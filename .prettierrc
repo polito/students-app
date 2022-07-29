@@ -1,0 +1,10 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "endOfLine": "auto",
+  "semi": true,
+  "importOrder": ["^react", "^expo", "^\\@", "^\\w", "^[./]"],
+  "importOrderSeparation": false
+}
