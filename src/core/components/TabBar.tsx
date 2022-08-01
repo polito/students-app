@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import EmptyScreen from '../../features/teaching/screens/EmptyScreen';
-import TeachingScreen from '../../features/teaching/screens/TeachingScreen';
+import { EmptyScreen } from '../../features/teaching/screens/EmptyScreen';
+import { TeachingScreen } from '../../features/teaching/screens/TeachingScreen';
 
 const Tab = createBottomTabNavigator();
 
-const TabBar = () => {
+export const TabBar = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -55,5 +55,3 @@ const TabBar = () => {
     </Tab.Navigator>
   );
 };
-
-export default TabBar;

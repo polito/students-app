@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
-import SectionHeader from '../../../core/components/SectionHeader';
+import { SectionHeader } from '../../../core/components/SectionHeader';
 
-const TeachingScreen = () => {
+export const TeachingScreen = () => {
   return (
     <View>
       <View style={styles.sectionsContainer}>

@@ -1,10 +1,14 @@
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { Link } from '@react-navigation/native';
-import PropTypes from 'prop-types';
-import colors from '../constants/colors';
-import Separator from './Separator';
+import { colors } from '../constants/colors';
+import { Separator } from './Separator';
 
-const SectionHeader = ({ title, linkTo }) => {
+interface Props {
+  title: string;
+  linkTo: any;
+}
+
+export const SectionHeader = ({ title, linkTo }: Props) => {
   const colorScheme = useColorScheme();
 
   return (
@@ -30,18 +34,9 @@ const SectionHeader = ({ title, linkTo }) => {
   );
 };
 
-SectionHeader.propTypes = {
-  title: PropTypes.string,
-  action: PropTypes.any,
-};
-
-export default SectionHeader;
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
     paddingHorizontal: 18,
   },
   innerContainer: {

@@ -8,8 +8,8 @@ import {
 import { registerRootComponent } from 'expo';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import TabBar from './core/components/TabBar';
-import colors from './core/constants/colors';
+import { TabBar } from './core/components/TabBar';
+import { colors } from './core/constants/colors';
 import * as themes from './core/constants/themes';
 
 export const App = () => {

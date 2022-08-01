@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-const EmptyScreen = () => {
+export const EmptyScreen = () => {
   return (
     <View>
       <View style={styles.sectionsContainer}></View>
@@ -14,5 +14,3 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
 });
-
-export default EmptyScreen;
