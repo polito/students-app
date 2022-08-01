@@ -29,16 +29,16 @@ $ npx expo build:[android|ios]
 
 ## Bug reports
 
-If you found a bug, an issue or feel something is off please open an [issue](./issues/new) using one of the available templates.
+If you found a bug, an issue or feel something is off please open an [issue](https://github.com/polito-it/students-app/issues/new) using one of the available templates.
 
 ## Feedback and support
 
-We use GitHub [Discussions](./discussions) as a place to gather feedback, provide support, share ideas and connect with the community.
+We use GitHub [Discussions](https://github.com/polito-it/students-app/discussions) as a place to gather feedback, provide support, share ideas and connect with the community.
 
 ## Roadmap and feature proposals
 
-We use GitHub [Projects](./projects/1) to keep track of the roadmap.  
-If you would like to propose a new feature, feel free to open an [issue](./issues/new) with the Feature Proposal template.
+We use GitHub [Projects](https://github.com/orgs/polito-it/projects/2) to keep track of the roadmap.  
+If you would like to propose a new feature, feel free to open an [issue](https://github.com/polito-it/students-app/issues/new) with the Feature Proposal template.
 
 ## Contributing
 

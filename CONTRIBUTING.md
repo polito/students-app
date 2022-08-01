@@ -60,7 +60,8 @@ We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like br
 - `develop` is the development trunk,
 - use `feature/...` branches to work on new features,
 - use `hotfix/...`branches to perform urgent fixes,
-- use hyphen separators (ie `feature/data-fetching`).
+- use hyphen separators (ie `feature/data-fetching`),
+- use commit footers to reference related issues (ie `Refs #10`, `Closes #10` etc.).
 
 ### Hooks
 
