@@ -1,5 +1,5 @@
 import { Theme } from '@react-navigation/native/src/types';
-import colors from './colors';
+import { colors } from './colors';
 
 export const LightTheme: Theme = {
   dark: false,

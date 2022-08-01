@@ -31,5 +31,3 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 });
-
-export default TeachingScreen;
