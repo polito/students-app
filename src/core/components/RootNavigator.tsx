@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
+import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
 import { ProfileNavigator } from '../../features/profile/components/ProfileNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
-import { EmptyScreen } from '../../features/teaching/screens/EmptyScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +38,7 @@ export const RootNavigator = () => {
       />
       <Tab.Screen
         name="Places"
-        component={EmptyScreen}
+        component={PlacesScreen}
         options={{
           tabBarLabel: t('Places'),
           tabBarIcon: ({ color, size }) => (
