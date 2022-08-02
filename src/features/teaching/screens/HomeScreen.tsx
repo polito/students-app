@@ -1,20 +1,25 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { SectionHeader } from '../../../core/components/SectionHeader';
 
-export const HomeScreen = () => {
+export const TeachingScreen = () => {
+  const { t } = useTranslation();
   return (
     <View>
       <View style={styles.sectionsContainer}>
         <View style={styles.section}>
-          <SectionHeader title="Corsi" linkTo={{ screen: 'Courses' }} />
+          <SectionHeader title={t('Courses')} linkTo={{ screen: 'Courses' }} />
           <Text>Lorem ipsum dolor sit amet</Text>
         </View>
         <View style={styles.section}>
-          <SectionHeader title="Appelli" linkTo={{ screen: 'Exams' }} />
+          <SectionHeader title={t('Exams')} linkTo={{ screen: 'Exams' }} />
           <Text>Lorem ipsum dolor sit amet</Text>
         </View>
         <View style={styles.section}>
-          <SectionHeader title="Libretto" linkTo={{ screen: 'Grades' }} />
+          <SectionHeader
+            title={t('Transcript')}
+            linkTo={{ screen: 'Grades' }}
+          />
           <Text>Lorem ipsum dolor sit amet</Text>
         </View>
       </View>

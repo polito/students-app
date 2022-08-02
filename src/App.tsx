@@ -11,6 +11,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { RootNavigator } from './core/components/RootNavigator';
 import { colors } from './core/constants/colors';
 import * as themes from './core/constants/themes';
+import './core/services/i18n';
 
 export const App = () => {
   const colorScheme = useColorScheme();
