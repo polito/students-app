@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { SectionHeader } from '../../../core/components/SectionHeader';
 
-export const TeachingScreen = () => {
+export const HomeScreen = () => {
   const { t } = useTranslation();
   return (
     <View>
