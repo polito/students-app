@@ -2,7 +2,7 @@
   "expo": {
     "name": "Polito Students",
     "slug": "polito-students",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "entryPoint": "./src/App.tsx",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
