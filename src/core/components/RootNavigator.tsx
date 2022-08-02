@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { EmptyScreen } from '../../features/teaching/screens/EmptyScreen';
 
@@ -26,7 +27,7 @@ export const RootNavigator = () => {
       />
       <Tab.Screen
         name="Agenda"
-        component={EmptyScreen}
+        component={AgendaNavigator}
         options={{
           tabBarLabel: t('Agenda'),
           tabBarIcon: ({ color, size }) => (
