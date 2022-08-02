@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { Link } from '@react-navigation/native';
 import { colors } from '../constants/colors';
@@ -10,6 +11,7 @@ interface Props {
 
 export const SectionHeader = ({ title, linkTo }: Props) => {
   const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
@@ -27,7 +29,7 @@ export const SectionHeader = ({ title, linkTo }: Props) => {
           to={linkTo}
           style={[styles.link, colorScheme === 'dark' ? styles.linkDark : null]}
         >
-          Vedi tutto
+          {t('See all')}
         </Link>
       </View>
     </View>
