@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { EmptyScreen } from '../../features/teaching/screens/EmptyScreen';
-import { TeachingScreen } from '../../features/teaching/screens/TeachingScreen';
 
 const Tab = createBottomTabNavigator();
 
-export const TabBar = () => {
+export const RootNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -14,7 +14,7 @@ export const TabBar = () => {
     >
       <Tab.Screen
         name="Teaching"
-        component={TeachingScreen}
+        component={TeachingNavigator}
         options={{
           tabBarLabel: 'Didattica',
           tabBarIcon: ({ color, size }) => (
