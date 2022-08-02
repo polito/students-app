@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CourseScreen } from '../screens/CourseScreen';
 import { CoursesScreen } from '../screens/CoursesScreen';
@@ -9,14 +10,22 @@ import { HomeScreen } from '../screens/HomeScreen';
 const Stack = createNativeStackNavigator();
 
 export const TeachingNavigator = () => {
+  const { t } = useTranslation();
+
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerTitle: t('Teaching'),
+        }}
+      />
       <Stack.Screen
         name="Courses"
         component={CoursesScreen}
         options={{
-          headerTitle: 'Corsi',
+          headerTitle: t('Courses'),
         }}
       />
       <Stack.Screen name="Course" component={CourseScreen} />
@@ -24,7 +33,7 @@ export const TeachingNavigator = () => {
         name="Exams"
         component={ExamsScreen}
         options={{
-          headerTitle: 'Appelli',
+          headerTitle: t('Exams'),
         }}
       />
       <Stack.Screen name="Exam" component={ExamScreen} />
@@ -32,7 +41,7 @@ export const TeachingNavigator = () => {
         name="Grades"
         component={GradesScreen}
         options={{
-          headerTitle: 'Libretto',
+          headerTitle: t('Transcript'),
         }}
       />
     </Stack.Navigator>
