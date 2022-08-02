@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "bump": "standard-version"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^6.3.2",
@@ -38,10 +39,7 @@
     "husky": "^7.0.0",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
+    "standard-version": "^9.5.0",
     "typescript": "~4.3.5"
-  },
-  "lint-staged": {
-    "*.ts?(x)": "eslint --cache --fix",
-    "*.{ts,tsx,css,md}": "prettier --write"
   }
 }
