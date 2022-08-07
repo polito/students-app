@@ -12,22 +12,13 @@ export const RootNavigator = () => {
   const { t } = useTranslation();
   return (
     <Tab.Navigator
+      backBehavior="history"
       screenOptions={{
         headerShown: false,
       }}
     >
       <Tab.Screen
-        name="Teaching"
-        component={TeachingNavigator}
-        options={{
-          tabBarLabel: t('Teaching'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="book" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Agenda"
+        name="AgendaTab"
         component={AgendaNavigator}
         options={{
           tabBarLabel: t('Agenda'),
@@ -37,7 +28,17 @@ export const RootNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Places"
+        name="TeachingTab"
+        component={TeachingNavigator}
+        options={{
+          tabBarLabel: t('Teaching'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="PlacesTab"
         component={PlacesScreen}
         options={{
           tabBarLabel: t('Places'),
@@ -47,7 +48,7 @@ export const RootNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="ProfileTab"
         component={ProfileNavigator}
         options={{
           tabBarLabel: t('Profile'),

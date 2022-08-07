@@ -29,6 +29,7 @@ export const TeachingNavigator = () => {
         }}
       />
       <Stack.Screen name="Course" component={CourseScreen} />
+
       <Stack.Screen
         name="Exams"
         component={ExamsScreen}
@@ -37,6 +38,7 @@ export const TeachingNavigator = () => {
         }}
       />
       <Stack.Screen name="Exam" component={ExamScreen} />
+
       <Stack.Screen
         name="Grades"
         component={GradesScreen}

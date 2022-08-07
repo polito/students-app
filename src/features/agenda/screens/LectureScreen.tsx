@@ -1,16 +1,20 @@
 import { Text, View } from 'react-native';
 import { Link } from '@react-navigation/native';
 
-export const AgendaScreen = () => {
+export const LectureScreen = () => {
   return (
     <View>
-      <Text>Agenda</Text>
+      <Text>Lecture</Text>
+
       <Link
         to={{
-          screen: 'Lecture',
+          screen: 'TeachingTab',
+          params: {
+            screen: 'Course',
+          },
         }}
       >
-        Lecture
+        Material
       </Link>
     </View>
   );
