@@ -1,16 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Link } from '@react-navigation/native';
-import { colors } from '../constants/colors';
+import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
+import { useTheme } from '../hooks/useTheme';
 import { Separator } from './Separator';
 
 interface Props {
   title: string;
-  linkTo: any;
+  linkTo: To;
 }
 
 export const SectionHeader = ({ title, linkTo }: Props) => {
-  const colorScheme = useColorScheme();
+  const { colors } = useTheme();
   const { t } = useTranslation();
 
   return (
@@ -20,14 +21,18 @@ export const SectionHeader = ({ title, linkTo }: Props) => {
         <Text
           style={[
             styles.title,
-            colorScheme === 'dark' ? styles.titleDark : null,
+            {
+              color: colors.headings,
+            },
           ]}
         >
           {title}
         </Text>
         <Link
           to={linkTo}
-          style={[styles.link, colorScheme === 'dark' ? styles.linkDark : null]}
+          style={{
+            color: colors.links,
+          }}
         >
           {t('See all')}
         </Link>
@@ -49,18 +54,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    color: colors.primary700,
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'left',
-  },
-  titleDark: {
-    color: colors.text50,
-  },
-  link: {
-    color: colors.primary500,
-  },
-  linkDark: {
-    color: colors.primary400,
   },
 });
