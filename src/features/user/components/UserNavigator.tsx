@@ -6,7 +6,7 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
-export const ProfileNavigator = () => {
+export const UserNavigator = () => {
   const { t } = useTranslation();
 
   return (
