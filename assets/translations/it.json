@@ -1,10 +1,12 @@
 {
   "Agenda": "Agenda",
   "Courses": "Corsi",
-  "Exams": "Esami",
+  "Exams": "Appelli",
+  "Notifications archive": "Archivio notifiche",
   "Places": "Luoghi",
   "Profile": "Profilo",
   "See all": "Vedi tutto",
+  "Settings": "Impostazioni",
   "Teaching": "Didattica",
   "Transcript": "Libretto"
 }

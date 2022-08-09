@@ -17,7 +17,7 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 │   ├── App.tsx              # App entry point
 │   ├── core                 # Core module
 │   │   ├── components
-│   │   │   └── TabBar.tsx
+│   │   │   └── RootNavigator.tsx
 │   │   ├── hooks
 │   │   └── screens
 │   ├── features             # Feature modules
