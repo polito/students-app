@@ -1,8 +1,8 @@
 import { initReactI18next } from 'react-i18next';
 import { NativeModules, Platform } from 'react-native';
 import i18n from 'i18next';
-import en from '../../../assets/translations/en.json';
-import it from '../../../assets/translations/it.json';
+import en from '../assets/translations/en.json';
+import it from '../assets/translations/it.json';
 
 const deviceLocale =
   Platform.OS === 'ios'
