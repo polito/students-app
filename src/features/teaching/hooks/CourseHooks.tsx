@@ -11,7 +11,7 @@ export const useGetCourses = () => {
 
 export const useGetCourse = (courseId: number) => {
   return useQuery([COURSE_QUERY_KEY, courseId, 'overview'], () =>
-    CourseService.getCourseOverview({ courseId: courseId }),
+    CourseService.getCourse({ courseId: courseId }),
   );
 };
 

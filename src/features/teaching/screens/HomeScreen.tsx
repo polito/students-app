@@ -21,7 +21,10 @@ export const HomeScreen = () => {
           {isCoursesLoading && <Text>Loading</Text>}
           <View>
             {coursesResponse?.data.slice(0, 4).map(c => (
-              <Link key={c.id} to={{ screen: 'Course', params: { id: c.id } }}>
+              <Link
+                key={c.shortcode}
+                to={{ screen: 'Course', params: { id: c.id } }}
+              >
                 <Text>{JSON.stringify(c)}</Text>
               </Link>
             ))}
