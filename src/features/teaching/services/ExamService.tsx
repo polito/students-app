@@ -1,8 +1,4 @@
-import { Configuration, ExamsApi } from '@polito-it/api-client';
+import { ExamsApi } from '@polito-it/api-client';
+import { getApiConfiguration } from '../../../config';
 
-export const ExamService = new ExamsApi(
-  new Configuration({
-    basePath: 'http://192.168.14.65:4010',
-    accessToken: 'whatever',
-  }),
-);
+export const ExamService = new ExamsApi(getApiConfiguration());
