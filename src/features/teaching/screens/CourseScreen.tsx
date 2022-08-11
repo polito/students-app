@@ -18,8 +18,8 @@ export const CourseScreen = ({ route }: Props) => {
   const renderedTab = overviewResponse && (
     <CourseLecturesTab
       courseId={id}
-      otherEditions={overviewResponse.data.otherEditions}
-      vcCourses={overviewResponse.data.vcCourses}
+      vcPreviousYears={overviewResponse.data.vcPreviousYears}
+      vcOtherCourses={overviewResponse.data.vcOtherCourses}
     ></CourseLecturesTab>
   );
 

@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
-import { CourseAllOfOtherEditions } from '@polito-it/api-client/models/CourseAllOfOtherEditions';
-import { CourseAllOfVcCourses } from '@polito-it/api-client/models/CourseAllOfVcCourses';
+import { CourseAllOfVcOtherCourses } from '@polito-it/api-client';
+import { CourseAllOfVcPreviousYears } from '@polito-it/api-client';
 import { Link } from '@react-navigation/native';
 import {
   useGetCourseVideolectures,
@@ -9,14 +9,14 @@ import {
 import { CourseTabProps } from '../screens/CourseScreen';
 
 type CourseLecturesTabParameters = CourseTabProps & {
-  otherEditions: CourseAllOfOtherEditions[];
-  vcCourses: CourseAllOfVcCourses[];
+  vcPreviousYears: CourseAllOfVcPreviousYears[];
+  vcOtherCourses: CourseAllOfVcOtherCourses[];
 };
 
 export const CourseLecturesTab = ({
   courseId,
-  otherEditions,
-  vcCourses,
+  vcPreviousYears,
+  vcOtherCourses,
 }: CourseLecturesTabParameters) => {
   const { data: videolecturesResponse } = useGetCourseVideolectures(courseId);
   const { data: virtualClassroomsResponse } =
