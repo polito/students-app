@@ -1,6 +1,4 @@
-import { Configuration, StudentApi } from '@polito-it/api-client';
+import { StudentApi } from '@polito-it/api-client';
 import { getApiConfiguration } from '../../config';
 
-export const StudentService = new StudentApi(
-  new Configuration(getApiConfiguration()),
-);
+export const StudentService = new StudentApi(getApiConfiguration());
