@@ -1,7 +1,12 @@
 {
   "Agenda": "Agenda",
+  "Assignments": "Assignments",
   "Courses": "Courses",
   "Exams": "Exams",
+  "Files": "Files",
+  "Info": "Info",
+  "Lectures": "Lectures",
+  "Notices": "Notices",
   "Notifications archive": "Notifications archive",
   "Places": "Places",
   "Profile": "Profile",

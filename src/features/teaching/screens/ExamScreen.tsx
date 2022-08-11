@@ -1,8 +1,12 @@
 import { Text, View } from 'react-native';
 import { ExamStatusEnum } from '@polito-it/api-client/models/Exam';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { useBookExam, useGetExams } from '../hooks/ExamHooks';
 
-export const ExamScreen = ({ route }) => {
+type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
+
+export const ExamScreen = ({ route }: Props) => {
   const { id } = route.params;
 
   const { data: examsResponse } = useGetExams();

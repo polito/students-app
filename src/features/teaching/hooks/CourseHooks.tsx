@@ -9,7 +9,7 @@ export const useGetCourses = () => {
   return useQuery([COURSES_QUERY_KEY], () => CourseService.getCourses());
 };
 
-export const useGetCourseOverview = (courseId: number) => {
+export const useGetCourse = (courseId: number) => {
   return useQuery([COURSE_QUERY_KEY, courseId, 'overview'], () =>
     CourseService.getCourseOverview({ courseId: courseId }),
   );

@@ -1,10 +1,27 @@
 import { Text, View } from 'react-native';
-import { useGetCourseOverview } from '../hooks/CourseHooks';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { CourseLecturesTab } from '../components/CourseLecturesTab';
+import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { useGetCourse } from '../hooks/CourseHooks';
 
-export const CourseScreen = ({ route }) => {
+type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
+
+export type CourseTabProps = {
+  courseId: number;
+};
+
+export const CourseScreen = ({ route }: Props) => {
   const { id } = route.params;
   const { data: overviewResponse, isLoading: isCourseLoading } =
-    useGetCourseOverview(id);
+    useGetCourse(id);
+
+  const renderedTab = overviewResponse && (
+    <CourseLecturesTab
+      courseId={id}
+      otherEditions={overviewResponse.data.otherEditions}
+      vcCourses={overviewResponse.data.vcCourses}
+    ></CourseLecturesTab>
+  );
 
   return (
     <View>
@@ -12,6 +29,7 @@ export const CourseScreen = ({ route }) => {
       <Text>
         Course: {overviewResponse && JSON.stringify(overviewResponse.data)}
       </Text>
+      {renderedTab}
     </View>
   );
 };
