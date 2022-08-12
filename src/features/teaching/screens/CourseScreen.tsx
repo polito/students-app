@@ -2,13 +2,11 @@ import { Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-import { useGetCourse } from '../hooks/CourseHooks';
+import { useGetCourse } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
-export type CourseTabProps = {
-  courseId: number;
-};
+export type CourseTabProps = { courseId: number };
 
 export const CourseScreen = ({ route }: Props) => {
   const { id } = route.params;

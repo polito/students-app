@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
-import { useGetStudent } from '../../../core/hooks/StudentHooks';
-import { useGetGrades } from '../hooks/GradeHooks';
+import { useGetStudent } from '../../../core/hooks/studentHooks';
+import { useGetGrades } from '../hooks/gradeHooks';
 
 export const GradesScreen = () => {
   const { data: studentResponse } = useGetStudent();

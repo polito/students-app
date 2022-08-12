@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 import { Link } from '@react-navigation/native';
-import { useGetExams } from '../hooks/ExamHooks';
+import { useGetExams } from '../hooks/examHooks';
 
 export const ExamsScreen = () => {
   const { data: examsResponse, isLoading } = useGetExams();

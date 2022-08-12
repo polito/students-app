@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { Link } from '@react-navigation/native';
 import { SectionHeader } from '../../../core/components/SectionHeader';
-import { useGetStudent } from '../../../core/hooks/StudentHooks';
-import { useGetCourses } from '../hooks/CourseHooks';
-import { useGetExams } from '../hooks/ExamHooks';
+import { useGetStudent } from '../../../core/hooks/studentHooks';
+import { useGetCourses } from '../hooks/courseHooks';
+import { useGetExams } from '../hooks/examHooks';
 
 export const HomeScreen = () => {
   const { t } = useTranslation();

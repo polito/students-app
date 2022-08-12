@@ -1,11 +1,13 @@
 import { Text, View } from 'react-native';
-import { CourseAllOfVcOtherCourses } from '@polito-it/api-client';
-import { CourseAllOfVcPreviousYears } from '@polito-it/api-client';
+import {
+  CourseAllOfVcOtherCourses,
+  CourseAllOfVcPreviousYears,
+} from '@polito-it/api-client';
 import { Link } from '@react-navigation/native';
 import {
   useGetCourseVideolectures,
   useGetCourseVirtualClassrooms,
-} from '../hooks/CourseHooks';
+} from '../hooks/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 type CourseLecturesTabParameters = CourseTabProps & {

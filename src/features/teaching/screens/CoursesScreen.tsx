@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 import { Link } from '@react-navigation/native';
-import { useGetCourses } from '../hooks/CourseHooks';
+import { useGetCourses } from '../hooks/courseHooks';
 
 export const CoursesScreen = () => {
   const { data: coursesResponse, isLoading: isCoursesLoading } =

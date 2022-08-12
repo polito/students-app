@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-import { useGetCourseGuide } from '../hooks/CourseHooks';
+import { useGetCourseGuide } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseGuide'>;
 

@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useGetCourseAssignments } from '../hooks/CourseHooks';
+import { useGetCourseAssignments } from '../hooks/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 export const CourseAssignmentsTab = ({ courseId }: CourseTabProps) => {
