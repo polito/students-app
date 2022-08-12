@@ -12,7 +12,7 @@ export const UserNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
+        name="Profile"
         component={HomeScreen}
         options={{
           headerShown: false,

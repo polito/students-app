@@ -10,7 +10,7 @@ const deviceLocale =
       NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
     : NativeModules.I18nManager.localeIdentifier;
 
-const language = deviceLocale.startsWith('en') ? 'en' : 'it';
+export const language = deviceLocale.startsWith('en') ? 'en' : 'it';
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',

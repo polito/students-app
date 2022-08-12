@@ -9,12 +9,13 @@ import { registerRootComponent } from 'expo';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { FetchError } from '@polito-it/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
-import { NavigationContainer } from '@react-navigation/native';
 import {
   onlineManager,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import MatomoTracker, { MatomoProvider } from 'matomo-tracker-react-native';
+import { NavigationContainer } from './core/components/NavigationContainer';
 import { RootNavigator } from './core/components/RootNavigator';
 import { colors } from './core/constants/colors';
 import * as themes from './core/constants/themes';
@@ -67,16 +68,26 @@ export const App = () => {
     });
   });
 
+  const trackerInstance = new MatomoTracker({
+    urlBase: 'https://ingestion.webanalytics.italia.it', // required
+    siteId: 8693, // required, number matching your Matomo project
+    // userId: 'UID76903202' // optional, default value: `undefined`.
+    // disabled: !isEnvProduction, // optional, default value: false. Disables all tracking operations if set to true.
+    log: true, // optional, default value: false. Enables some logs if set to true.
+  });
+
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <ExpoStatusBar {...statusBarProps} />
-        <SafeAreaView style={styles.container}>
-          <NavigationContainer theme={theme}>
-            <RootNavigator />
-          </NavigationContainer>
-        </SafeAreaView>
-      </QueryClientProvider>
+      <MatomoProvider instance={trackerInstance}>
+        <QueryClientProvider client={queryClient}>
+          <ExpoStatusBar {...statusBarProps} />
+          <SafeAreaView style={styles.container}>
+            <NavigationContainer theme={theme}>
+              <RootNavigator />
+            </NavigationContainer>
+          </SafeAreaView>
+        </QueryClientProvider>
+      </MatomoProvider>
     </>
   );
 };

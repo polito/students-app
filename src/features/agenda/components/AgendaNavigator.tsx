@@ -11,7 +11,7 @@ export const AgendaNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
+        name="Agenda"
         component={AgendaScreen}
         options={{
           headerTitle: t('Agenda'),
