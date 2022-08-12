@@ -72,7 +72,7 @@ export const App = () => {
     urlBase: 'https://ingestion.webanalytics.italia.it', // required
     siteId: 8693, // required, number matching your Matomo project
     // userId: 'UID76903202' // optional, default value: `undefined`.
-    // disabled: !isEnvProduction, // optional, default value: false. Disables all tracking operations if set to true.
+    disabled: true, // optional, default value: false. Disables all tracking operations if set to true.
     log: true, // optional, default value: false. Enables some logs if set to true.
   });
 
