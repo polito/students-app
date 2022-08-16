@@ -20,7 +20,6 @@ export const NavigationContainer = ({
 
   const getCurrentRouteName = () => {
     const route = navigationRef.getCurrentRoute();
-    console.log(route.params);
 
     type ParamsWithId = {
       id: string | number;
