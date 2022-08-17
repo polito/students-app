@@ -5,6 +5,9 @@ interface Prop {
   style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * A divider element to separate list items
+ */
 export const Divider = ({ style = {} }: Prop) => {
   const { colors } = useTheme();
   return (
