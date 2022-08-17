@@ -1,18 +1,41 @@
+import { useContext, useEffect, useState } from 'react';
 import { Animated } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { CollapsingHeaderContext } from '../contexts/CollapsingHeaderContext';
 
 export const useCollapsingHeader = () => {
-  const {
-    params: { scrollTop },
-  } = useRoute<any>();
-  if (!scrollTop) {
-    return {};
+  const headerHeight = useHeaderHeight();
+  const [count, setCount] = useState(0);
+  const [collapsedHeaderHeight, setCollapsedHeaderHeight] =
+    useState(headerHeight);
+  const { scrollTop, enabled, setEnabled } = useContext(
+    CollapsingHeaderContext,
+  );
+
+  if (!enabled) {
+    setEnabled(true);
   }
+
+  useEffect(() => {
+    if (count < 2) {
+      setCollapsedHeaderHeight(headerHeight);
+      setCount(c => c + 1);
+    }
+  }, [headerHeight]);
+
   return {
-    onScroll: Animated.event(
-      [{ nativeEvent: { contentOffset: { y: scrollTop } } }],
-      { useNativeDriver: false },
-    ),
-    scrollEventThrottle: 16,
+    scrollTop,
+    scrollViewProps: scrollTop
+      ? {
+          style: {
+            paddingTop: collapsedHeaderHeight,
+          },
+          onScroll: Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollTop } } }],
+            { useNativeDriver: false },
+          ),
+          scrollEventThrottle: 16,
+        }
+      : {},
   };
 };

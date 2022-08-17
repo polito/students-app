@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { AgendaCard } from '../../../../lib/ui/components/AgendaCard';
 import { ListItem } from '../../../../lib/ui/components/ListItem';
+import { MetricCard } from '../../../../lib/ui/components/MetricCard';
 import { SectionHeader } from '../../../../lib/ui/components/SectionHeader';
 import { SectionList } from '../../../../lib/ui/components/SectionList';
 import { useStylesheet } from '../../../../lib/ui/hooks/useStylesheet';
@@ -12,28 +12,19 @@ import { useCollapsingHeader } from '../../../core/hooks/useCollapsingHeader';
 export const TeachingScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const headerHeight = useHeaderHeight();
-  const [count, setCount] = useState(0);
-  const [initialHeaderHeight, setInitialHeaderHeight] = useState(headerHeight);
-  const scrollViewProps = useCollapsingHeader();
-
-  useEffect(() => {
-    if (count < 2) {
-      setInitialHeaderHeight(headerHeight);
-      setCount(c => c + 1);
-    }
-  }, [headerHeight]);
+  const { scrollViewProps } = useCollapsingHeader();
 
   return (
-    <ScrollView
-      style={{ paddingTop: initialHeaderHeight }}
-      {...scrollViewProps}
-    >
+    <ScrollView {...scrollViewProps}>
       <View style={styles.sectionsContainer}>
         <View style={styles.section}>
           <SectionHeader title={t('Courses')} linkTo={{ screen: 'Teaching' }} />
           <SectionList>
-            <ListItem title="Test" subtitle="Test subtitle" />
+            <ListItem
+              title="Test"
+              subtitle="Test subtitle"
+              linkTo={{ screen: 'Teaching' }}
+            />
             <ListItem title="Test" subtitle="Test subtitle" />
             <ListItem title="Test" subtitle="Test subtitle" />
             <ListItem title="Test" subtitle="Test subtitle" />
@@ -41,14 +32,39 @@ export const TeachingScreen = () => {
         </View>
         <View style={styles.section}>
           <SectionHeader title={t('Exams')} linkTo={{ screen: 'Teaching' }} />
-          <Text>Lorem ipsum dolor sit amet</Text>
+          <View style={{ padding: 18 }}>
+            <View style={{ flexDirection: 'row', marginBottom: 18 }}>
+              <MetricCard
+                name="Title"
+                value="Metric"
+                style={{ marginRight: 18 }}
+              />
+              <MetricCard name="Title" value="Metric" />
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <MetricCard
+                name="Title"
+                value="Metric"
+                style={{ marginRight: 18 }}
+              />
+              <MetricCard name="Title" value="Metric" />
+            </View>
+          </View>
         </View>
         <View style={styles.section}>
           <SectionHeader
             title={t('Transcript')}
             linkTo={{ screen: 'Teaching' }}
           />
-          <Text>Lorem ipsum dolor sit amet</Text>
+          <AgendaCard
+            title="Physics 1"
+            style={{ margin: 18 }}
+            time="08:30"
+            subtitle="Lesson"
+          >
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
+            libero maxime quia ratione suscipit.
+          </AgendaCard>
         </View>
         <View style={{ height: 2000 }}></View>
       </View>

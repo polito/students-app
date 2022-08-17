@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useContext, useState } from 'react';
 import { Animated, Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import {
   useSafeAreaFrame,
@@ -14,8 +14,7 @@ import {
 } from '@react-navigation/elements';
 import { useTheme as useNavigationTheme } from '@react-navigation/native';
 import { useTheme } from '../../../lib/ui/hooks/useTheme';
-
-import AnimatedValue = Animated.AnimatedValue;
+import { CollapsingHeaderContext } from '../contexts/CollapsingHeaderContext';
 
 type Props = HeaderOptions & {
   /**
@@ -31,9 +30,9 @@ type Props = HeaderOptions & {
    */
   title: string;
   /**
-   * The scroll offset
+   * The bottom view
    */
-  scrollTop: AnimatedValue;
+  bottom?: JSX.Element;
 };
 
 const warnIfHeaderStylesDefined = (styles: Record<string, any>) => {
@@ -56,12 +55,15 @@ export const Header = (props: Props) => {
   const insets = useSafeAreaInsets();
   const frame = useSafeAreaFrame();
   const { colors } = useNavigationTheme();
-  const { spacing } = useTheme();
+  const { spacing, fontSizes, fontFamilies } = useTheme();
+  const [largeTitleHeight, setLargeTitleHeight] = useState(0);
 
-  const isParentHeaderShown = React.useContext(HeaderShownContext);
+  const isParentHeaderShown = useContext(HeaderShownContext);
+  const { enabled, scrollTop } = useContext(CollapsingHeaderContext);
 
   const {
     title,
+    bottom,
     layout = frame,
     modal = false,
     headerTitle: customTitle,
@@ -198,7 +200,6 @@ export const Header = (props: Props) => {
       borderBottomWidth: 0,
     },
   ];
-  console.log('Bg styles', backgroundStyle);
 
   const leftButton = headerLeft
     ? headerLeft({
@@ -226,18 +227,20 @@ export const Header = (props: Props) => {
       : customTitle;
 
   return (
-    <React.Fragment>
+    <>
       <Animated.View
         pointerEvents="box-none"
         style={[
           StyleSheet.absoluteFill,
           {
             zIndex: 0,
-            opacity: props.scrollTop.interpolate({
-              inputRange: [25, 35],
-              outputRange: [0, 1],
-              extrapolate: 'clamp',
-            }),
+            opacity: enabled
+              ? scrollTop.interpolate({
+                  inputRange: [largeTitleHeight - 5, largeTitleHeight],
+                  outputRange: [0, 1],
+                  extrapolate: 'clamp',
+                })
+              : undefined,
           },
           backgroundContainerStyle,
         ]}
@@ -289,11 +292,13 @@ export const Header = (props: Props) => {
                         insets.left -
                         insets.right),
 
-                opacity: props.scrollTop.interpolate({
-                  inputRange: [34, 44],
-                  outputRange: [0, 1],
-                  extrapolate: 'clamp',
-                }),
+                opacity: enabled
+                  ? scrollTop.interpolate({
+                      inputRange: [largeTitleHeight - 5, largeTitleHeight],
+                      outputRange: [0, 1],
+                      extrapolate: 'clamp',
+                    })
+                  : undefined,
               },
               titleContainerStyle,
             ]}
@@ -302,7 +307,12 @@ export const Header = (props: Props) => {
               children: title,
               allowFontScaling: titleAllowFontScaling,
               tintColor: headerTintColor,
-              style: titleStyle,
+              style: [
+                {
+                  fontFamily: `${fontFamilies.heading}-semibold`,
+                },
+                titleStyle,
+              ],
             })}
           </Animated.View>
           <Animated.View
@@ -318,46 +328,60 @@ export const Header = (props: Props) => {
           </Animated.View>
         </View>
       </Animated.View>
-      <Animated.View
-        style={{
-          paddingLeft: spacing[4],
-          paddingRight: spacing[4],
-          height: props.scrollTop.interpolate({
-            inputRange: [0, 44],
-            outputRange: [44, 0],
-            extrapolateLeft: 'extend',
-            extrapolateRight: 'clamp',
-          }),
-          overflow: 'hidden',
-        }}
-      >
+      {enabled && (
         <Animated.View
           style={{
-            marginTop: Animated.subtract(0, props.scrollTop),
+            paddingLeft: spacing[4],
+            paddingRight: spacing[4],
+            height:
+              largeTitleHeight !== 0
+                ? scrollTop.interpolate({
+                    inputRange: [0, largeTitleHeight],
+                    outputRange: [largeTitleHeight, 0],
+                    extrapolateLeft: 'extend',
+                    extrapolateRight: 'clamp',
+                  })
+                : undefined,
+            overflow: 'hidden',
           }}
         >
           {headerTitle({
             children: title,
             allowFontScaling: titleAllowFontScaling,
             tintColor: headerTintColor,
+            onLayout: e => {
+              const { height: titleHeight } = e.nativeEvent.layout;
+              if (titleHeight > 0 && !largeTitleHeight) {
+                setLargeTitleHeight(titleHeight);
+              }
+            },
             style: [
               titleStyle,
               {
-                fontSize: props.scrollTop.interpolate({
-                  inputRange: [-46, 0],
-                  outputRange: [38, 36],
-                  extrapolateLeft: 'extend',
-                  extrapolateRight: 'clamp',
-                }),
+                fontFamily: `${fontFamilies.heading}-semibold`,
+                height: largeTitleHeight > 0 ? largeTitleHeight : undefined,
+                fontSize: fontSizes['4xl'],
+                transform: [
+                  {
+                    translateY: scrollTop.interpolate({
+                      inputRange: [0, 10],
+                      outputRange: [0, -10],
+                      extrapolate: 'extend',
+                    }),
+                  },
+                ],
               },
             ],
           })}
         </Animated.View>
-      </Animated.View>
-    </React.Fragment>
+      )}
+
+      {bottom && bottom}
+    </>
   );
 };
 
+// noinspection JSSuspiciousNameCombination
 const styles = StyleSheet.create({
   content: {
     flex: 1,
