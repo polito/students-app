@@ -1,11 +1,8 @@
-import {
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import { useMemo } from 'react';
+import { useColorScheme } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { registerRootComponent } from 'expo';
+import { useFonts } from 'expo-font';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { FetchError } from '@polito-it/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
@@ -15,29 +12,26 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import MatomoTracker, { MatomoProvider } from 'matomo-tracker-react-native';
+import { ThemeContext } from '../lib/ui/contexts/ThemeContext';
 import { NavigationContainer } from './core/components/NavigationContainer';
 import { RootNavigator } from './core/components/RootNavigator';
-import { colors } from './core/constants/colors';
-import * as themes from './core/constants/themes';
+import { darkTheme } from './core/themes/dark';
+import { lightTheme } from './core/themes/light';
 import './i18n';
+import { fromUiTheme } from './utils/navigation-theme';
 
 export const App = () => {
+  const [fontsLoaded] = useFonts({
+    'Poppins-bold': require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
+    'Poppins-bold-italic': require('../assets/fonts/Poppins/Poppins-BoldItalic.ttf'),
+    'Poppins-normal-italic': require('../assets/fonts/Poppins/Poppins-Italic.ttf'),
+    'Poppins-normal': require('../assets/fonts/Poppins/Poppins-Regular.ttf'),
+    'Poppins-semibold': require('../assets/fonts/Poppins/Poppins-SemiBold.ttf'),
+    'Poppins-semibold-italic': require('../assets/fonts/Poppins/Poppins-SemiBoldItalic.ttf'),
+  });
   const colorScheme = useColorScheme();
-  let theme, statusBarProps;
-
-  if (colorScheme === 'dark') {
-    theme = themes.DarkTheme;
-    statusBarProps = {
-      style: 'light',
-      backgroundColor: colors.surfaceDark,
-    };
-  } else {
-    theme = themes.LightTheme;
-    statusBarProps = {
-      style: 'dark',
-      backgroundColor: colors.surfaceLight,
-    };
-  }
+  const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
+  const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 
   const isEnvProduction = process.env.NODE_ENV === 'production';
 
@@ -76,28 +70,21 @@ export const App = () => {
     log: true, // optional, default value: false. Enables some logs if set to true.
   });
 
-  return (
-    <>
-      <MatomoProvider instance={trackerInstance}>
-        <QueryClientProvider client={queryClient}>
-          <ExpoStatusBar {...statusBarProps} />
-          <SafeAreaView style={styles.container}>
-            <NavigationContainer theme={theme}>
+  return fontsLoaded ? (
+    <MatomoProvider instance={trackerInstance}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeContext.Provider value={uiTheme}>
+          <ExpoStatusBar />
+          <SafeAreaProvider>
+            <NavigationContainer theme={navigationTheme}>
               <RootNavigator />
             </NavigationContainer>
-          </SafeAreaView>
-        </QueryClientProvider>
-      </MatomoProvider>
-    </>
-  );
+          </SafeAreaProvider>
+        </ThemeContext.Provider>
+      </QueryClientProvider>
+    </MatomoProvider>
+  ) : null;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
-});
 
 export default App;
 registerRootComponent(App);

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseScreen } from '../screens/CourseScreen';
@@ -24,7 +24,7 @@ export type TeachingStackParamList = {
   Grades: undefined;
 };
 
-const Stack = createNativeStackNavigator<TeachingStackParamList>();
+const Stack = createStackNavigator<TeachingStackParamList>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();

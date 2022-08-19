@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export const AgendaNavigator = () => {
   const { t } = useTranslation();

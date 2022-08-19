@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { Link } from '@react-navigation/native';
-import { SectionHeader } from '../../../core/components/SectionHeader';
+import { SectionHeader } from '../../../../lib/ui/components/SectionHeader';
 import { useGetStudent } from '../../../core/hooks/studentHooks';
 import { useGetCourses } from '../hooks/courseHooks';
 import { useGetExams } from '../hooks/examHooks';
