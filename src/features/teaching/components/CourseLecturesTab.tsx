@@ -1,9 +1,17 @@
-import { Text, View } from 'react-native';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { TouchableHighlight, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Card } from '@lib/ui/components/Card';
+import { Grid } from '@lib/ui/components/Grid';
+import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { Text } from '@lib/ui/components/Text';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   CourseAllOfVcOtherCourses,
   CourseAllOfVcPreviousYears,
 } from '@polito-it/api-client';
-import { Link } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {
   useGetCourseVideolectures,
   useGetCourseVirtualClassrooms,
@@ -17,45 +25,99 @@ type CourseLecturesTabParameters = CourseTabProps & {
 
 export const CourseLecturesTab = ({
   courseId,
+  setIsRefreshing,
+  shouldRefresh,
   vcPreviousYears,
   vcOtherCourses,
 }: CourseLecturesTabParameters) => {
-  const { data: videolecturesResponse } = useGetCourseVideolectures(courseId);
-  const { data: virtualClassroomsResponse } =
-    useGetCourseVirtualClassrooms(courseId);
+  const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
+  const { navigate } = useNavigation();
+  const {
+    data: videolecturesResponse,
+    isLoading: isLoadingVideoLectures,
+    refetch: refetchVideoLectures,
+  } = useGetCourseVideolectures(courseId);
+  const {
+    data: virtualClassroomsResponse,
+    isLoading: isLoadingVirtualClassrooms,
+    refetch: refetchVirtualClassrooms,
+  } = useGetCourseVirtualClassrooms(courseId);
+
+  useEffect(
+    () => setIsRefreshing(isLoadingVideoLectures || isLoadingVirtualClassrooms),
+    [isLoadingVideoLectures, isLoadingVirtualClassrooms],
+  );
+
+  useEffect(() => {
+    if (shouldRefresh) {
+      refetchVideoLectures();
+      refetchVirtualClassrooms();
+    }
+  }, [shouldRefresh]);
 
   return (
-    <View>
-      <Text style={{ fontWeight: 'bold' }}>Videolectures</Text>
-      <View>
-        {videolecturesResponse &&
-          videolecturesResponse.data.map(lecture => (
-            <Link
-              to={{
-                screen: 'CourseVideolecture',
+    <View style={{ paddingVertical: spacing[5] }}>
+      <SectionHeader title={t('Video lectures')} />
+      <Grid style={{ padding: spacing[5] }}>
+        {videolecturesResponse?.data.map(lecture => (
+          <TouchableHighlight
+            key={lecture.id}
+            style={{ flex: 1 }}
+            onPress={() =>
+              navigate({
+                name: 'CourseVideolecture',
                 params: { courseId, lectureId: lecture.id },
-              }}
-              key={lecture.id}
-            >
-              {lecture.title}
-            </Link>
-          ))}
-      </View>
-      <Text style={{ fontWeight: 'bold' }}>Virtual classrooms</Text>
-      <View>
-        {virtualClassroomsResponse &&
-          virtualClassroomsResponse.data.map(lecture => (
-            <Link
-              to={{
-                screen: 'CourseVirtualClassroom',
-                params: { courseId, lectureId: lecture.id },
-              }}
-              key={lecture.id}
-            >
-              {lecture.title}
-            </Link>
-          ))}
-      </View>
+              })
+            }
+          >
+            <Card style={{ padding: spacing[5] }}>
+              <Ionicons
+                name="videocam-outline"
+                size={36}
+                color={colors.secondaryText}
+                style={{ alignSelf: 'center', margin: spacing[8] }}
+              />
+              <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
+                {lecture.title}
+              </Text>
+              <Text variant="secondaryText">
+                {lecture.createdAt.toLocaleDateString()}
+              </Text>
+            </Card>
+          </TouchableHighlight>
+        ))}
+      </Grid>
+      <SectionHeader title={t('Virtual classrooms')} />
+      <Grid style={{ padding: spacing[5] }}>
+        {virtualClassroomsResponse?.data.map(vc => (
+          <TouchableHighlight
+            key={vc.id}
+            style={{ flex: 1 }}
+            onPress={() =>
+              navigate({
+                name: 'CourseVirtualClassroom',
+                params: { courseId, lectureId: vc.id },
+              })
+            }
+          >
+            <Card style={{ padding: spacing[5] }}>
+              <Ionicons
+                name="videocam-outline"
+                size={36}
+                color={colors.secondaryText}
+                style={{ alignSelf: 'center', margin: spacing[8] }}
+              />
+              <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
+                {vc.title}
+              </Text>
+              <Text variant="secondaryText">
+                {vc.createdAt.toLocaleDateString()}
+              </Text>
+            </Card>
+          </TouchableHighlight>
+        ))}
+      </Grid>
     </View>
   );
 };

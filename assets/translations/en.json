@@ -6,6 +6,8 @@
   "Files": "Files",
   "Info": "Info",
   "Lectures": "Lectures",
+  "Video lectures": "Video lectures",
+  "Virtual classrooms": "Virtual classrooms",
   "Notices": "Notices",
   "Notifications archive": "Notifications archive",
   "Places": "Places",
@@ -13,5 +15,15 @@
   "See all": "See all",
   "Settings": "Settings",
   "Teaching": "Teaching",
-  "Transcript": "Transcript"
+  "Teacher": "Teacher",
+  "Transcript": "Transcript",
+  "Period": "Period",
+  "Weighted average": "Weighted average",
+  "Final average": "Final average",
+  "Credits": "Credits",
+  "Academic year": "Academic year",
+  "in the agenda": "in the agenda",
+  "This course in the agenda": "This course in the agenda",
+  "More": "Altro",
+  "Course guide": "Course guide"
 }

@@ -17,7 +17,9 @@ export const useGetCourse = (courseId: number) => {
 
 export const useGetCourseFiles = (courseId: number) => {
   return useQuery([COURSE_QUERY_KEY, courseId, 'files'], () =>
-    CourseService.getCourseFiles({ courseId: courseId }),
+    CourseService.getCourseFiles({ courseId: courseId }).then(files => ({
+      data: files.data.concat(...files.data).concat(...files.data),
+    })),
   );
 };
 

@@ -1,21 +1,19 @@
-import { Children, PropsWithChildren } from 'react';
-import { Platform } from 'react-native';
+import { PropsWithChildren } from 'react';
+import { ActivityIndicator, Platform } from 'react-native';
+import { List } from '@lib/ui/components/List';
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
-import { Divider } from './Divider';
 
 type Props = PropsWithChildren<{
   dividers?: boolean;
+  loading?: boolean;
 }>;
 
 /**
  * Displays a list of items with automatic dividers inside a card.
  * (Only suitable for short non virtual-scrolled lists)
  */
-export const SectionList = ({
-  children,
-  dividers = Platform.select({ ios: true, android: false }),
-}: Props) => {
+export const SectionList = ({ children, loading = false, dividers }: Props) => {
   const { spacing } = useTheme();
 
   return (
@@ -26,21 +24,15 @@ export const SectionList = ({
         marginHorizontal: Platform.select({ ios: spacing[4] }),
       }}
     >
-      {dividers
-        ? Children.map(children, (c, i) => {
-            return (
-              <>
-                {c}
-                {i < Children.count(children) - 1 && (
-                  <Divider
-                    key={`div-${i}`}
-                    style={{ marginStart: spacing[5] }}
-                  />
-                )}
-              </>
-            );
-          })
-        : children}
+      {loading ? (
+        <ActivityIndicator
+          style={{
+            marginVertical: spacing[8],
+          }}
+        />
+      ) : (
+        <List dividers={dividers}>{children}</List>
+      )}
     </Card>
   );
 };

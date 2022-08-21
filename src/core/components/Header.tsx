@@ -4,6 +4,7 @@ import {
   useSafeAreaFrame,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   getDefaultHeaderHeight,
   HeaderBackground,
@@ -13,7 +14,6 @@ import {
   Layout,
 } from '@react-navigation/elements';
 import { useTheme as useNavigationTheme } from '@react-navigation/native';
-import { useTheme } from '../../../lib/ui/hooks/useTheme';
 import { CollapsingHeaderContext } from '../contexts/CollapsingHeaderContext';
 
 type Props = HeaderOptions & {
@@ -28,7 +28,7 @@ type Props = HeaderOptions & {
   /**
    * Title text for the header.
    */
-  title: string;
+  title?: string;
   /**
    * The bottom view
    */
@@ -87,7 +87,7 @@ export const Header = (props: Props) => {
     headerShadowVisible,
     headerPressColor,
     headerPressOpacity,
-    headerStatusBarHeight = isParentHeaderShown ? 0 : insets.top,
+    headerStatusBarHeight = insets.top,
   } = props;
 
   const defaultHeight = getDefaultHeaderHeight(
@@ -225,6 +225,8 @@ export const Header = (props: Props) => {
           <HeaderTitle {...props} />
         )
       : customTitle;
+
+  console.log({ enabled });
 
   return (
     <>

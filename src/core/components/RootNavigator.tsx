@@ -1,23 +1,36 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
+import { TranslucentView } from './TranslucentView';
 
-const Tab = createBottomTabNavigator();
+const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
+  const tabBarStyle: any = {
+    position: Platform.select({ ios: 'absolute' }),
+  };
+  if (Platform.OS === 'ios') {
+    tabBarStyle.height = 84;
+  }
+
   return (
-    <Tab.Navigator
+    <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
+        tabBarStyle,
+        tabBarBackground: Platform.select({
+          ios: () => <TranslucentView />,
+        }),
         headerShown: false,
       }}
     >
-      <Tab.Screen
+      <TabNavigator.Screen
         name="TeachingTab"
         component={TeachingNavigator}
         options={{
@@ -27,7 +40,7 @@ export const RootNavigator = () => {
           ),
         }}
       />
-      <Tab.Screen
+      <TabNavigator.Screen
         name="AgendaTab"
         component={AgendaNavigator}
         options={{
@@ -37,7 +50,7 @@ export const RootNavigator = () => {
           ),
         }}
       />
-      <Tab.Screen
+      <TabNavigator.Screen
         name="PlacesTab"
         component={PlacesScreen}
         options={{
@@ -47,7 +60,7 @@ export const RootNavigator = () => {
           ),
         }}
       />
-      <Tab.Screen
+      <TabNavigator.Screen
         name="ProfileTab"
         component={UserNavigator}
         options={{
@@ -57,6 +70,6 @@ export const RootNavigator = () => {
           ),
         }}
       />
-    </Tab.Navigator>
+    </TabNavigator.Navigator>
   );
 };

@@ -1,4 +1,4 @@
-import { Theme } from '../../../lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/theme';
 import { lightTheme } from './light';
 
 export const darkTheme: Theme = {
@@ -10,6 +10,7 @@ export const darkTheme: Theme = {
     surface: '#12171B',
     heading: lightTheme.colors.text[50],
     title: 'white',
+    headline: 'white',
     prose: lightTheme.colors.text[50],
     secondaryText: lightTheme.colors.text[400],
     caption: lightTheme.colors.text[500],

@@ -8,6 +8,7 @@ interface Props {
   variant?:
     | 'heading'
     | 'title'
+    | 'headline'
     | 'prose'
     | 'secondaryText'
     | 'caption'
@@ -19,6 +20,7 @@ interface Props {
 const deafultWeights = {
   heading: 'bold',
   title: 'semibold',
+  headline: 'normal',
   caption: 'bold',
   link: 'normal',
   prose: 'normal',
@@ -69,6 +71,9 @@ const createStyles = ({ fontSizes }: Theme) =>
     },
     title: {
       fontSize: fontSizes.lg,
+    },
+    headline: {
+      fontSize: fontSizes.md,
     },
     caption: {
       fontSize: fontSizes.xs,

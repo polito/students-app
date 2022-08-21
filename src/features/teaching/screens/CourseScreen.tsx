@@ -1,33 +1,104 @@
-import { Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RefreshControl, ScrollView, View } from 'react-native';
+import { Text } from '@lib/ui/components/Text';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SubHeader } from '../../../core/components/SubHeader';
+import { useSubHeader } from '../../../core/hooks/useSubHeader';
+import { useTabs } from '../../../core/hooks/useTabs';
+import { CourseFilesTab } from '../components/CourseFilesTab';
+import { CourseInfoTab } from '../components/CourseInfoTab';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
+import { CourseNoticesTab } from '../components/CourseNoticesTab';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { useGetCourse } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
-export type CourseTabProps = { courseId: number };
+export type CourseTabProps = {
+  courseId: number;
+  setIsRefreshing: (value: boolean) => void;
+  shouldRefresh: boolean;
+};
 
 export const CourseScreen = ({ route }: Props) => {
-  const { id } = route.params;
-  const { data: overviewResponse, isLoading: isCourseLoading } =
-    useGetCourse(id);
+  const { t } = useTranslation();
+  const { id, courseName } = route.params;
+  const { setOptions } = useNavigation();
+  const { subHeaderProps, scrollViewProps } = useSubHeader();
+  const [isRefreshing, setIsRefreshing] = useState(true);
+  const [shouldRefresh, setShouldRefresh] = useState(false);
+  const { data: overviewResponse } = useGetCourse(id);
 
-  const renderedTab = overviewResponse && (
-    <CourseLecturesTab
-      courseId={id}
-      vcPreviousYears={overviewResponse.data.vcPreviousYears}
-      vcOtherCourses={overviewResponse.data.vcOtherCourses}
-    ></CourseLecturesTab>
-  );
+  useEffect(() => {
+    const headerTitle = courseName || overviewResponse.data.name;
+    setOptions({
+      headerTitle,
+      headerBackTitleVisible: headerTitle.length <= 20,
+    });
+  }, [courseName, overviewResponse]);
+
+  useEffect(() => {
+    if (!isRefreshing) {
+      setShouldRefresh(false);
+    }
+  }, [isRefreshing]);
+
+  const refreshControlProps = {
+    setIsRefreshing,
+    shouldRefresh,
+  };
+
+  const { Tabs, TabsContent } = useTabs([
+    {
+      title: t('Info'),
+      renderContent: () => (
+        <CourseInfoTab courseId={id} {...refreshControlProps} />
+      ),
+    },
+    {
+      title: t('Notices'),
+      renderContent: () => (
+        <CourseNoticesTab courseId={id} {...refreshControlProps} />
+      ),
+    },
+    {
+      title: t('Files'),
+      renderContent: () => (
+        <CourseFilesTab courseId={id} {...refreshControlProps} />
+      ),
+    },
+    {
+      title: t('Lectures'),
+      renderContent: () => (
+        <CourseLecturesTab courseId={id} {...refreshControlProps} />
+      ),
+    },
+    {
+      title: t('Assignments'),
+      renderContent: () => (
+        <View>
+          <Text>Assignments</Text>
+        </View>
+      ),
+    },
+  ]);
 
   return (
-    <View>
-      {isCourseLoading && <Text>Loading</Text>}
-      <Text>
-        Course: {overviewResponse && JSON.stringify(overviewResponse.data)}
-      </Text>
-      {renderedTab}
-    </View>
+    <ScrollView
+      {...scrollViewProps}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={() => setShouldRefresh(true)}
+        />
+      }
+    >
+      <SubHeader {...subHeaderProps}>
+        <Tabs />
+      </SubHeader>
+      <TabsContent />
+    </ScrollView>
   );
 };

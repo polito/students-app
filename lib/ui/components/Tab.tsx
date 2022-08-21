@@ -1,5 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react';
 import {
+  Platform,
   StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
@@ -70,7 +71,10 @@ export const Tab = ({
       {...rest}
     >
       <Text
-        style={{ color: selected ? colors.text[50] : colors.secondaryText }}
+        style={{
+          color: selected ? colors.text[50] : colors.secondaryText,
+          marginBottom: Platform.select({ android: -3 }),
+        }}
       >
         {children}
       </Text>

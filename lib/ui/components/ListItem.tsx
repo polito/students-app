@@ -12,10 +12,10 @@ import { Text } from './Text';
 
 interface Props {
   title: string | JSX.Element;
-  subtitle: string | JSX.Element;
+  subtitle?: string | JSX.Element;
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
-  linkTo?: To;
+  linkTo?: To<any>;
 }
 
 /**
@@ -43,6 +43,10 @@ export const ListItem = ({
           ? () => {
               navigation.navigate({
                 name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
+                params:
+                  typeof linkTo === 'object' && 'params' in linkTo
+                    ? linkTo.params
+                    : undefined,
               });
             }
           : onPress
@@ -60,7 +64,15 @@ export const ListItem = ({
         {leadingItem}
         <View style={{ flex: 1 }}>
           {typeof title === 'string' ? (
-            <Text variant="title" weight="normal">
+            <Text
+              variant="title"
+              style={{
+                fontSize: fontSizes.md,
+              }}
+              weight="normal"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {title}
             </Text>
           ) : (
@@ -72,6 +84,8 @@ export const ListItem = ({
               style={{
                 fontSize: fontSizes.sm,
               }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
               {subtitle}
             </Text>

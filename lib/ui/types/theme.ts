@@ -8,6 +8,7 @@ export interface Theme {
     heading: string;
     title: string;
     prose: string;
+    headline: string;
     secondaryText: string;
     caption: string;
     link: string;

@@ -4,7 +4,7 @@ import { Card, Props as CardProps } from './Card';
 
 interface Props {
   name: string;
-  value: string | JSX.Element;
+  value: string | number | JSX.Element;
 }
 
 /**
@@ -30,7 +30,7 @@ export const MetricCard = ({
       {...rest}
     >
       <Text style={{ color: colors.secondaryText }}>{name}</Text>
-      {typeof value === 'string' ? (
+      {['string', 'number'].includes(typeof value) ? (
         <Text
           style={{
             color: colors.prose,

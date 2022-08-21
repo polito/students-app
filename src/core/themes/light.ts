@@ -1,4 +1,4 @@
-import { Theme } from '../../../lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/theme';
 
 const darkBlue = {
   50: '#B7E1FF',
@@ -142,6 +142,7 @@ export const lightTheme: Theme = {
     surface: '#FFFFFF',
     heading: darkBlue[700],
     title: 'black',
+    headline: 'black',
     prose: text[800],
     secondaryText: text[500],
     caption: text[400],

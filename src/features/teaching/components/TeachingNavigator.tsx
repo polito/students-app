@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { createStackNavigator } from '@react-navigation/stack';
+import { Platform } from 'react-native';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseScreen } from '../screens/CourseScreen';
@@ -14,7 +16,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
-  Course: { id: number };
+  Course: { id: number; courseName: string };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
@@ -24,13 +26,34 @@ export type TeachingStackParamList = {
   Grades: undefined;
 };
 
-const Stack = createStackNavigator<TeachingStackParamList>();
+const Stack = createNativeStackNavigator<TeachingStackParamList>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
+  const { colors } = useTheme();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerLargeTitle: true,
+        headerTransparent: Platform.select({ ios: true }),
+        headerLargeStyle: {
+          backgroundColor: colors.background,
+        },
+        headerLargeTitleStyle: {
+          fontFamily: 'Poppins-semibold',
+          color: colors.heading,
+        },
+        headerBlurEffect: 'regular',
+        headerTitleStyle: {
+          fontFamily: 'Poppins-semibold',
+          color: colors.heading,
+        },
+        headerBackTitleStyle: {
+          fontFamily: 'Poppins-normal',
+        },
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -45,7 +68,15 @@ export const TeachingNavigator = () => {
           headerTitle: t('Courses'),
         }}
       />
-      <Stack.Screen name="Course" component={CourseScreen} />
+      <Stack.Screen
+        name="Course"
+        component={CourseScreen}
+        options={{
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+        }}
+      />
       <Stack.Screen name="CourseGuide" component={CourseGuideScreen} />
       <Stack.Screen
         name="CourseVideolecture"

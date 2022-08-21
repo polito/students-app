@@ -10,7 +10,7 @@ import { Text } from './Text';
 
 interface Props {
   title: string;
-  linkTo?: To;
+  linkTo?: To<any>;
 }
 
 /**
@@ -28,11 +28,11 @@ export const SectionHeader = ({ title, linkTo }: Props) => {
       <View style={styles.innerContainer}>
         <Text
           variant="title"
-          style={{
-            color: colors.heading,
-          }}
+          style={styles.title}
           accessible={true}
           accessibilityRole="header"
+          numberOfLines={1}
+          ellipsizeMode="tail"
         >
           {title}
         </Text>
@@ -46,16 +46,18 @@ export const SectionHeader = ({ title, linkTo }: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
     container: {
-      width: '100%',
       paddingHorizontal: spacing[5],
     },
+    title: {
+      color: colors.heading,
+      flex: 1,
+      marginEnd: spacing[5],
+    },
     innerContainer: {
-      width: '100%',
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
     },
   });

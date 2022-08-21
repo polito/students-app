@@ -6,6 +6,8 @@
   "Files": "Materiali",
   "Info": "Info",
   "Lectures": "Lezioni",
+  "Video lectures": "Videolezioni",
+  "Virtual classrooms": "Virtual classrooms",
   "Notices": "Avvisi",
   "Notifications archive": "Archivio notifiche",
   "Places": "Luoghi",
@@ -13,5 +15,14 @@
   "See all": "Vedi tutto",
   "Settings": "Impostazioni",
   "Teaching": "Didattica",
-  "Transcript": "Libretto"
+  "Teacher": "Docente",
+  "Transcript": "Libretto",
+  "Period": "Periodo",
+  "Weighted average": "Media ponderata",
+  "Final average": "Media depurata",
+  "Credits": "Crediti",
+  "Academic year": "Anno accademico",
+  "This course in the agenda": "Questo corso nell'agenda",
+  "More": "More",
+  "Course guide": "Guida del corso"
 }

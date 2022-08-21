@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { registerRootComponent } from 'expo';
 import { useFonts } from 'expo-font';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { FetchError } from '@polito-it/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
 import {
@@ -12,7 +13,6 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import MatomoTracker, { MatomoProvider } from 'matomo-tracker-react-native';
-import { ThemeContext } from '../lib/ui/contexts/ThemeContext';
 import { NavigationContainer } from './core/components/NavigationContainer';
 import { RootNavigator } from './core/components/RootNavigator';
 import { darkTheme } from './core/themes/dark';
