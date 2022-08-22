@@ -32,7 +32,7 @@ export const CourseScreen = ({ route }: Props) => {
   const { data: overviewResponse } = useGetCourse(id);
 
   useEffect(() => {
-    const headerTitle = courseName || overviewResponse.data.name;
+    const headerTitle = courseName || overviewResponse?.data.name;
     setOptions({
       headerTitle,
       headerBackTitleVisible: headerTitle.length <= 20,

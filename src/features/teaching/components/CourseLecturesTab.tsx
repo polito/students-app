@@ -72,12 +72,16 @@ export const CourseLecturesTab = ({
             }
           >
             <Card style={{ padding: spacing[5] }}>
+              {/* {lecture.coverUrl ? (*/}
+              {/*  <Image source={{ uri: lecture.coverUrl }} />*/}
+              {/* ) : (*/}
               <Ionicons
                 name="videocam-outline"
                 size={36}
                 color={colors.secondaryText}
                 style={{ alignSelf: 'center', margin: spacing[8] }}
               />
+              {/* )}*/}
               <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
                 {lecture.title}
               </Text>

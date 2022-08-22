@@ -101,18 +101,18 @@ export const HomeScreen = () => {
                       style={{ marginBottom: spacing[2] }}
                     >
                       {t('Weighted average')}:{' '}
-                      {studentQuery.data.data.averageGrade}
+                      {studentQuery.data?.data.averageGrade}
                     </Text>
                     <Text
                       variant="secondaryText"
                       style={{ marginBottom: spacing[2] }}
                     >
                       {t('Final average')}:{' '}
-                      {studentQuery.data.data.averageGradePurged}
+                      {studentQuery.data?.data.averageGradePurged}
                     </Text>
                     <Text variant="secondaryText">
-                      {studentQuery.data.data.totalAcquiredCredits}/
-                      {studentQuery.data.data.totalCredits}{' '}
+                      {studentQuery.data?.data.totalAcquiredCredits}/
+                      {studentQuery.data?.data.totalCredits}{' '}
                       {t('Credits').toLowerCase()}
                     </Text>
                   </View>
@@ -120,8 +120,8 @@ export const HomeScreen = () => {
                     data={{
                       labels: ['Test'],
                       data: [
-                        studentQuery.data.data.totalAcquiredCredits /
-                          studentQuery.data.data.totalCredits,
+                        studentQuery.data?.data.totalAcquiredCredits /
+                          studentQuery.data?.data.totalCredits,
                       ],
                     }}
                     width={90}

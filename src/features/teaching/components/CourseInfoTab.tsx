@@ -33,23 +33,23 @@ export const CourseInfoTab = ({
         <View style={{ flexDirection: 'row', marginBottom: spacing[5] }}>
           <MetricCard
             name={t('Teacher')}
-            value={overviewResponse.data.teacherId}
+            value={overviewResponse?.data.teacherId}
             style={{ marginRight: spacing[5] }}
           />
           <MetricCard
             name={t('Academic year')}
-            value={overviewResponse.data.year}
+            value={overviewResponse?.data.year}
           />
         </View>
         <View style={{ flexDirection: 'row' }}>
           <MetricCard
             name={t('Credits')}
-            value={overviewResponse.data.cfu}
+            value={overviewResponse?.data.cfu}
             style={{ marginRight: spacing[5] }}
           />
           <MetricCard
             name={t('Period')}
-            value={overviewResponse.data.teachingPeriod}
+            value={overviewResponse?.data.teachingPeriod}
           />
         </View>
       </View>
