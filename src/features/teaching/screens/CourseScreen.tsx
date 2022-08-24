@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
-import { Text } from '@lib/ui/components/Text';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SubHeader } from '../../../core/components/SubHeader';
 import { useSubHeader } from '../../../core/hooks/useSubHeader';
 import { useTabs } from '../../../core/hooks/useTabs';
+import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
 import { CourseInfoTab } from '../components/CourseInfoTab';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
@@ -78,9 +78,7 @@ export const CourseScreen = ({ route }: Props) => {
     {
       title: t('Assignments'),
       renderContent: () => (
-        <View>
-          <Text>Assignments</Text>
-        </View>
+        <CourseAssignmentsTab courseId={id} {...refreshControlProps} />
       ),
     },
   ]);
