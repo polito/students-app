@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableHighlight, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@lib/ui/components/Card';
@@ -12,6 +13,7 @@ import { CourseTabProps } from '../screens/CourseScreen';
 const numColumns = 2;
 
 export const CourseFilesTab = ({ courseId }: CourseTabProps) => {
+  const { t } = useTranslation();
   const { spacing, colors } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const filesQuery = useGetCourseFiles(courseId);
@@ -45,7 +47,11 @@ export const CourseFilesTab = ({ courseId }: CourseTabProps) => {
               <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
                 {f.name}
               </Text>
-              <Text variant="secondaryText">{f.files?.length ?? 'test'}</Text>
+              <Text variant="secondaryText">
+                {f.files?.length != null
+                  ? `${f.files?.length} ${t('Files')}`
+                  : `${f.sizeInKiloBytes} KB`}
+              </Text>
             </Card>
           </TouchableHighlight>
         </FlatListItem>
