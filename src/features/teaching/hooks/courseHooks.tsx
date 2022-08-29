@@ -1,6 +1,7 @@
 import { UploadCourseAssignmentRequest } from '@polito-it/api-client/apis/CoursesApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CourseService } from '../services/CourseService';
+import { useGetExams } from './examHooks';
 
 export const COURSES_QUERY_KEY = 'courses';
 export const COURSE_QUERY_KEY = 'course';
@@ -68,5 +69,24 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 export const useGetCourseVideolectures = (courseId: number) => {
   return useQuery([COURSE_QUERY_KEY, courseId, 'videolectures'], () =>
     CourseService.getCourseVideolectures({ courseId: courseId }),
+  );
+};
+
+export const useGetCourseExams = (
+  courseId: number,
+  courseShortcode: string,
+) => {
+  const { data: exams } = useGetExams();
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'exams'],
+    () => ({
+      data: exams.data.filter(exam => {
+        return exam.courseShortcode === courseShortcode;
+      }),
+    }),
+    {
+      enabled: courseShortcode != null && exams != null,
+      initialData: { data: [] },
+    },
   );
 };
