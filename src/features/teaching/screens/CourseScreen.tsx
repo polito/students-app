@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SubHeader } from '../../../core/components/SubHeader';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useSubHeader } from '../../../core/hooks/useSubHeader';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
@@ -19,15 +17,13 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
 export type CourseTabProps = {
   courseId: number;
-  setIsRefreshing: (value: boolean) => void;
-  shouldRefresh: boolean;
 };
 
 export const CourseScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { id, courseName } = route.params;
   const { setOptions } = useNavigation();
-  const { subHeaderProps, scrollViewProps } = useSubHeader();
+  // const { subHeaderProps, scrollViewProps } = useSubHeader();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [isRefreshing, setIsRefreshing] = useState(true);
   const [shouldRefresh, setShouldRefresh] = useState(false);
@@ -52,11 +48,11 @@ export const CourseScreen = ({ route }: Props) => {
     shouldRefresh,
   };
 
-  const { Tabs, TabsContent } = useTabs([
+  const { Tabs, TabsContent, scrollViewProps } = useTabs([
     {
       title: t('Info'),
       renderContent: () => (
-        <CourseInfoTab courseId={id} {...refreshControlProps} />
+        <CourseInfoTab courseId={id} scrollViewProps={scrollViewProps} />
       ),
     },
     {
@@ -86,20 +82,23 @@ export const CourseScreen = ({ route }: Props) => {
   ]);
 
   return (
-    <ScrollView
-      {...scrollViewProps}
-      style={bottomBarAwareStyles}
-      refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={() => setShouldRefresh(true)}
-        />
-      }
-    >
-      <SubHeader {...subHeaderProps}>
-        <Tabs />
-      </SubHeader>
+    <View style={{ flex: 1 }}>
+      <Tabs />
       <TabsContent />
-    </ScrollView>
+    </View>
+    // <ScrollView
+    //   {...scrollViewProps}
+    //   style={bottomBarAwareStyles}
+    //   refreshControl={
+    //     <RefreshControl
+    //       refreshing={isRefreshing}
+    //       onRefresh={() => setShouldRefresh(true)}
+    //     />
+    //   }
+    // >
+    //   <SubHeader {...subHeaderProps}>
+    //   </SubHeader>
+    //   <TabsContent />
+    // </ScrollView>
   );
 };

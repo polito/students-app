@@ -1,55 +1,49 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { MetricCard } from '@lib/ui/components/MetricCard';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useGetCourse } from '../hooks/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
-export const CourseInfoTab = ({
-  courseId,
-  setIsRefreshing,
-  shouldRefresh,
-}: CourseTabProps) => {
+export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const { data: overviewResponse, isLoading, refetch } = useGetCourse(courseId);
-
-  useEffect(() => setIsRefreshing(isLoading), [isLoading]);
-
-  useEffect(() => {
-    if (shouldRefresh) {
-      refetch();
-    }
-  }, [shouldRefresh]);
+  const courseQuery = useGetCourse(courseId);
 
   return (
-    <>
+    <ScrollView
+      style={{ flex: 1 }}
+      refreshControl={createRefreshControl(courseQuery)}
+    >
       <View style={{ padding: spacing[5] }}>
         <View style={{ flexDirection: 'row', marginBottom: spacing[5] }}>
           <MetricCard
             name={t('Teacher')}
-            value={overviewResponse?.data.teacherId}
+            value={
+              courseQuery.data?.data
+                .teacherId /* TODO update once get teacher hook is available */
+            }
             style={{ marginRight: spacing[5] }}
           />
           <MetricCard
             name={t('Academic year')}
-            value={overviewResponse?.data.year}
+            value={courseQuery.data?.data.year}
           />
         </View>
         <View style={{ flexDirection: 'row' }}>
           <MetricCard
             name={t('Credits')}
-            value={overviewResponse?.data.cfu}
+            value={courseQuery.data?.data.cfu}
             style={{ marginRight: spacing[5] }}
           />
           <MetricCard
             name={t('Period')}
-            value={overviewResponse?.data.teachingPeriod}
+            value={courseQuery.data?.data.teachingPeriod}
           />
         </View>
       </View>
@@ -71,6 +65,6 @@ export const CourseInfoTab = ({
           />
         </SectionList>
       </Section>
-    </>
+    </ScrollView>
   );
 };

@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TouchableHighlight, View } from 'react-native';
+import { ScrollView, TouchableHighlight } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
@@ -12,6 +11,8 @@ import {
   CourseAllOfVcPreviousYears,
 } from '@polito-it/api-client';
 import { useNavigation } from '@react-navigation/native';
+import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useGetCourseVideolectures,
   useGetCourseVirtualClassrooms,
@@ -25,42 +26,27 @@ type CourseLecturesTabParameters = CourseTabProps & {
 
 export const CourseLecturesTab = ({
   courseId,
-  setIsRefreshing,
-  shouldRefresh,
   vcPreviousYears,
   vcOtherCourses,
 }: CourseLecturesTabParameters) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const { navigate } = useNavigation();
-  const {
-    data: videolecturesResponse,
-    isLoading: isLoadingVideoLectures,
-    refetch: refetchVideoLectures,
-  } = useGetCourseVideolectures(courseId);
-  const {
-    data: virtualClassroomsResponse,
-    isLoading: isLoadingVirtualClassrooms,
-    refetch: refetchVirtualClassrooms,
-  } = useGetCourseVirtualClassrooms(courseId);
-
-  useEffect(
-    () => setIsRefreshing(isLoadingVideoLectures || isLoadingVirtualClassrooms),
-    [isLoadingVideoLectures, isLoadingVirtualClassrooms],
-  );
-
-  useEffect(() => {
-    if (shouldRefresh) {
-      refetchVideoLectures();
-      refetchVirtualClassrooms();
-    }
-  }, [shouldRefresh]);
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const videolecturesQuery = useGetCourseVideolectures(courseId);
+  const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   return (
-    <View style={{ paddingVertical: spacing[5] }}>
+    <ScrollView
+      style={[{ paddingVertical: spacing[5] }, bottomBarAwareStyles]}
+      refreshControl={createRefreshControl(
+        videolecturesQuery,
+        virtualClassroomsQuery,
+      )}
+    >
       <SectionHeader title={t('Video lectures')} />
       <Grid style={{ padding: spacing[5] }}>
-        {videolecturesResponse?.data.map(lecture => (
+        {videolecturesQuery.data?.data.map(lecture => (
           <TouchableHighlight
             key={lecture.id}
             style={{ flex: 1 }}
@@ -94,7 +80,7 @@ export const CourseLecturesTab = ({
       </Grid>
       <SectionHeader title={t('Virtual classrooms')} />
       <Grid style={{ padding: spacing[5] }}>
-        {virtualClassroomsResponse?.data.map(vc => (
+        {virtualClassroomsQuery.data?.data.map(vc => (
           <TouchableHighlight
             key={vc.id}
             style={{ flex: 1 }}
@@ -122,6 +108,6 @@ export const CourseLecturesTab = ({
           </TouchableHighlight>
         ))}
       </Grid>
-    </View>
+    </ScrollView>
   );
 };

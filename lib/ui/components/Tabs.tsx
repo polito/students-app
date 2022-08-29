@@ -21,6 +21,7 @@ interface Props {
  */
 export const Tabs = ({
   children,
+  style,
   selectedIndexes,
   ...rest
 }: PropsWithChildren<ScrollViewProps & Props>) => {
@@ -35,6 +36,7 @@ export const Tabs = ({
         paddingHorizontal: spacing[4],
         paddingVertical: spacing[2],
       }}
+      style={[{ flexGrow: 0 }, style]}
       {...rest}
     >
       {Children.map(children, (c: ReactElement<TabProps>, i) => {
