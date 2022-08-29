@@ -1,37 +1,36 @@
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../hooks/courseHooks';
 
 export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const styles = useStylesheet(createStyles);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const { data: coursesResponse, isLoading: isLoadingCourses } =
-    useGetCourses();
+  const coursesQuery = useGetCourses();
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      style={[bottomBarAwareStyles, { paddingVertical: spacing[5] }]}
+      contentContainerStyle={{
+        paddingVertical: spacing[5],
+      }}
+      refreshControl={createRefreshControl(coursesQuery)}
+      style={bottomBarAwareStyles}
     >
-      {isLoadingCourses ? (
-        <ActivityIndicator style={styles.loader} />
-      ) : (
+      {!coursesQuery.isLoading &&
         Object.entries(
-          coursesResponse.data.reduce((byPeriod, course) => {
+          coursesQuery.data.data.reduce((byPeriod, course) => {
             (byPeriod[course.teachingPeriod] =
               byPeriod[course.teachingPeriod] ?? []).push(course);
             return byPeriod;
-          }, {} as Record<string, Array<typeof coursesResponse.data[0]>>),
+          }, {} as Record<string, Array<typeof coursesQuery.data.data[0]>>),
         ).map(([period, courses]) => (
           <Section key={period}>
             <SectionHeader
@@ -42,28 +41,24 @@ export const CoursesScreen = () => {
               }
             />
             <SectionList>
-              {courses.map(c => (
+              {courses.map(course => (
                 <ListItem
-                  key={c.shortcode}
-                  linkTo={{
-                    screen: 'Course',
-                    params: { id: c.id, courseName: c.name },
-                  }}
-                  title={c.name}
-                  subtitle={`${c.cfu} ${t('Credits').toLowerCase()}`}
+                  key={course.shortcode}
+                  linkTo={
+                    course.id != null
+                      ? {
+                          screen: 'Course',
+                          params: { id: course.id, courseName: course.name },
+                        }
+                      : undefined
+                  }
+                  title={course.name}
+                  subtitle={`${course.cfu} ${t('Credits').toLowerCase()}`}
                 />
               ))}
             </SectionList>
           </Section>
-        ))
-      )}
+        ))}
     </ScrollView>
   );
 };
-
-const createStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    loader: {
-      marginVertical: spacing[8],
-    },
-  });
