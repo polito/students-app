@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, TouchableHighlight } from 'react-native';
+import { ScrollView, TouchableHighlight, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
@@ -58,16 +58,25 @@ export const CourseLecturesTab = ({
             }
           >
             <Card style={{ padding: spacing[5] }}>
-              {/* {lecture.coverUrl ? (*/}
-              {/*  <Image source={{ uri: lecture.coverUrl }} />*/}
-              {/* ) : (*/}
-              <Ionicons
-                name="videocam-outline"
-                size={36}
-                color={colors.secondaryText}
-                style={{ alignSelf: 'center', margin: spacing[8] }}
-              />
-              {/* )}*/}
+              {lecture.coverUrl ? (
+                <Image
+                  source={{ uri: lecture.coverUrl }}
+                  resizeMode="cover"
+                  style={{
+                    marginTop: -spacing[5],
+                    marginHorizontal: -spacing[5],
+                    marginBottom: spacing[3],
+                    height: 110,
+                  }}
+                />
+              ) : (
+                <Ionicons
+                  name="videocam-outline"
+                  size={36}
+                  color={colors.secondaryText}
+                  style={{ alignSelf: 'center', margin: spacing[8] }}
+                />
+              )}
               <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
                 {lecture.title}
               </Text>
@@ -91,13 +100,26 @@ export const CourseLecturesTab = ({
               })
             }
           >
-            <Card style={{ padding: spacing[5] }}>
-              <Ionicons
-                name="videocam-outline"
-                size={36}
-                color={colors.secondaryText}
-                style={{ alignSelf: 'center', margin: spacing[8] }}
-              />
+            <Card style={{ padding: spacing[5], overflow: 'hidden' }}>
+              {vc.coverUrl ? (
+                <Image
+                  source={{ uri: vc.coverUrl }}
+                  resizeMode="cover"
+                  style={{
+                    marginTop: -spacing[5],
+                    marginHorizontal: -spacing[5],
+                    marginBottom: spacing[3],
+                    height: 110,
+                  }}
+                />
+              ) : (
+                <Ionicons
+                  name="videocam-outline"
+                  size={36}
+                  color={colors.secondaryText}
+                  style={{ alignSelf: 'center', margin: spacing[8] }}
+                />
+              )}
               <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
                 {vc.title}
               </Text>
