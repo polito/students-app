@@ -98,6 +98,7 @@ export const ListItem = ({
             name="chevron-forward-outline"
             color={colors.secondaryText}
             size={fontSizes['2xl']}
+            style={{ marginRight: -spacing[1] }}
           />
         ) : (
           trailingItem

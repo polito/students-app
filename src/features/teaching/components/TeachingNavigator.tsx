@@ -10,8 +10,8 @@ import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomS
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
-import { GradesScreen } from '../screens/GradesScreen';
 import { HomeScreen } from '../screens/HomeScreen';
+import { TranscriptScreen } from '../screens/TranscriptScreen';
 
 export type TeachingStackParamList = {
   Home: undefined;
@@ -23,7 +23,7 @@ export type TeachingStackParamList = {
   CourseAssignmentUpload: { courseId: number };
   Exams: undefined;
   Exam: { id: number };
-  Grades: undefined;
+  Transcript: undefined;
 };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -81,7 +81,13 @@ export const TeachingNavigator = () => {
           headerBackTitleVisible: false,
         }}
       />
-      <Stack.Screen name="CourseGuide" component={CourseGuideScreen} />
+      <Stack.Screen
+        name="CourseGuide"
+        component={CourseGuideScreen}
+        options={{
+          headerTitle: t('Course guide'),
+        }}
+      />
       <Stack.Screen
         name="CourseVideolecture"
         component={CourseVideolectureScreen}
@@ -105,8 +111,8 @@ export const TeachingNavigator = () => {
       <Stack.Screen name="Exam" component={ExamScreen} />
 
       <Stack.Screen
-        name="Grades"
-        component={GradesScreen}
+        name="Transcript"
+        component={TranscriptScreen}
         options={{
           headerTitle: t('Transcript'),
         }}

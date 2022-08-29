@@ -22,6 +22,7 @@
     "@react-navigation/stack": "^6.2.2",
     "@tanstack/react-query": "^4.0.10",
     "color": "^4.2.3",
+    "domutils": "^3.0.1",
     "expo": "~45.0.0",
     "expo-blur": "~11.1.0",
     "expo-font": "~10.1.0",

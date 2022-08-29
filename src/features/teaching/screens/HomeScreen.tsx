@@ -35,9 +35,6 @@ export const HomeScreen = () => {
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
 
-  const isLoading =
-    coursesQuery.isLoading || examsQuery.isLoading || studentQuery.isLoading;
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -45,7 +42,6 @@ export const HomeScreen = () => {
       refreshControl={
         <RefreshControl
           refreshing={false}
-          enabled={!isLoading}
           onRefresh={() => {
             coursesQuery.refetch();
             examsQuery.refetch();
@@ -58,15 +54,15 @@ export const HomeScreen = () => {
         <Section>
           <SectionHeader title={t('Courses')} linkTo={{ screen: 'Courses' }} />
           <SectionList loading={coursesQuery.isLoading}>
-            {coursesQuery.data?.data.slice(0, 4).map(c => (
+            {coursesQuery.data?.data.slice(0, 4).map(course => (
               <ListItem
-                key={c.shortcode}
+                key={course.shortcode}
                 linkTo={{
                   screen: 'Course',
-                  params: { id: c.id, courseName: c.name },
+                  params: { id: course.id, courseName: course.name },
                 }}
-                title={c.name}
-                subtitle={`${t('Period')} ${c.teachingPeriod}`}
+                title={course.name}
+                subtitle={`${t('Period')} ${course.teachingPeriod}`}
               />
             ))}
           </SectionList>
@@ -74,12 +70,14 @@ export const HomeScreen = () => {
         <Section>
           <SectionHeader title={t('Exams')} linkTo={{ screen: 'Exams' }} />
           <SectionList loading={examsQuery.isLoading}>
-            {examsQuery.data?.data.slice(0, 4).map(e => (
+            {examsQuery.data?.data.slice(0, 4).map(exam => (
               <ListItem
-                key={e.id}
-                linkTo={{ screen: 'Exam', params: { id: e.id } }}
-                title={e.courseName}
-                subtitle={`${e.examStartsAt.toDateString()} - ${e.classrooms}`}
+                key={exam.id}
+                linkTo={{ screen: 'Exam', params: { id: exam.id } }}
+                title={exam.courseName}
+                subtitle={`${exam.examStartsAt.toLocaleString()} - ${
+                  exam.classrooms
+                }`}
               />
             ))}
           </SectionList>
@@ -87,10 +85,10 @@ export const HomeScreen = () => {
         <Section>
           <SectionHeader
             title={t('Transcript')}
-            linkTo={{ screen: 'Grades' }}
+            linkTo={{ screen: 'Transcript' }}
           />
 
-          <TouchableHighlight onPress={() => navigate('Grades')}>
+          <TouchableHighlight onPress={() => navigate('Transcript')}>
             <Card
               rounded={Platform.select({ android: false })}
               style={styles.card}
