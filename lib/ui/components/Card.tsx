@@ -20,7 +20,6 @@ export const Card = ({ children, style, rounded = true, ...rest }: Props) => {
   const shadow =
     Platform.OS === 'android'
       ? {
-          shadowColor: colors.primary[700],
           elevation: 2,
         }
       : {};

@@ -4,6 +4,7 @@ import { RefreshControl, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SubHeader } from '../../../core/components/SubHeader';
+import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useSubHeader } from '../../../core/hooks/useSubHeader';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
@@ -27,6 +28,7 @@ export const CourseScreen = ({ route }: Props) => {
   const { id, courseName } = route.params;
   const { setOptions } = useNavigation();
   const { subHeaderProps, scrollViewProps } = useSubHeader();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [isRefreshing, setIsRefreshing] = useState(true);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const { data: overviewResponse } = useGetCourse(id);
@@ -86,6 +88,7 @@ export const CourseScreen = ({ route }: Props) => {
   return (
     <ScrollView
       {...scrollViewProps}
+      style={bottomBarAwareStyles}
       refreshControl={
         <RefreshControl
           refreshing={isRefreshing}

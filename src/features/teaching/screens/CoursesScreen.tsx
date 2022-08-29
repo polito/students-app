@@ -7,19 +7,21 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../hooks/courseHooks';
 
 export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { data: coursesResponse, isLoading: isLoadingCourses } =
     useGetCourses();
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      style={{ paddingVertical: spacing[5] }}
+      style={[bottomBarAwareStyles, { paddingVertical: spacing[5] }]}
     >
       {isLoadingCourses ? (
         <ActivityIndicator style={styles.loader} />
@@ -32,7 +34,13 @@ export const CoursesScreen = () => {
           }, {} as Record<string, Array<typeof coursesResponse.data[0]>>),
         ).map(([period, courses]) => (
           <Section key={period}>
-            <SectionHeader title={`${t('Period')} ${period}`} />
+            <SectionHeader
+              title={
+                period !== 'undefined'
+                  ? `${t('Period')} ${period}`
+                  : t('Other courses')
+              }
+            />
             <SectionList>
               {courses.map(c => (
                 <ListItem

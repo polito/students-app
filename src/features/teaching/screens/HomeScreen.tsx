@@ -21,6 +21,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { useNavigation } from '@react-navigation/native';
 import color from 'color';
 import { useGetStudent } from '../../../core/hooks/studentHooks';
+import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../hooks/courseHooks';
 import { useGetExams } from '../hooks/examHooks';
 
@@ -29,6 +30,7 @@ export const HomeScreen = () => {
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const { navigate } = useNavigation();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -39,9 +41,11 @@ export const HomeScreen = () => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
+      style={bottomBarAwareStyles}
       refreshControl={
         <RefreshControl
-          refreshing={isLoading}
+          refreshing={false}
+          enabled={!isLoading}
           onRefresh={() => {
             coursesQuery.refetch();
             examsQuery.refetch();
