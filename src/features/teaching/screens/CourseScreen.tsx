@@ -24,6 +24,12 @@ export const CourseScreen = ({ route }: Props) => {
   const { setOptions } = useNavigation();
   const { data: overviewResponse } = useGetCourse(id);
 
+  if (courseName) {
+    setOptions({
+      headerTitle: courseName,
+    });
+  }
+
   useEffect(() => {
     const headerTitle = courseName || overviewResponse?.data.name;
     setOptions({

@@ -88,15 +88,18 @@ export const HomeScreen = () => {
             linkTo={{ screen: 'Transcript' }}
           />
 
-          <TouchableHighlight onPress={() => navigate('Transcript')}>
-            <Card
-              rounded={Platform.select({ android: false })}
-              style={styles.card}
-            >
-              {studentQuery.isLoading ? (
-                <ActivityIndicator style={styles.loader} />
-              ) : (
-                <View style={{ flexDirection: 'row' }}>
+          <Card
+            rounded={Platform.select({ android: false })}
+            style={styles.sectionContent}
+          >
+            {studentQuery.isLoading ? (
+              <ActivityIndicator style={styles.loader} />
+            ) : (
+              <TouchableHighlight
+                onPress={() => navigate('Transcript')}
+                underlayColor={colors.touchableHighlight}
+              >
+                <View style={{ padding: spacing[5], flexDirection: 'row' }}>
                   <View style={{ flex: 1 }}>
                     <Text
                       variant="headline"
@@ -137,9 +140,9 @@ export const HomeScreen = () => {
                     }}
                   />
                 </View>
-              )}
-            </Card>
-          </TouchableHighlight>
+              </TouchableHighlight>
+            )}
+          </Card>
         </Section>
       </View>
     </ScrollView>
@@ -157,9 +160,8 @@ const createStyles = ({ spacing }: Theme) =>
     loader: {
       marginVertical: spacing[8],
     },
-    card: {
+    sectionContent: {
       marginVertical: spacing[2],
       marginHorizontal: Platform.select({ ios: spacing[4] }),
-      padding: spacing[5],
     },
   });
