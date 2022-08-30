@@ -54,7 +54,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       </Section>
       {courseExamsQuery.data?.data.length > 0 && (
         <Section>
-          <SectionHeader title={t('Exams')} linkTo={{ screen: 'ExamScreen' }} />
+          <SectionHeader title={t('Exams')} />
           <SectionList>
             {courseExamsQuery.data?.data.map(exam => (
               <ListItem
