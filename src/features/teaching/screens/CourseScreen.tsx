@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
@@ -18,21 +17,14 @@ export type CourseTabProps = {
   courseId: number;
 };
 
-export const CourseScreen = ({ route }: Props) => {
+export const CourseScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { id, courseName } = route.params;
-  const { setOptions } = useNavigation();
   const { data: overviewResponse } = useGetCourse(id);
-
-  if (courseName) {
-    setOptions({
-      headerTitle: courseName,
-    });
-  }
 
   useEffect(() => {
     const headerTitle = courseName || overviewResponse?.data.name;
-    setOptions({
+    navigation.setOptions({
       headerTitle,
       headerBackTitleVisible: headerTitle.length <= 20,
     });
