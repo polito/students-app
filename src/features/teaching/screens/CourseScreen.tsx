@@ -9,7 +9,6 @@ import { CourseInfoTab } from '../components/CourseInfoTab';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
 import { CourseNoticesTab } from '../components/CourseNoticesTab';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-import { useGetCourse } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
@@ -20,15 +19,13 @@ export type CourseTabProps = {
 export const CourseScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { id, courseName } = route.params;
-  const { data: overviewResponse } = useGetCourse(id);
 
   useEffect(() => {
-    const headerTitle = courseName || overviewResponse?.data.name;
     navigation.setOptions({
-      headerTitle,
-      headerBackTitleVisible: headerTitle.length <= 20,
+      headerTitle: courseName,
+      headerBackTitleVisible: courseName.length <= 20,
     });
-  }, [courseName, overviewResponse]);
+  }, [courseName]);
 
   const { Tabs, TabsContent } = useTabs([
     {
