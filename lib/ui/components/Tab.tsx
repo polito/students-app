@@ -29,7 +29,7 @@ export const Tab = ({
         : color(colors.muted[dark ? 800 : 200])
             .alpha(0.4)
             .toString(),
-    [dark, colors],
+    [selected, dark, colors],
   );
   const underlayColor = useMemo(
     () =>
@@ -38,14 +38,14 @@ export const Tab = ({
         : color(colors.muted[dark ? 800 : 200])
             .alpha(0.8)
             .toString(),
-    [dark, colors],
+    [selected, dark, colors],
   );
   const borderColor = useMemo(
     () =>
       color(colors.muted[dark ? 800 : 300])
         .alpha(0.6)
         .toString(),
-    [dark, colors],
+    [selected, dark, colors],
   );
 
   return (

@@ -38,7 +38,8 @@ export const CourseLecturesTab = ({
 
   return (
     <ScrollView
-      style={[{ paddingVertical: spacing[5] }, bottomBarAwareStyles]}
+      style={{ paddingVertical: spacing[5] }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(
         videolecturesQuery,
         virtualClassroomsQuery,

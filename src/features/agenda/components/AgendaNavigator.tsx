@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { createStackNavigator } from '@react-navigation/stack';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export const AgendaNavigator = () => {
   const { t } = useTranslation();
+  const { colors } = useTheme();
 
   return (
     <Stack.Navigator>
@@ -15,6 +17,13 @@ export const AgendaNavigator = () => {
         component={AgendaScreen}
         options={{
           headerTitle: t('Agenda'),
+          headerLargeStyle: {
+            backgroundColor: colors.surface,
+          },
+          headerTransparent: false,
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen

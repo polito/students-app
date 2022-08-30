@@ -20,12 +20,15 @@ export const CourseFilesTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <FlatList
-      style={[{ flex: 1, paddingHorizontal: spacing[2] }, bottomBarAwareStyles]}
+      style={{ flex: 1, paddingHorizontal: spacing[2] }}
       keyExtractor={item => item.id}
       data={filesQuery.data?.data}
-      contentContainerStyle={{
-        paddingVertical: spacing[5],
-      }}
+      contentContainerStyle={[
+        {
+          paddingVertical: spacing[5],
+        },
+        bottomBarAwareStyles,
+      ]}
       refreshControl={createRefreshControl(filesQuery)}
       renderItem={({ item: f, index }) => (
         <FlatListItem
