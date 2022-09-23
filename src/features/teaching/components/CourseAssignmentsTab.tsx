@@ -18,12 +18,15 @@ export const CourseAssignmentsTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <FlatList
-      style={[{ flex: 1, paddingHorizontal: spacing[2] }, bottomBarAwareStyles]}
+      style={{ flex: 1, paddingHorizontal: spacing[2] }}
       keyExtractor={item => item.id + ''}
       data={assignmentsQuery.data?.data}
-      contentContainerStyle={{
-        paddingVertical: spacing[5],
-      }}
+      contentContainerStyle={[
+        {
+          paddingVertical: spacing[5],
+        },
+        bottomBarAwareStyles,
+      ]}
       refreshControl={createRefreshControl(assignmentsQuery)}
       renderItem={({ item: f, index }) => (
         <FlatListItem

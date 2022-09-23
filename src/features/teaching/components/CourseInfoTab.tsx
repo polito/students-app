@@ -24,7 +24,8 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={[{ flex: 1 }, bottomBarAwareStyles]}
+      style={{ flex: 1 }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(courseQuery, courseExamsQuery)}
     >
       <Grid style={{ padding: spacing[5] }}>
