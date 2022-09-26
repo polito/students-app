@@ -1,4 +1,6 @@
-import { Text, View } from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
+import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { useGetCourseVideolectures } from '../hooks/courseHooks';
@@ -16,7 +18,10 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   const lecture = videolecturesResponse?.data.find(l => l.id === lectureId);
   return (
     <View>
-      <Text>{lecture && JSON.stringify(lecture)}</Text>
+      <VideoPlayer
+        videoUrl="https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        coverUrl={lecture.coverUrl}
+      />
     </View>
   );
 };
