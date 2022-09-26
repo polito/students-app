@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackHandler, Dimensions, StyleSheet, View } from 'react-native';
 import { ResizeMode } from 'expo-av';
-import { AVPlaybackStatusSuccess } from 'expo-av/src/AV.types';
 import { setStatusBarHidden } from 'expo-status-bar';
 import ExpoVideoPlayer from 'expo-video-player';
 import { Tab } from '@lib/ui/components/Tab';
@@ -60,7 +59,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
 
   const onBackPressed = () => {
     if (isFullscreen) {
-      exitFullscreen().then(() => navigation.goBack());
+      exitFullscreen();
       return true;
     }
     return false;
@@ -126,12 +125,6 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         inFullscreen: isFullscreen,
         enterFullscreen,
         exitFullscreen,
-      }}
-      playbackCallback={(status: AVPlaybackStatusSuccess) => {
-        console.log(status);
-        if (status.didJustFinish) {
-          exitFullscreen();
-        }
       }}
     />
   );
