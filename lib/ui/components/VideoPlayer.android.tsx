@@ -75,9 +75,24 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     }, [isFullscreen]),
   );
 
+  const videoProps = useMemo(() => {
+    return {
+      resizeMode: ResizeMode.CONTAIN,
+      posterSource: {
+        uri: coverUrl,
+      },
+      source: {
+        uri: videoUrl,
+      },
+      status: {
+        rate: playbackRate,
+      },
+    };
+  }, [videoUrl, coverUrl, playbackRate]);
+
   return (
     <ExpoVideoPlayer
-      /* defaultControlsVisible={true}*/
+      defaultControlsVisible={true}
       header={
         <View style={styles.speedSection}>
           <Text style={{ color: '#fff' }}>{t('Speed')}:</Text>
@@ -106,24 +121,14 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         width: playerDimensions.width,
         controlsBackgroundColor: colors.heading,
       }}
-      videoProps={{
-        resizeMode: ResizeMode.CONTAIN,
-        posterSource: {
-          uri: coverUrl,
-        },
-        source: {
-          uri: videoUrl,
-        },
-        status: {
-          rate: playbackRate,
-        },
-      }}
+      videoProps={videoProps}
       fullscreen={{
         inFullscreen: isFullscreen,
         enterFullscreen,
         exitFullscreen,
       }}
       playbackCallback={(status: AVPlaybackStatusSuccess) => {
+        console.log(status);
         if (status.didJustFinish) {
           exitFullscreen();
         }
