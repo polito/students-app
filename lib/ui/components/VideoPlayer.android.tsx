@@ -4,6 +4,7 @@ import { BackHandler, Dimensions, StyleSheet, View } from 'react-native';
 import { ResizeMode } from 'expo-av';
 import { setStatusBarHidden } from 'expo-status-bar';
 import ExpoVideoPlayer from 'expo-video-player';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
 import { VideoPlayerProps } from '@lib/ui/components/VideoPlayer';
@@ -110,6 +111,24 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           </View>
         </View>
       }
+      icon={{
+        fullscreen: (
+          <MaterialIcons
+            name="fullscreen"
+            style={{ padding: 2 }}
+            size={36}
+            color="#FFF"
+          />
+        ),
+        exitFullscreen: (
+          <MaterialIcons
+            name="fullscreen-exit"
+            style={{ padding: 2 }}
+            size={36}
+            color="#FFF"
+          />
+        ),
+      }}
       slider={{
         thumbTintColor: colors.secondary[600],
         minimumTrackTintColor: colors.secondary[600],
