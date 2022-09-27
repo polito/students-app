@@ -91,10 +91,20 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseVideolecture"
         component={CourseVideolectureScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackTitleVisible: false,
+        }}
       />
       <Stack.Screen
         name="CourseVirtualClassroom"
         component={CourseVirtualClassroomScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackTitleVisible: false,
+        }}
       />
       <Stack.Screen
         name="CourseAssignmentUpload"
