@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, TouchableHighlight, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Card } from '@lib/ui/components/Card';
-import { Grid } from '@lib/ui/components/Grid';
+import { ScrollView, View } from 'react-native';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
+import { TouchableCard } from '@lib/ui/components/TouchableCard';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   CourseAllOfVcOtherCourses,
@@ -30,7 +28,7 @@ export const CourseLecturesTab = ({
   vcOtherCourses,
 }: CourseLecturesTabParameters) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
   const { navigate } = useNavigation();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const videolecturesQuery = useGetCourseVideolectures(courseId);
@@ -45,11 +43,12 @@ export const CourseLecturesTab = ({
       )}
     >
       <SectionHeader title={t('Video lectures')} />
-      <Grid style={{ padding: spacing[5] }}>
+      <View style={{ padding: spacing[5] }}>
         {videolecturesQuery.data?.data.map(lecture => (
-          <TouchableHighlight
+          <TouchableCard
             key={lecture.id}
-            style={{ flex: 1 }}
+            style={{ marginBottom: spacing[4] }}
+            cardStyle={{ padding: spacing[5] }}
             onPress={() =>
               navigate({
                 name: 'CourseVideolecture',
@@ -57,42 +56,25 @@ export const CourseLecturesTab = ({
               })
             }
           >
-            <Card style={{ padding: spacing[5] }}>
-              {lecture.coverUrl ? (
-                <Image
-                  source={{ uri: lecture.coverUrl }}
-                  resizeMode="cover"
-                  style={{
-                    marginTop: -spacing[5],
-                    marginHorizontal: -spacing[5],
-                    marginBottom: spacing[3],
-                    height: 110,
-                  }}
-                />
-              ) : (
-                <Ionicons
-                  name="videocam-outline"
-                  size={36}
-                  color={colors.secondaryText}
-                  style={{ alignSelf: 'center', margin: spacing[8] }}
-                />
-              )}
+            <View style={{ marginBottom: spacing[2] }}>
               <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
                 {lecture.title}
               </Text>
-              <Text variant="secondaryText">
-                {lecture.createdAt.toLocaleDateString()}
-              </Text>
-            </Card>
-          </TouchableHighlight>
+              <Text variant="secondaryText">{lecture.teacherId}</Text>
+            </View>
+            <Text variant="secondaryText">
+              {lecture.createdAt.toLocaleDateString()} ({lecture.duration})
+            </Text>
+          </TouchableCard>
         ))}
-      </Grid>
+      </View>
       <SectionHeader title={t('Virtual classrooms')} />
-      <Grid style={{ padding: spacing[5] }}>
+      <View style={{ padding: spacing[5] }}>
         {virtualClassroomsQuery.data?.data.map(vc => (
-          <TouchableHighlight
+          <TouchableCard
             key={vc.id}
-            style={{ flex: 1 }}
+            style={{ marginBottom: spacing[4] }}
+            cardStyle={{ padding: spacing[5] }}
             onPress={() =>
               navigate({
                 name: 'CourseVirtualClassroom',
@@ -100,36 +82,18 @@ export const CourseLecturesTab = ({
               })
             }
           >
-            <Card style={{ padding: spacing[5], overflow: 'hidden' }}>
-              {vc.coverUrl ? (
-                <Image
-                  source={{ uri: vc.coverUrl }}
-                  resizeMode="cover"
-                  style={{
-                    marginTop: -spacing[5],
-                    marginHorizontal: -spacing[5],
-                    marginBottom: spacing[3],
-                    height: 110,
-                  }}
-                />
-              ) : (
-                <Ionicons
-                  name="videocam-outline"
-                  size={36}
-                  color={colors.secondaryText}
-                  style={{ alignSelf: 'center', margin: spacing[8] }}
-                />
-              )}
+            <View style={{ marginBottom: spacing[2] }}>
               <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
                 {vc.title}
               </Text>
-              <Text variant="secondaryText">
-                {vc.createdAt.toLocaleDateString()}
-              </Text>
-            </Card>
-          </TouchableHighlight>
+              <Text variant="secondaryText">{vc.teacherId}</Text>
+            </View>
+            <Text variant="secondaryText">
+              {vc.createdAt.toLocaleDateString()} ({vc.duration})
+            </Text>
+          </TouchableCard>
         ))}
-      </Grid>
+      </View>
     </ScrollView>
   );
 };
