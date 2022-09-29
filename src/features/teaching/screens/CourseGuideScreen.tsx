@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
 import { Platform, ScrollView } from 'react-native';
+
 import { Card } from '@lib/ui/components/Card';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useGetCourseGuide } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-import { useGetCourseGuide } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseGuide'>;
 

@@ -1,11 +1,13 @@
 import { ScrollView } from 'react-native';
+
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetExams } from '../hooks/examHooks';
+import { useGetExams } from '../../../core/queries/examHooks';
 
 export const ExamsScreen = () => {
   const { spacing } = useTheme();

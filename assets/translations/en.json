@@ -26,9 +26,12 @@
   "Academic year": "Academic year",
   "in the agenda": "in the agenda",
   "This course in the agenda": "This course in the agenda",
-  "More": "Altro",
+  "More": "More",
   "Course guide": "Course guide",
   "Other courses": "Other courses",
   "Provisional grades": "Provisional grades",
-  "Staff": "Staff"
+  "Staff": "Staff",
+  "Login": "Login",
+  "Student ID": "Student ID",
+  "Password": "Password"
 }
