@@ -39,6 +39,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     navigation.setOptions({ orientation: 'landscape', headerShown: false });
     tabNavigation.setOptions({ tabBarStyle: { display: 'none' } });
 
+    // noinspection JSSuspiciousNameCombination
     setPlayerDimensions({
       width: windowDimensions.height,
       height: windowDimensions.width,
@@ -90,6 +91,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     };
   }, [videoUrl, coverUrl, playbackRate]);
 
+  // noinspection RequiredAttributes
   return (
     <ExpoVideoPlayer
       defaultControlsVisible={true}
