@@ -19,7 +19,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   return (
     <View>
       <VideoPlayer
-        videoUrl="https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        videoUrl="https://lucapezzolla.com/20210525.mp4"
         coverUrl={lecture.coverUrl}
       />
     </View>
