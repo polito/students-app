@@ -14,17 +14,9 @@ export const useLogin = () => {
     refreshContext,
   } = useApiContext();
 
-  return useMutation(
-    (dto: LoginRequest) => {
-      return authClient.login({ loginRequest: dto });
-    },
-    {
-      onSuccess: async data => {
-        await SecureStore.setItemAsync(SECURE_STORE_TOKEN_KEY, data.data.token);
-        refreshContext(data.data.token);
-      },
-    },
-  );
+  return useMutation((dto: LoginRequest) => {
+    return authClient.login({ loginRequest: dto });
+  });
 };
 
 export const useLogout = () => {
@@ -34,13 +26,7 @@ export const useLogout = () => {
   } = useApiContext();
   const client = useQueryClient();
 
-  return useMutation(() => authClient.logout(), {
-    onSuccess: async () => {
-      await SecureStore.deleteItemAsync(SECURE_STORE_TOKEN_KEY);
-      refreshContext();
-      return client.invalidateQueries([]);
-    },
-  });
+  return useMutation(() => authClient.logout());
 };
 
 export const useSwitchCareer = () => {

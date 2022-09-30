@@ -1,25 +1,43 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Image, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import * as SecureStore from 'expo-secure-store';
 
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { SECURE_STORE_TOKEN_KEY, useApiContext } from '../contexts/ApiContext';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
-  const { mutate: handleLogin, isLoading } = useLogin();
+  const { mutate: handleLogin, isLoading, data } = useLogin();
   const { colors, spacing } = useTheme();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const { refreshContext } = useApiContext();
+
   const onLoginButtonPressed = () => {
     handleLogin({ username, password });
   };
+
+  const onSuccessfulLogin = async token => {
+    await SecureStore.setItemAsync(SECURE_STORE_TOKEN_KEY, token);
+    refreshContext(token);
+  };
+
+  useEffect(() => {
+    if (data?.data.token) {
+      onSuccessfulLogin(data.data.token).catch(e => {
+        // TODO handle error
+      });
+    }
+  }, [data]);
 
   const passwordRef = useRef<TextInput>();
 
