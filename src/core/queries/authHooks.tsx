@@ -1,18 +1,21 @@
-import * as SecureStore from 'expo-secure-store';
-
 import {
+  AuthApi,
   LoginRequest,
   SwitchCareerRequest,
-} from '@polito-it/api-client/models';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+} from '@polito-it/api-client';
+import { useMutation } from '@tanstack/react-query';
 
-import { SECURE_STORE_TOKEN_KEY, useApiContext } from '../contexts/ApiContext';
+import { useApiContext } from '../contexts/ApiContext';
 
-export const useLogin = () => {
+const useAuthClient = (): AuthApi => {
   const {
     clients: { auth: authClient },
-    refreshContext,
   } = useApiContext();
+  return authClient;
+};
+
+export const useLogin = () => {
+  const authClient = useAuthClient();
 
   return useMutation((dto: LoginRequest) => {
     return authClient.login({ loginRequest: dto });
@@ -20,31 +23,15 @@ export const useLogin = () => {
 };
 
 export const useLogout = () => {
-  const {
-    clients: { auth: authClient },
-    refreshContext,
-  } = useApiContext();
-  const client = useQueryClient();
+  const authClient = useAuthClient();
 
   return useMutation(() => authClient.logout());
 };
 
 export const useSwitchCareer = () => {
-  const {
-    clients: { auth: authClient },
-    refreshContext,
-  } = useApiContext();
-  const client = useQueryClient();
+  const authClient = useAuthClient();
 
-  return useMutation(
-    (dto: SwitchCareerRequest) =>
-      authClient.switchCareer({ switchCareerRequest: dto }),
-    {
-      onSuccess: async data => {
-        await SecureStore.setItemAsync(SECURE_STORE_TOKEN_KEY, data.data.token);
-        refreshContext(data.data.token);
-        return client.invalidateQueries([]);
-      },
-    },
+  return useMutation((dto: SwitchCareerRequest) =>
+    authClient.switchCareer({ switchCareerRequest: dto }),
   );
 };
