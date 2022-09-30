@@ -5,6 +5,7 @@
   "bracketSpacing": true,
   "endOfLine": "auto",
   "semi": true,
-  "importOrder": ["^react", "^expo", "^\\@", "^\\w", "^[./]"],
-  "importOrderSeparation": false
+  "importOrder": ["^react", "^expo", "^@(?!ui/)(.*)$", "^\\w", "^@ui/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

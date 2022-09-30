@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, TouchableHighlight, Image } from 'react-native';
+import { Image, ScrollView, TouchableHighlight } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
@@ -11,12 +12,13 @@ import {
   CourseAllOfVcPreviousYears,
 } from '@polito-it/api-client';
 import { useNavigation } from '@react-navigation/native';
+
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useGetCourseVideolectures,
   useGetCourseVirtualClassrooms,
-} from '../hooks/courseHooks';
+} from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 type CourseLecturesTabParameters = CourseTabProps & {

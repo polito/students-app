@@ -1,18 +1,16 @@
-import { ComponentProps, useRef } from 'react';
+import { ComponentProps } from 'react';
+
 import {
   NavigationContainer as ReactNavigationContainer,
   useNavigationContainerRef,
 } from '@react-navigation/native';
-import {
-  useTrackAppStartAsync,
-  useTrackScreenViewAsync,
-} from '../hooks/matomoHooks';
 
 export const NavigationContainer = ({
   children,
   ...props
 }: ComponentProps<typeof ReactNavigationContainer>) => {
   const navigationRef = useNavigationContainerRef();
+  /*
   const routeNameRef = useRef<string>();
 
   const trackAppStart = useTrackAppStartAsync();
@@ -33,10 +31,12 @@ export const NavigationContainer = ({
 
     return route.name;
   };
+  */
 
   return (
     <ReactNavigationContainer
       ref={navigationRef}
+      /*
       onReady={() => {
         const currentRouteName = getCurrentRouteName();
         routeNameRef.current = currentRouteName;
@@ -53,6 +53,7 @@ export const NavigationContainer = ({
 
         routeNameRef.current = currentRouteName;
       }}
+      */
       {...props}
     >
       {children}

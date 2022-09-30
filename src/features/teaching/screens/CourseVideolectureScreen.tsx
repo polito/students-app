@@ -1,9 +1,11 @@
 import React from 'react';
 import { View } from 'react-native';
+
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-import { useGetCourseVideolectures } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,

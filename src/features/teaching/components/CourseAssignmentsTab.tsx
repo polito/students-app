@@ -1,12 +1,14 @@
 import { FlatList, TouchableHighlight, View } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import { FlatListItem } from '../../../core/components/FlatListItem';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetCourseAssignments } from '../hooks/courseHooks';
+import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 const numColumns = 2;

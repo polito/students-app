@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
+
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { MetricCard } from '@lib/ui/components/MetricCard';
@@ -7,9 +8,13 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetCourse, useGetCourseExams } from '../hooks/courseHooks';
+import {
+  useGetCourse,
+  useGetCourseExams,
+} from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
