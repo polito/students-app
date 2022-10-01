@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { ProgressChart } from 'react-native-chart-kit';
+
 import { Card } from '@lib/ui/components/Card';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
@@ -19,11 +20,13 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { useNavigation } from '@react-navigation/native';
+
 import color from 'color';
-import { useGetStudent } from '../../../core/hooks/studentHooks';
+
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetCourses } from '../hooks/courseHooks';
-import { useGetExams } from '../hooks/examHooks';
+import { useGetCourses } from '../../../core/queries/courseHooks';
+import { useGetExams } from '../../../core/queries/examHooks';
+import { useGetStudent } from '../../../core/queries/studentHooks';
 
 export const HomeScreen = () => {
   const { t } = useTranslation();

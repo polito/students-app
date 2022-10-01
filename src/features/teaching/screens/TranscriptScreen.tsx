@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 import { ProgressChart } from 'react-native-chart-kit';
+
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -10,11 +11,15 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import color from 'color';
+
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
-import { useGetStudent } from '../../../core/hooks/studentHooks';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetGrades } from '../hooks/gradeHooks';
+import {
+  useGetGrades,
+  useGetStudent,
+} from '../../../core/queries/studentHooks';
 
 export const TranscriptScreen = () => {
   const { t } = useTranslation();

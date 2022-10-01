@@ -1,41 +1,61 @@
-import { UploadCourseAssignmentRequest } from '@polito-it/api-client/apis/CoursesApi';
+import {
+  CoursesApi,
+  UploadCourseAssignmentRequest,
+} from '@polito-it/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CourseService } from '../services/CourseService';
+
+import { useApiContext } from '../contexts/ApiContext';
 import { useGetExams } from './examHooks';
 
 export const COURSES_QUERY_KEY = 'courses';
 export const COURSE_QUERY_KEY = 'course';
 
+const useCoursesClient = (): CoursesApi => {
+  const {
+    clients: { courses: coursesClient },
+  } = useApiContext();
+  return coursesClient;
+};
+
 export const useGetCourses = () => {
-  return useQuery([COURSES_QUERY_KEY], () => CourseService.getCourses());
+  const coursesClient = useCoursesClient();
+
+  return useQuery([COURSES_QUERY_KEY], () => coursesClient.getCourses());
 };
 
 export const useGetCourse = (courseId: number) => {
-  return useQuery([COURSE_QUERY_KEY, courseId, 'overview'], () =>
-    CourseService.getCourse({ courseId: courseId }),
-  );
+  const coursesClient = useCoursesClient();
+
+  return useQuery([COURSE_QUERY_KEY, courseId, 'overview'], () => {
+    return coursesClient.getCourse({ courseId: courseId });
+  });
 };
 
 export const useGetCourseFiles = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+
   return useQuery([COURSE_QUERY_KEY, courseId, 'files'], () =>
-    CourseService.getCourseFiles({ courseId: courseId }).then(files => ({
-      data: files.data.concat(...files.data).concat(...files.data),
+    coursesClient.getCourseFiles({ courseId: courseId }).then(files => ({
+      data: files.data,
     })),
   );
 };
 
 export const useGetCourseAssignments = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+
   return useQuery([COURSE_QUERY_KEY, courseId, 'assignments'], () =>
-    CourseService.getCourseAssignments({ courseId: courseId }),
+    coursesClient.getCourseAssignments({ courseId: courseId }),
   );
 };
 
 export const useUploadAssignment = (courseId: number) => {
+  const coursesClient = useCoursesClient();
   const client = useQueryClient();
 
   return useMutation(
     (dto: UploadCourseAssignmentRequest) =>
-      CourseService.uploadCourseAssignment(dto),
+      coursesClient.uploadCourseAssignment(dto),
     {
       onSuccess() {
         return client.invalidateQueries([
@@ -49,26 +69,34 @@ export const useUploadAssignment = (courseId: number) => {
 };
 
 export const useGetCourseGuide = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+
   return useQuery([COURSE_QUERY_KEY, courseId, 'guide'], () =>
-    CourseService.getCourseGuide({ courseId: courseId }),
+    coursesClient.getCourseGuide({ courseId: courseId }),
   );
 };
 
 export const useGetCourseNotices = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+
   return useQuery([COURSE_QUERY_KEY, courseId, 'notices'], () =>
-    CourseService.getCourseNotices({ courseId: courseId }),
+    coursesClient.getCourseNotices({ courseId: courseId }),
   );
 };
 
 export const useGetCourseVirtualClassrooms = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+
   return useQuery([COURSE_QUERY_KEY, courseId, 'virtual-classrooms'], () =>
-    CourseService.getCourseVirtualClassrooms({ courseId: courseId }),
+    coursesClient.getCourseVirtualClassrooms({ courseId: courseId }),
   );
 };
 
 export const useGetCourseVideolectures = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+
   return useQuery([COURSE_QUERY_KEY, courseId, 'videolectures'], () =>
-    CourseService.getCourseVideolectures({ courseId: courseId }),
+    coursesClient.getCourseVideolectures({ courseId: courseId }),
   );
 };
 

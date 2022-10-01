@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
+
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseScreen } from '../screens/CourseScreen';
@@ -91,10 +93,20 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseVideolecture"
         component={CourseVideolectureScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackTitleVisible: false,
+        }}
       />
       <Stack.Screen
         name="CourseVirtualClassroom"
         component={CourseVirtualClassroomScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackTitleVisible: false,
+        }}
       />
       <Stack.Screen
         name="CourseAssignmentUpload"

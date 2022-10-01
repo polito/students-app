@@ -1,5 +1,21 @@
 import * as Constants from 'expo-constants';
-import { BASE_PATH, Configuration } from '@polito-it/api-client';
+
+import {
+  AuthApi,
+  BASE_PATH,
+  BookingsApi,
+  Configuration,
+  ConfigurationParameters,
+  CoursesApi,
+  ExamsApi,
+  LecturesApi,
+  PeopleApi,
+  PlacesApi,
+  StudentApi,
+} from '@polito-it/api-client';
+
+import { ApiContextClientsProps } from '../core/contexts/ApiContext';
+import { language } from '../i18n';
 
 export const apiBasePath = (() => {
   if (process.env.NODE_ENV === 'development') {
@@ -10,14 +26,46 @@ export const apiBasePath = (() => {
     console.log(
       `Expecting a running (fake) API on your computer at ${apiHost}`,
     );
+
     return apiHost;
   }
   return BASE_PATH;
 })();
 
-export function getApiConfiguration(): Configuration {
-  return new Configuration({
+export const createApiConfiguration = (token?: string) => {
+  const configurationParameters: ConfigurationParameters = {
     basePath: apiBasePath,
-    accessToken: 'whatever',
-  });
-}
+    headers: {
+      'Accept-Language': language,
+    },
+  };
+
+  if (token) {
+    configurationParameters.accessToken = token;
+  }
+
+  return new Configuration(configurationParameters);
+};
+
+export const createApiClients = (token?: string) => {
+  const configuration = createApiConfiguration(token);
+
+  let clients: Partial<ApiContextClientsProps> = {
+    auth: new AuthApi(configuration),
+  };
+
+  if (token) {
+    clients = {
+      ...clients,
+      bookings: new BookingsApi(configuration),
+      courses: new CoursesApi(configuration),
+      exams: new ExamsApi(configuration),
+      lectures: new LecturesApi(configuration),
+      people: new PeopleApi(configuration),
+      places: new PlacesApi(configuration),
+      student: new StudentApi(configuration),
+    };
+  }
+
+  return clients;
+};
