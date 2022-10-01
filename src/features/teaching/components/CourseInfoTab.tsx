@@ -42,7 +42,6 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   useEffect(() => {
     if (isStaffLoading) return;
 
-    console.log(courseQuery.data.data);
     const staffData = [];
     const teacherId = `${courseQuery.data.data.teacherId}`;
     courseQuery.data.data.staff.forEach(s =>
@@ -56,7 +55,6 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
       staffData[index] = { ...personData, ...staffData[index] };
 
-      console.log(`Comparing teacher ${teacherId} with staff ${personData.id}`);
       if (personData.id === teacherId) {
         setTeacher(staffData[index]);
       }
@@ -119,8 +117,13 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       <Section>
         <SectionHeader title={t('Staff')} />
         <SectionList>
-          {staff.map(member => (
-            <PersonListItem person={member} subtitle={member.courseRole} />
+          {staff.map((member, index) => (
+            // TODO cleanup key when real API are used
+            <PersonListItem
+              key={`${member.id}${index}`}
+              person={member}
+              subtitle={member.courseRole}
+            />
           ))}
         </SectionList>
       </Section>
