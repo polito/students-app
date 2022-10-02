@@ -26,8 +26,12 @@ export const useGetPeople = (search: string) => {
 export const useGetPerson = (personId: string) => {
   const peopleClient = usePeopleClient();
 
-  return useQuery([PERSON_QUERY_KEY, personId], () =>
-    peopleClient.getPerson({ personId }),
+  return useQuery(
+    [PERSON_QUERY_KEY, personId],
+    () => peopleClient.getPerson({ personId }),
+    {
+      staleTime: Infinity,
+    },
   );
 };
 
@@ -38,12 +42,13 @@ export const useGetPersons = (personIds: string[]) => {
     queries: (personIds ?? []).map(personId => ({
       queryKey: [PERSON_QUERY_KEY, personId],
       queryFn: () => peopleClient.getPerson({ personId }),
+      staleTime: Infinity,
     })),
   });
 
   const isLoading = useMemo(() => {
     if (!personIds) return true;
-    return !queries.every(q => q.isLoading === false);
+    return queries.some(q => q.isLoading);
   }, [queries]);
 
   return { isLoading, queries };
