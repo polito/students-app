@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   ActionSheetIOS,
   Button,
@@ -7,6 +8,7 @@ import {
   useColorScheme,
 } from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@lib/ui/components/Text';
 import { TouchableCard } from '@lib/ui/components/TouchableCard';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -18,8 +20,12 @@ import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { formatFileDate, formatFileSize } from '../../../utils/files';
 import { CourseTabProps } from '../screens/CourseScreen';
 
-export const CourseAssignmentsTab = ({ courseId }: CourseTabProps) => {
-  const { spacing } = useTheme();
+export const CourseAssignmentsTab = ({
+  courseId,
+  navigation,
+}: CourseTabProps) => {
+  const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
@@ -29,10 +35,24 @@ export const CourseAssignmentsTab = ({ courseId }: CourseTabProps) => {
       data={assignmentsQuery.data?.data ?? []}
       style={[{ paddingHorizontal: spacing[5] }, bottomBarAwareStyles]}
       refreshControl={createRefreshControl(assignmentsQuery)}
-      renderItem={({ item }) => <CourseAssignmentCard assignment={item} />}
+      renderItem={({ item, index }) => (
+        <CourseAssignmentCard
+          assignment={item}
+          isDownloaded={index % 3 === 0}
+        />
+      )}
       ListHeaderComponent={
         <View style={{ marginVertical: spacing[4] }}>
-          <Button title="Invia un elaborato" />
+          <Button
+            color={colors.primary[600]}
+            title={t('Upload assignment')}
+            onPress={() =>
+              navigation.navigate({
+                name: 'CourseAssignmentUpload',
+                params: { courseId },
+              })
+            }
+          />
         </View>
       }
     />
@@ -41,10 +61,14 @@ export const CourseAssignmentsTab = ({ courseId }: CourseTabProps) => {
 
 interface AssignmentProps {
   assignment: CourseAssignment;
+  isDownloaded: boolean;
 }
 
-const CourseAssignmentCard = ({ assignment }: AssignmentProps) => {
-  const { spacing } = useTheme();
+const CourseAssignmentCard = ({
+  assignment,
+  isDownloaded,
+}: AssignmentProps) => {
+  const { colors, spacing } = useTheme();
   const colorScheme = useColorScheme();
 
   return (
@@ -83,9 +107,27 @@ const CourseAssignmentCard = ({ assignment }: AssignmentProps) => {
       }}
     >
       <View style={{ marginBottom: spacing[2] }}>
-        <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
-          {assignment.filename}
-        </Text>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Text
+            variant="headline"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ flex: 1 }}
+          >
+            {assignment.filename}
+          </Text>
+          {isDownloaded && (
+            <Text style={{ color: colors.secondary[600] }}>
+              <Ionicons name="md-download-outline" size={20} />
+            </Text>
+          )}
+        </View>
         <Text variant="secondaryText">{assignment.description}</Text>
       </View>
       <View

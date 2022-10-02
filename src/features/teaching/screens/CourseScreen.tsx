@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
+
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
@@ -14,6 +19,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
 export type CourseTabProps = {
   courseId: number;
+  navigation?: NativeStackNavigationProp<TeachingStackParamList, 'Course'>;
 };
 
 export const CourseScreen = ({ navigation, route }: Props) => {
@@ -42,11 +48,15 @@ export const CourseScreen = ({ navigation, route }: Props) => {
     },
     {
       title: t('Lectures'),
-      renderContent: () => <CourseLecturesTab courseId={id} />,
+      renderContent: () => (
+        <CourseLecturesTab courseId={id} navigation={navigation} />
+      ),
     },
     {
       title: t('Assignments'),
-      renderContent: () => <CourseAssignmentsTab courseId={id} />,
+      renderContent: () => (
+        <CourseAssignmentsTab courseId={id} navigation={navigation} />
+      ),
     },
   ]);
 

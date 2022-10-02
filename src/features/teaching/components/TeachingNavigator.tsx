@@ -111,6 +111,9 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
+        options={{
+          headerTitle: t('Upload assignment'),
+        }}
       />
 
       <Stack.Screen
