@@ -1,12 +1,15 @@
 import {
-  View,
-  TouchableHighlight,
   Platform,
+  TouchableHighlight,
   TouchableHighlightProps,
+  View,
 } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
+
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -33,7 +36,7 @@ export const ListItem = ({
   ...rest
 }: TouchableHighlightProps & Props) => {
   const { fontSizes, colors, spacing } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   return (
     <TouchableHighlight

@@ -25,7 +25,6 @@ export const PersonListItem = ({
 
   return (
     <ListItem
-      key={person.id}
       leadingItem={
         person.picture ? (
           <Image source={{ uri: person.picture }} style={pictureStyle} />
