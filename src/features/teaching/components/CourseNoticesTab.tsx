@@ -25,7 +25,9 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
     setNotices(
       noticesQuery.data?.data.map(notice => {
         const { id, content, publishedAt } = notice;
-        const dom = parseDocument(content.replace(/\\r+/g, ' '));
+        const dom = parseDocument(
+          content.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+        );
         const title = innerText(dom.children as any[]);
         return {
           id,
