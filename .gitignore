@@ -19,3 +19,5 @@ web-build/
 # IDEs
 .idea
 .vscode
+
+.env

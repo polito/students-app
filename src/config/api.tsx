@@ -1,5 +1,4 @@
-import * as Constants from 'expo-constants';
-
+import { API_BASE_PATH } from '@env';
 import {
   AuthApi,
   BASE_PATH,
@@ -17,24 +16,13 @@ import {
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
 import { language } from '../i18n';
 
-export const apiBasePath = (() => {
-  if (process.env.NODE_ENV === 'development') {
-    const ipRegex = /exp:\/\/(.*):[0-9]*/g;
-    const ipAddress = ipRegex.exec(Constants.default.linkingUri)[1];
-
-    const apiHost = `http://${ipAddress}:4010`;
-    console.log(
-      `Expecting a running (fake) API on your computer at ${apiHost}`,
-    );
-
-    return apiHost;
-  }
-  return BASE_PATH;
-})();
-
 export const createApiConfiguration = (token?: string) => {
+  const basePath = API_BASE_PATH ?? BASE_PATH;
+
+  console.log(`Expecting a running API at ${basePath}`);
+
   const configurationParameters: ConfigurationParameters = {
-    basePath: apiBasePath,
+    basePath,
     headers: {
       'Accept-Language': language,
     },
