@@ -9,6 +9,7 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 
 import { fromUiTheme } from '../../utils/navigation-theme';
 import { NavigationContainer } from '../components/NavigationContainer';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';
 
@@ -22,7 +23,11 @@ export const UiProvider = ({ children }) => {
     'Poppins-semibold-italic': require('../../../assets/fonts/Poppins/Poppins-SemiBoldItalic.ttf'),
   });
 
-  const colorScheme = useColorScheme();
+  let { colorScheme } = usePreferencesContext();
+  if (!colorScheme) {
+    colorScheme = useColorScheme();
+  }
+
   const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
   const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 

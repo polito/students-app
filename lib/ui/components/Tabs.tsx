@@ -1,11 +1,12 @@
 import {
   Children,
-  cloneElement,
-  isValidElement,
   PropsWithChildren,
   ReactElement,
+  cloneElement,
+  isValidElement,
 } from 'react';
 import { ScrollView, ScrollViewProps, View } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 import { Props as TabProps } from './Tab';
 
@@ -36,7 +37,7 @@ export const Tabs = ({
         paddingHorizontal: spacing[4],
         paddingVertical: spacing[2],
       }}
-      style={[{ flexGrow: 0 }, style]}
+      style={[{ flexGrow: 0, flexShrink: 0 }, style]}
       {...rest}
     >
       {Children.map(children, (c: ReactElement<TabProps>, i) => {

@@ -25,7 +25,7 @@ export const ApiProvider = ({ children }) => {
     clients: {},
   });
 
-  const isSplashVisible = useRef<boolean>(true);
+  const apiInitialized = useRef<boolean>(false);
 
   useEffect(() => {
     // update ApiContext based on the provided token
@@ -64,9 +64,9 @@ export const ApiProvider = ({ children }) => {
 
   // Initialization completed, splash can be hidden
   useEffect(() => {
-    if (isSplashVisible.current) {
+    if (!apiInitialized.current) {
       SplashScreen.hideAsync();
-      isSplashVisible.current = false;
+      apiInitialized.current = true;
     }
   }, [apiContext]);
 
@@ -92,7 +92,9 @@ export const ApiProvider = ({ children }) => {
 
   return (
     <ApiContext.Provider value={apiContext}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {apiInitialized.current && children}
+      </QueryClientProvider>
     </ApiContext.Provider>
   );
 };
