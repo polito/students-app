@@ -30,6 +30,7 @@ export const useGetPerson = (personId: string) => {
     [PERSON_QUERY_KEY, personId],
     () => peopleClient.getPerson({ personId }),
     {
+      enabled: personId != null,
       staleTime: Infinity,
     },
   );
