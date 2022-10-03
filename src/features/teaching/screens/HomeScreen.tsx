@@ -41,7 +41,7 @@ export const HomeScreen = () => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingBottom: spacing[10] }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={
         <RefreshControl
           refreshing={false}
@@ -76,7 +76,10 @@ export const HomeScreen = () => {
             {examsQuery.data?.data.slice(0, 4).map(exam => (
               <ListItem
                 key={exam.id}
-                linkTo={{ screen: 'Exam', params: { id: exam.id } }}
+                linkTo={{
+                  screen: 'Exam',
+                  params: { id: exam.id },
+                }}
                 title={exam.courseName}
                 subtitle={`${exam.examStartsAt.toLocaleString()} - ${
                   exam.classrooms
