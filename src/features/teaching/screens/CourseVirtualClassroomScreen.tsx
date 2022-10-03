@@ -1,7 +1,10 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+
+import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-import { useGetCourseVirtualClassrooms } from '../hooks/courseHooks';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
@@ -15,9 +18,13 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
     useGetCourseVirtualClassrooms(courseId);
 
   const lecture = virtualClassroomsResponse?.data.find(l => l.id === lectureId);
+
   return (
     <View>
-      <Text>{lecture && JSON.stringify(lecture)}</Text>
+      <VideoPlayer
+        videoUrl="https://lucapezzolla.com/20210525.mp4"
+        coverUrl={lecture.coverUrl}
+      />
     </View>
   );
 };

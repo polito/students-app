@@ -1,23 +1,59 @@
-import * as Constants from 'expo-constants';
-import { BASE_PATH, Configuration } from '@polito-it/api-client';
+import { API_BASE_PATH } from '@env';
+import {
+  AuthApi,
+  BASE_PATH,
+  BookingsApi,
+  Configuration,
+  ConfigurationParameters,
+  CoursesApi,
+  ExamsApi,
+  LecturesApi,
+  PeopleApi,
+  PlacesApi,
+  StudentApi,
+} from '@polito-it/api-client';
 
-export const apiBasePath = (() => {
-  if (process.env.NODE_ENV === 'development') {
-    const ipRegex = /exp:\/\/(.*):[0-9]*/g;
-    const ipAddress = ipRegex.exec(Constants.default.linkingUri)[1];
+import { ApiContextClientsProps } from '../core/contexts/ApiContext';
+import { language } from '../i18n';
 
-    const apiHost = `http://${ipAddress}:4010`;
-    console.log(
-      `Expecting a running (fake) API on your computer at ${apiHost}`,
-    );
-    return apiHost;
+export const createApiConfiguration = (token?: string) => {
+  const basePath = API_BASE_PATH ?? BASE_PATH;
+
+  console.log(`Expecting a running API at ${basePath}`);
+
+  const configurationParameters: ConfigurationParameters = {
+    basePath,
+    headers: {
+      'Accept-Language': language,
+    },
+  };
+
+  if (token) {
+    configurationParameters.accessToken = token;
   }
-  return BASE_PATH;
-})();
 
-export function getApiConfiguration(): Configuration {
-  return new Configuration({
-    basePath: apiBasePath,
-    accessToken: 'whatever',
-  });
-}
+  return new Configuration(configurationParameters);
+};
+
+export const createApiClients = (token?: string) => {
+  const configuration = createApiConfiguration(token);
+
+  let clients: Partial<ApiContextClientsProps> = {
+    auth: new AuthApi(configuration),
+  };
+
+  if (token) {
+    clients = {
+      ...clients,
+      bookings: new BookingsApi(configuration),
+      courses: new CoursesApi(configuration),
+      exams: new ExamsApi(configuration),
+      lectures: new LecturesApi(configuration),
+      people: new PeopleApi(configuration),
+      places: new PlacesApi(configuration),
+      student: new StudentApi(configuration),
+    };
+  }
+
+  return clients;
+};
