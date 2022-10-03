@@ -32,8 +32,6 @@ export const useGetCourses = () => {
 
         // eslint-disable-next-line no-prototype-builtins
         if (!courses.hasOwnProperty(c.id)) {
-          console.log(`Found new course ${c.id}`);
-
           const randomColor = Math.floor(Math.random() * 16777215).toString(16);
           courses[c.id] = {
             color: `#${randomColor}`,
