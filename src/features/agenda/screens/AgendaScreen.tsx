@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View } from 'react-native';
+
 import { AgendaCard } from '@lib/ui/components/AgendaCard';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 
 export const AgendaScreen = () => {
@@ -13,10 +15,10 @@ export const AgendaScreen = () => {
   const { colors, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState({
-    lectures: null,
-    exams: null,
-    bookings: null,
-    deadlines: null,
+    lectures: false,
+    exams: false,
+    bookings: false,
+    deadlines: false,
   });
   const agendaItems = useMemo(
     () => [
