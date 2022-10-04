@@ -1,15 +1,18 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import RenderHTML from 'react-native-render-html';
+
 import { Ionicons } from '@expo/vector-icons';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
+
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetCourseNotices } from '../hooks/courseHooks';
+import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
@@ -22,7 +25,9 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
     setNotices(
       noticesQuery.data?.data.map(notice => {
         const { id, content, publishedAt } = notice;
-        const dom = parseDocument(content.replace(/\\r+/g, ' '));
+        const dom = parseDocument(
+          content.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+        );
         const title = innerText(dom.children as any[]);
         return {
           id,
