@@ -21,8 +21,6 @@ const createOptions = (title: string, autoBackAction: boolean) => {
 export const useScreenTitle = (title: string, autoBackAction = true) => {
   const { setOptions } = useNavigation();
 
-  setOptions(createOptions(title, autoBackAction));
-
   useEffect(() => {
     setOptions(createOptions(title, autoBackAction));
   }, [title]);
