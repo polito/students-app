@@ -23,7 +23,7 @@ export const useGetPeople = (search: string) => {
   );
 };
 
-export const useGetPerson = (personId: string) => {
+export const useGetPerson = (personId: number) => {
   const peopleClient = usePeopleClient();
 
   return useQuery(
@@ -35,7 +35,7 @@ export const useGetPerson = (personId: string) => {
   );
 };
 
-export const useGetPersons = (personIds: string[]) => {
+export const useGetPersons = (personIds: number[]) => {
   const peopleClient = usePeopleClient();
 
   const queries = useQueries({

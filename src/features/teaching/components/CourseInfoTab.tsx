@@ -43,7 +43,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     if (isStaffLoading) return;
 
     const staffData = [];
-    const teacherId = `${courseQuery.data.data.teacherId}`;
+    const teacherId = courseQuery.data.data.teacherId;
     courseQuery.data.data.staff.forEach(s =>
       staffData.push({
         courseRole: s.role,
