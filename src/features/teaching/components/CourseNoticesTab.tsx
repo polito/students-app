@@ -35,7 +35,10 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           title,
           content: (
             <RenderHTML
-              baseStyle={{ paddingHorizontal: spacing[5], color: colors.prose }}
+              baseStyle={{
+                paddingHorizontal: spacing[5],
+                color: colors.prose,
+              }}
               source={{ dom }}
             />
           ),
@@ -47,7 +50,8 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={[{ flex: 1 }, bottomBarAwareStyles]}
+      style={{ flex: 1 }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(noticesQuery)}
     >
       <List>

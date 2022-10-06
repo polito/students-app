@@ -1,9 +1,13 @@
 import { Platform } from 'react-native';
+
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 export const useBottomBarAwareStyles = () => {
   const bottomBarHeight = useBottomTabBarHeight();
+  const { spacing } = useTheme();
   return {
-    marginBottom: Platform.select({ ios: bottomBarHeight }),
+    paddingBottom:
+      +(Platform.select({ ios: bottomBarHeight }) ?? 0) + +spacing[5],
   };
 };

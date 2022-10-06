@@ -4,6 +4,8 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { Logo } from '../../../core/components/Logo';
+import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseScreen } from '../screens/CourseScreen';
@@ -42,24 +44,15 @@ export const TeachingNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        headerLargeTitleStyle: {
-          fontFamily: 'Poppins-semibold',
-          color: colors.heading,
-        },
         headerBlurEffect: 'regular',
-        headerTitleStyle: {
-          fontFamily: 'Poppins-semibold',
-          color: colors.heading,
-        },
-        headerBackTitleStyle: {
-          fontFamily: 'Poppins-normal',
-        },
+        ...titlesStyles(colors),
       }}
     >
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{
+          headerLeft: () => <Logo />,
           headerTitle: t('Teaching'),
         }}
       />

@@ -43,7 +43,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     if (isStaffLoading) return;
 
     const staffData = [];
-    const teacherId = `${courseQuery.data.data.teacherId}`;
+    const teacherId = courseQuery.data.data.teacherId;
     courseQuery.data.data.staff.forEach(s =>
       staffData.push({
         courseRole: s.role,
@@ -65,7 +65,8 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={[{ flex: 1 }, bottomBarAwareStyles]}
+      style={{ flex: 1 }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(
         courseQuery,
         courseExamsQuery,

@@ -8,6 +8,7 @@ import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigato
 import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
+import { Logo } from './Logo';
 import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
@@ -57,6 +58,7 @@ export const RootNavigator = () => {
         name="PlacesTab"
         component={PlacesScreen}
         options={{
+          headerLeft: () => <Logo />,
           tabBarLabel: t('Places'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="location" color={color} size={size} />

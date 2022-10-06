@@ -41,7 +41,7 @@ export const HomeScreen = () => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      style={bottomBarAwareStyles}
+      contentContainerStyle={{ paddingBottom: spacing[10] }}
       refreshControl={
         <RefreshControl
           refreshing={false}
