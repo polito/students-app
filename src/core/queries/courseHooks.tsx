@@ -1,8 +1,17 @@
+import { useMemo } from 'react';
+
 import {
+  CourseAllOfVcOtherCourses,
+  CourseAllOfVcPreviousYears,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito-it/api-client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -54,9 +63,15 @@ export const useGetCourses = () => {
 export const useGetCourse = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'overview'], () => {
-    return coursesClient.getCourse({ courseId: courseId });
-  });
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'overview'],
+    () => {
+      return coursesClient.getCourse({ courseId: courseId });
+    },
+    {
+      staleTime: Infinity,
+    },
+  );
 };
 
 export const useGetCourseFiles = (courseId: number) => {
@@ -118,6 +133,33 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
   return useQuery([COURSE_QUERY_KEY, courseId, 'virtual-classrooms'], () =>
     coursesClient.getCourseVirtualClassrooms({ courseId: courseId }),
   );
+};
+
+export const useGetCourseRelatedVirtualClassrooms = (
+  vcPreviousYears: CourseAllOfVcPreviousYears[],
+  vcOtherCourses: CourseAllOfVcOtherCourses[],
+) => {
+  const coursesClient = useCoursesClient();
+
+  const queries = useQueries({
+    queries: (vcOtherCourses ?? [])
+      .concat(vcOtherCourses ?? [])
+      .map(relatedVC => {
+        return {
+          queryKey: [COURSE_QUERY_KEY, relatedVC.id, 'virtual-classrooms'],
+          queryFn: () =>
+            coursesClient.getCourseVirtualClassrooms({
+              courseId: relatedVC.id,
+            }),
+        };
+      }),
+  });
+
+  const isLoading = useMemo(() => {
+    return queries.some(q => q.isLoading);
+  }, [queries]);
+
+  return { queries, isLoading };
 };
 
 export const useGetCourseVideolectures = (courseId: number) => {
