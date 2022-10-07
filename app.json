@@ -1,35 +1,4 @@
 {
-  "expo": {
-    "name": "Polito Students",
-    "slug": "polito-students",
-    "version": "0.0.0",
-    "entryPoint": "./src/App.tsx",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#002B49"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon-foreground.png",
-        "backgroundImage": "./assets/images/icon-background.png"
-      },
-      "package": "it.polito.students"
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
-    }
-  }
+  "name": "students",
+  "displayName": "students"
 }
