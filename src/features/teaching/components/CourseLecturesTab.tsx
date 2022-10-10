@@ -107,7 +107,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   }, [videolecturesQuery.isLoading]);
 
   useEffect(() => {
-    if (areRelatedLoading) return;
+    if (courseQuery.isLoading || areRelatedLoading) return;
 
     setLectures(oldL => {
       relatedVCQueries.forEach((relatedQuery, index) => {
@@ -135,7 +135,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     });
 
     onSectionLoaded();
-  }, [areRelatedLoading]);
+  }, [courseQuery.isLoading, areRelatedLoading]);
 
   const toggleSection = index => {
     setSections(oldS => {

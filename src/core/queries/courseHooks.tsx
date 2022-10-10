@@ -212,7 +212,7 @@ export const useGetCourseRelatedVirtualClassrooms = (
   const coursesClient = useCoursesClient();
 
   const queries = useQueries({
-    queries: (vcOtherCourses ?? [])
+    queries: (vcPreviousYears ?? [])
       .concat(vcOtherCourses ?? [])
       .map(relatedVC => {
         return {
