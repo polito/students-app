@@ -1,4 +1,6 @@
 import {
+  CourseDirectory,
+  CourseDirectoryContentInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito-it/api-client';
@@ -61,12 +63,80 @@ export const useGetCourse = (courseId: number) => {
 
 export const useGetCourseFiles = (courseId: number) => {
   const coursesClient = useCoursesClient();
+  const client = useQueryClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'files'], () =>
-    coursesClient.getCourseFiles({ courseId: courseId }).then(files => ({
-      data: files.data,
-    })),
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'files'],
+    () =>
+      coursesClient.getCourseFiles({ courseId: courseId }).then(files => ({
+        data: files.data,
+      })),
+    {
+      onSuccess() {
+        return client.invalidateQueries([
+          COURSE_QUERY_KEY,
+          courseId,
+          'directories',
+        ]);
+      },
+    },
   );
+};
+
+export const useGetCourseDirectory = (
+  courseId: number,
+  directoryId: string,
+) => {
+  const filesQuery = useGetCourseFiles(courseId);
+
+  const rootDirectoryContent = filesQuery.data?.data;
+
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'directories', directoryId],
+    () => {
+      const directory = findDirectory(directoryId, rootDirectoryContent);
+
+      return new Promise<CourseDirectory>(resolve => {
+        resolve(directory);
+      });
+    },
+    {
+      enabled: !!rootDirectoryContent,
+    },
+  );
+};
+
+/**
+ * Recursively look for a given directory with a depth-by-depth approach
+ *
+ * @param searchDirectoryId The id of the directory we are looking for
+ * @param directoryContent
+ */
+const findDirectory = (
+  searchDirectoryId: string,
+  directoryContent: CourseDirectoryContentInner[],
+): CourseDirectory => {
+  let result = null;
+  const childDirectories = directoryContent.filter(
+    f => f.type === 'directory',
+  ) as CourseDirectory[];
+
+  let nextDepthFiles = [];
+  for (let i = 0; i < childDirectories.length; i++) {
+    const currentDir = childDirectories[i];
+    if (currentDir.id === searchDirectoryId) {
+      result = currentDir;
+      break;
+    }
+
+    nextDepthFiles = [...nextDepthFiles, currentDir.files];
+  }
+
+  if (!result && nextDepthFiles.length) {
+    result = findDirectory(searchDirectoryId, nextDepthFiles);
+  }
+
+  return result;
 };
 
 export const useGetCourseAssignments = (courseId: number) => {

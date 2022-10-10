@@ -19,7 +19,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import color from 'color';
 
@@ -27,12 +27,16 @@ import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareSt
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { TeachingStackParamList } from '../components/TeachingNavigator';
 
-export const HomeScreen = () => {
+interface Props {
+  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Home'>;
+}
+
+export const HomeScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { navigate } = useNavigation();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
@@ -99,7 +103,7 @@ export const HomeScreen = () => {
               <ActivityIndicator style={styles.loader} />
             ) : (
               <TouchableHighlight
-                onPress={() => navigate('Transcript')}
+                onPress={() => navigation.navigate('Transcript')}
                 underlayColor={colors.touchableHighlight}
               >
                 <View style={{ padding: spacing[5], flexDirection: 'row' }}>
