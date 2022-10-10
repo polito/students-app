@@ -1,4 +1,10 @@
-import { StyleSheet, TouchableHighlightProps, View } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableHighlightProps,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -10,6 +16,7 @@ interface Props {
   subtitle?: string | JSX.Element;
   trailingItem?: JSX.Element;
   isDownloaded: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 export const FileListItem = ({
@@ -21,7 +28,7 @@ export const FileListItem = ({
   return (
     <ListItem
       leadingItem={
-        <View style={styles.iconsContainer}>
+        <View>
           <Ionicons name="document-outline" size={24} style={styles.fileIcon} />
           {isDownloaded && (
             <Ionicons
@@ -39,7 +46,6 @@ export const FileListItem = ({
 
 const createItemStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
-    iconsContainer: {},
     fileIcon: {
       color: colors.heading,
       marginRight: spacing[3],
