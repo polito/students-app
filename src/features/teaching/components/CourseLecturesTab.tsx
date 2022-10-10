@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SectionList, View } from 'react-native';
+import {
+  Animated,
+  Pressable,
+  SectionList,
+  StyleSheet,
+  View,
+} from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { TouchableCard } from '@lib/ui/components/TouchableCard';
@@ -9,6 +18,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VideoLecture, VirtualClassroom } from '@polito-it/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useGetCourse,
@@ -22,8 +32,9 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const { spacing, colors, fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const scrollPosition = useRef(new Animated.Value(0));
   const courseQuery = useGetCourse(courseId);
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
@@ -146,25 +157,68 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
     isSomethingLoaded.current && (
       <SectionList
         ref={sectionListRef}
-        style={[bottomBarAwareStyles]}
+        contentContainerStyle={bottomBarAwareStyles}
         sections={sections}
         refreshing={queries.some(q => q.isLoading)}
         onRefresh={() => queries.forEach(q => q.refetch())}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
+          { useNativeDriver: false },
+        )}
+        ItemSeparatorComponent={IndentedDivider}
         renderSectionHeader={({ section: { title, index } }) => (
           <Pressable onPress={() => toggleSection(index)}>
-            <View style={{ paddingTop: spacing[4], paddingBottom: spacing[2] }}>
-              <SectionHeader title={title} />
+            <View
+              style={{
+                paddingVertical: spacing[2],
+              }}
+            >
+              <TranslucentView
+                style={{
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  borderBottomColor: colors.divider,
+                }}
+              />
+              <SectionHeader
+                title={title}
+                separator={false}
+                trailingItem={
+                  <Ionicons
+                    name={
+                      sections[index].isExpanded
+                        ? 'chevron-up-outline'
+                        : 'chevron-down-outline'
+                    }
+                    color={colors.secondaryText}
+                    size={fontSizes['2xl']}
+                  />
+                }
+              />
             </View>
           </Pressable>
         )}
-        renderItem={({ section, item }) => (
-          <CourseLectureCard
-            navigation={navigation}
-            lecture={item}
-            courseId={courseId}
-            type={section.type}
-          />
-        )}
+        renderItem={({ section, item: lecture }) => {
+          const { data: teacher } = useGetPerson(lecture.teacherId);
+          return (
+            <ListItem
+              title={lecture.title}
+              subtitle={[
+                teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
+                lecture.createdAt?.toLocaleDateString(),
+                lecture.duration,
+              ]
+                .filter(i => !!i)
+                .join(' - ')}
+              linkTo={{
+                screen:
+                  section.type === 'VideoLecture'
+                    ? 'CourseVideolecture'
+                    : 'CourseVirtualClassroom',
+                params: { courseId, lectureId: lecture.id },
+              }}
+            />
+          );
+        }}
       />
     )
   );
