@@ -12,11 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Text } from '@lib/ui/components/Text';
-import { TouchableCard } from '@lib/ui/components/TouchableCard';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { VideoLecture, VirtualClassroom } from '@polito-it/api-client';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -28,9 +24,8 @@ import {
 } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
-import { TeachingStackParamList } from './TeachingNavigator';
 
-export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
+export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const { spacing, colors, fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -55,7 +50,9 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
   const [sections, setSections] = useState([]);
   const [lectures, setLectures] = useState([]);
 
-  const isSomethingLoaded = useRef(false);
+  const [loadedSectionsCount, setLoadedSectionsCount] = useState(0);
+
+  const onSectionLoaded = () => setLoadedSectionsCount(c => ++c);
   const sectionListRef = useRef(null);
 
   useEffect(() => {
@@ -78,13 +75,16 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
       return oldS;
     });
 
-    isSomethingLoaded.current = true;
+    onSectionLoaded();
   }, [virtualClassroomsQuery.isLoading]);
 
   useEffect(() => {
     if (videolecturesQuery.isLoading) return;
 
-    if (!videolecturesQuery.data.data.length) return;
+    if (!videolecturesQuery.data.data) {
+      onSectionLoaded();
+      return;
+    }
 
     setLectures(oldL => {
       oldL[1] = videolecturesQuery.data.data;
@@ -102,6 +102,8 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
 
       return oldS;
     });
+
+    onSectionLoaded();
   }, [videolecturesQuery.isLoading]);
 
   useEffect(() => {
@@ -131,6 +133,8 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
 
       return oldS;
     });
+
+    onSectionLoaded();
   }, [areRelatedLoading]);
 
   const toggleSection = index => {
@@ -154,7 +158,7 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
   };
 
   return (
-    isSomethingLoaded.current && (
+    loadedSectionsCount === 3 && (
       <SectionList
         ref={sectionListRef}
         contentContainerStyle={bottomBarAwareStyles}
@@ -221,52 +225,5 @@ export const CourseLecturesTab = ({ courseId, navigation }: CourseTabProps) => {
         }}
       />
     )
-  );
-};
-
-interface CourseLectureProps {
-  navigation?: NativeStackNavigationProp<TeachingStackParamList, 'Course'>;
-  lecture: VideoLecture | VirtualClassroom;
-  courseId: number;
-  type: string;
-}
-
-const CourseLectureCard = ({
-  navigation,
-  lecture,
-  courseId,
-  type,
-}: CourseLectureProps) => {
-  const { spacing } = useTheme();
-
-  const { data: teacher } = useGetPerson(`${lecture.teacherId}`);
-
-  return (
-    <TouchableCard
-      key={lecture.id}
-      style={{ marginBottom: spacing[4] }}
-      cardStyle={{ padding: spacing[5] }}
-      onPress={() =>
-        navigation.navigate({
-          name:
-            type === 'VideoLecture'
-              ? 'CourseVideolecture'
-              : 'CourseVirtualClassroom',
-          params: { courseId, lectureId: lecture.id },
-        })
-      }
-    >
-      <View style={{ marginBottom: spacing[2] }}>
-        <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
-          {lecture.title}
-        </Text>
-        <Text variant="secondaryText">
-          {teacher && `${teacher.data.firstName} ${teacher.data.lastName}`}
-        </Text>
-      </View>
-      <Text variant="secondaryText">
-        {lecture.createdAt?.toLocaleDateString()} - {lecture.duration}
-      </Text>
-    </TouchableCard>
   );
 };
