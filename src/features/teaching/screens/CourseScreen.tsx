@@ -44,7 +44,9 @@ export const CourseScreen = ({ navigation, route }: Props) => {
     },
     {
       title: t('Files'),
-      renderContent: () => <CourseFilesTab courseId={id} />,
+      renderContent: () => (
+        <CourseFilesTab courseId={id} navigation={navigation} />
+      ),
     },
     {
       title: t('Lectures'),
