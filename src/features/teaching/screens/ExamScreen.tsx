@@ -20,7 +20,7 @@ import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 
-export const ExamScreen = ({ route }: Props) => {
+export const ExamScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes, spacing } = useTheme();
@@ -30,6 +30,12 @@ export const ExamScreen = ({ route }: Props) => {
   const exam = examsQuery.data?.data.find(e => e.id === id);
   const bookExamMutation = useBookExam(exam?.id);
   const teacherQuery = useGetPerson(exam?.teacherId);
+  const routes = navigation.getState()?.routes;
+  if (routes[routes.length - 2]?.name === 'Course') {
+    navigation.setOptions({
+      headerBackTitle: t('Course'),
+    });
+  }
 
   return (
     <>
