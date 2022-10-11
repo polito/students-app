@@ -38,8 +38,26 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               baseStyle={{
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
+                fontFamily: 'Poppins-normal',
               }}
               source={{ dom }}
+              systemFonts={[
+                'Poppins-bold',
+                'Poppins-bold-italic',
+                'Poppins-normal-italic',
+                'Poppins-normal',
+              ]}
+              tagsStyles={{
+                b: {
+                  fontFamily: 'Poppins-bold',
+                },
+                strong: {
+                  fontFamily: 'Poppins-bold',
+                },
+                i: {
+                  fontFamily: 'Poppins-normal-italic',
+                },
+              }}
             />
           ),
           open: false,
