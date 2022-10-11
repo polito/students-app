@@ -102,7 +102,7 @@ export const TeachingNavigator = () => {
         component={CourseGuideScreen}
         options={{
           headerTitle: t('Course guide'),
-          headerBackTitleVisible: false,
+          headerBackTitle: t('Course'),
         }}
       />
       <Stack.Screen
@@ -111,7 +111,8 @@ export const TeachingNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTransparent: false,
-          headerBackTitleVisible: false,
+          headerBackTitle: t('Course'),
+          title: t('Video lecture'),
         }}
       />
       <Stack.Screen
@@ -120,13 +121,15 @@ export const TeachingNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTransparent: false,
-          headerBackTitleVisible: false,
+          headerBackTitle: t('Course'),
+          title: t('Virtual classroom'),
         }}
       />
       <Stack.Screen
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
         options={{
+          headerBackTitle: t('Course'),
           headerTitle: t('Upload assignment'),
         }}
       />
@@ -138,7 +141,13 @@ export const TeachingNavigator = () => {
           headerTitle: t('Exams'),
         }}
       />
-      <Stack.Screen name="Exam" component={ExamScreen} />
+      <Stack.Screen
+        name="Exam"
+        component={ExamScreen}
+        options={{
+          headerLargeTitle: false,
+        }}
+      />
 
       <Stack.Screen
         name="Transcript"

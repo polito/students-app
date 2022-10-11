@@ -7,6 +7,7 @@
   "Courses": "Corsi",
   "Course guide": "Guida del corso",
   "Credits": "Crediti",
+  "Exam": "Appello",
   "Exams": "Appelli",
   "Files": "Materiali",
   "Final average": "Media depurata",
@@ -20,6 +21,7 @@
   "Password": "Password",
   "Period": "Periodo",
   "Places": "Luoghi",
+  "Location": "Luogo",
   "Profile": "Profilo",
   "Provisional grades": "Valutazioni provvisorie",
   "See all": "Vedi tutto",
@@ -33,6 +35,11 @@
   "Transcript": "Libretto",
   "Upload assignment": "Invia un elaborato",
   "Video lectures": "Videolezioni",
+  "Video lecture": "Videolezione",
   "Virtual classrooms": "Virtual classrooms",
-  "Weighted average": "Media ponderata"
+  "Virtual classroom": "Virtual classroom",
+  "Weighted average": "Media ponderata",
+  "Course holder": "Titolare del corso",
+  "Book exam": "Prenota esame",
+  "Exam booked": "Esame prenotato"
 }
