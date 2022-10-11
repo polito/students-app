@@ -88,8 +88,10 @@ export const TeachingNavigator = () => {
         getId={({ params }) => `${params.directoryId}`}
         options={{
           headerBackTitleVisible: false,
+          headerLargeTitle: false,
           headerSearchBarOptions: {
             obscureBackground: true,
+            hideWhenScrolling: false,
             onSearchButtonPress: () => {},
           },
         }}
@@ -100,8 +102,10 @@ export const TeachingNavigator = () => {
         options={{
           title: t('Files'),
           headerBackTitleVisible: false,
+          headerLargeTitle: false,
           headerSearchBarOptions: {
             obscureBackground: true,
+            hideWhenScrolling: false,
             onSearchButtonPress: () => {},
           },
         }}
@@ -111,6 +115,7 @@ export const TeachingNavigator = () => {
         component={CourseDirectorySearchScreen}
         options={{
           headerBackTitleVisible: false,
+          headerLargeTitle: false,
           headerSearchBarOptions: {
             obscureBackground: true,
             onSearchButtonPress: () => {},

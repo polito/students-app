@@ -18,18 +18,16 @@ type Props = NativeStackScreenProps<
 
 export const CourseDirectorySearchScreen = ({ route }: Props) => {
   const { courseId, search } = route.params;
-
   const [searchQuery, setSearchQuery] = useState(search ?? '');
   const [filteredFiles, setFilteredFiles] = useState([]);
-
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   useEffect(() => {}, [search]);
 
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-
   return (
     <FlatList
+      contentInsetAdjustmentBehavior="automatic"
       data={filteredFiles}
       keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
       renderItem={({ item, index }) =>
@@ -41,7 +39,7 @@ export const CourseDirectorySearchScreen = ({ route }: Props) => {
       }
       refreshControl={createRefreshControl(recentFilesQuery)}
       refreshing={recentFilesQuery.isLoading}
-      style={bottomBarAwareStyles}
+      contentContainerStyle={bottomBarAwareStyles}
     />
   );
 };

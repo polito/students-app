@@ -30,6 +30,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 
   return (
     <FlatList
+      contentInsetAdjustmentBehavior="automatic"
       data={directoryQuery.data?.files}
       keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
       renderItem={({ item, index }) =>
@@ -41,7 +42,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       }
       refreshControl={createRefreshControl(directoryQuery)}
       refreshing={directoryQuery.isLoading}
-      style={bottomBarAwareStyles}
+      contentContainerStyle={bottomBarAwareStyles}
     />
   );
 };

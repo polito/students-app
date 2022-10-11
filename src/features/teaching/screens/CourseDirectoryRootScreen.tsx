@@ -23,6 +23,7 @@ export const CourseDirectoryRootScreen = ({ route }: Props) => {
 
   return (
     <FlatList
+      contentInsetAdjustmentBehavior="automatic"
       data={filesQuery.data?.data}
       keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
       renderItem={({ item, index }) =>
@@ -34,7 +35,7 @@ export const CourseDirectoryRootScreen = ({ route }: Props) => {
       }
       refreshControl={createRefreshControl(filesQuery)}
       refreshing={filesQuery.isLoading}
-      style={bottomBarAwareStyles}
+      contentContainerStyle={bottomBarAwareStyles}
     />
   );
 };
