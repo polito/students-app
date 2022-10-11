@@ -132,7 +132,6 @@ export const TeachingNavigator = () => {
         name="Exam"
         component={ExamScreen}
         options={{
-          headerTransparent: false,
           headerLargeTitle: false,
         }}
       />

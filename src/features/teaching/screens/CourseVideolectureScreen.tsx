@@ -2,11 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
-import { Ionicons } from '@expo/vector-icons';
-import { ListItem } from '@lib/ui/components/ListItem';
+import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
@@ -24,7 +22,6 @@ type Props = NativeStackScreenProps<
 export const CourseVideolectureScreen = ({ route }: Props) => {
   const { courseId, lectureId } = route.params;
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const lecture = videolecturesQuery.data?.data.find(l => l.id === lectureId);
@@ -46,15 +43,8 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       />
       <SectionList loading={teacherQuery.isLoading}>
         {teacherQuery.data && (
-          <ListItem
-            leadingItem={
-              <Ionicons
-                name="person"
-                style={{ color: colors.secondaryText, marginRight: spacing[4] }}
-                size={fontSizes['2xl']}
-              />
-            }
-            title={`${teacherQuery.data.data.firstName} ${teacherQuery.data.data.lastName}`}
+          <PersonListItem
+            person={teacherQuery.data?.data}
             subtitle={t('Course holder')}
           />
         )}
