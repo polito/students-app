@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ExamStatusEnum } from '@polito-it/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -27,57 +29,62 @@ export const ExamScreen = ({ route }: Props) => {
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.data.find(e => e.id === id);
   const bookExamMutation = useBookExam(exam?.id);
-  const teacherQuery = useGetPerson(`${exam?.teacherId}`);
+  const teacherQuery = useGetPerson(exam?.teacherId);
 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      refreshControl={createRefreshControl(examsQuery)}
-      contentContainerStyle={bottomBarAwareStyles}
-      contentInsetAdjustmentBehavior="automatic"
-    >
-      <EventDetails
-        title={exam?.courseName}
-        type={t('Exam')}
-        time={exam?.examStartsAt}
-      />
-      <SectionList loading={teacherQuery.isLoading}>
-        <ListItem
-          leadingItem={
-            <Ionicons
-              name="location"
-              style={{ color: colors.secondaryText, marginRight: spacing[4] }}
-              size={fontSizes['2xl']}
-            />
-          }
-          title={exam?.classrooms}
-          subtitle={t('Location')}
+    <>
+      <ScrollView
+        refreshControl={createRefreshControl(examsQuery)}
+        contentContainerStyle={{
+          paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
+        }}
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        <EventDetails
+          title={exam?.courseName}
+          type={t('Exam')}
+          time={exam?.examStartsAt}
         />
-        {teacherQuery.data && (
-          <PersonListItem
-            person={teacherQuery.data?.data}
-            subtitle={t('Course holder')}
+        <SectionList loading={teacherQuery.isLoading}>
+          <ListItem
+            leadingItem={
+              <Ionicons
+                name="location"
+                style={{ color: colors.secondaryText, marginRight: spacing[4] }}
+                size={fontSizes['2xl']}
+              />
+            }
+            title={exam?.classrooms}
+            subtitle={t('Location')}
           />
-        )}
-      </SectionList>
-      {/* {exam?.status === ExamStatusEnum.Available && bookExamMutation.isIdle && (*/}
-      {/*  <View*/}
-      {/*    style={{*/}
-      {/*      position: 'absolute',*/}
-      {/*      bottom: 0,*/}
-      {/*      marginBottom: bottomBarHeight,*/}
-      {/*      padding: spacing[4],*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <CtaButton*/}
-      {/*      title={t('Book exam')}*/}
-      {/*      onPress={() => bookExamMutation.mutate({})}*/}
-      {/*      loading={bookExamMutation.isLoading}*/}
-      {/*      success={bookExamMutation.isSuccess}*/}
-      {/*      successMessage={t('Exam booked')}*/}
-      {/*    />*/}
-      {/*  </View>*/}
-      {/* )}*/}
-    </ScrollView>
+          {teacherQuery.data && (
+            <PersonListItem
+              person={teacherQuery.data?.data}
+              subtitle={t('Course holder')}
+            />
+          )}
+        </SectionList>
+      </ScrollView>
+      {exam?.status === ExamStatusEnum.Available && bookExamMutation.isIdle && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            marginBottom: bottomBarHeight,
+            padding: spacing[4],
+          }}
+        >
+          <CtaButton
+            title={t('Book exam')}
+            onPress={() => bookExamMutation.mutate({})}
+            loading={bookExamMutation.isLoading}
+            success={bookExamMutation.isSuccess}
+            successMessage={t('Exam booked')}
+          />
+        </View>
+      )}
+    </>
   );
 };
