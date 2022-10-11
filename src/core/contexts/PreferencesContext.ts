@@ -6,7 +6,10 @@ export interface PreferencesContextProps {
     [courseId: number]: CoursePreferencesProps;
   };
   language: 'it' | 'en';
-  updatePreference: (key: string, value: any) => void;
+  updatePreference: <K extends keyof PreferencesContextProps>(
+    key: K,
+    value: PreferencesContextProps[K],
+  ) => void;
 }
 
 export interface CoursePreferencesProps {

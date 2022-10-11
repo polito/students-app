@@ -38,7 +38,7 @@ const Stack = createNativeStackNavigator<TeachingStackParamList>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, fontSizes } = useTheme();
 
   return (
     <Stack.Navigator

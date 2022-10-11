@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -23,10 +24,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import color from 'color';
 
+import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { CoursePreferencesMenu } from '../components/CoursePreferencesMenu';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
@@ -37,6 +40,7 @@ export const HomeScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const preferences = useContext(PreferencesContext);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
@@ -45,7 +49,7 @@ export const HomeScreen = ({ navigation }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingBottom: spacing[10] }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={
         <RefreshControl
           refreshing={false}
@@ -61,17 +65,38 @@ export const HomeScreen = ({ navigation }: Props) => {
         <Section>
           <SectionHeader title={t('Courses')} linkTo={{ screen: 'Courses' }} />
           <SectionList loading={coursesQuery.isLoading}>
-            {coursesQuery.data?.data.slice(0, 4).map(course => (
-              <ListItem
-                key={course.shortcode}
-                linkTo={{
-                  screen: 'Course',
-                  params: { id: course.id, courseName: course.name },
-                }}
-                title={course.name}
-                subtitle={`${t('Period')} ${course.teachingPeriod}`}
-              />
-            ))}
+            {coursesQuery.data?.data
+              .filter(c => !preferences.courses[c.id]?.isHidden)
+              .map(course => (
+                <CoursePreferencesMenu
+                  key={course.shortcode}
+                  courseId={course.id}
+                  shouldOpenOnLongPress={true}
+                  title={t('Course preferences')}
+                >
+                  <ListItem
+                    linkTo={{
+                      screen: 'Course',
+                      params: { id: course.id, courseName: course.name },
+                    }}
+                    title={course.name}
+                    subtitle={`${t('Period')} ${course.teachingPeriod}`}
+                    leadingItem={
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          marginRight: spacing[3],
+                          borderRadius: 10,
+                          backgroundColor:
+                            preferences.courses[course.id]?.color ??
+                            colors.primary[400],
+                        }}
+                      />
+                    }
+                  />
+                </CoursePreferencesMenu>
+              ))}
           </SectionList>
         </Section>
         <Section>

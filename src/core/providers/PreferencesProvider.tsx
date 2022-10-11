@@ -26,20 +26,20 @@ export const PreferencesProvider = ({ children }) => {
 
     if (value === null) {
       AsyncStorage.removeItem(key).then(() =>
-        setPreferencesContext(oldP => {
-          oldP[key] = value;
-          return oldP;
-        }),
+        setPreferencesContext(oldP => ({
+          ...oldP,
+          [key]: value,
+        })),
       );
     } else {
       const storedValue = storageObjectKeys.includes(key)
         ? JSON.stringify(value)
         : value;
       AsyncStorage.setItem(key, storedValue).then(() =>
-        setPreferencesContext(oldP => {
-          oldP[key] = value;
-          return oldP;
-        }),
+        setPreferencesContext(oldP => ({
+          ...oldP,
+          [key]: value,
+        })),
       );
     }
   };
