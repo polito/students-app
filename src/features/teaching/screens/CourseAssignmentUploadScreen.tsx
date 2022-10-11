@@ -1,5 +1,8 @@
 import { View } from 'react-native';
+
+import { Text } from '@lib/ui/components/Text';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -8,5 +11,9 @@ type Props = NativeStackScreenProps<
 >;
 
 export const CourseAssignmentUploadScreen = ({ route }: Props) => {
-  return <View></View>;
+  return (
+    <View>
+      <Text>Todo upload assignment</Text>
+    </View>
+  );
 };

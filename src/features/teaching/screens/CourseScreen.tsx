@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useTabs } from '../../../core/hooks/useTabs';
@@ -16,9 +19,10 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
 export type CourseTabProps = {
   courseId: number;
+  navigation?: NativeStackNavigationProp<TeachingStackParamList, 'Course'>;
 };
 
-export const CourseScreen = ({ route }: Props) => {
+export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { id, courseName } = route.params;
   useScreenTitle(courseName);
@@ -34,15 +38,21 @@ export const CourseScreen = ({ route }: Props) => {
     },
     {
       title: t('Files'),
-      renderContent: () => <CourseFilesTab courseId={id} />,
+      renderContent: () => (
+        <CourseFilesTab courseId={id} navigation={navigation} />
+      ),
     },
     {
       title: t('Lectures'),
-      renderContent: () => <CourseLecturesTab courseId={id} />,
+      renderContent: () => (
+        <CourseLecturesTab courseId={id} navigation={navigation} />
+      ),
     },
     {
       title: t('Assignments'),
-      renderContent: () => <CourseAssignmentsTab courseId={id} />,
+      renderContent: () => (
+        <CourseAssignmentsTab courseId={id} navigation={navigation} />
+      ),
     },
   ]);
 

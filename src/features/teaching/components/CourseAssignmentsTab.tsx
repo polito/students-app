@@ -1,62 +1,50 @@
-import { FlatList, TouchableHighlight, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Button, ScrollView, View } from 'react-native';
 
-import { Ionicons } from '@expo/vector-icons';
-import { Card } from '@lib/ui/components/Card';
-import { Text } from '@lib/ui/components/Text';
+import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { FlatListItem } from '../../../core/components/FlatListItem';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
+import { CourseAssignmentListItem } from './CourseAssignmentListItem';
 
-const numColumns = 2;
-
-export const CourseAssignmentsTab = ({ courseId }: CourseTabProps) => {
-  const { spacing, colors } = useTheme();
+export const CourseAssignmentsTab = ({
+  courseId,
+  navigation,
+}: CourseTabProps) => {
+  const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
-    <FlatList
-      style={{ flex: 1, paddingHorizontal: spacing[2] }}
-      keyExtractor={item => item.id + ''}
-      data={assignmentsQuery.data?.data}
-      contentContainerStyle={[
-        {
-          paddingVertical: spacing[5],
-        },
-        bottomBarAwareStyles,
-      ]}
+    <ScrollView
       refreshControl={createRefreshControl(assignmentsQuery)}
-      renderItem={({ item: f, index }) => (
-        <FlatListItem
-          gap={+spacing[5]}
-          numColumns={2}
-          itemsCount={assignmentsQuery.data?.data?.length}
-          index={index}
-        >
-          <TouchableHighlight>
-            <Card style={{ padding: spacing[5] }}>
-              <Ionicons
-                name="document-outline"
-                size={36}
-                color={colors.secondaryText}
-                style={{ alignSelf: 'center', margin: spacing[8] }}
-              />
-              <Text variant="headline" numberOfLines={1} ellipsizeMode="tail">
-                {f.filename}
-              </Text>
-              <Text variant="secondaryText">
-                {f.uploadedAt.toLocaleDateString()}
-              </Text>
-            </Card>
-          </TouchableHighlight>
-        </FlatListItem>
-      )}
-      ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
-      numColumns={numColumns}
-    />
+      style={bottomBarAwareStyles}
+    >
+      <View style={{ margin: spacing[4] }}>
+        <Button
+          color={colors.primary[600]}
+          title={t('Upload assignment')}
+          onPress={() =>
+            navigation.navigate({
+              name: 'CourseAssignmentUpload',
+              params: { courseId },
+            })
+          }
+        />
+      </View>
+      <SectionList>
+        {assignmentsQuery.data?.data.map((assignment, index) => (
+          <CourseAssignmentListItem
+            key={assignment.id}
+            item={assignment}
+            isDownloaded={index % 3 === 0}
+          />
+        ))}
+      </SectionList>
+    </ScrollView>
   );
 };

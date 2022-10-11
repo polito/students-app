@@ -25,7 +25,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const lecture = videolecturesQuery.data?.data.find(l => l.id === lectureId);
-  const teacherQuery = useGetPerson(`${lecture.teacherId}`);
+  const teacherQuery = useGetPerson(lecture.teacherId);
 
   return (
     <ScrollView

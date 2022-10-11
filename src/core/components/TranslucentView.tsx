@@ -1,13 +1,21 @@
+import { PropsWithChildren } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
-import { BlurView } from 'expo-blur';
 
-export const TranslucentView = ({ style = null }) => {
+import { BlurView, BlurViewProps } from 'expo-blur';
+
+export const TranslucentView = ({
+  style = null,
+  children,
+  intensity = 100,
+}: PropsWithChildren<BlurViewProps>) => {
   const scheme = useColorScheme();
   return (
     <BlurView
       tint={scheme}
-      intensity={100}
+      intensity={intensity}
       style={[StyleSheet.absoluteFill, style]}
-    />
+    >
+      {children}
+    </BlurView>
   );
 };
