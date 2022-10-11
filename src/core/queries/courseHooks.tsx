@@ -88,12 +88,30 @@ export const useGetCourseFiles = (courseId: number) => {
       })),
     {
       onSuccess() {
-        return client.invalidateQueries([
-          COURSE_QUERY_KEY,
-          courseId,
-          'directories',
-        ]);
+        return client
+          .invalidateQueries([COURSE_QUERY_KEY, courseId, 'directories'])
+          .then(() =>
+            client.invalidateQueries([
+              COURSE_QUERY_KEY,
+              courseId,
+              'recentFiles',
+            ]),
+          );
       },
+    },
+  );
+};
+
+export const useGetCourseFilesRecent = (courseId: number) => {
+  const filesQuery = useGetCourseFiles(courseId);
+
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'recentFiles'],
+    () => {
+      return filesQuery.data.data;
+    },
+    {
+      enabled: !!filesQuery.data,
     },
   );
 };
