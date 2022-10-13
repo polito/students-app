@@ -1,13 +1,15 @@
 export const titlesStyles = colors => ({
   headerTitleStyle: {
-    fontFamily: 'Poppins-semibold',
+    fontFamily: 'Poppins',
+    fontWeight: '600',
     color: colors.heading,
   },
   headerLargeTitleStyle: {
-    fontFamily: 'Poppins-semibold',
+    fontFamily: 'Poppins',
+    fontWeight: '600',
     color: colors.heading,
   },
   headerBackTitleStyle: {
-    fontFamily: 'Poppins-normal',
+    fontFamily: 'Poppins',
   },
 });

@@ -5,8 +5,8 @@ import {
   TouchableOpacityProps,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -55,7 +55,7 @@ export const CtaButton = ({
         <ActivityIndicator style={{ marginVertical: 1 }} />
       ) : showSuccess ? (
         <View style={{ flexDirection: 'row' }}>
-          <Ionicons
+          <Icon
             name="checkmark-circle-outline"
             color={colors.prose}
             size={fontSizes['2xl']}

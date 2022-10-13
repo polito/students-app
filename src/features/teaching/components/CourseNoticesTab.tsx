@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import RenderHTML from 'react-native-render-html';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -38,24 +38,19 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               baseStyle={{
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
-                fontFamily: 'Poppins-normal',
+                fontFamily: 'Poppins',
               }}
               source={{ dom }}
-              systemFonts={[
-                'Poppins-bold',
-                'Poppins-bold-italic',
-                'Poppins-normal-italic',
-                'Poppins-normal',
-              ]}
+              systemFonts={['Poppins']}
               tagsStyles={{
                 b: {
-                  fontFamily: 'Poppins-bold',
+                  fontWeight: 'bold',
                 },
                 strong: {
-                  fontFamily: 'Poppins-bold',
+                  fontWeight: 'bold',
                 },
                 i: {
-                  fontFamily: 'Poppins-normal-italic',
+                  fontStyle: 'italic',
                 },
               }}
             />
@@ -86,7 +81,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 )
               }
               trailingItem={
-                <Ionicons
+                <Icon
                   name={
                     notice.open
                       ? 'chevron-down-outline'

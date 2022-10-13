@@ -44,16 +44,17 @@ export const Text = ({
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
-  const fontFamily = `${fontFamilyName}-${weight ?? deafultWeights[variant]}${
-    italic ? '-italic' : ''
-  }`;
 
   return (
     <RNText
       style={[
         {
-          fontFamily,
+          fontFamily: fontFamilyName,
+          fontWeight: weight,
           color: colors[variant],
+        },
+        italic && {
+          fontStyle: 'italic',
         },
         styles[variant],
         style,

@@ -7,8 +7,8 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -187,7 +187,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
                 title={title}
                 separator={false}
                 trailingItem={
-                  <Ionicons
+                  <Icon
                     name={
                       sections[index].isExpanded
                         ? 'chevron-up-outline'

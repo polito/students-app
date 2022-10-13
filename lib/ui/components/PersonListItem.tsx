@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Image, TouchableHighlightProps } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Person } from '@polito-it/api-client/models/Person';
@@ -33,7 +33,7 @@ export const PersonListItem = ({
         person.picture ? (
           <Image source={{ uri: person.picture }} style={pictureStyle} />
         ) : (
-          <Ionicons
+          <Icon
             name="person"
             style={{
               color: colors.secondaryText,

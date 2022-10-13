@@ -1,4 +1,4 @@
 {
   "*.ts?(x)": "eslint --cache --fix",
-  "*.{ts,tsx,css,md}": "prettier --write"
+  "*.{ts,tsx,md}": "prettier --write"
 }

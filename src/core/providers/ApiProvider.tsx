@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-
-import * as SecureStore from 'expo-secure-store';
-import * as SplashScreen from 'expo-splash-screen';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import * as Keychain from 'react-native-keychain';
 
 import { FetchError } from '@polito-it/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
@@ -12,13 +10,9 @@ import {
 } from '@tanstack/react-query';
 
 import { createApiClients } from '../../config/api';
-import {
-  ApiContext,
-  ApiContextProps,
-  SECURE_STORE_TOKEN_KEY,
-} from '../contexts/ApiContext';
+import { ApiContext, ApiContextProps } from '../contexts/ApiContext';
 
-export const ApiProvider = ({ children }) => {
+export const ApiProvider = ({ children }: PropsWithChildren) => {
   const [apiContext, setApiContext] = useState<ApiContextProps>({
     isLogged: null,
     refreshContext: null,
@@ -39,9 +33,18 @@ export const ApiProvider = ({ children }) => {
       });
 
     // Retrieve existing token from SecureStore, if any
-    SecureStore.getItemAsync(SECURE_STORE_TOKEN_KEY).then(token => {
-      refreshContext(token);
-    });
+    Keychain.getGenericPassword()
+      .then(credentials => {
+        let token = null;
+        if (credentials) {
+          token = credentials.password;
+        }
+        refreshContext(token);
+      })
+      .catch(e => {
+        console.log("Keychain couldn't be accessed!", e);
+        refreshContext(null);
+      });
 
     // Handle login status
     onlineManager.setEventListener(setOnline => {
@@ -65,7 +68,6 @@ export const ApiProvider = ({ children }) => {
   // Initialization completed, splash can be hidden
   useEffect(() => {
     if (!apiInitialized.current) {
-      SplashScreen.hideAsync();
       apiInitialized.current = true;
     }
   }, [apiContext]);
@@ -77,9 +79,9 @@ export const ApiProvider = ({ children }) => {
       queries: {
         retry: isEnvProduction,
         refetchOnWindowFocus: isEnvProduction,
-        onError(error: FetchError) {
+        onError(error) {
           // TODO notify query error
-          if (!isEnvProduction) {
+          if (!isEnvProduction && error instanceof FetchError) {
             console.error(error?.cause?.message ?? error.message);
             console.error(JSON.stringify(error));
           }

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
@@ -40,7 +40,7 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('Teaching'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="book" color={color} size={size} />
+            <Icon name="book" color={color} size={size} />
           ),
         }}
       />
@@ -50,7 +50,7 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('Agenda'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" color={color} size={size} />
+            <Icon name="calendar" color={color} size={size} />
           ),
         }}
       />
@@ -61,7 +61,7 @@ export const RootNavigator = () => {
           headerLeft: () => <Logo />,
           tabBarLabel: t('Places'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="location" color={color} size={size} />
+            <Icon name="location" color={color} size={size} />
           ),
         }}
       />
@@ -71,7 +71,7 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('Profile'),
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
+            <Icon name="person" color={color} size={size} />
           ),
         }}
       />

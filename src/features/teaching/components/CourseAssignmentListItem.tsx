@@ -3,8 +3,8 @@ import {
   TouchableHighlight,
   TouchableHighlightProps,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -39,7 +39,7 @@ export const CourseAssignmentListItem = ({
           style={styles.trailingHighlight}
           underlayColor={colors.touchableHighlight}
         >
-          <Ionicons name="ellipsis-vertical" size={24} />
+          <Icon name="ellipsis-vertical" size={24} />
         </TouchableHighlight>
       }
       {...rest}

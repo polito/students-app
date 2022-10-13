@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
@@ -54,7 +54,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         <SectionList loading={teacherQuery.isLoading}>
           <ListItem
             leadingItem={
-              <Ionicons
+              <Icon
                 name="location"
                 style={{ color: colors.secondaryText, marginRight: spacing[4] }}
                 size={fontSizes['2xl']}

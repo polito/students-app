@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, View } from 'react-native';
-
-import { ResizeMode, Video } from 'expo-av';
+import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
@@ -54,12 +53,9 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         source={{
           uri: videoUrl,
         }}
-        posterSource={{
-          uri: coverUrl,
-        }}
+        poster={coverUrl}
         rate={playbackRate}
-        useNativeControls
-        resizeMode={ResizeMode.CONTAIN}
+        resizeMode="contain"
       />
       {speedControls}
     </View>

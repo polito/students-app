@@ -1,15 +1,11 @@
 import { useEffect } from 'react';
 import { Button, Text } from 'react-native';
+import * as Keychain from 'react-native-keychain';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import * as SecureStore from 'expo-secure-store';
 
 import { useQueryClient } from '@tanstack/react-query';
 
-import {
-  SECURE_STORE_TOKEN_KEY,
-  useApiContext,
-} from '../../../core/contexts/ApiContext';
+import { useApiContext } from '../../../core/contexts/ApiContext';
 import { useLogout } from '../../../core/queries/authHooks';
 
 export const HomeScreen = () => {
@@ -19,7 +15,7 @@ export const HomeScreen = () => {
   const client = useQueryClient();
 
   const onSuccessfulLogout = async () => {
-    await SecureStore.deleteItemAsync(SECURE_STORE_TOKEN_KEY);
+    await Keychain.resetGenericPassword();
     await client.invalidateQueries([]);
     refreshContext();
   };

@@ -1,23 +1,57 @@
+build/
+.idea
+.vscode
+.env
+
+# OSX
+#
+.DS_Store
+
+# Xcode
+#
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+ios/.xcode.env.local
+
+# Android/IntelliJ
+#
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+
+# node.js
+#
 node_modules/
-.expo/
-dist/
 npm-debug.*
+
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
 *.orig.*
-web-build/
 
 # ESLint
 .eslintcache
 
-# macOS
-.DS_Store
+# Bundle artifact
+*.jsbundle
 
-# IDEs
-.idea
-.vscode
-
-.env
+# Ruby / CocoaPods
+/ios/Pods/
+/vendor/bundle/
