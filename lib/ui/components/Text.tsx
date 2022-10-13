@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
-import { StyleSheet, Text as RNText, TextProps } from 'react-native';
+import { Text as RNText, StyleSheet, TextProps } from 'react-native';
+
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/theme';

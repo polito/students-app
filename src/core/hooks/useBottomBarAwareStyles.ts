@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 

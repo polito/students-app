@@ -1,8 +1,10 @@
 import {
   Platform,
+  StyleProp,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -19,6 +21,7 @@ interface Props {
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -32,6 +35,7 @@ export const ListItem = ({
   leadingItem,
   trailingItem,
   linkTo,
+  containerStyle,
   onPress,
   ...rest
 }: TouchableHighlightProps & Props) => {
@@ -57,12 +61,15 @@ export const ListItem = ({
       {...rest}
     >
       <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: spacing[5],
-          paddingVertical: spacing[2],
-        }}
+        style={[
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: spacing[5],
+            paddingVertical: spacing[2],
+          },
+          containerStyle,
+        ]}
       >
         {leadingItem}
         <View style={{ flex: 1 }}>

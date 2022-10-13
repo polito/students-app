@@ -1,8 +1,19 @@
+import { useMemo } from 'react';
+
 import {
+  CourseAllOfVcOtherCourses,
+  CourseAllOfVcPreviousYears,
+  CourseDirectory,
+  CourseDirectoryContentInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito-it/api-client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -54,19 +65,93 @@ export const useGetCourses = () => {
 export const useGetCourse = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'overview'], () => {
-    return coursesClient.getCourse({ courseId: courseId });
-  });
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'overview'],
+    () => {
+      return coursesClient.getCourse({ courseId: courseId });
+    },
+    {
+      staleTime: Infinity,
+    },
+  );
 };
 
 export const useGetCourseFiles = (courseId: number) => {
   const coursesClient = useCoursesClient();
+  const client = useQueryClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'files'], () =>
-    coursesClient.getCourseFiles({ courseId: courseId }).then(files => ({
-      data: files.data,
-    })),
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'files'],
+    () =>
+      coursesClient.getCourseFiles({ courseId: courseId }).then(files => ({
+        data: files.data,
+      })),
+    {
+      onSuccess() {
+        return client.invalidateQueries([
+          COURSE_QUERY_KEY,
+          courseId,
+          'directories',
+        ]);
+      },
+    },
   );
+};
+
+export const useGetCourseDirectory = (
+  courseId: number,
+  directoryId: string,
+) => {
+  const filesQuery = useGetCourseFiles(courseId);
+
+  const rootDirectoryContent = filesQuery.data?.data;
+
+  return useQuery(
+    [COURSE_QUERY_KEY, courseId, 'directories', directoryId],
+    () => {
+      const directory = findDirectory(directoryId, rootDirectoryContent);
+
+      return new Promise<CourseDirectory>(resolve => {
+        resolve(directory);
+      });
+    },
+    {
+      enabled: !!rootDirectoryContent,
+    },
+  );
+};
+
+/**
+ * Recursively look for a given directory with a depth-by-depth approach
+ *
+ * @param searchDirectoryId The id of the directory we are looking for
+ * @param directoryContent
+ */
+const findDirectory = (
+  searchDirectoryId: string,
+  directoryContent: CourseDirectoryContentInner[],
+): CourseDirectory => {
+  let result = null;
+  const childDirectories = directoryContent.filter(
+    f => f.type === 'directory',
+  ) as CourseDirectory[];
+
+  let nextDepthFiles = [];
+  for (let i = 0; i < childDirectories.length; i++) {
+    const currentDir = childDirectories[i];
+    if (currentDir.id === searchDirectoryId) {
+      result = currentDir;
+      break;
+    }
+
+    nextDepthFiles = [...nextDepthFiles, currentDir.files];
+  }
+
+  if (!result && nextDepthFiles.length) {
+    result = findDirectory(searchDirectoryId, nextDepthFiles);
+  }
+
+  return result;
 };
 
 export const useGetCourseAssignments = (courseId: number) => {
@@ -118,6 +203,33 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
   return useQuery([COURSE_QUERY_KEY, courseId, 'virtual-classrooms'], () =>
     coursesClient.getCourseVirtualClassrooms({ courseId: courseId }),
   );
+};
+
+export const useGetCourseRelatedVirtualClassrooms = (
+  vcPreviousYears: CourseAllOfVcPreviousYears[],
+  vcOtherCourses: CourseAllOfVcOtherCourses[],
+) => {
+  const coursesClient = useCoursesClient();
+
+  const queries = useQueries({
+    queries: (vcPreviousYears ?? [])
+      .concat(vcOtherCourses ?? [])
+      .map(relatedVC => {
+        return {
+          queryKey: [COURSE_QUERY_KEY, relatedVC.id, 'virtual-classrooms'],
+          queryFn: () =>
+            coursesClient.getCourseVirtualClassrooms({
+              courseId: relatedVC.id,
+            }),
+        };
+      }),
+  });
+
+  const isLoading = useMemo(() => {
+    return queries.some(q => q.isLoading);
+  }, [queries]);
+
+  return { queries, isLoading };
 };
 
 export const useGetCourseVideolectures = (courseId: number) => {

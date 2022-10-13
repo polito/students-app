@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+
 import { Link } from '@react-navigation/native';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
+
 import { useStylesheet } from '../hooks/useStylesheet';
-import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/theme';
 import { Separator } from './Separator';
 import { Text } from './Text';
@@ -11,20 +12,26 @@ import { Text } from './Text';
 interface Props {
   title: string;
   linkTo?: To<any>;
+  trailingItem?: JSX.Element;
+  separator?: boolean;
 }
 
 /**
  * A section title with an optional link to a related
  * screen
  */
-export const SectionHeader = ({ title, linkTo }: Props) => {
-  const { colors } = useTheme();
+export const SectionHeader = ({
+  title,
+  linkTo,
+  separator = true,
+  trailingItem,
+}: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
-      <Separator />
+      {separator && <Separator />}
       <View style={styles.innerContainer}>
         <Text
           variant="title"
@@ -36,11 +43,13 @@ export const SectionHeader = ({ title, linkTo }: Props) => {
         >
           {title}
         </Text>
-        {linkTo && (
-          <Link to={linkTo}>
-            <Text variant="link">{t('See all')}</Text>
-          </Link>
-        )}
+        {trailingItem
+          ? trailingItem
+          : linkTo && (
+              <Link to={linkTo}>
+                <Text variant="link">{t('See all')}</Text>
+              </Link>
+            )}
       </View>
     </View>
   );
