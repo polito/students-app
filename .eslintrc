@@ -1,0 +1,36 @@
+{
+  "root": true,
+  "extends": [
+    "eslint-config-react-typescript",
+    "prettier"
+  ],
+  "plugins": [
+    "unused-imports"
+  ],
+  "env": {
+    "browser": true
+  },
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-use-before-define": "off"
+  }
+}
