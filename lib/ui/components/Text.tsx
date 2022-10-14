@@ -18,7 +18,7 @@ interface Props {
   italic?: boolean;
 }
 
-const deafultWeights = {
+const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   heading: 'bold',
   title: 'semibold',
   headline: 'normal',
@@ -40,17 +40,18 @@ export const Text = ({
   children,
   ...rest
 }: PropsWithChildren<TextProps & Props>) => {
-  const { colors, fontFamilies } = useTheme();
+  const { colors, fontFamilies, fontWeights } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
 
+  const textWeight = fontWeights[weight ?? defaultWeights[variant]];
   return (
     <RNText
       style={[
         {
           fontFamily: fontFamilyName,
-          fontWeight: weight,
+          fontWeight: textWeight,
           color: colors[variant],
         },
         italic && {
@@ -81,4 +82,7 @@ const createStyles = ({ fontSizes }: Theme) =>
       fontSize: fontSizes.xs,
       textTransform: 'uppercase',
     },
+    prose: {},
+    secondaryText: {},
+    link: {},
   });
