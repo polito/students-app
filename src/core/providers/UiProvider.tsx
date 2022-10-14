@@ -3,9 +3,9 @@ import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { fromUiTheme } from '../../utils/navigation-theme';
-import { NavigationContainer } from '../components/NavigationContainer';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';
