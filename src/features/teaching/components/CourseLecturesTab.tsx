@@ -187,12 +187,13 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         sections={sections}
         refreshing={queries.some(q => q.isLoading)}
         onRefresh={() => queries.forEach(q => q.refetch())}
+        stickySectionHeadersEnabled={true}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
           { useNativeDriver: false },
         )}
         ItemSeparatorComponent={IndentedDivider}
-        renderSectionHeader={({ section: { title, index } }) => (
+        renderSectionHeader={({ section: { title, index, isExpanded } }) => (
           <Pressable onPress={() => toggleSection(index)}>
             <View
               style={{
@@ -211,9 +212,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
                 trailingItem={
                   <Icon
                     name={
-                      sections[index].isExpanded
-                        ? 'chevron-up-outline'
-                        : 'chevron-down-outline'
+                      isExpanded ? 'chevron-up-outline' : 'chevron-down-outline'
                     }
                     color={colors.secondaryText}
                     size={fontSizes['2xl']}
