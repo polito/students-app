@@ -47,6 +47,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   return (
     <View>
       <Video
+        controls={true}
         style={{
           height: (width / 16) * 9,
         }}
