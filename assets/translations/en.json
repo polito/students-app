@@ -12,6 +12,7 @@
   "Course guide": "Course guide",
   "Credits": "Credits",
   "Exams": "Exams",
+  "Exam": "Exam",
   "Files": "Files",
   "Final average": "Final average",
   "Info": "Info",
@@ -22,6 +23,7 @@
   "Other courses": "Other courses",
   "Period": "Period",
   "Places": "Places",
+  "Location": "Location",
   "Profile": "Profile",
   "Provisional grades": "Provisional grades",
   "See all": "See all",
@@ -34,6 +36,11 @@
   "Transcript": "Transcript",
   "Upload assignment": "Upload assignment",
   "Video lectures": "Video lectures",
+  "Video lecture": "Video lecture",
   "Virtual classrooms": "Virtual classrooms",
-  "Weighted average": "Weighted average"
+  "Virtual classroom": "Virtual classroom",
+  "Weighted average": "Weighted average",
+  "Course holder": "Course holder",
+  "Book exam": "Book exam",
+  "Exam booked": "Exam booked"
 }

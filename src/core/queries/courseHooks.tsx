@@ -194,7 +194,7 @@ const findDirectory = (
     f => f.type === 'directory',
   ) as CourseDirectory[];
 
-  let nextDepthFiles = [];
+  let nextDepthFiles: CourseDirectoryContentInner[] = [];
   for (let i = 0; i < childDirectories.length; i++) {
     const currentDir = childDirectories[i];
     if (currentDir.id === searchDirectoryId) {
@@ -202,7 +202,7 @@ const findDirectory = (
       break;
     }
 
-    nextDepthFiles = [...nextDepthFiles, currentDir.files];
+    nextDepthFiles = [...nextDepthFiles, ...currentDir.files];
   }
 
   if (!result && nextDepthFiles.length) {

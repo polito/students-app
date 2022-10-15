@@ -6,8 +6,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -104,7 +104,7 @@ export const ListItem = ({
           )}
         </View>
         {linkTo && Platform.OS === 'ios' ? (
-          <Ionicons
+          <Icon
             name="chevron-forward-outline"
             color={colors.secondaryText}
             size={fontSizes['2xl']}

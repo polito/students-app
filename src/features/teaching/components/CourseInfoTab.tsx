@@ -42,7 +42,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   useEffect(() => {
     if (isStaffLoading) return;
 
-    const staffData = [];
+    const staffData: StaffMember[] = [];
     const teacherId = courseQuery.data.data.teacherId;
     courseQuery.data.data.staff.forEach(s =>
       staffData.push({

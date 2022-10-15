@@ -11,8 +11,6 @@ import {
   StudentApi,
 } from '@polito-it/api-client';
 
-export const SECURE_STORE_TOKEN_KEY = 'token';
-
 export interface ApiContextProps {
   isLogged: boolean;
   refreshContext: (token?: string) => void;

@@ -5,8 +5,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -29,9 +29,9 @@ export const FileListItem = ({
     <ListItem
       leadingItem={
         <View>
-          <Ionicons name="document-outline" size={24} style={styles.fileIcon} />
+          <Icon name="document-outline" size={24} style={styles.fileIcon} />
           {isDownloaded && (
-            <Ionicons
+            <Icon
               name="checkmark-circle"
               size={20}
               style={styles.downloadedIcon}

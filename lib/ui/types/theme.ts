@@ -2,28 +2,7 @@ import { TextStyle } from 'react-native';
 
 export interface Theme {
   dark: boolean;
-  colors: Record<string, string | ColorPalette> & {
-    background: string;
-    surface: string;
-    heading: string;
-    title: string;
-    prose: string;
-    headline: string;
-    secondaryText: string;
-    caption: string;
-    link: string;
-    divider: string;
-    touchableHighlight: string;
-    text: ColorPalette;
-    primary: ColorPalette;
-    secondary: ColorPalette;
-    danger: ColorPalette;
-    success: ColorPalette;
-    error: ColorPalette;
-    warning: ColorPalette;
-    muted: ColorPalette;
-    info: ColorPalette;
-  };
+  colors: Colors;
   shapes: {
     sm: number;
     md: number;
@@ -91,6 +70,29 @@ export interface Theme {
     black?: TextStyle['fontWeight'];
   };
 }
+
+export type Colors = Record<string, string | ColorPalette> & {
+  background: string;
+  surface: string;
+  heading: string;
+  title: string;
+  prose: string;
+  headline: string;
+  secondaryText: string;
+  caption: string;
+  link: string;
+  divider: string;
+  touchableHighlight: string;
+  text: ColorPalette;
+  primary: ColorPalette;
+  secondary: ColorPalette;
+  danger: ColorPalette;
+  success: ColorPalette;
+  error: ColorPalette;
+  warning: ColorPalette;
+  muted: ColorPalette;
+  info: ColorPalette;
+};
 
 export interface ColorPalette {
   50: string;

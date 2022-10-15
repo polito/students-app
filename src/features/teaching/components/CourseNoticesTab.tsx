@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
-import RenderHTML from 'react-native-render-html';
+import RenderHTML, { Document } from 'react-native-render-html';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -27,7 +27,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
         const { id, content, publishedAt } = notice;
         const dom = parseDocument(
           content.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-        );
+        ) as Document;
         const title = innerText(dom.children as any[]);
         return {
           id,
@@ -38,8 +38,21 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               baseStyle={{
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
+                fontFamily: 'Poppins',
               }}
               source={{ dom }}
+              systemFonts={['Poppins']}
+              tagsStyles={{
+                b: {
+                  fontWeight: 'bold',
+                },
+                strong: {
+                  fontWeight: 'bold',
+                },
+                i: {
+                  fontStyle: 'italic',
+                },
+              }}
             />
           ),
           open: false,
@@ -68,7 +81,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 )
               }
               trailingItem={
-                <Ionicons
+                <Icon
                   name={
                     notice.open
                       ? 'chevron-down-outline'
