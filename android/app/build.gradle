@@ -79,6 +79,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
  */
 
 project.ext.react = [
+    entryFile: "index.tsx",
     enableHermes: true,  // clean and rebuild if changing
 ]
 
