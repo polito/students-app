@@ -5,7 +5,6 @@ import { ScrollView } from 'react-native';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
@@ -23,13 +22,12 @@ type Props = NativeStackScreenProps<
 export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   const { courseId, lectureId } = route.params;
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const virtualClassroomQuery = useGetCourseVirtualClassrooms(courseId);
   const lecture = virtualClassroomQuery.data?.data.find(
     l => l.id === lectureId,
   );
-  const teacherQuery = useGetPerson(`${lecture.teacherId}`);
+  const teacherQuery = useGetPerson(lecture.teacherId);
 
   return (
     <ScrollView

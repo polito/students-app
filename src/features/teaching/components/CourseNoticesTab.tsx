@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
-import RenderHTML from 'react-native-render-html';
+import RenderHTML, { Document } from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { List } from '@lib/ui/components/List';
@@ -27,7 +27,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
         const { id, content, publishedAt } = notice;
         const dom = parseDocument(
           content.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-        );
+        ) as Document;
         const title = innerText(dom.children as any[]);
         return {
           id,

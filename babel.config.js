@@ -7,6 +7,7 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             '@lib': './lib',
           },
         },
