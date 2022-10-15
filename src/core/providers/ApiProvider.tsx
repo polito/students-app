@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
 
 import { FetchError } from '@polito-it/api-client/runtime';
@@ -11,6 +11,7 @@ import {
 
 import { createApiClients } from '../../config/api';
 import { ApiContext, ApiContextProps } from '../contexts/ApiContext';
+import { useSplashContext } from '../contexts/SplashContext';
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const [apiContext, setApiContext] = useState<ApiContextProps>({
@@ -19,7 +20,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     clients: {},
   });
 
-  const apiInitialized = useRef<boolean>(false);
+  const splashContext = useSplashContext();
 
   useEffect(() => {
     // update ApiContext based on the provided token
@@ -67,8 +68,8 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   // Initialization completed, splash can be hidden
   useEffect(() => {
-    if (!apiInitialized.current) {
-      apiInitialized.current = true;
+    if (!splashContext.isAppLoaded) {
+      splashContext.setIsAppLoaded(true);
     }
   }, [apiContext]);
 
@@ -95,7 +96,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   return (
     <ApiContext.Provider value={apiContext}>
       <QueryClientProvider client={queryClient}>
-        {apiInitialized.current && children}
+        {splashContext.isAppLoaded && children}
       </QueryClientProvider>
     </ApiContext.Provider>
   );
