@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   CourseAllOfVcOtherCourses,
   CourseAllOfVcPreviousYears,
   CourseDirectory,
   CourseDirectoryContentInner,
+  CourseFileOverview,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito-it/api-client';
@@ -76,27 +78,24 @@ export const useGetCourse = (courseId: number) => {
   );
 };
 
+const courseFilesStaleTime = 60000; // 1 minute
+
 export const useGetCourseFiles = (courseId: number) => {
   const coursesClient = useCoursesClient();
   const client = useQueryClient();
 
   return useQuery(
     [COURSE_QUERY_KEY, courseId, 'files'],
-    () =>
-      coursesClient.getCourseFiles({ courseId: courseId }).then(files => ({
-        data: files.data,
-      })),
+    () => {
+      return coursesClient.getCourseFiles({ courseId: courseId });
+    },
     {
-      onSuccess() {
-        return client
-          .invalidateQueries([COURSE_QUERY_KEY, courseId, 'directories'])
-          .then(() =>
-            client.invalidateQueries([
-              COURSE_QUERY_KEY,
-              courseId,
-              'recentFiles',
-            ]),
-          );
+      staleTime: courseFilesStaleTime,
+      onSuccess: () => {
+        return Promise.all([
+          client.invalidateQueries([COURSE_QUERY_KEY, courseId, 'recentFiles']),
+          client.invalidateQueries([COURSE_QUERY_KEY, courseId, 'directories']),
+        ]);
       },
     },
   );
@@ -105,14 +104,47 @@ export const useGetCourseFiles = (courseId: number) => {
 export const useGetCourseFilesRecent = (courseId: number) => {
   const filesQuery = useGetCourseFiles(courseId);
 
-  return useQuery(
+  const recentFilesQuery = useQuery(
     [COURSE_QUERY_KEY, courseId, 'recentFiles'],
-    () => {
-      return filesQuery.data.data;
-    },
+    () => sortRecentFiles(filesQuery.data.data),
     {
-      enabled: !!filesQuery.data,
+      enabled: !!filesQuery.data && !filesQuery.isRefetching,
+      staleTime: courseFilesStaleTime,
     },
+  );
+
+  return {
+    ...recentFilesQuery,
+    refetch: () => filesQuery.refetch().then(recentFilesQuery.refetch),
+  };
+};
+
+/**
+ * Extract a flat array of files contained into the given directory tree
+ */
+const flattenFiles = (
+  directoryContent: CourseDirectoryContentInner[],
+): CourseFileOverview[] => {
+  const result = [];
+  directoryContent?.forEach(item => {
+    if (item.type === 'file') {
+      result.push(item);
+    } else {
+      result.push(...flattenFiles(item.files));
+    }
+  });
+  return result;
+};
+
+/**
+ * Extract files from folders and sort them by decreasing createdAt
+ */
+const sortRecentFiles = (
+  directoryContent: CourseDirectoryContentInner[],
+): CourseFileOverview[] => {
+  const flatFiles = flattenFiles(directoryContent);
+  return flatFiles.sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
   );
 };
 
@@ -120,6 +152,7 @@ export const useGetCourseDirectory = (
   courseId: number,
   directoryId: string,
 ) => {
+  const { t } = useTranslation();
   const filesQuery = useGetCourseFiles(courseId);
 
   const rootDirectoryContent = filesQuery.data?.data;
@@ -127,6 +160,12 @@ export const useGetCourseDirectory = (
   return useQuery(
     [COURSE_QUERY_KEY, courseId, 'directories', directoryId],
     () => {
+      if (!directoryId) {
+        // Root directory
+        return new Promise<CourseDirectory>(resolve => {
+          resolve({ name: t('Files'), files: rootDirectoryContent });
+        });
+      }
       const directory = findDirectory(directoryId, rootDirectoryContent);
 
       return new Promise<CourseDirectory>(resolve => {
@@ -134,7 +173,8 @@ export const useGetCourseDirectory = (
       });
     },
     {
-      enabled: !!rootDirectoryContent,
+      enabled: !!rootDirectoryContent && !filesQuery.isRefetching,
+      staleTime: courseFilesStaleTime,
     },
   );
 };

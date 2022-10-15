@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   StyleSheet,
   TouchableHighlight,
@@ -24,14 +25,16 @@ export const CourseAssignmentListItem = ({
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const styles = useStylesheet(createItemStyles);
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <FileListItem
       onPress={() => {}}
       title={item.description}
-      subtitle={`Uploaded on ${formatFileDate(
-        item.uploadedAt,
-      )} - ${formatFileSize(item.sizeInKiloBytes)}`}
+      subtitle={t('CourseFileListItem.Subtitle', {
+        date: formatFileDate(item.uploadedAt),
+        size: formatFileSize(item.sizeInKiloBytes),
+      })}
       containerStyle={styles.listItemContainer}
       trailingItem={
         <TouchableHighlight

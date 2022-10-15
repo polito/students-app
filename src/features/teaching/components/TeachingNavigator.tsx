@@ -7,9 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Logo } from '../../../core/components/Logo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
-import { CourseDirectoryRootScreen } from '../screens/CourseDirectoryRootScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
-import { CourseDirectorySearchScreen } from '../screens/CourseDirectorySearchScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseScreen } from '../screens/CourseScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
@@ -24,9 +22,7 @@ export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
-  CourseDirectory: { courseId: number; directoryId: string };
-  CourseDirectoryRoot: { courseId: number };
-  CourseDirectorySearch: { courseId: number; search?: string };
+  CourseDirectory: { courseId: number; directoryId?: string };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
@@ -90,35 +86,7 @@ export const TeachingNavigator = () => {
           headerBackTitleVisible: false,
           headerLargeTitle: false,
           headerSearchBarOptions: {
-            obscureBackground: true,
             hideWhenScrolling: false,
-            onSearchButtonPress: () => {},
-          },
-        }}
-      />
-      <Stack.Screen
-        name="CourseDirectoryRoot"
-        component={CourseDirectoryRootScreen}
-        options={{
-          title: t('Files'),
-          headerBackTitleVisible: false,
-          headerLargeTitle: false,
-          headerSearchBarOptions: {
-            obscureBackground: true,
-            hideWhenScrolling: false,
-            onSearchButtonPress: () => {},
-          },
-        }}
-      />
-      <Stack.Screen
-        name="CourseDirectorySearch"
-        component={CourseDirectorySearchScreen}
-        options={{
-          headerBackTitleVisible: false,
-          headerLargeTitle: false,
-          headerSearchBarOptions: {
-            obscureBackground: true,
-            onSearchButtonPress: () => {},
           },
         }}
       />
