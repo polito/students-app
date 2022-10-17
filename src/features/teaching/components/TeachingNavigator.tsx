@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../../core/components/Logo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
@@ -27,6 +28,7 @@ export type TeachingStackParamList = {
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
   CourseAssignmentUpload: { courseId: number };
+  CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
   Exams: undefined;
   Exam: { id: number };
   Transcript: undefined;
@@ -124,6 +126,14 @@ export const TeachingNavigator = () => {
         component={CourseAssignmentUploadScreen}
         options={{
           headerBackTitle: t('Course'),
+          headerTitle: t('Upload assignment'),
+        }}
+      />
+      <Stack.Screen
+        name="CourseAssignmentUploadConfirmation"
+        component={CourseAssignmentUploadConfirmationScreen}
+        options={{
+          headerBackTitle: t('Pick file'),
           headerTitle: t('Upload assignment'),
         }}
       />
