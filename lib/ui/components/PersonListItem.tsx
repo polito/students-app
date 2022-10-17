@@ -1,6 +1,7 @@
-import { Image, TouchableHighlightProps, View } from 'react-native';
+import { useMemo } from 'react';
+import { Image, TouchableHighlightProps } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Person } from '@polito-it/api-client/models/Person';
@@ -14,14 +15,17 @@ export const PersonListItem = ({
   person,
   ...rest
 }: TouchableHighlightProps & Props) => {
-  const { colors } = useTheme();
-
-  const pictureStyle = {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 20,
-  };
+  const { colors, spacing, fontSizes } = useTheme();
+  const pictureStyle = useMemo(
+    () => ({
+      width: 38,
+      height: 38,
+      borderRadius: 20,
+      marginRight: spacing[2],
+      marginLeft: -spacing[2] + 1,
+    }),
+    [spacing],
+  );
 
   return (
     <ListItem
@@ -29,19 +33,14 @@ export const PersonListItem = ({
         person.picture ? (
           <Image source={{ uri: person.picture }} style={pictureStyle} />
         ) : (
-          <View
-            style={[
-              pictureStyle,
-              {
-                backgroundColor: colors.background,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              },
-            ]}
-          >
-            <Ionicons name="person-outline" color={colors.heading} size={20} />
-          </View>
+          <Icon
+            name="person"
+            style={{
+              color: colors.secondaryText,
+              marginRight: spacing[4],
+            }}
+            size={fontSizes['2xl']}
+          />
         )
       }
       title={`${person.firstName} ${person.lastName}`}

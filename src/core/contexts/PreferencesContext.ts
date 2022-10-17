@@ -1,11 +1,11 @@
 import { createContext, useContext } from 'react';
 
 export interface PreferencesContextProps {
-  colorScheme: 'light' | 'dark';
+  colorScheme?: 'light' | 'dark';
   courses: {
     [courseId: number]: CoursePreferencesProps;
   };
-  language: 'it' | 'en';
+  language?: 'it' | 'en';
   updatePreference: <K extends keyof PreferencesContextProps>(
     key: K,
     value: PreferencesContextProps[K],

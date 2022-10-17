@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,7 +9,7 @@ import {
   storageObjectKeys,
 } from '../contexts/PreferencesContext';
 
-export const PreferencesProvider = ({ children }) => {
+export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
       colorScheme: null,
@@ -47,10 +47,11 @@ export const PreferencesProvider = ({ children }) => {
   // Initialize preferences from AsyncStorage
   useEffect(() => {
     AsyncStorage.multiGet(storageKeys).then(storagePreferences => {
-      const preferences = {
+      const preferences: Partial<PreferencesContextProps> = {
         updatePreference,
       };
       storagePreferences.map(([key, value]) => {
+        // @ts-expect-error temporary type fix
         preferences[key] = storageObjectKeys.includes(key)
           ? JSON.parse(value) ?? {}
           : value;

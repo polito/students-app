@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Image, TextInput, View } from 'react-native';
+import * as Keychain from 'react-native-keychain';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import * as SecureStore from 'expo-secure-store';
 
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { SECURE_STORE_TOKEN_KEY, useApiContext } from '../contexts/ApiContext';
+import { useApiContext } from '../contexts/ApiContext';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
@@ -26,14 +25,14 @@ export const LoginScreen = () => {
     handleLogin({ username, password });
   };
 
-  const onSuccessfulLogin = async token => {
-    await SecureStore.setItemAsync(SECURE_STORE_TOKEN_KEY, token);
+  const onSuccessfulLogin = async (clientId: string, token: string) => {
+    await Keychain.setGenericPassword(clientId, token);
     refreshContext(token);
   };
 
   useEffect(() => {
     if (data?.data.token) {
-      onSuccessfulLogin(data.data.token).catch(e => {
+      onSuccessfulLogin(data.data.clientId, data.data.token).catch(e => {
         // TODO handle error
       });
     }

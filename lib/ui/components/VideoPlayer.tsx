@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
-
-import { ResizeMode, Video } from 'expo-av';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
+import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
@@ -22,8 +21,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [playbackRate, setPlaybackRate] = useState(1);
 
   const speedControls = useMemo(() => {
-    // if (parseInt(Platform.Version as string, 10) >= 16)
-    // return; // Speed controls are included in native player since iOS 16
+    if (parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
 
     return (
       <View style={styles.speedSection}>
@@ -48,18 +46,16 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   return (
     <View>
       <Video
+        controls={true}
         style={{
           height: (width / 16) * 9,
         }}
         source={{
           uri: videoUrl,
         }}
-        posterSource={{
-          uri: coverUrl,
-        }}
+        poster={coverUrl}
         rate={playbackRate}
-        useNativeControls
-        resizeMode={ResizeMode.CONTAIN}
+        resizeMode="contain"
       />
       {speedControls}
     </View>

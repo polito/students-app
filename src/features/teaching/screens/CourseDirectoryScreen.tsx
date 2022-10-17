@@ -1,12 +1,19 @@
-import { useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, StyleSheet } from 'react-native';
 
+import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/theme';
 import { CourseDirectory, CourseFileOverview } from '@polito-it/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetCourseDirectory } from '../../../core/queries/courseHooks';
+import {
+  useGetCourseDirectory,
+  useGetCourseFilesRecent,
+} from '../../../core/queries/courseHooks';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -17,20 +24,56 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { courseId, directoryId } = route.params;
 
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
+  const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const [directoryContent, setDirectoryContent] = useState([]);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [isFiltered, setIsFiltered] = useState(false);
+
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
 
   useEffect(() => {
-    if (!directoryId || !directoryQuery.data) return;
+    navigation.setOptions({
+      headerSearchBarOptions: {
+        onChangeText: e => setSearchFilter(e.nativeEvent.text),
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!directoryQuery.data) return;
 
     navigation.setOptions({
       headerTitle: directoryQuery.data.name,
     });
+    setDirectoryContent(directoryQuery.data.files);
   }, [directoryQuery.data]);
+
+  useEffect(() => {
+    // If the search filter is empty
+    if (!searchFilter) {
+      // If no filter was applied
+      if (!isFiltered) return;
+
+      // Else, reset screen directory content
+      setDirectoryContent(directoryQuery.data.files);
+      setIsFiltered(false);
+      return;
+    }
+
+    // Search filter is nonempty
+    setIsFiltered(true);
+    setDirectoryContent(
+      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
+    );
+  }, [searchFilter]);
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
     <FlatList
-      data={directoryQuery.data?.files}
+      contentInsetAdjustmentBehavior="automatic"
+      data={directoryContent}
       keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
       renderItem={({ item, index }) =>
         item.type === 'directory' ? (
@@ -41,7 +84,19 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       }
       refreshControl={createRefreshControl(directoryQuery)}
       refreshing={directoryQuery.isLoading}
-      style={bottomBarAwareStyles}
+      contentContainerStyle={bottomBarAwareStyles}
+      ListEmptyComponent={
+        <Text style={styles.noResultText}>
+          {t('CourseDirectoryScreen.EmptySearch')}
+        </Text>
+      }
     />
   );
 };
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    noResultText: {
+      padding: spacing[4],
+    },
+  });

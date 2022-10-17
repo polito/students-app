@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   NativeStackNavigationProp,
@@ -10,6 +10,7 @@ import {
 } from '@react-navigation/native-stack';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
@@ -26,17 +27,18 @@ export type CourseTabProps = {
   navigation?: NativeStackNavigationProp<TeachingStackParamList, 'Course'>;
 };
 
-export const CourseScreen = ({ navigation, route }: Props) => {
+export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const { courses } = useContext(PreferencesContext);
   const { id, courseName } = route.params;
+  useScreenTitle(courseName);
 
   navigation.setOptions({
     headerRight: () => (
       <CoursePreferencesMenu courseId={id} title={t('Course preferences')}>
         <TouchableOpacity>
-          <Ionicons
+          <Icon
             name={Platform.select({
               ios: 'ellipsis-horizontal-circle-outline',
               android: 'ellipsis-vertical-outline',

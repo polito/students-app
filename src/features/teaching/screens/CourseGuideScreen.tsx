@@ -32,11 +32,8 @@ export const CourseGuideScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{
-        paddingVertical: spacing[5],
-      }}
+      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(guideQuery)}
-      style={bottomBarAwareStyles}
     >
       {guideSections.map((section, i) => (
         <Section key={i}>

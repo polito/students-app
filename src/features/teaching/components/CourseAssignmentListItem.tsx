@@ -1,10 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import {
   StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -24,14 +25,16 @@ export const CourseAssignmentListItem = ({
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const styles = useStylesheet(createItemStyles);
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <FileListItem
       onPress={() => {}}
       title={item.description}
-      subtitle={`Uploaded on ${formatFileDate(
-        item.uploadedAt,
-      )} - ${formatFileSize(item.sizeInKiloBytes)}`}
+      subtitle={t('CourseFileListItem.Subtitle', {
+        date: formatFileDate(item.uploadedAt),
+        size: formatFileSize(item.sizeInKiloBytes),
+      })}
       containerStyle={styles.listItemContainer}
       trailingItem={
         <TouchableHighlight
@@ -39,7 +42,7 @@ export const CourseAssignmentListItem = ({
           style={styles.trailingHighlight}
           underlayColor={colors.touchableHighlight}
         >
-          <Ionicons name="ellipsis-vertical" size={24} />
+          <Icon name="ellipsis-vertical" size={24} />
         </TouchableHighlight>
       }
       {...rest}

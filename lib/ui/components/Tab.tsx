@@ -51,7 +51,7 @@ export const Tab = ({
       color(colors.muted[dark ? 800 : 300])
         .alpha(0.6)
         .toString(),
-    [dark, colors],
+    [selected, dark, colors],
   );
 
   return (

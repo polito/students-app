@@ -7,12 +7,14 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Ionicons } from '@expo/vector-icons';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { VideoLecture } from '@polito-it/api-client';
+import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito-it/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -24,6 +26,18 @@ import {
 } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
+
+type SectionLectures =
+  | GetCourseVirtualClassrooms200ResponseDataInner[]
+  | VideoLecture[];
+
+interface Section {
+  index: number;
+  title: string;
+  data: SectionLectures;
+  type: 'VirtualClassroom' | 'VideoLecture';
+  isExpanded: boolean;
+}
 
 export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
@@ -47,97 +61,105 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     ...relatedVCQueries,
   ];
 
-  const [sections, setSections] = useState([]);
-  const [lectures, setLectures] = useState([]);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [lectures, setLectures] = useState<SectionLectures[]>([]);
 
-  const [loadedSectionsCount, setLoadedSectionsCount] = useState(0);
+  const [loadedLectureQueriesCount, setLoadedLectureQueriesCount] = useState(0);
+  const onLectureQueryLoaded = () => setLoadedLectureQueriesCount(c => ++c);
 
-  const onSectionLoaded = () => setLoadedSectionsCount(c => ++c);
+  const setSectionLectures = (
+    sectionIndex: number,
+    sectionLectures: SectionLectures,
+  ) =>
+    setLectures(oldL =>
+      Object.assign([], oldL, { [sectionIndex]: sectionLectures }),
+    );
+
   const sectionListRef = useRef(null);
 
   useEffect(() => {
     if (virtualClassroomsQuery.isLoading) return;
 
-    setLectures(oldL => {
-      oldL[0] = virtualClassroomsQuery.data.data;
-      return oldL;
-    });
-
-    setSections(oldS => {
-      oldS[0] = {
-        index: 0,
-        title: t('Virtual classrooms'),
-        data: virtualClassroomsQuery.data.data,
-        type: 'VirtualClassroom',
-        isExpanded: true,
-      };
-
-      return oldS;
-    });
-
-    onSectionLoaded();
+    if (virtualClassroomsQuery.data.data) {
+      setSectionLectures(0, virtualClassroomsQuery.data.data);
+    }
+    onLectureQueryLoaded();
   }, [virtualClassroomsQuery.isLoading]);
 
   useEffect(() => {
     if (videolecturesQuery.isLoading) return;
 
-    if (!videolecturesQuery.data.data) {
-      onSectionLoaded();
-      return;
+    if (videolecturesQuery.data.data) {
+      setSectionLectures(1, videolecturesQuery.data.data);
     }
-
-    setLectures(oldL => {
-      oldL[1] = videolecturesQuery.data.data;
-      return oldL;
-    });
-
-    setSections(oldS => {
-      oldS[1] = {
-        index: 1,
-        title: t('Video lectures'),
-        data: [],
-        type: 'VideoLecture',
-        isExpanded: false,
-      };
-
-      return oldS;
-    });
-
-    onSectionLoaded();
+    onLectureQueryLoaded();
   }, [videolecturesQuery.isLoading]);
 
   useEffect(() => {
     if (courseQuery.isLoading || areRelatedLoading) return;
 
-    setLectures(oldL => {
-      relatedVCQueries.forEach((relatedQuery, index) => {
-        oldL[2 + index] = relatedQuery.data.data;
-      });
-      return oldL;
+    relatedVCQueries.forEach((relatedQuery, index) => {
+      if (relatedQuery.data.data) {
+        setSectionLectures(2 + index, relatedQuery.data.data);
+      }
     });
 
-    setSections(oldS => {
-      const sectionTitles = vcPreviousYears
-        .map(py => `${t('Virtual classrooms')} - ${py.year}`)
-        .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
-
-      sectionTitles.forEach((title, index) => {
-        oldS[2 + index] = {
-          index: 2 + index,
-          title,
-          data: [],
-          type: 'VirtualClassroom',
-          isExpanded: false,
-        };
-      });
-
-      return oldS;
-    });
-
-    onSectionLoaded();
+    onLectureQueryLoaded();
   }, [courseQuery.isLoading, areRelatedLoading]);
 
-  const toggleSection = index => {
+  // After all lectures have been retrieve, only render sections containing lectures (the first one should be open)
+  useEffect(() => {
+    if (loadedLectureQueriesCount < 3) return;
+
+    const availableSections: Section[] = [
+      {
+        index: 0,
+        title: t('Virtual classrooms'),
+        data: [],
+        type: 'VirtualClassroom',
+        isExpanded: false,
+      },
+      {
+        index: 1,
+        title: t('Video lectures'),
+        data: [],
+        type: 'VideoLecture',
+        isExpanded: false,
+      },
+    ];
+
+    const sectionTitles = vcPreviousYears
+      .map(py => `${t('Virtual classrooms')} - ${py.year}`)
+      .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
+
+    sectionTitles.forEach((title, index) => {
+      availableSections[2 + index] = {
+        index: 2 + index,
+        title,
+        data: [],
+        type: 'VirtualClassroom',
+        isExpanded: false,
+      };
+    });
+
+    const renderedSections: Section[] = [];
+    let shouldExpand = true;
+    availableSections.forEach(section => {
+      if (section.index in lectures) {
+        renderedSections.push({
+          ...section,
+          isExpanded: shouldExpand,
+          data: shouldExpand ? lectures[section.index] : [],
+        });
+
+        if (shouldExpand) shouldExpand = false;
+      }
+    });
+
+    setSections(renderedSections);
+  }, [loadedLectureQueriesCount]);
+
+  const toggleSection = (index: number) => {
     setSections(oldS => {
       const wasSectionCollapsed = !oldS[index].isExpanded;
 
@@ -153,45 +175,46 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
           itemIndex: 0,
         });
       }
-      return oldS;
+      return [...oldS];
     });
   };
 
   return (
-    loadedSectionsCount === 3 && (
+    sections.length > 0 && (
       <SectionList
         ref={sectionListRef}
         contentContainerStyle={bottomBarAwareStyles}
         sections={sections}
         refreshing={queries.some(q => q.isLoading)}
         onRefresh={() => queries.forEach(q => q.refetch())}
+        stickySectionHeadersEnabled={true}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
           { useNativeDriver: false },
         )}
         ItemSeparatorComponent={IndentedDivider}
-        renderSectionHeader={({ section: { title, index } }) => (
+        renderSectionHeader={({ section: { title, index, isExpanded } }) => (
           <Pressable onPress={() => toggleSection(index)}>
             <View
               style={{
                 paddingVertical: spacing[2],
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderColor: colors.divider,
+                ...(index > 0 && sections[index - 1]?.isExpanded
+                  ? {
+                      borderTopWidth: StyleSheet.hairlineWidth,
+                    }
+                  : {}),
               }}
             >
-              <TranslucentView
-                style={{
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  borderBottomColor: colors.divider,
-                }}
-              />
+              <TranslucentView />
               <SectionHeader
                 title={title}
                 separator={false}
                 trailingItem={
-                  <Ionicons
+                  <Icon
                     name={
-                      sections[index].isExpanded
-                        ? 'chevron-up-outline'
-                        : 'chevron-down-outline'
+                      isExpanded ? 'chevron-up-outline' : 'chevron-down-outline'
                     }
                     color={colors.secondaryText}
                     size={fontSizes['2xl']}
