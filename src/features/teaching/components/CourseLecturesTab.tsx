@@ -198,14 +198,16 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
             <View
               style={{
                 paddingVertical: spacing[2],
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderColor: colors.divider,
+                ...(index > 0 && sections[index - 1]?.isExpanded
+                  ? {
+                      borderTopWidth: StyleSheet.hairlineWidth,
+                    }
+                  : {}),
               }}
             >
-              <TranslucentView
-                style={{
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  borderBottomColor: colors.divider,
-                }}
-              />
+              <TranslucentView />
               <SectionHeader
                 title={title}
                 separator={false}
