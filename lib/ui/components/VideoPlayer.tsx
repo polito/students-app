@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
@@ -21,8 +21,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [playbackRate, setPlaybackRate] = useState(1);
 
   const speedControls = useMemo(() => {
-    // if (parseInt(Platform.Version as string, 10) >= 16)
-    // return; // Speed controls are included in native player since iOS 16
+    if (parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
 
     return (
       <View style={styles.speedSection}>
