@@ -2,7 +2,6 @@
 
 Politecnico di Torino's official mobile application for students.
 
-[![Expo](https://img.shields.io/badge/expo-1C1E24?logo=expo&logoColor=#D04A37)](https://expo.dev/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen)](https://opensource.org/licenses/MIT)
 
 ## Install
@@ -24,7 +23,7 @@ for more details.
 $ git clone https://github.com/polito-it/students-app.git
 $ cd students-app
 $ npm install
-$ npx expo build:[android|ios]
+$ npm run ios/android
 ```
 
 ## Bug reports

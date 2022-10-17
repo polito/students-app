@@ -31,13 +31,11 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 
 ## Npm scripts
 
-| Name    | Description                                                                     |
-| ------- | ------------------------------------------------------------------------------- |
-| start   | Start a local dev server for the app                                            |
-| android | Opens your app in Expo Go on a connected Android device                         |
-| ios     | Opens your app in Expo Go in a currently running iOS simulator on your computer |
-| web     | Opens your app in a web browser                                                 |
-| eject   | Create native iOS and Android project files before building natively            |
+| Name    | Description                               |
+| ------- | ----------------------------------------- |
+| start   | Start a local dev server for the app      |
+| android | Build and start the app on Android device |
+| ios     | Build and start the app on iOS device     |
 
 ## Code style
 
