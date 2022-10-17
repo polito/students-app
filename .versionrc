@@ -1,7 +1,3 @@
 {
-  "bumpFiles": ["package.json",
-    {
-      "filename": "app.json",
-      "updater": "./scripts/expo-version.updater.js"
-    }]
+  "bumpFiles": ["package.json"]
 }
