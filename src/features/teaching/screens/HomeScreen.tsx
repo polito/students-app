@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Platform,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
@@ -23,6 +22,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import color from 'color';
 
+import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
@@ -46,16 +46,11 @@ export const HomeScreen = ({ navigation }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={() => {
-            coursesQuery.refetch();
-            examsQuery.refetch();
-            studentQuery.refetch();
-          }}
-        />
-      }
+      refreshControl={createRefreshControl(
+        coursesQuery,
+        examsQuery,
+        studentQuery,
+      )}
     >
       <View style={styles.sectionsContainer}>
         <Section>
