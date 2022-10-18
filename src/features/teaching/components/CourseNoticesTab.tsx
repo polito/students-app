@@ -42,17 +42,6 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               }}
               source={{ dom }}
               systemFonts={['Poppins']}
-              tagsStyles={{
-                b: {
-                  fontWeight: 'bold',
-                },
-                strong: {
-                  fontWeight: 'bold',
-                },
-                i: {
-                  fontStyle: 'italic',
-                },
-              }}
             />
           ),
           open: false,
