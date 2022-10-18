@@ -20,6 +20,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { MenuView } from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import color from 'color';
@@ -29,7 +30,7 @@ import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareSt
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { CoursePreferencesMenu } from '../components/CoursePreferencesMenu';
+import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
@@ -66,13 +67,32 @@ export const HomeScreen = ({ navigation }: Props) => {
           <SectionHeader title={t('Courses')} linkTo={{ screen: 'Courses' }} />
           <SectionList loading={coursesQuery.isLoading}>
             {coursesQuery.data?.data
+              .sort(
+                (a, b) =>
+                  preferences.courses[a.id]?.order -
+                  preferences.courses[b.id]?.order,
+              )
               .filter(c => !preferences.courses[c.id]?.isHidden)
               .map(course => (
-                <CoursePreferencesMenu
+                <MenuView
                   key={course.shortcode}
-                  courseId={course.id}
                   shouldOpenOnLongPress={true}
                   title={t('Course preferences')}
+                  actions={[
+                    {
+                      title: t('Hide course from home screen'),
+                      image: 'eye.slash',
+                    },
+                  ]}
+                  onPressAction={() => {
+                    preferences.updatePreference('courses', {
+                      ...preferences.courses,
+                      [course.id]: {
+                        ...preferences.courses[course.id],
+                        isHidden: true,
+                      },
+                    });
+                  }}
                 >
                   <ListItem
                     linkTo={{
@@ -82,20 +102,12 @@ export const HomeScreen = ({ navigation }: Props) => {
                     title={course.name}
                     subtitle={`${t('Period')} ${course.teachingPeriod}`}
                     leadingItem={
-                      <View
-                        style={{
-                          width: 20,
-                          height: 20,
-                          marginRight: spacing[3],
-                          borderRadius: 10,
-                          backgroundColor:
-                            preferences.courses[course.id]?.color ??
-                            colors.primary[400],
-                        }}
+                      <CourseIcon
+                        color={preferences.courses[course.id]?.color}
                       />
                     }
                   />
-                </CoursePreferencesMenu>
+                </MenuView>
               ))}
           </SectionList>
         </Section>

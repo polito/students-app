@@ -9,6 +9,7 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
+import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseScreen } from '../screens/CourseScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
@@ -22,6 +23,7 @@ export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
+  CoursePreferences: { courseId: number };
   CourseDirectory: { courseId: number; directoryId?: string };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
@@ -36,7 +38,7 @@ const Stack = createNativeStackNavigator<TeachingStackParamList>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
-  const { colors, fontSizes } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Stack.Navigator
@@ -76,6 +78,20 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="CoursePreferences"
+        component={CoursePreferencesScreen}
+        options={{
+          title: t('Preferences'),
+          headerLargeStyle: {
+            backgroundColor: colors.surface,
+          },
+          headerTransparent: false,
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+          headerBackTitle: t('Course'),
         }}
       />
       <Stack.Screen

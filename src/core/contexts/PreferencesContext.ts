@@ -16,6 +16,7 @@ export interface CoursePreferencesProps {
   color: string;
   icon: string;
   isHidden: boolean;
+  order?: number;
 }
 
 export const storageKeys = ['colorScheme', 'courses', 'language'];

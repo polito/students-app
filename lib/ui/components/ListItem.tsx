@@ -15,7 +15,7 @@ import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
-interface Props {
+export interface ListItemProps extends TouchableHighlightProps {
   title: string | JSX.Element;
   subtitle?: string | JSX.Element;
   leadingItem?: JSX.Element;
@@ -38,7 +38,7 @@ export const ListItem = ({
   containerStyle,
   onPress,
   ...rest
-}: TouchableHighlightProps & Props) => {
+}: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
@@ -63,6 +63,7 @@ export const ListItem = ({
       <View
         style={[
           {
+            minHeight: 48,
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: spacing[5],
@@ -103,7 +104,7 @@ export const ListItem = ({
             subtitle
           )}
         </View>
-        {linkTo && Platform.OS === 'ios' ? (
+        {!trailingItem && (linkTo || onPress) && Platform.OS === 'ios' ? (
           <Icon
             name="chevron-forward-outline"
             color={colors.secondaryText}

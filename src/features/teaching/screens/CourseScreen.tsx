@@ -1,6 +1,6 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -9,7 +9,6 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
@@ -17,7 +16,6 @@ import { CourseFilesTab } from '../components/CourseFilesTab';
 import { CourseInfoTab } from '../components/CourseInfoTab';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
 import { CourseNoticesTab } from '../components/CourseNoticesTab';
-import { CoursePreferencesMenu } from '../components/CoursePreferencesMenu';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
@@ -30,24 +28,22 @@ export type CourseTabProps = {
 export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
-  const { courses } = useContext(PreferencesContext);
   const { id, courseName } = route.params;
   useScreenTitle(courseName);
 
   navigation.setOptions({
     headerRight: () => (
-      <CoursePreferencesMenu courseId={id} title={t('Course preferences')}>
-        <TouchableOpacity>
-          <Icon
-            name={Platform.select({
-              ios: 'ellipsis-horizontal-circle-outline',
-              android: 'ellipsis-vertical-outline',
-            })}
-            color={colors.primary[400]}
-            size={fontSizes['2xl']}
-          />
-        </TouchableOpacity>
-      </CoursePreferencesMenu>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('CoursePreferences', { courseId: id });
+        }}
+      >
+        <Icon
+          name="options-outline"
+          color={colors.primary[400]}
+          size={fontSizes['2xl']}
+        />
+      </TouchableOpacity>
     ),
   });
 

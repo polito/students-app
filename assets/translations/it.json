@@ -20,6 +20,7 @@
   "Login": "Accedi",
   "More": "Altro",
   "Notices": "Avvisi",
+  "Notifications": "Notifiche",
   "Notifications archive": "Archivio notifiche",
   "Other courses": "Altri corsi",
   "Password": "Password",
@@ -45,10 +46,12 @@
   "Color": "Colore",
   "Icon": "Icona",
   "Show in home screen": "Mostra nella home",
+  "Hide course from home screen": "Nascondi corso dalla home",
   "Course preferences": "Preferenze del corso",
   "Virtual classroom": "Virtual classroom",
-  "Weighted average": "Media ponderata",
   "Course holder": "Titolare del corso",
   "Book exam": "Prenota esame",
-  "Exam booked": "Esame prenotato"
+  "Exam booked": "Esame prenotato",
+  "Preferences": "Preferenze",
+  "Visualization": "Visualizzazione"
 }

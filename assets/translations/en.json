@@ -19,6 +19,7 @@
   "Lectures": "Lectures",
   "More": "More",
   "Notices": "Notices",
+  "Notifications": "Notifications",
   "Notifications archive": "Notifications archive",
   "Other courses": "Other courses",
   "Period": "Period",
@@ -42,10 +43,12 @@
   "Color": "Color",
   "Icon": "Icon",
   "Show in home screen": "Show in home screen",
+  "Hide course from home screen": "Hide course from home screen",
   "Course preferences": "Course preferences",
   "Virtual classroom": "Virtual classroom",
-  "Weighted average": "Weighted average",
   "Course holder": "Course holder",
   "Book exam": "Book exam",
-  "Exam booked": "Exam booked"
+  "Exam booked": "Exam booked",
+  "Preferences": "Preferences",
+  "Visualization": "Visualization"
 }
