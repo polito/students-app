@@ -52,7 +52,10 @@ export const CourseAssignmentUploadConfirmationScreen = ({ route }: Props) => {
   };
 
   return (
-    <ScrollView style={[bottomBarAwareStyles, styles.screen]}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={[bottomBarAwareStyles, styles.screen]}
+    >
       <Section>
         <SectionHeader title={t('Confirm upload')} />
         <View style={styles.formContainer}>

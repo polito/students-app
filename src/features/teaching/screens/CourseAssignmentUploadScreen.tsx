@@ -31,7 +31,10 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <ScrollView style={[bottomBarAwareStyles, styles.screen]}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={[bottomBarAwareStyles, styles.screen]}
+    >
       <AssignmentUploadAction
         title={'Carica un file'}
         subtitle={'sul tuo dispositivo o dal cloud'}

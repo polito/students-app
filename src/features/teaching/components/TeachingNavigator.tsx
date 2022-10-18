@@ -127,6 +127,7 @@ export const TeachingNavigator = () => {
         options={{
           headerBackTitle: t('Course'),
           headerTitle: t('Upload assignment'),
+          headerLargeTitle: false,
         }}
       />
       <Stack.Screen
@@ -135,6 +136,7 @@ export const TeachingNavigator = () => {
         options={{
           headerBackTitle: t('Pick file'),
           headerTitle: t('Upload assignment'),
+          headerLargeTitle: false,
         }}
       />
 
