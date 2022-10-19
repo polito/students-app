@@ -13,6 +13,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
+import { DrawerCalendar } from '../components/DrawerCalendar';
 
 const viewabilityConfig = {
   // minimumViewTime: 100,
@@ -123,6 +124,8 @@ export const AgendaScreen = () => {
     }
   };
 
+  const onPressCalendarDay = () => {};
+
   const viewabilityConfigCallbackPairs = useRef([
     { viewabilityConfig, onViewableItemsChanged },
   ]);
@@ -158,7 +161,10 @@ export const AgendaScreen = () => {
       <FlatList
         style={styles.list}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
-        contentContainerStyle={[{ padding: spacing[5] }, bottomBarAwareStyles]}
+        contentContainerStyle={[
+          { padding: spacing[5], paddingTop: 100 },
+          bottomBarAwareStyles,
+        ]}
         data={agendaItems}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={({ item, index }) => (
@@ -183,6 +189,7 @@ export const AgendaScreen = () => {
           </View>
         )}
       />
+      <DrawerCalendar onPressDay={onPressCalendarDay} />
     </View>
   );
 };
