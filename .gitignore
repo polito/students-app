@@ -55,3 +55,6 @@ npm-debug.*
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
+
+# Fastlane
+/ios/fastlane/report.xml
