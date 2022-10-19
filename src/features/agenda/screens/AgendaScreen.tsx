@@ -11,11 +11,16 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useGetBookings } from '../../../core/queries/bookingHooks';
+import { useGetExams } from '../../../core/queries/examHooks';
 
 export const AgendaScreen = () => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const examsQuery = useGetExams();
+  const bookingsQuery = useGetBookings();
+
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<{
     [key: string]: boolean;
@@ -25,6 +30,11 @@ export const AgendaScreen = () => {
     bookings: false,
     deadlines: false,
   });
+
+  const agendaItemsTemp = useMemo(() => {
+    console.log({ examsQuery });
+    console.log({ bookingsQuery });
+  }, [examsQuery.data, bookingsQuery.data]);
 
   const agendaItems = useMemo(
     () => [

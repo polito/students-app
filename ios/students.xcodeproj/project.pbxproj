@@ -14,8 +14,6 @@
 		2646B83C81F6495CB52AEAF4 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 529CCA2A81544FEAA216F107 /* OFL.txt */; };
 		34FC1A7206A744708A824BB6 /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4235A235BD1F4FEC80AA8C7A /* Poppins-BoldItalic.ttf */; };
 		3EFA4B21625146A89857A529 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8935C626771446EDAA17542B /* Poppins-Bold.ttf */; };
-		555616772900019D009E60A0 /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555616762900019D009E60A0 /* hermes.xcframework */; };
-		555616782900019D009E60A0 /* hermes.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 555616762900019D009E60A0 /* hermes.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		591D5F1EFD484E6D9C308ECB /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E8AD3DC98C04C38A97D8729 /* Poppins-Regular.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9CCF8634D86F461E825CEE79 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 80CC860FE0CB4B61BFD46385 /* Poppins-Italic.ttf */; };
@@ -34,20 +32,6 @@
 			remoteInfo = students;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		616C0AB928FD85F800866D67 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				555616782900019D009E60A0 /* hermes.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* studentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = studentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,7 +75,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D95DE5F953CCF57E690334AC /* libPods-students.a in Frameworks */,
-				555616772900019D009E60A0 /* hermes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +190,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				157D597B8354AB192858FDDD /* [CP] Embed Pods Frameworks */,
 				5B3C80115D6A512DA589D22B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -230,8 +212,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				616C0AB928FD85F800866D67 /* Embed Frameworks */,
-				9285CEC93610ABB6607C355F /* [CP] Embed Pods Frameworks */,
 				8DA82DA4CDC5715672D68A79 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -322,23 +302,6 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		157D597B8354AB192858FDDD /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5A2F5B8F19646A59269BCC04 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -393,23 +356,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9285CEC93610ABB6607C355F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9A11FD4F78B2C72DCA396A55 /* [CP] Check Pods Manifest.lock */ = {
