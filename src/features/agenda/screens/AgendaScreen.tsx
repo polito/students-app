@@ -13,6 +13,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
+import { agendaMockEvents } from '../../../utils/mock';
 
 export const AgendaScreen = () => {
   const { t } = useTranslation();
@@ -31,72 +32,11 @@ export const AgendaScreen = () => {
     deadlines: false,
   });
 
-  const agendaItemsTemp = useMemo(() => {
+  const agendaItems = useMemo(() => {
     console.log({ examsQuery });
     console.log({ bookingsQuery });
+    return agendaMockEvents(colors);
   }, [examsQuery.data, bookingsQuery.data]);
-
-  const agendaItems = useMemo(
-    () => [
-      {
-        title: 'Fisica 1',
-        live: true,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-      {
-        title: 'Fisica 1',
-        live: false,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-      {
-        title: 'Fisica 1',
-        live: false,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-      {
-        title: 'Fisica 1',
-        live: true,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-      {
-        title: 'Fisica 1',
-        live: true,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-      {
-        title: 'Fisica 1',
-        live: true,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-      {
-        title: 'Fisica 1',
-        live: true,
-        type: 'Lesson',
-        color: colors.info[500],
-        startsAt: new Date(),
-        description: 'Event description text test',
-      },
-    ],
-    [colors],
-  );
 
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
@@ -138,18 +78,10 @@ export const AgendaScreen = () => {
         contentContainerStyle={[{ padding: spacing[5] }, bottomBarAwareStyles]}
         data={agendaItems}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <View style={{ flexDirection: 'row' }}>
-            <View style={{ width: '15%' }}>
-              {index === 0 && (
-                <View>
-                  <Text variant="title">LUN</Text>
-                  <Text variant="title">18</Text>
-                </View>
-              )}
-            </View>
             <AgendaCard
-              style={{ flex: 1 }}
+              style={styles.agendaCard}
               title={item.title}
               subtitle={item.type}
               color={item.color}
@@ -164,8 +96,9 @@ export const AgendaScreen = () => {
   );
 };
 
-const createStyles = ({ spacing, colors }: Theme) =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
+    agendaCard: { flex: 1 },
     tabs: {
       backgroundColor: colors.surface,
       borderBottomWidth: Platform.select({
