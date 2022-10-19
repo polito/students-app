@@ -9,7 +9,6 @@ import {
 
 import color from 'color';
 
-import { Normalize } from '../../../src/utils/conts';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -68,13 +67,7 @@ export const Tab = ({
           backgroundColor,
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: !selected ? borderColor : backgroundColor,
-          // borderBottomWidth: !selected ? 1 : undefined,
-          // borderLeftWidth: !selected ? 1 : undefined,
-          // borderRightWidth: !selected ? 1 : undefined,
-          // borderBottomColor: !selected ? 'red' : undefined,
-          // borderBottomLeftRadius: Normalize(10),
-          // borderBottomRightRadius: Normalize(10),
-          borderRadius: Normalize(10),
+          borderRadius: 10,
           paddingHorizontal: spacing[2.5],
           paddingVertical: spacing[1],
         },
