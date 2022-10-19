@@ -6,6 +6,8 @@ import { Theme } from '@lib/ui/types/theme';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../utils/conts';
 
+// import { Calendar } from './Calendar';
+
 interface Props {
   onPressDay: () => void;
 }
@@ -130,7 +132,8 @@ export const DrawerCalendar = ({ onPressDay }: Props) => {
         {/*  calendarDateOpacity={calendarDateOpacity}*/}
         {/*  calendarContainerHeight={calendarContainerHeight}*/}
         {/*  calendarInfoOpacity={calendarInfoOpacity}*/}
-        {/*  onPressDay={onClickPressDay}*/}
+        {/*  onPressDay={onPressDay}*/}
+        {/*  viewedDate={''}*/}
         {/*/ >*/}
 
         <View {...panResponder.panHandlers} style={styles.dragHandlerView}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { usePropsStyle } from '../../utils/theme';
+import { usePropsStyle } from '../../../src/utils/theme';
 
 export interface ColProps {
   children?: ViewStyle;
