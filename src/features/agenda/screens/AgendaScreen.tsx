@@ -12,7 +12,6 @@ import { mapAgendaItem } from '../../../core/agenda';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
-import { AgendaItem } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
 
@@ -31,9 +30,9 @@ export const AgendaScreen = () => {
   const [viewedData, setViewedData] = useState<string>();
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const [selectedEventTypes, setSelectedEventTypes] = useState<{
-    [key: string]: boolean;
-  }>({
+  const [selectedEventTypes, setSelectedEventTypes] = useState<
+    Record<string, boolean>
+  >({
     lectures: false,
     exams: false,
     bookings: false,
@@ -76,9 +75,8 @@ export const AgendaScreen = () => {
     { viewabilityConfig, onViewableItemsChanged },
   ]);
 
-  const renderItem = (day: string) => {
-    const items: AgendaItem[] = agendaItems[day];
-    return <AgendaDay day={day} items={items} />;
+  const renderItem = ({ item: day }: { item: string }) => {
+    return <AgendaDay day={day} items={agendaItems[day]} />;
   };
 
   return (
@@ -115,7 +113,7 @@ export const AgendaScreen = () => {
         contentContainerStyle={[styles.listContainer, bottomBarAwareStyles]}
         data={agendaDays}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
-        renderItem={({ item }) => renderItem(item)}
+        renderItem={renderItem}
       />
       <DrawerCalendar onPressDay={onPressCalendarDay} />
     </View>

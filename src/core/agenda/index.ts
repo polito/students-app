@@ -22,6 +22,7 @@ export const mapAgendaItem = (
       title: exam?.courseName,
       content: exam,
       type: 'Exam',
+      classroom: exam?.classrooms,
     };
     if (events[ISODate]) events[ISODate].push(item);
     else events[ISODate] = [item];
@@ -37,6 +38,7 @@ export const mapAgendaItem = (
       title: booking?.topic?.title,
       content: booking,
       type: 'Booking',
+      classroom: booking.location?.description || ' - ',
     };
     if (events[ISODate]) events[ISODate].push(item);
     else events[ISODate] = [item];

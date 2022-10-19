@@ -38,6 +38,13 @@ export interface Theme {
     '80': string | number;
     '96': string | number;
   };
+  size: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  };
   fontSizes: {
     '2xs': number;
     xs: number;

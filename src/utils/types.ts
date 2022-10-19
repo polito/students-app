@@ -8,6 +8,7 @@ export interface AgendaItem {
   fromDate: string;
   toDate: string;
   title: string;
+  classroom?: string;
   type: 'Exam' | 'Booking';
   content: Exam | Booking;
 }
