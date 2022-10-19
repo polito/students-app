@@ -1,10 +1,10 @@
 import React from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { usePropsStyle } from '../../../src/utils/theme';
 
 export interface ColProps {
-  children?: ViewStyle;
+  children?: JSX.Element | JSX.Element[];
   style?: { [key: string]: any };
   pointerEvents?: string;
   alignStart?: boolean;
@@ -19,8 +19,8 @@ export interface ColProps {
   justifyEnd?: boolean;
   flex?: number;
   backgroundColor?: string;
-  onPress: () => any;
-  maxWidth?: number;
+  onPress?: () => any;
+  maxWidth?: boolean;
   onLayout?: any;
   shadow?: boolean;
   noFlex?: boolean;

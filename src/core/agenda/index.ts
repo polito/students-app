@@ -1,7 +1,8 @@
 import { Colors } from '@lib/ui/types/theme';
 import { Booking, Exam } from '@polito-it/api-client';
 
-import { agendaMockEvents } from '../../utils/mock';
+import { DateTime } from 'luxon';
+
 import { AgendaItem } from '../../utils/types';
 
 export const mapAgendaItem = (
@@ -9,43 +10,37 @@ export const mapAgendaItem = (
   bookings: Booking[],
   colors: Colors,
 ) => {
-  const events: any = [];
+  const events: Record<string, AgendaItem[]> = {};
 
   exams.forEach(exam => {
-    const ISODate = exam.examStartsAt.toISOString();
-    const index = events.findIndex((el: Exam) => el === ISODate);
+    const fromDate = exam.examStartsAt.toISOString();
+    const toDate = exam.bookingEndsAt?.toISOString();
+    const ISODate = DateTime.fromISO(fromDate).toISO();
     const item: AgendaItem = {
-      fromDate: ISODate,
-      toDate: ISODate,
+      fromDate: fromDate,
+      toDate: toDate,
       content: exam,
       type: 'Exam',
     };
-    if (index > -1) {
-      events[index] = [...events[index], item];
-    } else {
-      events.push(ISODate);
-      events[events.indexOf(ISODate)] = [item];
-    }
+    if (events[ISODate]) events[ISODate].push(item);
+    else events[ISODate] = [item];
   });
 
   bookings.forEach(booking => {
-    const ISODate = booking.startsAt.toISOString();
-    const index = events.findIndex((el: Exam) => el === ISODate);
+    const fromDate = booking.startsAt.toISOString();
+    const toDate = booking.endsAt.toISOString();
+    const ISODate = DateTime.fromISO(fromDate).toISO();
     const item: AgendaItem = {
-      fromDate: ISODate,
-      toDate: ISODate,
+      fromDate: fromDate,
+      toDate: toDate,
       content: booking,
       type: 'Booking',
     };
-    if (index > -1) {
-      events[index] = [...events[index], item];
-    } else {
-      events.push(ISODate);
-      events[events.indexOf(ISODate)] = [item];
-    }
+    if (events[ISODate]) events[ISODate].push(item);
+    else events[ISODate] = [item];
   });
 
-  console.log('events', events.sort());
+  console.log('events', events);
 
-  return agendaMockEvents(colors);
+  return events;
 };

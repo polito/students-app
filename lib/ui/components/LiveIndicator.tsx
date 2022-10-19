@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, View } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
-import { Text } from './Text';
 
 const liveIndicatorSize = 8;
 
@@ -58,9 +58,9 @@ export const LiveIndicator = () => {
           }}
         />
       </View>
-      <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
-        Live
-      </Text>
+      {/* <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>*/}
+      {/*  Live*/}
+      {/* </Text>*/}
     </View>
   );
 };

@@ -2,10 +2,8 @@ import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View, ViewToken } from 'react-native';
 
-import { AgendaCard } from '@lib/ui/components/AgendaCard';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -14,6 +12,8 @@ import { mapAgendaItem } from '../../../core/agenda';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
+import { AgendaItem } from '../../../utils/types';
+import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
 
 const viewabilityConfig = {
@@ -48,6 +48,10 @@ export const AgendaScreen = () => {
     );
   }, [examsQuery.data, bookingsQuery.data]);
 
+  const agendaDays = useMemo(() => {
+    return Object.keys(agendaItems).sort();
+  }, [agendaItems]);
+
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
       ...types,
@@ -71,6 +75,11 @@ export const AgendaScreen = () => {
   const viewabilityConfigCallbackPairs = useRef([
     { viewabilityConfig, onViewableItemsChanged },
   ]);
+
+  const renderItem = (day: string) => {
+    const items: AgendaItem[] = agendaItems[day];
+    return <AgendaDay day={day} items={items} />;
+  };
 
   return (
     <View style={styles.container}>
@@ -103,32 +112,17 @@ export const AgendaScreen = () => {
       <FlatList
         style={styles.list}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
-        contentContainerStyle={[
-          { padding: spacing[5], paddingTop: 100 },
-          bottomBarAwareStyles,
-        ]}
-        data={agendaItems}
+        contentContainerStyle={[styles.listContainer, bottomBarAwareStyles]}
+        data={agendaDays}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
-        renderItem={({ item }) => (
-          <View style={{ flexDirection: 'row' }}>
-            <AgendaCard
-              style={styles.agendaCard}
-              title={item.title}
-              subtitle={item.type}
-              color={item.color}
-              live={item.live}
-            >
-              <Text variant="prose">{item.description}</Text>
-            </AgendaCard>
-          </View>
-        )}
+        renderItem={({ item }) => renderItem(item)}
       />
       <DrawerCalendar onPressDay={onPressCalendarDay} />
     </View>
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     agendaCard: { flex: 1 },
     tabs: {
@@ -142,4 +136,8 @@ const createStyles = ({ colors }: Theme) =>
     },
     container: { flex: 1 },
     list: { flex: 1 },
+    listContainer: {
+      padding: spacing[5],
+      paddingTop: 100,
+    },
   });

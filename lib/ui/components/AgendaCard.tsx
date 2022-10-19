@@ -1,108 +1,63 @@
 import { PropsWithChildren } from 'react';
-import { TouchableHighlight, View } from 'react-native';
+import { StyleSheet, TouchableHighlight } from 'react-native';
+
+import { Col } from '@lib/ui/components/Col';
+import { Row } from '@lib/ui/components/Row';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/theme';
+
+import { DateTime } from 'luxon';
+
+import { AgendaItem } from '../../../src/utils/types';
 import { useTheme } from '../hooks/useTheme';
 import { Card, Props as CardProps } from './Card';
 import { LiveIndicator } from './LiveIndicator';
 import { Text } from './Text';
 
 interface Props {
-  /**
-   * The event title
-   */
-  title: string | JSX.Element;
-  /**
-   * The color of the event
-   */
-  color?: string;
-  /**
-   * Shows a live indicator
-   */
-  live?: boolean;
-  /**
-   * Event time information
-   */
-  time?: string;
-  /**
-   * A subtitle (ie event type)
-   */
-  subtitle?: string;
+  item: AgendaItem;
 }
 
-/**
- * A card used to present an agenda item
- */
 export const AgendaCard = ({
-  title,
-  style,
-  color,
-  live = true,
-  time = '--:--',
-  subtitle,
-  children,
+  item,
   ...rest
 }: PropsWithChildren<CardProps & Props>) => {
   const { colors, spacing, fontSizes } = useTheme();
-  const borderColor = color ?? colors.primary[500];
+  const styles = useStylesheet(createStyles);
+  const live: boolean = true;
+  const borderColor = colors.primary[500];
+  const fromHour = DateTime.fromISO(item.fromDate).toFormat('HH:mm');
+  const toHour = DateTime.fromISO(item.toDate).toFormat('HH:mm');
+  const time = `${fromHour} - ${toHour}`;
 
   return (
-    <Card
-      style={[
-        {
-          flex: 1,
-          borderWidth: 2,
-          borderColor,
-        },
-        style,
-      ]}
-      {...rest}
-    >
-      <TouchableHighlight
-        style={{
-          padding: spacing[5],
-        }}
-      >
-        <View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            {typeof title === 'string' ? (
-              <Text
-                variant="title"
-                style={{
-                  flex: 1,
-                }}
-              >
-                {title}
+    <Card style={[{ borderColor }, styles.agendaCard]} {...rest}>
+      <TouchableHighlight style={styles.agendaButtonStyle}>
+        <Col>
+          <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
+            <Text variant={'headline'}> Titolo </Text>
+            <Row noFlex>
+              {live && <LiveIndicator />}
+              <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
+                {time}
               </Text>
-            ) : (
-              title
-            )}
-            {live && <LiveIndicator />}
-            <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
-              {time}
-            </Text>
-          </View>
-          {subtitle && (
-            <Text
-              variant="caption"
-              style={{
-                marginTop: spacing[1.5],
-              }}
-            >
-              {subtitle}
-            </Text>
-          )}
-          {typeof children === 'string' ? (
-            <Text style={{ marginTop: spacing[2.5] }}>{children}</Text>
-          ) : (
-            children
-          )}
-        </View>
+            </Row>
+          </Row>
+        </Col>
       </TouchableHighlight>
     </Card>
   );
 };
+
+const createStyles = ({ spacing, colors }: Theme) =>
+  StyleSheet.create({
+    agendaCard: {
+      flex: 1,
+      width: '100%',
+      borderWidth: 2,
+      marginTop: spacing['1.5'],
+    },
+    agendaButtonStyle: {
+      padding: spacing[5],
+    },
+  });

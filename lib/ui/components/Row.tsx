@@ -17,7 +17,7 @@ export interface RowProps {
   justifyEnd?: boolean;
   backgroundColor?: string;
   onPress?: () => any;
-  maxWidth?: number;
+  maxWidth?: boolean;
   onLayout?: any;
   noFlex?: boolean;
   width?: number | string;
