@@ -11,7 +11,7 @@ import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
-import { CourseFileListItem } from './CourseFileListItem';
+import { CourseRecentFileListItem } from './CourseRecentFileListItem';
 
 export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         <SectionHeader title={t('CourseFilesTab.Title')} />
         <SectionList loading={recentFilesQuery.isLoading}>
           {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
-            <CourseFileListItem
+            <CourseRecentFileListItem
               key={file.id}
               item={file}
               isDownloaded={index % 3 === 0}
