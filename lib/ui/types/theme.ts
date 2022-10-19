@@ -14,7 +14,7 @@ export interface Theme {
     '0.5': string | number;
     '1': string | number;
     '1.5': string | number;
-    '2': string | number;
+    '2': number | string;
     '2.5': string | number;
     '3': string | number;
     '3.5': string | number;

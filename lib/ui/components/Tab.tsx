@@ -9,6 +9,7 @@ import {
 
 import color from 'color';
 
+import { Normalize } from '../../../src/utils/conts';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -31,8 +32,8 @@ export const Tab = ({
   const backgroundColor = useMemo(
     () =>
       selected
-        ? colors.primary[400]
-        : color(colors.muted[dark ? 800 : 200])
+        ? colors.primary[500]
+        : color(colors.primary[dark ? 800 : 50])
             .alpha(0.4)
             .toString(),
     [selected, dark, colors],
@@ -67,7 +68,13 @@ export const Tab = ({
           backgroundColor,
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: !selected ? borderColor : backgroundColor,
-          borderRadius: 30,
+          // borderBottomWidth: !selected ? 1 : undefined,
+          // borderLeftWidth: !selected ? 1 : undefined,
+          // borderRightWidth: !selected ? 1 : undefined,
+          // borderBottomColor: !selected ? 'red' : undefined,
+          // borderBottomLeftRadius: Normalize(10),
+          // borderBottomRightRadius: Normalize(10),
+          borderRadius: Normalize(10),
           paddingHorizontal: spacing[2.5],
           paddingVertical: spacing[1],
         },
@@ -77,9 +84,7 @@ export const Tab = ({
     >
       <Text
         style={[
-          {
-            color: selected ? colors.text[50] : colors.secondaryText,
-          },
+          { color: selected ? colors.text[50] : colors.secondaryText },
           textStyle,
         ]}
       >

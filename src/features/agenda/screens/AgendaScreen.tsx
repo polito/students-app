@@ -6,20 +6,26 @@ import { AgendaCard } from '@lib/ui/components/AgendaCard';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 
 export const AgendaScreen = () => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const [selectedEventTypes, setSelectedEventTypes] = useState({
+  const [selectedEventTypes, setSelectedEventTypes] = useState<{
+    [key: string]: boolean;
+  }>({
     lectures: false,
     exams: false,
     bookings: false,
     deadlines: false,
   });
+
   const agendaItems = useMemo(
     () => [
       {
@@ -82,63 +88,43 @@ export const AgendaScreen = () => {
     [colors],
   );
 
+  const onSelectTab = (tabName: string) => {
+    setSelectedEventTypes(types => ({
+      ...types,
+      [tabName]: !types[tabName],
+    }));
+  };
+
   return (
-    <View style={{ flex: 1 }}>
-      <Tabs
-        style={{
-          backgroundColor: colors.surface,
-          borderBottomWidth: Platform.select({
-            ios: StyleSheet.hairlineWidth,
-          }),
-          borderBottomColor: colors.divider,
-          elevation: 3,
-          zIndex: 1,
-        }}
-      >
+    <View style={styles.container}>
+      <Tabs style={styles.tabs}>
         <Tab
           selected={selectedEventTypes.lectures}
-          onPress={() =>
-            setSelectedEventTypes(types => ({
-              ...types,
-              lectures: !types.lectures,
-            }))
-          }
+          onPress={() => onSelectTab('lectures')}
         >
           {t('Lectures')}
         </Tab>
         <Tab
           selected={selectedEventTypes.exams}
-          onPress={() =>
-            setSelectedEventTypes(types => ({ ...types, exams: !types.exams }))
-          }
+          onPress={() => onSelectTab('exams')}
         >
           {t('Exams')}
         </Tab>
         <Tab
           selected={selectedEventTypes.bookings}
-          onPress={() =>
-            setSelectedEventTypes(types => ({
-              ...types,
-              bookings: !types.bookings,
-            }))
-          }
+          onPress={() => onSelectTab('bookings')}
         >
           {t('Bookings')}
         </Tab>
         <Tab
           selected={selectedEventTypes.deadlines}
-          onPress={() =>
-            setSelectedEventTypes(types => ({
-              ...types,
-              deadlines: !types.deadlines,
-            }))
-          }
+          onPress={() => onSelectTab('deadlines')}
         >
           {t('Deadlines')}
         </Tab>
       </Tabs>
       <FlatList
-        style={{ flex: 1 }}
+        style={styles.list}
         contentContainerStyle={[{ padding: spacing[5] }, bottomBarAwareStyles]}
         data={agendaItems}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
@@ -167,3 +153,18 @@ export const AgendaScreen = () => {
     </View>
   );
 };
+
+const createStyles = ({ spacing, colors }: Theme) =>
+  StyleSheet.create({
+    tabs: {
+      backgroundColor: colors.surface,
+      borderBottomWidth: Platform.select({
+        ios: StyleSheet.hairlineWidth,
+      }),
+      borderBottomColor: colors.divider,
+      elevation: 3,
+      zIndex: 1,
+    },
+    container: { flex: 1 },
+    list: { flex: 1 },
+  });
