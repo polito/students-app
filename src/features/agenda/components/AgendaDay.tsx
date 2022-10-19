@@ -18,7 +18,7 @@ export interface AgendaDayProps {
 export const AgendaDay = ({ day, items }: AgendaDayProps) => {
   const styles = useStylesheet(createStyles);
   const formattedDay: string = DateTime.fromISO(day).toFormat('MMMM dd');
-  const weekDay: string = DateTime.fromISO(day).toFormat('ww');
+  const weekDay: string = DateTime.fromISO(day).toFormat('cccc');
 
   return (
     <Col flexStart style={styles.agendaDay} noFlex>

@@ -7,6 +7,7 @@ export interface Object {
 export interface AgendaItem {
   fromDate: string;
   toDate: string;
+  title: string;
   type: 'Exam' | 'Booking';
   content: Exam | Booking;
 }

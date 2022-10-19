@@ -22,7 +22,7 @@ export const AgendaCard = ({
   item,
   ...rest
 }: PropsWithChildren<CardProps & Props>) => {
-  const { colors, spacing, fontSizes } = useTheme();
+  const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const live: boolean = true;
   const borderColor = colors.primary[500];
@@ -35,8 +35,15 @@ export const AgendaCard = ({
       <TouchableHighlight style={styles.agendaButtonStyle}>
         <Col>
           <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
-            <Text variant={'headline'}> Titolo </Text>
-            <Row noFlex>
+            <Text
+              weight={'bold'}
+              numberOfLines={1}
+              variant={'secondaryText'}
+              style={styles.title}
+            >
+              {item.title}
+            </Text>
+            <Row noFlex justifyCenter alignCenter>
               {live && <LiveIndicator />}
               <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
                 {time}
@@ -51,6 +58,10 @@ export const AgendaCard = ({
 
 const createStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
+    title: {
+      maxWidth: '50%',
+      color: colors.trueGray[700],
+    },
     agendaCard: {
       flex: 1,
       width: '100%',

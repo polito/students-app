@@ -19,6 +19,7 @@ export const mapAgendaItem = (
     const item: AgendaItem = {
       fromDate: fromDate,
       toDate: toDate,
+      title: exam?.courseName,
       content: exam,
       type: 'Exam',
     };
@@ -33,6 +34,7 @@ export const mapAgendaItem = (
     const item: AgendaItem = {
       fromDate: fromDate,
       toDate: toDate,
+      title: booking?.topic?.title,
       content: booking,
       type: 'Booking',
     };
