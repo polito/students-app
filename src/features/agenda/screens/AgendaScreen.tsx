@@ -10,10 +10,10 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
+import { mapAgendaItem } from '../../../core/agenda';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
-import { agendaMockEvents } from '../../../utils/mock';
 import { DrawerCalendar } from '../components/DrawerCalendar';
 
 const viewabilityConfig = {
@@ -41,9 +41,11 @@ export const AgendaScreen = () => {
   });
 
   const agendaItems = useMemo(() => {
-    console.log({ examsQuery });
-    console.log({ bookingsQuery });
-    return agendaMockEvents(colors);
+    return mapAgendaItem(
+      examsQuery.data?.data || [],
+      bookingsQuery.data?.data || [],
+      colors,
+    );
   }, [examsQuery.data, bookingsQuery.data]);
 
   const onSelectTab = (tabName: string) => {
@@ -57,8 +59,8 @@ export const AgendaScreen = () => {
     viewableItems: Array<ViewToken>;
     changed: Array<ViewToken>;
   }) => {
-    console.log({ changed });
-    console.log({ viewableItems: changed.viewableItems });
+    // console.log({ changed });
+    // console.log({ viewableItems: changed.viewableItems });
     if (changed.viewableItems[0]) {
       // const viewedDate = DateTime.fromFormat(changed.viewableItems[0].key, 'dd/MM/yyyy').toISODate() || DateTime.fromJSDate(new Date()).toISODate();
     }
