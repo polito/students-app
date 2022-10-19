@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View, ViewToken } from 'react-native';
 
 import { AgendaCard } from '@lib/ui/components/AgendaCard';
 import { Tab } from '@lib/ui/components/Tab';
@@ -14,12 +14,19 @@ import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareSt
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 
+const viewabilityConfig = {
+  // minimumViewTime: 100,
+  viewAreaCoveragePercentThreshold: 30,
+  waitForInteraction: false,
+};
+
 export const AgendaScreen = () => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
+  const [viewedData, setViewedData] = useState<string>();
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<{
@@ -105,6 +112,21 @@ export const AgendaScreen = () => {
     }));
   };
 
+  const onViewableItemsChanged = (changed: {
+    viewableItems: Array<ViewToken>;
+    changed: Array<ViewToken>;
+  }) => {
+    console.log({ changed });
+    console.log({ viewableItems: changed.viewableItems });
+    if (changed.viewableItems[0]) {
+      // const viewedDate = DateTime.fromFormat(changed.viewableItems[0].key, 'dd/MM/yyyy').toISODate() || DateTime.fromJSDate(new Date()).toISODate();
+    }
+  };
+
+  const viewabilityConfigCallbackPairs = useRef([
+    { viewabilityConfig, onViewableItemsChanged },
+  ]);
+
   return (
     <View style={styles.container}>
       <Tabs style={styles.tabs}>
@@ -135,6 +157,7 @@ export const AgendaScreen = () => {
       </Tabs>
       <FlatList
         style={styles.list}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         contentContainerStyle={[{ padding: spacing[5] }, bottomBarAwareStyles]}
         data={agendaItems}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
