@@ -1,10 +1,10 @@
 import React from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { usePropsStyle } from '../../utils/theme';
+import { usePropsStyle } from '../../../src/utils/theme';
 
 export interface RowProps {
-  children?: ViewStyle;
+  children?: ViewStyle | ViewStyle[] | any;
   style?: { [key: string]: any };
   pointerEvents?: string;
   alignStart?: boolean;
@@ -20,7 +20,7 @@ export interface RowProps {
   maxWidth?: number;
   onLayout?: any;
   noFlex?: boolean;
-  width?: number;
+  width?: number | string;
 }
 
 export const Row = ({
