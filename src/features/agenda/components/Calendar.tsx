@@ -21,10 +21,12 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
 
 import { DateTime } from 'luxon';
 
 import { SCREEN_WIDTH } from '../../../utils/conts';
+import { AgendaDayInterface, AgendaItemInterface } from '../../../utils/types';
 import { CalendarService, Day } from './CalendarService';
 
 import Value = Animated.Value;
@@ -35,6 +37,7 @@ interface Props {
   calendarContainerHeight: Value;
   calendarInfoOpacity: Value;
   viewedDate: string;
+  agendaDays: AgendaDayInterface[];
 }
 
 const Normalize = (n: number) => n;
@@ -48,6 +51,7 @@ export const Calendar = forwardRef(
       calendarInfoOpacity,
       onPressDay,
       viewedDate,
+      agendaDays,
     }: Props,
     ref: ForwardedRef<any>,
   ) => {
@@ -66,7 +70,9 @@ export const Calendar = forwardRef(
 
     useEffect(() => {
       if (viewedDate) {
-        const tempWeeks = service.getMonthCalendar(new Date()).weeks;
+        const tempWeeks = service.getMonthCalendar(
+          DateTime.fromISO(viewedDate).toJSDate(),
+        ).weeks;
         setWeeks(tempWeeks);
         if (fistOpen) {
           setTimeout(() => {
@@ -89,6 +95,7 @@ export const Calendar = forwardRef(
           week.days.forEach((day: Day) => {
             const isToday =
               DateTime.fromJSDate(day.date).toISODate() === viewedDate;
+            console.log('isToday', isToday);
             if (isToday) {
               try {
                 flatListRef.current.scrollToIndex({
@@ -163,7 +170,7 @@ export const Calendar = forwardRef(
               justifyCenter
               spaceAround
               alignCenter
-              style={{ marginBottom: Normalize(10) }}
+              style={{ marginBottom: Normalize(10), borderColor: 'blue' }}
             >
               <CalendarMonthIcon
                 iconName={'chevron-back-outline'}
@@ -205,6 +212,7 @@ export const Calendar = forwardRef(
                 item={item}
                 formattedViewedDate={viewedDate}
                 onPressDay={onPressDay}
+                agendaDays={agendaDays}
               />
             )}
             // ListHeaderComponent={renderHeader}
@@ -282,22 +290,37 @@ interface RowProp {
   };
   formattedViewedDate: string;
   onPressDay: (day: Date) => void;
+  agendaDays: AgendaDayInterface[];
 }
 
-const RenderRow = ({ item, formattedViewedDate, onPressDay }: RowProp) => {
+const DOT_COLORS = {
+  Booking: 'blue',
+  Exam: 'red',
+  Lecture: 'green',
+};
+const RenderRow = ({
+  item,
+  formattedViewedDate,
+  onPressDay,
+  agendaDays,
+}: RowProp) => {
   const styles = useStylesheet(createItemStyles);
 
   return (
     <Row spaceBetween width={'100%'}>
       {item.days.map(day => {
+        console.log('day', day);
         const formattedDay = DateTime.fromJSDate(day.date).toISODate();
         const isViewed = formattedDay === formattedViewedDate;
         const isToday = DateTime.now().toISODate() === formattedDay;
-        // const dots = _.get(
-        //   reservationDots.find(rd => rd.date === formattedDay),
-        //   'dots',
-        //   [],
-        // );
+
+        const agendaDay = agendaDays.find(ad => ad.id === formattedDay);
+        let dots: string[] = [];
+        if (agendaDay && agendaDay.items.length) {
+          dots = agendaDay.items.map((agendaItem: AgendaItemInterface) => {
+            return DOT_COLORS[agendaItem.type];
+          });
+        }
         // const dots = [];
         // const disable = day.daysFromToday < 0 || day.daysFromToday > 90;
         const disable = false;
@@ -324,21 +347,20 @@ const RenderRow = ({ item, formattedViewedDate, onPressDay }: RowProp) => {
               >
                 {day.monthDay}
               </Text>
-              {/* TODO*/}
-              {/* <Row style={styles.rowDots} alignCenter justifyCenter noFlex>*/}
-              {/*  {dots.map(dot => {*/}
-              {/*    return (*/}
-              {/*      <View*/}
-              {/*        style={[*/}
-              {/*          styles.dot,*/}
-              {/*          {*/}
-              {/*            backgroundColor: isViewed ? 'red' : 'blue',*/}
-              {/*          },*/}
-              {/*        ]}*/}
-              {/*      />*/}
-              {/*    );*/}
-              {/*  })}*/}
-              {/* </Row>*/}
+              <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
+                {dots.map((dot: string) => {
+                  return (
+                    <View
+                      style={[
+                        styles.dot,
+                        {
+                          backgroundColor: dot,
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </Row>
             </View>
           </TouchableOpacity>
         );
@@ -347,7 +369,7 @@ const RenderRow = ({ item, formattedViewedDate, onPressDay }: RowProp) => {
   );
 };
 
-const createItemStyles = () =>
+const createItemStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -355,7 +377,7 @@ const createItemStyles = () =>
     },
     topDays: {
       position: 'absolute',
-      top: 0,
+      top: 60,
       left: 0,
       right: 0,
       width: SCREEN_WIDTH,
@@ -384,7 +406,9 @@ const createItemStyles = () =>
       padding: Normalize(7),
       borderRadius: Normalize(9),
     },
-    calendarContainer: {},
+    calendarContainer: {
+      marginTop: 45,
+    },
     calendar: {
       width: '100%',
       paddingHorizontal: Normalize(20),
@@ -407,10 +431,8 @@ const createItemStyles = () =>
       // marginHorizontal: Normalize(5),
     },
     today: {
-      backgroundColor: '#E1FFFC',
-      borderWidth: 1,
-      borderColor: 'blue',
-      borderRadius: Normalize(11),
+      backgroundColor: colors.secondary[500],
+      borderRadius: Normalize(50),
       // backgroundColor: PRIMARY_COLOR,
       // borderRadius: Normalize(40),
     },
@@ -430,6 +452,8 @@ const createItemStyles = () =>
     },
     textDay: {
       color: 'black',
+      minWidth: 30,
+      textAlign: 'center',
     },
     rowDots: {
       // position: 'absolute',

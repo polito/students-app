@@ -140,7 +140,11 @@ export const AgendaScreen = () => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
-      <DrawerCalendar onPressDay={onPressCalendarDay} viewedDate={viewedDate} />
+      <DrawerCalendar
+        onPressDay={onPressCalendarDay}
+        viewedDate={viewedDate}
+        agendaDays={agendaDays}
+      />
     </View>
   );
 };
@@ -161,6 +165,6 @@ const createStyles = ({ colors, spacing }: Theme) =>
     list: { flex: 1 },
     listContainer: {
       padding: spacing[5],
-      paddingTop: 100,
+      paddingTop: 120,
     },
   });

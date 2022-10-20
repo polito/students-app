@@ -3,26 +3,29 @@ import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 
-
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../utils/conts';
+import { AgendaDayInterface } from '../../../utils/types';
 import { Calendar } from './Calendar';
 
 interface Props {
   onPressDay: (day: Date) => void;
   viewedDate: string;
+  agendaDays: AgendaDayInterface[];
 }
 
-const defaultHeightPercentage = 10;
+const effectiveDefaultHeight = 140;
 const openedHeightPercentage = 70;
 export const DAY_DIMENSION = (SCREEN_WIDTH - 60) / 7;
 const HEIGHT_TO_HIDE_TOP_DATES = 100;
 const distanceFromTopToBottomCalendar = 110;
 
-export const DrawerCalendar = ({ onPressDay, viewedDate }: Props) => {
+export const DrawerCalendar = ({
+  onPressDay,
+  viewedDate,
+  agendaDays,
+}: Props) => {
   const styles = useStylesheet(createItemStyles);
 
-  const effectiveDefaultHeight =
-    (SCREEN_HEIGHT / 100) * defaultHeightPercentage;
   const effectiveOpenedHeight = (SCREEN_HEIGHT / 100) * openedHeightPercentage;
   const drawerHeight = useRef(
     new Animated.Value(effectiveDefaultHeight),
@@ -134,6 +137,7 @@ export const DrawerCalendar = ({ onPressDay, viewedDate }: Props) => {
           calendarInfoOpacity={calendarInfoOpacity}
           onPressDay={onPressDayCalendar}
           viewedDate={viewedDate}
+          agendaDays={agendaDays}
         />
 
         <View {...panResponder.panHandlers} style={styles.dragHandlerView}>
@@ -164,7 +168,6 @@ const createItemStyles = () =>
       borderBottomRightRadius: 30,
     },
     dragHandlerView: {
-      backgroundColor: 'transparent',
       position: 'absolute',
       bottom: 0,
       left: 0,
@@ -180,7 +183,6 @@ const createItemStyles = () =>
       borderTopWidth: 0,
     },
     dragHandlerView2: {
-      // backgroundColor: 'blue',
       flex: 1,
       height: '100%',
       alignItems: 'center',

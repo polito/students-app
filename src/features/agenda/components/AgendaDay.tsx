@@ -21,7 +21,7 @@ export const AgendaDay = ({ agendaDay }: AgendaDayProps) => {
     'MMMM dd',
   );
   const items = agendaDay.items;
-  const weekDay: string = DateTime.fromISO(agendaDay.id).toFormat('EEEE');
+  const weekDay: string = DateTime.fromISO(agendaDay.id).toFormat('EEEE yyyy');
 
   return (
     <Col flexStart style={styles.agendaDay} noFlex>

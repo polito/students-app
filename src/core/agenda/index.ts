@@ -65,7 +65,7 @@ export const mapAgendaItem = (
       toDate: toDate,
       title: lecture?.type,
       content: lecture,
-      type: 'Booking',
+      type: 'Lecture',
       classroom: lecture.roomName || ' - ',
     };
     pushItemToList(item, ISODate);
@@ -73,5 +73,9 @@ export const mapAgendaItem = (
 
   console.log('agendaDays', agendaDays);
 
-  return agendaDays;
+  // return agendaDays.sort();
+
+  return agendaDays.sort(function (a, b) {
+    return DateTime.fromISO(a.id) < DateTime.fromISO(b.id) ? 1 : -1;
+  });
 };
