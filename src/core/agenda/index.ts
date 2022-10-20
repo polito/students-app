@@ -1,5 +1,5 @@
 import { Colors } from '@lib/ui/types/theme';
-import { Booking, Exam } from '@polito-it/api-client';
+import { Booking, Exam, Lecture } from '@polito-it/api-client';
 
 import { DateTime } from 'luxon';
 
@@ -8,10 +8,12 @@ import { AgendaDayInterface, AgendaItemInterface } from '../../utils/types';
 export const mapAgendaItem = (
   exams: Exam[],
   bookings: Booking[],
+  lectures: Lecture[],
   colors: Colors,
 ) => {
   const agendaDays: AgendaDayInterface[] = [];
   console.log({ colors });
+  console.log('lectures', lectures);
   const pushItemToList = (item: AgendaItemInterface, ISODate: string) => {
     const currentAgendaDayIndex = agendaDays.findIndex(ad => ad.id === ISODate);
     if (currentAgendaDayIndex === -1) {
@@ -50,6 +52,21 @@ export const mapAgendaItem = (
       content: booking,
       type: 'Booking',
       classroom: booking.location?.description || ' - ',
+    };
+    pushItemToList(item, ISODate);
+  });
+
+  lectures.forEach(lecture => {
+    const fromDate = lecture.startsAt.toISOString();
+    const toDate = lecture.endsAt.toISOString();
+    const ISODate = DateTime.fromISO(fromDate).toISODate();
+    const item: AgendaItemInterface = {
+      fromDate: fromDate,
+      toDate: toDate,
+      title: lecture?.type,
+      content: lecture,
+      type: 'Booking',
+      classroom: lecture.roomName || ' - ',
     };
     pushItemToList(item, ISODate);
   });

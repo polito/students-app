@@ -14,6 +14,7 @@ import { mapAgendaItem } from '../../../core/agenda';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
+import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -30,6 +31,7 @@ export const AgendaScreen = () => {
   const styles = useStylesheet(createStyles);
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
+  const lecturesQuery = useGetLectures();
   const [viewedDate, setViewedDate] = useState<string>('');
   const flatListRef = useRef();
 
@@ -47,9 +49,10 @@ export const AgendaScreen = () => {
     return mapAgendaItem(
       examsQuery.data?.data || [],
       bookingsQuery.data?.data || [],
+      lecturesQuery.data?.data || [],
       colors,
     );
-  }, [examsQuery.data, bookingsQuery.data]);
+  }, [examsQuery.data, bookingsQuery.data, lecturesQuery.data]);
 
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
