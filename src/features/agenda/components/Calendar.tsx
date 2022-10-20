@@ -251,13 +251,21 @@ export const Calendar = forwardRef(
         <Animated.View
           style={[styles.topDays, { opacity: calendarDateOpacity }]}
         >
-          <Text style={styles.textDay}>{'Mon'}</Text>
-          <Text style={styles.textDay}>{'Tue'}</Text>
-          <Text style={styles.textDay}>{'Wed'}</Text>
-          <Text style={styles.textDay}>{'Thu'}</Text>
-          <Text style={styles.textDay}>{'Fri'}</Text>
-          <Text style={styles.textDay}>{'Sat'}</Text>
-          <Text style={styles.textDay}>{'Sun'}</Text>
+          <Row noFlex maxWidth spaceBetween alignCenter>
+            <Text style={styles.textMonthPreview}>
+              {DateTime.fromISO(viewedDate).toFormat('MMMM')}
+            </Text>
+            <Text style={styles.textGoToToday}>Torna a oggi</Text>
+          </Row>
+          <Row noFlex maxWidth spaceAround>
+            <Text style={styles.textDay}>{'Mon'}</Text>
+            <Text style={styles.textDay}>{'Tue'}</Text>
+            <Text style={styles.textDay}>{'Wed'}</Text>
+            <Text style={styles.textDay}>{'Thu'}</Text>
+            <Text style={styles.textDay}>{'Fri'}</Text>
+            <Text style={styles.textDay}>{'Sat'}</Text>
+            <Text style={styles.textDay}>{'Sun'}</Text>
+          </Row>
         </Animated.View>
       </View>
     );
@@ -377,12 +385,10 @@ const createItemStyles = ({ colors }: Theme) =>
     },
     topDays: {
       position: 'absolute',
-      top: 60,
+      top: 30,
       left: 0,
       right: 0,
       width: SCREEN_WIDTH,
-      flexDirection: 'row',
-      justifyContent: 'space-around',
       paddingHorizontal: Normalize(20),
       backgroundColor: 'white',
     },
@@ -407,7 +413,7 @@ const createItemStyles = ({ colors }: Theme) =>
       borderRadius: Normalize(9),
     },
     calendarContainer: {
-      marginTop: 45,
+      marginTop: 50,
     },
     calendar: {
       width: '100%',
@@ -421,7 +427,7 @@ const createItemStyles = ({ colors }: Theme) =>
     touchableDay: {
       width: DAY_DIMENSION,
       height: DAY_DIMENSION,
-      padding: 4,
+      padding: 5,
     },
     day: {
       alignItems: 'center',
@@ -437,11 +443,13 @@ const createItemStyles = ({ colors }: Theme) =>
       // borderRadius: Normalize(40),
     },
     isViewed: {
-      backgroundColor: 'blue',
-      borderRadius: Normalize(11),
+      backgroundColor: colors.secondary[500],
+      borderRadius: Normalize(30),
+      borderColor: colors.primary[400],
+      borderWidth: 1,
     },
     textTodayCalendar: {
-      color: 'white',
+      // color: 'white',
       // fontFamily: POPPINS_SEMI_BOLD,
     },
     textDayDisable: {
@@ -454,6 +462,15 @@ const createItemStyles = ({ colors }: Theme) =>
       color: 'black',
       minWidth: 30,
       textAlign: 'center',
+    },
+    textMonthPreview: {
+      color: colors.primary[700],
+      fontSize: 16,
+      marginBottom: 3,
+    },
+    textGoToToday: {
+      color: colors.primary[400],
+      fontSize: 12,
     },
     rowDots: {
       // position: 'absolute',
