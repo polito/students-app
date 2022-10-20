@@ -9,17 +9,19 @@ import { Theme } from '@lib/ui/types/theme';
 
 import { DateTime } from 'luxon';
 
-import { AgendaItem } from '../../../utils/types';
+import { AgendaDayInterface } from '../../../utils/types';
 
 export interface AgendaDayProps {
-  day: string;
-  items: AgendaItem[];
+  agendaDay: AgendaDayInterface;
 }
 
-export const AgendaDay = ({ day, items }: AgendaDayProps) => {
+export const AgendaDay = ({ agendaDay }: AgendaDayProps) => {
   const styles = useStylesheet(createStyles);
-  const formattedDay: string = DateTime.fromISO(day).toFormat('MMMM dd');
-  const weekDay: string = DateTime.fromISO(day).toFormat('EEEE');
+  const formattedDay: string = DateTime.fromISO(agendaDay.id).toFormat(
+    'MMMM dd',
+  );
+  const items = agendaDay.items;
+  const weekDay: string = DateTime.fromISO(agendaDay.id).toFormat('EEEE');
 
   return (
     <Col flexStart style={styles.agendaDay} noFlex>

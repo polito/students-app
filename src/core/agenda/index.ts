@@ -3,20 +3,32 @@ import { Booking, Exam } from '@polito-it/api-client';
 
 import { DateTime } from 'luxon';
 
-import { AgendaItem } from '../../utils/types';
+import { AgendaDayInterface, AgendaItemInterface } from '../../utils/types';
 
 export const mapAgendaItem = (
   exams: Exam[],
   bookings: Booking[],
   colors: Colors,
 ) => {
-  const events: Record<string, AgendaItem[]> = {};
+  const agendaDays: AgendaDayInterface[] = [];
+  console.log({ colors });
+  const pushItemToList = (item: AgendaItemInterface, ISODate: string) => {
+    const currentAgendaDayIndex = agendaDays.findIndex(ad => ad.id === ISODate);
+    if (currentAgendaDayIndex === -1) {
+      agendaDays.push({
+        id: ISODate,
+        items: [item],
+      });
+    } else {
+      agendaDays[currentAgendaDayIndex].items.push(item);
+    }
+  };
 
   exams.forEach(exam => {
     const fromDate = exam.examStartsAt.toISOString();
     const toDate = exam.bookingEndsAt?.toISOString();
-    const ISODate = DateTime.fromISO(fromDate).toISO();
-    const item: AgendaItem = {
+    const ISODate = DateTime.fromISO(fromDate).toISODate();
+    const item: AgendaItemInterface = {
       fromDate: fromDate,
       toDate: toDate,
       title: exam?.courseName,
@@ -24,15 +36,14 @@ export const mapAgendaItem = (
       type: 'Exam',
       classroom: exam?.classrooms,
     };
-    if (events[ISODate]) events[ISODate].push(item);
-    else events[ISODate] = [item];
+    pushItemToList(item, ISODate);
   });
 
   bookings.forEach(booking => {
     const fromDate = booking.startsAt.toISOString();
     const toDate = booking.endsAt.toISOString();
-    const ISODate = DateTime.fromISO(fromDate).toISO();
-    const item: AgendaItem = {
+    const ISODate = DateTime.fromISO(fromDate).toISODate();
+    const item: AgendaItemInterface = {
       fromDate: fromDate,
       toDate: toDate,
       title: booking?.topic?.title,
@@ -40,11 +51,10 @@ export const mapAgendaItem = (
       type: 'Booking',
       classroom: booking.location?.description || ' - ',
     };
-    if (events[ISODate]) events[ISODate].push(item);
-    else events[ISODate] = [item];
+    pushItemToList(item, ISODate);
   });
 
-  console.log('events', events);
+  console.log('agendaDays', agendaDays);
 
-  return events;
+  return agendaDays;
 };

@@ -2,29 +2,27 @@ import { useRef } from 'react';
 import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../utils/conts';
-
-// import { Calendar } from './Calendar';
+import { Calendar } from './Calendar';
 
 interface Props {
-  onPressDay: () => void;
+  onPressDay: (day: Date) => void;
+  viewedDate: string;
 }
 
 const defaultHeightPercentage = 10;
-const closedHeightPercentage = 5;
 const openedHeightPercentage = 70;
 export const DAY_DIMENSION = (SCREEN_WIDTH - 60) / 7;
 const HEIGHT_TO_HIDE_TOP_DATES = 100;
 const distanceFromTopToBottomCalendar = 110;
 
-export const DrawerCalendar = ({ onPressDay }: Props) => {
+export const DrawerCalendar = ({ onPressDay, viewedDate }: Props) => {
   const styles = useStylesheet(createItemStyles);
 
   const effectiveDefaultHeight =
     (SCREEN_HEIGHT / 100) * defaultHeightPercentage;
-  const effectiveClosedHeight = (SCREEN_HEIGHT / 100) * closedHeightPercentage;
   const effectiveOpenedHeight = (SCREEN_HEIGHT / 100) * openedHeightPercentage;
   const drawerHeight = useRef(
     new Animated.Value(effectiveDefaultHeight),
@@ -41,13 +39,8 @@ export const DrawerCalendar = ({ onPressDay }: Props) => {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {},
       onPanResponderMove: (evt, gestureState) => {
-        // console.log('drawerHeight', drawerHeight._value);
-        // console.log('dy', gestureState.dy);
-        // console.log('y0', gestureState.y0);
-        // console.log('moveY', gestureState.moveY);
-        const delta = gestureState.dy;
+        // const delta = gestureState.dy;
         const newHeight = gestureState.moveY - distanceFromTopToBottomCalendar;
-        /* console.log('newValue', newValue);*/
 
         Animated.timing(drawerHeight, {
           toValue: newHeight,
@@ -79,15 +72,15 @@ export const DrawerCalendar = ({ onPressDay }: Props) => {
           useNativeDriver: false,
         }).start();
       },
-      onPanResponderRelease: (evt, gestureState) => {
-        console.log({ drawerHeight });
+      onPanResponderRelease: () => {
+        // @ts-ignore
         const screenPercentage = (drawerHeight._value / SCREEN_HEIGHT) * 100;
-        console.log({ screenPercentage });
+        // console.log({ screenPercentage });
         const isOpen = screenPercentage > 50;
         finishAnimation(isOpen);
         setTimeout(() => {
           if (calendarRef) {
-            // calendarRef.current.scrollToToday();
+            calendarRef.current.scrollToToday();
           }
         }, 450);
       },
@@ -117,6 +110,13 @@ export const DrawerCalendar = ({ onPressDay }: Props) => {
     }).start();
   };
 
+  const onPressDayCalendar = (day: Date) => {
+    finishAnimation(false);
+    setTimeout(() => {
+      onPressDay(day);
+    }, 450);
+  };
+
   return (
     <Animated.View style={[styles.drawerContainer, { height: drawerHeight }]}>
       <View
@@ -127,14 +127,14 @@ export const DrawerCalendar = ({ onPressDay }: Props) => {
           overflow: 'hidden',
         }}
       >
-        {/* <Calendar*/}
-        {/*  ref={calendarRef}*/}
-        {/*  calendarDateOpacity={calendarDateOpacity}*/}
-        {/*  calendarContainerHeight={calendarContainerHeight}*/}
-        {/*  calendarInfoOpacity={calendarInfoOpacity}*/}
-        {/*  onPressDay={onPressDay}*/}
-        {/*  viewedDate={''}*/}
-        {/*/ >*/}
+        <Calendar
+          ref={calendarRef}
+          calendarDateOpacity={calendarDateOpacity}
+          calendarContainerHeight={calendarContainerHeight}
+          calendarInfoOpacity={calendarInfoOpacity}
+          onPressDay={onPressDayCalendar}
+          viewedDate={viewedDate}
+        />
 
         <View {...panResponder.panHandlers} style={styles.dragHandlerView}>
           <View style={styles.dragHandlerView2}>
@@ -150,7 +150,7 @@ export const DrawerCalendar = ({ onPressDay }: Props) => {
   );
 };
 
-const createItemStyles = ({ spacing }: Theme) =>
+const createItemStyles = () =>
   StyleSheet.create({
     drawerContainer: {
       position: 'absolute',

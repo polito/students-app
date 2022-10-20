@@ -4,7 +4,12 @@ export interface Object {
   [key: string]: any;
 }
 
-export interface AgendaItem {
+export interface AgendaDayInterface {
+  id: string;
+  items: AgendaItemInterface[];
+}
+
+export interface AgendaItemInterface {
   fromDate: string;
   toDate: string;
   title: string;

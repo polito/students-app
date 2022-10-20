@@ -9,14 +9,14 @@ import { Theme } from '@lib/ui/types/theme';
 
 import { DateTime } from 'luxon';
 
-import { AgendaItem } from '../../../src/utils/types';
+import { AgendaItemInterface } from '../../../src/utils/types';
 import { useTheme } from '../hooks/useTheme';
 import { Card, Props as CardProps } from './Card';
 import { LiveIndicator } from './LiveIndicator';
 import { Text } from './Text';
 
 interface Props {
-  item: AgendaItem;
+  item: AgendaItemInterface;
 }
 
 export const AgendaCard = ({

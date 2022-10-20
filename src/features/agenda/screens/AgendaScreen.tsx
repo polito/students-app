@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View, ViewToken } from 'react-native';
 
@@ -8,10 +8,13 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
+import { DateTime } from 'luxon';
+
 import { mapAgendaItem } from '../../../core/agenda';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
+import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
 
@@ -27,7 +30,8 @@ export const AgendaScreen = () => {
   const styles = useStylesheet(createStyles);
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
-  const [viewedData, setViewedData] = useState<string>();
+  const [viewedDate, setViewedDate] = useState<string>('');
+  const flatListRef = useRef();
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<
@@ -39,17 +43,13 @@ export const AgendaScreen = () => {
     deadlines: false,
   });
 
-  const agendaItems = useMemo(() => {
+  const agendaDays = useMemo(() => {
     return mapAgendaItem(
       examsQuery.data?.data || [],
       bookingsQuery.data?.data || [],
       colors,
     );
   }, [examsQuery.data, bookingsQuery.data]);
-
-  const agendaDays = useMemo(() => {
-    return Object.keys(agendaItems).sort();
-  }, [agendaItems]);
 
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
@@ -63,20 +63,40 @@ export const AgendaScreen = () => {
     changed: Array<ViewToken>;
   }) => {
     // console.log({ changed });
-    // console.log({ viewableItems: changed.viewableItems });
+    console.log({ viewableItems: changed.viewableItems });
     if (changed.viewableItems[0]) {
-      // const viewedDate = DateTime.fromFormat(changed.viewableItems[0].key, 'dd/MM/yyyy').toISODate() || DateTime.fromJSDate(new Date()).toISODate();
+      setViewedDate(changed.viewableItems[0].key);
     }
   };
 
-  const onPressCalendarDay = () => {};
+  const onPressCalendarDay = useCallback(
+    (day: Date) => {
+      const formattedDay = DateTime.fromJSDate(day).toISODate();
+      const agendaDayIndex = agendaDays.findIndex(
+        item => item.id === formattedDay,
+      );
+      console.log({ agendaDayIndex });
+      if (agendaDayIndex >= 0 && flatListRef && flatListRef.current) {
+        try {
+          // @ts-ignore
+          flatListRef.current.scrollToIndex({
+            animated: true,
+            index: agendaDayIndex,
+          });
+        } catch (e) {
+          console.log({ e });
+        }
+      }
+    },
+    [agendaDays, flatListRef],
+  );
 
   const viewabilityConfigCallbackPairs = useRef([
     { viewabilityConfig, onViewableItemsChanged },
   ]);
 
-  const renderItem = ({ item: day }: { item: string }) => {
-    return <AgendaDay day={day} items={agendaItems[day]} />;
+  const renderItem = ({ item }: { item: AgendaDayInterface }) => {
+    return <AgendaDay agendaDay={item} />;
   };
 
   return (
@@ -108,14 +128,16 @@ export const AgendaScreen = () => {
         </Tab>
       </Tabs>
       <FlatList
+        ref={flatListRef}
         style={styles.list}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         contentContainerStyle={[styles.listContainer, bottomBarAwareStyles]}
         data={agendaDays}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={renderItem}
+        keyExtractor={item => item.id}
       />
-      <DrawerCalendar onPressDay={onPressCalendarDay} />
+      <DrawerCalendar onPressDay={onPressCalendarDay} viewedDate={viewedDate} />
     </View>
   );
 };
