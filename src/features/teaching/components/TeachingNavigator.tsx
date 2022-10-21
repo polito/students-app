@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Logo } from '../../../core/components/Logo';
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
@@ -54,7 +54,7 @@ export const TeachingNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          headerLeft: () => <Logo />,
+          headerLeft: () => <HeaderLogo />,
           headerTitle: t('Teaching'),
         }}
       />

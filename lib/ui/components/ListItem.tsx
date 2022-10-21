@@ -78,6 +78,7 @@ export const ListItem = ({
               variant="title"
               style={{
                 fontSize: fontSizes.md,
+                lineHeight: fontSizes.md * 1.5,
               }}
               weight="normal"
               numberOfLines={1}
@@ -93,6 +94,7 @@ export const ListItem = ({
               variant="secondaryText"
               style={{
                 fontSize: fontSizes.sm,
+                lineHeight: fontSizes.sm * 1.5,
               }}
               numberOfLines={1}
               ellipsizeMode="tail"
