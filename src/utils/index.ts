@@ -1,3 +1,4 @@
+import { times } from 'lodash';
 import { DateTime } from 'luxon';
 
 export const isToday = (date: Date): boolean => {
@@ -23,4 +24,9 @@ export const weekDay = (date: Date, t: any): string => {
 export const fromDateToFormat = (date: Date, fmt = 'HH:mm'): string => {
   if (!date) return '';
   return DateTime.fromISO(date.toISOString()).toFormat(fmt);
+};
+
+export const weekDays = (): string[] => {
+  const now = DateTime.now();
+  return times(7, i => now.startOf('week').plus({ days: i }).toFormat('EEE'));
 };

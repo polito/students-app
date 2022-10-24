@@ -17,6 +17,7 @@ import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { useGetDeadlines } from '../../../core/queries/studentHooks';
+import { weekDays } from '../../../utils';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -37,7 +38,7 @@ export const AgendaScreen = () => {
   const deadlinesQuery = useGetDeadlines();
   const [viewedDate, setViewedDate] = useState<string>('');
   const flatListRef = useRef();
-
+  console.log('WEEK_DAYS', weekDays());
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<
     Record<string, boolean>

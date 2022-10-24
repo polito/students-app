@@ -1,11 +1,17 @@
 import React from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import { usePropsStyle } from '../../../src/utils/theme';
 
 export interface RowProps {
   children?: ViewStyle | ViewStyle[] | any;
-  style?: { [key: string]: any };
+  style?: StyleProp<ViewStyle>;
   pointerEvents?: string;
   alignStart?: boolean;
   alignCenter?: boolean;

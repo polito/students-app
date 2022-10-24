@@ -26,11 +26,12 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
 import _ from 'lodash';
-import { DateTime, Info } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { SCREEN_WIDTH } from '../../../utils/conts';
 import { AgendaDayInterface, AgendaItemInterface } from '../../../utils/types';
 import { CalendarService, Day } from './CalendarService';
+import { WeekDays } from './WeekDays';
 
 import Value = Animated.Value;
 
@@ -187,31 +188,8 @@ export const Calendar = forwardRef(
                 iconName={'chevron-forward-outline'}
                 onPress={onPressNextMonth}
               />
-              {/* <FontAwesomeIcon*/}
-              {/*  style={styles.icon}*/}
-              {/*  icon={'fas fa-chevron-left'}*/}
-              {/*  onPress={onPressPrevMonth}*/}
-              {/*/ >*/}
-              {/* <FontAwesomeIcon*/}
-              {/*  style={styles.icon}*/}
-              {/*  icon={'fas fa-chevron-right'}*/}
-              {/*  onPress={onPressNextMonth}*/}
-              {/*/ >*/}
             </Row>
-            <Row style={styles.headerDays}>
-              {Info.weekdays().map((week, index) => {
-                return (
-                  <Text style={styles.textDay}>
-                    {_.upperFirst(
-                      DateTime.now()
-                        .startOf('week')
-                        .plus({ day: index })
-                        .toFormat('EEE'),
-                    )}
-                  </Text>
-                );
-              })}
-            </Row>
+            <WeekDays style={styles.headerDays} />
           </Animated.View>
           <FlatList
             ref={flatListRef}
@@ -247,27 +225,14 @@ export const Calendar = forwardRef(
           style={[styles.topDays, { opacity: calendarDateOpacity }]}
         >
           <Row noFlex maxWidth spaceBetween alignCenter>
-            <Text style={styles.textMonthPreview}>
-              {_.upperFirst(DateTime.fromISO(viewedDate).toFormat('MMMM'))}
+            <Text style={styles.textMonthPreview} capitalize>
+              {DateTime.fromISO(viewedDate).toFormat('MMMM')}
             </Text>
             <Pressable onPress={() => onPressScrollToToday()}>
               <Text style={styles.textGoToToday}>{t('Back to today')}</Text>
             </Pressable>
           </Row>
-          <Row noFlex maxWidth spaceAround>
-            {Info.weekdays().map((week, index) => {
-              return (
-                <Text style={styles.textDay}>
-                  {_.upperFirst(
-                    DateTime.now()
-                      .startOf('week')
-                      .plus({ day: index })
-                      .toFormat('EEE'),
-                  )}
-                </Text>
-              );
-            })}
-          </Row>
+          <WeekDays />
         </Animated.View>
       </View>
     );
