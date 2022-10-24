@@ -39,7 +39,6 @@ export const AgendaScreen = () => {
   const flatListRef = useRef();
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  console.log('botttttom', bottomBarAwareStyles);
   const [selectedEventTypes, setSelectedEventTypes] = useState<
     Record<string, boolean>
   >({
