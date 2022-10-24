@@ -73,14 +73,11 @@ export const AgendaScreen = () => {
       .compact()
       .value();
 
-    console.log({ filters });
-
     if (!filters.length) {
       return toFilterAgendaDays;
     }
     return _.chain(toFilterAgendaDays)
       .map(agendaDay => {
-        console.log({ agendaDay });
         const agendaDayItems = agendaDay.items.filter(item =>
           filters.includes(item.type.toLowerCase()),
         );
@@ -105,8 +102,6 @@ export const AgendaScreen = () => {
     // });
   }, [toFilterAgendaDays, selectedEventTypes]);
 
-  console.log('agenda', agendaDays);
-
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
       ...types,
@@ -122,8 +117,7 @@ export const AgendaScreen = () => {
     viewableItems: Array<ViewToken>;
     changed: Array<ViewToken>;
   }) => {
-    // console.log({ changed });
-    console.log({ viewableItems: changed.viewableItems });
+    // console.log({ viewableItems: changed.viewableItems });
     if (changed.viewableItems[0]) {
       setViewedDate(changed.viewableItems[0].key);
     }
@@ -135,7 +129,6 @@ export const AgendaScreen = () => {
       const agendaDayIndex = agendaDays.findIndex(
         item => item.id === formattedDay,
       );
-      console.log({ agendaDayIndex });
       try {
         if (flatListRef && flatListRef.current) {
           if (agendaDayIndex >= 0) {
@@ -203,7 +196,7 @@ export const AgendaScreen = () => {
         ref={flatListRef}
         style={styles.list}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
-        contentContainerStyle={[styles.listContainer, bottomBarAwareStyles]}
+        contentContainerStyle={[bottomBarAwareStyles, styles.listContainer]}
         data={agendaDays}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={renderItem}
@@ -238,7 +231,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
     },
     listContainer: {
       padding: spacing[5],
-      paddingBottom: 120,
+      paddingBottom: 240,
     },
   });
 
@@ -255,15 +248,17 @@ const searchNearestIndexDate = (
     if (minDifference === null) {
       minDifference = difference;
     }
-    if (difference > minDifference && minDifference < 0) {
+    if (difference < minDifference && minDifference > 0) {
       minDifference = difference;
     } else {
-      if (difference < minDifference) {
+      if (difference > minDifference) {
         minDifference = difference;
       }
     }
     return difference;
   });
+
+  console.log('difff', minDifference, differences);
   return minDifference === null
     ? undefined
     : differences.findIndex(diff => diff === minDifference);

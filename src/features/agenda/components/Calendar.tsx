@@ -1,12 +1,14 @@
 import {
   ForwardedRef,
   forwardRef,
+  memo,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Animated,
   FlatList,
@@ -58,6 +60,7 @@ export const Calendar = forwardRef(
     }: Props,
     ref: ForwardedRef<any>,
   ) => {
+    const { t } = useTranslation();
     const styles = useStylesheet(createItemStyles);
     // const myFutureReservationsGrouped = useSelector(getMyFutureReservationGrouped);
     // const reservations: any[] = [];
@@ -172,7 +175,6 @@ export const Calendar = forwardRef(
           >
             <Row
               justifyCenter
-              spaceAround
               alignCenter
               style={{ marginBottom: Normalize(10), borderColor: 'blue' }}
             >
@@ -241,22 +243,6 @@ export const Calendar = forwardRef(
           />
         </Animated.View>
 
-        {/* <Col style={styles.calendar} noFlex>*/}
-        {/*  {weeks.map(week => {*/}
-        {/*    return (*/}
-        {/*      <Row spaceBetween width={'100%'}>*/}
-        {/*        {week.days.map(day => {*/}
-        {/*          return (*/}
-        {/*            <TouchableOpacity style={styles.day}>*/}
-        {/*              <Text>{day.monthDay}</Text>*/}
-        {/*            </TouchableOpacity>*/}
-        {/*          );*/}
-        {/*        })}*/}
-        {/*      </Row>*/}
-        {/*    );*/}
-        {/*  })}*/}
-        {/* </Col>*/}
-
         <Animated.View
           style={[styles.topDays, { opacity: calendarDateOpacity }]}
         >
@@ -265,7 +251,7 @@ export const Calendar = forwardRef(
               {_.upperFirst(DateTime.fromISO(viewedDate).toFormat('MMMM'))}
             </Text>
             <Pressable onPress={() => onPressScrollToToday()}>
-              <Text style={styles.textGoToToday}>Torna a oggi</Text>
+              <Text style={styles.textGoToToday}>{t('Back to today')}</Text>
             </Pressable>
           </Row>
           <Row noFlex maxWidth spaceAround>
@@ -322,76 +308,73 @@ const DOT_COLORS: Record<string, string> = {
   Exam: 'red',
   Lecture: 'green',
 };
-const RenderRow = ({
-  item,
-  formattedViewedDate,
-  onPressDay,
-  agendaDays,
-}: RowProp) => {
-  const styles = useStylesheet(createItemStyles);
+const RenderRow = memo(
+  ({ item, formattedViewedDate, onPressDay, agendaDays }: RowProp) => {
+    const styles = useStylesheet(createItemStyles);
 
-  return (
-    <Row spaceBetween width={'100%'}>
-      {item.days.map(day => {
-        const formattedDay = DateTime.fromJSDate(day.date).toISODate();
-        const isViewed = formattedDay === formattedViewedDate;
-        const isToday = DateTime.now().toISODate() === formattedDay;
+    return (
+      <Row spaceBetween width={'100%'}>
+        {item.days.map(day => {
+          const formattedDay = DateTime.fromJSDate(day.date).toISODate();
+          const isViewed = formattedDay === formattedViewedDate;
+          const isToday = DateTime.now().toISODate() === formattedDay;
 
-        const agendaDay = agendaDays.find(ad => ad.id === formattedDay);
-        let dots: string[] = [];
-        if (agendaDay && agendaDay.items.length) {
-          dots = agendaDay.items.map((agendaItem: AgendaItemInterface) => {
-            return DOT_COLORS[agendaItem.type];
-          });
-        }
-        // const dots = [];
-        // const disable = day.daysFromToday < 0 || day.daysFromToday > 90;
-        const disable = false;
-        return (
-          <TouchableOpacity
-            key={formattedDay}
-            style={styles.touchableDay}
-            onPress={() => onPressDay(day.date)}
-            disabled={disable}
-          >
-            <View
-              style={[
-                styles.day,
-                isToday && styles.today,
-                isViewed && styles.isViewed,
-              ]}
+          const agendaDay = agendaDays.find(ad => ad.id === formattedDay);
+          let dots: string[] = [];
+          if (agendaDay && agendaDay.items.length) {
+            dots = agendaDay.items.map((agendaItem: AgendaItemInterface) => {
+              return DOT_COLORS[agendaItem.type];
+            });
+          }
+          // const dots = [];
+          // const disable = day.daysFromToday < 0 || day.daysFromToday > 90;
+          const disable = false;
+          return (
+            <TouchableOpacity
+              key={formattedDay}
+              style={styles.touchableDay}
+              onPress={() => onPressDay(day.date)}
+              disabled={disable}
             >
-              <Text
+              <View
                 style={[
-                  styles.textDayCalendar,
-                  isViewed && styles.textTodayCalendar,
-                  disable && styles.textDayDisable,
+                  styles.day,
+                  isToday && styles.today,
+                  isViewed && styles.isViewed,
                 ]}
               >
-                {day.monthDay}
-              </Text>
-            </View>
-            <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
-              {dots.map((dot: string, index: number) => {
-                return (
-                  <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      {
-                        backgroundColor: dot,
-                      },
-                    ]}
-                  />
-                );
-              })}
-            </Row>
-          </TouchableOpacity>
-        );
-      })}
-    </Row>
-  );
-};
+                <Text
+                  style={[
+                    styles.textDayCalendar,
+                    isViewed && styles.textTodayCalendar,
+                    disable && styles.textDayDisable,
+                  ]}
+                >
+                  {day.monthDay}
+                </Text>
+              </View>
+              <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
+                {dots.map((dot: string, index: number) => {
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.dot,
+                        {
+                          backgroundColor: dot,
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </Row>
+            </TouchableOpacity>
+          );
+        })}
+      </Row>
+    );
+  },
+);
 
 const createItemStyles = ({ colors, fontWeights }: Theme) =>
   StyleSheet.create({
@@ -406,7 +389,6 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       right: 0,
       width: SCREEN_WIDTH,
       paddingHorizontal: Normalize(20),
-      backgroundColor: 'white',
     },
     extraInfo: {
       position: 'absolute',
@@ -421,6 +403,9 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
     month: {
       fontSize: Normalize(22),
       fontWeight: fontWeights.semibold,
+      color: colors.title,
+      width: SCREEN_WIDTH * 0.7,
+      textAlign: 'center',
     },
     icon: {
       borderColor: 'red',
@@ -429,7 +414,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       borderRadius: Normalize(9),
     },
     calendarContainer: {
-      marginTop: 50,
+      marginTop: 65,
     },
     calendar: {
       width: '100%',
@@ -452,7 +437,6 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       borderRadius: Normalize(30),
       width: DAY_DIMENSION * 0.6,
       height: DAY_DIMENSION * 0.6,
-      // flex: 1,
     },
     today: {
       borderRadius: Normalize(30),
@@ -471,7 +455,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       color: 'grey',
     },
     textDayCalendar: {
-      color: colors.primary[700],
+      color: colors.title,
       fontWeight: fontWeights.medium,
       fontSize: 12,
     },
@@ -484,7 +468,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       flex: 1,
     },
     textMonthPreview: {
-      color: colors.primary[700],
+      color: colors.title,
       fontSize: 16,
       marginBottom: 3,
       fontWeight: fontWeights.semibold,

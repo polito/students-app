@@ -89,7 +89,7 @@ export const AgendaCard = ({
   );
 };
 
-const createStyles = ({ spacing, colors, size }: Theme) =>
+const createStyles = ({ spacing, colors, size, fontSizes }: Theme) =>
   StyleSheet.create({
     rowBottom: {
       marginTop: size.sm,
@@ -106,15 +106,17 @@ const createStyles = ({ spacing, colors, size }: Theme) =>
     },
     title: {
       maxWidth: '50%',
-      color: colors.trueGray[700],
+      color: colors.title,
+      fontSize: fontSizes.lg,
     },
     agendaCard: {
       flex: 1,
       width: '100%',
-      borderWidth: 2,
-      marginTop: spacing['1.5'],
+      borderWidth: 3,
+      marginTop: spacing['2'],
     },
     agendaButtonStyle: {
-      padding: spacing[5],
+      padding: spacing[4],
+      paddingBottom: spacing[3],
     },
   });
