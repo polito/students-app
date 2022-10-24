@@ -249,15 +249,17 @@ const searchNearestIndexDate = (
     if (minDifference === null) {
       minDifference = difference;
     }
-    if (difference > minDifference && minDifference < 0) {
+    if (difference < minDifference && minDifference > 0) {
       minDifference = difference;
     } else {
-      if (difference < minDifference) {
+      if (difference > minDifference) {
         minDifference = difference;
       }
     }
     return difference;
   });
+
+  console.log('difff', minDifference, differences);
   return minDifference === null
     ? undefined
     : differences.findIndex(diff => diff === minDifference);
