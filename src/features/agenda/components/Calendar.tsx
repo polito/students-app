@@ -23,7 +23,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import { DateTime } from 'luxon';
+import _ from 'lodash';
+import { DateTime, Info } from 'luxon';
 
 import { SCREEN_WIDTH } from '../../../utils/conts';
 import { AgendaDayInterface, AgendaItemInterface } from '../../../utils/types';
@@ -38,6 +39,7 @@ interface Props {
   calendarInfoOpacity: Value;
   viewedDate: string;
   agendaDays: AgendaDayInterface[];
+  onPressScrollToToday: () => void;
 }
 
 const Normalize = (n: number) => n;
@@ -52,6 +54,7 @@ export const Calendar = forwardRef(
       onPressDay,
       viewedDate,
       agendaDays,
+      onPressScrollToToday,
     }: Props,
     ref: ForwardedRef<any>,
   ) => {
@@ -149,9 +152,11 @@ export const Calendar = forwardRef(
     // }, [reservations]);
 
     const month = useMemo(() => {
-      return DateTime.fromJSDate(
-        weeks.length ? weeks[1].days[6].date : '',
-      ).toFormat('MMMM yyyy');
+      return _.upperFirst(
+        DateTime.fromJSDate(weeks.length ? weeks[1].days[6].date : '').toFormat(
+          'MMMM yyyy',
+        ),
+      );
     }, [weeks]);
 
     return (
@@ -192,13 +197,18 @@ export const Calendar = forwardRef(
               {/*/ >*/}
             </Row>
             <Row style={styles.headerDays}>
-              <Text style={styles.textDay}>{'Mon'}</Text>
-              <Text style={styles.textDay}>{'Tue'}</Text>
-              <Text style={styles.textDay}>{'Wed'}</Text>
-              <Text style={styles.textDay}>{'Thu'}</Text>
-              <Text style={styles.textDay}>{'Fri'}</Text>
-              <Text style={styles.textDay}>{'Sat'}</Text>
-              <Text style={styles.textDay}>{'Sun'}</Text>
+              {Info.weekdays().map((week, index) => {
+                return (
+                  <Text style={styles.textDay}>
+                    {_.upperFirst(
+                      DateTime.now()
+                        .startOf('week')
+                        .plus({ day: index })
+                        .toFormat('EEE'),
+                    )}
+                  </Text>
+                );
+              })}
             </Row>
           </Animated.View>
           <FlatList
@@ -252,18 +262,25 @@ export const Calendar = forwardRef(
         >
           <Row noFlex maxWidth spaceBetween alignCenter>
             <Text style={styles.textMonthPreview}>
-              {DateTime.fromISO(viewedDate).toFormat('MMMM')}
+              {_.upperFirst(DateTime.fromISO(viewedDate).toFormat('MMMM'))}
             </Text>
-            <Text style={styles.textGoToToday}>Torna a oggi</Text>
+            <Pressable onPress={() => onPressScrollToToday()}>
+              <Text style={styles.textGoToToday}>Torna a oggi</Text>
+            </Pressable>
           </Row>
           <Row noFlex maxWidth spaceAround>
-            <Text style={styles.textDay}>{'Mon'}</Text>
-            <Text style={styles.textDay}>{'Tue'}</Text>
-            <Text style={styles.textDay}>{'Wed'}</Text>
-            <Text style={styles.textDay}>{'Thu'}</Text>
-            <Text style={styles.textDay}>{'Fri'}</Text>
-            <Text style={styles.textDay}>{'Sat'}</Text>
-            <Text style={styles.textDay}>{'Sun'}</Text>
+            {Info.weekdays().map((week, index) => {
+              return (
+                <Text style={styles.textDay}>
+                  {_.upperFirst(
+                    DateTime.now()
+                      .startOf('week')
+                      .plus({ day: index })
+                      .toFormat('EEE'),
+                  )}
+                </Text>
+              );
+            })}
           </Row>
         </Animated.View>
       </View>
@@ -353,21 +370,21 @@ const RenderRow = ({
               >
                 {day.monthDay}
               </Text>
-              <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
-                {dots.map((dot: string) => {
-                  return (
-                    <View
-                      style={[
-                        styles.dot,
-                        {
-                          backgroundColor: dot,
-                        },
-                      ]}
-                    />
-                  );
-                })}
-              </Row>
             </View>
+            <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
+              {dots.map((dot: string) => {
+                return (
+                  <View
+                    style={[
+                      styles.dot,
+                      {
+                        backgroundColor: dot,
+                      },
+                    ]}
+                  />
+                );
+              })}
+            </Row>
           </TouchableOpacity>
         );
       })}
@@ -375,7 +392,7 @@ const RenderRow = ({
   );
 };
 
-const createItemStyles = ({ colors }: Theme) =>
+const createItemStyles = ({ colors, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -402,7 +419,7 @@ const createItemStyles = ({ colors }: Theme) =>
     },
     month: {
       fontSize: Normalize(22),
-      // fontFamily: POPPINS_MEDIUM,
+      fontWeight: fontWeights.semibold,
     },
     icon: {
       borderColor: 'red',
@@ -425,13 +442,16 @@ const createItemStyles = ({ colors }: Theme) =>
     touchableDay: {
       width: DAY_DIMENSION,
       height: DAY_DIMENSION,
-      padding: 5,
+      alignItems: 'center',
+      paddingTop: 5,
     },
     day: {
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: Normalize(11),
-      flex: 1,
+      borderRadius: Normalize(30),
+      width: DAY_DIMENSION * 0.6,
+      height: DAY_DIMENSION * 0.6,
+      // flex: 1,
     },
     today: {
       borderRadius: Normalize(30),
@@ -450,20 +470,27 @@ const createItemStyles = ({ colors }: Theme) =>
       color: 'grey',
     },
     textDayCalendar: {
-      color: 'black',
+      color: colors.primary[700],
+      fontWeight: fontWeights.medium,
+      fontSize: 12,
     },
     textDay: {
-      color: 'black',
+      color: colors.text[600],
       minWidth: 30,
+      fontSize: 14,
       textAlign: 'center',
+      fontWeight: fontWeights.semibold,
+      flex: 1,
     },
     textMonthPreview: {
       color: colors.primary[700],
       fontSize: 16,
       marginBottom: 3,
+      fontWeight: fontWeights.semibold,
     },
     textGoToToday: {
       color: colors.primary[400],
+      fontWeight: fontWeights.normal,
       fontSize: 12,
     },
     rowDots: {
@@ -473,8 +500,8 @@ const createItemStyles = ({ colors }: Theme) =>
       // backgroundColor: 'blue',
     },
     dot: {
-      width: Normalize(4),
-      height: Normalize(4),
+      width: Normalize(5),
+      height: Normalize(5),
       borderRadius: Normalize(5),
       marginHorizontal: 1,
     },

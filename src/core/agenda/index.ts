@@ -91,6 +91,6 @@ export const mapAgendaItem = (
   // return agendaDays.sort();
 
   return agendaDays.sort(function (a, b) {
-    return DateTime.fromISO(a.id) < DateTime.fromISO(b.id) ? 1 : -1;
+    return DateTime.fromISO(a.id) < DateTime.fromISO(b.id) ? -1 : 1;
   });
 };

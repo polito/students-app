@@ -23,7 +23,7 @@ import { DrawerCalendar } from '../components/DrawerCalendar';
 
 const viewabilityConfig = {
   // minimumViewTime: 100,
-  viewAreaCoveragePercentThreshold: 30,
+  viewAreaCoveragePercentThreshold: 15,
   waitForInteraction: false,
 };
 
@@ -114,6 +114,10 @@ export const AgendaScreen = () => {
     }));
   };
 
+  const onPressScrollToToday = () => {
+    onPressCalendarDay(new Date());
+  };
+
   const onViewableItemsChanged = (changed: {
     viewableItems: Array<ViewToken>;
     changed: Array<ViewToken>;
@@ -132,16 +136,28 @@ export const AgendaScreen = () => {
         item => item.id === formattedDay,
       );
       console.log({ agendaDayIndex });
-      if (agendaDayIndex >= 0 && flatListRef && flatListRef.current) {
-        try {
-          // @ts-ignore
-          flatListRef.current.scrollToIndex({
-            animated: true,
-            index: agendaDayIndex,
-          });
-        } catch (e) {
-          console.log({ e });
+      try {
+        if (flatListRef && flatListRef.current) {
+          if (agendaDayIndex >= 0) {
+            // @ts-ignore
+            flatListRef.current.scrollToIndex({
+              animated: true,
+              index: agendaDayIndex,
+            });
+          } else {
+            const index = searchNearestIndexDate(agendaDays, day);
+            if (index === undefined) {
+              return;
+            }
+            // @ts-ignore
+            flatListRef.current.scrollToIndex({
+              animated: true,
+              index: index,
+            });
+          }
         }
+      } catch (e) {
+        console.log({ e });
       }
     },
     [agendaDays, flatListRef],
@@ -197,6 +213,7 @@ export const AgendaScreen = () => {
         onPressDay={onPressCalendarDay}
         viewedDate={viewedDate}
         agendaDays={agendaDays}
+        onPressScrollToToday={onPressScrollToToday}
       />
     </View>
   );
@@ -215,9 +232,39 @@ const createStyles = ({ colors, spacing }: Theme) =>
       zIndex: 1,
     },
     container: { flex: 1 },
-    list: { flex: 1 },
-    listContainer: {
-      padding: spacing[5],
+    list: {
+      flex: 1,
       paddingTop: 120,
     },
+    listContainer: {
+      padding: spacing[5],
+      paddingBottom: 120,
+    },
   });
+
+const searchNearestIndexDate = (
+  agendaDays: AgendaDayInterface[],
+  date: Date,
+) => {
+  const luxonDate = DateTime.fromJSDate(date);
+  let minDifference: null | number = null;
+  const differences = agendaDays.map(agendaDay => {
+    const difference = luxonDate.diff(
+      DateTime.fromISO(agendaDay.id),
+    ).milliseconds;
+    if (minDifference === null) {
+      minDifference = difference;
+    }
+    if (difference > minDifference && minDifference < 0) {
+      minDifference = difference;
+    } else {
+      if (difference < minDifference) {
+        minDifference = difference;
+      }
+    }
+    return difference;
+  });
+  return minDifference === null
+    ? undefined
+    : differences.findIndex(diff => diff === minDifference);
+};

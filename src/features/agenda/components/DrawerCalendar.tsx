@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/theme';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../utils/conts';
 import { AgendaDayInterface } from '../../../utils/types';
@@ -11,6 +12,7 @@ interface Props {
   onPressDay: (day: Date) => void;
   viewedDate: string;
   agendaDays: AgendaDayInterface[];
+  onPressScrollToToday: () => void;
 }
 
 const effectiveDefaultHeight = 140;
@@ -23,6 +25,7 @@ export const DrawerCalendar = ({
   onPressDay,
   viewedDate,
   agendaDays,
+  onPressScrollToToday,
 }: Props) => {
   const styles = useStylesheet(createItemStyles);
 
@@ -138,6 +141,7 @@ export const DrawerCalendar = ({
           onPressDay={onPressDayCalendar}
           viewedDate={viewedDate}
           agendaDays={agendaDays}
+          onPressScrollToToday={onPressScrollToToday}
         />
 
         <View {...panResponder.panHandlers} style={styles.dragHandlerView}>
@@ -154,7 +158,7 @@ export const DrawerCalendar = ({
   );
 };
 
-const createItemStyles = () =>
+const createItemStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     drawerContainer: {
       position: 'absolute',
@@ -166,6 +170,15 @@ const createItemStyles = () =>
       // top: 0,
       borderBottomLeftRadius: 30,
       borderBottomRightRadius: 30,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.29,
+      shadowRadius: 4.65,
+
+      elevation: 7,
     },
     dragHandlerView: {
       position: 'absolute',
@@ -179,7 +192,7 @@ const createItemStyles = () =>
       alignItems: 'flex-start',
       justifyContent: 'center',
       borderColor: 'rgb(243, 244, 246)',
-      borderBottomWidth: 6,
+      // borderBottomWidth: 6,
       borderTopWidth: 0,
     },
     dragHandlerView2: {
@@ -189,9 +202,9 @@ const createItemStyles = () =>
       justifyContent: 'center',
     },
     toggle: {
-      height: 7,
+      height: 5,
       borderRadius: 5,
-      width: 40,
-      backgroundColor: '#DADBDC',
+      width: 35,
+      backgroundColor: colors.primary[700],
     },
   });
