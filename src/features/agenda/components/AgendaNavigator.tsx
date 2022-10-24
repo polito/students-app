@@ -7,12 +7,15 @@ import { Logo } from '../../../core/components/Logo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
+import { BookingScreen } from '../screens/BookingScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
 export type AgendaStackParamList = {
   Agenda: undefined;
   Lecture: { id: number };
   Exam: { id: number };
+  Deadline: { id: number };
+  Booking: { id: number };
 };
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
@@ -49,6 +52,13 @@ export const AgendaNavigator = () => {
       <Stack.Screen
         name="Exam"
         component={ExamScreen}
+        options={{
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="Booking"
+        component={BookingScreen}
         options={{
           headerLargeTitle: false,
         }}

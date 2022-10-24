@@ -37,24 +37,12 @@ export const AgendaCard = ({
 
   const onPressCard = (): void => {
     console.log('item', item);
-
-    if (item.type === 'Lecture') {
-      navigation.navigate({
-        name: 'Lecture',
-        params: {
-          lecture: item.content,
-        },
-      });
-    }
-
-    if (item.type === 'Exam') {
-      navigation.navigate({
-        name: 'Exam',
-        params: {
-          id: item.content.id,
-        },
-      });
-    }
+    navigation.navigate({
+      name: item.type,
+      params: {
+        id: item.content.id,
+      },
+    });
   };
 
   return (
