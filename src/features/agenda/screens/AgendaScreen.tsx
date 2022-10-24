@@ -8,6 +8,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
+import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import { mapAgendaItem } from '../../../core/agenda';
@@ -15,6 +16,7 @@ import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareSt
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
+import { useGetDeadlines } from '../../../core/queries/studentHooks';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -32,6 +34,7 @@ export const AgendaScreen = () => {
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
   const lecturesQuery = useGetLectures();
+  const deadlinesQuery = useGetDeadlines();
   const [viewedDate, setViewedDate] = useState<string>('');
   const flatListRef = useRef();
 
@@ -39,20 +42,70 @@ export const AgendaScreen = () => {
   const [selectedEventTypes, setSelectedEventTypes] = useState<
     Record<string, boolean>
   >({
-    lectures: false,
-    exams: false,
-    bookings: false,
+    lecture: false,
+    exam: false,
+    booking: false,
     deadlines: false,
   });
 
-  const agendaDays = useMemo(() => {
+  const toFilterAgendaDays = useMemo(() => {
     return mapAgendaItem(
       examsQuery.data?.data || [],
       bookingsQuery.data?.data || [],
       lecturesQuery.data?.data || [],
+      deadlinesQuery.data?.data || [],
       colors,
     );
-  }, [examsQuery.data, bookingsQuery.data, lecturesQuery.data]);
+  }, [
+    examsQuery.data,
+    bookingsQuery.data,
+    lecturesQuery.data,
+    deadlinesQuery.data,
+  ]);
+
+  const agendaDays = useMemo(() => {
+    const filters = _.chain(selectedEventTypes)
+      .map((value, key) => {
+        if (value) {
+          return key;
+        }
+      })
+      .compact()
+      .value();
+
+    console.log({ filters });
+
+    if (!filters.length) {
+      return toFilterAgendaDays;
+    }
+    return _.chain(toFilterAgendaDays)
+      .map(agendaDay => {
+        console.log({ agendaDay });
+        const agendaDayItems = agendaDay.items.filter(item =>
+          filters.includes(item.type.toLowerCase()),
+        );
+        if (agendaDayItems.length) {
+          return {
+            ...agendaDay,
+            items: agendaDay.items.filter(item =>
+              filters.includes(item.type.toLowerCase()),
+            ),
+          };
+        }
+      })
+      .compact()
+      .value();
+    // return toFilterAgendaDays.map(agendaDay => {
+    //   return {
+    //     ...agendaDay,
+    //     items: agendaDay.items.filter(item =>
+    //       filters.includes(item.type.toLowerCase()),
+    //     ),
+    //   };
+    // });
+  }, [toFilterAgendaDays, selectedEventTypes]);
+
+  console.log('agenda', agendaDays);
 
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
@@ -106,26 +159,26 @@ export const AgendaScreen = () => {
     <View style={styles.container}>
       <Tabs style={styles.tabs}>
         <Tab
-          selected={selectedEventTypes.lectures}
-          onPress={() => onSelectTab('lectures')}
+          selected={selectedEventTypes.lecture}
+          onPress={() => onSelectTab('lecture')}
         >
           {t('Lectures')}
         </Tab>
         <Tab
-          selected={selectedEventTypes.exams}
-          onPress={() => onSelectTab('exams')}
+          selected={selectedEventTypes.exam}
+          onPress={() => onSelectTab('exam')}
         >
           {t('Exams')}
         </Tab>
         <Tab
-          selected={selectedEventTypes.bookings}
-          onPress={() => onSelectTab('bookings')}
+          selected={selectedEventTypes.booking}
+          onPress={() => onSelectTab('booking')}
         >
           {t('Bookings')}
         </Tab>
         <Tab
-          selected={selectedEventTypes.deadlines}
-          onPress={() => onSelectTab('deadlines')}
+          selected={selectedEventTypes.deadline}
+          onPress={() => onSelectTab('deadline')}
         >
           {t('Deadlines')}
         </Tab>

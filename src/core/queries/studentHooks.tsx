@@ -24,3 +24,9 @@ export const useGetGrades = () => {
 
   return useQuery([GRADES_QUERY_KEY], () => studentClient.getStudentGrades());
 };
+
+export const useGetDeadlines = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery([GRADES_QUERY_KEY], () => studentClient.getDeadlines());
+};

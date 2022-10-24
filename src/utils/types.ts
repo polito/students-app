@@ -14,6 +14,6 @@ export interface AgendaItemInterface {
   toDate: string;
   title: string;
   classroom?: string;
-  type: 'Exam' | 'Booking' | 'Lecture';
+  type: 'Exam' | 'Booking' | 'Lecture' | 'Deadline';
   content: Exam | Booking;
 }

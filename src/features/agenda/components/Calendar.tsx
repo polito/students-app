@@ -95,7 +95,6 @@ export const Calendar = forwardRef(
           week.days.forEach((day: Day) => {
             const isToday =
               DateTime.fromJSDate(day.date).toISODate() === viewedDate;
-            console.log('isToday', isToday);
             if (isToday) {
               try {
                 flatListRef.current.scrollToIndex({
@@ -301,7 +300,7 @@ interface RowProp {
   agendaDays: AgendaDayInterface[];
 }
 
-const DOT_COLORS = {
+const DOT_COLORS: Record<string, string> = {
   Booking: 'blue',
   Exam: 'red',
   Lecture: 'green',
@@ -317,7 +316,6 @@ const RenderRow = ({
   return (
     <Row spaceBetween width={'100%'}>
       {item.days.map(day => {
-        console.log('day', day);
         const formattedDay = DateTime.fromJSDate(day.date).toISODate();
         const isViewed = formattedDay === formattedViewedDate;
         const isToday = DateTime.now().toISODate() === formattedDay;
@@ -434,19 +432,15 @@ const createItemStyles = ({ colors }: Theme) =>
       justifyContent: 'center',
       borderRadius: Normalize(11),
       flex: 1,
-      // marginHorizontal: Normalize(5),
     },
     today: {
-      backgroundColor: colors.secondary[500],
-      borderRadius: Normalize(50),
-      // backgroundColor: PRIMARY_COLOR,
-      // borderRadius: Normalize(40),
+      borderRadius: Normalize(30),
+      borderColor: colors.primary[400],
+      borderWidth: 1,
     },
     isViewed: {
       backgroundColor: colors.secondary[500],
       borderRadius: Normalize(30),
-      borderColor: colors.primary[400],
-      borderWidth: 1,
     },
     textTodayCalendar: {
       // color: 'white',
