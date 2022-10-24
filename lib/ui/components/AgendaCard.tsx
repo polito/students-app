@@ -40,10 +40,12 @@ export const AgendaCard = ({
     console.log('item', item);
 
     if (item.type === 'Deadline') {
+      const deadline: Deadline = item.content as Deadline;
       navigation.navigate({
         name: item.type,
         params: {
-          deadline: item.content as Deadline,
+          type: deadline.type,
+          date: deadline?.endsAt ? deadline.endsAt.toISOString() : null,
         },
       });
       return;

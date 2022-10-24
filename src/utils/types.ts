@@ -1,8 +1,4 @@
-import { Booking, Exam } from '@polito-it/api-client';
-
-export interface Object {
-  [key: string]: any;
-}
+import { Booking, Exam, Lecture } from '@polito-it/api-client';
 
 export interface AgendaDayInterface {
   id: string;
@@ -15,5 +11,5 @@ export interface AgendaItemInterface {
   title: string;
   classroom?: string;
   type: 'Exam' | 'Booking' | 'Lecture' | 'Deadline';
-  content: Exam | Booking;
+  content: Exam | Booking | Lecture;
 }

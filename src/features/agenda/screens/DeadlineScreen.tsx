@@ -12,17 +12,22 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useGetDeadlines } from '../../../core/queries/studentHooks';
 import { fromDateToFormat, weekDay } from '../../../utils';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Deadline'>;
 
 export const DeadlineScreen = ({ route }: Props) => {
-  const { deadline } = route.params;
+  const { date, type } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
+  const deadlinesQuery = useGetDeadlines();
+  const deadline = deadlinesQuery.data?.data.find(e => {
+    return e?.type === type && e?.endsAt.toISOString() === date;
+  });
 
   const timeLabel = useMemo(() => {
     const endsAtDate = fromDateToFormat(deadline?.endsAt);

@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Deadline } from '@polito-it/api-client';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../../core/components/Logo';
@@ -16,7 +15,7 @@ export type AgendaStackParamList = {
   Agenda: undefined;
   Lecture: { id: number };
   Exam: { id: number };
-  Deadline: { deadline: Deadline };
+  Deadline: { type: string; date: string };
   Booking: { id: number };
 };
 
