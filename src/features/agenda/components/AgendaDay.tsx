@@ -42,13 +42,14 @@ export const AgendaDay = ({ agendaDay }: AgendaDayProps) => {
   );
 };
 
-const createStyles = ({ spacing, colors }: Theme) =>
+const createStyles = ({ spacing, colors, fontWeights }: Theme) =>
   StyleSheet.create({
     agendaDay: {
       padding: 2,
     },
     day: {
       textAlign: 'left',
+      fontWeight: fontWeights.medium,
     },
     weekDay: {
       paddingLeft: spacing['3'],
