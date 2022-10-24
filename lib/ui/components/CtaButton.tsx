@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -14,7 +15,9 @@ interface Props extends TouchableOpacityProps {
   title: string;
   loading?: boolean;
   success?: boolean;
+  icon?: string;
   successMessage?: string;
+  onSuccess?: () => void;
 }
 
 export const CtaButton = ({
@@ -23,6 +26,8 @@ export const CtaButton = ({
   loading,
   success,
   successMessage,
+  icon,
+  onSuccess,
   ...rest
 }: Props) => {
   const { colors, spacing, shapes, fontSizes } = useTheme();
@@ -31,7 +36,10 @@ export const CtaButton = ({
   useEffect(() => {
     if (success) {
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 2000);
+      onSuccess && onSuccess();
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
     }
   }, [success]);
 
@@ -57,20 +65,42 @@ export const CtaButton = ({
         <View style={{ flexDirection: 'row' }}>
           <Icon
             name="checkmark-circle-outline"
-            color={colors.prose}
+            color={colors.trueGray[50]}
             size={fontSizes['2xl']}
             style={{ marginVertical: -2, marginRight: spacing[2] }}
           />
           {successMessage && (
-            <Text style={{ fontSize: fontSizes.md, textAlign: 'center' }}>
+            <Text
+              style={{
+                fontSize: fontSizes.md,
+                textAlign: 'center',
+                color: colors.trueGray[50],
+              }}
+            >
               {successMessage}
             </Text>
           )}
         </View>
       ) : (
-        <Text style={{ fontSize: fontSizes.md, textAlign: 'center' }}>
-          {title}
-        </Text>
+        <Row>
+          {icon && (
+            <Icon
+              name={icon}
+              color={colors.trueGray[50]}
+              size={fontSizes['2xl']}
+              style={{ marginVertical: -2, marginRight: spacing[2] }}
+            />
+          )}
+          <Text
+            style={{
+              fontSize: fontSizes.md,
+              textAlign: 'center',
+              color: colors.trueGray[50],
+            }}
+          >
+            {title}
+          </Text>
+        </Row>
       )}
     </TouchableOpacity>
   );

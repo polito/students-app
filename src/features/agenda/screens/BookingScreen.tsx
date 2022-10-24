@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Card } from '@lib/ui/components/Card';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -13,6 +14,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -20,7 +22,10 @@ import { DateTime } from 'luxon';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetBookings } from '../../../core/queries/bookingHooks';
+import {
+  useDeleteBooking,
+  useGetBookings,
+} from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { weekDay } from '../../../utils';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
@@ -31,18 +36,20 @@ export const BookingScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes, spacing } = useTheme();
+  const bottomBarHeight = useBottomTabBarHeight();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const bookingsQuery = useGetBookings();
+  const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
   const styles = useStylesheet(createStyles);
   const booking = bookingsQuery.data?.data.find(e => e.id === id);
 
   const title = booking?.topic?.title;
   const timeLabel = useMemo(() => {
-    const fromDate = DateTime.fromISO(booking.startsAt.toISOString()).toFormat(
+    const fromDate = DateTime.fromISO(booking?.startsAt.toISOString()).toFormat(
       'HH:mm',
     );
-    const toDate = DateTime.fromISO(booking.endsAt.toISOString()).toFormat(
+    const toDate = DateTime.fromISO(booking?.endsAt.toISOString()).toFormat(
       'HH:mm',
     );
     return `${weekDay(booking.startsAt, t)},  ${fromDate} - ${toDate}`;
@@ -50,6 +57,10 @@ export const BookingScreen = ({ route, navigation }: Props) => {
 
   const onPressLocation = () => {
     console.log('onPressLocation');
+  };
+
+  const onPressDelete = () => {
+    bookingMutation.mutate();
   };
 
   return (
@@ -94,12 +105,37 @@ export const BookingScreen = ({ route, navigation }: Props) => {
           </Card>
         </Section>
       </ScrollView>
+      {/* {bookingMutation.isIdle && (*/}
+      <View
+        style={{
+          ...styles.bottomRow,
+          marginBottom: bottomBarHeight,
+        }}
+      >
+        <CtaButton
+          icon={'close'}
+          title={t('Delete Booking')}
+          onPress={onPressDelete}
+          loading={bookingMutation.isLoading}
+          success={bookingMutation.isSuccess}
+          successMessage={t('Exam booked')}
+          onSuccess={() => navigation.goBack()}
+        />
+      </View>
+      {/* )}*/}
     </>
   );
 };
 
 const createStyles = ({ spacing, colors, size }: Theme) =>
   StyleSheet.create({
+    bottomRow: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      padding: spacing[4],
+    },
     barcode: {},
     barCodeCard: {
       width: '100%',
