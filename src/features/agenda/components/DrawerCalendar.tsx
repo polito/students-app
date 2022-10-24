@@ -1,5 +1,12 @@
 import { useRef } from 'react';
-import { Animated, PanResponder, StyleSheet, View } from 'react-native';
+import {
+  Animated,
+  PanResponder,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -19,7 +26,8 @@ const effectiveDefaultHeight = 140;
 const openedHeightPercentage = 70;
 export const DAY_DIMENSION = (SCREEN_WIDTH - 60) / 7;
 const HEIGHT_TO_HIDE_TOP_DATES = 100;
-const distanceFromTopToBottomCalendar = 110;
+const distanceFromTopToBottomCalendar =
+  Platform.OS === 'ios' ? 110 : 110 - StatusBar.currentHeight;
 
 export const DrawerCalendar = ({
   onPressDay,
@@ -125,31 +133,23 @@ export const DrawerCalendar = ({
 
   return (
     <Animated.View style={[styles.drawerContainer, { height: drawerHeight }]}>
-      <View
-        style={{
-          height: '100%',
-          width: SCREEN_WIDTH,
-          backgroundColor: 'white',
-          overflow: 'hidden',
-        }}
-      >
-        <Calendar
-          ref={calendarRef}
-          calendarDateOpacity={calendarDateOpacity}
-          calendarContainerHeight={calendarContainerHeight}
-          calendarInfoOpacity={calendarInfoOpacity}
-          onPressDay={onPressDayCalendar}
-          viewedDate={viewedDate}
-          agendaDays={agendaDays}
-          onPressScrollToToday={onPressScrollToToday}
-        />
+      <Calendar
+        ref={calendarRef}
+        calendarDateOpacity={calendarDateOpacity}
+        calendarContainerHeight={calendarContainerHeight}
+        calendarInfoOpacity={calendarInfoOpacity}
+        onPressDay={onPressDayCalendar}
+        viewedDate={viewedDate}
+        agendaDays={agendaDays}
+        onPressScrollToToday={onPressScrollToToday}
+      />
 
-        <View {...panResponder.panHandlers} style={styles.dragHandlerView}>
-          <View style={styles.dragHandlerView2}>
-            <View style={styles.toggle} />
-          </View>
+      <View {...panResponder.panHandlers} style={styles.dragHandlerView}>
+        <View style={styles.dragHandlerView2}>
+          <View style={styles.toggle} />
         </View>
       </View>
+      {/* </View>*/}
 
       {/* <ScrollView scrollEventThrottle={100} onScrollEndDrag={onScroll} bounces={false} scrollEnabled={opened} style={styles.drawerContent}>*/}
       {/*  {children}*/}
@@ -166,10 +166,7 @@ const createItemStyles = ({ colors }: Theme) =>
       right: 0,
       top: 0,
       marginTop: 20,
-      backgroundColor: 'white',
       // top: 0,
-      borderBottomLeftRadius: 30,
-      borderBottomRightRadius: 30,
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
@@ -179,6 +176,10 @@ const createItemStyles = ({ colors }: Theme) =>
       shadowRadius: 4.65,
 
       elevation: 7,
+
+      overflow: 'hidden',
+      width: SCREEN_WIDTH,
+      backgroundColor: colors.surface,
     },
     dragHandlerView: {
       position: 'absolute',
@@ -202,7 +203,7 @@ const createItemStyles = ({ colors }: Theme) =>
       justifyContent: 'center',
     },
     toggle: {
-      height: 4,
+      height: 5,
       borderRadius: 5,
       width: 35,
       backgroundColor: colors.primary[700],

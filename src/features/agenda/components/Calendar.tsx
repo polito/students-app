@@ -389,7 +389,6 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       right: 0,
       width: SCREEN_WIDTH,
       paddingHorizontal: Normalize(20),
-      backgroundColor: 'white',
     },
     extraInfo: {
       position: 'absolute',
@@ -404,6 +403,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
     month: {
       fontSize: Normalize(22),
       fontWeight: fontWeights.semibold,
+      color: colors.title,
     },
     icon: {
       borderColor: 'red',
@@ -412,7 +412,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       borderRadius: Normalize(9),
     },
     calendarContainer: {
-      marginTop: 50,
+      marginTop: 65,
     },
     calendar: {
       width: '100%',
@@ -435,7 +435,6 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       borderRadius: Normalize(30),
       width: DAY_DIMENSION * 0.6,
       height: DAY_DIMENSION * 0.6,
-      // flex: 1,
     },
     today: {
       borderRadius: Normalize(30),
@@ -454,7 +453,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       color: 'grey',
     },
     textDayCalendar: {
-      color: colors.primary[700],
+      color: colors.title,
       fontWeight: fontWeights.medium,
       fontSize: 12,
     },
@@ -467,7 +466,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       flex: 1,
     },
     textMonthPreview: {
-      color: colors.primary[700],
+      color: colors.title,
       fontSize: 16,
       marginBottom: 3,
       fontWeight: fontWeights.semibold,

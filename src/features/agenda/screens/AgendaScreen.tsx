@@ -197,7 +197,7 @@ export const AgendaScreen = () => {
         ref={flatListRef}
         style={styles.list}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
-        contentContainerStyle={[styles.listContainer, bottomBarAwareStyles]}
+        contentContainerStyle={[bottomBarAwareStyles, styles.listContainer]}
         data={agendaDays}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={renderItem}
@@ -229,11 +229,10 @@ const createStyles = ({ colors, spacing }: Theme) =>
     list: {
       flex: 1,
       paddingTop: 120,
-      paddingBottom: 120,
     },
     listContainer: {
       padding: spacing[5],
-      paddingBottom: 200,
+      paddingBottom: 240,
     },
   });
 
