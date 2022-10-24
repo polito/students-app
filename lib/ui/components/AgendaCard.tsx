@@ -6,6 +6,8 @@ import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
@@ -26,15 +28,29 @@ export const AgendaCard = ({
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const live = true;
   const borderColor = colors.primary[500];
   const fromHour = DateTime.fromISO(item.fromDate).toFormat('HH:mm');
   const toHour = DateTime.fromISO(item.toDate).toFormat('HH:mm');
   const time = `${fromHour} - ${toHour}`;
 
+  const onPressCard = (): void => {
+    console.log('item', item);
+    navigation.navigate({
+      name: item.type,
+      params: {
+        id: item.content.id,
+      },
+    });
+  };
+
   return (
     <Card style={[{ borderColor }, styles.agendaCard]} {...rest}>
-      <TouchableHighlight style={styles.agendaButtonStyle}>
+      <TouchableHighlight
+        style={styles.agendaButtonStyle}
+        onPress={onPressCard}
+      >
         <Col>
           <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
             <Text

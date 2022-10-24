@@ -26,20 +26,20 @@ export const mapAgendaItem = (
     }
   };
 
-  exams.forEach(exam => {
-    const fromDate = exam.examStartsAt.toISOString();
-    const toDate = exam.bookingEndsAt?.toISOString();
-    const ISODate = DateTime.fromISO(fromDate).toISODate();
-    const item: AgendaItemInterface = {
-      fromDate: fromDate,
-      toDate: toDate,
-      title: exam?.courseName,
-      content: exam,
-      type: 'Exam',
-      classroom: exam?.classrooms,
-    };
-    pushItemToList(item, ISODate);
-  });
+  // exams.forEach(exam => {
+  //   const fromDate = exam.examStartsAt.toISOString();
+  //   const toDate = exam.bookingEndsAt?.toISOString();
+  //   const ISODate = DateTime.fromISO(fromDate).toISODate();
+  //   const item: AgendaItemInterface = {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //     title: exam?.courseName,
+  //     content: exam,
+  //     type: 'Exam',
+  //     classroom: exam?.classrooms,
+  //   };
+  //   pushItemToList(item, ISODate);
+  // });
 
   bookings.forEach(booking => {
     const fromDate = booking.startsAt.toISOString();
@@ -56,20 +56,20 @@ export const mapAgendaItem = (
     pushItemToList(item, ISODate);
   });
 
-  lectures.forEach(lecture => {
-    const fromDate = lecture.startsAt.toISOString();
-    const toDate = lecture.endsAt.toISOString();
-    const ISODate = DateTime.fromISO(fromDate).toISODate();
-    const item: AgendaItemInterface = {
-      fromDate: fromDate,
-      toDate: toDate,
-      title: lecture?.type,
-      content: lecture,
-      type: 'Lecture',
-      classroom: lecture.roomName || ' - ',
-    };
-    pushItemToList(item, ISODate);
-  });
+  // lectures.forEach(lecture => {
+  //   const fromDate = lecture.startsAt.toISOString();
+  //   const toDate = lecture.endsAt.toISOString();
+  //   const ISODate = DateTime.fromISO(fromDate).toISODate();
+  //   const item: AgendaItemInterface = {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //     title: lecture?.type,
+  //     content: lecture,
+  //     type: 'Lecture',
+  //     classroom: lecture.roomName || ' - ',
+  //   };
+  //   pushItemToList(item, ISODate);
+  // });
 
   deadlines.forEach(deadline => {
     // const fromDate = deadline.startsAt.toISOString();

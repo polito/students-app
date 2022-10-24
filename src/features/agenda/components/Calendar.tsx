@@ -356,9 +356,10 @@ const RenderRow = ({
               </Text>
             </View>
             <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
-              {dots.map((dot: string) => {
+              {dots.map((dot: string, index: number) => {
                 return (
                   <View
+                    key={index}
                     style={[
                       styles.dot,
                       {

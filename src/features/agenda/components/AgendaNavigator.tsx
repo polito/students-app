@@ -5,10 +5,20 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../../core/components/Logo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
+import { BookingScreen } from '../screens/BookingScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
-const Stack = createNativeStackNavigator();
+export type AgendaStackParamList = {
+  Agenda: undefined;
+  Lecture: { id: number };
+  Exam: { id: number };
+  Deadline: { id: number };
+  Booking: { id: number };
+};
+
+const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
   const { colors } = useTheme();
@@ -37,6 +47,20 @@ export const AgendaNavigator = () => {
         component={LectureScreen}
         options={{
           headerTitle: t('Lecture'),
+        }}
+      />
+      <Stack.Screen
+        name="Exam"
+        component={ExamScreen}
+        options={{
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="Booking"
+        component={BookingScreen}
+        options={{
+          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>
