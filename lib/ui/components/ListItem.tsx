@@ -39,7 +39,7 @@ export const ListItem = ({
   onPress,
   ...rest
 }: TouchableHighlightProps & Props) => {
-  const { fontSizes, colors, spacing } = useTheme();
+  const { fontSizes, colors, spacing, size } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   return (
@@ -92,7 +92,8 @@ export const ListItem = ({
             <Text
               variant="secondaryText"
               style={{
-                fontSize: fontSizes.sm,
+                fontSize: fontSizes.xs,
+                marginTop: size.xs,
               }}
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -103,12 +104,20 @@ export const ListItem = ({
             subtitle
           )}
         </View>
+        {onPress && (
+          <Icon
+            name="chevron-forward-outline"
+            color={colors.primary[400]}
+            size={fontSizes['2xl']}
+            style={{ marginHorizontal: spacing[1] }}
+          />
+        )}
         {linkTo && Platform.OS === 'ios' ? (
           <Icon
             name="chevron-forward-outline"
-            color={colors.secondaryText}
+            color={colors.primary[400]}
             size={fontSizes['2xl']}
-            style={{ marginRight: -spacing[1] }}
+            style={{ marginHorizontal: spacing[1] }}
           />
         ) : (
           trailingItem

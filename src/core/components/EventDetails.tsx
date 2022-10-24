@@ -6,10 +6,11 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 interface Props {
   title: string;
   type: string;
-  time: Date;
+  time?: Date;
+  timeLabel?: string;
 }
 
-export const EventDetails = ({ title, type, time }: Props) => {
+export const EventDetails = ({ title, type, time, timeLabel }: Props) => {
   const { spacing, fontSizes } = useTheme();
   return (
     <>
@@ -24,6 +25,9 @@ export const EventDetails = ({ title, type, time }: Props) => {
           <Text style={{ fontSize: fontSizes.md }}>
             {time.toLocaleString()}
           </Text>
+        )}
+        {timeLabel && (
+          <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
         )}
       </View>
     </>

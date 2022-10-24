@@ -68,8 +68,6 @@ export const HomeScreen = ({ navigation }: Props) => {
               />
             ))}
           </SectionList>
-        </Section>
-        <Section>
           <SectionHeader title={t('Exams')} linkTo={{ screen: 'Exams' }} />
           <SectionList loading={examsQuery.isLoading}>
             {examsQuery.data?.data.slice(0, 4).map(exam => (
