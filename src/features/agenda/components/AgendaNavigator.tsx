@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Deadline } from '@polito-it/api-client';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../../core/components/Logo';
@@ -8,13 +9,14 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { BookingScreen } from '../screens/BookingScreen';
+import { DeadlineScreen } from '../screens/DeadlineScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
 export type AgendaStackParamList = {
   Agenda: undefined;
   Lecture: { id: number };
   Exam: { id: number };
-  Deadline: { id: number };
+  Deadline: { deadline: Deadline };
   Booking: { id: number };
 };
 
@@ -59,6 +61,13 @@ export const AgendaNavigator = () => {
       <Stack.Screen
         name="Booking"
         component={BookingScreen}
+        options={{
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="Deadline"
+        component={DeadlineScreen}
         options={{
           headerLargeTitle: false,
         }}

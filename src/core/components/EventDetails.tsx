@@ -27,7 +27,9 @@ export const EventDetails = ({ title, type, time, timeLabel }: Props) => {
           </Text>
         )}
         {timeLabel && (
-          <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
+          <Text style={{ fontSize: fontSizes.md, textTransform: 'capitalize' }}>
+            {timeLabel}
+          </Text>
         )}
       </View>
     </>

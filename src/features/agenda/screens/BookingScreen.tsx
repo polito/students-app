@@ -17,8 +17,6 @@ import { Theme } from '@lib/ui/types/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime } from 'luxon';
-
 import { EventDetails } from '../../../core/components/EventDetails';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -27,7 +25,7 @@ import {
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { weekDay } from '../../../utils';
+import { fromDateToFormat, weekDay } from '../../../utils';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
@@ -46,13 +44,10 @@ export const BookingScreen = ({ route, navigation }: Props) => {
 
   const title = booking?.topic?.title;
   const timeLabel = useMemo(() => {
-    const fromDate = DateTime.fromISO(booking?.startsAt.toISOString()).toFormat(
-      'HH:mm',
-    );
-    const toDate = DateTime.fromISO(booking?.endsAt.toISOString()).toFormat(
-      'HH:mm',
-    );
-    return `${weekDay(booking.startsAt, t)},  ${fromDate} - ${toDate}`;
+    const fromDate = fromDateToFormat(booking?.startsAt);
+    const toDate = fromDateToFormat(booking?.endsAt);
+    const day = booking?.startsAt ? `${weekDay(booking.startsAt, t)}, ` : '';
+    return `${day}  ${fromDate} - ${toDate}`;
   }, [booking]);
 
   const onPressLocation = () => {

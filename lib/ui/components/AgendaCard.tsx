@@ -1,11 +1,12 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
+import { Deadline } from '@polito-it/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -37,20 +38,28 @@ export const AgendaCard = ({
 
   const onPressCard = (): void => {
     console.log('item', item);
+
+    if (item.type === 'Deadline') {
+      navigation.navigate({
+        name: item.type,
+        params: {
+          deadline: item.content as Deadline,
+        },
+      });
+      return;
+    }
+
     navigation.navigate({
       name: item.type,
       params: {
-        id: item.content.id,
+        id: item.content?.id,
       },
     });
   };
 
   return (
     <Card style={[{ borderColor }, styles.agendaCard]} {...rest}>
-      <TouchableHighlight
-        style={styles.agendaButtonStyle}
-        onPress={onPressCard}
-      >
+      <TouchableOpacity style={styles.agendaButtonStyle} onPress={onPressCard}>
         <Col>
           <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
             <Text
@@ -84,7 +93,7 @@ export const AgendaCard = ({
             <Text weight={'medium'}>{item.classroom}</Text>
           </Row>
         </Col>
-      </TouchableHighlight>
+      </TouchableOpacity>
     </Card>
   );
 };

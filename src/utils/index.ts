@@ -19,3 +19,8 @@ export const weekDay = (date: Date, t: any): string => {
   if (isTomorrow(date)) return t('Tomorrow');
   return DateTime.fromISO(date.toISOString()).toFormat('EEEE');
 };
+
+export const fromDateToFormat = (date: Date, fmt = 'HH:mm'): string => {
+  if (!date) return '';
+  return DateTime.fromISO(date.toISOString()).toFormat(fmt);
+};
