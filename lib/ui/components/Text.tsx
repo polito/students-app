@@ -52,7 +52,6 @@ export const Text = ({
   const lineHeight = useMemo(() => {
     const textStyle = style as TextStyle;
     if (textStyle?.lineHeight || !textStyle?.fontSize) return false;
-    console.log(textStyle.fontSize * defaultLineHeightMultiplier);
     return textStyle.fontSize * defaultLineHeightMultiplier;
   }, [style]);
 
