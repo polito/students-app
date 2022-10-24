@@ -202,7 +202,7 @@ const createItemStyles = ({ colors }: Theme) =>
       justifyContent: 'center',
     },
     toggle: {
-      height: 5,
+      height: 4,
       borderRadius: 5,
       width: 35,
       backgroundColor: colors.primary[700],

@@ -39,6 +39,7 @@ export const AgendaScreen = () => {
   const flatListRef = useRef();
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
+  console.log('botttttom', bottomBarAwareStyles);
   const [selectedEventTypes, setSelectedEventTypes] = useState<
     Record<string, boolean>
   >({
@@ -73,14 +74,11 @@ export const AgendaScreen = () => {
       .compact()
       .value();
 
-    console.log({ filters });
-
     if (!filters.length) {
       return toFilterAgendaDays;
     }
     return _.chain(toFilterAgendaDays)
       .map(agendaDay => {
-        console.log({ agendaDay });
         const agendaDayItems = agendaDay.items.filter(item =>
           filters.includes(item.type.toLowerCase()),
         );
@@ -105,8 +103,6 @@ export const AgendaScreen = () => {
     // });
   }, [toFilterAgendaDays, selectedEventTypes]);
 
-  console.log('agenda', agendaDays);
-
   const onSelectTab = (tabName: string) => {
     setSelectedEventTypes(types => ({
       ...types,
@@ -122,8 +118,7 @@ export const AgendaScreen = () => {
     viewableItems: Array<ViewToken>;
     changed: Array<ViewToken>;
   }) => {
-    // console.log({ changed });
-    console.log({ viewableItems: changed.viewableItems });
+    // console.log({ viewableItems: changed.viewableItems });
     if (changed.viewableItems[0]) {
       setViewedDate(changed.viewableItems[0].key);
     }
@@ -135,7 +130,6 @@ export const AgendaScreen = () => {
       const agendaDayIndex = agendaDays.findIndex(
         item => item.id === formattedDay,
       );
-      console.log({ agendaDayIndex });
       try {
         if (flatListRef && flatListRef.current) {
           if (agendaDayIndex >= 0) {
@@ -235,10 +229,11 @@ const createStyles = ({ colors, spacing }: Theme) =>
     list: {
       flex: 1,
       paddingTop: 120,
+      paddingBottom: 120,
     },
     listContainer: {
       padding: spacing[5],
-      paddingBottom: 120,
+      paddingBottom: 200,
     },
   });
 

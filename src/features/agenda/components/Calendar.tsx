@@ -241,22 +241,6 @@ export const Calendar = forwardRef(
           />
         </Animated.View>
 
-        {/* <Col style={styles.calendar} noFlex>*/}
-        {/*  {weeks.map(week => {*/}
-        {/*    return (*/}
-        {/*      <Row spaceBetween width={'100%'}>*/}
-        {/*        {week.days.map(day => {*/}
-        {/*          return (*/}
-        {/*            <TouchableOpacity style={styles.day}>*/}
-        {/*              <Text>{day.monthDay}</Text>*/}
-        {/*            </TouchableOpacity>*/}
-        {/*          );*/}
-        {/*        })}*/}
-        {/*      </Row>*/}
-        {/*    );*/}
-        {/*  })}*/}
-        {/* </Col>*/}
-
         <Animated.View
           style={[styles.topDays, { opacity: calendarDateOpacity }]}
         >
