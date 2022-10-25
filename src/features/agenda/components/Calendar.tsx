@@ -346,6 +346,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
     container: {
       flex: 1,
       justifyContent: 'center',
+      overflow: 'hidden',
     },
     topDays: {
       position: 'absolute',
