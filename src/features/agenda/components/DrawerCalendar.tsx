@@ -170,14 +170,13 @@ const createItemStyles = ({ colors }: Theme) =>
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
-        height: 3,
+        height: 4,
       },
-      shadowOpacity: 0.29,
+      shadowOpacity: 0.3,
       shadowRadius: 4.65,
 
-      elevation: 7,
+      elevation: 8,
 
-      overflow: 'hidden',
       width: SCREEN_WIDTH,
       backgroundColor: colors.surface,
     },
