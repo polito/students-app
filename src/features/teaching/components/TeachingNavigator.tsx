@@ -70,7 +70,7 @@ export const TeachingNavigator = () => {
         component={CourseScreen}
         options={{
           headerLargeStyle: {
-            backgroundColor: colors.surface,
+            backgroundColor: colors.headers,
           },
           headerTransparent: false,
           headerLargeTitle: false,

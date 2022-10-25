@@ -140,6 +140,7 @@ export const lightTheme: Theme = {
     touchableHighlight: 'rgba(0, 0, 0, .08)',
     background: '#F0F3F5',
     surface: '#FFFFFF',
+    headers: '#FFFFFF',
     heading: darkBlue[700],
     title: 'black',
     headline: 'black',
@@ -147,7 +148,7 @@ export const lightTheme: Theme = {
     secondaryText: text[500],
     caption: text[400],
     link: darkBlue[500],
-    divider: trueGray[300],
+    divider: 'rgba(0, 0, 0, .15)',
   },
   fontFamilies: {
     heading: 'Poppins',
