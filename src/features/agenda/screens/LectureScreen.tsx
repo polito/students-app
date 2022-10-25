@@ -59,7 +59,15 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     console.log('onPressTeacherCard');
   };
 
-  const onPressMaterialCard = () => {};
+  const onPressMaterialCard = () => {
+    navigation.navigate({
+      name: 'LectureCourseDirectory',
+      params: {
+        lectureId: lecture.id,
+        courseId: lecture.courseId,
+      },
+    });
+  };
 
   return (
     <>

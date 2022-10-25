@@ -8,8 +8,8 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { BookingScreen } from '../screens/BookingScreen';
-import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { DeadlineScreen } from '../screens/DeadlineScreen';
+import { LectureCourseDirectoryScreen } from '../screens/LectureCourseDirectoryScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
 export type AgendaStackParamList = {
@@ -19,6 +19,10 @@ export type AgendaStackParamList = {
   Deadline: { type: string; date: string };
   CourseVideolecture?: { courseId: number; lectureId: number };
   CourseVirtualClassroom?: { courseId: number; lectureId: number };
+  LectureCourseDirectory?: {
+    courseId: number;
+    lectureId: number;
+  };
   Booking: { id: number };
 };
 
@@ -54,6 +58,13 @@ export const AgendaNavigator = () => {
         }}
       />
       <Stack.Screen
+        name="LectureCourseDirectory"
+        component={LectureCourseDirectoryScreen}
+        options={{
+          headerTitle: t('Lecture'),
+        }}
+      />
+      <Stack.Screen
         name="Exam"
         component={ExamScreen}
         options={{
@@ -65,16 +76,6 @@ export const AgendaNavigator = () => {
         component={BookingScreen}
         options={{
           headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseVirtualClassroom"
-        component={CourseVirtualClassroomScreen}
-        options={{
-          headerLargeTitle: false,
-          headerTransparent: false,
-          headerBackTitle: t('Course'),
-          title: t('Virtual classroom'),
         }}
       />
       <Stack.Screen

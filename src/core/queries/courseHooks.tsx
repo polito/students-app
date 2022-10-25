@@ -150,7 +150,7 @@ const sortRecentFiles = (
 
 export const useGetCourseDirectory = (
   courseId: number,
-  directoryId: string,
+  directoryId?: string,
 ) => {
   const { t } = useTranslation();
   const filesQuery = useGetCourseFiles(courseId);
