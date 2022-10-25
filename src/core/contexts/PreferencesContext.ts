@@ -5,6 +5,9 @@ export interface PreferencesContextProps {
   courses: {
     [courseId: number]: CoursePreferencesProps;
   };
+  types: {
+    [key: string]: TypesPreferencesProps;
+  };
   language?: 'it' | 'en';
   updatePreference: (key: string, value: any) => void;
 }
@@ -15,10 +18,14 @@ export interface CoursePreferencesProps {
   isHidden: boolean;
 }
 
-export const storageKeys = ['colorScheme', 'courses', 'language'];
+export interface TypesPreferencesProps {
+  color: string;
+}
+
+export const storageKeys = ['colorScheme', 'courses', 'language', 'types'];
 
 // Require serialization/deserialization
-export const storageObjectKeys = ['courses'];
+export const storageObjectKeys = ['courses', 'types'];
 
 export const PreferencesContext = createContext<
   PreferencesContextProps | undefined

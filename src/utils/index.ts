@@ -21,12 +21,24 @@ export const weekDay = (date: Date, t: any): string => {
   return DateTime.fromISO(date.toISOString()).toFormat('EEEE');
 };
 
-export const fromDateToFormat = (date: Date, fmt = 'HH:mm'): string => {
+export const fromDateToFormat = (date: Date, fmt: string = 'HH:mm'): string => {
   if (!date) return '';
   return DateTime.fromISO(date.toISOString()).toFormat(fmt);
+};
+
+export const fromISOToFormat = (ISODate: string, fmt: string = 'HH:mm') => {
+  if (!ISODate) return '';
+  return DateTime.fromISO(ISODate).toFormat(fmt);
 };
 
 export const weekDays = (): string[] => {
   const now = DateTime.now();
   return times(7, i => now.startOf('week').plus({ days: i }).toFormat('EEE'));
+};
+
+export const isLive = (formDate: Date, toDate: Date): boolean => {
+  const nowMillis = DateTime.now().toMillis();
+  const formDateMillis = DateTime.fromISO(formDate.toISOString()).toMillis();
+  const toDateMillis = DateTime.fromISO(toDate.toISOString()).toMillis();
+  return formDateMillis <= nowMillis && nowMillis <= toDateMillis;
 };

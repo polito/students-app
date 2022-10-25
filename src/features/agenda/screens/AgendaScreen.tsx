@@ -17,7 +17,6 @@ import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { useGetDeadlines } from '../../../core/queries/studentHooks';
-import { weekDays } from '../../../utils';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -38,7 +37,7 @@ export const AgendaScreen = () => {
   const deadlinesQuery = useGetDeadlines();
   const [viewedDate, setViewedDate] = useState<string>('');
   const flatListRef = useRef();
-  console.log('WEEK_DAYS', weekDays());
+  // console.log('WEEK_DAYS', weekDays());
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<
     Record<string, boolean>
@@ -50,13 +49,15 @@ export const AgendaScreen = () => {
   });
 
   const toFilterAgendaDays = useMemo(() => {
-    return mapAgendaItem(
+    const agendaItems = mapAgendaItem(
       examsQuery.data?.data || [],
       bookingsQuery.data?.data || [],
       lecturesQuery.data?.data || [],
       deadlinesQuery.data?.data || [],
       colors,
     );
+    console.log('agendaItems', agendaItems);
+    return agendaItems;
   }, [
     examsQuery.data,
     bookingsQuery.data,
@@ -194,11 +195,15 @@ export const AgendaScreen = () => {
         </Tab>
       </Tabs>
       <FlatList
+        // windowSize={12}
         ref={flatListRef}
         style={styles.list}
+        // removeClippedSubviews
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         contentContainerStyle={[bottomBarAwareStyles, styles.listContainer]}
         data={agendaDays}
+        // maxToRenderPerBatch={8}
+        // initialNumToRender={8}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={renderItem}
         keyExtractor={item => item.id}

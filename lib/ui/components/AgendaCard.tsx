@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -6,12 +6,14 @@ import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
-import { Deadline } from '@polito-it/api-client';
+import { Deadline, Lecture } from '@polito-it/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+import { isLive } from '../../../src/utils';
 import { AgendaItemInterface } from '../../../src/utils/types';
 import { useTheme } from '../hooks/useTheme';
 import { Card, Props as CardProps } from './Card';
@@ -30,11 +32,25 @@ export const AgendaCard = ({
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const live = true;
-  const borderColor = colors.primary[500];
+  const isLecture = item.type === 'Lecture';
+  const isDeadline = item.type === 'Deadline';
+  const live = useMemo(() => {
+    if (!isLecture) return false;
+    const lecture = item.content as Lecture;
+    return isLive(lecture.startsAt, lecture.endsAt);
+  }, []);
   const fromHour = DateTime.fromISO(item.fromDate).toFormat('HH:mm');
   const toHour = DateTime.fromISO(item.toDate).toFormat('HH:mm');
   const time = `${fromHour} - ${toHour}`;
+  const preferences = usePreferencesContext();
+  console.log('preferences', preferences);
+  const borderColor = useMemo(() => {
+    if (isLecture) {
+      const lecture = item.content as Lecture;
+      return preferences.courses[lecture.courseId].color;
+    }
+    return preferences.types[item.type]?.color || colors.primary[500];
+  }, [item]);
 
   const onPressCard = (): void => {
     console.log('item', item);
@@ -65,7 +81,7 @@ export const AgendaCard = ({
         <Col>
           <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
             <Text
-              weight={'bold'}
+              weight={'semibold'}
               numberOfLines={1}
               variant={'secondaryText'}
               style={styles.title}
