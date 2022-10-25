@@ -17,7 +17,7 @@ export const WeekDays = ({ style }: Props) => {
     <Row noFlex maxWidth spaceAround style={style}>
       {weekDays().map(week => {
         return (
-          <Text style={styles.textDay} capitalize>
+          <Text key={week} style={styles.textDay} capitalize>
             {week}
           </Text>
         );

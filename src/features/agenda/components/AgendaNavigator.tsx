@@ -8,6 +8,7 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { BookingScreen } from '../screens/BookingScreen';
+import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { DeadlineScreen } from '../screens/DeadlineScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
@@ -16,6 +17,8 @@ export type AgendaStackParamList = {
   Lecture: { id: number };
   Exam: { id: number };
   Deadline: { type: string; date: string };
+  CourseVideolecture?: { courseId: number; lectureId: number };
+  CourseVirtualClassroom?: { courseId: number; lectureId: number };
   Booking: { id: number };
 };
 
@@ -62,6 +65,16 @@ export const AgendaNavigator = () => {
         component={BookingScreen}
         options={{
           headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="CourseVirtualClassroom"
+        component={CourseVirtualClassroomScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackTitle: t('Course'),
+          title: t('Virtual classroom'),
         }}
       />
       <Stack.Screen

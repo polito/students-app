@@ -29,11 +29,11 @@ export const AgendaCard = ({
   ...rest
 }: PropsWithChildren<CardProps & Props>) => {
   const { t } = useTranslation();
+  const preferences = usePreferencesContext();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const isLecture = item.type === 'Lecture';
-  const isDeadline = item.type === 'Deadline';
   const live = useMemo(() => {
     if (!isLecture) return false;
     const lecture = item.content as Lecture;
@@ -42,8 +42,6 @@ export const AgendaCard = ({
   const fromHour = DateTime.fromISO(item.fromDate).toFormat('HH:mm');
   const toHour = DateTime.fromISO(item.toDate).toFormat('HH:mm');
   const time = `${fromHour} - ${toHour}`;
-  const preferences = usePreferencesContext();
-  console.log('preferences', preferences);
   const borderColor = useMemo(() => {
     if (isLecture) {
       const lecture = item.content as Lecture;
@@ -67,12 +65,45 @@ export const AgendaCard = ({
       return;
     }
 
+    if (item.type === 'Lecture') {
+      const lecture = item.content as Lecture;
+      console.log('lecture', lecture);
+
+      // if (lecture.roomName === 'AULA VIRTUALE') {
+      //   console.log('go to virtual classroom');
+      //   navigation.navigate({
+      //     name: 'CourseVirtualClassroom',
+      //     params: {
+      //       lectureId: lecture.id,
+      //       courseId: lecture.courseId,
+      //     },
+      //   });
+      //   return;
+      // } else {
+      navigation.navigate({
+        name: 'Lecture',
+        params: {
+          id: lecture.id,
+        },
+      });
+      // }
+      // return;
+    }
+
     navigation.navigate({
       name: item.type,
       params: {
         id: item.content?.id,
       },
     });
+
+    // if (item.type === 'Lecture') {
+    //   const lecture = item.content as Lecture;
+    //   const virtualClassroom = useGetCourseVirtualClassrooms(lecture.courseId);
+    //
+    //   console.log('virtualClassroom', virtualClassroom);
+    //   return;
+    // }
   };
 
   return (

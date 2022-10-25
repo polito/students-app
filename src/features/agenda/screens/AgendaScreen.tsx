@@ -195,15 +195,15 @@ export const AgendaScreen = () => {
         </Tab>
       </Tabs>
       <FlatList
-        // windowSize={12}
+        windowSize={12}
         ref={flatListRef}
         style={styles.list}
-        // removeClippedSubviews
+        removeClippedSubviews
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         contentContainerStyle={[bottomBarAwareStyles, styles.listContainer]}
         data={agendaDays}
-        // maxToRenderPerBatch={8}
-        // initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        initialNumToRender={8}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={renderItem}
         keyExtractor={item => item.id}
