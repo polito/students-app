@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -31,11 +32,14 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const bookExamMutation = useBookExam(exam?.id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
-  if (routes[routes.length - 2]?.name === 'Course') {
-    navigation.setOptions({
-      headerBackTitle: t('Course'),
-    });
-  }
+
+  useEffect(() => {
+    if (routes[routes.length - 2]?.name === 'Course') {
+      navigation.setOptions({
+        headerBackTitle: t('Course'),
+      });
+    }
+  }, []);
 
   return (
     <>
