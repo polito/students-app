@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 
 import { FileListItem } from '@lib/ui/components/FileListItem';
-import { CourseFileOverview } from '@polito-it/api-client';
+import { CourseFileOverview } from '@polito/api-client';
 
 import { formatFileDate, formatFileSize } from '../../../utils/files';
 

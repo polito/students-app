@@ -1,7 +1,7 @@
 import { TouchableHighlightProps } from 'react-native';
 
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
-import { CourseDirectory } from '@polito-it/api-client';
+import { CourseDirectory } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

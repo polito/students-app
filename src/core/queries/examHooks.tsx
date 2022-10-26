@@ -1,4 +1,4 @@
-import { BookExamRequest, ExamsApi } from '@polito-it/api-client';
+import { BookExamRequest, ExamsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';

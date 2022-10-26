@@ -13,8 +13,8 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { VideoLecture } from '@polito-it/api-client';
-import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito-it/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
+import { VideoLecture } from '@polito/api-client';
+import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';

@@ -8,7 +8,7 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamStatusEnum } from '@polito-it/api-client';
+import { ExamStatusEnum } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

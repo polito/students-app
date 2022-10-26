@@ -10,7 +10,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Person } from '@polito-it/api-client/models/Person';
+import { Person } from '@polito/api-client/models/Person';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';

@@ -10,7 +10,7 @@ import { FileListItem } from '@lib/ui/components/FileListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { CourseAssignment } from '@polito-it/api-client';
+import { CourseAssignment } from '@polito/api-client';
 
 import { formatFileDate, formatFileSize } from '../../../utils/files';
 
