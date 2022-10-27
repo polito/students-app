@@ -104,7 +104,7 @@ export const AgendaScreen = () => {
             }))
           }
         >
-          {t('Lectures')}
+          {t('courseLecturesTab.title')}
         </Tab>
         <Tab
           selected={selectedEventTypes.exams}
@@ -112,7 +112,7 @@ export const AgendaScreen = () => {
             setSelectedEventTypes(types => ({ ...types, exams: !types.exams }))
           }
         >
-          {t('Exams')}
+          {t('examsScreen.title')}
         </Tab>
         <Tab
           selected={selectedEventTypes.bookings}

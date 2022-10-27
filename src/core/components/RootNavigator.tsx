@@ -38,7 +38,7 @@ export const RootNavigator = () => {
         name="TeachingTab"
         component={TeachingNavigator}
         options={{
-          tabBarLabel: t('Teaching'),
+          tabBarLabel: t('teachingScreen.title'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="book" color={color} size={size} />
           ),
@@ -48,7 +48,7 @@ export const RootNavigator = () => {
         name="AgendaTab"
         component={AgendaNavigator}
         options={{
-          tabBarLabel: t('Agenda'),
+          tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="calendar" color={color} size={size} />
           ),
@@ -59,7 +59,7 @@ export const RootNavigator = () => {
         component={PlacesScreen}
         options={{
           headerLeft: () => <HeaderLogo />,
-          tabBarLabel: t('Places'),
+          tabBarLabel: t('placesScreen.title'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="location" color={color} size={size} />
           ),
@@ -69,7 +69,7 @@ export const RootNavigator = () => {
         name="ProfileTab"
         component={UserNavigator}
         options={{
-          tabBarLabel: t('Profile'),
+          tabBarLabel: t('profileScreen.title'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="person" color={color} size={size} />
           ),

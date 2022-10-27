@@ -12,7 +12,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { CourseAssignment } from '@polito/api-client';
 
-import { formatFileDate, formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
@@ -31,10 +30,7 @@ export const CourseAssignmentListItem = ({
     <FileListItem
       onPress={() => {}}
       title={item.description}
-      subtitle={t('CourseFileListItem.Subtitle', {
-        date: formatFileDate(item.uploadedAt),
-        size: formatFileSize(item.sizeInKiloBytes),
-      })}
+      subtitle={''}
       containerStyle={styles.listItemContainer}
       trailingItem={
         <TouchableHighlight

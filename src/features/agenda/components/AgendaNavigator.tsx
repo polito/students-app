@@ -26,7 +26,7 @@ export const AgendaNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerLeft: () => <HeaderLogo />,
-          headerTitle: t('Agenda'),
+          headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,

@@ -87,7 +87,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       contentContainerStyle={bottomBarAwareStyles}
       ListEmptyComponent={
         <Text style={styles.noResultText}>
-          {t('CourseDirectoryScreen.EmptySearch')}
+          {t('courseDirectoryScreen.noResult')}
         </Text>
       }
     />

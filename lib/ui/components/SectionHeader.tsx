@@ -47,7 +47,7 @@ export const SectionHeader = ({
           ? trailingItem
           : linkTo && (
               <Link to={linkTo}>
-                <Text variant="link">{t('See all')}</Text>
+                <Text variant="link">{t('sectionHeader.cta')}</Text>
               </Link>
             )}
       </View>

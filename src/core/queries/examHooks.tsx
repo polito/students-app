@@ -32,3 +32,17 @@ export const useBookExam = (examId: number) => {
     },
   );
 };
+
+export const useCancelExamBooking = (examId: number) => {
+  const examsClient = useExamsClient();
+  const client = useQueryClient();
+
+  return useMutation(
+    () => examsClient.deleteExamBookingById({ examId: examId }),
+    {
+      onSuccess() {
+        return client.invalidateQueries([EXAMS_QUERY_KEY]);
+      },
+    },
+  );
+};

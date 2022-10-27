@@ -44,6 +44,7 @@ export const PersonListItem = ({
         )
       }
       title={`${person.firstName} ${person.lastName}`}
+      subtitleStyle={{ textTransform: 'capitalize' }}
       linkTo={{
         screen: 'Person',
         params: { id: person.id },

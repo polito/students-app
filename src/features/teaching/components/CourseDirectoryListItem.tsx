@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
@@ -19,10 +20,14 @@ export const CourseDirectoryListItem = ({
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList, any>>();
+  const { t } = useTranslation();
+
   return (
     <DirectoryListItem
       title={item.name}
-      subtitle={`${item.files.length} files`}
+      subtitle={t('courseDirectoryListItem.subtitle', {
+        count: item.files.length,
+      })}
       onPress={() =>
         navigation.navigate('CourseDirectory', {
           courseId,

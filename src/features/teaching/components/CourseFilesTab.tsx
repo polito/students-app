@@ -27,7 +27,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       refreshControl={createRefreshControl(recentFilesQuery)}
     >
       <View style={styles.sectionContainer}>
-        <SectionHeader title={t('CourseFilesTab.Title')} />
+        <SectionHeader title={t('courseFilesTab.recentSectionTitle')} />
         <SectionList loading={recentFilesQuery.isLoading}>
           {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
             <CourseFileListItem
@@ -37,7 +37,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
             />
           ))}
           {recentFilesQuery.data?.length === 0 && (
-            <ListItem title={t('CourseFilesTab.Empty')} />
+            <ListItem title={t('courseFilesTab.empty')} />
           )}
         </SectionList>
       </View>
