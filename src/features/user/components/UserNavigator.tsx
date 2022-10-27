@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+
 import { createStackNavigator } from '@react-navigation/stack';
+
 import { HomeScreen } from '../screens/HomeScreen';
-import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { MessagesScreen } from '../screens/MessagesScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
 const Stack = createStackNavigator();
@@ -22,14 +24,14 @@ export const UserNavigator = () => {
         name="Settings"
         component={SettingsScreen}
         options={{
-          headerTitle: t('Settings'),
+          headerTitle: t('settingsScreen.title'),
         }}
       />
       <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
+        name="Messages"
+        component={MessagesScreen}
         options={{
-          headerTitle: t('Notifications archive'),
+          headerTitle: t('messagesScreen.title'),
         }}
       />
     </Stack.Navigator>

@@ -1,6 +1,5 @@
 import { ScrollView } from 'react-native';
 
-import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -8,6 +7,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetExams } from '../../../core/queries/examHooks';
+import { ExamListItem } from '../components/ExamListItem';
 
 export const ExamsScreen = () => {
   const { spacing } = useTheme();
@@ -27,17 +27,7 @@ export const ExamsScreen = () => {
         <Section>
           <SectionList>
             {examsQuery.data.data.map(exam => (
-              <ListItem
-                key={exam.courseShortcode}
-                linkTo={{
-                  screen: 'Exam',
-                  params: { id: exam.id },
-                }}
-                title={exam.courseName}
-                subtitle={`${exam.examStartsAt.toLocaleString()} - ${
-                  exam.classrooms
-                }`}
-              />
+              <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>
         </Section>
