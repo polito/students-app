@@ -5,7 +5,6 @@ import {
   Dimensions,
   Image,
   StyleSheet,
-  Text,
   TouchableHighlight,
   View,
   ViewToken,
@@ -13,6 +12,7 @@ import {
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -52,7 +52,9 @@ export const CourseAssignmentPdfCreationScreen = ({
     });
     return () =>
       navigation.getParent()?.setOptions({
-        tabBarStyle: undefined,
+        tabBarStyle: {
+          display: 'flex',
+        },
       });
   }, []);
 
@@ -123,8 +125,6 @@ export const CourseAssignmentPdfCreationScreen = ({
 
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-
-  const { colors, fontSizes } = useTheme();
 
   return (
     <View style={[styles.screen]}>
