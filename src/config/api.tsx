@@ -11,7 +11,7 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
-} from '@polito-it/api-client';
+} from '@polito/api-client';
 
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
 import { language } from '../i18n';

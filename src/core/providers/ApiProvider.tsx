@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
 
-import { FetchError } from '@polito-it/api-client/runtime';
+import { FetchError } from '@polito/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
 import {
   QueryClient,

@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
-import { Text as RNText, StyleSheet, TextProps } from 'react-native';
+import { PropsWithChildren, useMemo } from 'react';
+import { Text as RNText, StyleSheet, TextProps, TextStyle } from 'react-native';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
@@ -28,6 +28,8 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   secondaryText: 'normal',
 };
 
+export const defaultLineHeightMultiplier = 1.3;
+
 /**
  * A wrapper around RN's Text component that applies basic theme
  * styles
@@ -44,8 +46,15 @@ export const Text = ({
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
-
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
+
+  // Apply default line height multiplier if only fontSize is provided
+  const lineHeight = useMemo(() => {
+    const textStyle = style as TextStyle;
+    if (textStyle?.lineHeight || !textStyle?.fontSize) return false;
+    return textStyle.fontSize * defaultLineHeightMultiplier;
+  }, [style]);
+
   return (
     <RNText
       style={[
@@ -56,6 +65,9 @@ export const Text = ({
         },
         italic && {
           fontStyle: 'italic',
+        },
+        lineHeight && {
+          lineHeight,
         },
         styles[variant],
         style,
@@ -71,15 +83,19 @@ const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
       fontSize: fontSizes.xl,
+      lineHeight: fontSizes.xl * defaultLineHeightMultiplier,
     },
     title: {
       fontSize: fontSizes.lg,
+      lineHeight: fontSizes.lg * defaultLineHeightMultiplier,
     },
     headline: {
       fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * defaultLineHeightMultiplier,
     },
     caption: {
       fontSize: fontSizes.xs,
+      lineHeight: fontSizes.xs * defaultLineHeightMultiplier,
       textTransform: 'uppercase',
     },
     prose: {},

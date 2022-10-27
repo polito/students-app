@@ -25,7 +25,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
 
     return (
       <View style={styles.speedSection}>
-        <Text variant="headline">{t('Speed')}:</Text>
+        <Text variant="headline">{t('videoPlayer.speedSectionTitle')}:</Text>
         <View style={styles.speedTabsContainer}>
           {[1, 1.5, 2, 2.5].map(rate => (
             <Tab

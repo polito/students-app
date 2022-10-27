@@ -9,7 +9,7 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
-} from '@polito-it/api-client';
+} from '@polito/api-client';
 
 export interface ApiContextProps {
   isLogged: boolean;

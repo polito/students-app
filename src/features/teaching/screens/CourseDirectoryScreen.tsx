@@ -5,7 +5,7 @@ import { FlatList, StyleSheet } from 'react-native';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
-import { CourseDirectory, CourseFileOverview } from '@polito-it/api-client';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
@@ -103,7 +103,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
       contentContainerStyle={bottomBarAwareStyles}
       ListEmptyComponent={
         <Text style={styles.noResultText}>
-          {t('CourseDirectoryScreen.EmptySearch')}
+          {t('courseDirectoryScreen.noResult')}
         </Text>
       }
     />

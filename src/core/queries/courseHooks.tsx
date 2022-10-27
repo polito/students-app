@@ -9,7 +9,7 @@ import {
   CourseFileOverview,
   CoursesApi,
   UploadCourseAssignmentRequest,
-} from '@polito-it/api-client';
+} from '@polito/api-client';
 import {
   useMutation,
   useQueries,

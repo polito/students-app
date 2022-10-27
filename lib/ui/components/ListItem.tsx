@@ -1,6 +1,7 @@
 import {
   Platform,
   StyleProp,
+  TextStyle,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
@@ -22,6 +23,8 @@ interface Props {
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
   containerStyle?: StyleProp<ViewStyle>;
+  titleStyle?: StyleProp<TextStyle>;
+  subtitleStyle?: StyleProp<TextStyle>;
 }
 
 /**
@@ -31,7 +34,9 @@ interface Props {
  */
 export const ListItem = ({
   title,
+  titleStyle,
   subtitle,
+  subtitleStyle,
   leadingItem,
   trailingItem,
   linkTo,
@@ -76,9 +81,13 @@ export const ListItem = ({
           {typeof title === 'string' ? (
             <Text
               variant="title"
-              style={{
-                fontSize: fontSizes.md,
-              }}
+              style={[
+                {
+                  fontSize: fontSizes.md,
+                  lineHeight: fontSizes.md * 1.5,
+                },
+                titleStyle,
+              ]}
               weight="normal"
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -91,9 +100,13 @@ export const ListItem = ({
           {typeof subtitle === 'string' ? (
             <Text
               variant="secondaryText"
-              style={{
-                fontSize: fontSizes.sm,
-              }}
+              style={[
+                {
+                  fontSize: fontSizes.sm,
+                  lineHeight: fontSizes.sm * 1.5,
+                },
+                subtitleStyle,
+              ]}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
