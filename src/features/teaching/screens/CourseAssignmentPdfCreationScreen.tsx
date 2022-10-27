@@ -10,6 +10,7 @@ import {
   ViewToken,
 } from 'react-native';
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Text } from '@lib/ui/components/Text';
@@ -126,8 +127,10 @@ export const CourseAssignmentPdfCreationScreen = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
+  const { bottom: marginBottom } = useSafeAreaInsets();
+
   return (
-    <View style={[styles.screen]}>
+    <View style={[styles.screen, { marginBottom }]}>
       <Animated.FlatList
         data={images}
         horizontal
@@ -197,11 +200,6 @@ const createStyles = ({ colors, fontSizes, spacing }: Theme) =>
     actionsContainer: {
       display: 'flex',
       flexDirection: 'row',
-      backgroundColor: colors.surface,
-      borderTopWidth: StyleSheet.hairlineWidth,
-      borderTopColor: colors.divider,
-      elevation: 3,
-      zIndex: 1,
     },
     actionHighlight: {
       flexGrow: 1,
