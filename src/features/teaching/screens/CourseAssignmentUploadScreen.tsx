@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 import DocumentPicker, { isInProgress } from 'react-native-document-picker';
-import { launchCamera } from 'react-native-image-picker';
+import { openCamera } from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Text } from '@lib/ui/components/Text';
@@ -58,23 +58,26 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
         subtitle={'con la fotocamera del telefono'}
         iconName="camera-outline"
         onPress={() => {
-          launchCamera({
+          openCamera({
             mediaType: 'photo',
-          }).then(response => {
-            if (response.didCancel) return;
-            if (response.errorCode) {
-              console.error(response.errorMessage);
-              return;
-            }
-            handlePickedFile(response.assets[0].uri);
-          });
+          })
+            .then(image => {
+              handlePickedFile(image.path);
+            })
+            .catch(e => {
+              console.log(e);
+            });
         }}
       />
       <AssignmentUploadAction
         title={'Scansiona un documento'}
         subtitle={'crea un file pdf'}
         iconName="scan-outline"
-        onPress={() => {}}
+        onPress={() => {
+          navigation.navigate('CourseAssignmentPdfCreation', {
+            courseId,
+          });
+        }}
       />
     </ScrollView>
   );

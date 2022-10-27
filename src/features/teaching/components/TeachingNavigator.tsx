@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../../core/components/Logo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
@@ -27,6 +28,7 @@ export type TeachingStackParamList = {
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
+  CourseAssignmentPdfCreation: { courseId: number };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
   Exams: undefined;
@@ -119,6 +121,16 @@ export const TeachingNavigator = () => {
           headerTransparent: false,
           headerBackTitle: t('Course'),
           title: t('Virtual classroom'),
+        }}
+      />
+      <Stack.Screen
+        name="CourseAssignmentPdfCreation"
+        component={CourseAssignmentPdfCreationScreen}
+        options={{
+          headerBackTitle: t('Upload assignment'),
+          headerTitle: t('Create PDF'),
+          headerLargeTitle: false,
+          orientation: 'portrait',
         }}
       />
       <Stack.Screen
