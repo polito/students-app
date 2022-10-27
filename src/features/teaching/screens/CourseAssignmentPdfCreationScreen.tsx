@@ -139,7 +139,7 @@ export const CourseAssignmentPdfCreationScreen = ({
         onViewableItemsChanged={onViewableItemsChanged.current}
         renderItem={({ item }) => (
           <Image
-            resizeMode="center"
+            resizeMode="contain"
             source={{ uri: item.uri }}
             style={styles.page}
           />

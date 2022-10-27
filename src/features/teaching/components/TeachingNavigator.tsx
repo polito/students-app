@@ -45,6 +45,7 @@ export const TeachingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        orientation: 'portrait',
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
@@ -127,10 +128,9 @@ export const TeachingNavigator = () => {
         name="CourseAssignmentPdfCreation"
         component={CourseAssignmentPdfCreationScreen}
         options={{
-          headerBackTitle: t('Upload assignment'),
+          headerBackTitleVisible: false,
           headerTitle: t('Create PDF'),
           headerLargeTitle: false,
-          orientation: 'portrait',
         }}
       />
       <Stack.Screen
