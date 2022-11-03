@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View, ViewToken } from 'react-native';
 
@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import { mapAgendaItem } from '../../../core/agenda';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
@@ -30,6 +31,7 @@ const viewabilityConfig = {
 export const AgendaScreen = () => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
+  const { updatePreference } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
@@ -47,6 +49,14 @@ export const AgendaScreen = () => {
     booking: false,
     deadlines: false,
   });
+
+  useEffect(() => {
+    updatePreference('types', {
+      Lecture: { color: colors.primary[500] },
+      Deadline: { color: colors.success[500] },
+      Booking: { color: colors.error[400] },
+    });
+  }, []);
 
   const toFilterAgendaDays = useMemo(() => {
     const agendaItems = mapAgendaItem(
