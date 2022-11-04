@@ -7,6 +7,7 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
 import { Row } from '@lib/ui/components/Row';
 import { SectionList } from '@lib/ui/components/SectionList';
+import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -17,10 +18,7 @@ import _ from 'lodash';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import {
-  useGetCourse,
-  useGetCourseVirtualClassrooms,
-} from '../../../core/queries/courseHooks';
+import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { fromDateToFormat, isLive, weekDay } from '../../../utils';
@@ -35,11 +33,11 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const lectureQuery = useGetLectures();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { fontSizes, size } = useTheme();
+  const { fontSizes } = useTheme();
   const lecture: Lecture = _.find(lectureQuery?.data?.data, l => l.id === id);
-  const coursesQuery = useGetCourse(lecture.courseId);
   const teacherQuery = useGetPerson(lecture.teacherId);
-  const virtualClassroomQuery = useGetCourseVirtualClassrooms(lecture.courseId);
+  const videoLecturesQuery = useGetCourseVideolectures(lecture.courseId);
+  const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
 
   const live = useMemo(() => {
     return isLive(lecture.startsAt, lecture.endsAt);
@@ -48,7 +46,9 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   // console.log('virtualClassroomQuery', virtualClassroomQuery?.data);
   // console.log('courseQuery', coursesQuery?.data);
   // console.log('teacherQuery', teacherQuery?.data);
-  // console.log('lecture', lecture);
+  console.log('lecture', lecture);
+  console.log('videoLecture', videoLecture);
+  console.log('videoLectureQuery', videoLecturesQuery?.data?.data);
 
   const timeLabel = useMemo(() => {
     const endsAtDate = fromDateToFormat(lecture?.endsAt);
@@ -84,13 +84,19 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         }}
         style={styles.wrapper}
       >
+        {videoLecture?.coverUrl && (
+          <VideoPlayer
+            videoUrl="https://lucapezzolla.com/20210525.mp4"
+            coverUrl={videoLecture.coverUrl}
+          />
+        )}
         <Row maxWidth noFlex spaceBetween alignCenter>
           <EventDetails
             title={lecture?.roomName}
             type={t('Lecture')}
             timeLabel={timeLabel}
           />
-          {!live && (
+          {live && (
             <Row alignEnd noFlex justifyEnd>
               <LiveIndicator showText />
             </Row>

@@ -135,7 +135,7 @@ export const AgendaCard = ({
             style={styles.rowBottom}
           >
             <Col alignCenter noFlex justifyCenter style={styles.itemType}>
-              <Text style={styles.textType} variant={'prose'}>
+              <Text style={{ ...styles.textType }} variant={'prose'}>
                 {t(item.type)}
               </Text>
             </Col>
@@ -155,7 +155,7 @@ const createStyles = ({ spacing, colors, size, fontSizes }: Theme) =>
     itemType: {
       borderRadius: size.xs,
       paddingHorizontal: spacing[1.5],
-      paddingTop: size.xs,
+      // paddingTop: size.xs,
       borderColor: colors.primary[600],
       borderWidth: 1,
     },
