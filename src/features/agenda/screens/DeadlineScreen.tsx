@@ -58,7 +58,7 @@ export const DeadlineScreen = ({ route }: Props) => {
         style={styles.wrapper}
       >
         <EventDetails
-          title={deadline.type}
+          title={deadline?.type || ''}
           type={t('Deadline')}
           timeLabel={timeLabel}
         />

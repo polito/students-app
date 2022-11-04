@@ -54,7 +54,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         contentInsetAdjustmentBehavior="automatic"
       >
         <EventDetails
-          title={exam?.courseName}
+          title={exam?.courseName || ''}
           type={t('words.exam')}
           time={exam?.examStartsAt}
         />
