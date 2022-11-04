@@ -26,10 +26,10 @@ export const WeekDays = ({ style }: Props) => {
   );
 };
 
-const createStyles = ({ colors, fontWeights }: Theme) =>
+const createStyles = ({ colors, fontWeights, dark }: Theme) =>
   StyleSheet.create({
     textDay: {
-      color: colors.text[600],
+      color: dark ? colors.primary[100] : colors.text[600],
       minWidth: 30,
       fontSize: 14,
       textAlign: 'center',

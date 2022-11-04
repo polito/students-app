@@ -177,7 +177,7 @@ export const Calendar = forwardRef(
             <Row
               justifyCenter
               alignCenter
-              style={{ marginBottom: Normalize(10), borderColor: 'blue' }}
+              style={{ marginBottom: Normalize(15), borderColor: 'blue' }}
             >
               <CalendarMonthIcon
                 iconName={'chevron-back-outline'}
@@ -229,7 +229,9 @@ export const Calendar = forwardRef(
               {DateTime.fromISO(viewedDate).toFormat('MMMM')}
             </Text>
             <Pressable onPress={() => onPressScrollToToday()}>
-              <Text style={styles.textGoToToday}>{t('Back to today')}</Text>
+              <Text style={styles.textGoToToday}>
+                {t('agendaScreen.backToToday')}
+              </Text>
             </Pressable>
           </Row>
           <WeekDays />
@@ -245,13 +247,13 @@ interface CalendarMonthIconProps {
 }
 
 const CalendarMonthIcon = ({ iconName, onPress }: CalendarMonthIconProps) => {
-  const { colors, fontSizes } = useTheme();
+  const { colors, fontSizes, dark } = useTheme();
 
   return (
     <Pressable onPress={onPress}>
       <Icon
         name={iconName}
-        color={colors.primary[500]}
+        color={dark ? colors.primary[50] : colors.primary[500]}
         size={fontSizes['2xl']}
         // style={{ marginRight: -spacing[1] }}
       />
@@ -341,7 +343,7 @@ const RenderRow = memo(
   },
 );
 
-const createItemStyles = ({ colors, fontWeights }: Theme) =>
+const createItemStyles = ({ colors, fontWeights, dark }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -350,7 +352,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
     },
     topDays: {
       position: 'absolute',
-      top: 30,
+      top: 40,
       left: 0,
       right: 0,
       width: SCREEN_WIDTH,
@@ -440,7 +442,7 @@ const createItemStyles = ({ colors, fontWeights }: Theme) =>
       fontWeight: fontWeights.semibold,
     },
     textGoToToday: {
-      color: colors.primary[400],
+      color: dark ? colors.primary[50] : colors.primary[400],
       fontWeight: fontWeights.normal,
       fontSize: 12,
     },

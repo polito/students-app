@@ -38,7 +38,7 @@ export const AgendaDay = ({ agendaDay }: AgendaDayProps) => {
   );
 };
 
-const createStyles = ({ spacing, colors, fontWeights }: Theme) =>
+const createStyles = ({ spacing, colors, fontWeights, dark }: Theme) =>
   StyleSheet.create({
     agendaDay: {
       padding: 2,
@@ -49,6 +49,6 @@ const createStyles = ({ spacing, colors, fontWeights }: Theme) =>
     },
     weekDay: {
       paddingLeft: spacing['3'],
-      color: colors.primary[400],
+      color: dark ? colors.primary[100] : colors.primary[400],
     },
   });

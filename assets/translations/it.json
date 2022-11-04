@@ -1,6 +1,7 @@
 {
   "agendaScreen": {
-    "title": "Agenda"
+    "title": "Agenda",
+    "backToToday": "Torna a oggi"
   },
   "courseAssignmentUploadScreen": {
     "title": "Invia un elaborato"

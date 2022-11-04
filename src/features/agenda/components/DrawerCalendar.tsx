@@ -158,7 +158,7 @@ export const DrawerCalendar = ({
   );
 };
 
-const createItemStyles = ({ colors }: Theme) =>
+const createItemStyles = ({ colors, dark }: Theme) =>
   StyleSheet.create({
     drawerContainer: {
       position: 'absolute',
@@ -178,7 +178,7 @@ const createItemStyles = ({ colors }: Theme) =>
       elevation: 8,
 
       width: SCREEN_WIDTH,
-      backgroundColor: colors.surface,
+      backgroundColor: dark ? colors.primary[600] : colors.surface,
     },
     dragHandlerView: {
       position: 'absolute',
@@ -205,6 +205,6 @@ const createItemStyles = ({ colors }: Theme) =>
       height: 5,
       borderRadius: 5,
       width: 35,
-      backgroundColor: colors.primary[700],
+      backgroundColor: dark ? colors.title : colors.primary[700],
     },
   });

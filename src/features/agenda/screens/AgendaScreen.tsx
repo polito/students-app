@@ -228,11 +228,11 @@ export const AgendaScreen = () => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ colors, spacing, dark }: Theme) =>
   StyleSheet.create({
     agendaCard: { flex: 1 },
     tabs: {
-      backgroundColor: colors.surface,
+      backgroundColor: dark ? colors.primary[700] : colors.surface,
       borderBottomWidth: Platform.select({
         ios: StyleSheet.hairlineWidth,
       }),
@@ -240,7 +240,10 @@ const createStyles = ({ colors, spacing }: Theme) =>
       elevation: 3,
       zIndex: 1,
     },
-    container: { flex: 1 },
+    container: {
+      flex: 1,
+      backgroundColor: dark ? colors.primary[700] : undefined,
+    },
     list: {
       flex: 1,
       paddingTop: 120,

@@ -121,7 +121,7 @@ export const AgendaCard = ({
             </Text>
             <Row noFlex justifyCenter alignCenter>
               {live && <LiveIndicator />}
-              <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
+              <Text variant="secondaryText" style={styles.textTime}>
                 {time}
               </Text>
             </Row>
@@ -147,7 +147,7 @@ export const AgendaCard = ({
   );
 };
 
-const createStyles = ({ spacing, colors, size, fontSizes }: Theme) =>
+const createStyles = ({ spacing, colors, size, fontSizes, dark }: Theme) =>
   StyleSheet.create({
     rowBottom: {
       marginTop: size.sm,
@@ -156,7 +156,7 @@ const createStyles = ({ spacing, colors, size, fontSizes }: Theme) =>
       borderRadius: size.xs,
       paddingVertical: spacing['1'],
       paddingHorizontal: spacing[1.5],
-      borderColor: colors.primary[600],
+      borderColor: dark ? colors.headline : colors.primary[600],
       borderWidth: 1,
     },
     textType: {
@@ -172,9 +172,13 @@ const createStyles = ({ spacing, colors, size, fontSizes }: Theme) =>
       width: '100%',
       borderWidth: 3,
       marginTop: spacing['2'],
+      backgroundColor: dark ? colors.primary[700] : 'white',
     },
     agendaButtonStyle: {
       padding: spacing[4],
       paddingBottom: spacing[3],
+    },
+    textTime: {
+      color: dark ? colors.headline : undefined,
     },
   });

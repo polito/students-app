@@ -29,13 +29,16 @@ export type AgendaStackParamList = {
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
   const { t } = useTranslation();
 
   return (
     <Stack.Navigator
       screenOptions={{
         ...titlesStyles(colors),
+        headerStyle: {
+          backgroundColor: dark ? colors.primary[700] : undefined,
+        },
       }}
     >
       <Stack.Screen
