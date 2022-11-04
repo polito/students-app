@@ -10,7 +10,6 @@ import {
 import { ProgressChart } from 'react-native-chart-kit';
 
 import { Card } from '@lib/ui/components/Card';
-import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -27,13 +26,15 @@ import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareSt
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { CourseListItem } from '../components/CourseListItem';
+import { ExamListItem } from '../components/ExamListItem';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
   navigation: NativeStackNavigationProp<TeachingStackParamList, 'Home'>;
 }
 
-export const HomeScreen = ({ navigation }: Props) => {
+export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -54,40 +55,30 @@ export const HomeScreen = ({ navigation }: Props) => {
     >
       <View style={styles.sectionsContainer}>
         <Section>
-          <SectionHeader title={t('Courses')} linkTo={{ screen: 'Courses' }} />
+          <SectionHeader
+            title={t('coursesScreen.title')}
+            linkTo={{ screen: 'Courses' }}
+          />
           <SectionList loading={coursesQuery.isLoading}>
             {coursesQuery.data?.data.slice(0, 4).map(course => (
-              <ListItem
-                key={course.shortcode}
-                linkTo={{
-                  screen: 'Course',
-                  params: { id: course.id, courseName: course.name },
-                }}
-                title={course.name}
-                subtitle={`${t('Period')} ${course.teachingPeriod}`}
-              />
-            ))}
-          </SectionList>
-          <SectionHeader title={t('Exams')} linkTo={{ screen: 'Exams' }} />
-          <SectionList loading={examsQuery.isLoading}>
-            {examsQuery.data?.data.slice(0, 4).map(exam => (
-              <ListItem
-                key={exam.id}
-                linkTo={{
-                  screen: 'Exam',
-                  params: { id: exam.id },
-                }}
-                title={exam.courseName}
-                subtitle={`${exam.examStartsAt.toLocaleString()} - ${
-                  exam.classrooms
-                }`}
-              />
+              <CourseListItem key={course.shortcode} course={course} />
             ))}
           </SectionList>
         </Section>
         <Section>
           <SectionHeader
-            title={t('Transcript')}
+            title={t('examsScreen.title')}
+            linkTo={{ screen: 'Exams' }}
+          />
+          <SectionList loading={examsQuery.isLoading}>
+            {examsQuery.data?.data.slice(0, 4).map(exam => (
+              <ExamListItem key={exam.id} exam={exam} />
+            ))}
+          </SectionList>
+        </Section>
+        <Section>
+          <SectionHeader
+            title={t('transcriptScreen.title')}
             linkTo={{ screen: 'Transcript' }}
           />
 
@@ -108,20 +99,20 @@ export const HomeScreen = ({ navigation }: Props) => {
                       variant="headline"
                       style={{ marginBottom: spacing[2] }}
                     >
-                      {t('Weighted average')}:{' '}
+                      {t('transcriptScreen.weightedAverageLabel')}:{' '}
                       {studentQuery.data?.data.averageGrade}
                     </Text>
                     <Text
                       variant="secondaryText"
                       style={{ marginBottom: spacing[2] }}
                     >
-                      {t('Final average')}:{' '}
+                      {t('transcriptScreen.finalAverageLabel')}:{' '}
                       {studentQuery.data?.data.averageGradePurged}
                     </Text>
                     <Text variant="secondaryText">
                       {studentQuery.data?.data.totalAcquiredCredits}/
                       {studentQuery.data?.data.totalCredits}{' '}
-                      {t('Credits').toLowerCase()}
+                      {t('words.credits')}
                     </Text>
                   </View>
                   <ProgressChart

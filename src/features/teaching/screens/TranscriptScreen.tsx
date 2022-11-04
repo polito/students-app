@@ -46,12 +46,12 @@ export const TranscriptScreen = () => {
       >
         <View style={{ flex: 1, marginRight: spacing[5] }}>
           <MetricCard
-            name={t('Weighted average')}
+            name={t('transcriptScreen.weightedAverageLabel')}
             value={studentQuery.data?.data.averageGrade}
             style={{ marginBottom: spacing[5] }}
           />
           <MetricCard
-            name={t('Final average')}
+            name={t('transcriptScreen.finalAverageLabel')}
             value={studentQuery.data?.data.averageGradePurged}
           />
         </View>
@@ -80,14 +80,14 @@ export const TranscriptScreen = () => {
       </View>
       <Grid style={{ paddingHorizontal: spacing[5] }}>
         <MetricCard
-          name={t('Acquired credits')}
+          name={t('transcriptScreen.acquiredCreditsLabel')}
           value={[
             studentQuery.data?.data.totalAcquiredCredits,
             studentQuery.data?.data.totalCredits,
           ].join('/')}
         />
         <MetricCard
-          name={t('Attended credits')}
+          name={t('transcriptScreen.attendedCreditsLabel')}
           value={[
             studentQuery.data?.data.enrollmentAttendedCredits,
             studentQuery.data?.data.enrollmentCredits,
@@ -95,7 +95,9 @@ export const TranscriptScreen = () => {
         />
       </Grid>
       <Section>
-        <SectionHeader title={t('Provisional grades')} />
+        <SectionHeader
+          title={t('transcriptScreen.provisionalGradesSectionTitle')}
+        />
         <SectionList>
           {gradesQuery.data?.data.map(grade => (
             <ListItem

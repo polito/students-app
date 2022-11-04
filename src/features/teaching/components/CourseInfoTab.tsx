@@ -10,7 +10,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Person } from '@polito-it/api-client/models/Person';
+import { Person } from '@polito/api-client/models/Person';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -75,29 +75,31 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     >
       <Grid style={{ padding: spacing[5] }}>
         <MetricCard
-          name={t('Teacher')}
+          name={t('courseInfoTab.teacherLabel')}
           value={teacher && `${teacher.firstName} ${teacher.lastName}`}
         />
         <MetricCard
-          name={t('Academic year')}
+          name={t('courseInfoTab.yearLabel')}
           value={courseQuery.data?.data.year}
         />
-
-        <MetricCard name={t('Credits')} value={courseQuery.data?.data.cfu} />
         <MetricCard
-          name={t('Period')}
+          name={t('courseInfoTab.creditsLabel')}
+          value={courseQuery.data?.data.cfu}
+        />
+        <MetricCard
+          name={t('courseInfoTab.periodLabel')}
           value={courseQuery.data?.data.teachingPeriod}
         />
       </Grid>
       <Section>
         <SectionHeader
-          title={t('This course in the agenda')}
+          title={t('courseInfoTab.agendaSectionTitle')}
           linkTo={{ screen: 'AgendaScreen' }}
         />
       </Section>
       {courseExamsQuery.data?.data.length > 0 && (
         <Section>
-          <SectionHeader title={t('Exams')} />
+          <SectionHeader title={t('examsScreen.title')} />
           <SectionList>
             {courseExamsQuery.data?.data.map(exam => (
               <ListItem
@@ -116,7 +118,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
         </Section>
       )}
       <Section>
-        <SectionHeader title={t('Staff')} />
+        <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
         <SectionList>
           {staff.map((member, index) => (
             // TODO cleanup key when real API are used
@@ -129,10 +131,10 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
         </SectionList>
       </Section>
       <Section>
-        <SectionHeader title={t('More')} />
+        <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
         <SectionList>
           <ListItem
-            title={t('Course guide')}
+            title={t('courseGuideScreen.title')}
             linkTo={{ screen: 'CourseGuide', params: { courseId } }}
           />
         </SectionList>

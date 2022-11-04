@@ -183,13 +183,13 @@ export const AgendaScreen = () => {
           selected={selectedEventTypes.lecture}
           onPress={() => onSelectTab('lecture')}
         >
-          {t('Lectures')}
+          {t('courseLecturesTab.title')}
         </Tab>
         <Tab
           selected={selectedEventTypes.exam}
           onPress={() => onSelectTab('exam')}
         >
-          {t('Exams')}
+          {t('examsScreen.title')}
         </Tab>
         <Tab
           selected={selectedEventTypes.booking}

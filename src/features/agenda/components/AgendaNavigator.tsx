@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Logo } from '../../../core/components/Logo';
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
@@ -43,8 +43,8 @@ export const AgendaNavigator = () => {
         component={AgendaScreen}
         options={{
           headerLargeTitle: false,
-          headerLeft: () => <Logo />,
-          headerTitle: t('Agenda'),
+          headerLeft: () => <HeaderLogo />,
+          headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,

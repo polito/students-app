@@ -1,57 +1,107 @@
 {
-  "Academic year": "Anno accademico",
-  "Acquired credits": "Crediti acquisiti",
-  "Agenda": "Agenda",
-  "Assignments": "Elaborati",
-  "Attended credits": "Crediti frequentati",
-  "Courses": "Corsi",
-  "CourseDirectoryScreen.EmptySearch": "Nessun risultato trovato",
-  "CourseFilesTab.Empty": "Nessun file disponibile",
-  "CourseFilesTab.Title": "File recenti",
-  "CourseFileListItem.Subtitle": "Caricato il {{- date}} - {{size}}",
-  "Course guide": "Guida del corso",
-  "Credits": "Crediti",
-  "Exam": "Appello",
-  "Exams": "Appelli",
-  "Files": "Materiali",
-  "Final average": "Media depurata",
-  "Info": "Info",
-  "Lectures": "Lezioni",
-  "Login": "Accedi",
-  "More": "Altro",
-  "Notices": "Avvisi",
-  "Notifications archive": "Archivio notifiche",
-  "Other courses": "Altri corsi",
-  "Password": "Password",
-  "Period": "Periodo",
-  "Places": "Luoghi",
-  "Location": "Luogo",
-  "Profile": "Profilo",
-  "Provisional grades": "Valutazioni provvisorie",
-  "See all": "Vedi tutto",
-  "Settings": "Impostazioni",
-  "Speed": "Velocità",
-  "Staff": "Docenti",
-  "Student ID": "Matricola",
-  "Teacher": "Docente",
-  "Teaching": "Didattica",
-  "This course in the agenda": "Questo corso nell'agenda",
-  "Transcript": "Libretto",
-  "Upload assignment": "Invia un elaborato",
-  "Video lectures": "Videolezioni",
-  "Video lecture": "Videolezione",
-  "Virtual classrooms": "Virtual classrooms",
-  "Virtual classroom": "Virtual classroom",
-  "Weighted average": "Media ponderata",
-  "Course holder": "Titolare del corso",
-  "Book exam": "Prenota esame",
-  "Exam booked": "Esame prenotato",
-  "Today": "Oggi",
-  "Tomorrow": "Domani",
-  "Back to today": "Torna a oggi",
-  "Delete Booking": "Annulla prenotazione",
-  "Deadline": "Scadenza",
-  "Teacher Lecture": "Professore associato",
-  "Material": "Materiale",
-  "GoToCourseMaterial": "Vai al materiale del corso"
+  "agendaScreen": {
+    "title": "Agenda"
+  },
+  "courseAssignmentUploadScreen": {
+    "title": "Invia un elaborato"
+  },
+  "courseAssignmentsTab": {
+    "title": "Elaborati"
+  },
+  "courseDirectoryListItem": {
+    "subtitle": "{{count}} file",
+    "subtitle_plural": "{{count}} file"
+  },
+  "courseDirectoryScreen": {
+    "noResult": "Nessun risultato trovato"
+  },
+  "courseFilesTab": {
+    "title": "Materiali",
+    "recentSectionTitle": "File recenti",
+    "empty": "Nessun file disponibile"
+  },
+  "courseGuideScreen": {
+    "title": "Guida del corso"
+  },
+  "courseInfoTab": {
+    "agendaSectionTitle": "Questo corso nell'agenda",
+    "creditsLabel": "Crediti",
+    "moreSectionTitle": "Altro",
+    "periodLabel": "Periodo",
+    "staffSectionTitle": "Docenti",
+    "teacherLabel": "Docente",
+    "title": "Info",
+    "yearLabel": "Anno"
+  },
+  "courseLecturesTab": {
+    "title": "Lezioni",
+    "videoLecturesSectionTitle": "Videolezioni",
+    "virtualClassroomsSectionTitle": "Virtual classrooms"
+  },
+  "courseNoticesTab": {
+    "title": "Avvisi"
+  },
+  "courseScreen": {
+    "title": "Corso"
+  },
+  "courseVideoLectureScreen": {
+    "title": "Videolezione"
+  },
+  "courseVirtualClassroomScreen": {
+    "title": "Virtual classroom"
+  },
+  "coursesScreen": {
+    "title": "Corsi",
+    "otherCoursesSectionTitle": "Altri corsi"
+  },
+  "examScreen": {
+    "ctaBook": "Prenota esame",
+    "ctaBookSuccess": "Esame prenotato",
+    "ctaCancel": "Annulla prenotazione",
+    "ctaCancelSuccess": "Prenotazione annullata",
+    "location": "Luogo"
+  },
+  "examsScreen": {
+    "title": "Appelli"
+  },
+  "loginScreen": {
+    "usernameLabel": "Matricola",
+    "passwordLabel": "Password",
+    "cta": "Accedi"
+  },
+  "messagesScreen": {
+    "title": "Archivio messaggi"
+  },
+  "placesScreen": {
+    "title": "Luoghi"
+  },
+  "profileScreen": {
+    "title": "Profilo"
+  },
+  "sectionHeader": {
+    "cta": "Vedi tutto"
+  },
+  "settingsScreen": {
+    "title": "Impostazioni"
+  },
+  "teachingScreen": {
+    "title": "Didattica"
+  },
+  "transcriptScreen": {
+    "acquiredCreditsLabel": "Crediti acquisiti",
+    "attendedCreditsLabel": "Crediti frequentati",
+    "finalAverageLabel": "Media depurata",
+    "provisionalGradesSectionTitle": "Valutazioni provvisorie",
+    "title": "Libretto",
+    "weightedAverageLabel": "Media ponderata"
+  },
+  "videoPlayer": {
+    "speedSectionTitle": "Velocità"
+  },
+  "words": {
+    "credits": "crediti",
+    "exam": "esame",
+    "lecture": "lezione",
+    "teacher": "docente"
+  }
 }

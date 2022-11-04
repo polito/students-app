@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Image, TextInput, View } from 'react-native';
+import { Image, TextInput, View } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -13,7 +14,7 @@ import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
-  const { mutate: handleLogin, isLoading, data } = useLogin();
+  const { mutate: handleLogin, isLoading, isSuccess, data } = useLogin();
   const { colors, spacing } = useTheme();
 
   const [username, setUsername] = useState('');
@@ -67,7 +68,7 @@ export const LoginScreen = () => {
         }}
       >
         <TextField
-          label={t('Matricola')}
+          label={t('loginScreen.usernameLabel')}
           value={username}
           onChangeText={setUsername}
           placeholder="s300000"
@@ -80,16 +81,16 @@ export const LoginScreen = () => {
         <TextField
           inputRef={passwordRef}
           type="password"
-          label={t('Password')}
+          label={t('loginScreen.passwordLabel')}
           onChangeText={setPassword}
           value={password}
           editable={!isLoading}
         />
-        <Button
-          title={t('Login')}
-          color={colors.heading}
-          disabled={isLoading}
+        <CtaButton
+          title={t('loginScreen.cta')}
           onPress={onLoginButtonPressed}
+          loading={isLoading}
+          success={isSuccess}
         />
       </View>
     </SafeAreaView>
