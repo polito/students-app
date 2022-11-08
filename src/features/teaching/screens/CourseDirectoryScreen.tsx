@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, Platform, StyleSheet } from 'react-native';
 
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -66,6 +67,9 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       refreshControl={createRefreshControl(directoryQuery)}
       refreshing={directoryQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}
+      ItemSeparatorComponent={Platform.select({
+        ios: IndentedDivider,
+      })}
     />
   );
 };

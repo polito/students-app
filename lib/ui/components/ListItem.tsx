@@ -7,8 +7,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faChevronRight } from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -25,6 +26,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
+  isNavigationAction?: boolean;
 }
 
 /**
@@ -42,6 +44,7 @@ export const ListItem = ({
   linkTo,
   containerStyle,
   onPress,
+  isNavigationAction,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -73,11 +76,25 @@ export const ListItem = ({
             alignItems: 'center',
             paddingHorizontal: spacing[5],
             paddingVertical: spacing[2],
+            minHeight: 56,
           },
           containerStyle,
         ]}
       >
-        {leadingItem}
+        {leadingItem && (
+          <View
+            style={{
+              width: 38,
+              height: 38,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: -7,
+              marginRight: spacing[2],
+            }}
+          >
+            {leadingItem}
+          </View>
+        )}
         <View style={{ flex: 1 }}>
           {typeof title === 'string' ? (
             <Text
@@ -98,31 +115,38 @@ export const ListItem = ({
           ) : (
             title
           )}
-          {typeof subtitle === 'string' ? (
-            <Text
-              variant="secondaryText"
-              style={[
-                {
-                  fontSize: fontSizes.sm,
-                  lineHeight: fontSizes.sm * 1.5,
-                },
-                subtitleStyle,
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {subtitle}
-            </Text>
-          ) : (
-            subtitle
-          )}
+          {subtitle ? (
+            typeof subtitle === 'string' ? (
+              <Text
+                variant="secondaryText"
+                style={[
+                  {
+                    fontSize: fontSizes.sm,
+                    lineHeight: fontSizes.sm * 1.5,
+                    height: 18,
+                  },
+                  subtitleStyle,
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {subtitle}
+              </Text>
+            ) : (
+              subtitle
+            )
+          ) : null}
         </View>
-        {!trailingItem && (linkTo || onPress) && Platform.OS === 'ios' ? (
+        {!trailingItem &&
+        (linkTo || isNavigationAction) &&
+        Platform.OS === 'ios' ? (
           <Icon
-            name="chevron-forward-outline"
+            icon={faChevronRight}
             color={colors.secondaryText}
-            size={fontSizes['2xl']}
-            style={{ marginRight: -spacing[1] }}
+            style={{
+              marginLeft: spacing[1],
+              marginRight: -spacing[1],
+            }}
           />
         ) : (
           trailingItem

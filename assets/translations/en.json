@@ -18,7 +18,8 @@
   "courseFilesTab": {
     "title": "Files",
     "recentSectionTitle": "Most recent files",
-    "empty": "No file available"
+    "empty": "No file available",
+    "browseFiles": "Browse files"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -55,7 +56,7 @@
     "otherCoursesSectionTitle": "Other courses"
   },
   "examScreen": {
-    "ctaBook": "Book esame",
+    "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
     "ctaCancelSuccess": "Booking cancelled",
@@ -88,6 +89,9 @@
     "title": "Teaching"
   },
   "transcriptScreen": {
+    "yourCareer": "Your career",
+    "thisYear": "This academic year",
+    "averages": "Averages",
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "finalAverageLabel": "Final average",

@@ -20,6 +20,7 @@ import {
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
+import { ExamListItem } from './ExamListItem';
 
 type StaffMember = Person & { courseRole: string };
 
@@ -100,26 +101,16 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       {courseExamsQuery.data?.data.length > 0 && (
         <Section>
           <SectionHeader title={t('examsScreen.title')} />
-          <SectionList>
+          <SectionList loading={courseExamsQuery.isLoading} indented>
             {courseExamsQuery.data?.data.map(exam => (
-              <ListItem
-                key={exam.id}
-                title={exam.courseName}
-                subtitle={`${exam.examStartsAt.toLocaleString()} - ${
-                  exam.classrooms
-                }`}
-                linkTo={{
-                  screen: 'Exam',
-                  params: { id: exam.id },
-                }}
-              />
+              <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>
         </Section>
       )}
       <Section>
         <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
-        <SectionList>
+        <SectionList indented>
           {staff.map((member, index) => (
             // TODO cleanup key when real API are used
             <PersonListItem

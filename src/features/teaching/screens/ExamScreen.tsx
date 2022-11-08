@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { ScrollView } from 'react-native';
 
+import { faLocationDot } from '@fortawesome/pro-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -58,17 +59,11 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           type={t('words.exam')}
           time={exam?.examStartsAt}
         />
-        <SectionList loading={teacherQuery.isLoading}>
+        <SectionList loading={teacherQuery.isLoading} indented>
           <ListItem
-            leadingItem={
-              <Icon
-                name="location"
-                style={{ color: colors.secondaryText, marginRight: spacing[4] }}
-                size={fontSizes['2xl']}
-              />
-            }
+            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
             title={exam?.classrooms}
-            subtitle={''}
+            subtitle={t('examScreen.location')}
           />
           {teacherQuery.data && (
             <PersonListItem
@@ -79,34 +74,25 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         </SectionList>
       </ScrollView>
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: spacing[4],
-        }}
-      >
-        {exam?.status === ExamStatusEnum.Available && (
-          <CtaButton
-            title={t('examScreen.ctaBook')}
-            onPress={() => bookExamMutation.mutate({})}
-            loading={bookExamMutation.isLoading}
-            success={bookExamMutation.isSuccess}
-            successMessage={t('examScreen.ctaBookSuccess')}
-          />
-        )}
-        {exam?.status === ExamStatusEnum.Booked && (
-          <CtaButton
-            title={t('examScreen.ctaCancel')}
-            onPress={() => cancelExamBookingMutation.mutate()}
-            loading={cancelExamBookingMutation.isLoading}
-            success={cancelExamBookingMutation.isSuccess}
-            successMessage={t('examScreen.ctaCancelSuccess')}
-          />
-        )}
-      </View>
+      {exam?.status === ExamStatusEnum.Available && (
+        <CtaButton
+          title={t('examScreen.ctaBook')}
+          onPress={() => bookExamMutation.mutate({})}
+          loading={bookExamMutation.isLoading}
+          success={bookExamMutation.isSuccess}
+          successMessage={t('examScreen.ctaBookSuccess')}
+        />
+      )}
+      {exam?.status === ExamStatusEnum.Booked && (
+        <CtaButton
+          destructive
+          title={t('examScreen.ctaCancel')}
+          onPress={() => cancelExamBookingMutation.mutate()}
+          loading={cancelExamBookingMutation.isLoading}
+          success={cancelExamBookingMutation.isSuccess}
+          successMessage={t('examScreen.ctaCancelSuccess')}
+        />
+      )}
     </>
   );
 };

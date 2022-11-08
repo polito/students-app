@@ -5,19 +5,20 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faFile } from '@fortawesome/pro-regular-svg-icons';
+import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-
-import { formatFileSize } from '../../../src/utils/files';
 
 interface Props {
   title: string | JSX.Element;
   subtitle?: string;
-  sizeInKiloBytes: number;
+  sizeInKiloBytes?: number;
   trailingItem?: JSX.Element;
   isDownloaded: boolean;
   containerStyle?: StyleProp<ViewStyle>;
@@ -25,23 +26,26 @@ interface Props {
 
 export const FileListItem = ({
   isDownloaded,
-  sizeInKiloBytes,
   subtitle,
   ...rest
 }: TouchableHighlightProps & Props) => {
+  const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createItemStyles);
 
   return (
     <ListItem
+      isNavigationAction
       leadingItem={
         <View>
-          <Icon name="document-outline" size={24} style={styles.fileIcon} />
+          <Icon icon={faFile} size={fontSizes['2xl']} style={styles.fileIcon} />
           {isDownloaded && (
-            <Icon
-              name="checkmark-circle"
-              size={20}
-              style={styles.downloadedIcon}
-            />
+            <View style={styles.downloadedIconContainer}>
+              <Icon
+                icon={faCheckCircle}
+                size={12}
+                color={colors.secondary[600]}
+              />
+            </View>
           )}
         </View>
       }
@@ -55,14 +59,14 @@ export const FileListItem = ({
           >
             {subtitle}
           </Text>
-          <Text
+          {/* <Text
             variant="secondaryText"
             numberOfLines={1}
             ellipsizeMode="tail"
             style={styles.fileSize}
           >
             {formatFileSize(sizeInKiloBytes)}
-          </Text>
+          </Text>*/}
         </View>
       }
       {...rest}
@@ -74,16 +78,17 @@ const createItemStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
     fileIcon: {
       color: colors.heading,
-      marginRight: spacing[3],
     },
     fileSize: {
       paddingLeft: spacing[1],
     },
-    downloadedIcon: {
+    downloadedIconContainer: {
+      padding: 2,
+      borderRadius: 16,
+      backgroundColor: colors.surface,
       position: 'absolute',
-      bottom: -10,
-      right: 5,
-      color: colors.secondary[600],
+      bottom: -5,
+      right: -2,
     },
     subtitle: {
       flexShrink: 1,

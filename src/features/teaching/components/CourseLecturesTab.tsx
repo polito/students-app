@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
+  Platform,
   Pressable,
   SectionList,
   StyleSheet,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faChevronDown, faChevronUp } from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -196,7 +198,9 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
       )}
-      ItemSeparatorComponent={IndentedDivider}
+      ItemSeparatorComponent={Platform.select({
+        ios: () => <IndentedDivider indent={spacing[5] as number} />,
+      })}
       renderSectionHeader={({ section: { title, index, isExpanded } }) => (
         <Pressable onPress={() => toggleSection(index)}>
           <View
@@ -217,11 +221,8 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
               separator={false}
               trailingItem={
                 <Icon
-                  name={
-                    isExpanded ? 'chevron-up-outline' : 'chevron-down-outline'
-                  }
+                  icon={isExpanded ? faChevronUp : faChevronDown}
                   color={colors.secondaryText}
-                  size={fontSizes['2xl']}
                 />
               }
             />

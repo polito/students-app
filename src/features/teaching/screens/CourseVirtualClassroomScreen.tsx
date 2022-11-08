@@ -31,6 +31,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(virtualClassroomQuery, teacherQuery)}
     >

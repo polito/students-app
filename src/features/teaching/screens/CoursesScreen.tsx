@@ -20,11 +20,13 @@ export const CoursesScreen = () => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{
-        paddingVertical: spacing[5],
-      }}
+      contentContainerStyle={[
+        {
+          paddingVertical: spacing[5],
+        },
+        bottomBarAwareStyles,
+      ]}
       refreshControl={createRefreshControl(coursesQuery)}
-      style={bottomBarAwareStyles}
     >
       {!coursesQuery.isLoading &&
         Object.entries(
@@ -42,7 +44,7 @@ export const CoursesScreen = () => {
                   : t('coursesScreen.otherCoursesSectionTitle')
               }
             />
-            <SectionList>
+            <SectionList indented>
               {courses.map(course => (
                 <CourseListItem key={course.shortcode} course={course} />
               ))}

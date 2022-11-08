@@ -28,7 +28,7 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   secondaryText: 'normal',
 };
 
-export const defaultLineHeightMultiplier = 1.3;
+export const defaultLineHeightMultiplier = 1.4;
 
 /**
  * A wrapper around RN's Text component that applies basic theme

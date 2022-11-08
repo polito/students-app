@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faSliders } from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   NativeStackNavigationProp,
@@ -39,9 +40,9 @@ export const CourseScreen = ({ route, navigation }: Props) => {
         }}
       >
         <Icon
-          name="options-outline"
+          icon={faSliders}
           color={colors.primary[400]}
-          size={fontSizes['2xl']}
+          size={fontSizes.lg}
         />
       </TouchableOpacity>
     ),

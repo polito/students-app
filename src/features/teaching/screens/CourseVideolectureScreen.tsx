@@ -29,6 +29,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(teacherQuery, videolecturesQuery)}
     >

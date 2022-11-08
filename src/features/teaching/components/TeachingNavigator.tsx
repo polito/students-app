@@ -72,7 +72,7 @@ export const TeachingNavigator = () => {
         component={CourseScreen}
         options={{
           headerLargeStyle: {
-            backgroundColor: colors.surface,
+            backgroundColor: colors.headers,
           },
           headerTransparent: false,
           headerLargeTitle: false,
@@ -120,7 +120,6 @@ export const TeachingNavigator = () => {
         component={CourseVideolectureScreen}
         options={{
           headerLargeTitle: false,
-          headerTransparent: false,
           headerBackTitle: t('courseScreen.title'),
           title: t('Video lecture'),
         }}
@@ -130,7 +129,6 @@ export const TeachingNavigator = () => {
         component={CourseVirtualClassroomScreen}
         options={{
           headerLargeTitle: false,
-          headerTransparent: false,
           headerBackTitle: t('courseScreen.title'),
           title: t('courseVirtualClassroomScreen.title'),
         }}

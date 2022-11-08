@@ -21,7 +21,10 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeContext.Provider value={uiTheme}>
-      <StatusBar />
+      <StatusBar
+        backgroundColor={uiTheme.colors.primary[700]}
+        barStyle="light-content"
+      />
       <SafeAreaProvider>
         <NavigationContainer theme={navigationTheme}>
           {children}

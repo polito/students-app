@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Button, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -22,34 +23,34 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const styles = useStylesheet(createStyles);
 
   return (
-    <ScrollView
-      style={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(recentFilesQuery)}
-    >
-      <View style={styles.sectionContainer}>
-        <SectionHeader title={t('courseFilesTab.recentSectionTitle')} />
-        <SectionList loading={recentFilesQuery.isLoading}>
-          {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
-            <CourseRecentFileListItem
-              key={file.id}
-              item={file}
-              isDownloaded={index % 3 === 0}
-            />
-          ))}
-          {recentFilesQuery.data?.length === 0 && (
-            <ListItem title={t('courseFilesTab.empty')} />
-          )}
-        </SectionList>
-      </View>
-      {recentFilesQuery.data?.length > 0 && (
-        <View style={styles.buttonContainer}>
-          <Button
-            title={'Navigate all files'}
-            onPress={() => navigation.navigate('CourseDirectory', { courseId })}
-          />
+    <>
+      <ScrollView
+        style={bottomBarAwareStyles}
+        refreshControl={createRefreshControl(recentFilesQuery)}
+      >
+        <View style={styles.sectionContainer}>
+          <SectionHeader title={t('courseFilesTab.recentSectionTitle')} />
+          <SectionList loading={recentFilesQuery.isLoading} indented>
+            {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
+              <CourseRecentFileListItem
+                key={file.id}
+                item={file}
+                isDownloaded={index % 3 === 0}
+              />
+            ))}
+            {recentFilesQuery.data?.length === 0 && (
+              <ListItem title={t('courseFilesTab.empty')} />
+            )}
+          </SectionList>
         </View>
+      </ScrollView>
+      {recentFilesQuery.data?.length > 0 && (
+        <CtaButton
+          title={t('courseFilesTab.browseFiles')}
+          onPress={() => navigation.navigate('CourseDirectory', { courseId })}
+        />
       )}
-    </ScrollView>
+    </>
   );
 };
 

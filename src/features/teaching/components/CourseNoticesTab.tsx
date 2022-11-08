@@ -1,8 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  faChevronDown,
+  faChevronRight,
+} from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { defaultLineHeightMultiplier } from '@lib/ui/components/Text';
@@ -45,17 +49,6 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               }}
               source={{ dom }}
               systemFonts={['Poppins']}
-              tagsStyles={{
-                b: {
-                  fontWeight: 'bold',
-                },
-                strong: {
-                  fontWeight: 'bold',
-                },
-                i: {
-                  fontStyle: 'italic',
-                },
-              }}
             />
           ),
           open: false,
@@ -70,7 +63,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(noticesQuery)}
     >
-      <List>
+      <List dividers>
         {notices.map((notice, index) => (
           <Fragment key={notice.id}>
             <ListItem
@@ -85,13 +78,9 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               }
               trailingItem={
                 <Icon
-                  name={
-                    notice.open
-                      ? 'chevron-down-outline'
-                      : 'chevron-forward-outline'
-                  }
+                  icon={notice.open ? faChevronDown : faChevronRight}
                   color={colors.secondaryText}
-                  size={fontSizes['2xl']}
+                  size={fontSizes.lg}
                   style={{ marginRight: -spacing[1] }}
                 />
               }

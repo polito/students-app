@@ -11,10 +11,9 @@ export const CourseIcon = ({ color }: Props) => {
   return (
     <View
       style={{
-        width: 20,
-        height: 20,
-        marginRight: spacing[3],
-        borderRadius: 10,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
         backgroundColor: color ?? colors.primary[400],
       }}
     />

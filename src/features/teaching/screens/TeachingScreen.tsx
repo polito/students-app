@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -8,7 +8,6 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { ProgressChart } from 'react-native-chart-kit';
 
 import { Card } from '@lib/ui/components/Card';
 import { Section } from '@lib/ui/components/Section';
@@ -18,9 +17,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import color from 'color';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
@@ -30,6 +28,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
+import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
@@ -45,6 +44,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const exams = useMemo(
+    () =>
+      examsQuery.data?.data
+        .sort(a => (a.status === ExamStatusEnum.Booked ? -1 : 1))
+        .slice(0, 4) ?? [],
+    [examsQuery],
+  );
 
   return (
     <ScrollView
@@ -62,7 +68,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
           />
-          <SectionList loading={coursesQuery.isLoading}>
+          <SectionList loading={coursesQuery.isLoading} indented>
             {coursesQuery.data?.data
               .sort(
                 (a, b) =>
@@ -80,8 +86,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
           />
-          <SectionList loading={examsQuery.isLoading}>
-            {examsQuery.data?.data.slice(0, 4).map(exam => (
+          <SectionList loading={examsQuery.isLoading} indented>
+            {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>
@@ -126,22 +132,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     </Text>
                   </View>
                   <ProgressChart
-                    data={{
-                      labels: ['Test'],
-                      data: [
-                        studentQuery.data?.data.totalAcquiredCredits /
-                          studentQuery.data?.data.totalCredits,
-                      ],
-                    }}
-                    width={90}
-                    height={90}
-                    hideLegend={true}
-                    chartConfig={{
-                      backgroundGradientFromOpacity: 0,
-                      backgroundGradientToOpacity: 0,
-                      color: (opacity = 1) =>
-                        color(colors.primary[400]).alpha(opacity).toString(),
-                    }}
+                    data={[80 / 120, 40 / 120]}
+                    colors={[colors.primary[400], colors.secondary[500]]}
                   />
                 </View>
               </TouchableHighlight>
