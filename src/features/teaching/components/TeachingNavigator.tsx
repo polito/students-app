@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Logo } from '../../../core/components/Logo';
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
@@ -15,7 +15,7 @@ import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomS
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
-import { HomeScreen } from '../screens/HomeScreen';
+import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
 
 export type TeachingStackParamList = {
@@ -52,17 +52,17 @@ export const TeachingNavigator = () => {
     >
       <Stack.Screen
         name="Home"
-        component={HomeScreen}
+        component={TeachingScreen}
         options={{
-          headerLeft: () => <Logo />,
-          headerTitle: t('Teaching'),
+          headerLeft: () => <HeaderLogo />,
+          headerTitle: t('teachingScreen.title'),
         }}
       />
       <Stack.Screen
         name="Courses"
         component={CoursesScreen}
         options={{
-          headerTitle: t('Courses'),
+          headerTitle: t('coursesScreen.title'),
         }}
       />
       <Stack.Screen
@@ -95,8 +95,8 @@ export const TeachingNavigator = () => {
         name="CourseGuide"
         component={CourseGuideScreen}
         options={{
-          headerTitle: t('Course guide'),
-          headerBackTitle: t('Course'),
+          headerTitle: t('courseGuideScreen.title'),
+          headerBackTitle: t('courseScreen.title'),
         }}
       />
       <Stack.Screen
@@ -104,8 +104,7 @@ export const TeachingNavigator = () => {
         component={CourseVideolectureScreen}
         options={{
           headerLargeTitle: false,
-          headerTransparent: false,
-          headerBackTitle: t('Course'),
+          headerBackTitle: t('courseScreen.title'),
           title: t('Video lecture'),
         }}
       />
@@ -114,17 +113,16 @@ export const TeachingNavigator = () => {
         component={CourseVirtualClassroomScreen}
         options={{
           headerLargeTitle: false,
-          headerTransparent: false,
-          headerBackTitle: t('Course'),
-          title: t('Virtual classroom'),
+          headerBackTitle: t('courseScreen.title'),
+          title: t('courseVirtualClassroomScreen.title'),
         }}
       />
       <Stack.Screen
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
         options={{
-          headerBackTitle: t('Course'),
-          headerTitle: t('Upload assignment'),
+          headerBackTitle: t('courseScreen.title'),
+          headerTitle: t('courseAssignmentUploadScreen.title'),
         }}
       />
 
@@ -132,7 +130,7 @@ export const TeachingNavigator = () => {
         name="Exams"
         component={ExamsScreen}
         options={{
-          headerTitle: t('Exams'),
+          headerTitle: t('examsScreen.title'),
         }}
       />
       <Stack.Screen

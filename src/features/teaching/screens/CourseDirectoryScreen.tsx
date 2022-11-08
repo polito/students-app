@@ -5,7 +5,7 @@ import { FlatList, StyleSheet } from 'react-native';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
-import { CourseDirectory, CourseFileOverview } from '@polito-it/api-client';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
@@ -16,6 +16,10 @@ import {
 } from '../../../core/queries/courseHooks';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
+import {
+  CourseRecentFile,
+  CourseRecentFileListItem,
+} from '../components/CourseRecentFileListItem';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
@@ -23,14 +27,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { courseId, directoryId } = route.params;
 
-  const directoryQuery = useGetCourseDirectory(courseId, directoryId);
-  const recentFilesQuery = useGetCourseFilesRecent(courseId);
-  const [directoryContent, setDirectoryContent] = useState([]);
   const [searchFilter, setSearchFilter] = useState('');
-  const [isFiltered, setIsFiltered] = useState(false);
-
-  const { t } = useTranslation();
-  const styles = useStylesheet(createStyles);
 
   useEffect(() => {
     navigation.setOptions({
@@ -40,40 +37,24 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     });
   }, []);
 
+  const directoryQuery = useGetCourseDirectory(courseId, directoryId);
+
   useEffect(() => {
     if (!directoryQuery.data) return;
 
     navigation.setOptions({
       headerTitle: directoryQuery.data.name,
     });
-    setDirectoryContent(directoryQuery.data.files);
   }, [directoryQuery.data]);
-
-  useEffect(() => {
-    // If the search filter is empty
-    if (!searchFilter) {
-      // If no filter was applied
-      if (!isFiltered) return;
-
-      // Else, reset screen directory content
-      setDirectoryContent(directoryQuery.data.files);
-      setIsFiltered(false);
-      return;
-    }
-
-    // Search filter is nonempty
-    setIsFiltered(true);
-    setDirectoryContent(
-      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
-    );
-  }, [searchFilter]);
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
-  return (
+  return searchFilter ? (
+    <CourseFileSearchFlatList courseId={courseId} searchFilter={searchFilter} />
+  ) : (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
-      data={directoryContent}
+      data={directoryQuery.data?.files}
       keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
       renderItem={({ item, index }) =>
         item.type === 'directory' ? (
@@ -85,9 +66,44 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       refreshControl={createRefreshControl(directoryQuery)}
       refreshing={directoryQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}
+    />
+  );
+};
+
+interface SearchProps {
+  courseId: number;
+  searchFilter: string;
+}
+
+const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
+  const [searchResults, setSearchResults] = useState([]);
+  const recentFilesQuery = useGetCourseFilesRecent(courseId);
+
+  useEffect(() => {
+    setSearchResults(
+      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
+    );
+  }, [searchFilter]);
+
+  const styles = useStylesheet(createStyles);
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
+
+  const { t } = useTranslation();
+
+  return (
+    <FlatList
+      contentInsetAdjustmentBehavior="automatic"
+      data={searchResults}
+      keyExtractor={(item: CourseRecentFile) => item.id}
+      renderItem={({ item, index }) => (
+        <CourseRecentFileListItem item={item} isDownloaded={index % 2 === 0} />
+      )}
+      refreshControl={createRefreshControl(recentFilesQuery)}
+      refreshing={recentFilesQuery.isLoading}
+      contentContainerStyle={bottomBarAwareStyles}
       ListEmptyComponent={
         <Text style={styles.noResultText}>
-          {t('CourseDirectoryScreen.EmptySearch')}
+          {t('courseDirectoryScreen.noResult')}
         </Text>
       }
     />

@@ -1,24 +1,21 @@
-import { TouchableHighlightProps } from 'react-native';
-
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { CourseFileOverview } from '@polito-it/api-client';
 
-import { formatFileDate } from '../../../utils/files';
+export type CourseRecentFile = CourseFileOverview & {
+  location: string;
+};
 
 interface Props {
-  item: CourseFileOverview;
+  item: CourseRecentFile;
   isDownloaded: boolean;
 }
 
-export const CourseFileListItem = ({
-  item,
-  ...rest
-}: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
+export const CourseRecentFileListItem = ({ item, ...rest }: Props) => {
   return (
     <FileListItem
       onPress={() => {}}
       title={item.name}
-      subtitle={formatFileDate(item.createdAt)}
+      subtitle={item.location}
       sizeInKiloBytes={item.sizeInKiloBytes}
       {...rest}
     />

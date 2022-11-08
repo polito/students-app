@@ -1,18 +1,18 @@
-import { useTranslation } from 'react-i18next';
 import {
   StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faEllipsisVertical } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { CourseAssignment } from '@polito-it/api-client';
+import { CourseAssignment } from '@polito/api-client';
 
-import { formatFileDate, formatFileSize } from '../../../utils/files';
+import { formatFileDate } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
@@ -25,16 +25,13 @@ export const CourseAssignmentListItem = ({
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const styles = useStylesheet(createItemStyles);
   const { colors } = useTheme();
-  const { t } = useTranslation();
 
   return (
     <FileListItem
       onPress={() => {}}
       title={item.description}
-      subtitle={t('CourseFileListItem.Subtitle', {
-        date: formatFileDate(item.uploadedAt),
-        size: formatFileSize(item.sizeInKiloBytes),
-      })}
+      subtitle={formatFileDate(item.uploadedAt)}
+      sizeInKiloBytes={item.sizeInKiloBytes}
       containerStyle={styles.listItemContainer}
       trailingItem={
         <TouchableHighlight
@@ -42,7 +39,7 @@ export const CourseAssignmentListItem = ({
           style={styles.trailingHighlight}
           underlayColor={colors.touchableHighlight}
         >
-          <Icon name="ellipsis-vertical" size={24} />
+          <FontAwesomeIcon icon={faEllipsisVertical} size={24} />
         </TouchableHighlight>
       }
       {...rest}

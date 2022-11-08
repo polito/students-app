@@ -1,10 +1,15 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  faChevronDown,
+  faChevronRight,
+} from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { defaultLineHeightMultiplier } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';
@@ -39,6 +44,8 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
                 fontFamily: 'Poppins',
+                fontSize: fontSizes.sm,
+                lineHeight: fontSizes.sm * defaultLineHeightMultiplier,
               }}
               source={{ dom }}
               systemFonts={['Poppins']}
@@ -70,15 +77,11 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 )
               }
               trailingItem={
-                <Icon
-                  name={
-                    notice.open
-                      ? 'chevron-down-outline'
-                      : 'chevron-forward-outline'
-                  }
+                <FontAwesomeIcon
+                  icon={notice.open ? faChevronDown : faChevronRight}
                   color={colors.secondaryText}
-                  size={fontSizes['2xl']}
-                  style={{ marginRight: -spacing[1] }}
+                  size={fontSizes.lg}
+                  style={{ marginRight: -spacing[2] }}
                 />
               }
             />

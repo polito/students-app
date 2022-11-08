@@ -9,7 +9,7 @@ import {
   CourseFileOverview,
   CoursesApi,
   UploadCourseAssignmentRequest,
-} from '@polito-it/api-client';
+} from '@polito/api-client';
 import {
   useMutation,
   useQueries,
@@ -17,6 +17,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
+import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useGetExams } from './examHooks';
@@ -123,14 +124,22 @@ export const useGetCourseFilesRecent = (courseId: number) => {
  * Extract a flat array of files contained into the given directory tree
  */
 const flattenFiles = (
-  directoryContent: CourseDirectoryContentInner[],
-): CourseFileOverview[] => {
-  const result = [];
+  directoryContent: CourseDirectoryContentInner[] | CourseFileOverview[],
+  location: string = '/',
+): CourseRecentFile[] => {
+  const result: CourseRecentFile[] = [];
   directoryContent?.forEach(item => {
     if (item.type === 'file') {
-      result.push(item);
+      result.push({ ...item, location });
     } else {
-      result.push(...flattenFiles(item.files));
+      result.push(
+        ...flattenFiles(
+          (item as CourseDirectory).files,
+          location.length === 1
+            ? location + item.name
+            : location + '/' + item.name,
+        ),
+      );
     }
   });
   return result;
@@ -141,7 +150,7 @@ const flattenFiles = (
  */
 const sortRecentFiles = (
   directoryContent: CourseDirectoryContentInner[],
-): CourseFileOverview[] => {
+): CourseRecentFile[] => {
   const flatFiles = flattenFiles(directoryContent);
   return flatFiles.sort(
     (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),

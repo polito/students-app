@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableHighlightProps } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faFolder } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -17,10 +18,10 @@ export const DirectoryListItem = (props: TouchableHighlightProps & Props) => {
   return (
     <ListItem
       leadingItem={
-        <Icon
-          name="folder"
+        <FontAwesomeIcon
+          icon={faFolder}
           size={24}
-          style={[styles.icon, styles.folderIcon]}
+          style={[styles.icon, styles.folderIcon as any]}
         />
       }
       {...props}

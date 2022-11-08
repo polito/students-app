@@ -16,7 +16,7 @@ import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigato
 import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
-import { Logo } from './Logo';
+import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
@@ -47,7 +47,7 @@ export const RootNavigator = () => {
         name="TeachingTab"
         component={TeachingNavigator}
         options={{
-          tabBarLabel: t('Teaching'),
+          tabBarLabel: t('teachingScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon ios="book" android="auto-stories" color={color} size={size} />
             <FontAwesomeIcon icon={faBook} color={color} size={size} />
@@ -58,7 +58,7 @@ export const RootNavigator = () => {
         name="AgendaTab"
         component={AgendaNavigator}
         options={{
-          tabBarLabel: t('Agenda'),
+          tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon
             //   ios="calendar"
@@ -74,8 +74,8 @@ export const RootNavigator = () => {
         name="PlacesTab"
         component={PlacesScreen}
         options={{
-          headerLeft: () => <Logo />,
-          tabBarLabel: t('Places'),
+          headerLeft: () => <HeaderLogo />,
+          tabBarLabel: t('placesScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon ios="map" android="place" color={color} size={size} />
             <FontAwesomeIcon icon={faLocationDot} color={color} size={size} />
@@ -86,7 +86,7 @@ export const RootNavigator = () => {
         name="ProfileTab"
         component={UserNavigator}
         options={{
-          tabBarLabel: t('Profile'),
+          tabBarLabel: t('profileScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon ios="person" android="person" color={color} size={size} />
             <FontAwesomeIcon icon={faUser} color={color} size={size} />

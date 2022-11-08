@@ -30,7 +30,13 @@ export const useTabs = (options: TabOptions[]) => {
           }}
         >
           {options.map((o, i) => (
-            <Tab key={i} onPress={() => setSelectedTabIndex(i)}>
+            <Tab
+              key={i}
+              onPress={() => setSelectedTabIndex(i)}
+              textStyle={{
+                marginBottom: -2,
+              }}
+            >
               {o.title}
             </Tab>
           ))}

@@ -7,14 +7,15 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faChevronDown, faChevronUp } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { VideoLecture } from '@polito-it/api-client';
-import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito-it/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
+import { VideoLecture } from '@polito/api-client';
+import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -114,14 +115,14 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     const availableSections: Section[] = [
       {
         index: 0,
-        title: t('Virtual classrooms'),
+        title: t('courseLecturesTab.virtualClassroomsSectionTitle'),
         data: [],
         type: 'VirtualClassroom',
         isExpanded: false,
       },
       {
         index: 1,
-        title: t('Video lectures'),
+        title: t('courseLecturesTab.videoLecturesSectionTitle'),
         data: [],
         type: 'VideoLecture',
         isExpanded: false,
@@ -129,7 +130,12 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     ];
 
     const sectionTitles = vcPreviousYears
-      .map(py => `${t('Virtual classrooms')} - ${py.year}`)
+      .map(
+        py =>
+          `${t('courseLecturesTab.virtualClassroomsSectionTitle')} - ${
+            py.year
+          }`,
+      )
       .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
 
     sectionTitles.forEach((title, index) => {
@@ -180,73 +186,69 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   };
 
   return (
-    sections.length > 0 && (
-      <SectionList
-        ref={sectionListRef}
-        contentContainerStyle={bottomBarAwareStyles}
-        sections={sections}
-        refreshing={queries.some(q => q.isLoading)}
-        onRefresh={() => queries.forEach(q => q.refetch())}
-        stickySectionHeadersEnabled={true}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
-          { useNativeDriver: false },
-        )}
-        ItemSeparatorComponent={IndentedDivider}
-        renderSectionHeader={({ section: { title, index, isExpanded } }) => (
-          <Pressable onPress={() => toggleSection(index)}>
-            <View
-              style={{
-                paddingVertical: spacing[2],
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderColor: colors.divider,
-                ...(index > 0 && sections[index - 1]?.isExpanded
-                  ? {
-                      borderTopWidth: StyleSheet.hairlineWidth,
-                    }
-                  : {}),
-              }}
-            >
-              <TranslucentView />
-              <SectionHeader
-                title={title}
-                separator={false}
-                trailingItem={
-                  <Icon
-                    name={
-                      isExpanded ? 'chevron-up-outline' : 'chevron-down-outline'
-                    }
-                    color={colors.secondaryText}
-                    size={fontSizes['2xl']}
-                  />
-                }
-              />
-            </View>
-          </Pressable>
-        )}
-        renderItem={({ section, item: lecture }) => {
-          const { data: teacher } = useGetPerson(lecture.teacherId);
-          return (
-            <ListItem
-              title={lecture.title}
-              subtitle={[
-                teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
-                lecture.createdAt?.toLocaleDateString(),
-                lecture.duration,
-              ]
-                .filter(i => !!i)
-                .join(' - ')}
-              linkTo={{
-                screen:
-                  section.type === 'VideoLecture'
-                    ? 'CourseVideolecture'
-                    : 'CourseVirtualClassroom',
-                params: { courseId, lectureId: lecture.id },
-              }}
+    <SectionList
+      ref={sectionListRef}
+      contentContainerStyle={bottomBarAwareStyles}
+      sections={sections}
+      refreshing={queries.some(q => q.isLoading)}
+      onRefresh={() => queries.forEach(q => q.refetch())}
+      stickySectionHeadersEnabled={true}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
+        { useNativeDriver: false },
+      )}
+      ItemSeparatorComponent={IndentedDivider}
+      renderSectionHeader={({ section: { title, index, isExpanded } }) => (
+        <Pressable onPress={() => toggleSection(index)}>
+          <View
+            style={{
+              paddingVertical: spacing[2],
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderColor: colors.divider,
+              ...(index > 0 && sections[index - 1]?.isExpanded
+                ? {
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                  }
+                : {}),
+            }}
+          >
+            <TranslucentView />
+            <SectionHeader
+              title={title}
+              separator={false}
+              trailingItem={
+                <FontAwesomeIcon
+                  icon={isExpanded ? faChevronUp : faChevronDown}
+                  color={colors.secondaryText}
+                  size={fontSizes['2xl']}
+                />
+              }
             />
-          );
-        }}
-      />
-    )
+          </View>
+        </Pressable>
+      )}
+      renderItem={({ section, item: lecture }) => {
+        const { data: teacher } = useGetPerson(lecture.teacherId);
+        return (
+          <ListItem
+            title={lecture.title}
+            subtitle={[
+              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
+              lecture.createdAt?.toLocaleDateString(),
+              lecture.duration,
+            ]
+              .filter(i => !!i)
+              .join(' - ')}
+            linkTo={{
+              screen:
+                section.type === 'VideoLecture'
+                  ? 'CourseVideolecture'
+                  : 'CourseVirtualClassroom',
+              params: { courseId, lectureId: lecture.id },
+            }}
+          />
+        );
+      }}
+    />
   );
 };

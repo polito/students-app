@@ -1,4 +1,4 @@
-import { StudentApi } from '@polito-it/api-client';
+import { StudentApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';

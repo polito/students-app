@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
-import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -10,6 +9,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
+import { CourseListItem } from '../components/CourseListItem';
 
 export const CoursesScreen = () => {
   const { t } = useTranslation();
@@ -39,24 +39,12 @@ export const CoursesScreen = () => {
               title={
                 period !== 'undefined'
                   ? `${t('Period')} ${period}`
-                  : t('Other courses')
+                  : t('coursesScreen.otherCoursesSectionTitle')
               }
             />
             <SectionList>
               {courses.map(course => (
-                <ListItem
-                  key={course.shortcode}
-                  linkTo={
-                    course.id != null
-                      ? {
-                          screen: 'Course',
-                          params: { id: course.id, courseName: course.name },
-                        }
-                      : undefined
-                  }
-                  title={course.name}
-                  subtitle={`${course.cfu} ${t('Credits').toLowerCase()}`}
-                />
+                <CourseListItem key={course.shortcode} course={course} />
               ))}
             </SectionList>
           </Section>

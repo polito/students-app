@@ -29,6 +29,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(teacherQuery, videolecturesQuery)}
     >
@@ -45,7 +46,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
         {teacherQuery.data && (
           <PersonListItem
             person={teacherQuery.data?.data}
-            subtitle={t('Course holder')}
+            subtitle={t('words.teacher')}
           />
         )}
       </SectionList>
