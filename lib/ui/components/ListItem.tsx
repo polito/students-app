@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Icon } from '@lib/ui/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -26,6 +26,7 @@ interface Props {
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
+  isNavigationAction?: boolean;
 }
 
 /**
@@ -43,6 +44,7 @@ export const ListItem = ({
   linkTo,
   containerStyle,
   onPress,
+  isNavigationAction,
   ...rest
 }: TouchableHighlightProps & Props) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -78,7 +80,20 @@ export const ListItem = ({
           containerStyle,
         ]}
       >
-        {leadingItem}
+        {leadingItem && (
+          <View
+            style={{
+              width: 38,
+              height: 38,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: -7,
+              marginRight: spacing[2],
+            }}
+          >
+            {leadingItem}
+          </View>
+        )}
         <View style={{ flex: 1 }}>
           {typeof title === 'string' ? (
             <Text
@@ -121,12 +136,16 @@ export const ListItem = ({
             )
           ) : null}
         </View>
-        {linkTo && Platform.OS === 'ios' ? (
-          <FontAwesomeIcon
+        {!trailingItem &&
+        (linkTo || isNavigationAction) &&
+        Platform.OS === 'ios' ? (
+          <Icon
             icon={faChevronRight}
             color={colors.secondaryText}
-            size={fontSizes.lg}
-            style={{ marginRight: -spacing[2] }}
+            style={{
+              marginLeft: spacing[1],
+              marginRight: -spacing[1],
+            }}
           />
         ) : (
           trailingItem

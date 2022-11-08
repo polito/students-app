@@ -1,6 +1,8 @@
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { CourseFileOverview } from '@polito-it/api-client';
 
+import { formatFileSize } from '../../../utils/files';
+
 export type CourseRecentFile = CourseFileOverview & {
   location: string;
 };
@@ -15,8 +17,7 @@ export const CourseRecentFileListItem = ({ item, ...rest }: Props) => {
     <FileListItem
       onPress={() => {}}
       title={item.name}
-      subtitle={item.location}
-      sizeInKiloBytes={item.sizeInKiloBytes}
+      subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${item.location}`}
       {...rest}
     />
   );

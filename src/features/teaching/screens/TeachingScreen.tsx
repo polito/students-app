@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -16,6 +17,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
@@ -40,6 +42,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const exams = useMemo(
+    () =>
+      examsQuery.data?.data
+        .sort(a => (a.status === ExamStatusEnum.Booked ? -1 : 1))
+        .slice(0, 4) ?? [],
+    [examsQuery],
+  );
 
   return (
     <ScrollView
@@ -68,8 +77,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
           />
-          <SectionList loading={examsQuery.isLoading}>
-            {examsQuery.data?.data.slice(0, 4).map(exam => (
+          <SectionList loading={examsQuery.isLoading} indented>
+            {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>

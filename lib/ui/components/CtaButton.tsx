@@ -7,8 +7,8 @@ import {
   View,
 } from 'react-native';
 
-import { faCheck } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCheckCircle } from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -71,9 +71,8 @@ export const CtaButton = ({
           <ActivityIndicator />
         ) : showSuccess ? (
           <View style={{ flexDirection: 'row' }}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              color={colors.prose}
+            <Icon
+              icon={faCheckCircle}
               size={fontSizes.xl}
               style={{ marginVertical: -2, marginRight: spacing[2] }}
             />

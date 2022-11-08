@@ -6,7 +6,7 @@ import {
   faChevronDown,
   faChevronRight,
 } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { defaultLineHeightMultiplier } from '@lib/ui/components/Text';
@@ -63,7 +63,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={createRefreshControl(noticesQuery)}
     >
-      <List>
+      <List dividers>
         {notices.map((notice, index) => (
           <Fragment key={notice.id}>
             <ListItem
@@ -77,11 +77,11 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 )
               }
               trailingItem={
-                <FontAwesomeIcon
+                <Icon
                   icon={notice.open ? faChevronDown : faChevronRight}
                   color={colors.secondaryText}
                   size={fontSizes.lg}
-                  style={{ marginRight: -spacing[2] }}
+                  style={{ marginRight: -spacing[1] }}
                 />
               }
             />

@@ -8,7 +8,7 @@ import {
   faLocationDot,
   faUser,
 } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -50,7 +50,7 @@ export const RootNavigator = () => {
           tabBarLabel: t('teachingScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon ios="book" android="auto-stories" color={color} size={size} />
-            <FontAwesomeIcon icon={faBook} color={color} size={size} />
+            <Icon icon={faBook} color={color} size={size} />
           ),
         }}
       />
@@ -66,7 +66,7 @@ export const RootNavigator = () => {
             //   color={color}
             //   size={size}
             // />
-            <FontAwesomeIcon icon={faCalendar} color={color} size={size} />
+            <Icon icon={faCalendar} color={color} size={size} />
           ),
         }}
       />
@@ -78,7 +78,7 @@ export const RootNavigator = () => {
           tabBarLabel: t('placesScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon ios="map" android="place" color={color} size={size} />
-            <FontAwesomeIcon icon={faLocationDot} color={color} size={size} />
+            <Icon icon={faLocationDot} color={color} size={size} />
           ),
         }}
       />
@@ -89,7 +89,7 @@ export const RootNavigator = () => {
           tabBarLabel: t('profileScreen.title'),
           tabBarIcon: ({ color, size }) => (
             // <Icon ios="person" android="person" color={color} size={size} />
-            <FontAwesomeIcon icon={faUser} color={color} size={size} />
+            <Icon icon={faUser} color={color} size={size} />
           ),
         }}
       />
@@ -106,11 +106,7 @@ export const RootNavigator = () => {
             //   color={color}
             //   size={size}
             // />
-            <FontAwesomeIcon
-              icon={faCircleEllipsis}
-              color={color}
-              size={size}
-            />
+            <Icon icon={faCircleEllipsis} color={color} size={size} />
           ),
         }}
       />

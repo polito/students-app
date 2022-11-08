@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -59,17 +59,11 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           type={t('words.exam')}
           time={exam?.examStartsAt}
         />
-        <SectionList loading={teacherQuery.isLoading}>
+        <SectionList loading={teacherQuery.isLoading} indented>
           <ListItem
-            leadingItem={
-              <FontAwesomeIcon
-                icon={faLocationDot}
-                style={{ color: colors.secondaryText, marginRight: spacing[4] }}
-                size={fontSizes['2xl']}
-              />
-            }
+            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
             title={exam?.classrooms}
-            subtitle={''}
+            subtitle={t('examScreen.location')}
           />
           {teacherQuery.data && (
             <PersonListItem

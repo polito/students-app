@@ -18,7 +18,8 @@
   "courseFilesTab": {
     "title": "Files",
     "recentSectionTitle": "Most recent files",
-    "empty": "No file available"
+    "empty": "No file available",
+    "browseFiles": "Browse files"
   },
   "courseGuideScreen": {
     "title": "Course guide"

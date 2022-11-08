@@ -1,10 +1,13 @@
 import { Children, PropsWithChildren } from 'react';
 import { Platform } from 'react-native';
+
 import { Divider } from '@lib/ui/components/Divider';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 interface Props {
   dividers?: boolean;
+  indented?: boolean;
 }
 
 /**
@@ -13,6 +16,7 @@ interface Props {
  */
 export const List = ({
   dividers = Platform.select({ ios: true, android: false }),
+  indented = false,
   children,
 }: PropsWithChildren<Props>) => {
   const { spacing } = useTheme();
@@ -24,12 +28,17 @@ export const List = ({
             return (
               <>
                 {c}
-                {i < Children.count(children) - 1 && (
-                  <Divider
-                    key={`div-${i}`}
-                    style={{ marginStart: spacing[5] }}
-                  />
-                )}
+                {i < Children.count(children) - 1 &&
+                  (indented ? (
+                    <IndentedDivider key={`div-${i}`} />
+                  ) : (
+                    <Divider
+                      key={`div-${i}`}
+                      style={{
+                        marginStart: spacing[5],
+                      }}
+                    />
+                  ))}
               </>
             );
           })

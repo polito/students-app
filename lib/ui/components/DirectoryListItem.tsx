@@ -1,10 +1,9 @@
-import { StyleSheet, TouchableHighlightProps } from 'react-native';
+import { TouchableHighlightProps } from 'react-native';
 
 import { faFolder } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 
 interface Props {
   title: string | JSX.Element;
@@ -13,29 +12,15 @@ interface Props {
 }
 
 export const DirectoryListItem = (props: TouchableHighlightProps & Props) => {
-  const styles = useStylesheet(createItemStyles);
+  const { colors } = useTheme();
 
   return (
     <ListItem
       leadingItem={
-        <FontAwesomeIcon
-          icon={faFolder}
-          size={24}
-          style={[styles.icon, styles.folderIcon as any]}
-        />
+        <Icon icon={faFolder} size={24} color={colors.secondary[500]} />
       }
+      isNavigationAction
       {...props}
     />
   );
 };
-
-const createItemStyles = ({ spacing, colors }: Theme) =>
-  StyleSheet.create({
-    icon: {
-      color: colors.heading,
-      marginRight: spacing[3],
-    },
-    folderIcon: {
-      color: colors.secondary[600],
-    },
-  });

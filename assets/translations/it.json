@@ -18,7 +18,8 @@
   "courseFilesTab": {
     "title": "Materiali",
     "recentSectionTitle": "File recenti",
-    "empty": "Nessun file disponibile"
+    "empty": "Nessun file disponibile",
+    "browseFiles": "Esplora file"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
