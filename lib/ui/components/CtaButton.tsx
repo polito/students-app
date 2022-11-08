@@ -74,6 +74,7 @@ export const CtaButton = ({
             <Icon
               icon={faCheckCircle}
               size={fontSizes.xl}
+              color="white"
               style={{ marginVertical: -2, marginRight: spacing[2] }}
             />
             {successMessage && (
@@ -82,6 +83,7 @@ export const CtaButton = ({
                   fontSize: fontSizes.md,
                   textAlign: 'center',
                   height: 20,
+                  color: 'white',
                 }}
               >
                 {successMessage}
@@ -90,7 +92,12 @@ export const CtaButton = ({
           </View>
         ) : (
           <Text
-            style={{ fontSize: fontSizes.md, textAlign: 'center', height: 20 }}
+            style={{
+              fontSize: fontSizes.md,
+              textAlign: 'center',
+              height: 20,
+              color: 'white',
+            }}
           >
             {title}
           </Text>
