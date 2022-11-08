@@ -56,27 +56,27 @@ export const CourseScreen = ({ route, navigation }: Props) => {
 
   const { Tabs, TabsContent } = useTabs([
     {
-      title: t('Info'),
+      title: t('courseInfoTab.title'),
       renderContent: () => <CourseInfoTab courseId={id} />,
     },
     {
-      title: t('Notices'),
+      title: t('courseNoticesTab.title'),
       renderContent: () => <CourseNoticesTab courseId={id} />,
     },
     {
-      title: t('Files'),
+      title: t('courseFilesTab.title'),
       renderContent: () => (
         <CourseFilesTab courseId={id} navigation={navigation} />
       ),
     },
     {
-      title: t('Lectures'),
+      title: t('courseLecturesTab.title'),
       renderContent: () => (
         <CourseLecturesTab courseId={id} navigation={navigation} />
       ),
     },
     {
-      title: t('Assignments'),
+      title: t('courseAssignmentsTab.title'),
       renderContent: () => (
         <CourseAssignmentsTab courseId={id} navigation={navigation} />
       ),

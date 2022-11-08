@@ -1,54 +1,107 @@
 {
-  "Academic year": "Academic year",
-  "Acquired credits": "Acquired credits",
-  "Agenda": "Agenda",
-  "Assignments": "Assignments",
-  "Attended credits": "Attended credits",
-  "Courses": "Courses",
-  "CourseDirectoryScreen.EmptySearch": "No results found",
-  "CourseFilesTab.Empty": "No file available",
-  "CourseFilesTab.Title": "Most recent files",
-  "CourseFileListItem.Subtitle": "Uploaded on {{date}} - {{size}}",
-  "Course guide": "Course guide",
-  "Credits": "Credits",
-  "Exams": "Exams",
-  "Exam": "Exam",
-  "Files": "Files",
-  "Final average": "Final average",
-  "Info": "Info",
-  "Lectures": "Lectures",
-  "More": "More",
-  "Notices": "Notices",
-  "Notifications": "Notifications",
-  "Notifications archive": "Notifications archive",
-  "Other courses": "Other courses",
-  "Period": "Period",
-  "Places": "Places",
-  "Location": "Location",
-  "Profile": "Profile",
-  "Provisional grades": "Provisional grades",
-  "See all": "See all",
-  "Settings": "Settings",
-  "Speed": "Speed",
-  "Staff": "Staff",
-  "Teacher": "Teacher",
-  "Teaching": "Teaching",
-  "This course in the agenda": "This course in the agenda",
-  "Transcript": "Transcript",
-  "Upload assignment": "Upload assignment",
-  "Video lectures": "Video lectures",
-  "Video lecture": "Video lecture",
-  "Virtual classrooms": "Virtual classrooms",
-  "Weighted average": "Weighted average",
-  "Color": "Color",
-  "Icon": "Icon",
-  "Show in home screen": "Show in home screen",
-  "Hide course from home screen": "Hide course from home screen",
-  "Course preferences": "Course preferences",
-  "Virtual classroom": "Virtual classroom",
-  "Course holder": "Course holder",
-  "Book exam": "Book exam",
-  "Exam booked": "Exam booked",
-  "Preferences": "Preferences",
-  "Visualization": "Visualization"
+  "agendaScreen": {
+    "title": "Agenda"
+  },
+  "courseAssignmentUploadScreen": {
+    "title": "Upload assignment"
+  },
+  "courseAssignmentsTab": {
+    "title": "Assignments"
+  },
+  "courseDirectoryListItem": {
+    "subtitle": "{{count}} file",
+    "subtitle_plural": "{{count}} files"
+  },
+  "courseDirectoryScreen": {
+    "noResult": "No results found"
+  },
+  "courseFilesTab": {
+    "title": "Files",
+    "recentSectionTitle": "Most recent files",
+    "empty": "No file available"
+  },
+  "courseGuideScreen": {
+    "title": "Course guide"
+  },
+  "courseInfoTab": {
+    "agendaSectionTitle": "This course in the agenda",
+    "creditsLabel": "Credits",
+    "moreSectionTitle": "More",
+    "periodLabel": "Period",
+    "staffSectionTitle": "Staff",
+    "teacherLabel": "Teacher",
+    "title": "Info",
+    "yearLabel": "Year"
+  },
+  "courseLecturesTab": {
+    "title": "Lectures",
+    "videoLecturesSectionTitle": "Video lectures",
+    "virtualClassroomsSectionTitle": "Virtual classrooms"
+  },
+  "courseNoticesTab": {
+    "title": "Notices"
+  },
+  "courseScreen": {
+    "title": "Course"
+  },
+  "courseVideoLectureScreen": {
+    "title": "Video lecture"
+  },
+  "courseVirtualClassroomScreen": {
+    "title": "Virtual classroom"
+  },
+  "coursesScreen": {
+    "title": "Courses",
+    "otherCoursesSectionTitle": "Other courses"
+  },
+  "examScreen": {
+    "ctaBook": "Book esame",
+    "ctaBookSuccess": "Exam booked",
+    "ctaCancel": "Cancel booking",
+    "ctaCancelSuccess": "Booking cancelled",
+    "location": "Location"
+  },
+  "examsScreen": {
+    "title": "Exams"
+  },
+  "loginScreen": {
+    "usernameLabel": "Student ID",
+    "passwordLabel": "Password",
+    "cta": "Login"
+  },
+  "messagesScreen": {
+    "title": "Messages archive"
+  },
+  "placesScreen": {
+    "title": "Places"
+  },
+  "profileScreen": {
+    "title": "Profile"
+  },
+  "sectionHeader": {
+    "cta": "See all"
+  },
+  "settingsScreen": {
+    "title": "Settings"
+  },
+  "teachingScreen": {
+    "title": "Teaching"
+  },
+  "transcriptScreen": {
+    "acquiredCreditsLabel": "Acquired credits",
+    "attendedCreditsLabel": "Attended credits",
+    "finalAverageLabel": "Final average",
+    "provisionalGradesSectionTitle": "Provisional grades",
+    "title": "Transcript",
+    "weightedAverageLabel": "Weighted average"
+  },
+  "videoPlayer": {
+    "speedSectionTitle": "Speed"
+  },
+  "words": {
+    "credits": "credits",
+    "exam": "exam",
+    "lecture": "lecture",
+    "teacher": "teacher"
+  }
 }

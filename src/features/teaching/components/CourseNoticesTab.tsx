@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { defaultLineHeightMultiplier } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';
@@ -39,6 +40,8 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
                 fontFamily: 'Poppins',
+                fontSize: fontSizes.sm,
+                lineHeight: fontSizes.sm * defaultLineHeightMultiplier,
               }}
               source={{ dom }}
               systemFonts={['Poppins']}

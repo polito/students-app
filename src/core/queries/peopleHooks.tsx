@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { PeopleApi } from '@polito-it/api-client';
+import { PeopleApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';

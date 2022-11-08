@@ -1,8 +1,4 @@
-import {
-  AuthApi,
-  LoginRequest,
-  SwitchCareerRequest,
-} from '@polito-it/api-client';
+import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import { useMutation } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';

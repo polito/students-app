@@ -27,7 +27,7 @@ export const CourseAssignmentsTab = ({
       <View style={{ margin: spacing[4] }}>
         <Button
           color={colors.primary[600]}
-          title={t('Upload assignment')}
+          title={t('courseAssignmentUploadScreen.title')}
           onPress={() =>
             navigation.navigate({
               name: 'CourseAssignmentUpload',
