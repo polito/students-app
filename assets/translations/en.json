@@ -88,6 +88,9 @@
     "title": "Teaching"
   },
   "transcriptScreen": {
+    "yourCareer": "Your career",
+    "thisYear": "This academic year",
+    "averages": "Averages",
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "finalAverageLabel": "Final average",

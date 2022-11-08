@@ -11,7 +11,6 @@ import { faCheck } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface Props extends TouchableOpacityProps {
   title: string;
@@ -32,7 +31,6 @@ export const CtaButton = ({
 }: Props) => {
   const { colors, spacing, shapes, fontSizes } = useTheme();
   const [showSuccess, setShowSuccess] = useState(false);
-  const bottomBarHeight = useBottomTabBarHeight();
 
   useEffect(() => {
     if (success) {
@@ -48,7 +46,7 @@ export const CtaButton = ({
         bottom: 0,
         left: 0,
         right: 0,
-        marginBottom: Platform.select({ ios: bottomBarHeight }),
+        marginBottom: Platform.select({ ios: 80 }),
         padding: spacing[4],
       }}
     >

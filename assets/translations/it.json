@@ -88,6 +88,9 @@
     "title": "Didattica"
   },
   "transcriptScreen": {
+    "yourCareer": "La tua carriera",
+    "thisYear": "Questo anno accademico",
+    "averages": "Medie",
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "finalAverageLabel": "Media depurata",

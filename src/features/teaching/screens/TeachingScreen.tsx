@@ -7,7 +7,6 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { ProgressChart } from 'react-native-chart-kit';
 
 import { Card } from '@lib/ui/components/Card';
 import { Section } from '@lib/ui/components/Section';
@@ -19,8 +18,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import color from 'color';
-
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
@@ -28,6 +25,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
+import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
@@ -116,22 +114,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     </Text>
                   </View>
                   <ProgressChart
-                    data={{
-                      labels: ['Test'],
-                      data: [
-                        studentQuery.data?.data.totalAcquiredCredits /
-                          studentQuery.data?.data.totalCredits,
-                      ],
-                    }}
-                    width={90}
-                    height={90}
-                    hideLegend={true}
-                    chartConfig={{
-                      backgroundGradientFromOpacity: 0,
-                      backgroundGradientToOpacity: 0,
-                      color: (opacity = 1) =>
-                        color(colors.primary[400]).alpha(opacity).toString(),
-                    }}
+                    data={[80 / 120, 40 / 120]}
+                    colors={[colors.primary[400], colors.secondary[500]]}
                   />
                 </View>
               </TouchableHighlight>
