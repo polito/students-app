@@ -1,4 +1,5 @@
 import {
+  Platform,
   StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
@@ -16,7 +17,6 @@ import { formatFileDate, formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
-  isDownloaded: boolean;
 }
 
 export const CourseAssignmentListItem = ({
@@ -33,15 +33,17 @@ export const CourseAssignmentListItem = ({
       subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${formatFileDate(
         item.uploadedAt,
       )}`}
-      trailingItem={
-        <TouchableHighlight
-          onPress={() => {}}
-          style={styles.trailingHighlight}
-          underlayColor={colors.touchableHighlight}
-        >
-          <Icon icon={faEllipsisVertical} size={24} />
-        </TouchableHighlight>
-      }
+      trailingItem={Platform.select({
+        android: (
+          <TouchableHighlight
+            onPress={() => {}}
+            style={styles.trailingHighlight}
+            underlayColor={colors.touchableHighlight}
+          >
+            <Icon icon={faEllipsisVertical} size={24} />
+          </TouchableHighlight>
+        ),
+      })}
       {...rest}
     />
   );
