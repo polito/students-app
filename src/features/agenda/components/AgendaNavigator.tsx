@@ -17,6 +17,7 @@ export const AgendaNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        orientation: 'portrait',
         ...titlesStyles(colors),
       }}
     >

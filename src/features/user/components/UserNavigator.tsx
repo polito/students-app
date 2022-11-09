@@ -1,18 +1,22 @@
 import { useTranslation } from 'react-i18next';
 
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export const UserNavigator = () => {
   const { t } = useTranslation();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        orientation: 'portrait',
+      }}
+    >
       <Stack.Screen
         name="Profile"
         component={HomeScreen}
