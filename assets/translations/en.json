@@ -15,6 +15,9 @@
   "courseDirectoryScreen": {
     "noResult": "No results found"
   },
+  "courseFileListItem": {
+    "reDownloadFile": "Redownload file"
+  },
   "courseFilesTab": {
     "title": "Files",
     "recentSectionTitle": "Most recent files",
@@ -106,6 +109,7 @@
     "credits": "credits",
     "exam": "exam",
     "lecture": "lecture",
-    "teacher": "teacher"
+    "teacher": "teacher",
+    "file": "File"
   }
 }

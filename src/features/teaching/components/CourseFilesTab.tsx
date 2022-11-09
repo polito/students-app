@@ -31,12 +31,8 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         <View style={styles.sectionContainer}>
           <SectionHeader title={t('courseFilesTab.recentSectionTitle')} />
           <SectionList loading={recentFilesQuery.isLoading} indented>
-            {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
-              <CourseRecentFileListItem
-                key={file.id}
-                item={file}
-                isDownloaded={index % 3 === 0}
-              />
+            {recentFilesQuery.data?.slice(0, 5).map(file => (
+              <CourseRecentFileListItem key={file.id} item={file} />
             ))}
             {recentFilesQuery.data?.length === 0 && (
               <ListItem title={t('courseFilesTab.empty')} />

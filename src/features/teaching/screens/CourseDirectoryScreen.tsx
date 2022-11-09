@@ -22,6 +22,7 @@ import {
   CourseRecentFileListItem,
 } from '../components/CourseRecentFileListItem';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
@@ -57,11 +58,11 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       data={directoryQuery.data?.files}
       keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-      renderItem={({ item, index }) =>
-        item.type === 'directory' ? (
+      renderItem={({ item }) =>
+        isDirectory(item) ? (
           <CourseDirectoryListItem item={item} courseId={courseId} />
         ) : (
-          <CourseFileListItem item={item} isDownloaded={index % 2 === 0} />
+          <CourseFileListItem item={item} />
         )
       }
       refreshControl={createRefreshControl(directoryQuery)}
@@ -99,12 +100,13 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       keyExtractor={(item: CourseRecentFile) => item.id}
-      renderItem={({ item, index }) => (
-        <CourseRecentFileListItem item={item} isDownloaded={index % 2 === 0} />
-      )}
+      renderItem={({ item }) => <CourseRecentFileListItem item={item} />}
       refreshControl={createRefreshControl(recentFilesQuery)}
       refreshing={recentFilesQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}
+      ItemSeparatorComponent={Platform.select({
+        ios: () => <IndentedDivider />,
+      })}
       ListEmptyComponent={
         <Text style={styles.noResultText}>
           {t('courseDirectoryScreen.noResult')}

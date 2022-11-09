@@ -5,6 +5,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import { Pie as ProgressIndicator } from 'react-native-progress';
 
 import { faFile } from '@fortawesome/pro-regular-svg-icons';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons';
@@ -20,12 +21,14 @@ interface Props {
   subtitle?: string;
   sizeInKiloBytes?: number;
   trailingItem?: JSX.Element;
-  isDownloaded: boolean;
+  isDownloaded?: boolean;
+  downloadProgress?: number;
   containerStyle?: StyleProp<ViewStyle>;
 }
 
 export const FileListItem = ({
-  isDownloaded,
+  isDownloaded = false,
+  downloadProgress,
   subtitle,
   ...rest
 }: TouchableHighlightProps & Props) => {
@@ -38,14 +41,24 @@ export const FileListItem = ({
       leadingItem={
         <View>
           <Icon icon={faFile} size={fontSizes['2xl']} style={styles.fileIcon} />
-          {isDownloaded && (
+          {downloadProgress != null ? (
             <View style={styles.downloadedIconContainer}>
-              <Icon
-                icon={faCheckCircle}
+              <ProgressIndicator
+                progress={downloadProgress}
                 size={12}
                 color={colors.secondary[600]}
               />
             </View>
+          ) : (
+            isDownloaded && (
+              <View style={styles.downloadedIconContainer}>
+                <Icon
+                  icon={faCheckCircle}
+                  size={12}
+                  color={colors.secondary[600]}
+                />
+              </View>
+            )
           )}
         </View>
       }
