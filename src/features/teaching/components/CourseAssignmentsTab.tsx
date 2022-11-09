@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { SectionList } from '@lib/ui/components/SectionList';
+import { List } from '@lib/ui/components/List';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
@@ -26,15 +26,11 @@ export const CourseAssignmentsTab = ({
         refreshControl={createRefreshControl(assignmentsQuery)}
         contentContainerStyle={bottomBarAwareStyles}
       >
-        <SectionList indented>
+        <List indented>
           {assignmentsQuery.data?.data.map((assignment, index) => (
-            <CourseAssignmentListItem
-              key={assignment.id}
-              item={assignment}
-              isDownloaded={index % 3 === 0}
-            />
+            <CourseAssignmentListItem key={assignment.id} item={assignment} />
           ))}
-        </SectionList>
+        </List>
       </ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}

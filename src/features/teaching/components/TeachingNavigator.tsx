@@ -48,7 +48,7 @@ export const TeachingNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        headerBlurEffect: 'regular',
+        headerBlurEffect: 'systemUltraThinMaterial',
         ...titlesStyles(colors),
       }}
     >

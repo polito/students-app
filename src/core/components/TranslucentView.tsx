@@ -15,7 +15,7 @@ export const TranslucentView = ({
   const scheme = useColorScheme();
   return (
     <BlurView
-      blurType={scheme}
+      blurType="ultraThinMaterial"
       blurAmount={blurAmount}
       style={{ ...(StyleSheet.absoluteFill as ViewStyle), ...style }}
     />
