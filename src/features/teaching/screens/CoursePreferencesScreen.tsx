@@ -1,7 +1,18 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Switch, View } from 'react-native';
+import {
+  Animated,
+  Easing,
+  FlatList,
+  ScrollView,
+  Switch,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
+import { faChevronDown, faChevronUp } from '@fortawesome/pro-regular-svg-icons';
+import { faCircleDashed } from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -13,18 +24,23 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { courseIcons } from '../constants';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
   'CoursePreferences'
 >;
 
+const iconsSelectorHeight = new Animated.Value(56);
+
 export const CoursePreferencesScreen = ({ route }: Props) => {
   const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, fontSizes } = useTheme();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { courseId } = route.params;
   const courseQuery = useGetCourse(courseId);
   const { courses: coursesPrefs, updatePreference } =
@@ -33,6 +49,7 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
     () => coursesPrefs[courseId],
     [courseId, coursesPrefs],
   );
+  const [selectingIcon, setSelectingIcon] = useState(false);
   const courseColors = useMemo(
     () => [
       { name: 'Dark blue', color: colors.darkBlue[400] },
@@ -46,12 +63,25 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
     [colors],
   );
 
+  useEffect(() => {
+    Animated.timing(iconsSelectorHeight, {
+      duration: 100,
+      toValue: selectingIcon ? 300 : 56,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+  }, [selectingIcon]);
+
   return (
-    <ScrollView refreshControl={createRefreshControl(courseQuery)}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      refreshControl={createRefreshControl(courseQuery)}
+      contentContainerStyle={bottomBarAwareStyles}
+    >
       <View style={{ paddingVertical: spacing[5] }}>
         <Section>
           <SectionHeader title={t('Visualization')} />
-          <SectionList loading={courseQuery.isLoading}>
+          <SectionList loading={courseQuery.isLoading} indented>
             <MenuView
               actions={courseColors.map(cc => {
                 return {
@@ -77,10 +107,59 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
                 onPress={() => {}}
               />
             </MenuView>
-            <ListItem title={t('Icon')} />
+            <Animated.View
+              style={{
+                height: iconsSelectorHeight,
+              }}
+            >
+              <ListItem
+                title={t('Icon')}
+                onPress={() => setSelectingIcon(old => !old)}
+                leadingItem={
+                  <Icon
+                    icon={
+                      coursePrefs.icon
+                        ? courseIcons[coursePrefs.icon]
+                        : faCircleDashed
+                    }
+                    size={fontSizes['2xl']}
+                  />
+                }
+                trailingItem={
+                  <Icon
+                    icon={selectingIcon ? faChevronUp : faChevronDown}
+                    color={colors.secondaryText}
+                  />
+                }
+              />
+              <FlatList
+                style={{ flex: 1 }}
+                data={Object.entries(courseIcons)}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={{ flex: 1, padding: spacing[4] }}
+                    onPress={() => {
+                      updatePreference('courses', {
+                        ...coursesPrefs,
+                        [courseId]: {
+                          ...coursePrefs,
+                          icon: item[0],
+                        },
+                      });
+                      setSelectingIcon(false);
+                    }}
+                  >
+                    <Icon icon={item[1]} size={fontSizes['2xl']} />
+                  </TouchableOpacity>
+                )}
+                numColumns={5}
+                contentContainerStyle={{ paddingHorizontal: spacing[5] }}
+              />
+            </Animated.View>
             <SwitchListItem
               title={t('Show in home screen')}
               value={!coursePrefs.isHidden}
+              leadingItem={<View />}
               onChange={value => {
                 updatePreference('courses', {
                   ...coursesPrefs,

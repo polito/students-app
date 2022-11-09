@@ -85,12 +85,7 @@ export const TeachingNavigator = () => {
         component={CoursePreferencesScreen}
         options={{
           title: t('Preferences'),
-          headerLargeStyle: {
-            backgroundColor: colors.surface,
-          },
-          headerTransparent: false,
           headerLargeTitle: false,
-          headerShadowVisible: false,
           headerBackTitle: t('Course'),
         }}
       />

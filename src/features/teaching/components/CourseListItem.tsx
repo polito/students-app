@@ -49,7 +49,10 @@ export const CourseListItem = ({ course }: Props) => {
         title={course.name}
         subtitle={`${course.cfu} ${t('words.credits')}`}
         leadingItem={
-          <CourseIcon color={preferences.courses[course.id]?.color} />
+          <CourseIcon
+            icon={preferences.courses[course.id]?.icon}
+            color={preferences.courses[course.id]?.color}
+          />
         }
       />
     </MenuView>

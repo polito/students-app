@@ -1,13 +1,17 @@
 import { View } from 'react-native';
 
+import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
+import { courseIcons } from '../constants';
 
 interface Props {
   color: string;
+  icon?: string;
 }
 
-export const CourseIcon = ({ color }: Props) => {
-  const { colors, spacing } = useTheme();
+export const CourseIcon = ({ color, icon }: Props) => {
+  const { colors } = useTheme();
   return (
     <View
       style={{
@@ -15,7 +19,11 @@ export const CourseIcon = ({ color }: Props) => {
         height: 30,
         borderRadius: 15,
         backgroundColor: color ?? colors.primary[400],
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
-    />
+    >
+      {icon && <Icon icon={courseIcons[icon]} />}
+    </View>
   );
 };
