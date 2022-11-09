@@ -9,7 +9,7 @@ export const darkTheme: Theme = {
     ...lightTheme.colors,
     background: lightTheme.colors.primary[700],
     surface: '#143959',
-    headers: '#0c2131',
+    headers: '#1e3444',
     heading: lightTheme.colors.text[50],
     title: 'white',
     headline: 'white',
