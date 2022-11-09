@@ -20,7 +20,7 @@
   },
   "courseFilesTab": {
     "title": "Files",
-    "recentSectionTitle": "Most recent files",
+    "recentSectionTitle": "Recent files",
     "empty": "No file available",
     "browseFiles": "Browse files"
   },

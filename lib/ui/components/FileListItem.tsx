@@ -11,7 +11,6 @@ import { faFile } from '@fortawesome/pro-regular-svg-icons';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -62,26 +61,7 @@ export const FileListItem = ({
           )}
         </View>
       }
-      subtitle={
-        <View style={styles.subtitleContainer}>
-          <Text
-            variant="secondaryText"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={styles.subtitle}
-          >
-            {subtitle}
-          </Text>
-          {/* <Text
-            variant="secondaryText"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={styles.fileSize}
-          >
-            {formatFileSize(sizeInKiloBytes)}
-          </Text>*/}
-        </View>
-      }
+      subtitle={subtitle}
       {...rest}
     />
   );
@@ -98,17 +78,12 @@ const createItemStyles = ({ spacing, colors }: Theme) =>
     downloadedIconContainer: {
       padding: 2,
       borderRadius: 16,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       position: 'absolute',
       bottom: -5,
       right: -2,
     },
     subtitle: {
       flexShrink: 1,
-    },
-    subtitleContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
     },
   });

@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
@@ -25,19 +25,22 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   return (
     <>
       <ScrollView
-        style={bottomBarAwareStyles}
+        contentContainerStyle={bottomBarAwareStyles}
         refreshControl={createRefreshControl(recentFilesQuery)}
       >
         <View style={styles.sectionContainer}>
-          <SectionHeader title={t('courseFilesTab.recentSectionTitle')} />
-          <SectionList loading={recentFilesQuery.isLoading} indented>
-            {recentFilesQuery.data?.slice(0, 5).map(file => (
+          <SectionHeader
+            title={t('courseFilesTab.recentSectionTitle')}
+            separator={false}
+          />
+          <List indented>
+            {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
               <CourseRecentFileListItem key={file.id} item={file} />
             ))}
             {recentFilesQuery.data?.length === 0 && (
               <ListItem title={t('courseFilesTab.empty')} />
             )}
-          </SectionList>
+          </List>
         </View>
       </ScrollView>
       {recentFilesQuery.data?.length > 0 && (
