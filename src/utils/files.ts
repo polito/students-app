@@ -10,3 +10,6 @@ export const formatFileDate = (date: Date) => {
     .toLocaleTimeString()
     .slice(0, -3)}`;
 };
+
+export const getUrlExtension = (url: string) =>
+  url.split(/[#?]/)[0].split('.').pop().trim();

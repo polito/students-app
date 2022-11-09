@@ -59,7 +59,7 @@ export const CtaButton = ({
             paddingVertical: spacing[4],
             backgroundColor: !destructive
               ? colors.primary[500]
-              : colors.error[500],
+              : colors.danger[500],
             borderRadius: shapes.lg,
             alignItems: 'center',
           },

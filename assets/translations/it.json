@@ -110,6 +110,7 @@
     "exam": "esame",
     "lecture": "lezione",
     "teacher": "docente",
-    "file": "File"
+    "file": "File",
+    "delete": "Elimina"
   }
 }

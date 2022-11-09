@@ -75,15 +75,7 @@ export const CourseFileListItem = ({
     [showSize, showLocation, showCreatedDate],
   );
 
-  useEffect(() => {
-    console.log('IsDownloaded', isDownloaded);
-  }, [isDownloaded]);
-
   const downloadOrOpenFile = async () => {
-    console.log('downloadOrOpenFile', {
-      isDownloaded: isDownloadedRef.current,
-      downloadProgress,
-    });
     if (!isDownloadedRef.current && downloadProgress == null) {
       setDownloadProgress(0);
       try {
