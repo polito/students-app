@@ -51,6 +51,11 @@
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
+  "coursePreferencesScreen": {
+    "noticesSubtitle": "Notices sent by the professor",
+    "filesSubtitle": "New material available",
+    "lessonsSubtitle": "New lessons available"
+  },
   "coursesScreen": {
     "title": "Courses",
     "otherCoursesSectionTitle": "Other courses"

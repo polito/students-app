@@ -10,7 +10,14 @@ import {
   View,
 } from 'react-native';
 
-import { faChevronDown, faChevronUp } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faBell,
+  faChevronDown,
+  faChevronUp,
+  faEye,
+  faFile,
+  faVideoCamera,
+} from '@fortawesome/pro-regular-svg-icons';
 import { faCircleDashed } from '@fortawesome/pro-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -103,8 +110,8 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
             >
               <ListItem
                 title={t('Color')}
+                isNavigationAction
                 leadingItem={<CourseIcon color={coursePrefs?.color} />}
-                onPress={() => {}}
               />
             </MenuView>
             <Animated.View
@@ -159,7 +166,7 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
             <SwitchListItem
               title={t('Show in home screen')}
               value={!coursePrefs.isHidden}
-              leadingItem={<View />}
+              leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
               onChange={value => {
                 updatePreference('courses', {
                   ...coursesPrefs,
@@ -175,33 +182,43 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
 
         <Section>
           <SectionHeader title={t('Notifications')} />
-          <SectionList>
+          <SectionList indented>
             <ListItem
               title={t('Notices')}
+              subtitle={t('coursePreferencesScreen.noticesSubtitle')}
               onPress={() => {
                 // TODO
               }}
+              leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
               trailingItem={
-                <Switch value={courseQuery.data.data.notifications.avvisidoc} />
+                <Switch
+                  value={courseQuery.data?.data.notifications.avvisidoc}
+                />
               }
             />
             <ListItem
               title={t('Files')}
+              subtitle={t('coursePreferencesScreen.filesSubtitle')}
               onPress={() => {
                 // TODO
               }}
+              leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
               trailingItem={
-                <Switch value={courseQuery.data.data.notifications.matdid} />
+                <Switch value={courseQuery.data?.data.notifications.matdid} />
               }
             />
             <ListItem
               title={t('Lessons')}
+              subtitle={t('coursePreferencesScreen.lessonsSubtitle')}
               onPress={() => {
                 // TODO
               }}
+              leadingItem={
+                <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
+              }
               trailingItem={
                 <Switch
-                  value={courseQuery.data.data.notifications.videolezioni}
+                  value={courseQuery.data.data?.notifications.videolezioni}
                 />
               }
             />
