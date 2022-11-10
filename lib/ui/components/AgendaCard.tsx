@@ -155,8 +155,7 @@ const createStyles = ({ spacing, colors, size, fontSizes, dark }: Theme) =>
     itemType: {
       borderRadius: size.xs,
       paddingHorizontal: spacing[1.5],
-      // paddingTop: size.xs,
-      borderColor: colors.primary[600],
+      paddingTop: size.xs,
       borderColor: dark ? colors.headline : colors.primary[600],
       borderWidth: 1,
     },
@@ -166,7 +165,7 @@ const createStyles = ({ spacing, colors, size, fontSizes, dark }: Theme) =>
     title: {
       maxWidth: '50%',
       color: colors.title,
-      fontSize: fontSizes.lg,
+      fontSize: fontSizes.md,
     },
     agendaCard: {
       flex: 1,
