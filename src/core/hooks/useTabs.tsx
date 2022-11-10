@@ -1,5 +1,12 @@
-import { useMemo, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { useMemo, useRef } from 'react';
+import {
+  Dimensions,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import useStateRef from 'react-usestateref';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
@@ -12,7 +19,10 @@ interface TabOptions {
 
 export const useTabs = (options: TabOptions[]) => {
   const { colors } = useTheme();
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const [selectedTabIndex, setSelectedTabIndex, selectedTabIndexRef] =
+    useStateRef(0);
+  const scrollViewRef = useRef<ScrollView>();
+  const width = Dimensions.get('window').width;
 
   const TabsComponent = useMemo(
     () => () =>
@@ -32,7 +42,11 @@ export const useTabs = (options: TabOptions[]) => {
           {options.map((o, i) => (
             <Tab
               key={i}
-              onPress={() => setSelectedTabIndex(i)}
+              onPress={() => {
+                scrollViewRef.current.scrollTo({
+                  x: width * i,
+                });
+              }}
               textStyle={{
                 marginBottom: -2,
               }}
@@ -44,13 +58,37 @@ export const useTabs = (options: TabOptions[]) => {
       ),
     [options, selectedTabIndex],
   );
-  const TabsContent = useMemo(
-    () => options[selectedTabIndex].renderContent,
-    [options, selectedTabIndex],
-  );
+
+  const tabsContent = useRef(() => (
+    <ScrollView
+      ref={scrollViewRef}
+      horizontal
+      bounces={false}
+      contentContainerStyle={{
+        width: width * options.length,
+      }}
+      showsHorizontalScrollIndicator={false}
+      scrollEventThrottle={60}
+      onScroll={({ nativeEvent }) => {
+        const currentTab = Math.max(
+          0,
+          Math.round(nativeEvent.contentOffset.x / width),
+        );
+        if (currentTab !== selectedTabIndexRef.current) {
+          setSelectedTabIndex(currentTab);
+        }
+      }}
+      decelerationRate="fast"
+      pagingEnabled
+    >
+      {options.map(o => (
+        <View style={{ width: width }}>{o.renderContent()}</View>
+      ))}
+    </ScrollView>
+  ));
   return {
     selectedTabIndex,
     Tabs: TabsComponent,
-    TabsContent,
+    TabsContent: tabsContent.current,
   };
 };
