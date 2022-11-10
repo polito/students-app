@@ -69,7 +69,7 @@ export const Tab = ({
           borderColor: !selected ? borderColor : backgroundColor,
           borderRadius: 10,
           paddingHorizontal: spacing[2.5],
-          paddingVertical: spacing[1],
+          // paddingVertical: spacing[1],
         },
         style,
       ]}

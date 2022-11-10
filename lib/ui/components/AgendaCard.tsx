@@ -1,12 +1,12 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
-import { Deadline, Lecture } from '@polito-it/api-client';
+import { Deadline, Lecture } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -134,11 +134,11 @@ export const AgendaCard = ({
             maxWidth
             style={styles.rowBottom}
           >
-            <View style={styles.itemType}>
-              <Text style={styles.textType} variant={'prose'}>
+            <Col alignCenter noFlex justifyCenter style={styles.itemType}>
+              <Text style={{ ...styles.textType }} variant={'prose'}>
                 {t(item.type)}
               </Text>
-            </View>
+            </Col>
             <Text weight={'medium'}>{item.classroom}</Text>
           </Row>
         </Col>
@@ -154,8 +154,9 @@ const createStyles = ({ spacing, colors, size, fontSizes, dark }: Theme) =>
     },
     itemType: {
       borderRadius: size.xs,
-      paddingVertical: spacing['1'],
       paddingHorizontal: spacing[1.5],
+      // paddingTop: size.xs,
+      borderColor: colors.primary[600],
       borderColor: dark ? colors.headline : colors.primary[600],
       borderWidth: 1,
     },

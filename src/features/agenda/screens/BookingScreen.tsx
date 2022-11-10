@@ -14,6 +14,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { Booking } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -40,7 +41,7 @@ export const BookingScreen = ({ route, navigation }: Props) => {
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
   const styles = useStylesheet(createStyles);
-  const booking = bookingsQuery.data?.data.find(e => e.id === id);
+  const booking = bookingsQuery.data?.data.find((e: Booking) => e.id === id);
 
   const title = booking?.topic?.title;
   const timeLabel = useMemo(() => {

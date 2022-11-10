@@ -4,24 +4,24 @@ import { ScrollView, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { ListItem } from '@lib/ui/components/ListItem';
+import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
+import { Row } from '@lib/ui/components/Row';
 import { SectionList } from '@lib/ui/components/SectionList';
+import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { Lecture } from '@polito-it/api-client';
+import { Lecture } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import _ from 'lodash';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import {
-  useGetCourse,
-  useGetCourseVirtualClassrooms,
-} from '../../../core/queries/courseHooks';
+import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { fromDateToFormat, weekDay } from '../../../utils';
+import { fromDateToFormat, isLive, weekDay } from '../../../utils';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
@@ -33,16 +33,22 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const lectureQuery = useGetLectures();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes, spacing } = useTheme();
+  const { fontSizes } = useTheme();
   const lecture: Lecture = _.find(lectureQuery?.data?.data, l => l.id === id);
-  const coursesQuery = useGetCourse(lecture.courseId);
   const teacherQuery = useGetPerson(lecture.teacherId);
-  const virtualClassroomQuery = useGetCourseVirtualClassrooms(lecture.courseId);
+  const videoLecturesQuery = useGetCourseVideolectures(lecture.courseId);
+  const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
 
-  console.log('virtualClassroomQuery', virtualClassroomQuery?.data);
-  console.log('courseQuery', coursesQuery?.data);
-  console.log('teacherQuery', teacherQuery?.data);
+  const live = useMemo(() => {
+    return isLive(lecture.startsAt, lecture.endsAt);
+  }, []);
+
+  // console.log('virtualClassroomQuery', virtualClassroomQuery?.data);
+  // console.log('courseQuery', coursesQuery?.data);
+  // console.log('teacherQuery', teacherQuery?.data);
   console.log('lecture', lecture);
+  console.log('videoLecture', videoLecture);
+  console.log('videoLectureQuery', videoLecturesQuery?.data?.data);
 
   const timeLabel = useMemo(() => {
     const endsAtDate = fromDateToFormat(lecture?.endsAt);
@@ -78,11 +84,24 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         }}
         style={styles.wrapper}
       >
-        <EventDetails
-          title={lecture.roomName}
-          type={t('Lecture')}
-          timeLabel={timeLabel}
-        />
+        {videoLecture?.coverUrl && (
+          <VideoPlayer
+            videoUrl="https://lucapezzolla.com/20210525.mp4"
+            coverUrl={videoLecture.coverUrl}
+          />
+        )}
+        <Row maxWidth noFlex spaceBetween alignCenter>
+          <EventDetails
+            title={lecture?.roomName}
+            type={t('Lecture')}
+            timeLabel={timeLabel}
+          />
+          {live && (
+            <Row alignEnd noFlex justifyEnd>
+              <LiveIndicator showText />
+            </Row>
+          )}
+        </Row>
         <SectionList>
           <ListItem
             leadingItem={
@@ -121,7 +140,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               />
             }
             title={t('Material')}
-            subtitle={t('GoToCourseMaterial')}
+            subtitle={t('lectureScreen.goToMaterial')}
             onPress={onPressMaterialCard}
           />
         </SectionList>

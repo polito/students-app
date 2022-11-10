@@ -88,6 +88,9 @@
   "teachingScreen": {
     "title": "Didattica"
   },
+  "lectureScreen": {
+    "goToMaterial": "Vai al materiale del corso"
+  },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",

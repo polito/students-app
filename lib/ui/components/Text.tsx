@@ -46,7 +46,7 @@ export const Text = ({
   children,
   ...rest
 }: PropsWithChildren<TextProps & Props>) => {
-  const { colors, fontFamilies, fontWeights } = useTheme();
+  const { colors, fontFamilies, fontWeights, size } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
@@ -66,6 +66,9 @@ export const Text = ({
           fontFamily: fontFamilyName,
           fontWeight: textWeight,
           color: colors[variant],
+        },
+        {
+          marginTop: 5,
         },
         italic && {
           fontStyle: 'italic',
