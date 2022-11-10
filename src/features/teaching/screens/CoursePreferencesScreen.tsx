@@ -1,19 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Animated,
-  Easing,
-  FlatList,
-  ScrollView,
-  Switch,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, Switch, View } from 'react-native';
 
 import {
   faBell,
-  faChevronDown,
-  faChevronUp,
   faEye,
   faFile,
   faVideoCamera,
@@ -42,9 +32,7 @@ type Props = NativeStackScreenProps<
   'CoursePreferences'
 >;
 
-const iconsSelectorHeight = new Animated.Value(56);
-
-export const CoursePreferencesScreen = ({ route }: Props) => {
+export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { spacing, colors, fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -56,7 +44,6 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
     () => coursesPrefs[courseId],
     [courseId, coursesPrefs],
   );
-  const [selectingIcon, setSelectingIcon] = useState(false);
   const courseColors = useMemo(
     () => [
       { name: 'Dark blue', color: colors.darkBlue[400] },
@@ -69,15 +56,6 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
     ],
     [colors],
   );
-
-  useEffect(() => {
-    Animated.timing(iconsSelectorHeight, {
-      duration: 100,
-      toValue: selectingIcon ? 300 : 56,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  }, [selectingIcon]);
 
   return (
     <ScrollView
@@ -114,55 +92,23 @@ export const CoursePreferencesScreen = ({ route }: Props) => {
                 leadingItem={<CourseIcon color={coursePrefs?.color} />}
               />
             </MenuView>
-            <Animated.View
-              style={{
-                height: iconsSelectorHeight,
-              }}
-            >
-              <ListItem
-                title={t('Icon')}
-                onPress={() => setSelectingIcon(old => !old)}
-                leadingItem={
-                  <Icon
-                    icon={
-                      coursePrefs.icon
-                        ? courseIcons[coursePrefs.icon]
-                        : faCircleDashed
-                    }
-                    size={fontSizes['2xl']}
-                  />
-                }
-                trailingItem={
-                  <Icon
-                    icon={selectingIcon ? faChevronUp : faChevronDown}
-                    color={colors.secondaryText}
-                  />
-                }
-              />
-              <FlatList
-                style={{ flex: 1 }}
-                data={Object.entries(courseIcons)}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={{ flex: 1, padding: spacing[4] }}
-                    onPress={() => {
-                      updatePreference('courses', {
-                        ...coursesPrefs,
-                        [courseId]: {
-                          ...coursePrefs,
-                          icon: item[0],
-                        },
-                      });
-                      setSelectingIcon(false);
-                    }}
-                  >
-                    <Icon icon={item[1]} size={fontSizes['2xl']} />
-                  </TouchableOpacity>
-                )}
-                numColumns={5}
-                contentContainerStyle={{ paddingHorizontal: spacing[5] }}
-              />
-            </Animated.View>
+            <ListItem
+              title={t('Icon')}
+              isNavigationAction
+              onPress={() =>
+                navigation.navigate('CourseIconPicker', { courseId })
+              }
+              leadingItem={
+                <Icon
+                  icon={
+                    coursePrefs.icon
+                      ? courseIcons[coursePrefs.icon]
+                      : faCircleDashed
+                  }
+                  size={fontSizes['2xl']}
+                />
+              }
+            />
             <SwitchListItem
               title={t('Show in home screen')}
               value={!coursePrefs.isHidden}
