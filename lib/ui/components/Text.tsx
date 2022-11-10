@@ -67,9 +67,6 @@ export const Text = ({
           fontWeight: textWeight,
           color: colors[variant],
         },
-        {
-          marginTop: 5,
-        },
         italic && {
           fontStyle: 'italic',
         },

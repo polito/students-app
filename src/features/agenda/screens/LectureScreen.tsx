@@ -35,12 +35,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { fontSizes } = useTheme();
   const lecture: Lecture = _.find(lectureQuery?.data?.data, l => l.id === id);
-  const teacherQuery = useGetPerson(lecture.teacherId);
-  const videoLecturesQuery = useGetCourseVideolectures(lecture.courseId);
+  const teacherQuery = useGetPerson(lecture?.teacherId);
+  const videoLecturesQuery = useGetCourseVideolectures(lecture?.courseId);
   const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
 
   const live = useMemo(() => {
-    return isLive(lecture.startsAt, lecture.endsAt);
+    return isLive(lecture?.startsAt, lecture?.endsAt);
   }, []);
 
   // console.log('virtualClassroomQuery', virtualClassroomQuery?.data);
@@ -87,7 +87,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         {videoLecture?.coverUrl && (
           <VideoPlayer
             videoUrl="https://lucapezzolla.com/20210525.mp4"
-            coverUrl={videoLecture.coverUrl}
+            coverUrl={videoLecture?.coverUrl}
           />
         )}
         <Row maxWidth noFlex spaceBetween alignCenter>
@@ -111,7 +111,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
                 size={fontSizes['2xl']}
               />
             }
-            title={lecture.roomName}
+            title={lecture?.roomName}
             subtitle={'Sede Centrale - piano terra'}
             onPress={onPressLectureLocation}
           />

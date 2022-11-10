@@ -258,7 +258,6 @@ export const AgendaScreen = () => {
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          console.log(event.nativeEvent.contentOffset.y);
           if (event.nativeEvent.contentOffset.y < 0) {
             onTopReached();
           }

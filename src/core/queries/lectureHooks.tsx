@@ -1,5 +1,5 @@
-import { LecturesApi } from '@polito-it/api-client';
-import { GetLecturesRequest } from '@polito-it/api-client/apis/LecturesApi';
+import { LecturesApi } from '@polito/api-client';
+import { GetLecturesRequest } from '@polito/api-client/apis/LecturesApi';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { getFromToDateFromPage } from '../agenda';

@@ -71,9 +71,9 @@ export const DeadlineScreen = ({ route }: Props) => {
                 size={fontSizes['2xl']}
               />
             }
-            title={deadline.type}
-            subtitle={deadline.name}
-            onPress={deadline.url ? onPressDeadlineUrl : null}
+            title={deadline?.type}
+            subtitle={deadline?.name}
+            onPress={deadline?.url ? onPressDeadlineUrl : null}
           />
         </SectionList>
       </ScrollView>

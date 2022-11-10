@@ -36,9 +36,12 @@ export const weekDays = (): string[] => {
   return times(7, i => now.startOf('week').plus({ days: i }).toFormat('EEE'));
 };
 
-export const isLive = (formDate: Date, toDate: Date): boolean => {
+export const isLive = (fromDate: Date, toDate: Date): boolean => {
+  if (!fromDate || !toDate) {
+    return;
+  }
   const nowMillis = DateTime.now().toMillis();
-  const formDateMillis = DateTime.fromISO(formDate.toISOString()).toMillis();
+  const formDateMillis = DateTime.fromISO(fromDate.toISOString()).toMillis();
   const toDateMillis = DateTime.fromISO(toDate.toISOString()).toMillis();
   return formDateMillis <= nowMillis && nowMillis <= toDateMillis;
 };

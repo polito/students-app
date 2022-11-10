@@ -42,7 +42,8 @@ export const BookingScreen = ({ route, navigation }: Props) => {
   const studentQuery = useGetStudent();
   const styles = useStylesheet(createStyles);
   const booking = bookingsQuery.data?.data.find((e: Booking) => e.id === id);
-
+  console.log('booking', booking);
+  console.log('booking', id);
   const title = booking?.topic?.title;
   const timeLabel = useMemo(() => {
     const fromDate = fromDateToFormat(booking?.startsAt);
@@ -79,8 +80,8 @@ export const BookingScreen = ({ route, navigation }: Props) => {
                 size={fontSizes['2xl']}
               />
             }
-            title={booking.location.name}
-            subtitle={booking.location.type}
+            title={booking?.location?.name}
+            subtitle={booking?.location?.type}
             onPress={onPressLocation}
           />
         </SectionList>

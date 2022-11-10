@@ -1,4 +1,4 @@
-import { BookingsApi } from '@polito-it/api-client';
+import { BookingsApi } from '@polito/api-client';
 import {
   useInfiniteQuery,
   useMutation,
