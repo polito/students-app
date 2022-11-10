@@ -47,7 +47,9 @@ export const AgendaScreen = () => {
   const deadlinesQuery = useGetInfiniteDeadlines();
   const [pageUp, setPageUp] = useState(0);
   const [pageDown, setPageDown] = useState(0);
-  const [viewedDate, setViewedDate] = useState<string>('');
+  const [viewedDate, setViewedDate] = useState<string>(
+    DateTime.now().toISODate(),
+  );
   const flatListRef = useRef();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<
