@@ -86,11 +86,21 @@ export const mapAgendaItem = (
     pushItemToList(item, ISODate);
   });
 
-  console.log('agendaDays', agendaDays);
-
-  // return agendaDays.sort();
-
   return agendaDays.sort(function (a, b) {
     return DateTime.fromISO(a.id) < DateTime.fromISO(b.id) ? -1 : 1;
   });
+};
+
+const agendaMonthPagination = 2;
+
+export const getFromToDateFromPage = (page: number) => {
+  // Carico due mesi alla volta, partendo da ora - 1 mese
+  console.log('page', page);
+  const fromDateIndex = -1 + agendaMonthPagination * page;
+  const toDataIndex = 1 + agendaMonthPagination * page;
+  const fromDate = DateTime.now().plus({ month: fromDateIndex }).toJSDate();
+  const toDate = DateTime.now().plus({ month: toDataIndex }).toJSDate();
+  // console.log('fromDate', DateTime.fromJSDate(fromDate).toISODate())
+  // console.log('toDate', DateTime.fromJSDate(toDate).toISODate())
+  return { fromDate, toDate };
 };

@@ -14,10 +14,18 @@ import { DateTime } from 'luxon';
 import { mapAgendaItem } from '../../../core/agenda';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetBookings } from '../../../core/queries/bookingHooks';
-import { useGetExams } from '../../../core/queries/examHooks';
-import { useGetLectures } from '../../../core/queries/lectureHooks';
-import { useGetDeadlines } from '../../../core/queries/studentHooks';
+import {
+  useGetInfiniteBookings,
+} from '../../../core/queries/bookingHooks';
+import {
+  useGetInfiniteExams,
+} from '../../../core/queries/examHooks';
+import {
+  useGetInfiniteLectures,
+} from '../../../core/queries/lectureHooks';
+import {
+  useGetInfiniteDeadlines,
+} from '../../../core/queries/studentHooks';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -33,13 +41,14 @@ export const AgendaScreen = () => {
   const { colors, spacing } = useTheme();
   const { updatePreference } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
-  const examsQuery = useGetExams();
-  const bookingsQuery = useGetBookings();
-  const lecturesQuery = useGetLectures();
-  const deadlinesQuery = useGetDeadlines();
+  const examsQuery = useGetInfiniteExams();
+  const bookingsQuery = useGetInfiniteBookings();
+  const lecturesQuery = useGetInfiniteLectures();
+  const deadlinesQuery = useGetInfiniteDeadlines();
+  const [pageUp, setPageUp] = useState(0);
+  const [pageDown, setPageDown] = useState(0);
   const [viewedDate, setViewedDate] = useState<string>('');
   const flatListRef = useRef();
-  // console.log('WEEK_DAYS', weekDays());
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState<
     Record<string, boolean>
@@ -56,17 +65,41 @@ export const AgendaScreen = () => {
       Deadline: { color: colors.success[500] },
       Booking: { color: colors.error[400] },
     });
+    setTimeout(() => {
+      onPressScrollToToday();
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    if (pageUp !== 0) {
+      getNextData(pageUp);
+    }
+  }, [pageUp]);
+
+  useEffect(() => {
+    if (pageDown !== 0) {
+      getNextData(pageDown);
+    }
+  }, [pageDown]);
+
+  const getNextData = useCallback((newPage: number) => {
+    // examsQuery.fetchNextPage({pageParam: newPage})
+    // bookingsQuery.fetchNextPage({pageParam: newPage})
+    // lecturesQuery.fetchNextPage({pageParam: newPage})
+    // deadlinesQuery.fetchNextPage({pageParam: newPage})
   }, []);
 
   const toFilterAgendaDays = useMemo(() => {
     const agendaItems = mapAgendaItem(
-      examsQuery.data?.data || [],
-      bookingsQuery.data?.data || [],
-      lecturesQuery.data?.data || [],
-      deadlinesQuery.data?.data || [],
+      _.flatMap(_.get(examsQuery, 'data.pages', []), page => page.data) || [],
+      _.flatMap(_.get(bookingsQuery, 'data.pages', []), page => page.data) ||
+        [],
+      _.flatMap(_.get(lecturesQuery, 'data.pages', []), page => page.data) ||
+        [],
+      _.flatMap(_.get(deadlinesQuery, 'data.pages', []), page => page.data) ||
+        [],
       colors,
     );
-    console.log('agendaItems', agendaItems);
     return agendaItems;
   }, [
     examsQuery.data,
@@ -104,14 +137,6 @@ export const AgendaScreen = () => {
       })
       .compact()
       .value();
-    // return toFilterAgendaDays.map(agendaDay => {
-    //   return {
-    //     ...agendaDay,
-    //     items: agendaDay.items.filter(item =>
-    //       filters.includes(item.type.toLowerCase()),
-    //     ),
-    //   };
-    // });
   }, [toFilterAgendaDays, selectedEventTypes]);
 
   const onSelectTab = (tabName: string) => {
@@ -133,6 +158,14 @@ export const AgendaScreen = () => {
     if (changed.viewableItems[0]) {
       setViewedDate(changed.viewableItems[0].key);
     }
+  };
+
+  const onEndReached = () => {
+    setPageDown(pageDown - 1);
+  };
+
+  const onTopReached = () => {
+    setPageUp(pageUp - 1);
   };
 
   const onPressCalendarDay = useCallback(
@@ -205,18 +238,20 @@ export const AgendaScreen = () => {
         </Tab>
       </Tabs>
       <FlatList
-        windowSize={12}
+        // windowSize={12}
         ref={flatListRef}
         style={styles.list}
         removeClippedSubviews
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         contentContainerStyle={[bottomBarAwareStyles, styles.listContainer]}
         data={agendaDays}
-        maxToRenderPerBatch={8}
-        initialNumToRender={8}
+        // maxToRenderPerBatch={8}
+        // initialNumToRender={8}
         ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
         renderItem={renderItem}
         keyExtractor={item => item.id}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
       />
       <DrawerCalendar
         onPressDay={onPressCalendarDay}
@@ -277,7 +312,6 @@ const searchNearestIndexDate = (
     return difference;
   });
 
-  console.log('difff', minDifference, differences);
   return minDifference === null
     ? undefined
     : differences.findIndex(diff => diff === minDifference);
