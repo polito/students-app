@@ -17,7 +17,7 @@ interface Props {
   subtitle?: string;
   sizeInKiloBytes?: number;
   trailingItem?: JSX.Element;
-  isDownloaded: boolean;
+  isDownloaded?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
 }
 

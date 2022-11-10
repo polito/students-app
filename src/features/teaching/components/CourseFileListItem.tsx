@@ -1,7 +1,7 @@
 import { TouchableHighlightProps } from 'react-native';
 
 import { FileListItem } from '@lib/ui/components/FileListItem';
-import { CourseFileOverview } from '@polito-it/api-client';
+import { CourseFileOverview } from '@polito/api-client';
 
 import { formatFileDate } from '../../../utils/files';
 

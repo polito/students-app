@@ -1,10 +1,9 @@
 import { PropsWithChildren, useMemo } from 'react';
 import {
   StyleProp,
-  StyleSheet,
   TextStyle,
-  TouchableHighlight,
   TouchableHighlightProps,
+  TouchableOpacity,
 } from 'react-native';
 
 import color from 'color';
@@ -31,43 +30,24 @@ export const Tab = ({
   const backgroundColor = useMemo(
     () =>
       selected
-        ? colors.primary[400]
-        : color(colors.muted[dark ? 800 : 200])
+        ? colors.primary[500]
+        : color(colors.primary[dark ? 600 : 50])
             .alpha(0.4)
             .toString(),
     [selected, dark, colors],
   );
-  const underlayColor = useMemo(
-    () =>
-      selected
-        ? colors.primary[500]
-        : color(colors.muted[dark ? 800 : 200])
-            .alpha(0.8)
-            .toString(),
-    [selected, dark, colors],
-  );
-  const borderColor = useMemo(
-    () =>
-      color(colors.muted[dark ? 800 : 300])
-        .alpha(0.6)
-        .toString(),
-    [selected, dark, colors],
-  );
 
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       accessible={true}
       accessibilityRole="tab"
       accessibilityState={{
         selected,
       }}
-      underlayColor={underlayColor}
       style={[
         {
           backgroundColor,
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: !selected ? borderColor : backgroundColor,
-          borderRadius: 30,
+          borderRadius: 10,
           paddingHorizontal: spacing[2.5],
           paddingVertical: spacing[1],
         },
@@ -78,13 +58,17 @@ export const Tab = ({
       <Text
         style={[
           {
-            color: selected ? colors.text[50] : colors.secondaryText,
+            color: selected
+              ? colors.text[50]
+              : dark
+              ? colors.primary[400]
+              : colors.primary[500],
           },
           textStyle,
         ]}
       >
         {children}
       </Text>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 };
