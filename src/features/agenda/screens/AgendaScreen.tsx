@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View, ViewToken } from 'react-native';
+import {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+  StyleSheet,
+  View,
+  ViewToken,
+} from 'react-native';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
@@ -8,24 +16,16 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import _ from 'lodash';
+import _, { throttle } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { mapAgendaItem } from '../../../core/agenda';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import {
-  useGetInfiniteBookings,
-} from '../../../core/queries/bookingHooks';
-import {
-  useGetInfiniteExams,
-} from '../../../core/queries/examHooks';
-import {
-  useGetInfiniteLectures,
-} from '../../../core/queries/lectureHooks';
-import {
-  useGetInfiniteDeadlines,
-} from '../../../core/queries/studentHooks';
+import { useGetInfiniteBookings } from '../../../core/queries/bookingHooks';
+import { useGetInfiniteExams } from '../../../core/queries/examHooks';
+import { useGetInfiniteLectures } from '../../../core/queries/lectureHooks';
+import { useGetInfiniteDeadlines } from '../../../core/queries/studentHooks';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -161,12 +161,15 @@ export const AgendaScreen = () => {
   };
 
   const onEndReached = () => {
-    setPageDown(pageDown - 1);
+    setPageDown(pageDown + 1);
   };
 
-  const onTopReached = () => {
-    setPageUp(pageUp - 1);
-  };
+  const onTopReached = useCallback(
+    throttle(() => {
+      setPageUp(oldPage => oldPage - 1);
+    }, 2000),
+    [],
+  );
 
   const onPressCalendarDay = useCallback(
     (day: Date) => {
@@ -252,6 +255,12 @@ export const AgendaScreen = () => {
         keyExtractor={item => item.id}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
+        onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          console.log(event.nativeEvent.contentOffset.y);
+          if (event.nativeEvent.contentOffset.y < 0) {
+            onTopReached();
+          }
+        }}
       />
       <DrawerCalendar
         onPressDay={onPressCalendarDay}
