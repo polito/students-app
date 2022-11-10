@@ -86,6 +86,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           left: 0,
           right: 0,
           padding: spacing[4],
+          paddingBottom: bottomBarAwareStyles.paddingBottom,
         }}
       >
         {exam?.status === ExamStatusEnum.Available && (
