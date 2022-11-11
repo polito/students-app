@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
@@ -7,6 +7,8 @@ import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
+
+import { VideoControl } from './VideoControl';
 
 export interface VideoPlayerProps {
   videoUrl: string;
@@ -17,6 +19,12 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const playerRef = useRef();
+  const [progress, setProgress] = useState(0);
+  const [paused, setPaused] = useState(false);
+  // const [horizontal, setHorizontal] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const [playbackRate, setPlaybackRate] = useState(1);
 
@@ -43,10 +51,56 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     );
   }, [playbackRate]);
 
+  const onSeekEnd = useCallback(
+    (newProgress: number) => {
+      try {
+        const newSeekValue = newProgress * 5447;
+        // console.log({duration});
+        console.log('onSeekEnd', { newSeekValue, duration, newProgress });
+        if (playerRef && playerRef.current) {
+          playerRef.current.seek(newSeekValue);
+        }
+      } catch (e) {
+        console.log('errorSeek', e);
+      }
+    },
+    [playerRef, duration],
+  );
+
+  const togglePaused = useCallback(() => {
+    setPaused(prev => !prev);
+  }, [playerRef]);
+
+  const handleLoad = useCallback((meta: any) => {
+    console.log('meta', meta);
+    setDuration(meta.duration);
+  }, []);
+
+  const handleProgress = useCallback(
+    (videoProgress: any) => {
+      try {
+        if (loading) {
+          setLoading(false);
+        }
+        const p = videoProgress.currentTime / duration;
+        if (p === Infinity || isNaN(p)) {
+          return;
+        } else {
+          setProgress(p);
+        }
+      } catch (e) {
+        console.log('errorHandleProgress', e);
+      }
+    },
+    [duration, loading],
+  );
+
   return (
     <View>
       <Video
+        ref={playerRef}
         controls={true}
+        paused={paused}
         style={{
           height: (width / 16) * 9,
         }}
@@ -56,6 +110,17 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         poster={coverUrl}
         rate={playbackRate}
         resizeMode="contain"
+        onLoad={handleLoad}
+        onProgress={handleProgress}
+        muted={true}
+      />
+      <VideoControl
+        onRelease={onSeekEnd}
+        newPosition={progress}
+        paused={paused}
+        togglePaused={togglePaused}
+        rotate={false}
+        secondsDuration={duration}
       />
       {speedControls}
     </View>
