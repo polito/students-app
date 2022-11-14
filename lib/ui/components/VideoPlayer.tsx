@@ -1,22 +1,29 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, Modal, Platform, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
 import { VideoControl } from '@lib/ui/components/VideoControl';
+import { VideoPlayerFullScreen } from '@lib/ui/components/VideoPlayerFullscreen';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
 import { isAndroid, isIos } from '../../../src/utils';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
 export interface VideoPlayerProps {
   videoUrl: string;
   coverUrl: string;
+  onOpenFullScreen?: (params: { videoUrl: string; coverUrl: string }) => void;
 }
 
-export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
+export const VideoPlayer = ({
+  videoUrl,
+  coverUrl,
+  onOpenFullScreen,
+}: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -28,6 +35,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   // const [horizontal, setHorizontal] = useState(false);
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [playbackRate, setPlaybackRate] = useState(1);
 
@@ -80,7 +88,11 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   }, [playerRef]);
 
   const toggleFullscreen = useCallback(() => {
-    setFullscreen(prev => !prev);
+    if (isAndroid) {
+      setModalVisible(true);
+    } else {
+      setFullscreen(prev => !prev);
+    }
   }, [playerRef]);
 
   const handleLoad = useCallback((meta: any) => {
@@ -109,6 +121,22 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
 
   return (
     <View>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}>
+          <VideoPlayerFullScreen
+            videoUrl={videoUrl}
+            coverUrl={coverUrl}
+            onHideFullScreen={() => setModalVisible(false)}
+          />
+        </View>
+      </Modal>
       <Video
         ref={playerRef}
         controls={isIos}
@@ -124,7 +152,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         resizeMode="contain"
         onLoad={handleLoad}
         onProgress={handleProgress}
-        muted={muted}
+        muted={true}
         fullscreen={fullscreen}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />

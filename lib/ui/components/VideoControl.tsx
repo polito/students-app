@@ -22,10 +22,10 @@ export interface VideoControlProps {
   newPosition: number;
   paused: boolean;
   togglePaused: () => void;
-  muted: boolean;
-  toggleMuted: () => void;
-  fullscreen: boolean;
-  toggleFullscreen: () => void;
+  muted?: boolean;
+  toggleMuted?: () => void;
+  fullscreen?: boolean;
+  toggleFullscreen?: () => void;
   rotate: boolean;
   secondsDuration: number;
 }

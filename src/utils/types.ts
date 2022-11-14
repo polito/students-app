@@ -1,4 +1,4 @@
-import { Booking, Exam, Lecture } from '@polito-it/api-client';
+import { Booking, Exam, Lecture } from '@polito/api-client';
 
 export interface AgendaDayInterface {
   id: string;
