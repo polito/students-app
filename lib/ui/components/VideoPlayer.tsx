@@ -22,6 +22,8 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const playerRef = useRef();
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
   // const [horizontal, setHorizontal] = useState(false);
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         // console.log({duration});
         console.log('onSeekEnd', { newSeekValue, duration, newProgress });
         if (playerRef && playerRef.current) {
+          // @ts-ignore
           playerRef.current.seek(newSeekValue);
         }
       } catch (e) {
@@ -69,6 +72,14 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
 
   const togglePaused = useCallback(() => {
     setPaused(prev => !prev);
+  }, [playerRef]);
+
+  const toggleMuted = useCallback(() => {
+    setMuted(prev => !prev);
+  }, [playerRef]);
+
+  const toggleFullscreen = useCallback(() => {
+    setFullscreen(prev => !prev);
   }, [playerRef]);
 
   const handleLoad = useCallback((meta: any) => {
@@ -99,7 +110,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     <View>
       <Video
         ref={playerRef}
-        controls={true}
+        controls={false}
         paused={paused}
         style={{
           height: (width / 16) * 9,
@@ -112,13 +123,19 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         resizeMode="contain"
         onLoad={handleLoad}
         onProgress={handleProgress}
-        muted={true}
+        muted={muted}
+        fullscreen={fullscreen}
+        onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
       <VideoControl
+        toggleFullscreen={toggleFullscreen}
+        fullscreen={fullscreen}
         onRelease={onSeekEnd}
         newPosition={progress}
         paused={paused}
         togglePaused={togglePaused}
+        toggleMuted={toggleMuted}
+        muted={muted}
         rotate={false}
         secondsDuration={duration}
       />

@@ -84,12 +84,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         }}
         style={styles.wrapper}
       >
-        {videoLecture?.coverUrl && (
-          <VideoPlayer
-            videoUrl="https://lucapezzolla.com/20210525.mp4"
-            coverUrl={videoLecture?.coverUrl}
-          />
-        )}
+        {/* {videoLecture?.coverUrl && ( */}
+        <VideoPlayer
+          videoUrl="https://lucapezzolla.com/20210525.mp4"
+          coverUrl={videoLecture?.coverUrl}
+        />
+        {/* // )}   */}
         <Row maxWidth noFlex spaceBetween alignCenter>
           <EventDetails
             title={lecture?.roomName}
