@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { times } from 'lodash';
 import { DateTime } from 'luxon';
 
@@ -45,3 +47,6 @@ export const isLive = (fromDate: Date, toDate: Date): boolean => {
   const toDateMillis = DateTime.fromISO(toDate.toISOString()).toMillis();
   return formDateMillis <= nowMillis && nowMillis <= toDateMillis;
 };
+
+export const isAndroid = Platform.OS === 'android';
+export const isIos = Platform.OS === 'ios';

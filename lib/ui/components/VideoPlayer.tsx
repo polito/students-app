@@ -5,10 +5,11 @@ import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
+import { VideoControl } from '@lib/ui/components/VideoControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { VideoControl } from './VideoControl';
+import { isAndroid, isIos } from '../../../src/utils';
 
 export interface VideoPlayerProps {
   videoUrl: string;
@@ -110,7 +111,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     <View>
       <Video
         ref={playerRef}
-        controls={false}
+        controls={isIos}
         paused={paused}
         style={{
           height: (width / 16) * 9,
@@ -127,18 +128,20 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         fullscreen={fullscreen}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
-      <VideoControl
-        toggleFullscreen={toggleFullscreen}
-        fullscreen={fullscreen}
-        onRelease={onSeekEnd}
-        newPosition={progress}
-        paused={paused}
-        togglePaused={togglePaused}
-        toggleMuted={toggleMuted}
-        muted={muted}
-        rotate={false}
-        secondsDuration={duration}
-      />
+      {isAndroid && (
+        <VideoControl
+          toggleFullscreen={toggleFullscreen}
+          fullscreen={fullscreen}
+          onRelease={onSeekEnd}
+          newPosition={progress}
+          paused={paused}
+          togglePaused={togglePaused}
+          toggleMuted={toggleMuted}
+          muted={muted}
+          rotate={false}
+          secondsDuration={duration}
+        />
+      )}
       {speedControls}
     </View>
   );
