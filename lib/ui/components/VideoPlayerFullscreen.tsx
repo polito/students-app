@@ -80,13 +80,6 @@ export const VideoPlayerFullScreen = ({
 
   return (
     <View style={[styles.container]}>
-      <View
-        style={{
-          height: SCREEN_HEIGHT,
-          width: SCREEN_WIDTH,
-          backgroundColor: 'red',
-        }}
-      ></View>
       <Video
         ref={playerRef}
         controls={false}

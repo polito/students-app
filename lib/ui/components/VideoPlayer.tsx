@@ -10,7 +10,7 @@ import { VideoPlayerFullScreen } from '@lib/ui/components/VideoPlayerFullscreen'
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { isAndroid, isIos } from '../../../src/utils';
+import { isAndroid } from '../../../src/utils';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
 export interface VideoPlayerProps {
@@ -65,8 +65,7 @@ export const VideoPlayer = ({
   const onSeekEnd = useCallback(
     (newProgress: number) => {
       try {
-        const newSeekValue = newProgress * 5447;
-        // console.log({duration});
+        const newSeekValue = (newProgress * duration) / 100;
         console.log('onSeekEnd', { newSeekValue, duration, newProgress });
         if (playerRef && playerRef.current) {
           // @ts-ignore
@@ -139,7 +138,7 @@ export const VideoPlayer = ({
       </Modal>
       <Video
         ref={playerRef}
-        controls={isIos}
+        controls={false}
         paused={paused}
         style={{
           height: (width / 16) * 9,
@@ -156,7 +155,7 @@ export const VideoPlayer = ({
         fullscreen={fullscreen}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
-      {isAndroid && (
+      {true && (
         <VideoControl
           toggleFullscreen={toggleFullscreen}
           fullscreen={fullscreen}

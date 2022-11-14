@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Animated,
   Dimensions,
-  PanResponder,
   StyleSheet,
+  Text,
   TouchableHighlightProps,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -14,6 +12,7 @@ import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
+import { Slider } from '@miblanchard/react-native-slider';
 
 import { DateTime } from 'luxon';
 
@@ -53,65 +52,22 @@ export const VideoControl = ({
   const currentTime = DateTime.fromSeconds(secondsDuration * newPosition)
     .toUTC()
     .toFormat('HH:mm:ss');
-  const duration = DateTime.fromSeconds(secondsDuration)
+  const duration = DateTime.fromSeconds(
+    secondsDuration - secondsDuration * newPosition,
+  )
     .toUTC()
     .toFormat('HH:mm:ss');
   const styles = useStylesheet(createStyles);
-  const [disableAutoMove, setDisableAutoMove] = useState(false);
-  const sliderLeft = useRef(new Animated.Value(0)).current;
+  const [value, setValue] = useState<number>(0);
+  const [value1, setValue1] = useState<number>(value);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => {},
-      onPanResponderMove: (evt, gestureState) => {
-        setDisableAutoMove(true);
-        console.log({ ...gestureState });
-        console.log('moveX ' + gestureState.moveX);
-
-        const newDistanceLeft =
-          gestureState.moveX - defaultPadding * 2 - Normalize(20);
-        console.log({
-          newDistanceLeft,
-          tot: WIDTH_DEVICE - defaultPadding * 1.5,
-        });
-
-        if (gestureState.moveX > WIDTH_DEVICE - defaultPadding * 1.5) {
-          return;
-        }
-        if (newDistanceLeft < 0) {
-          return;
-        }
-        Animated.timing(sliderLeft, {
-          toValue: newDistanceLeft,
-          duration: 0,
-          useNativeDriver: false,
-        }).start();
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        console.log('moveX ' + gestureState.moveX);
-        const newDistanceLeft =
-          gestureState.moveX - defaultPadding * 2 - Normalize(20);
-        const percentage = newDistanceLeft / LINE_WIDTH;
-        console.log({ percentage });
-        onRelease(percentage);
-        setTimeout(() => {
-          setDisableAutoMove(false);
-        }, 200);
-      },
-    }),
-  ).current;
-
-  useEffect(() => {
-    if (!disableAutoMove) {
-      const newDistanceLeft = newPosition * LINE_WIDTH;
-      Animated.timing(sliderLeft, {
-        toValue: newDistanceLeft,
-        duration: 0,
-        useNativeDriver: false,
-      }).start();
-    }
-  }, [newPosition]);
+  const onSlidingComplete = (evt: number | Array<number>): void => {
+    // @ts-ignore
+    const updatedValue: number = evt[0];
+    console.log('onSlidingComplete', updatedValue);
+    setValue(updatedValue);
+    onRelease(updatedValue);
+  };
 
   return (
     <Col noFlex flexStart spaceBetween style={[styles.wrapper]}>
@@ -123,31 +79,60 @@ export const VideoControl = ({
           <Icon name={'ios-scan'} color={'white'} />
         </VideoControlButton>
       </Row>
-      <Row alignCenter justifyCenter noFlex>
+      <Row alignCenter justifyCenter noFlex style={{ paddingBottom: 10 }}>
         <VideoControlButton onPress={() => togglePaused()}>
           <Icon name={paused ? 'play' : 'pause'} color={'white'} />
         </VideoControlButton>
-        <Row noFlex alignCenter style={styles.container}>
-          <View style={styles.hrContainer}>
-            <View style={styles.hr} />
-          </View>
-
-          <Animated.View
-            {...panResponder.panHandlers}
-            style={[styles.dragHandlerView, { left: sliderLeft }]}
-          >
-            <View style={styles.dragHandler} />
-          </Animated.View>
+        <Row
+          style={styles.sliderControlWrapper}
+          alignCenter
+          spaceBetween
+          justifyCenter
+        >
+          <Text style={styles.time}>{currentTime}</Text>
+          <Slider
+            value={value1}
+            containerStyle={{
+              marginTop: 0,
+              width: WIDTH_DEVICE * 0.5,
+            }}
+            trackStyle={{ backgroundColor: 'white' }}
+            maximumTrackTintColor={'white'}
+            minimumTrackTintColor={'white'}
+            trackMarks={[1]}
+            onSlidingComplete={onSlidingComplete}
+            minimumValue={0.001}
+            thumbTintColor={'white'}
+            maximumValue={100}
+            // @ts-ignore
+            onValueChange={setValue1}
+          />
+          <Text style={styles.timeRemaining}>-{duration}</Text>
         </Row>
       </Row>
-      {/* <Text>Duration: {duration}</Text> */}
-      {/* <Text>Tempo corrente {currentTime}</Text> */}
     </Col>
   );
 };
 
 const createStyles = ({ size }: Theme) =>
   StyleSheet.create({
+    timeRemaining: {
+      width: 50,
+      color: 'white',
+      fontSize: 10,
+    },
+    time: {
+      width: 46,
+      color: 'white',
+      fontSize: 10,
+    },
+    sliderControlWrapper: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      height: 28,
+      borderRadius: size.sm,
+      marginHorizontal: 10,
+      paddingHorizontal: size.xs,
+    },
     wrapper: {
       position: 'absolute',
       top: 0,
@@ -217,9 +202,9 @@ const VideoControlButton = ({ children, ...rest }: TouchableHighlightProps) => {
 const createStylesControl = ({ size }: Theme) =>
   StyleSheet.create({
     button: {
-      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       paddingHorizontal: size.md,
-      paddingVertical: size.xs,
+      paddingVertical: size.xs + 1.5,
       borderRadius: size.xs,
       color: 'white',
     },
