@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import Video from 'react-native-video';
 
 import { VideoControl } from '@lib/ui/components/VideoControl';
@@ -28,6 +28,15 @@ export const VideoPlayerFullScreen = ({
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const isLandscape = true;
+
+  useEffect(() => {
+    // Dimensions.set({
+    //   // ...Dimensions.get('window'),
+    //   width: Dimensions.get('window').height,
+    //   height: Dimensions.get('window').width
+    // })
+  }, []);
 
   const onSeekEnd = useCallback(
     (newProgress: number) => {
@@ -79,7 +88,7 @@ export const VideoPlayerFullScreen = ({
   );
 
   return (
-    <View style={[styles.container]}>
+    <>
       <Video
         ref={playerRef}
         controls={false}
@@ -87,13 +96,7 @@ export const VideoPlayerFullScreen = ({
         source={{
           uri: videoUrl,
         }}
-        style={{
-          height: SCREEN_HEIGHT,
-          width: SCREEN_WIDTH,
-          position: 'absolute',
-          right: 0,
-          transform: [{ rotate: '-90deg' }],
-        }}
+        style={styles.landscapeView}
         poster={coverUrl}
         rate={playbackRate}
         resizeMode="contain"
@@ -102,6 +105,7 @@ export const VideoPlayerFullScreen = ({
         muted={true}
         fullscreen={true}
       />
+      {/* <View style={styles.videoControlOverlay}> */}
       <VideoControl
         toggleFullscreen={onHideFullScreen}
         onRelease={onSeekEnd}
@@ -110,23 +114,40 @@ export const VideoPlayerFullScreen = ({
         togglePaused={togglePaused}
         toggleMuted={toggleMuted}
         muted={muted}
-        rotate={true}
+        isLandscape={true}
         secondsDuration={duration}
       />
-    </View>
+      {/* </View> */}
+    </>
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, size }: Theme) =>
   StyleSheet.create({
-    videoHorizontal: {
+    videoControlOverlay: {
+      transform: [{ rotate: '-90deg' }],
+      left: -SCREEN_HEIGHT / 2 + SCREEN_WIDTH / 2,
+    },
+    landscapeView: {
+      width: SCREEN_HEIGHT,
+      height: SCREEN_WIDTH,
+      backgroundColor: 'black',
+      transform: [{ rotate: '270deg' }],
+      // position: 'absolute',
+      left: -SCREEN_HEIGHT / 2 + SCREEN_WIDTH / 2,
+      top: SCREEN_WIDTH / 2 + 35,
+      // top: 0,
+      // bottom: 0
+    },
+    containerLandscape: {
       // width: SCREEN_HEIGHT,
       // height: SCREEN_WIDTH,
       // backgroundColor: 'red',
-      transform: [{ rotate: '90deg' }],
+      transform: [{ rotate: '-90deg' }],
+      marginTop: 0,
       position: 'absolute',
-      // bottom: 0,
-      // right:0
+      left: 0,
+      bottom: 10,
     },
     container: {
       // top: 60

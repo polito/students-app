@@ -10,7 +10,7 @@ import { VideoPlayerFullScreen } from '@lib/ui/components/VideoPlayerFullscreen'
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { isAndroid } from '../../../src/utils';
+import { isIos } from '../../../src/utils';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
 export interface VideoPlayerProps {
@@ -87,7 +87,7 @@ export const VideoPlayer = ({
   }, [playerRef]);
 
   const toggleFullscreen = useCallback(() => {
-    if (isAndroid) {
+    if (isIos) {
       setModalVisible(true);
     } else {
       setFullscreen(prev => !prev);
@@ -120,22 +120,34 @@ export const VideoPlayer = ({
 
   return (
     <View>
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}>
-          <VideoPlayerFullScreen
-            videoUrl={videoUrl}
-            coverUrl={coverUrl}
-            onHideFullScreen={() => setModalVisible(false)}
-          />
-        </View>
-      </Modal>
+      {modalVisible && (
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={modalVisible}
+          supportedOrientations={['portrait']}
+          onOrientationChange={or => {
+            console.log('onOrientationChange', or);
+          }}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View
+            style={{
+              height: SCREEN_HEIGHT,
+              width: SCREEN_WIDTH,
+              backgroundColor: 'black',
+            }}
+          >
+            <VideoPlayerFullScreen
+              videoUrl={videoUrl}
+              coverUrl={coverUrl}
+              onHideFullScreen={() => setModalVisible(false)}
+            />
+          </View>
+        </Modal>
+      )}
       <Video
         ref={playerRef}
         controls={false}
@@ -155,7 +167,7 @@ export const VideoPlayer = ({
         fullscreen={fullscreen}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
-      {true && (
+      {isIos && (
         <VideoControl
           toggleFullscreen={toggleFullscreen}
           fullscreen={fullscreen}
@@ -165,7 +177,7 @@ export const VideoPlayer = ({
           togglePaused={togglePaused}
           toggleMuted={toggleMuted}
           muted={muted}
-          rotate={false}
+          isLandscape={false}
           secondsDuration={duration}
         />
       )}
