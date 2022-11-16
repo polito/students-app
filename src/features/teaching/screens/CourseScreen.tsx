@@ -33,20 +33,22 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const { id, courseName } = route.params;
   useScreenTitle(courseName);
 
-  navigation.setOptions({
-    headerRight: () => (
-      <IconButton
-        icon={faSliders}
-        color={colors.primary[400]}
-        size={fontSizes.lg}
-        adjustSpacing="right"
-        accessibilityLabel={t('coursePreferencesScreen.title')}
-        onPress={() => {
-          navigation.navigate('CoursePreferences', { courseId: id });
-        }}
-      />
-    ),
-  });
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon={faSliders}
+          color={colors.primary[400]}
+          size={fontSizes.lg}
+          adjustSpacing="right"
+          accessibilityLabel={t('coursePreferencesScreen.title')}
+          onPress={() => {
+            navigation.navigate('CoursePreferences', { courseId: id });
+          }}
+        />
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({

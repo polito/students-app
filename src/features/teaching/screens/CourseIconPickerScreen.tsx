@@ -30,7 +30,6 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
     <>
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        style={[{ flex: 1 }, bottomBarAwareStyles]}
         data={Object.entries(courseIcons)}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -54,7 +53,10 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
           </TouchableOpacity>
         )}
         numColumns={5}
-        contentContainerStyle={{ paddingHorizontal: spacing[5] }}
+        contentContainerStyle={[
+          { paddingHorizontal: spacing[5] },
+          bottomBarAwareStyles,
+        ]}
       />
       {coursePrefs.icon != null && (
         <CtaButton
