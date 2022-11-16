@@ -17,8 +17,9 @@ import { VideoPlayerFullScreen } from '@lib/ui/components/VideoPlayerFullscreen'
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { isIos } from '../../../src/utils';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
+
+const isIos = Platform.OS === 'ios';
 
 export interface VideoPlayerProps {
   videoUrl: string;
@@ -26,11 +27,7 @@ export interface VideoPlayerProps {
   onOpenFullScreen?: (params: { videoUrl: string; coverUrl: string }) => void;
 }
 
-export const VideoPlayer = ({
-  videoUrl,
-  coverUrl,
-  onOpenFullScreen,
-}: VideoPlayerProps) => {
+export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -47,8 +44,12 @@ export const VideoPlayer = ({
   const [playbackRate, setPlaybackRate] = useState(1);
 
   useEffect(() => {
-    Orientation.lockToPortrait();
-  }, []);
+    if (modalVisible) {
+      Orientation.lockToLandscapeLeft();
+    } else {
+      Orientation.lockToPortrait();
+    }
+  }, [modalVisible]);
 
   const speedControls = useMemo(() => {
     if (parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
@@ -98,23 +99,14 @@ export const VideoPlayer = ({
   }, [playerRef]);
 
   const toggleFullscreen = useCallback(() => {
-    console.log('hide');
     if (!isIos) {
-      console.log(modalVisible);
-      if (modalVisible) {
-        Orientation.lockToPortrait();
-        setModalVisible(false);
-      } else {
-        Orientation.lockToLandscapeLeft();
-        setModalVisible(true);
-      }
+      setModalVisible(!modalVisible);
     } else {
       setFullscreen(prev => !prev);
     }
   }, [playerRef, modalVisible]);
 
   const handleLoad = useCallback((meta: any) => {
-    console.log('meta', meta);
     setDuration(meta.duration);
   }, []);
 
@@ -127,9 +119,8 @@ export const VideoPlayer = ({
         const p = videoProgress.currentTime / duration;
         if (p === Infinity || isNaN(p)) {
           return;
-        } else {
-          setProgress(p);
         }
+        setProgress(p);
       } catch (e) {
         console.log('errorHandleProgress', e);
       }
@@ -163,14 +154,18 @@ export const VideoPlayer = ({
               videoUrl={videoUrl}
               coverUrl={coverUrl}
               onHideFullScreen={toggleFullscreen}
+              progress={progress}
+              duration={duration}
+              playbackRate={playbackRate}
+              handleProgress={handleProgress}
             />
           </View>
         </Modal>
       )}
       <Video
         ref={playerRef}
-        controls={false}
-        paused={paused}
+        controls={isIos}
+        paused={paused || modalVisible}
         style={{
           height: (width / 16) * 9,
         }}
@@ -182,14 +177,13 @@ export const VideoPlayer = ({
         resizeMode="contain"
         onLoad={handleLoad}
         onProgress={handleProgress}
-        muted={true}
+        muted={muted}
         fullscreen={fullscreen}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
-      {!isIos && (
+      {!isIos && !modalVisible && (
         <VideoControl
           toggleFullscreen={toggleFullscreen}
-          fullscreen={fullscreen}
           onRelease={onSeekEnd}
           newPosition={progress}
           paused={paused}

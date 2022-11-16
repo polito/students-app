@@ -17,8 +17,6 @@ import { DateTime } from 'luxon';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
-const CONTROL_WIDTH = 45;
-
 export interface VideoControlProps {
   onRelease: (percentage: number) => void;
   newPosition: number;
@@ -48,14 +46,10 @@ export const VideoControl = ({
   muted,
   secondsDuration,
   toggleFullscreen,
-  fullscreen,
   isLandscape,
 }: VideoControlProps) => {
-  // const isLandscape = useMemo((): boolean => {
-  //   return Dimensions.get('window').width > Dimensions.get('window').height
-  // }, [])
-  // console.log({ isLandscape });
-  // const secondsDuration = useSelector(postSelectors.selectedVideoDuration);
+  // console.log({ secondsDuration, newPosition });
+
   const currentTime = DateTime.fromSeconds(secondsDuration * newPosition)
     .toUTC()
     .toFormat('HH:mm:ss');
@@ -64,9 +58,9 @@ export const VideoControl = ({
   )
     .toUTC()
     .toFormat('HH:mm:ss');
+
   const styles = useStylesheet(createStyles);
-  const [value, setValue] = useState<number>(0);
-  const [value1, setValue1] = useState<number>(value);
+  const [value, setValue] = useState<number>(newPosition * 100);
 
   const onSlidingComplete = (evt: number | Array<number>): void => {
     // @ts-ignore
@@ -108,7 +102,7 @@ export const VideoControl = ({
         >
           <Text style={styles.time}>{currentTime}</Text>
           <Slider
-            value={value1}
+            value={value}
             // @ts-ignore
             containerStyle={[
               styles.slider,
@@ -123,7 +117,7 @@ export const VideoControl = ({
             thumbTintColor={'white'}
             maximumValue={100}
             // @ts-ignore
-            onValueChange={setValue1}
+            onValueChange={setValue}
           />
           <Text style={styles.timeRemaining}>-{duration}</Text>
         </Row>
