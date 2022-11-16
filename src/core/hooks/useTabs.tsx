@@ -35,7 +35,10 @@ export const useTabs = ({ tabs, animated = false }: TabsOptions) => {
         <Tabs
           selectedIndexes={[selectedTabIndex]}
           style={{
-            backgroundColor: colors.headers,
+            backgroundColor: Platform.select({
+              ios: colors.headers,
+              android: colors.surface,
+            }),
             borderBottomWidth: Platform.select({
               ios: StyleSheet.hairlineWidth,
             }),
@@ -52,9 +55,6 @@ export const useTabs = ({ tabs, animated = false }: TabsOptions) => {
                   x: width * i,
                   animated,
                 });
-              }}
-              textStyle={{
-                marginBottom: -2,
               }}
             >
               {o.title}
