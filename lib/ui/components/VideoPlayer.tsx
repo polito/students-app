@@ -1,6 +1,13 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Modal, Platform, StyleSheet, View } from 'react-native';
+import Orientation from 'react-native-orientation-locker';
 import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
@@ -38,6 +45,10 @@ export const VideoPlayer = ({
   const [modalVisible, setModalVisible] = useState(false);
 
   const [playbackRate, setPlaybackRate] = useState(1);
+
+  useEffect(() => {
+    Orientation.lockToPortrait();
+  }, []);
 
   const speedControls = useMemo(() => {
     if (parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
@@ -87,12 +98,20 @@ export const VideoPlayer = ({
   }, [playerRef]);
 
   const toggleFullscreen = useCallback(() => {
-    if (isIos) {
-      setModalVisible(true);
+    console.log('hide');
+    if (!isIos) {
+      console.log(modalVisible);
+      if (modalVisible) {
+        Orientation.lockToPortrait();
+        setModalVisible(false);
+      } else {
+        Orientation.lockToLandscapeLeft();
+        setModalVisible(true);
+      }
     } else {
       setFullscreen(prev => !prev);
     }
-  }, [playerRef]);
+  }, [playerRef, modalVisible]);
 
   const handleLoad = useCallback((meta: any) => {
     console.log('meta', meta);
@@ -143,7 +162,7 @@ export const VideoPlayer = ({
             <VideoPlayerFullScreen
               videoUrl={videoUrl}
               coverUrl={coverUrl}
-              onHideFullScreen={() => setModalVisible(false)}
+              onHideFullScreen={toggleFullscreen}
             />
           </View>
         </Modal>
@@ -167,7 +186,7 @@ export const VideoPlayer = ({
         fullscreen={fullscreen}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
-      {isIos && (
+      {!isIos && (
         <VideoControl
           toggleFullscreen={toggleFullscreen}
           fullscreen={fullscreen}

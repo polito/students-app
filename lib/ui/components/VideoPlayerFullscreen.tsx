@@ -19,7 +19,7 @@ export const VideoPlayerFullScreen = ({
   coverUrl,
   onHideFullScreen,
 }: videoProps) => {
-  console.log({ videoUrl, coverUrl });
+  // console.log({ videoUrl, coverUrl });
   const playerRef = useRef();
   const styles = useStylesheet(createStyles);
   const [progress, setProgress] = useState(0);
@@ -41,8 +41,8 @@ export const VideoPlayerFullScreen = ({
   const onSeekEnd = useCallback(
     (newProgress: number) => {
       try {
-        const newSeekValue = newProgress * 5447;
-        // console.log({duration});
+        const newSeekValue = (newProgress * duration) / 100;
+        console.log({ newSeekValue });
         console.log('onSeekEnd', { newSeekValue, duration, newProgress });
         if (playerRef && playerRef.current) {
           // @ts-ignore
@@ -125,29 +125,19 @@ export const VideoPlayerFullScreen = ({
 const createStyles = ({ spacing, size }: Theme) =>
   StyleSheet.create({
     videoControlOverlay: {
-      transform: [{ rotate: '-90deg' }],
-      left: -SCREEN_HEIGHT / 2 + SCREEN_WIDTH / 2,
+      // transform: [{ rotate: '-90deg' }],
+      // left: -SCREEN_HEIGHT / 2 + SCREEN_WIDTH / 2,
     },
     landscapeView: {
       width: SCREEN_HEIGHT,
       height: SCREEN_WIDTH,
       backgroundColor: 'black',
-      transform: [{ rotate: '270deg' }],
-      // position: 'absolute',
-      left: -SCREEN_HEIGHT / 2 + SCREEN_WIDTH / 2,
-      top: SCREEN_WIDTH / 2 + 35,
+      // transform: [{ rotate: '270deg' }],
+      position: 'absolute',
+      // left: -SCREEN_HEIGHT / 2 + SCREEN_WIDTH / 2,
+      // top: SCREEN_WIDTH / 2 + 35,
       // top: 0,
       // bottom: 0
-    },
-    containerLandscape: {
-      // width: SCREEN_HEIGHT,
-      // height: SCREEN_WIDTH,
-      // backgroundColor: 'red',
-      transform: [{ rotate: '-90deg' }],
-      marginTop: 0,
-      position: 'absolute',
-      left: 0,
-      bottom: 10,
     },
     container: {
       // top: 60

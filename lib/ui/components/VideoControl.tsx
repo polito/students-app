@@ -4,7 +4,6 @@ import {
   Text,
   TouchableHighlightProps,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -55,7 +54,7 @@ export const VideoControl = ({
   // const isLandscape = useMemo((): boolean => {
   //   return Dimensions.get('window').width > Dimensions.get('window').height
   // }, [])
-  console.log({ isLandscape });
+  // console.log({ isLandscape });
   // const secondsDuration = useSelector(postSelectors.selectedVideoDuration);
   const currentTime = DateTime.fromSeconds(secondsDuration * newPosition)
     .toUTC()
@@ -78,50 +77,43 @@ export const VideoControl = ({
   };
 
   return (
-    <>
-      {isLandscape && (
-        <Col style={styles.screenOverlay}>
-          <View style={styles.hrLandscane}>
-            <Text style={styles.timeOverlay}>{currentTime}</Text>
-            <Row
-              justifyCenter
-              noFlex
-              alignCenter
-              style={styles.controlsOverlay}
-            >
-              <TouchableOpacity onPress={() => togglePaused()}>
-                <Icon
-                  name={paused ? 'play' : 'pause'}
-                  color={'white'}
-                  size={18}
-                />
-              </TouchableOpacity>
-              <Text style={styles.durationOverlay}>{currentTime}</Text>
-            </Row>
-          </View>
-          <View style={styles.hrLandscaneTop}>
-            <VideoControlButton onPress={() => toggleMuted()}>
-              <Icon
-                name={muted ? 'volume-off' : 'volume-high'}
-                color={'white'}
-              />
-            </VideoControlButton>
-            <VideoControlButton onPress={() => toggleFullscreen()}>
-              <Icon name={'ios-scan'} color={'white'} />
-            </VideoControlButton>
-          </View>
-          <Text style={styles.timeOverlay}>{currentTime}</Text>
+    <Col
+      noFlex
+      flexStart
+      spaceBetween
+      style={[styles.wrapper, isLandscape && styles.wrapperLandscape]}
+    >
+      <Row
+        noFlex
+        maxWidth
+        spaceBetween
+        style={[styles.header, isLandscape && styles.headerLandscape]}
+      >
+        <VideoControlButton onPress={() => toggleMuted()}>
+          <Icon name={muted ? 'volume-off' : 'volume-high'} color={'white'} />
+        </VideoControlButton>
+        <VideoControlButton onPress={() => toggleFullscreen()}>
+          <Icon name={'ios-scan'} color={'white'} />
+        </VideoControlButton>
+      </Row>
+      <Row alignCenter justifyCenter noFlex style={styles.wrapperControl}>
+        <VideoControlButton onPress={() => togglePaused()}>
+          <Icon name={paused ? 'play' : 'pause'} color={'white'} />
+        </VideoControlButton>
+        <Row
+          style={styles.sliderControlWrapper}
+          alignCenter
+          spaceBetween
+          justifyCenter
+        >
+          <Text style={styles.time}>{currentTime}</Text>
           <Slider
             value={value1}
-            containerStyle={{
-              width: SCREEN_WIDTH,
-              // backgroundColor: 'blue',
-              bottom: SCREEN_WIDTH,
-              left: SCREEN_WIDTH / 2.5,
-              // left: CONTROL_WIDTH,
-              position: 'absolute',
-            }}
-            vertical={true}
+            // @ts-ignore
+            containerStyle={[
+              styles.slider,
+              isLandscape && styles.sliderLandscape,
+            ]}
             trackStyle={{ backgroundColor: 'white' }}
             maximumTrackTintColor={'white'}
             minimumTrackTintColor={'white'}
@@ -133,152 +125,32 @@ export const VideoControl = ({
             // @ts-ignore
             onValueChange={setValue1}
           />
-        </Col>
-      )}
-      {!isLandscape && (
-        <>
-          <Col
-            noFlex
-            flexStart
-            spaceBetween
-            style={[styles.wrapper, isLandscape && styles.wrapperLandscape]}
-          >
-            <Row
-              noFlex
-              maxWidth
-              spaceBetween
-              style={[styles.header, isLandscape && styles.headerLandscape]}
-            >
-              <VideoControlButton onPress={() => toggleMuted()}>
-                <Icon
-                  name={muted ? 'volume-off' : 'volume-high'}
-                  color={'white'}
-                />
-              </VideoControlButton>
-              <VideoControlButton onPress={() => toggleFullscreen()}>
-                <Icon name={'ios-scan'} color={'white'} />
-              </VideoControlButton>
-            </Row>
-            <Row
-              alignCenter
-              justifyCenter
-              noFlex
-              style={[
-                styles.wrapperControl,
-                isLandscape && styles.wrapperControlLandscape,
-              ]}
-            >
-              <VideoControlButton onPress={() => togglePaused()}>
-                <Icon name={paused ? 'play' : 'pause'} color={'white'} />
-              </VideoControlButton>
-              <Row
-                style={styles.sliderControlWrapper}
-                alignCenter
-                spaceBetween
-                justifyCenter
-              >
-                <Text style={styles.time}>{currentTime}</Text>
-                <Slider
-                  value={value1}
-                  containerStyle={{
-                    marginTop: 0,
-                    width: isLandscape
-                      ? SCREEN_WIDTH * 0.5
-                      : SCREEN_WIDTH * 0.5,
-                  }}
-                  trackStyle={{ backgroundColor: 'white' }}
-                  maximumTrackTintColor={'white'}
-                  minimumTrackTintColor={'white'}
-                  trackMarks={[1]}
-                  onSlidingComplete={onSlidingComplete}
-                  minimumValue={0.001}
-                  thumbTintColor={'white'}
-                  maximumValue={100}
-                  // @ts-ignore
-                  onValueChange={setValue1}
-                />
-                <Text style={styles.timeRemaining}>-{duration}</Text>
-              </Row>
-            </Row>
-          </Col>
-        </>
-      )}
-    </>
+          <Text style={styles.timeRemaining}>-{duration}</Text>
+        </Row>
+      </Row>
+    </Col>
   );
 };
 
 const createStyles = ({ size }: Theme) =>
   StyleSheet.create({
-    timeOverlay: {
-      paddingRight: size.md,
-      color: 'white',
-      // position: 'absolute',
-      // bottom: SCREEN_HEIGHT/1.3,
-      // left: SCREEN_WIDTH - CONTROL_WIDTH - (CONTROL_WIDTH/2),
-      // transform: [{ rotate: '-90deg'}],
+    slider: {
+      width: SCREEN_WIDTH - 200,
     },
-    controlsOverlay: {
-      paddingLeft: size.md,
-    },
-    durationOverlay: {
-      paddingLeft: size.md,
-      color: 'white',
-    },
-    hrLandscaneTop: {
-      // backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      position: 'absolute',
-      borderRadius: size.sm,
-      bottom: SCREEN_WIDTH,
-      right: 12,
-      // height: SCREEN_WIDTH,
-      width: SCREEN_HEIGHT * 0.8,
-      height: CONTROL_WIDTH,
-      transform: [{ rotate: '-90deg' }],
-      flex: 1,
-      flexDirection: 'row-reverse',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    hrLandscane: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      position: 'absolute',
-      borderRadius: size.sm,
-      bottom: SCREEN_WIDTH,
-      left: 12,
-      // height: SCREEN_WIDTH,
-      width: SCREEN_HEIGHT * 0.8,
-      height: CONTROL_WIDTH,
-      transform: [{ rotate: '-90deg' }],
-      flex: 1,
-      flexDirection: 'row-reverse',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    screenOverlay: {
-      // width: SCREEN_HEIGHT,
-      // height: SCREEN_WIDTH,
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
-      // transform: [{ rotate: '90deg'}],
-      position: 'absolute',
-      // backgroundColor: 'red',
-      top: 0,
+    sliderLandscape: {
+      width: SCREEN_HEIGHT - 200,
     },
     header: {
-      // backgroundColor: 'blue'
+      top: 10,
     },
     headerLandscape: {
-      // backgroundColor: 'blue',
-      // transform: [{ rotate: '90deg'}],
-      // position: 'absolute',
-      // left: 10,
-      // top: 40,
-      // width: SCREEN_WIDTH
+      top: 20,
     },
     timeRemaining: {
       width: 50,
       color: 'white',
       fontSize: 10,
+      textAlign: 'right',
     },
     time: {
       width: 46,
@@ -288,18 +160,11 @@ const createStyles = ({ size }: Theme) =>
     wrapperControl: {
       paddingBottom: 10,
     },
-    wrapperControlLandscape: {
-      // transform: [{ rotate: '90deg'}],
-      // zIndex: 20,
-      // position: 'absolute',
-      // bottom: 0
-    },
     sliderControlWrapper: {
-      // transform: [{ rotate: '90deg'}],
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       height: 28,
       borderRadius: size.sm,
-      marginHorizontal: 10,
+      marginLeft: 10,
       paddingHorizontal: size.xs,
     },
     wrapper: {
@@ -307,17 +172,11 @@ const createStyles = ({ size }: Theme) =>
       top: 0,
       width: SCREEN_WIDTH,
       height: (SCREEN_WIDTH / 16) * 9,
-      // backgroundColor: 'red',
-      // marginLeft: -defaultPadding,
       paddingHorizontal: defaultPadding,
-      // backgroundColor: 'blue',
     },
     wrapperLandscape: {
-      // width: SCREEN_HEIGHT,
-      // height: SCREEN_WIDTH,
-      // position: 'absolute',
-      // bottom: 0,
-      // backgroundColor: 'red'
+      width: SCREEN_HEIGHT,
+      height: SCREEN_WIDTH,
     },
     container: {
       height: Normalize(50),
