@@ -22,6 +22,7 @@ import {
   CourseRecentFileListItem,
 } from '../components/CourseRecentFileListItem';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { CourseContext } from '../contexts/CourseContext';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
@@ -51,27 +52,34 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
-  return searchFilter ? (
-    <CourseFileSearchFlatList courseId={courseId} searchFilter={searchFilter} />
-  ) : (
-    <FlatList
-      contentInsetAdjustmentBehavior="automatic"
-      data={directoryQuery.data?.files}
-      keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-      renderItem={({ item }) =>
-        isDirectory(item) ? (
-          <CourseDirectoryListItem item={item} courseId={courseId} />
-        ) : (
-          <CourseFileListItem item={item} />
-        )
-      }
-      refreshControl={createRefreshControl(directoryQuery)}
-      refreshing={directoryQuery.isLoading}
-      contentContainerStyle={bottomBarAwareStyles}
-      ItemSeparatorComponent={Platform.select({
-        ios: IndentedDivider,
-      })}
-    />
+  return (
+    <CourseContext.Provider value={courseId}>
+      {searchFilter ? (
+        <CourseFileSearchFlatList
+          courseId={courseId}
+          searchFilter={searchFilter}
+        />
+      ) : (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={directoryQuery.data?.files}
+          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+          renderItem={({ item }) =>
+            isDirectory(item) ? (
+              <CourseDirectoryListItem item={item} courseId={courseId} />
+            ) : (
+              <CourseFileListItem item={item} />
+            )
+          }
+          refreshControl={createRefreshControl(directoryQuery)}
+          refreshing={directoryQuery.isLoading}
+          contentContainerStyle={bottomBarAwareStyles}
+          ItemSeparatorComponent={Platform.select({
+            ios: IndentedDivider,
+          })}
+        />
+      )}
+    </CourseContext.Provider>
   );
 };
 
