@@ -29,7 +29,7 @@ export const SwipeableAction = ({
           backgroundColor,
         }}
       >
-        {icon && <Icon icon={icon} />}
+        {icon && <Icon icon={icon} color="white" />}
         <Text style={{ color: 'white', marginTop: spacing[1] }}>{label}</Text>
       </View>
     </TouchableOpacity>
