@@ -111,6 +111,11 @@
     "lecture": "lecture",
     "teacher": "teacher",
     "file": "File",
-    "delete": "Delete"
+    "delete": "Delete",
+    "download": "Download",
+    "stop": "Stop",
+    "options": "Options",
+    "remove": "Remove",
+    "refresh": "Refresh"
   }
 }

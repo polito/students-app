@@ -1,4 +1,5 @@
 import { RefreshControl } from 'react-native';
+
 import { UseQueryResult } from '@tanstack/react-query';
 
 /**

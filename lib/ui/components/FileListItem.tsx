@@ -36,7 +36,6 @@ export const FileListItem = ({
 
   return (
     <ListItem
-      isNavigationAction
       leadingItem={
         <View>
           <Icon icon={faFile} size={fontSizes['2xl']} style={styles.fileIcon} />

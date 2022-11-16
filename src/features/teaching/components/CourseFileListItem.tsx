@@ -1,22 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 import { open } from 'react-native-file-viewer';
-import {
-  CachesDirectoryPath,
-  downloadFile,
-  exists,
-  mkdir,
-  unlink,
-} from 'react-native-fs';
+import { CachesDirectoryPath } from 'react-native-fs';
 import { extension } from 'react-native-mime-types';
-import useStateRef from 'react-usestateref';
 
+import {
+  faCloudArrowDown,
+  faEllipsisVertical,
+  faTrashCan,
+  faXmark,
+} from '@fortawesome/pro-regular-svg-icons';
+import { Swipeable } from '@kyupss/native-swipeable';
 import { FileListItem } from '@lib/ui/components/FileListItem';
+import { IconButton } from '@lib/ui/components/IconButton';
+import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
+import { useDownload } from '../../../core/hooks/useDownload';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { formatFileDate, formatFileSize } from '../../../utils/files';
+import { CourseContext } from '../contexts/CourseContext';
 
 export type CourseRecentFile = CourseFileOverview & {
   location?: string;
@@ -37,31 +43,38 @@ export const CourseFileListItem = ({
   ...rest
 }: Props) => {
   const { t } = useTranslation();
+  const { colors, fontSizes, spacing } = useTheme();
+  // @ts-expect-error due to Swipeable lib type patch
+  const swipeableRef = useRef<Swipeable>();
+  const iconProps = useMemo(
+    () => ({
+      color: colors.secondaryText,
+      size: fontSizes.xl,
+      style: {
+        marginRight: -spacing[2],
+      },
+    }),
+    [colors, fontSizes, spacing],
+  );
   const { data: student } = useGetStudent();
-  const [isDownloaded, setIsDownloaded, isDownloadedRef] = useStateRef(false);
-  const [downloadProgress, setDownloadProgress] = useState<number>(null);
-  const courseCachePath = useMemo(() => {
+  const courseId = useContext(CourseContext);
+  const cachedFilePath = useMemo(() => {
     if (student) {
-      return [CachesDirectoryPath, student.data.username, 'course-files'].join(
-        '/',
-      );
+      return [
+        CachesDirectoryPath,
+        student.data.username,
+        'Courses',
+        courseId,
+        `${item.id}.${extension(item.mimeType)}`,
+      ].join('/');
     }
   }, [student]);
-  const cachedFilePath = useMemo(() => {
-    if (courseCachePath) {
-      return [courseCachePath, `${item.id}.${extension(item.mimeType)}`].join(
-        '/',
-      );
-    }
-  }, [courseCachePath]);
-
-  useEffect(() => {
-    if (cachedFilePath) {
-      exists(cachedFilePath).then(result => {
-        setIsDownloaded(result);
-      });
-    }
-  }, [cachedFilePath]);
+  const { isDownloaded, downloadProgress, start, stop, refresh, remove } =
+    useDownload(
+      'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
+      cachedFilePath,
+    );
+  // 'https://cartographicperspectives.org/index.php/journal/article/download/cp43-complete-issue/pdf/2712',
 
   const metrics = useMemo(
     () =>
@@ -75,67 +88,113 @@ export const CourseFileListItem = ({
     [showSize, showLocation, showCreatedDate],
   );
 
-  const downloadOrOpenFile = async () => {
-    if (!isDownloadedRef.current && downloadProgress == null) {
-      setDownloadProgress(0);
-      try {
-        await mkdir(courseCachePath, {
-          NSURLIsExcludedFromBackupKey: true,
-        });
-        await downloadFile({
-          fromUrl: 'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
-          // 'https://cartographicperspectives.org/index.php/journal/article/download/cp43-complete-issue/pdf/2712',
-          toFile: cachedFilePath,
-          progressInterval: 200,
-          begin: () => {
-            /* Necessary for progress to work */
-          },
-          progress: ({ bytesWritten, contentLength }) =>
-            setDownloadProgress(bytesWritten / contentLength),
-        }).promise;
-        setIsDownloaded(true);
-        setDownloadProgress(null);
-        open(cachedFilePath);
-      } catch (e) {
-        // TODO show error message
-      }
-    } else {
-      open(cachedFilePath);
-    }
-  };
-
-  return (
-    <MenuView
-      shouldOpenOnLongPress={true}
-      title={t('words.file')}
-      actions={[
-        {
-          id: 'redownload',
-          title: t('courseFileListItem.reDownloadFile'),
-          image: 'arrow.down.circle',
-        },
-      ]}
-      onPressAction={async ({ nativeEvent }) => {
-        switch (nativeEvent.event) {
-          case 'redownload':
-            if (downloadProgress == null) {
-              await unlink(cachedFilePath);
-              setIsDownloaded(false);
-              setTimeout(downloadOrOpenFile, 1000);
+  const trailingItem = !isDownloaded ? (
+    downloadProgress == null ? (
+      <IconButton
+        icon={faCloudArrowDown}
+        accessibilityLabel={t('words.download')}
+        disabled
+        {...iconProps}
+      />
+    ) : (
+      <IconButton
+        icon={faXmark}
+        accessibilityLabel={t('words.stop')}
+        onPress={() => {
+          stop();
+        }}
+        {...iconProps}
+      />
+    )
+  ) : (
+    Platform.select({
+      android: (
+        <MenuView
+          shouldOpenOnLongPress={true}
+          title={t('words.file')}
+          actions={[
+            {
+              id: 'refresh',
+              title: t('words.refresh'),
+            },
+            {
+              id: 'delete',
+              title: t('words.delete'),
+              attributes: {
+                destructive: true,
+              },
+            },
+          ]}
+          onPressAction={({ nativeEvent }) => {
+            switch (nativeEvent.event) {
+              case 'refresh':
+                refresh();
+                break;
+              case 'delete':
+                remove();
+                break;
+              default:
             }
-            break;
-          default:
+          }}
+        >
+          <IconButton
+            icon={faEllipsisVertical}
+            accessibilityLabel={t('words.options')}
+            {...iconProps}
+          />
+        </MenuView>
+      ),
+    })
+  );
+
+  const listItem = (
+    <FileListItem
+      onPress={async () => {
+        if (downloadProgress == null) {
+          if (!isDownloaded) {
+            await start();
+          }
+          open(cachedFilePath);
         }
       }}
-    >
-      <FileListItem
-        onPress={downloadOrOpenFile}
-        isDownloaded={isDownloaded}
-        downloadProgress={downloadProgress}
-        title={item.name}
-        subtitle={metrics}
-        {...rest}
-      />
-    </MenuView>
+      isDownloaded={isDownloaded}
+      downloadProgress={downloadProgress}
+      title={item.name}
+      subtitle={metrics}
+      trailingItem={trailingItem}
+      {...rest}
+    />
   );
+
+  if (Platform.OS === 'ios' && isDownloaded) {
+    return (
+      <Swipeable
+        onRef={ref => (swipeableRef.current = ref)}
+        rightContainerStyle={{ backgroundColor: colors.danger[500] }}
+        rightButtons={[
+          <SwipeableAction
+            icon={faCloudArrowDown}
+            label={t('words.refresh')}
+            backgroundColor={colors.muted[500]}
+            onPress={() => {
+              swipeableRef.current?.recenter();
+              refresh();
+            }}
+          />,
+          <SwipeableAction
+            icon={faTrashCan}
+            label={t('words.remove')}
+            backgroundColor={colors.danger[500]}
+            onPress={() => {
+              swipeableRef.current?.recenter();
+              remove();
+            }}
+          />,
+        ]}
+      >
+        {listItem}
+      </Swipeable>
+    );
+  }
+  return listItem;
 };

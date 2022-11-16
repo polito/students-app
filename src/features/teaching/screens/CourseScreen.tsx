@@ -14,6 +14,7 @@ import { CourseInfoTab } from '../components/CourseInfoTab';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
 import { CourseNoticesTab } from '../components/CourseNoticesTab';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { CourseContext } from '../contexts/CourseContext';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
@@ -57,9 +58,11 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   ]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <Tabs />
-      <TabsContent />
-    </View>
+    <CourseContext.Provider value={id}>
+      <View style={{ flex: 1 }}>
+        <Tabs />
+        <TabsContent />
+      </View>
+    </CourseContext.Provider>
   );
 };

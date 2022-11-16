@@ -111,6 +111,11 @@
     "lecture": "lezione",
     "teacher": "docente",
     "file": "File",
-    "delete": "Elimina"
+    "delete": "Elimina",
+    "download": "Scarica",
+    "stop": "Stop",
+    "options": "Opzioni",
+    "remove": "Rimuovi",
+    "refresh": "Aggiorna"
   }
 }
