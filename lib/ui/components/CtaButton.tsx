@@ -69,7 +69,8 @@ export const CtaButton = ({
           },
           style,
         ]}
-        accessibilityLabelledBy="title"
+        accessible={true}
+        accessibilityLabel={title}
         {...rest}
       >
         <View>
@@ -110,7 +111,6 @@ export const CtaButton = ({
               </View>
             ) : (
               <Text
-                nativeID="title"
                 style={{
                   fontSize: fontSizes.md,
                   textAlign: 'center',

@@ -17,7 +17,6 @@ export const SwitchListItem = ({ title, value, onChange, ...rest }: Props) => {
     <ListItem
       title={
         <Text
-          nativeID={title}
           variant="title"
           style={{
             fontSize: fontSizes.md,
@@ -35,7 +34,8 @@ export const SwitchListItem = ({ title, value, onChange, ...rest }: Props) => {
       trailingItem={
         <Switch
           value={value}
-          accessibilityLabelledBy={title}
+          accessible={true}
+          accessibilityLabel={title}
           onChange={() => {
             onChange?.(!value);
           }}
