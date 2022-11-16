@@ -2,6 +2,7 @@ import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity } from 'react-native';
 
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -55,6 +56,22 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
         numColumns={5}
         contentContainerStyle={{ paddingHorizontal: spacing[5] }}
       />
+      {coursePrefs.icon != null && (
+        <CtaButton
+          title={t('common.remove')}
+          destructive
+          onPress={() => {
+            updatePreference('courses', {
+              ...coursesPrefs,
+              [courseId]: {
+                ...coursePrefs,
+                icon: null,
+              },
+            });
+            navigation.goBack();
+          }}
+        />
+      )}
     </>
   );
 };

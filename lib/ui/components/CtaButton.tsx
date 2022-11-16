@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
-  TouchableOpacity,
-  TouchableOpacityProps,
+  TouchableHighlight,
+  TouchableHighlightProps,
   View,
 } from 'react-native';
 
@@ -12,7 +12,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-interface Props extends TouchableOpacityProps {
+interface Props extends TouchableHighlightProps {
   title: string;
   loading?: boolean;
   success?: boolean;
@@ -50,8 +50,8 @@ export const CtaButton = ({
         padding: spacing[4],
       }}
     >
-      <TouchableOpacity
-        activeOpacity={0.8}
+      <TouchableHighlight
+        underlayColor={!destructive ? colors.primary[600] : colors.danger[600]}
         disabled={loading || showSuccess}
         style={[
           {
@@ -65,6 +65,7 @@ export const CtaButton = ({
           },
           style,
         ]}
+        accessibilityLabelledBy="title"
         {...rest}
       >
         {loading ? (
@@ -92,6 +93,7 @@ export const CtaButton = ({
           </View>
         ) : (
           <Text
+            nativeID="title"
             style={{
               fontSize: fontSizes.md,
               textAlign: 'center',
@@ -102,7 +104,7 @@ export const CtaButton = ({
             {title}
           </Text>
         )}
-      </TouchableOpacity>
+      </TouchableHighlight>
     </View>
   );
 };
