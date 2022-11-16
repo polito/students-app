@@ -9,6 +9,8 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
+import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
+import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseScreen } from '../screens/CourseScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
@@ -22,11 +24,13 @@ export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
+  CoursePreferences: { courseId: number };
   CourseDirectory: { courseId: number; directoryId?: string };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
   CourseAssignmentUpload: { courseId: number };
+  CourseIconPicker: { courseId: number };
   Exams: undefined;
   Exam: { id: number };
   Transcript: undefined;
@@ -76,6 +80,23 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="CoursePreferences"
+        component={CoursePreferencesScreen}
+        options={{
+          title: t('coursePreferencesScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitle: t('Course'),
+        }}
+      />
+      <Stack.Screen
+        name="CourseIconPicker"
+        component={CourseIconPickerScreen}
+        options={{
+          title: t('courseIconPickerScreen.title'),
+          headerLargeTitle: false,
         }}
       />
       <Stack.Screen

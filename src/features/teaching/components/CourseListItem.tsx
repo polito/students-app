@@ -1,7 +1,12 @@
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ListItem } from '@lib/ui/components/ListItem';
 import { CourseOverview } from '@polito/api-client';
+import { MenuView } from '@react-native-menu/menu';
+
+import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { CourseIcon } from './CourseIcon';
 
 interface Props {
   course: CourseOverview;
@@ -9,19 +14,47 @@ interface Props {
 
 export const CourseListItem = ({ course }: Props) => {
   const { t } = useTranslation();
+  const preferences = useContext(PreferencesContext);
 
   return (
-    <ListItem
-      linkTo={
-        course.id != null
-          ? {
-              screen: 'Course',
-              params: { id: course.id, courseName: course.name },
-            }
-          : undefined
-      }
-      title={course.name}
-      subtitle={`${course.cfu} ${t('words.credits')}`}
-    />
+    <MenuView
+      key={course.shortcode}
+      shouldOpenOnLongPress={true}
+      title={t('Course preferences')}
+      actions={[
+        {
+          title: t('Hide course from home screen'),
+          image: 'eye.slash',
+        },
+      ]}
+      onPressAction={() => {
+        preferences.updatePreference('courses', {
+          ...preferences.courses,
+          [course.id]: {
+            ...preferences.courses[course.id],
+            isHidden: true,
+          },
+        });
+      }}
+    >
+      <ListItem
+        linkTo={
+          course.id != null
+            ? {
+                screen: 'Course',
+                params: { id: course.id, courseName: course.name },
+              }
+            : undefined
+        }
+        title={course.name}
+        subtitle={`${course.cfu} ${t('words.credits')}`}
+        leadingItem={
+          <CourseIcon
+            icon={preferences.courses[course.id]?.icon}
+            color={preferences.courses[course.id]?.color}
+          />
+        }
+      />
+    </MenuView>
   );
 };

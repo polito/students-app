@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
+import { faSliders } from '@fortawesome/pro-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
@@ -25,8 +29,32 @@ export type CourseTabProps = {
 
 export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
+  const { colors, fontSizes } = useTheme();
   const { id, courseName } = route.params;
   useScreenTitle(courseName);
+
+  navigation.setOptions({
+    headerRight: () => (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('CoursePreferences', { courseId: id });
+        }}
+      >
+        <Icon
+          icon={faSliders}
+          color={colors.primary[400]}
+          size={fontSizes.lg}
+        />
+      </TouchableOpacity>
+    ),
+  });
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: courseName,
+      headerBackTitleVisible: courseName.length <= 20,
+    });
+  }, [courseName]);
 
   const { Tabs, TabsContent } = useTabs([
     {

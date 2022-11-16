@@ -54,6 +54,15 @@
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
+  "coursePreferencesScreen": {
+    "title": "Preferenze",
+    "noticesSubtitle": "Avvisi mandati dai professori",
+    "filesSubtitle": "Nuovi materiali disponibili",
+    "lessonsSubtitle": "Nuove lezioni disponibili"
+  },
+  "courseIconPickerScreen": {
+    "title": "Seleziona un'icona"
+  },
   "coursesScreen": {
     "title": "Corsi",
     "otherCoursesSectionTitle": "Altri corsi"

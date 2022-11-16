@@ -44,7 +44,7 @@ export const CoursesScreen = () => {
                   : t('coursesScreen.otherCoursesSectionTitle')
               }
             />
-            <SectionList>
+            <SectionList indented>
               {courses.map(course => (
                 <CourseListItem key={course.shortcode} course={course} />
               ))}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -20,6 +20,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
@@ -38,6 +39,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const preferences = useContext(PreferencesContext);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
@@ -66,10 +68,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
           />
-          <SectionList loading={coursesQuery.isLoading}>
-            {coursesQuery.data?.data.slice(0, 4).map(course => (
-              <CourseListItem key={course.shortcode} course={course} />
-            ))}
+          <SectionList loading={coursesQuery.isLoading} indented>
+            {coursesQuery.data?.data
+              .sort(
+                (a, b) =>
+                  preferences.courses[a.id]?.order -
+                  preferences.courses[b.id]?.order,
+              )
+              .filter(c => !preferences.courses[c.id]?.isHidden)
+              .map(course => (
+                <CourseListItem key={course.shortcode} course={course} />
+              ))}
           </SectionList>
         </Section>
         <Section>

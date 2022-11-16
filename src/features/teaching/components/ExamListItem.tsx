@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const ExamListItem = ({ exam }: Props) => {
-  const { colors, fontSizes } = useTheme();
+  const { fontSizes } = useTheme();
 
   return (
     <ListItem
@@ -24,17 +24,9 @@ export const ExamListItem = ({ exam }: Props) => {
       subtitle={`${exam.examStartsAt.toLocaleString()} - ${exam.classrooms}`}
       leadingItem={
         exam.status === ExamStatusEnum.Booked ? (
-          <Icon
-            icon={faCalendarCheck}
-            size={fontSizes['2xl']}
-            color={colors.secondaryText}
-          />
+          <Icon icon={faCalendarCheck} size={fontSizes['2xl']} />
         ) : (
-          <Icon
-            icon={faCalendar}
-            size={fontSizes['2xl']}
-            color={colors.secondaryText}
-          />
+          <Icon icon={faCalendar} size={fontSizes['2xl']} />
         )
       }
     />
