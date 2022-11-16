@@ -101,7 +101,6 @@ export const CtaButton = ({
                     style={{
                       fontSize: fontSizes.md,
                       textAlign: 'center',
-                      height: 20,
                       color: 'white',
                     }}
                   >
@@ -114,7 +113,6 @@ export const CtaButton = ({
                 style={{
                   fontSize: fontSizes.md,
                   textAlign: 'center',
-                  height: 20,
                   color: 'white',
                 }}
               >

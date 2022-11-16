@@ -131,7 +131,6 @@ export const ListItem = ({
                   {
                     fontSize: fontSizes.sm,
                     lineHeight: fontSizes.sm * 1.5,
-                    height: 18,
                   },
                   subtitleStyle,
                 ]}
