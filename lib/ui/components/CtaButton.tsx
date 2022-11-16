@@ -48,7 +48,6 @@ export const CtaButton = ({
         right: 0,
         marginBottom: Platform.select({ ios: 80 }),
         padding: spacing[4],
-        elevation: 12,
       }}
     >
       <TouchableHighlight
@@ -66,6 +65,7 @@ export const CtaButton = ({
               android: 60,
             }),
             alignItems: 'center',
+            elevation: 12,
           },
           style,
         ]}
