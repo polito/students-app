@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { faSliders } from '@fortawesome/pro-regular-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   NativeStackNavigationProp,
@@ -35,17 +35,16 @@ export const CourseScreen = ({ route, navigation }: Props) => {
 
   navigation.setOptions({
     headerRight: () => (
-      <TouchableOpacity
+      <IconButton
+        icon={faSliders}
+        color={colors.primary[400]}
+        size={fontSizes.lg}
+        adjustSpacing="right"
+        accessibilityLabel={t('coursePreferencesScreen.title')}
         onPress={() => {
           navigation.navigate('CoursePreferences', { courseId: id });
         }}
-      >
-        <Icon
-          icon={faSliders}
-          color={colors.primary[400]}
-          size={fontSizes.lg}
-        />
-      </TouchableOpacity>
+      />
     ),
   });
 
@@ -56,34 +55,36 @@ export const CourseScreen = ({ route, navigation }: Props) => {
     });
   }, [courseName]);
 
-  const { Tabs, TabsContent } = useTabs([
-    {
-      title: t('courseInfoTab.title'),
-      renderContent: () => <CourseInfoTab courseId={id} />,
-    },
-    {
-      title: t('courseNoticesTab.title'),
-      renderContent: () => <CourseNoticesTab courseId={id} />,
-    },
-    {
-      title: t('courseFilesTab.title'),
-      renderContent: () => (
-        <CourseFilesTab courseId={id} navigation={navigation} />
-      ),
-    },
-    {
-      title: t('courseLecturesTab.title'),
-      renderContent: () => (
-        <CourseLecturesTab courseId={id} navigation={navigation} />
-      ),
-    },
-    {
-      title: t('courseAssignmentsTab.title'),
-      renderContent: () => (
-        <CourseAssignmentsTab courseId={id} navigation={navigation} />
-      ),
-    },
-  ]);
+  const { Tabs, TabsContent } = useTabs({
+    tabs: [
+      {
+        title: t('courseInfoTab.title'),
+        renderContent: () => <CourseInfoTab courseId={id} />,
+      },
+      {
+        title: t('courseNoticesTab.title'),
+        renderContent: () => <CourseNoticesTab courseId={id} />,
+      },
+      {
+        title: t('courseFilesTab.title'),
+        renderContent: () => (
+          <CourseFilesTab courseId={id} navigation={navigation} />
+        ),
+      },
+      {
+        title: t('courseLecturesTab.title'),
+        renderContent: () => (
+          <CourseLecturesTab courseId={id} navigation={navigation} />
+        ),
+      },
+      {
+        title: t('courseAssignmentsTab.title'),
+        renderContent: () => (
+          <CourseAssignmentsTab courseId={id} navigation={navigation} />
+        ),
+      },
+    ],
+  });
 
   return (
     <CourseContext.Provider value={id}>

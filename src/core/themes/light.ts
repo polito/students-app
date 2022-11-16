@@ -140,7 +140,7 @@ export const lightTheme: Theme = {
     touchableHighlight: 'rgba(0, 0, 0, .08)',
     background: '#F0F3F5',
     surface: '#FFFFFF',
-    headers: '#FFFFFF',
+    headers: '#edeef0',
     heading: darkBlue[700],
     title: 'black',
     headline: 'black',

@@ -50,9 +50,6 @@ export const CourseFileListItem = ({
     () => ({
       color: colors.secondaryText,
       size: fontSizes.xl,
-      style: {
-        marginRight: -spacing[2],
-      },
     }),
     [colors, fontSizes, spacing],
   );
@@ -94,12 +91,14 @@ export const CourseFileListItem = ({
         icon={faCloudArrowDown}
         accessibilityLabel={t('words.download')}
         disabled
+        adjustSpacing="right"
         {...iconProps}
       />
     ) : (
       <IconButton
         icon={faXmark}
         accessibilityLabel={t('words.stop')}
+        adjustSpacing="right"
         onPress={() => {
           stop();
         }}
@@ -140,6 +139,7 @@ export const CourseFileListItem = ({
           <IconButton
             icon={faEllipsisVertical}
             accessibilityLabel={t('words.options')}
+            adjustSpacing="right"
             {...iconProps}
           />
         </MenuView>

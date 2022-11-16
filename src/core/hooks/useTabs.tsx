@@ -1,18 +1,33 @@
-import { useMemo, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { useMemo, useRef } from 'react';
+import {
+  Dimensions,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import useStateRef from 'react-usestateref';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+
+interface TabsOptions {
+  tabs: TabOptions[];
+  animated?: boolean;
+}
 
 interface TabOptions {
   title: string;
   renderContent: () => JSX.Element;
 }
 
-export const useTabs = (options: TabOptions[]) => {
+export const useTabs = ({ tabs, animated = false }: TabsOptions) => {
   const { colors } = useTheme();
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const [selectedTabIndex, setSelectedTabIndex, selectedTabIndexRef] =
+    useStateRef(0);
+  const scrollViewRef = useRef<ScrollView>();
+  const width = Dimensions.get('window').width;
 
   const TabsComponent = useMemo(
     () => () =>
@@ -29,10 +44,15 @@ export const useTabs = (options: TabOptions[]) => {
             zIndex: 1,
           }}
         >
-          {options.map((o, i) => (
+          {tabs.map((o, i) => (
             <Tab
               key={i}
-              onPress={() => setSelectedTabIndex(i)}
+              onPress={() => {
+                scrollViewRef.current.scrollTo({
+                  x: width * i,
+                  animated,
+                });
+              }}
               textStyle={{
                 marginBottom: -2,
               }}
@@ -42,15 +62,40 @@ export const useTabs = (options: TabOptions[]) => {
           ))}
         </Tabs>
       ),
-    [options, selectedTabIndex],
+    [tabs, selectedTabIndex],
   );
-  const TabsContent = useMemo(
-    () => options[selectedTabIndex].renderContent,
-    [options, selectedTabIndex],
-  );
+
+  const tabsContent = useRef(() => (
+    <ScrollView
+      ref={scrollViewRef}
+      horizontal
+      scrollEnabled={animated}
+      bounces={false}
+      contentContainerStyle={{
+        width: width * tabs.length,
+      }}
+      showsHorizontalScrollIndicator={false}
+      scrollEventThrottle={60}
+      onScroll={({ nativeEvent }) => {
+        const currentTab = Math.max(
+          0,
+          Math.round(nativeEvent.contentOffset.x / width),
+        );
+        if (currentTab !== selectedTabIndexRef.current) {
+          setSelectedTabIndex(currentTab);
+        }
+      }}
+      decelerationRate="fast"
+      pagingEnabled
+    >
+      {tabs.map(o => (
+        <View style={{ width: width }}>{o.renderContent()}</View>
+      ))}
+    </ScrollView>
+  ));
   return {
     selectedTabIndex,
     Tabs: TabsComponent,
-    TabsContent,
+    TabsContent: tabsContent.current,
   };
 };

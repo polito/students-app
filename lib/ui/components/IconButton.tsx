@@ -7,9 +7,11 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 type Props = Omit<FAProps, 'style'> &
   TouchableOpacityProps & {
     iconStyle?: FAProps['style'];
+    adjustSpacing?: 'left' | 'right' | 'both';
   };
 
-export const IconButton = ({ iconStyle, ...rest }: Props) => {
+export const IconButton = ({ iconStyle, adjustSpacing, ...rest }: Props) => {
+  const { spacing } = useTheme();
   const {
     icon,
     height,
@@ -38,13 +40,27 @@ export const IconButton = ({ iconStyle, ...rest }: Props) => {
     transform,
     testID,
   };
-  const { spacing } = useTheme();
   return (
     <TouchableOpacity
       style={[{ padding: spacing[2] }, style]}
       {...otherButtonProps}
     >
-      <Icon style={iconStyle} {...iconProps} />
+      <Icon
+        style={[
+          {
+            marginLeft:
+              adjustSpacing === 'left' || adjustSpacing === 'both'
+                ? -spacing[2]
+                : undefined,
+            marginRight:
+              adjustSpacing === 'right' || adjustSpacing === 'both'
+                ? -spacing[2]
+                : undefined,
+          },
+          iconStyle,
+        ]}
+        {...iconProps}
+      />
     </TouchableOpacity>
   );
 };
