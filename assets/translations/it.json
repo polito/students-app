@@ -56,9 +56,15 @@
   },
   "coursePreferencesScreen": {
     "title": "Preferenze",
+    "hideInExtracts": "Nascondi negli estratti",
+    "showInExtracts": "Mostra negli estratti",
+    "showInExtractsSubtitle": "In home screen e agenda",
+    "cleanCourseFiles": "Rimuovi file del corso",
+    "cleanCourseFilesSubtitle": "Libera {{size}}",
     "noticesSubtitle": "Avvisi mandati dai professori",
     "filesSubtitle": "Nuovi materiali disponibili",
-    "lessonsSubtitle": "Nuove lezioni disponibili"
+    "lecturesSubtitle": "Nuove lezioni disponibili",
+    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"
@@ -114,17 +120,28 @@
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
   },
-  "words": {
-    "credits": "crediti",
-    "exam": "esame",
-    "lecture": "lezione",
-    "teacher": "docente",
+  "common": {
+    "color": "Colore",
+    "icon": "Icona",
+    "credits": "Crediti",
+    "exam": "Esame",
+    "lecture": "Lezione",
+    "lecture_plural": "Lezioni",
+    "teacher": "Docente",
     "file": "File",
+    "file_plural": "File",
     "delete": "Elimina",
     "download": "Scarica",
     "stop": "Stop",
     "options": "Opzioni",
     "remove": "Rimuovi",
-    "refresh": "Aggiorna"
+    "refresh": "Aggiorna",
+    "notifications": "Notifiche",
+    "visualization": "Visualizzazione",
+    "notice": "Avviso",
+    "notice_plural": "Avvisi",
+    "ok": "Ok",
+    "cancel": "Annulla",
+    "areYouSure?": "Sei sicuro?"
   }
 }

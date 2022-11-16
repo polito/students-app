@@ -56,9 +56,15 @@
   },
   "coursePreferencesScreen": {
     "title": "Preferences",
+    "hideInExtracts": "Hide in extracts",
+    "showInExtracts": "Show in extracts",
+    "showInExtractsSubtitle": "In home screen and agenda",
+    "cleanCourseFiles": "Clean course files",
+    "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
     "noticesSubtitle": "Notices sent by the professor",
     "filesSubtitle": "New material available",
-    "lessonsSubtitle": "New lessons available"
+    "lecturesSubtitle": "New lectures available",
+    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
@@ -114,17 +120,28 @@
   "videoPlayer": {
     "speedSectionTitle": "Speed"
   },
-  "words": {
-    "credits": "credits",
-    "exam": "exam",
-    "lecture": "lecture",
-    "teacher": "teacher",
+  "common": {
+    "color": "Color",
+    "icon": "Icon",
+    "credits": "Credits",
+    "exam": "Exam",
+    "lecture": "Lecture",
+    "lecture_plural": "Lectures",
+    "teacher": "Teacher",
     "file": "File",
+    "file_plural": "Files",
     "delete": "Delete",
     "download": "Download",
     "stop": "Stop",
     "options": "Options",
     "remove": "Remove",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "notifications": "Notifications",
+    "visualization": "Visualization",
+    "notice": "Notice",
+    "notice_plural": "Notices",
+    "ok": "Ok",
+    "cancel": "Cancel",
+    "areYouSure?": "Are you sure?"
   }
 }
