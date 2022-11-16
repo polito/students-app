@@ -37,11 +37,11 @@ const Menu = ({
   return (
     <MenuView
       shouldOpenOnLongPress={shouldOpenOnLongPress}
-      title={t('words.file')}
+      title={t('common.file')}
       actions={[
         {
           id: 'delete',
-          title: t('words.delete'),
+          title: t('common.delete'),
           image: 'trash',
           attributes: {
             destructive: true,

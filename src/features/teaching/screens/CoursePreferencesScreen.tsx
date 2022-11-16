@@ -1,9 +1,11 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Switch, View } from 'react-native';
+import { stat, unlink } from 'react-native-fs';
 
 import {
   faBell,
+  faBroom,
   faEye,
   faFile,
   faVideoCamera,
@@ -22,10 +24,55 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGetCourse } from '../../../core/queries/courseHooks';
+import { formatFileSize } from '../../../utils/files';
 import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
+import { CourseContext } from '../contexts/CourseContext';
+import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+
+const CleanCourseFilesListItem = () => {
+  const { t } = useTranslation();
+  const { fontSizes } = useTheme();
+  const courseFilesCache = useCourseFilesCache();
+  const [cacheSize, setCacheSize] = useState<number>(null);
+  const confirm = useConfirmationDialog({
+    title: t('common.areYouSure?'),
+    message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
+  });
+
+  useEffect(() => {
+    if (courseFilesCache) {
+      stat(courseFilesCache)
+        .then(({ size }) => {
+          setCacheSize(size);
+        })
+        .catch(() => {
+          setCacheSize(0);
+        });
+    }
+  }, [courseFilesCache]);
+
+  return (
+    <ListItem
+      isNavigationAction
+      title={t('coursePreferencesScreen.cleanCourseFiles')}
+      subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
+        size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
+      })}
+      disabled={cacheSize === 0}
+      leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
+      onPress={async () => {
+        if (courseFilesCache && (await confirm())) {
+          await unlink(courseFilesCache);
+          // TODO feedback
+        }
+      }}
+    />
+  );
+};
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
@@ -58,119 +105,129 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   );
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      refreshControl={createRefreshControl(courseQuery)}
-      contentContainerStyle={bottomBarAwareStyles}
-    >
-      <View style={{ paddingVertical: spacing[5] }}>
-        <Section>
-          <SectionHeader title={t('Visualization')} />
-          <SectionList loading={courseQuery.isLoading} indented>
-            <MenuView
-              actions={courseColors.map(cc => {
-                return {
-                  id: cc.color,
-                  title: cc.name,
-                  image: 'circle.fill',
-                  imageColor: cc.color,
-                };
-              })}
-              onPressAction={({ nativeEvent: { event: color } }) => {
-                updatePreference('courses', {
-                  ...coursesPrefs,
-                  [courseId]: {
-                    ...coursePrefs,
-                    color,
-                  },
-                });
-              }}
-            >
+    <CourseContext.Provider value={courseId}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={createRefreshControl(courseQuery)}
+        contentContainerStyle={bottomBarAwareStyles}
+      >
+        <View style={{ paddingVertical: spacing[5] }}>
+          <Section>
+            <SectionHeader title={t('common.visualization')} />
+            <SectionList loading={courseQuery.isLoading} indented>
+              <MenuView
+                actions={courseColors.map(cc => {
+                  return {
+                    id: cc.color,
+                    title: cc.name,
+                    image: 'circle.fill',
+                    imageColor: cc.color,
+                  };
+                })}
+                onPressAction={({ nativeEvent: { event: color } }) => {
+                  updatePreference('courses', {
+                    ...coursesPrefs,
+                    [courseId]: {
+                      ...coursePrefs,
+                      color,
+                    },
+                  });
+                }}
+              >
+                <ListItem
+                  title={t('common.color')}
+                  isNavigationAction
+                  leadingItem={<CourseIcon color={coursePrefs?.color} />}
+                />
+              </MenuView>
               <ListItem
-                title={t('Color')}
+                title={t('common.icon')}
                 isNavigationAction
-                leadingItem={<CourseIcon color={coursePrefs?.color} />}
+                onPress={() =>
+                  navigation.navigate('CourseIconPicker', { courseId })
+                }
+                leadingItem={
+                  <Icon
+                    icon={
+                      coursePrefs.icon
+                        ? courseIcons[coursePrefs.icon]
+                        : faCircleDashed
+                    }
+                    size={fontSizes['2xl']}
+                  />
+                }
               />
-            </MenuView>
-            <ListItem
-              title={t('Icon')}
-              isNavigationAction
-              onPress={() =>
-                navigation.navigate('CourseIconPicker', { courseId })
-              }
-              leadingItem={
-                <Icon
-                  icon={
-                    coursePrefs.icon
-                      ? courseIcons[coursePrefs.icon]
-                      : faCircleDashed
-                  }
-                  size={fontSizes['2xl']}
-                />
-              }
-            />
-            <SwitchListItem
-              title={t('Show in home screen')}
-              value={!coursePrefs.isHidden}
-              leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
-              onChange={value => {
-                updatePreference('courses', {
-                  ...coursesPrefs,
-                  [courseId]: {
-                    ...coursePrefs,
-                    isHidden: !value,
-                  },
-                });
-              }}
-            />
-          </SectionList>
-        </Section>
+              <SwitchListItem
+                title={t('coursePreferencesScreen.showInExtracts')}
+                subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
+                value={!coursePrefs.isHidden}
+                leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
+                onChange={value => {
+                  updatePreference('courses', {
+                    ...coursesPrefs,
+                    [courseId]: {
+                      ...coursePrefs,
+                      isHidden: !value,
+                    },
+                  });
+                }}
+              />
+            </SectionList>
+          </Section>
 
-        <Section>
-          <SectionHeader title={t('Notifications')} />
-          <SectionList indented>
-            <ListItem
-              title={t('Notices')}
-              subtitle={t('coursePreferencesScreen.noticesSubtitle')}
-              onPress={() => {
-                // TODO
-              }}
-              leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-              trailingItem={
-                <Switch
-                  value={courseQuery.data?.data.notifications.avvisidoc}
-                />
-              }
-            />
-            <ListItem
-              title={t('Files')}
-              subtitle={t('coursePreferencesScreen.filesSubtitle')}
-              onPress={() => {
-                // TODO
-              }}
-              leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-              trailingItem={
-                <Switch value={courseQuery.data?.data.notifications.matdid} />
-              }
-            />
-            <ListItem
-              title={t('Lessons')}
-              subtitle={t('coursePreferencesScreen.lessonsSubtitle')}
-              onPress={() => {
-                // TODO
-              }}
-              leadingItem={
-                <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
-              }
-              trailingItem={
-                <Switch
-                  value={courseQuery.data.data?.notifications.videolezioni}
-                />
-              }
-            />
-          </SectionList>
-        </Section>
-      </View>
-    </ScrollView>
+          <Section>
+            <SectionHeader title={t('common.notifications')} />
+            <SectionList indented>
+              <ListItem
+                title={t('common.notice', { count: 2 })}
+                subtitle={t('coursePreferencesScreen.noticesSubtitle')}
+                onPress={() => {
+                  // TODO
+                }}
+                leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
+                trailingItem={
+                  <Switch
+                    value={courseQuery.data?.data.notifications.avvisidoc}
+                  />
+                }
+              />
+              <ListItem
+                title={t('common.file', { count: 2 })}
+                subtitle={t('coursePreferencesScreen.filesSubtitle')}
+                onPress={() => {
+                  // TODO
+                }}
+                leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
+                trailingItem={
+                  <Switch value={courseQuery.data?.data.notifications.matdid} />
+                }
+              />
+              <ListItem
+                title={t('common.lecture', { count: 2 })}
+                subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
+                onPress={() => {
+                  // TODO
+                }}
+                leadingItem={
+                  <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
+                }
+                trailingItem={
+                  <Switch
+                    value={courseQuery.data?.data.notifications.videolezioni}
+                  />
+                }
+              />
+            </SectionList>
+          </Section>
+
+          <Section>
+            <SectionHeader title={t('common.file', { count: 2 })} />
+            <SectionList indented>
+              <CleanCourseFilesListItem />
+            </SectionList>
+          </Section>
+        </View>
+      </ScrollView>
+    </CourseContext.Provider>
   );
 };

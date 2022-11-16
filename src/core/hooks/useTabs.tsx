@@ -89,7 +89,9 @@ export const useTabs = ({ tabs, animated = false }: TabsOptions) => {
       pagingEnabled
     >
       {tabs.map(o => (
-        <View style={{ width: width }}>{o.renderContent()}</View>
+        <View key={o.title} style={{ width: width }}>
+          {o.renderContent()}
+        </View>
       ))}
     </ScrollView>
   ));

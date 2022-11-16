@@ -23,7 +23,8 @@ export const CourseListItem = ({ course }: Props) => {
       title={t('Course preferences')}
       actions={[
         {
-          title: t('Hide course from home screen'),
+          title: t('coursePreferencesScreen.hideInExtracts'),
+          subtitle: t('coursePreferencesScreen.showInExtractsSubtitle'),
           image: 'eye.slash',
         },
       ]}
@@ -47,7 +48,7 @@ export const CourseListItem = ({ course }: Props) => {
             : undefined
         }
         title={course.name}
-        subtitle={`${course.cfu} ${t('words.credits')}`}
+        subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
         leadingItem={
           <CourseIcon
             icon={preferences.courses[course.id]?.icon}

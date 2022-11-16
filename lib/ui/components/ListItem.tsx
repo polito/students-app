@@ -45,6 +45,8 @@ export const ListItem = ({
   containerStyle,
   onPress,
   isNavigationAction,
+  disabled,
+  style,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -66,6 +68,13 @@ export const ListItem = ({
             }
           : onPress
       }
+      style={[
+        {
+          opacity: disabled ? 0.7 : 1,
+        },
+        style,
+      ]}
+      disabled={disabled}
       {...rest}
     >
       <View
@@ -76,7 +85,6 @@ export const ListItem = ({
             alignItems: 'center',
             paddingHorizontal: spacing[5],
             paddingVertical: spacing[2],
-            minHeight: 56,
           },
           containerStyle,
         ]}

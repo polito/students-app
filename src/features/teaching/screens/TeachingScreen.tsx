@@ -128,7 +128,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     <Text variant="secondaryText">
                       {studentQuery.data?.data.totalAcquiredCredits}/
                       {studentQuery.data?.data.totalCredits}{' '}
-                      {t('words.credits')}
+                      {t('common.credits').toLowerCase()}
                     </Text>
                   </View>
                   <ProgressChart

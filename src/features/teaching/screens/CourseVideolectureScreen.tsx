@@ -46,7 +46,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
         {teacherQuery.data && (
           <PersonListItem
             person={teacherQuery.data?.data}
-            subtitle={t('words.teacher')}
+            subtitle={t('common.teacher')}
           />
         )}
       </SectionList>

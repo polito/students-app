@@ -1,8 +1,7 @@
-import { useContext, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { open } from 'react-native-file-viewer';
-import { CachesDirectoryPath } from 'react-native-fs';
 import { extension } from 'react-native-mime-types';
 
 import {
@@ -20,9 +19,8 @@ import { CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
 import { useDownload } from '../../../core/hooks/useDownload';
-import { useGetStudent } from '../../../core/queries/studentHooks';
 import { formatFileDate, formatFileSize } from '../../../utils/files';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
 
 export type CourseRecentFile = CourseFileOverview & {
   location?: string;
@@ -53,19 +51,15 @@ export const CourseFileListItem = ({
     }),
     [colors, fontSizes, spacing],
   );
-  const { data: student } = useGetStudent();
-  const courseId = useContext(CourseContext);
+  const courseFilesCachePath = useCourseFilesCache();
   const cachedFilePath = useMemo(() => {
-    if (student) {
+    if (courseFilesCachePath) {
       return [
-        CachesDirectoryPath,
-        student.data.username,
-        'Courses',
-        courseId,
+        courseFilesCachePath,
         `${item.id}.${extension(item.mimeType)}`,
       ].join('/');
     }
-  }, [student]);
+  }, [courseFilesCachePath]);
   const { isDownloaded, downloadProgress, start, stop, refresh, remove } =
     useDownload(
       'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
@@ -89,7 +83,7 @@ export const CourseFileListItem = ({
     downloadProgress == null ? (
       <IconButton
         icon={faCloudArrowDown}
-        accessibilityLabel={t('words.download')}
+        accessibilityLabel={t('common.download')}
         disabled
         adjustSpacing="right"
         {...iconProps}
@@ -97,7 +91,7 @@ export const CourseFileListItem = ({
     ) : (
       <IconButton
         icon={faXmark}
-        accessibilityLabel={t('words.stop')}
+        accessibilityLabel={t('common.stop')}
         adjustSpacing="right"
         onPress={() => {
           stop();
@@ -110,15 +104,15 @@ export const CourseFileListItem = ({
       android: (
         <MenuView
           shouldOpenOnLongPress={true}
-          title={t('words.file')}
+          title={t('common.file')}
           actions={[
             {
               id: 'refresh',
-              title: t('words.refresh'),
+              title: t('common.refresh'),
             },
             {
               id: 'delete',
-              title: t('words.delete'),
+              title: t('common.delete'),
               attributes: {
                 destructive: true,
               },
@@ -138,7 +132,7 @@ export const CourseFileListItem = ({
         >
           <IconButton
             icon={faEllipsisVertical}
-            accessibilityLabel={t('words.options')}
+            accessibilityLabel={t('common.options')}
             adjustSpacing="right"
             {...iconProps}
           />
@@ -174,7 +168,7 @@ export const CourseFileListItem = ({
         rightButtons={[
           <SwipeableAction
             icon={faCloudArrowDown}
-            label={t('words.refresh')}
+            label={t('common.refresh')}
             backgroundColor={colors.muted[500]}
             onPress={() => {
               swipeableRef.current?.recenter();
@@ -183,7 +177,7 @@ export const CourseFileListItem = ({
           />,
           <SwipeableAction
             icon={faTrashCan}
-            label={t('words.remove')}
+            label={t('common.remove')}
             backgroundColor={colors.danger[500]}
             onPress={() => {
               swipeableRef.current?.recenter();

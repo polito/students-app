@@ -16,7 +16,7 @@ export const PersonListItem = ({
   person,
   ...rest
 }: TouchableHighlightProps & Props) => {
-  const { colors, spacing, fontSizes } = useTheme();
+  const { spacing, fontSizes } = useTheme();
   const pictureStyle = useMemo(
     () => ({
       width: '100%',
@@ -36,7 +36,6 @@ export const PersonListItem = ({
         )
       }
       title={`${person.firstName} ${person.lastName}`}
-      subtitleStyle={{ textTransform: 'capitalize' }}
       linkTo={{
         screen: 'Person',
         params: { id: person.id },

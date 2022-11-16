@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity } from 'react-native';
 
 import { Icon } from '@lib/ui/components/Icon';
@@ -13,7 +14,8 @@ import { courseIcons } from '../constants';
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
 
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
-  const { spacing, colors, fontSizes } = useTheme();
+  const { t } = useTranslation();
+  const { spacing, fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { courses: coursesPrefs, updatePreference } =
     useContext(PreferencesContext);
@@ -24,33 +26,35 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   );
 
   return (
-    <FlatList
-      contentInsetAdjustmentBehavior="automatic"
-      style={[{ flex: 1 }, bottomBarAwareStyles]}
-      data={Object.entries(courseIcons)}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            padding: spacing[4],
-          }}
-          onPress={() => {
-            updatePreference('courses', {
-              ...coursesPrefs,
-              [courseId]: {
-                ...coursePrefs,
-                icon: item[0],
-              },
-            });
-            navigation.goBack();
-          }}
-        >
-          <Icon icon={item[1]} size={fontSizes['2xl']} />
-        </TouchableOpacity>
-      )}
-      numColumns={5}
-      contentContainerStyle={{ paddingHorizontal: spacing[5] }}
-    />
+    <>
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        style={[{ flex: 1 }, bottomBarAwareStyles]}
+        data={Object.entries(courseIcons)}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              padding: spacing[4],
+            }}
+            onPress={() => {
+              updatePreference('courses', {
+                ...coursesPrefs,
+                [courseId]: {
+                  ...coursePrefs,
+                  icon: item[0],
+                },
+              });
+              navigation.goBack();
+            }}
+          >
+            <Icon icon={item[1]} size={fontSizes['2xl']} />
+          </TouchableOpacity>
+        )}
+        numColumns={5}
+        contentContainerStyle={{ paddingHorizontal: spacing[5] }}
+      />
+    </>
   );
 };

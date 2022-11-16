@@ -56,7 +56,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       >
         <EventDetails
           title={exam?.courseName}
-          type={t('words.exam')}
+          type={t('common.exam')}
           time={exam?.examStartsAt}
         />
         <SectionList loading={teacherQuery.isLoading} indented>
@@ -68,7 +68,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           {teacherQuery.data && (
             <PersonListItem
               person={teacherQuery.data?.data}
-              subtitle={t('words.teacher')}
+              subtitle={t('common.teacher')}
             />
           )}
         </SectionList>
