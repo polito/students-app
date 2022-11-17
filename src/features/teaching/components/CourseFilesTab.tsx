@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -16,9 +17,8 @@ import { CourseRecentFileListItem } from './CourseRecentFileListItem';
 
 export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
-
+  const [scollEnabled, setScollEnabled] = useState(true);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
-
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
@@ -27,6 +27,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       <ScrollView
         contentContainerStyle={bottomBarAwareStyles}
         refreshControl={createRefreshControl(recentFilesQuery)}
+        scrollEnabled={scollEnabled}
       >
         <View style={styles.sectionContainer}>
           <SectionHeader
@@ -34,8 +35,13 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
             separator={false}
           />
           <List indented>
-            {recentFilesQuery.data?.slice(0, 5).map((file, index) => (
-              <CourseRecentFileListItem key={file.id} item={file} />
+            {recentFilesQuery.data?.slice(0, 5).map(file => (
+              <CourseRecentFileListItem
+                key={file.id}
+                item={file}
+                onSwipeStart={() => setScollEnabled(false)}
+                onSwipeEnd={() => setScollEnabled(true)}
+              />
             ))}
             {recentFilesQuery.data?.length === 0 && (
               <ListItem title={t('courseFilesTab.empty')} />

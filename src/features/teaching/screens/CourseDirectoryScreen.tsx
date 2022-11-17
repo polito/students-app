@@ -29,6 +29,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
 export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { courseId, directoryId } = route.params;
+  const [scollEnabled, setScollEnabled] = useState(true);
 
   const [searchFilter, setSearchFilter] = useState('');
 
@@ -63,12 +64,17 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={directoryQuery.data?.files}
+          scrollEnabled={scollEnabled}
           keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
           renderItem={({ item }) =>
             isDirectory(item) ? (
               <CourseDirectoryListItem item={item} courseId={courseId} />
             ) : (
-              <CourseFileListItem item={item} />
+              <CourseFileListItem
+                item={item}
+                onSwipeStart={() => setScollEnabled(false)}
+                onSwipeEnd={() => setScollEnabled(true)}
+              />
             )
           }
           refreshControl={createRefreshControl(directoryQuery)}
@@ -91,6 +97,7 @@ interface SearchProps {
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const [searchResults, setSearchResults] = useState([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const [scollEnabled, setScollEnabled] = useState(true);
 
   useEffect(() => {
     setSearchResults(
@@ -107,8 +114,15 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
+      scrollEnabled={scollEnabled}
       keyExtractor={(item: CourseRecentFile) => item.id}
-      renderItem={({ item }) => <CourseRecentFileListItem item={item} />}
+      renderItem={({ item }) => (
+        <CourseRecentFileListItem
+          item={item}
+          onSwipeStart={() => setScollEnabled(false)}
+          onSwipeEnd={() => setScollEnabled(true)}
+        />
+      )}
       refreshControl={createRefreshControl(recentFilesQuery)}
       refreshing={recentFilesQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}

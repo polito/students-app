@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { open } from 'react-native-file-viewer';
@@ -31,6 +31,8 @@ export interface Props {
   showSize?: boolean;
   showLocation?: boolean;
   showCreatedDate?: boolean;
+  onSwipeStart?: () => void;
+  onSwipeEnd?: () => void;
 }
 
 export const CourseFileListItem = ({
@@ -38,12 +40,15 @@ export const CourseFileListItem = ({
   showSize = true,
   showLocation = false,
   showCreatedDate = true,
+  onSwipeStart,
+  onSwipeEnd,
   ...rest
 }: Props) => {
   const { t } = useTranslation();
   const { colors, fontSizes, spacing } = useTheme();
   // @ts-expect-error due to Swipeable lib type patch
   const swipeableRef = useRef<Swipeable>();
+  const [scollEnabled, setScollEnabled] = useState(true);
   const iconProps = useMemo(
     () => ({
       color: colors.secondaryText,
@@ -185,6 +190,8 @@ export const CourseFileListItem = ({
             }}
           />,
         ]}
+        onSwipeStart={() => onSwipeStart?.()}
+        onSwipeComplete={() => onSwipeEnd?.()}
       >
         {listItem}
       </Swipeable>
