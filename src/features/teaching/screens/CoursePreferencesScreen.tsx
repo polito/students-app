@@ -20,6 +20,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { courseColors } from '../../../core/constants';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -92,18 +93,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const coursePrefs = useMemo(
     () => coursesPrefs[courseId],
     [courseId, coursesPrefs],
-  );
-  const courseColors = useMemo(
-    () => [
-      { name: 'Dark blue', color: colors.darkBlue[400] },
-      { name: 'Orange', color: colors.orange[400] },
-      { name: 'Rose', color: colors.rose[400] },
-      { name: 'Red', color: colors.red[400] },
-      { name: 'Green', color: colors.green[400] },
-      { name: 'Dark orange', color: colors.darkOrange[400] },
-      { name: 'Light blue', color: colors.lightBlue[400] },
-    ],
-    [colors],
   );
 
   return (

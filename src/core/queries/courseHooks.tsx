@@ -18,6 +18,7 @@ import {
 } from '@tanstack/react-query';
 
 import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
+import { courseColors } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useGetExams } from './examHooks';
@@ -46,7 +47,7 @@ export const useGetCourses = () => {
 
         // eslint-disable-next-line no-prototype-builtins
         if (!courses.hasOwnProperty(c.id)) {
-          const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+          const randomColor = courseColors[Math.round(Math.random() * 6)];
           courses[c.id] = {
             color: `#${randomColor}`,
             icon: null,
