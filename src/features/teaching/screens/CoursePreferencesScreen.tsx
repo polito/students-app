@@ -1,16 +1,15 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Switch, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
   faBell,
-  faBroom,
+  faCircle,
   faEye,
   faFile,
-  faVideoCamera,
-} from '@fortawesome/pro-regular-svg-icons';
-import { faCircleDashed } from '@fortawesome/pro-regular-svg-icons';
+} from '@fortawesome/free-regular-svg-icons';
+import { faBroom, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
@@ -43,7 +42,7 @@ const CleanCourseFilesListItem = () => {
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
   });
 
-  useEffect(() => {
+  const refreshSize = () => {
     if (courseFilesCache) {
       stat(courseFilesCache)
         .then(({ size }) => {
@@ -53,7 +52,9 @@ const CleanCourseFilesListItem = () => {
           setCacheSize(0);
         });
     }
-  }, [courseFilesCache]);
+  };
+
+  useEffect(refreshSize, [courseFilesCache]);
 
   return (
     <ListItem
@@ -67,6 +68,7 @@ const CleanCourseFilesListItem = () => {
       onPress={async () => {
         if (courseFilesCache && (await confirm())) {
           await unlink(courseFilesCache);
+          refreshSize();
           // TODO feedback
         }
       }}
@@ -149,9 +151,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 leadingItem={
                   <Icon
                     icon={
-                      coursePrefs.icon
+                      coursePrefs.icon && coursePrefs.icon in courseIcons
                         ? courseIcons[coursePrefs.icon]
-                        : faCircleDashed
+                        : faCircle
                     }
                     size={fontSizes['2xl']}
                   />
@@ -160,6 +162,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               <SwitchListItem
                 title={t('coursePreferencesScreen.showInExtracts')}
                 subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
+                disabled={!coursePrefs}
                 value={!coursePrefs.isHidden}
                 leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
                 onChange={value => {
@@ -178,44 +181,39 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
           <Section>
             <SectionHeader title={t('common.notifications')} />
             <SectionList indented>
-              <ListItem
+              <SwitchListItem
                 title={t('common.notice', { count: 2 })}
                 subtitle={t('coursePreferencesScreen.noticesSubtitle')}
-                onPress={() => {
+                disabled={!courseQuery.data}
+                value={courseQuery.data?.data.notifications.avvisidoc}
+                leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
+                onChange={value => {
                   // TODO
                 }}
-                leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-                trailingItem={
-                  <Switch
-                    value={courseQuery.data?.data.notifications.avvisidoc}
-                  />
-                }
               />
-              <ListItem
+
+              <SwitchListItem
                 title={t('common.file', { count: 2 })}
                 subtitle={t('coursePreferencesScreen.filesSubtitle')}
-                onPress={() => {
+                disabled={!courseQuery.data}
+                value={courseQuery.data?.data.notifications.matdid}
+                leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
+                onChange={value => {
                   // TODO
                 }}
-                leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-                trailingItem={
-                  <Switch value={courseQuery.data?.data.notifications.matdid} />
-                }
               />
-              <ListItem
+
+              <SwitchListItem
                 title={t('common.lecture', { count: 2 })}
                 subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
-                onPress={() => {
-                  // TODO
-                }}
+                disabled={!courseQuery.data}
+                value={courseQuery.data?.data.notifications.videolezioni}
                 leadingItem={
                   <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
                 }
-                trailingItem={
-                  <Switch
-                    value={courseQuery.data?.data.notifications.videolezioni}
-                  />
-                }
+                onChange={value => {
+                  // TODO
+                }}
               />
             </SectionList>
           </Section>

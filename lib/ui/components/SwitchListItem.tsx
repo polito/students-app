@@ -1,6 +1,5 @@
-import { Switch } from 'react-native';
-
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
+import { Switch } from '@lib/ui/components/Switch';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -10,7 +9,13 @@ interface Props extends ListItemProps {
   onChange?: (value: boolean) => void;
 }
 
-export const SwitchListItem = ({ title, value, onChange, ...rest }: Props) => {
+export const SwitchListItem = ({
+  title,
+  value,
+  onChange,
+  disabled,
+  ...rest
+}: Props) => {
   const { fontSizes } = useTheme();
 
   return (
@@ -33,7 +38,8 @@ export const SwitchListItem = ({ title, value, onChange, ...rest }: Props) => {
       }}
       trailingItem={
         <Switch
-          value={value}
+          value={value ?? false}
+          disabled={disabled}
           accessibilityLabel={title}
           onChange={() => {
             onChange?.(!value);
