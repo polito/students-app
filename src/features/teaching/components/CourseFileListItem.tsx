@@ -178,6 +178,7 @@ export const CourseFileListItem = ({
       title={item.name}
       subtitle={metrics}
       trailingItem={trailingItem}
+      mimeType={item.mimeType}
       {...rest}
     />
   );
