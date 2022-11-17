@@ -1,28 +1,15 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableHighlightProps,
-} from 'react-native';
-import { open } from 'react-native-file-viewer';
-import { TemporaryDirectoryPath, downloadFile } from 'react-native-fs';
+import { Linking, Platform, TouchableHighlightProps } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
-import { Icon } from '@lib/ui/components/Icon';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
 import { CourseAssignment } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
-import {
-  formatFileDate,
-  formatFileSize,
-  getUrlExtension,
-} from '../../../utils/files';
+import { formatFileDate, formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
@@ -37,12 +24,10 @@ const Menu = ({
   return (
     <MenuView
       shouldOpenOnLongPress={shouldOpenOnLongPress}
-      title={t('common.file')}
       actions={[
         {
-          id: 'delete',
-          title: t('common.delete'),
-          image: 'trash',
+          id: 'retract',
+          title: t('common.retract'),
           attributes: {
             destructive: true,
           },
@@ -50,8 +35,8 @@ const Menu = ({
       ]}
       onPressAction={({ nativeEvent }) => {
         switch (nativeEvent.event) {
-          case 'delete':
-            // TODO delete assignment
+          case 'retract':
+            // TODO retract assignment
             break;
           default:
         }
@@ -66,60 +51,49 @@ export const CourseAssignmentListItem = ({
   item,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
-  const styles = useStylesheet(createItemStyles);
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
-  return (
-    <Menu shouldOpenOnLongPress={true}>
+  const listItem = useMemo(
+    () => (
       <FileListItem
         onPress={async () => {
-          const tmpFile = [
-            TemporaryDirectoryPath,
-            `${item.id}.${getUrlExtension(item.url)}`,
-          ].join('/');
-          // TODO show loading
-          try {
-            await downloadFile({
-              fromUrl: item.url,
-              toFile: tmpFile,
-            }).promise;
-          } catch (e) {
-            // TODO show error message
+          if (await Linking.canOpenURL(item.url)) {
+            Linking.openURL(item.url);
+          } else {
+            // TODO feedback
           }
-          open(tmpFile);
         }}
         title={item.description}
         subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${formatFileDate(
           item.uploadedAt,
         )}`}
-        trailingItem={Platform.select({
-          android: (
-            <Menu>
-              <TouchableHighlight
-                style={styles.trailingHighlight}
-                underlayColor={colors.touchableHighlight}
-              >
-                <Icon icon={faEllipsisVertical} size={24} />
-              </TouchableHighlight>
-            </Menu>
-          ),
-        })}
+        mimeType={item.mimeType}
+        trailingItem={
+          item.deletedAt == null
+            ? Platform.select({
+                android: (
+                  <Menu>
+                    <IconButton
+                      style={{
+                        padding: spacing[3],
+                      }}
+                      icon={faEllipsisVertical}
+                      color={colors.secondaryText}
+                      adjustSpacing="right"
+                    />
+                  </Menu>
+                ),
+              })
+            : null
+        }
         {...rest}
       />
-    </Menu>
+    ),
+    [item, spacing, colors, rest],
   );
-};
 
-const createItemStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    listItemContainer: {
-      paddingRight: 0,
-    },
-    trailingHighlight: {
-      paddingHorizontal: spacing[5],
-      marginRight: -spacing[5],
-      alignSelf: 'stretch',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-  });
+  if (Platform.OS === 'ios') {
+    return <Menu shouldOpenOnLongPress={true}>{listItem}</Menu>;
+  }
+  return listItem;
+};
