@@ -243,6 +243,8 @@ PODS:
     - React-Core
   - react-native-netinfo (9.3.4):
     - React-Core
+  - react-native-orientation-locker (1.5.0):
+    - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
   - react-native-safe-area-context (4.4.1):
@@ -363,6 +365,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
@@ -438,6 +441,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-orientation-locker:
+    :path: "../node_modules/react-native-orientation-locker"
   react-native-render-html:
     :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
@@ -507,11 +512,12 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7e2e1772ef7b97168c880eeaf3749d8c145ffd6e
   React-jsinspector: 0553c9fe7218e1f127be070bd5a4d2fc19fb8190
   React-logger: cffcc09e8aba8a3014be8d18da7f922802e9f19e
-  react-native-blur: 8cd9b4a8007166ad643f4dff914c3fddd2ff5b9a
-  react-native-netinfo: 668e62d9caec81e005c1ea400fa1f55ebf6ffe4a
-  react-native-render-html: 5af9f6852f5e0cf9b74127537da3370984da51ee
-  react-native-safe-area-context: ec0d85aca8110dae9327430a9541fec165352dab
-  react-native-video: 79a186e378d327b6c08bc3982c17ef455c6bd75c
+  react-native-blur: 3e9c8e8e9f7d17fa1b94e1a0ae9fd816675f5382
+  react-native-netinfo: 6ac9bcc7c88dc51717bda3484eb99093acb755e0
+  react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
+  react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
+  react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
+  react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   React-perflogger: 082b4293f0b3914ff41da35a6c06ac4490fcbcc8
   React-RCTActionSheet: 83da3030deb5dea54b398129f56540a44e64d3ae
   React-RCTAnimation: bac3a4f4c0436554d9f7fbb1352a0cdcb1fb0f1c
@@ -524,7 +530,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: b9a58ffdd18446f43d493a4b0ecd603ee86be847
   React-runtimeexecutor: e9b1f9310158a1e265bcdfdfd8c62d6174b947a2
   ReactCommon: 01064177e66d652192c661de899b1076da962fd9
-  RNCAsyncStorage: 73b194e58ded504eee17b9a3c125651e2507ddde
+  RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
   RNGestureHandler: b7a872907ee289ada902127f2554fa1d2c076122
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d

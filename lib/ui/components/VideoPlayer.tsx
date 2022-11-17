@@ -52,7 +52,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   }, [modalVisible]);
 
   const speedControls = useMemo(() => {
-    if (parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
+    if (isIos && parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
 
     return (
       <View style={styles.speedSection}>
