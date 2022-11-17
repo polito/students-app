@@ -73,9 +73,9 @@ export const CourseFileListItem = ({
     remove,
     notifyFileSystemChange,
   } = useDownload(
-    'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
+    'https://www.africau.edu/images/default/sample.pdf',
+    // 'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
     // 'https://cartographicperspectives.org/index.php/journal/article/download/cp43-complete-issue/pdf/2712',
-    // 'https://www.africau.edu/images/default/sample.pdf',
     cachedFilePath,
   );
 

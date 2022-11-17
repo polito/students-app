@@ -54,7 +54,7 @@ const Menu = ({
 };
 
 export const CourseListItem = ({ course }: Props) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
   const preferences = useContext(PreferencesContext);
 
@@ -85,6 +85,7 @@ export const CourseListItem = ({ course }: Props) => {
               }}
               icon={faEllipsisVertical}
               color={colors.secondaryText}
+              size={fontSizes.xl}
             />
           </Menu>
         ),

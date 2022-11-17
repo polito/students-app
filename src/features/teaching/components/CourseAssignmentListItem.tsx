@@ -51,7 +51,7 @@ export const CourseAssignmentListItem = ({
   item,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, fontSizes } = useTheme();
 
   const listItem = useMemo(
     () => (
@@ -79,6 +79,7 @@ export const CourseAssignmentListItem = ({
                       }}
                       icon={faEllipsisVertical}
                       color={colors.secondaryText}
+                      size={fontSizes.xl}
                       adjustSpacing="right"
                     />
                   </Menu>
