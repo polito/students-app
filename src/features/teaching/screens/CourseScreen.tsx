@@ -57,36 +57,34 @@ export const CourseScreen = ({ route, navigation }: Props) => {
     });
   }, [courseName]);
 
-  const { Tabs, TabsContent } = useTabs({
-    tabs: [
-      {
-        title: t('courseInfoTab.title'),
-        renderContent: () => <CourseInfoTab courseId={id} />,
-      },
-      {
-        title: t('courseNoticesTab.title'),
-        renderContent: () => <CourseNoticesTab courseId={id} />,
-      },
-      {
-        title: t('courseFilesTab.title'),
-        renderContent: () => (
-          <CourseFilesTab courseId={id} navigation={navigation} />
-        ),
-      },
-      {
-        title: t('courseLecturesTab.title'),
-        renderContent: () => (
-          <CourseLecturesTab courseId={id} navigation={navigation} />
-        ),
-      },
-      {
-        title: t('courseAssignmentsTab.title'),
-        renderContent: () => (
-          <CourseAssignmentsTab courseId={id} navigation={navigation} />
-        ),
-      },
-    ],
-  });
+  const { Tabs, TabsContent } = useTabs([
+    {
+      title: t('courseInfoTab.title'),
+      renderContent: () => <CourseInfoTab courseId={id} />,
+    },
+    {
+      title: t('courseNoticesTab.title'),
+      renderContent: () => <CourseNoticesTab courseId={id} />,
+    },
+    {
+      title: t('courseFilesTab.title'),
+      renderContent: () => (
+        <CourseFilesTab courseId={id} navigation={navigation} />
+      ),
+    },
+    {
+      title: t('courseLecturesTab.title'),
+      renderContent: () => (
+        <CourseLecturesTab courseId={id} navigation={navigation} />
+      ),
+    },
+    {
+      title: t('courseAssignmentsTab.title'),
+      renderContent: () => (
+        <CourseAssignmentsTab courseId={id} navigation={navigation} />
+      ),
+    },
+  ]);
 
   return (
     <CourseContext.Provider value={id}>
