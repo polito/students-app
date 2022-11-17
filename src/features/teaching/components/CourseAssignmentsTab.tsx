@@ -23,7 +23,7 @@ export const CourseAssignmentsTab = ({
   const { t } = useTranslation();
   // @ts-expect-error due to Swipeable lib type patch
   const swipeableRef = useRef<Swipeable>();
-  const [scollEnabled, setScollEnabled] = useState(true);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
@@ -32,7 +32,7 @@ export const CourseAssignmentsTab = ({
       <ScrollView
         refreshControl={createRefreshControl(assignmentsQuery)}
         contentContainerStyle={bottomBarAwareStyles}
-        scrollEnabled={scollEnabled}
+        scrollEnabled={scrollEnabled}
       >
         <List indented>
           {assignmentsQuery.data?.data.map(assignment => (
@@ -43,15 +43,15 @@ export const CourseAssignmentsTab = ({
               rightButtons={[
                 <SwipeableAction
                   icon={faTrashCan}
-                  label={t('common.remove')}
+                  label={t('common.retract')}
                   backgroundColor={colors.danger[500]}
                   onPress={() => {
                     swipeableRef.current?.recenter();
                   }}
                 ></SwipeableAction>,
               ]}
-              onSwipeStart={() => setScollEnabled(false)}
-              onSwipeComplete={() => setScollEnabled(true)}
+              onSwipeStart={() => setScrollEnabled(false)}
+              onSwipeComplete={() => setScrollEnabled(true)}
             >
               <CourseAssignmentListItem item={assignment} />
             </Swipeable>

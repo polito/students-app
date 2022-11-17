@@ -17,7 +17,7 @@ import { CourseRecentFileListItem } from './CourseRecentFileListItem';
 
 export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
-  const [scollEnabled, setScollEnabled] = useState(true);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
@@ -27,7 +27,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       <ScrollView
         contentContainerStyle={bottomBarAwareStyles}
         refreshControl={createRefreshControl(recentFilesQuery)}
-        scrollEnabled={scollEnabled}
+        scrollEnabled={scrollEnabled}
       >
         <View style={styles.sectionContainer}>
           <SectionHeader
@@ -39,8 +39,8 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
               <CourseRecentFileListItem
                 key={file.id}
                 item={file}
-                onSwipeStart={() => setScollEnabled(false)}
-                onSwipeEnd={() => setScollEnabled(true)}
+                onSwipeStart={() => setScrollEnabled(false)}
+                onSwipeEnd={() => setScrollEnabled(true)}
               />
             ))}
             {recentFilesQuery.data?.length === 0 && (
