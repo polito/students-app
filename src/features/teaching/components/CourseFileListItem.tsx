@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { open } from 'react-native-file-viewer';
@@ -17,6 +17,7 @@ import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { useDownload } from '../../../core/hooks/useDownload';
 import { formatFileDate, formatFileSize } from '../../../utils/files';
@@ -48,7 +49,6 @@ export const CourseFileListItem = ({
   const { colors, fontSizes, spacing } = useTheme();
   // @ts-expect-error due to Swipeable lib type patch
   const swipeableRef = useRef<Swipeable>();
-  const [scollEnabled, setScollEnabled] = useState(true);
   const iconProps = useMemo(
     () => ({
       color: colors.secondaryText,
@@ -56,21 +56,35 @@ export const CourseFileListItem = ({
     }),
     [colors, fontSizes, spacing],
   );
-  const courseFilesCachePath = useCourseFilesCache();
+  const courseFilesCache = useCourseFilesCache();
   const cachedFilePath = useMemo(() => {
-    if (courseFilesCachePath) {
-      return [
-        courseFilesCachePath,
-        `${item.id}.${extension(item.mimeType)}`,
-      ].join('/');
+    if (courseFilesCache) {
+      return [courseFilesCache, `${item.id}.${extension(item.mimeType)}`].join(
+        '/',
+      );
     }
-  }, [courseFilesCachePath]);
-  const { isDownloaded, downloadProgress, start, stop, refresh, remove } =
-    useDownload(
-      'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
-      cachedFilePath,
-    );
-  // 'https://cartographicperspectives.org/index.php/journal/article/download/cp43-complete-issue/pdf/2712',
+  }, [courseFilesCache, item]);
+  const {
+    isDownloaded,
+    downloadProgress,
+    start,
+    stop,
+    refresh,
+    remove,
+    notifyFileSystemChange,
+  } = useDownload(
+    'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
+    // 'https://cartographicperspectives.org/index.php/journal/article/download/cp43-complete-issue/pdf/2712',
+    // 'https://www.africau.edu/images/default/sample.pdf',
+    cachedFilePath,
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      // Refresh the current item on screen focus
+      notifyFileSystemChange();
+    }, []),
+  );
 
   const metrics = useMemo(
     () =>
@@ -84,66 +98,69 @@ export const CourseFileListItem = ({
     [showSize, showLocation, showCreatedDate],
   );
 
-  const trailingItem = !isDownloaded ? (
-    downloadProgress == null ? (
-      <IconButton
-        icon={faCloudArrowDown}
-        accessibilityLabel={t('common.download')}
-        disabled
-        adjustSpacing="right"
-        {...iconProps}
-      />
-    ) : (
-      <IconButton
-        icon={faXmark}
-        accessibilityLabel={t('common.stop')}
-        adjustSpacing="right"
-        onPress={() => {
-          stop();
-        }}
-        {...iconProps}
-      />
-    )
-  ) : (
-    Platform.select({
-      android: (
-        <MenuView
-          shouldOpenOnLongPress={true}
-          title={t('common.file')}
-          actions={[
-            {
-              id: 'refresh',
-              title: t('common.refresh'),
-            },
-            {
-              id: 'delete',
-              title: t('common.delete'),
-              attributes: {
-                destructive: true,
-              },
-            },
-          ]}
-          onPressAction={({ nativeEvent }) => {
-            switch (nativeEvent.event) {
-              case 'refresh':
-                refresh();
-                break;
-              case 'delete':
-                remove();
-                break;
-              default:
-            }
-          }}
-        >
+  const trailingItem = useMemo(
+    () =>
+      !isDownloaded ? (
+        downloadProgress == null ? (
           <IconButton
-            icon={faEllipsisVertical}
-            accessibilityLabel={t('common.options')}
+            icon={faCloudArrowDown}
+            accessibilityLabel={t('common.download')}
+            disabled
             adjustSpacing="right"
             {...iconProps}
           />
-        </MenuView>
+        ) : (
+          <IconButton
+            icon={faXmark}
+            accessibilityLabel={t('common.stop')}
+            adjustSpacing="right"
+            onPress={() => {
+              stop();
+            }}
+            {...iconProps}
+          />
+        )
+      ) : (
+        Platform.select({
+          android: (
+            <MenuView
+              title={t('common.file')}
+              actions={[
+                {
+                  id: 'refresh',
+                  title: t('common.refresh'),
+                },
+                {
+                  id: 'delete',
+                  title: t('common.delete'),
+                  attributes: {
+                    destructive: true,
+                  },
+                },
+              ]}
+              onPressAction={({ nativeEvent }) => {
+                switch (nativeEvent.event) {
+                  case 'refresh':
+                    refresh();
+                    break;
+                  case 'delete':
+                    remove();
+                    break;
+                  default:
+                }
+              }}
+            >
+              <IconButton
+                icon={faEllipsisVertical}
+                accessibilityLabel={t('common.options')}
+                adjustSpacing="right"
+                {...iconProps}
+              />
+            </MenuView>
+          ),
+        })
       ),
-    })
+    [isDownloaded, downloadProgress],
   );
 
   const listItem = (
