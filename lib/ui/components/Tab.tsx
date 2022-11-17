@@ -39,7 +39,6 @@ export const Tab = ({
 
   return (
     <TouchableOpacity
-      accessible={true}
       accessibilityRole="tab"
       accessibilityState={{
         selected,

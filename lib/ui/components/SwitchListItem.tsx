@@ -34,7 +34,6 @@ export const SwitchListItem = ({ title, value, onChange, ...rest }: Props) => {
       trailingItem={
         <Switch
           value={value}
-          accessible={true}
           accessibilityLabel={title}
           onChange={() => {
             onChange?.(!value);

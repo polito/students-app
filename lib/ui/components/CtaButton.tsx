@@ -69,7 +69,6 @@ export const CtaButton = ({
           },
           style,
         ]}
-        accessible={true}
         accessibilityLabel={title}
         {...rest}
       >

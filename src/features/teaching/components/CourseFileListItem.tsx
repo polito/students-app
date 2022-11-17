@@ -169,7 +169,7 @@ export const CourseFileListItem = ({
           <SwipeableAction
             icon={faCloudArrowDown}
             label={t('common.refresh')}
-            backgroundColor={colors.muted[500]}
+            backgroundColor={colors.primary[500]}
             onPress={() => {
               swipeableRef.current?.recenter();
               refresh();
