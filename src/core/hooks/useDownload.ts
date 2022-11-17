@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   downloadFile,
   exists,
@@ -11,6 +12,7 @@ import { dirname } from 'react-native-path';
 import { Download, DownloadsContext } from '../contexts/DownloadsContext';
 
 export const useDownload = (fromUrl: string, toFile: string) => {
+  const { t } = useTranslation();
   const { downloadsRef, setDownloads } = useContext(DownloadsContext);
   const key = `${fromUrl}:${toFile}`;
   let download = downloadsRef.current[key];
@@ -38,13 +40,15 @@ export const useDownload = (fromUrl: string, toFile: string) => {
     }));
   };
 
-  useEffect(() => {
+  const notifyFileSystemChange = () => {
     if (toFile) {
       exists(toFile).then(result => {
         updateDownload({ isDownloaded: result });
       });
     }
-  }, [toFile]);
+  };
+
+  useEffect(notifyFileSystemChange, [toFile]);
 
   const start = async () => {
     download = downloadsRef.current[key];
@@ -66,13 +70,22 @@ export const useDownload = (fromUrl: string, toFile: string) => {
           },
         });
         updateDownload({ jobId });
-        await promise;
+        const result = await promise;
+        if (result.statusCode !== 200) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(t('courseFileListItem.downloadError'));
+        }
         updateDownload({
           isDownloaded: true,
           downloadProgress: null,
         });
       } catch (e) {
         // TODO show error message
+        updateDownload({
+          isDownloaded: false,
+          downloadProgress: null,
+        });
+        throw e;
       }
     }
   };
@@ -119,5 +132,6 @@ export const useDownload = (fromUrl: string, toFile: string) => {
     stop,
     refresh,
     remove,
+    notifyFileSystemChange,
   };
 };

@@ -16,7 +16,8 @@
     "noResult": "No results found"
   },
   "courseFileListItem": {
-    "reDownloadFile": "Redownload file"
+    "reDownloadFile": "Redownload file",
+    "downloadError": "Something went wrong with the download"
   },
   "courseFilesTab": {
     "title": "Files",
@@ -142,6 +143,7 @@
     "notice_plural": "Notices",
     "ok": "Ok",
     "cancel": "Cancel",
-    "areYouSure?": "Are you sure?"
+    "areYouSure?": "Are you sure?",
+    "retract": "Retract"
   }
 }

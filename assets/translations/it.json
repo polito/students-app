@@ -16,7 +16,8 @@
     "noResult": "Nessun risultato trovato"
   },
   "courseFileListItem": {
-    "reDownloadFile": "Ri-scarica file"
+    "reDownloadFile": "Ri-scarica file",
+    "downloadError": "Qualcosa è andato storto con durante il download"
   },
   "courseFilesTab": {
     "title": "Materiali",
@@ -142,6 +143,7 @@
     "notice_plural": "Avvisi",
     "ok": "Ok",
     "cancel": "Annulla",
-    "areYouSure?": "Sei sicuro?"
+    "areYouSure?": "Sei sicuro?",
+    "retract": "Ritira"
   }
 }
