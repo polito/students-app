@@ -50,16 +50,6 @@ export const TranscriptScreen = () => {
             }}
           >
             <View style={{ flex: 1 }}>
-              <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
-              <Text
-                style={{
-                  color: colors.primary[400],
-                  fontSize: fontSizes.lg,
-                  fontWeight: fontWeights.semibold,
-                }}
-              >
-                80/120 CFU
-              </Text>
               <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
               <Text
                 style={{
@@ -69,6 +59,16 @@ export const TranscriptScreen = () => {
                 }}
               >
                 40/120 CFU
+              </Text>
+              <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
+              <Text
+                style={{
+                  color: colors.primary[400],
+                  fontSize: fontSizes.lg,
+                  fontWeight: fontWeights.semibold,
+                }}
+              >
+                80/120 CFU
               </Text>
             </View>
             <ProgressChart
@@ -92,16 +92,6 @@ export const TranscriptScreen = () => {
             }}
           >
             <View style={{ flex: 1 }}>
-              <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
-              <Text
-                style={{
-                  color: colors.primary[400],
-                  fontSize: fontSizes.lg,
-                  fontWeight: fontWeights.semibold,
-                }}
-              >
-                20/60 CFU
-              </Text>
               <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
               <Text
                 style={{
@@ -111,6 +101,16 @@ export const TranscriptScreen = () => {
                 }}
               >
                 6/60 CFU
+              </Text>
+              <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
+              <Text
+                style={{
+                  color: colors.primary[400],
+                  fontSize: fontSizes.lg,
+                  fontWeight: fontWeights.semibold,
+                }}
+              >
+                20/60 CFU
               </Text>
             </View>
             <ProgressChart
