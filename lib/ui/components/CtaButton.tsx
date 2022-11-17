@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 
-import { faCheckCircle } from '@fortawesome/pro-regular-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';

@@ -11,9 +11,9 @@
     "bump": "standard-version"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.2.0",
-    "@fortawesome/pro-regular-svg-icons": "^6.2.0",
-    "@fortawesome/pro-solid-svg-icons": "^6.2.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
     "@kyupss/native-swipeable": "^1.0.1",
     "@polito/api-client": "^1.0.0-ALPHA.10",

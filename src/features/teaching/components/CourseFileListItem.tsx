@@ -4,12 +4,12 @@ import { Platform } from 'react-native';
 import { open } from 'react-native-file-viewer';
 import { extension } from 'react-native-mime-types';
 
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import {
   faCloudArrowDown,
   faEllipsisVertical,
-  faTrashCan,
   faXmark,
-} from '@fortawesome/pro-regular-svg-icons';
+} from '@fortawesome/free-solid-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';

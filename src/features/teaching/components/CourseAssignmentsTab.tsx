@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
-import { faTrashCan } from '@fortawesome/pro-regular-svg-icons';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { List } from '@lib/ui/components/List';

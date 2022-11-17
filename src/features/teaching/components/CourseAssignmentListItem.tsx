@@ -9,7 +9,7 @@ import {
 import { open } from 'react-native-file-viewer';
 import { TemporaryDirectoryPath, downloadFile } from 'react-native-fs';
 
-import { faEllipsisVertical } from '@fortawesome/pro-regular-svg-icons';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';

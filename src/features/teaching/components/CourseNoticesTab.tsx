@@ -5,7 +5,7 @@ import RenderHTML, { Document } from 'react-native-render-html';
 import {
   faChevronDown,
   faChevronRight,
-} from '@fortawesome/pro-regular-svg-icons';
+} from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';

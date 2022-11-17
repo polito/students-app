@@ -23,7 +23,9 @@ export const CourseIcon = ({ color, icon }: Props) => {
         justifyContent: 'center',
       }}
     >
-      {icon && <Icon icon={courseIcons[icon]} color="white" />}
+      {icon && icon in courseIcons && (
+        <Icon icon={courseIcons[icon]} color="white" />
+      )}
     </View>
   );
 };

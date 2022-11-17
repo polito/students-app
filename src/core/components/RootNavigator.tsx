@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
+import { faCalendar, faUser } from '@fortawesome/free-regular-svg-icons';
 import {
   faBook,
-  faCalendar,
-  faCircleEllipsis,
+  faEllipsis,
   faLocationDot,
-  faUser,
-} from '@fortawesome/pro-regular-svg-icons';
+} from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -97,7 +96,7 @@ export const RootNavigator = () => {
         name="ServicesTab"
         component={PlacesScreen}
         options={{
-          headerLeft: () => <Logo />,
+          headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('Services'),
           tabBarIcon: ({ color, size }) => (
             // <Icon
@@ -106,7 +105,7 @@ export const RootNavigator = () => {
             //   color={color}
             //   size={size}
             // />
-            <Icon icon={faCircleEllipsis} color={color} size={size} />
+            <Icon icon={faEllipsis} color={color} size={size} />
           ),
         }}
       />

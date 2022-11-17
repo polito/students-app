@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { faChevronRight } from '@fortawesome/pro-regular-svg-icons';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -70,7 +70,7 @@ export const ListItem = ({
       }
       style={[
         {
-          opacity: disabled ? 0.7 : 1,
+          opacity: disabled ? 0.6 : 1,
         },
         style,
       ]}

@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import { faChevronDown, faChevronUp } from '@fortawesome/pro-regular-svg-icons';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';

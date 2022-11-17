@@ -7,8 +7,8 @@ import {
 } from 'react-native';
 import { Pie as ProgressIndicator } from 'react-native-progress';
 
-import { faFile } from '@fortawesome/pro-regular-svg-icons';
-import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons';
+import { faFile } from '@fortawesome/free-regular-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
