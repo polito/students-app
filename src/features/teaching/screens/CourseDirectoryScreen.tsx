@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, RefreshControl, StyleSheet } from 'react-native';
+import { FlatList, Platform, StyleSheet } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Text } from '@lib/ui/components/Text';
@@ -75,8 +75,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               />
             )
           }
-          refreshControl={<RefreshControl {...refreshControl} />}
-          refreshing={directoryQuery.isLoading}
+          {...refreshControl}
           contentContainerStyle={bottomBarAwareStyles}
           ItemSeparatorComponent={Platform.select({
             ios: IndentedDivider,
@@ -122,8 +121,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           onSwipeEnd={() => setScrollEnabled(true)}
         />
       )}
-      refreshControl={<RefreshControl {...refreshControl} />}
-      refreshing={recentFilesQuery.isLoading}
+      {...refreshControl}
       contentContainerStyle={bottomBarAwareStyles}
       ItemSeparatorComponent={Platform.select({
         ios: () => <IndentedDivider />,

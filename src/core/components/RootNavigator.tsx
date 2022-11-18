@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
-import { faCalendar, faUser } from '@fortawesome/free-regular-svg-icons';
 import {
   faBook,
+  faCalendar,
   faEllipsis,
   faLocationDot,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
@@ -22,20 +22,13 @@ const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
-  const { colors, fontSizes } = useTheme();
-
-  const tabBarStyle: any = {
-    position: Platform.select({ ios: 'absolute' }),
-  };
-  if (Platform.OS === 'ios') {
-    tabBarStyle.height = 84;
-  }
 
   return (
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
-        tabBarStyle,
+        tabBarStyle: styles.tabBarStyle,
+        tabBarItemStyle: styles.tabBarItemStyle,
         tabBarBackground: Platform.select({
           ios: () => <TranslucentView />,
         }),
@@ -48,7 +41,6 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('teachingScreen.title'),
           tabBarIcon: ({ color, size }) => (
-            // <Icon ios="book" android="auto-stories" color={color} size={size} />
             <Icon icon={faBook} color={color} size={size} />
           ),
         }}
@@ -59,12 +51,6 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color, size }) => (
-            // <Icon
-            //   ios="calendar"
-            //   android="calendar-today"
-            //   color={color}
-            //   size={size}
-            // />
             <Icon icon={faCalendar} color={color} size={size} />
           ),
         }}
@@ -76,7 +62,6 @@ export const RootNavigator = () => {
           headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('placesScreen.title'),
           tabBarIcon: ({ color, size }) => (
-            // <Icon ios="map" android="place" color={color} size={size} />
             <Icon icon={faLocationDot} color={color} size={size} />
           ),
         }}
@@ -87,7 +72,6 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('profileScreen.title'),
           tabBarIcon: ({ color, size }) => (
-            // <Icon ios="person" android="person" color={color} size={size} />
             <Icon icon={faUser} color={color} size={size} />
           ),
         }}
@@ -99,12 +83,6 @@ export const RootNavigator = () => {
           headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('Services'),
           tabBarIcon: ({ color, size }) => (
-            // <Icon
-            //   ios="ellipsis.circle"
-            //   android="more-horiz"
-            //   color={color}
-            //   size={size}
-            // />
             <Icon icon={faEllipsis} color={color} size={size} />
           ),
         }}
@@ -112,3 +90,13 @@ export const RootNavigator = () => {
     </TabNavigator.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarStyle: {
+    position: Platform.OS === 'ios' ? 'absolute' : undefined,
+    height: Platform.OS === 'ios' ? 84 : 60,
+  },
+  tabBarItemStyle: {
+    paddingVertical: Platform.OS === 'android' ? 4 : undefined,
+  },
+});
