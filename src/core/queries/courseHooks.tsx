@@ -49,7 +49,7 @@ export const useGetCourses = () => {
         if (!courses.hasOwnProperty(c.id)) {
           const randomColor = courseColors[Math.round(Math.random() * 6)];
           courses[c.id] = {
-            color: `#${randomColor}`,
+            color: randomColor.color,
             icon: null,
             isHidden: false,
           };
