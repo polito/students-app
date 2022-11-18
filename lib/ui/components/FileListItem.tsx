@@ -1,10 +1,4 @@
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableHighlightProps,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Pie as ProgressIndicator } from 'react-native-progress';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -23,7 +17,7 @@ import {
   faFileZipper,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
+import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -79,7 +73,7 @@ export const FileListItem = ({
   subtitle,
   mimeType,
   ...rest
-}: TouchableHighlightProps & Props) => {
+}: ListItemProps & Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createItemStyles);
 
@@ -87,11 +81,7 @@ export const FileListItem = ({
     <ListItem
       leadingItem={
         <View>
-          <Icon
-            icon={getIconFromMimeType(mimeType)}
-            size={fontSizes['2xl']}
-            style={styles.fileIcon}
-          />
+          <Icon icon={getIconFromMimeType(mimeType)} size={fontSizes['2xl']} />
           {downloadProgress != null ? (
             <View style={styles.downloadedIconContainer}>
               <ProgressIndicator

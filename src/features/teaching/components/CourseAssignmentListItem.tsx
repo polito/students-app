@@ -64,6 +64,10 @@ export const CourseAssignmentListItem = ({
           }
         }}
         title={item.description}
+        titleStyle={{
+          textDecorationLine:
+            item.deletedAt != null ? 'line-through' : undefined,
+        }}
         subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${formatFileDate(
           item.uploadedAt,
         )}`}

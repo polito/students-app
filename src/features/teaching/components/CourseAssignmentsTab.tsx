@@ -36,27 +36,31 @@ export const CourseAssignmentsTab = ({
         scrollEnabled={scrollEnabled}
       >
         <List indented>
-          {assignmentsQuery.data?.data.map(assignment => (
-            <Swipeable
-              key={assignment.id}
-              onRef={ref => (swipeableRef.current = ref)}
-              rightContainerStyle={{ backgroundColor: colors.danger[500] }}
-              rightButtons={[
-                <SwipeableAction
-                  icon={faTrashCan}
-                  label={t('common.retract')}
-                  backgroundColor={colors.danger[500]}
-                  onPress={() => {
-                    swipeableRef.current?.recenter();
-                  }}
-                ></SwipeableAction>,
-              ]}
-              onSwipeStart={() => setScrollEnabled(false)}
-              onSwipeComplete={() => setScrollEnabled(true)}
-            >
+          {assignmentsQuery.data?.data.map(assignment =>
+            assignment.deletedAt == null ? (
+              <Swipeable
+                key={assignment.id}
+                onRef={ref => (swipeableRef.current = ref)}
+                rightContainerStyle={{ backgroundColor: colors.danger[500] }}
+                rightButtons={[
+                  <SwipeableAction
+                    icon={faTrashCan}
+                    label={t('common.retract')}
+                    backgroundColor={colors.danger[500]}
+                    onPress={() => {
+                      swipeableRef.current?.recenter();
+                    }}
+                  ></SwipeableAction>,
+                ]}
+                onSwipeStart={() => setScrollEnabled(false)}
+                onSwipeComplete={() => setScrollEnabled(true)}
+              >
+                <CourseAssignmentListItem item={assignment} />
+              </Swipeable>
+            ) : (
               <CourseAssignmentListItem item={assignment} />
-            </Swipeable>
-          ))}
+            ),
+          )}
         </List>
       </ScrollView>
       <CtaButton
