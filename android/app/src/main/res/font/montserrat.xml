@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font app:fontStyle="normal" app:fontWeight="400" app:font="@font/montserrat_regular" />
+    <font app:fontStyle="italic" app:fontWeight="400" app:font="@font/montserrat_italic"/>
+    <font app:fontStyle="normal" app:fontWeight="500" app:font="@font/montserrat_medium" />
+    <font app:fontStyle="italic" app:fontWeight="500" app:font="@font/montserrat_mediumitalic"/>
+    <font app:fontStyle="normal" app:fontWeight="600" app:font="@font/montserrat_semibold" />
+    <font app:fontStyle="italic" app:fontWeight="600" app:font="@font/montserrat_semibolditalic"/>
+    <font app:fontStyle="normal" app:fontWeight="700" app:font="@font/montserrat_bold" />
+    <font app:fontStyle="italic" app:fontWeight="700" app:font="@font/montserrat_bolditalic"/>
+</font-family>

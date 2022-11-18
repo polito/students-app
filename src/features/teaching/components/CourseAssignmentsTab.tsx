@@ -1,11 +1,16 @@
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
-import { SectionList } from '@lib/ui/components/SectionList';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { Swipeable } from '@kyupss/native-swipeable';
+import { CtaButton } from '@lib/ui/components/CtaButton';
+import { List } from '@lib/ui/components/List';
+import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { CourseAssignmentListItem } from './CourseAssignmentListItem';
@@ -14,37 +19,59 @@ export const CourseAssignmentsTab = ({
   courseId,
   navigation,
 }: CourseTabProps) => {
+  const { colors } = useTheme();
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  // @ts-expect-error due to Swipeable lib type patch
+  const swipeableRef = useRef<Swipeable>();
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
+  const refreshControl = useRefreshControl(assignmentsQuery);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
-    <ScrollView
-      refreshControl={createRefreshControl(assignmentsQuery)}
-      style={bottomBarAwareStyles}
-    >
-      <View style={{ margin: spacing[4] }}>
-        <Button
-          color={colors.primary[600]}
-          title={t('courseAssignmentUploadScreen.title')}
-          onPress={() =>
-            navigation.navigate({
-              name: 'CourseAssignmentUpload',
-              params: { courseId },
-            })
-          }
-        />
-      </View>
-      <SectionList>
-        {assignmentsQuery.data?.data.map((assignment, index) => (
-          <CourseAssignmentListItem
-            key={assignment.id}
-            item={assignment}
-            isDownloaded={index % 3 === 0}
-          />
-        ))}
-      </SectionList>
-    </ScrollView>
+    <>
+      <ScrollView
+        refreshControl={<RefreshControl {...refreshControl} />}
+        contentContainerStyle={bottomBarAwareStyles}
+        scrollEnabled={scrollEnabled}
+      >
+        <List indented>
+          {assignmentsQuery.data?.data.map(assignment =>
+            assignment.deletedAt == null ? (
+              <Swipeable
+                key={assignment.id}
+                onRef={ref => (swipeableRef.current = ref)}
+                rightContainerStyle={{ backgroundColor: colors.danger[500] }}
+                rightButtons={[
+                  <SwipeableAction
+                    icon={faTrashCan}
+                    label={t('common.retract')}
+                    backgroundColor={colors.danger[500]}
+                    onPress={() => {
+                      swipeableRef.current?.recenter();
+                    }}
+                  ></SwipeableAction>,
+                ]}
+                onSwipeStart={() => setScrollEnabled(false)}
+                onSwipeComplete={() => setScrollEnabled(true)}
+              >
+                <CourseAssignmentListItem item={assignment} />
+              </Swipeable>
+            ) : (
+              <CourseAssignmentListItem item={assignment} />
+            ),
+          )}
+        </List>
+      </ScrollView>
+      <CtaButton
+        title={t('courseAssignmentUploadScreen.title')}
+        onPress={() =>
+          navigation.navigate({
+            name: 'CourseAssignmentUpload',
+            params: { courseId },
+          })
+        }
+      />
+    </>
   );
 };

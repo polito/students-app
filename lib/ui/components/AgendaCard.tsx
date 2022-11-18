@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { TouchableHighlight, View } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 import { Card, Props as CardProps } from './Card';
 import { LiveIndicator } from './LiveIndicator';
@@ -46,6 +47,7 @@ export const AgendaCard = ({
 
   return (
     <Card
+      rounded
       style={[
         {
           flex: 1,

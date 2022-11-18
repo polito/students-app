@@ -10,12 +10,12 @@ export interface TranslucentViewProps {
 
 export const TranslucentView = ({
   style = null,
-  blurAmount = 5,
+  blurAmount = 15,
 }: TranslucentViewProps) => {
   const scheme = useColorScheme();
   return (
     <BlurView
-      blurType={scheme}
+      blurType="ultraThinMaterial"
       blurAmount={blurAmount}
       style={{ ...(StyleSheet.absoluteFill as ViewStyle), ...style }}
     />

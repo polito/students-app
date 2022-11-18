@@ -1,18 +1,21 @@
 import { Fragment, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  faChevronDown,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { defaultLineHeightMultiplier } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
@@ -20,6 +23,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const { fontSizes, colors, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const noticesQuery = useGetCourseNotices(courseId);
+  const refreshControl = useRefreshControl(noticesQuery);
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
@@ -39,23 +43,11 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               baseStyle={{
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
-                fontFamily: 'Poppins',
+                fontFamily: 'Montserrat',
                 fontSize: fontSizes.sm,
-                lineHeight: fontSizes.sm * defaultLineHeightMultiplier,
               }}
               source={{ dom }}
-              systemFonts={['Poppins']}
-              tagsStyles={{
-                b: {
-                  fontWeight: 'bold',
-                },
-                strong: {
-                  fontWeight: 'bold',
-                },
-                i: {
-                  fontStyle: 'italic',
-                },
-              }}
+              systemFonts={['Montserrat']}
             />
           ),
           open: false,
@@ -68,9 +60,9 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(noticesQuery)}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <List>
+      <List dividers>
         {notices.map((notice, index) => (
           <Fragment key={notice.id}>
             <ListItem
@@ -85,13 +77,9 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               }
               trailingItem={
                 <Icon
-                  name={
-                    notice.open
-                      ? 'chevron-down-outline'
-                      : 'chevron-forward-outline'
-                  }
+                  icon={notice.open ? faChevronDown : faChevronRight}
                   color={colors.secondaryText}
-                  size={fontSizes['2xl']}
+                  size={fontSizes.lg}
                   style={{ marginRight: -spacing[1] }}
                 />
               }

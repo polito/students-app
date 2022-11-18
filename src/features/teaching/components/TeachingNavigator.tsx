@@ -11,6 +11,8 @@ import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssig
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
+import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
+import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseScreen } from '../screens/CourseScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
@@ -24,6 +26,7 @@ export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
+  CoursePreferences: { courseId: number };
   CourseDirectory: { courseId: number; directoryId?: string };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
@@ -31,6 +34,7 @@ export type TeachingStackParamList = {
   CourseAssignmentPdfCreation: { courseId: number };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
+  CourseIconPicker: { courseId: number };
   Exams: undefined;
   Exam: { id: number };
   Transcript: undefined;
@@ -51,7 +55,7 @@ export const TeachingNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        headerBlurEffect: 'regular',
+        headerBlurEffect: 'systemUltraThinMaterial',
         ...titlesStyles(colors),
       }}
     >
@@ -75,12 +79,29 @@ export const TeachingNavigator = () => {
         component={CourseScreen}
         options={{
           headerLargeStyle: {
-            backgroundColor: colors.surface,
+            backgroundColor: colors.headers,
           },
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="CoursePreferences"
+        component={CoursePreferencesScreen}
+        options={{
+          title: t('common.preferences'),
+          headerLargeTitle: false,
+          headerBackTitle: t('common.course'),
+        }}
+      />
+      <Stack.Screen
+        name="CourseIconPicker"
+        component={CourseIconPickerScreen}
+        options={{
+          title: t('courseIconPickerScreen.title'),
+          headerLargeTitle: false,
         }}
       />
       <Stack.Screen
@@ -101,7 +122,7 @@ export const TeachingNavigator = () => {
         component={CourseGuideScreen}
         options={{
           headerTitle: t('courseGuideScreen.title'),
-          headerBackTitle: t('courseScreen.title'),
+          headerBackTitle: t('common.course'),
         }}
       />
       <Stack.Screen
@@ -109,9 +130,8 @@ export const TeachingNavigator = () => {
         component={CourseVideolectureScreen}
         options={{
           headerLargeTitle: false,
-          headerTransparent: false,
-          headerBackTitle: t('courseScreen.title'),
-          title: t('Video lecture'),
+          headerBackTitle: t('common.course'),
+          title: t('common.videoLecture'),
         }}
       />
       <Stack.Screen
@@ -119,8 +139,7 @@ export const TeachingNavigator = () => {
         component={CourseVirtualClassroomScreen}
         options={{
           headerLargeTitle: false,
-          headerTransparent: false,
-          headerBackTitle: t('courseScreen.title'),
+          headerBackTitle: t('common.course'),
           title: t('courseVirtualClassroomScreen.title'),
         }}
       />
@@ -137,7 +156,7 @@ export const TeachingNavigator = () => {
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
         options={{
-          headerBackTitle: t('courseScreen.title'),
+          headerBackTitle: t('common.course'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
           headerLargeTitle: false,
         }}
@@ -171,7 +190,7 @@ export const TeachingNavigator = () => {
         name="Transcript"
         component={TranscriptScreen}
         options={{
-          headerTitle: t('Transcript'),
+          headerTitle: t('common.transcript'),
         }}
       />
     </Stack.Navigator>

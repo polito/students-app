@@ -37,7 +37,7 @@ export const AgendaNavigator = () => {
         name="Lecture"
         component={LectureScreen}
         options={{
-          headerTitle: t('Lecture'),
+          headerTitle: t('common.lecture'),
         }}
       />
     </Stack.Navigator>

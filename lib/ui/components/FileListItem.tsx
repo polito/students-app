@@ -1,70 +1,109 @@
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableHighlightProps,
-  View,
-  ViewStyle,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Pie as ProgressIndicator } from 'react-native-progress';
 
-import { ListItem } from '@lib/ui/components/ListItem';
-import { Text } from '@lib/ui/components/Text';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import {
+  faCheckCircle,
+  faFile,
+  faFileAudio,
+  faFileCode,
+  faFileCsv,
+  faFileExcel,
+  faFileImage,
+  faFilePdf,
+  faFilePowerpoint,
+  faFileVideo,
+  faFileWord,
+  faFileZipper,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
+import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import { formatFileSize } from '../../../src/utils/files';
+type IconType = string;
+
+const mimeTypeIcons: Record<IconType, IconDefinition> = {
+  pdf: faFilePdf,
+  image: faFileImage,
+  word: faFileWord,
+  excel: faFileExcel,
+  zip: faFileZipper,
+  tar: faFileZipper,
+  gz: faFileZipper,
+  rar: faFileZipper,
+  video: faFileVideo,
+  powerpoint: faFilePowerpoint,
+  csv: faFileCsv,
+  xml: faFileCode,
+  audio: faFileAudio,
+  html: faFileCode,
+  javascript: faFileCode,
+  json: faFileCode,
+  iso: faFileZipper,
+  '7z': faFileZipper,
+};
+
+const getIconFromMimeType = (mimeType?: string) => {
+  if (!mimeType) return faFile;
+  const keywords = new RegExp(Object.keys(mimeTypeIcons).join('|'), 'i');
+  const match = mimeType.match(keywords);
+  const type: IconType = match?.[0];
+  if (type && type in mimeTypeIcons) {
+    return mimeTypeIcons[type];
+  }
+  return faFile;
+};
 
 interface Props {
   title: string | JSX.Element;
   subtitle?: string;
-  sizeInKiloBytes: number;
+  sizeInKiloBytes?: number;
   trailingItem?: JSX.Element;
-  isDownloaded: boolean;
+  isDownloaded?: boolean;
+  downloadProgress?: number;
   containerStyle?: StyleProp<ViewStyle>;
+  mimeType?: string;
 }
 
 export const FileListItem = ({
-  isDownloaded,
-  sizeInKiloBytes,
+  isDownloaded = false,
+  downloadProgress,
   subtitle,
+  mimeType,
   ...rest
-}: TouchableHighlightProps & Props) => {
+}: ListItemProps & Props) => {
+  const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createItemStyles);
 
   return (
     <ListItem
       leadingItem={
         <View>
-          <Icon name="document-outline" size={24} style={styles.fileIcon} />
-          {isDownloaded && (
-            <Icon
-              name="checkmark-circle"
-              size={20}
-              style={styles.downloadedIcon}
-            />
+          <Icon icon={getIconFromMimeType(mimeType)} size={fontSizes['2xl']} />
+          {downloadProgress != null ? (
+            <View style={styles.downloadedIconContainer}>
+              <ProgressIndicator
+                progress={downloadProgress}
+                size={12}
+                color={colors.secondary[600]}
+              />
+            </View>
+          ) : (
+            isDownloaded && (
+              <View style={styles.downloadedIconContainer}>
+                <Icon
+                  icon={faCheckCircle}
+                  size={12}
+                  color={colors.secondary[600]}
+                />
+              </View>
+            )
           )}
         </View>
       }
-      subtitle={
-        <View style={styles.subtitleContainer}>
-          <Text
-            variant="secondaryText"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={styles.subtitle}
-          >
-            {subtitle}
-          </Text>
-          <Text
-            variant="secondaryText"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={styles.fileSize}
-          >
-            {formatFileSize(sizeInKiloBytes)}
-          </Text>
-        </View>
-      }
+      subtitle={subtitle}
       {...rest}
     />
   );
@@ -72,25 +111,18 @@ export const FileListItem = ({
 
 const createItemStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
-    fileIcon: {
-      color: colors.heading,
-      marginRight: spacing[3],
-    },
     fileSize: {
       paddingLeft: spacing[1],
     },
-    downloadedIcon: {
+    downloadedIconContainer: {
+      padding: 2,
+      borderRadius: 16,
+      backgroundColor: colors.background,
       position: 'absolute',
-      bottom: -10,
-      right: 5,
-      color: colors.secondary[600],
+      bottom: -5,
+      right: -2,
     },
     subtitle: {
       flexShrink: 1,
-    },
-    subtitleContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
     },
   });

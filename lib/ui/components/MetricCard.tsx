@@ -1,4 +1,5 @@
 import { Text } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 import { Card, Props as CardProps } from './Card';
 
@@ -20,6 +21,8 @@ export const MetricCard = ({
 
   return (
     <Card
+      rounded
+      spaced={false}
       style={[
         {
           flex: 1,

@@ -1,13 +1,13 @@
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
   View,
 } from 'react-native';
-import { ProgressChart } from 'react-native-chart-kit';
 
 import { Card } from '@lib/ui/components/Card';
 import { Section } from '@lib/ui/components/Section';
@@ -17,17 +17,18 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import color from 'color';
-
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
+import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
@@ -38,20 +39,29 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const preferences = useContext(PreferencesContext);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const refreshControl = useRefreshControl(
+    coursesQuery,
+    examsQuery,
+    studentQuery,
+  );
+  const exams = useMemo(
+    () =>
+      examsQuery.data?.data
+        .sort(a => (a.status === ExamStatusEnum.Booked ? -1 : 1))
+        .slice(0, 4) ?? [],
+    [examsQuery],
+  );
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(
-        coursesQuery,
-        examsQuery,
-        studentQuery,
-      )}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <View style={styles.sectionsContainer}>
         <Section>
@@ -59,10 +69,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
           />
-          <SectionList loading={coursesQuery.isLoading}>
-            {coursesQuery.data?.data.slice(0, 4).map(course => (
-              <CourseListItem key={course.shortcode} course={course} />
-            ))}
+          <SectionList loading={coursesQuery.isLoading} indented>
+            {coursesQuery.data?.data
+              .sort(
+                (a, b) =>
+                  preferences.courses[a.id]?.order -
+                  preferences.courses[b.id]?.order,
+              )
+              .filter(c => !preferences.courses[c.id]?.isHidden)
+              .map(course => (
+                <CourseListItem key={course.shortcode} course={course} />
+              ))}
           </SectionList>
         </Section>
         <Section>
@@ -70,22 +87,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
           />
-          <SectionList loading={examsQuery.isLoading}>
-            {examsQuery.data?.data.slice(0, 4).map(exam => (
+          <SectionList loading={examsQuery.isLoading} indented>
+            {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>
         </Section>
         <Section>
           <SectionHeader
-            title={t('transcriptScreen.title')}
+            title={t('common.transcript')}
             linkTo={{ screen: 'Transcript' }}
           />
 
-          <Card
-            rounded={Platform.select({ android: false })}
-            style={styles.sectionContent}
-          >
+          <Card style={styles.sectionContent}>
             {studentQuery.isLoading ? (
               <ActivityIndicator style={styles.loader} />
             ) : (
@@ -112,26 +126,12 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     <Text variant="secondaryText">
                       {studentQuery.data?.data.totalAcquiredCredits}/
                       {studentQuery.data?.data.totalCredits}{' '}
-                      {t('words.credits')}
+                      {t('common.credits').toLowerCase()}
                     </Text>
                   </View>
                   <ProgressChart
-                    data={{
-                      labels: ['Test'],
-                      data: [
-                        studentQuery.data?.data.totalAcquiredCredits /
-                          studentQuery.data?.data.totalCredits,
-                      ],
-                    }}
-                    width={90}
-                    height={90}
-                    hideLegend={true}
-                    chartConfig={{
-                      backgroundGradientFromOpacity: 0,
-                      backgroundGradientToOpacity: 0,
-                      color: (opacity = 1) =>
-                        color(colors.primary[400]).alpha(opacity).toString(),
-                    }}
+                    data={[80 / 120, 40 / 120]}
+                    colors={[colors.primary[400], colors.secondary[500]]}
                   />
                 </View>
               </TouchableHighlight>
@@ -156,6 +156,5 @@ const createStyles = ({ spacing }: Theme) =>
     },
     sectionContent: {
       marginVertical: spacing[2],
-      marginHorizontal: Platform.select({ ios: spacing[4] }),
     },
   });

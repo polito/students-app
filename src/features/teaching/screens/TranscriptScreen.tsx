@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
-import { ProgressChart } from 'react-native-chart-kit';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
@@ -12,88 +11,131 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import color from 'color';
-
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetGrades,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
+import { ProgressChart } from '../components/ProgressChart';
 
 export const TranscriptScreen = () => {
   const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, fontSizes, fontWeights } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
+  const refreshControl = useRefreshControl(studentQuery, gradesQuery);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{
-        paddingVertical: spacing[5],
-      }}
-      refreshControl={createRefreshControl(studentQuery, gradesQuery)}
-      style={bottomBarAwareStyles}
+      contentContainerStyle={[
+        {
+          paddingVertical: spacing[5],
+        },
+        bottomBarAwareStyles,
+      ]}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <View
-        style={{
-          flexDirection: 'row',
-          paddingHorizontal: spacing[5],
-          marginBottom: spacing[5],
-        }}
-      >
-        <View style={{ flex: 1, marginRight: spacing[5] }}>
+      <Section>
+        <SectionHeader title={t('transcriptScreen.yourCareer')} />
+        <Card
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: spacing[4],
+            marginTop: spacing[2],
+            marginBottom: spacing[3],
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.secondary[500],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+                marginBottom: spacing[2],
+              }}
+            >
+              40/120 CFU
+            </Text>
+            <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.primary[400],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+              }}
+            >
+              80/120 CFU
+            </Text>
+          </View>
+          <ProgressChart
+            data={[80 / 120, 40 / 120]}
+            colors={[colors.primary[400], colors.secondary[500]]}
+          />
+        </Card>
+      </Section>
+
+      <Section>
+        <SectionHeader title={t('transcriptScreen.thisYear')} />
+        <Card
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: spacing[4],
+            marginTop: spacing[2],
+            marginBottom: spacing[3],
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.secondary[500],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+                marginBottom: spacing[2],
+              }}
+            >
+              6/60 CFU
+            </Text>
+            <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.primary[400],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+              }}
+            >
+              20/60 CFU
+            </Text>
+          </View>
+          <ProgressChart
+            data={[20 / 60, 6 / 60]}
+            colors={[colors.primary[400], colors.secondary[500]]}
+          />
+        </Card>
+      </Section>
+
+      <Section>
+        <SectionHeader title={t('transcriptScreen.averages')} />
+        <Grid style={{ paddingHorizontal: spacing[5], marginTop: spacing[2] }}>
           <MetricCard
             name={t('transcriptScreen.weightedAverageLabel')}
             value={studentQuery.data?.data.averageGrade}
-            style={{ marginBottom: spacing[5] }}
           />
           <MetricCard
             name={t('transcriptScreen.finalAverageLabel')}
-            value={studentQuery.data?.data.averageGradePurged}
+            value={studentQuery.data?.data.averageGradePurged ?? '--'}
           />
-        </View>
-        <Card
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <ProgressChart
-            data={{
-              labels: ['Test'],
-              data: [
-                studentQuery.data?.data.totalAcquiredCredits /
-                  studentQuery.data?.data.totalCredits,
-              ],
-            }}
-            width={120}
-            height={120}
-            hideLegend={true}
-            chartConfig={{
-              backgroundGradientFromOpacity: 0,
-              backgroundGradientToOpacity: 0,
-              color: (opacity = 1) =>
-                color(colors.primary[400]).alpha(opacity).toString(),
-            }}
-          />
-        </Card>
-      </View>
-      <Grid style={{ paddingHorizontal: spacing[5] }}>
-        <MetricCard
-          name={t('transcriptScreen.acquiredCreditsLabel')}
-          value={[
-            studentQuery.data?.data.totalAcquiredCredits,
-            studentQuery.data?.data.totalCredits,
-          ].join('/')}
-        />
-        <MetricCard
-          name={t('transcriptScreen.attendedCreditsLabel')}
-          value={[
-            studentQuery.data?.data.enrollmentAttendedCredits,
-            studentQuery.data?.data.enrollmentCredits,
-          ].join('/')}
-        />
-      </Grid>
+        </Grid>
+      </Section>
+
       <Section>
         <SectionHeader
           title={t('transcriptScreen.provisionalGradesSectionTitle')}

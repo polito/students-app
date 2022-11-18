@@ -7,8 +7,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -16,7 +17,7 @@ import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
-interface Props {
+export interface ListItemProps extends TouchableHighlightProps {
   title: string | JSX.Element;
   subtitle?: string | JSX.Element;
   leadingItem?: JSX.Element;
@@ -25,6 +26,7 @@ interface Props {
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
+  isNavigationAction?: boolean;
 }
 
 /**
@@ -42,8 +44,11 @@ export const ListItem = ({
   linkTo,
   containerStyle,
   onPress,
+  isNavigationAction,
+  disabled,
+  style,
   ...rest
-}: TouchableHighlightProps & Props) => {
+}: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
@@ -63,11 +68,19 @@ export const ListItem = ({
             }
           : onPress
       }
+      style={[
+        {
+          opacity: disabled ? 0.6 : 1,
+        },
+        style,
+      ]}
+      disabled={disabled}
       {...rest}
     >
       <View
         style={[
           {
+            minHeight: 60,
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: spacing[5],
@@ -76,7 +89,20 @@ export const ListItem = ({
           containerStyle,
         ]}
       >
-        {leadingItem}
+        {leadingItem && (
+          <View
+            style={{
+              width: 38,
+              height: 38,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: -7,
+              marginRight: spacing[2],
+            }}
+          >
+            {leadingItem}
+          </View>
+        )}
         <View style={{ flex: 1 }}>
           {typeof title === 'string' ? (
             <Text
@@ -84,7 +110,6 @@ export const ListItem = ({
               style={[
                 {
                   fontSize: fontSizes.md,
-                  lineHeight: fontSizes.md * 1.5,
                 },
                 titleStyle,
               ]}
@@ -97,31 +122,36 @@ export const ListItem = ({
           ) : (
             title
           )}
-          {typeof subtitle === 'string' ? (
-            <Text
-              variant="secondaryText"
-              style={[
-                {
-                  fontSize: fontSizes.sm,
-                  lineHeight: fontSizes.sm * 1.5,
-                },
-                subtitleStyle,
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {subtitle}
-            </Text>
-          ) : (
-            subtitle
-          )}
+          {subtitle ? (
+            typeof subtitle === 'string' ? (
+              <Text
+                variant="secondaryText"
+                style={[
+                  {
+                    fontSize: fontSizes.sm,
+                  },
+                  subtitleStyle,
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {subtitle}
+              </Text>
+            ) : (
+              subtitle
+            )
+          ) : null}
         </View>
-        {linkTo && Platform.OS === 'ios' ? (
+        {!trailingItem &&
+        (linkTo || isNavigationAction) &&
+        Platform.OS === 'ios' ? (
           <Icon
-            name="chevron-forward-outline"
+            icon={faChevronRight}
             color={colors.secondaryText}
-            size={fontSizes['2xl']}
-            style={{ marginRight: -spacing[1] }}
+            style={{
+              marginLeft: spacing[1],
+              marginRight: -spacing[1],
+            }}
           />
         ) : (
           trailingItem

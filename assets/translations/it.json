@@ -15,10 +15,15 @@
   "courseDirectoryScreen": {
     "noResult": "Nessun risultato trovato"
   },
+  "courseFileListItem": {
+    "downloadError": "Qualcosa è andato storto con durante il download",
+    "reDownloadFile": "Ri-scarica file"
+  },
   "courseFilesTab": {
-    "title": "Materiali",
+    "browseFiles": "Esplora file",
+    "empty": "Nessun file disponibile",
     "recentSectionTitle": "File recenti",
-    "empty": "Nessun file disponibile"
+    "title": "Materiali"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -27,7 +32,6 @@
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
     "moreSectionTitle": "Altro",
-    "periodLabel": "Periodo",
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
@@ -35,20 +39,27 @@
   },
   "courseLecturesTab": {
     "title": "Lezioni",
-    "videoLecturesSectionTitle": "Videolezioni",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
     "title": "Avvisi"
   },
-  "courseScreen": {
-    "title": "Corso"
-  },
-  "courseVideoLectureScreen": {
-    "title": "Videolezione"
-  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
+  },
+  "coursePreferencesScreen": {
+    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
+    "cleanCourseFiles": "Rimuovi file del corso",
+    "cleanCourseFilesSubtitle": "Libera {{size}}",
+    "filesSubtitle": "Nuovi materiali disponibili",
+    "hideInExtracts": "Nascondi negli estratti",
+    "lecturesSubtitle": "Nuove lezioni disponibili",
+    "noticesSubtitle": "Avvisi mandati dai professori",
+    "showInExtracts": "Mostra negli estratti",
+    "showInExtractsSubtitle": "In home screen e agenda"
+  },
+  "courseIconPickerScreen": {
+    "title": "Seleziona un'icona"
   },
   "coursesScreen": {
     "title": "Corsi",
@@ -65,9 +76,9 @@
     "title": "Appelli"
   },
   "loginScreen": {
-    "usernameLabel": "Matricola",
+    "cta": "Accedi",
     "passwordLabel": "Password",
-    "cta": "Accedi"
+    "usernameLabel": "Matricola"
   },
   "messagesScreen": {
     "title": "Archivio messaggi"
@@ -90,18 +101,62 @@
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
+    "averages": "Medie",
     "finalAverageLabel": "Media depurata",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
-    "title": "Libretto",
-    "weightedAverageLabel": "Media ponderata"
+    "thisYear": "Questo anno accademico",
+    "weightedAverageLabel": "Media ponderata",
+    "yourCareer": "La tua carriera"
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
   },
-  "words": {
-    "credits": "crediti",
-    "exam": "esame",
-    "lecture": "lezione",
-    "teacher": "docente"
+  "colors": {
+    "darkBlue": "Blu scuro",
+    "orange": "Arancione",
+    "rose":  "Rosa",
+    "red": "Rosso",
+    "green":  "Verde",
+    "darkOrange": "Arancione scuro",
+    "lightBlue":  "Blu chiaro"
+  },
+  "common": {
+    "areYouSure?": "Sei sicuro?",
+    "booking": "Prenotazione",
+    "booking_plural": "Prenotazioni",
+    "cancel": "Annulla",
+    "color": "Colore",
+    "course": "Corso",
+    "course_plural": "Corsi",
+    "credits": "Crediti",
+    "delete": "Elimina",
+    "deadline": "Scadenza",
+    "deadline_plural": "Scadenze",
+    "download": "Scarica",
+    "exam": "Esame",
+    "file": "File",
+    "file_plural": "File",
+    "icon": "Icona",
+    "lecture": "Lezione",
+    "lecture_plural": "Lezioni",
+    "notice": "Avviso",
+    "notice_plural": "Avvisi",
+    "notifications": "Notifiche",
+    "ok": "Ok",
+    "options": "Opzioni",
+    "period": "Period",
+    "preferences": "Preferenze",
+    "refresh": "Aggiorna",
+    "remove": "Rimuovi",
+    "retract": "Ritira",
+    "services": "Servizi",
+    "stop": "Stop",
+    "teacher": "Docente",
+    "transcript": "Libretto",
+    "videoLecture": "Video lezione",
+    "videoLecture_plural": "Video lezioni",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classroom",
+    "visualization": "Visualizzazione"
   }
 }

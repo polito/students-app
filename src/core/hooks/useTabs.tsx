@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
+
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -19,7 +20,10 @@ export const useTabs = (options: TabOptions[]) => {
         <Tabs
           selectedIndexes={[selectedTabIndex]}
           style={{
-            backgroundColor: colors.surface,
+            backgroundColor: Platform.select({
+              ios: colors.headers,
+              android: colors.surface,
+            }),
             borderBottomWidth: Platform.select({
               ios: StyleSheet.hairlineWidth,
             }),

@@ -1,19 +1,27 @@
 import { PropsWithChildren } from 'react';
 import { ActivityIndicator, Platform } from 'react-native';
+
 import { List } from '@lib/ui/components/List';
+
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 
 type Props = PropsWithChildren<{
   dividers?: boolean;
   loading?: boolean;
+  indented?: boolean;
 }>;
 
 /**
  * Displays a list of items with automatic dividers inside a card.
  * (Only suitable for short non virtual-scrolled lists)
  */
-export const SectionList = ({ children, loading = false, dividers }: Props) => {
+export const SectionList = ({
+  children,
+  loading = false,
+  indented = false,
+  dividers,
+}: Props) => {
   const { spacing } = useTheme();
 
   return (
@@ -31,7 +39,9 @@ export const SectionList = ({ children, loading = false, dividers }: Props) => {
           }}
         />
       ) : (
-        <List dividers={dividers}>{children}</List>
+        <List dividers={dividers} indented={indented}>
+          {children}
+        </List>
       )}
     </Card>
   );

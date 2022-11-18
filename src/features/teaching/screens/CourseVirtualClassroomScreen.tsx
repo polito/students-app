@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -8,8 +8,8 @@ import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -28,11 +28,13 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
     l => l.id === lectureId,
   );
   const teacherQuery = useGetPerson(lecture.teacherId);
+  const refreshControl = useRefreshControl(virtualClassroomQuery, teacherQuery);
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(virtualClassroomQuery, teacherQuery)}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <VideoPlayer
         videoUrl="https://lucapezzolla.com/20210525.mp4"
@@ -47,7 +49,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
         {teacherQuery.data && (
           <PersonListItem
             person={teacherQuery.data?.data}
-            subtitle={t('words.teacher')}
+            subtitle={t('common.teacher')}
           />
         )}
       </SectionList>
