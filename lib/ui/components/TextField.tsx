@@ -61,6 +61,7 @@ const createStyles = ({ fontSizes, spacing, colors }: Theme) =>
     },
     label: {
       fontSize: fontSizes.md,
+      marginBottom: 5,
     },
     input: {
       fontSize: fontSizes.lg,

@@ -1,15 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Dimensions,
-  Image,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { TextField } from '@lib/ui/components/TextField';
@@ -52,33 +46,40 @@ export const CourseAssignmentUploadConfirmationScreen = ({ route }: Props) => {
   };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={[bottomBarAwareStyles, styles.screen]}
-    >
-      <Section>
-        <SectionHeader title={t('Confirm upload')} />
-        <View style={styles.formContainer}>
-          <TextField
-            label={t('Assignment description')}
-            value={description}
-            onChangeText={setDescription}
-            editable={!uploadMutation.isLoading}
-            returnKeyType="send"
-            onSubmitEditing={uploadFile}
-          />
-          <Button title="Upload assignment" onPress={uploadFile} />
-        </View>
+    <View style={[bottomBarAwareStyles, styles.screen]}>
+      <Section style={styles.formContainer}>
+        <TextField
+          label={t('courseAssignmentUploadConfirmationScreen.descriptionLabel')}
+          value={description}
+          onChangeText={setDescription}
+          editable={!uploadMutation.isLoading}
+          returnKeyType="send"
+          onSubmitEditing={uploadFile}
+        />
+        <CtaButton
+          title={t('courseAssignmentUploadConfirmationScreen.ctaUpload')}
+          onPress={uploadFile}
+          loading={uploadMutation.isLoading}
+          success={uploadMutation.isSuccess}
+        />
       </Section>
       {fileUri.endsWith('pdf') && (
-        <Section>
-          <SectionHeader title={t('File preview')} />
+        <Section style={styles.previewSection}>
+          <SectionHeader
+            title={t(
+              'courseAssignmentUploadConfirmationScreen.previewSectionTitle',
+            )}
+          />
           <Pdf source={{ uri: fileUri }} style={styles.preview} />
         </Section>
       )}
       {/\.jpe?g|gif|png$/i.test(fileUri) && (
-        <Section>
-          <SectionHeader title={t('File preview')} />
+        <Section style={styles.previewSection}>
+          <SectionHeader
+            title={t(
+              'courseAssignmentUploadConfirmationScreen.previewSectionTitle',
+            )}
+          />
           <Image
             source={{ uri: fileUri }}
             style={styles.preview}
@@ -86,7 +87,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({ route }: Props) => {
           />
         </Section>
       )}
-    </ScrollView>
+    </View>
   );
 };
 const createStyles = ({ spacing }: Theme) =>
@@ -96,10 +97,15 @@ const createStyles = ({ spacing }: Theme) =>
     },
     screen: {
       paddingTop: spacing[5],
+      flex: 1,
+    },
+    previewSection: {
+      flex: 1,
+      flexGrow: 1,
     },
     preview: {
-      flex: 1,
       width: Dimensions.get('window').width,
-      height: 300,
+      flexGrow: 1,
+      marginTop: 5,
     },
   });

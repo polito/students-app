@@ -23,6 +23,13 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
+  const takePicture = () =>
+    openCamera({
+      mediaType: 'photo',
+      cropping: true,
+      freeStyleCropEnabled: true,
+    });
+
   const handlePickedFile = (fileUri: string) => {
     navigation.navigate('CourseAssignmentUploadConfirmation', {
       courseId,
@@ -44,7 +51,6 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
             copyTo: 'cachesDirectory',
           })
             .then(response => {
-              console.log(response);
               handlePickedFile(response.fileCopyUri);
             })
             .catch(e => {
@@ -58,9 +64,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
         subtitle={'con la fotocamera del telefono'}
         iconName="camera-outline"
         onPress={() => {
-          openCamera({
-            mediaType: 'photo',
-          })
+          takePicture()
             .then(image => {
               handlePickedFile(image.path);
             })
@@ -74,9 +78,16 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
         subtitle={'crea un file pdf'}
         iconName="scan-outline"
         onPress={() => {
-          navigation.navigate('CourseAssignmentPdfCreation', {
-            courseId,
-          });
+          takePicture()
+            .then(image => {
+              navigation.navigate('CourseAssignmentPdfCreation', {
+                courseId,
+                firstImageUri: image.path,
+              });
+            })
+            .catch(e => {
+              console.log(e);
+            });
         }}
       />
     </ScrollView>

@@ -8,6 +8,18 @@
   "courseAssignmentsTab": {
     "title": "Elaborati"
   },
+  "courseAssignmentPdfCreationScreen": {
+    "title": "Crea PDF",
+    "pageNumber": "Pagina {{index}} di {{count}}",
+    "ctaAddPage": "Aggiungi",
+    "ctaConfirm": "Crea PDF",
+    "ctaDeletePage": "Elimina"
+  },
+  "courseAssignmentUploadConfirmationScreen": {
+    "ctaUpload": "Carica elaborato",
+    "descriptionLabel": "Descrizione elaborato",
+    "previewSectionTitle": "Anteprima del file"
+  },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
     "subtitle_plural": "{{count}} file"

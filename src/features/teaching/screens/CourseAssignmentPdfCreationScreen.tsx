@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import {
   Animated,
   Dimensions,
+  FlatList,
   Image,
   StyleSheet,
   TouchableHighlight,
   View,
   ViewToken,
 } from 'react-native';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,23 +31,18 @@ type Props = NativeStackScreenProps<
 const windowDimensions = Dimensions.get('window');
 const PAGE_MARGIN = 20;
 
-interface CroppedImage {
-  uri: string;
-  width: number;
-  height: number;
-}
-
 export const CourseAssignmentPdfCreationScreen = ({
   navigation,
   route,
 }: Props) => {
-  const { courseId } = route.params;
+  const { courseId, firstImageUri } = route.params;
 
-  const [images, setImages] = useState<CroppedImage[]>([]);
+  const [imageUris, setImageUris] = useState<string[]>([firstImageUri]);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
 
+  const pageSliderRef = useRef<FlatList>();
+
   useEffect(() => {
-    if (!images.length) addPage();
     navigation.getParent()?.setOptions({
       tabBarStyle: {
         display: 'none',
@@ -66,14 +63,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       freeStyleCropEnabled: true,
     })
       .then(image => {
-        setImages(oldUris => [
-          ...oldUris,
-          {
-            width: image.width,
-            height: image.height,
-            uri: image.path,
-          },
-        ]);
+        setImageUris(oldUris => [...oldUris, image.path]);
       })
       .catch(e => {
         console.log(e);
@@ -81,12 +71,24 @@ export const CourseAssignmentPdfCreationScreen = ({
   };
 
   const deletePage = () => {
-    cleanSingle(images[currentPageIndex].uri)
+    cleanSingle(imageUris[currentPageIndex])
       .then(() => {
-        console.log('image removed');
-        setImages(oldUris => {
-          return [...oldUris.splice(currentPageIndex, 1)];
+        const currentPageCount = imageUris.length;
+        if (currentPageCount === 1) {
+          navigation.goBack();
+          return;
+        }
+
+        setImageUris(oldUris => {
+          return oldUris.filter((uri, index) => index !== currentPageIndex);
         });
+
+        if (currentPageCount - 1 === currentPageIndex) {
+          pageSliderRef.current.scrollToIndex({
+            animated: true,
+            index: currentPageIndex - 1,
+          });
+        }
       })
       .catch(e => {
         console.error(e);
@@ -94,26 +96,20 @@ export const CourseAssignmentPdfCreationScreen = ({
   };
 
   const createPdf = async () => {
-    /* const pages = images.map((image) => PDFPage
-       .create()
-       .setMediaBox(image.width, image.height)
-       .drawImage(image.uri))
+    const pages = imageUris.map(
+      uri =>
+        `<img style='width: 100vw; height: 100vh; object-fit: contain' src='${uri}'/>`,
+    );
 
-     // TODO REPLACE with cache dir
-     const docsDir = await PDFLib.getDocumentsDirectory();
-     const pdfPath = `${docsDir}/sample.pdf`;
-
-     PDFDocument
-       .create(pdfPath)
-       .addPages(pages)
-       .write()
-       .then(fileUri => {
-         console.log('PDF created at: ' + fileUri);
-         navigation.navigate('CourseAssignmentUploadConfirmation', {
-           courseId,
-           fileUri,
-         });
-       });*/
+    RNHTMLtoPDF.convert({
+      fileName: 'assignment',
+      html: pages.join(''),
+    }).then(pdf => {
+      navigation.navigate('CourseAssignmentUploadConfirmation', {
+        courseId,
+        fileUri: pdf.filePath,
+      });
+    });
   };
 
   const onViewableItemsChanged = useRef(
@@ -131,28 +127,45 @@ export const CourseAssignmentPdfCreationScreen = ({
 
   return (
     <View style={[styles.screen, { marginBottom }]}>
+      <Text variant="secondaryText" style={styles.pageNumber}>
+        {t('courseAssignmentPdfCreationScreen.pageNumber', {
+          index: currentPageIndex + 1,
+          count: imageUris.length,
+        })}
+      </Text>
       <Animated.FlatList
-        data={images}
+        ref={pageSliderRef}
+        data={imageUris}
         horizontal
         pagingEnabled
-        keyExtractor={item => item.uri}
+        keyExtractor={item => item}
         onViewableItemsChanged={onViewableItemsChanged.current}
         renderItem={({ item }) => (
-          <Image
-            resizeMode="contain"
-            source={{ uri: item.uri }}
-            style={styles.page}
-          />
+          <View style={styles.page}>
+            <Image
+              resizeMode="contain"
+              source={{ uri: item }}
+              style={styles.pageImage}
+            />
+          </View>
         )}
         contentContainerStyle={styles.sliderContentContainer}
-        extraData={images}
+        extraData={imageUris}
       />
       <View style={styles.actionsContainer}>
-        <Action iconName="add" label="Add page" onPress={addPage} />
-        <Action iconName="trash" label="Delete page" onPress={deletePage} />
+        <Action
+          iconName="add"
+          label={t('courseAssignmentPdfCreationScreen.ctaAddPage')}
+          onPress={addPage}
+        />
+        <Action
+          iconName="trash"
+          label={t('courseAssignmentPdfCreationScreen.ctaDeletePage')}
+          onPress={deletePage}
+        />
         <Action
           iconName="checkmark-outline"
-          label="Confirm"
+          label={t('courseAssignmentPdfCreationScreen.ctaConfirm')}
           onPress={createPdf}
         />
       </View>
@@ -187,7 +200,6 @@ const createStyles = ({ colors, fontSizes, spacing }: Theme) =>
     screen: {
       flex: 1,
     },
-    slider: {},
     sliderContentContainer: {
       alignItems: 'center',
     },
@@ -196,6 +208,15 @@ const createStyles = ({ colors, fontSizes, spacing }: Theme) =>
       height: (windowDimensions.width - PAGE_MARGIN * 2) * 1.42,
       marginHorizontal: PAGE_MARGIN,
       backgroundColor: '#ffffff',
+      padding: 10,
+    },
+    pageImage: {
+      flexGrow: 1,
+    },
+    pageNumber: {
+      position: 'absolute',
+      top: 20,
+      left: 20,
     },
     actionsContainer: {
       display: 'flex',

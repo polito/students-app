@@ -31,7 +31,7 @@ export type TeachingStackParamList = {
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
-  CourseAssignmentPdfCreation: { courseId: number };
+  CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
   CourseIconPicker: { courseId: number };
@@ -148,7 +148,7 @@ export const TeachingNavigator = () => {
         component={CourseAssignmentPdfCreationScreen}
         options={{
           headerBackTitleVisible: false,
-          headerTitle: t('Create PDF'),
+          headerTitle: t('courseAssignmentPdfCreationScreen.title'),
           headerLargeTitle: false,
         }}
       />

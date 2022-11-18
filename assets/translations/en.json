@@ -8,6 +8,18 @@
   "courseAssignmentsTab": {
     "title": "Assignments"
   },
+  "courseAssignmentPdfCreationScreen": {
+    "ctaAddPage": "Add",
+    "ctaConfirm": "Create PDF",
+    "ctaDeletePage": "Delete",
+    "pageNumber": "Page {{index}} of {{count}}",
+    "title": "Create PDF"
+  },
+  "courseAssignmentUploadConfirmationScreen": {
+    "ctaUpload": "Upload assignment",
+    "descriptionLabel": "Assignment description",
+    "previewSectionTitle": "File preview"
+  },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
     "subtitle_plural": "{{count}} files"
