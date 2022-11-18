@@ -21,7 +21,7 @@ export const LoginScreen = () => {
   const [password, setPassword] = useState('');
 
   const { refreshContext } = useApiContext();
-
+  console.log('data', data);
   const onLoginButtonPressed = () => {
     handleLogin({ username, password });
   };

@@ -104,23 +104,4 @@ const createStyles = ({ spacing }: Theme) =>
       backgroundColor: 'black',
       position: 'absolute',
     },
-    container: {
-      marginTop: 50,
-    },
-    speedSection: {
-      paddingVertical: spacing[3],
-      paddingHorizontal: spacing[4],
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    speedTabsContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-    },
-    speedTab: {
-      width: 55,
-      marginLeft: spacing[2],
-    },
   });

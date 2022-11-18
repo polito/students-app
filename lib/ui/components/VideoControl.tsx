@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
+  Animated,
   StyleSheet,
   Text,
   TouchableHighlightProps,
@@ -49,6 +50,8 @@ export const VideoControl = ({
   isLandscape,
 }: VideoControlProps) => {
   // console.log({ secondsDuration, newPosition });
+  const [disableControl, setDisableControl] = useState(true);
+  const animatedOpacity = useRef(new Animated.Value(0)).current;
 
   const currentTime = DateTime.fromSeconds(secondsDuration * newPosition)
     .toUTC()
@@ -70,59 +73,89 @@ export const VideoControl = ({
     onRelease(updatedValue);
   };
 
+  const onPressVideoControls = () => {
+    if (disableControl) {
+      Animated.timing(animatedOpacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+      setDisableControl(false);
+    } else {
+      Animated.timing(animatedOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+      setDisableControl(true);
+    }
+  };
+
   return (
-    <Col
-      noFlex
-      flexStart
-      spaceBetween
-      style={[styles.wrapper, isLandscape && styles.wrapperLandscape]}
+    <Animated.View
+      style={[styles.animatedWrapper, { opacity: animatedOpacity }]}
     >
-      <Row
+      <Col
         noFlex
-        maxWidth
+        flexStart
         spaceBetween
-        style={[styles.header, isLandscape && styles.headerLandscape]}
+        style={[styles.wrapper, isLandscape && styles.wrapperLandscape]}
+        onPress={onPressVideoControls}
       >
-        <VideoControlButton onPress={() => toggleMuted()}>
-          <Icon name={muted ? 'volume-off' : 'volume-high'} color={'white'} />
-        </VideoControlButton>
-        <VideoControlButton onPress={() => toggleFullscreen()}>
-          <Icon name={'ios-scan'} color={'white'} />
-        </VideoControlButton>
-      </Row>
-      <Row alignCenter justifyCenter noFlex style={styles.wrapperControl}>
-        <VideoControlButton onPress={() => togglePaused()}>
-          <Icon name={paused ? 'play' : 'pause'} color={'white'} />
-        </VideoControlButton>
         <Row
-          style={styles.sliderControlWrapper}
-          alignCenter
+          noFlex
+          maxWidth
           spaceBetween
-          justifyCenter
+          style={[styles.header, isLandscape && styles.headerLandscape]}
+          pointerEvents={disableControl ? 'none' : undefined}
         >
-          <Text style={styles.time}>{currentTime}</Text>
-          <Slider
-            value={value}
-            // @ts-ignore
-            containerStyle={[
-              styles.slider,
-              isLandscape && styles.sliderLandscape,
-            ]}
-            trackStyle={{ backgroundColor: 'white' }}
-            maximumTrackTintColor={'white'}
-            minimumTrackTintColor={'white'}
-            trackMarks={[1]}
-            onSlidingComplete={onSlidingComplete}
-            minimumValue={0.001}
-            thumbTintColor={'white'}
-            maximumValue={100}
-            // @ts-ignore
-            onValueChange={setValue}
-          />
-          <Text style={styles.timeRemaining}>-{duration}</Text>
+          <VideoControlButton onPress={() => toggleMuted()}>
+            <Icon name={muted ? 'volume-off' : 'volume-high'} color={'white'} />
+          </VideoControlButton>
+          <VideoControlButton onPress={() => toggleFullscreen()}>
+            <Icon name={'ios-scan'} color={'white'} />
+          </VideoControlButton>
         </Row>
-      </Row>
-    </Col>
+        <Row
+          alignCenter
+          justifyCenter
+          noFlex
+          style={styles.wrapperControl}
+          pointerEvents={disableControl ? 'none' : undefined}
+        >
+          <VideoControlButton onPress={() => togglePaused()}>
+            <Icon name={paused ? 'play' : 'pause'} color={'white'} />
+          </VideoControlButton>
+          <Row
+            style={styles.sliderControlWrapper}
+            alignCenter
+            spaceBetween
+            justifyCenter
+          >
+            <Text style={styles.time}>{currentTime}</Text>
+            <Slider
+              value={value}
+              // @ts-ignore
+              containerStyle={[
+                styles.slider,
+                isLandscape && styles.sliderLandscape,
+              ]}
+              trackStyle={{ backgroundColor: 'white' }}
+              maximumTrackTintColor={'white'}
+              minimumTrackTintColor={'white'}
+              trackMarks={[1]}
+              onSlidingComplete={onSlidingComplete}
+              minimumValue={0.001}
+              thumbTintColor={'white'}
+              maximumValue={100}
+              // @ts-ignore
+              onValueChange={setValue}
+            />
+            <Text style={styles.timeRemaining}>-{duration}</Text>
+          </Row>
+        </Row>
+      </Col>
+    </Animated.View>
   );
 };
 
@@ -157,13 +190,15 @@ const createStyles = ({ size }: Theme) =>
     sliderControlWrapper: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       height: 28,
-      borderRadius: size.sm,
+      borderRadius: size.xs,
       marginLeft: 10,
       paddingHorizontal: size.xs,
     },
-    wrapper: {
+    animatedWrapper: {
       position: 'absolute',
       top: 0,
+    },
+    wrapper: {
       width: SCREEN_WIDTH,
       height: (SCREEN_WIDTH / 16) * 9,
       paddingHorizontal: defaultPadding,
@@ -171,38 +206,6 @@ const createStyles = ({ size }: Theme) =>
     wrapperLandscape: {
       width: SCREEN_HEIGHT,
       height: SCREEN_WIDTH,
-    },
-    container: {
-      height: Normalize(50),
-      // marginBottom: 20,
-    },
-    toggle: {},
-    dragHandlerView: {
-      height: Normalize(50),
-      width: Normalize(DRAG_DIMENSION),
-      position: 'absolute',
-      top: 0,
-      alignItems: 'center',
-      justifyContent: 'center',
-      // backgroundColor: 'rgba(255, 0, 0, 0.2)',
-    },
-    dragHandler: {
-      width: Normalize(13),
-      height: Normalize(13),
-      backgroundColor: 'white',
-      borderRadius: Normalize(50),
-    },
-    rowTime: {
-      width: LINE_WIDTH,
-      marginLeft: defaultPadding * 2,
-    },
-    textTime: {},
-    textTimeRotate: {
-      transform: [{ rotate: '90deg' }],
-      marginTop: 4,
-    },
-    rotateIcon: {
-      transform: [{ rotate: '90deg' }],
     },
   });
 
