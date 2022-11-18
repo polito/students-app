@@ -47,6 +47,7 @@ export const AgendaCard = ({
 
   return (
     <Card
+      rounded
       style={[
         {
           flex: 1,

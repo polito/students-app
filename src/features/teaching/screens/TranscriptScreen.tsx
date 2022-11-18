@@ -40,91 +40,91 @@ export const TranscriptScreen = () => {
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />
-        <View style={{ paddingHorizontal: spacing[5] }}>
-          <Card
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: spacing[4],
-              marginBottom: spacing[5],
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
-              <Text
-                style={{
-                  color: colors.secondary[500],
-                  fontSize: fontSizes.lg,
-                  fontWeight: fontWeights.semibold,
-                }}
-              >
-                40/120 CFU
-              </Text>
-              <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
-              <Text
-                style={{
-                  color: colors.primary[400],
-                  fontSize: fontSizes.lg,
-                  fontWeight: fontWeights.semibold,
-                }}
-              >
-                80/120 CFU
-              </Text>
-            </View>
-            <ProgressChart
-              data={[80 / 120, 40 / 120]}
-              colors={[colors.primary[400], colors.secondary[500]]}
-            />
-          </Card>
-        </View>
+        <Card
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: spacing[4],
+            marginTop: spacing[2],
+            marginBottom: spacing[3],
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.secondary[500],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+                marginBottom: spacing[2],
+              }}
+            >
+              40/120 CFU
+            </Text>
+            <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.primary[400],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+              }}
+            >
+              80/120 CFU
+            </Text>
+          </View>
+          <ProgressChart
+            data={[80 / 120, 40 / 120]}
+            colors={[colors.primary[400], colors.secondary[500]]}
+          />
+        </Card>
       </Section>
 
       <Section>
         <SectionHeader title={t('transcriptScreen.thisYear')} />
-        <View style={{ paddingHorizontal: spacing[5] }}>
-          <Card
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: spacing[4],
-              marginBottom: spacing[5],
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
-              <Text
-                style={{
-                  color: colors.secondary[500],
-                  fontSize: fontSizes.lg,
-                  fontWeight: fontWeights.semibold,
-                }}
-              >
-                6/60 CFU
-              </Text>
-              <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
-              <Text
-                style={{
-                  color: colors.primary[400],
-                  fontSize: fontSizes.lg,
-                  fontWeight: fontWeights.semibold,
-                }}
-              >
-                20/60 CFU
-              </Text>
-            </View>
-            <ProgressChart
-              data={[20 / 60, 6 / 60]}
-              colors={[colors.primary[400], colors.secondary[500]]}
-            />
-          </Card>
-        </View>
+        <Card
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: spacing[4],
+            marginTop: spacing[2],
+            marginBottom: spacing[3],
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text>{t('transcriptScreen.acquiredCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.secondary[500],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+                marginBottom: spacing[2],
+              }}
+            >
+              6/60 CFU
+            </Text>
+            <Text>{t('transcriptScreen.attendedCreditsLabel')}</Text>
+            <Text
+              style={{
+                color: colors.primary[400],
+                fontSize: fontSizes.lg,
+                fontWeight: fontWeights.semibold,
+              }}
+            >
+              20/60 CFU
+            </Text>
+          </View>
+          <ProgressChart
+            data={[20 / 60, 6 / 60]}
+            colors={[colors.primary[400], colors.secondary[500]]}
+          />
+        </Card>
       </Section>
 
       <Section>
         <SectionHeader title={t('transcriptScreen.averages')} />
-        <Grid style={{ paddingHorizontal: spacing[5] }}>
+        <Grid style={{ paddingHorizontal: spacing[5], marginTop: spacing[2] }}>
           <MetricCard
             name={t('transcriptScreen.weightedAverageLabel')}
             value={studentQuery.data?.data.averageGrade}

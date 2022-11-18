@@ -2,7 +2,6 @@ import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -100,10 +99,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkTo={{ screen: 'Transcript' }}
           />
 
-          <Card
-            rounded={Platform.select({ android: false })}
-            style={styles.sectionContent}
-          >
+          <Card style={styles.sectionContent}>
             {studentQuery.isLoading ? (
               <ActivityIndicator style={styles.loader} />
             ) : (
@@ -160,6 +156,5 @@ const createStyles = ({ spacing }: Theme) =>
     },
     sectionContent: {
       marginVertical: spacing[2],
-      marginHorizontal: Platform.select({ ios: spacing[4] }),
     },
   });

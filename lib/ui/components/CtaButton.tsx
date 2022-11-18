@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
+  StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
@@ -10,7 +11,9 @@ import {
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
 
 interface Props extends TouchableHighlightProps {
   title: string;
@@ -29,7 +32,8 @@ export const CtaButton = ({
   destructive = false,
   ...rest
 }: Props) => {
-  const { colors, spacing, shapes, fontSizes } = useTheme();
+  const { colors, fontSizes } = useTheme();
+  const styles = useStylesheet(createStyles);
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
@@ -40,32 +44,16 @@ export const CtaButton = ({
   }, [success]);
 
   return (
-    <View
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: Platform.select({ ios: 0 }),
-        right: 0,
-        marginBottom: Platform.select({ ios: 80 }),
-        padding: spacing[4],
-      }}
-    >
+    <View style={styles.container}>
       <TouchableHighlight
         underlayColor={!destructive ? colors.primary[600] : colors.danger[600]}
         disabled={loading || showSuccess}
         style={[
+          styles.button,
           {
-            paddingHorizontal: spacing[5],
-            paddingVertical: spacing[4],
             backgroundColor: !destructive
               ? colors.primary[500]
               : colors.danger[500],
-            borderRadius: Platform.select({
-              ios: shapes.lg,
-              android: 60,
-            }),
-            alignItems: 'center',
-            elevation: 12,
           },
           style,
         ]}
@@ -73,17 +61,7 @@ export const CtaButton = ({
         {...rest}
       >
         <View>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View style={styles.stack}>
             {loading && <ActivityIndicator color="white" />}
           </View>
           <View style={{ opacity: loading ? 0 : 1 }}>
@@ -93,30 +71,14 @@ export const CtaButton = ({
                   icon={faCheckCircle}
                   size={fontSizes.xl}
                   color="white"
-                  style={{ marginVertical: -2, marginRight: spacing[2] }}
+                  style={styles.icon}
                 />
                 {successMessage && (
-                  <Text
-                    style={{
-                      fontSize: fontSizes.md,
-                      textAlign: 'center',
-                      color: 'white',
-                    }}
-                  >
-                    {successMessage}
-                  </Text>
+                  <Text style={styles.textStyle}>{successMessage}</Text>
                 )}
               </View>
             ) : (
-              <Text
-                style={{
-                  fontSize: fontSizes.md,
-                  textAlign: 'center',
-                  color: 'white',
-                }}
-              >
-                {title}
-              </Text>
+              <Text style={styles.textStyle}>{title}</Text>
             )}
           </View>
         </View>
@@ -124,3 +86,40 @@ export const CtaButton = ({
     </View>
   );
 };
+
+const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
+  StyleSheet.create({
+    container: {
+      position: 'absolute',
+      bottom: 0,
+      left: Platform.select({ ios: 0 }),
+      right: 0,
+      marginBottom: Platform.select({ ios: 80 }),
+      padding: spacing[4],
+    },
+    button: {
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
+      borderRadius: Platform.select({
+        ios: shapes.lg,
+        android: 60,
+      }),
+      alignItems: 'center',
+      elevation: 12,
+    },
+    stack: {
+      ...StyleSheet.absoluteFillObject,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    textStyle: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.medium,
+      textAlign: 'center',
+      color: 'white',
+    },
+    icon: {
+      marginVertical: -2,
+      marginRight: spacing[2],
+    },
+  });
