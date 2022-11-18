@@ -9,6 +9,8 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
@@ -22,6 +24,7 @@ const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
 
   return (
     <TabNavigator.Navigator
@@ -29,6 +32,7 @@ export const RootNavigator = () => {
       screenOptions={{
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
+        tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarBackground: Platform.select({
           ios: () => <TranslucentView />,
         }),
@@ -91,12 +95,17 @@ export const RootNavigator = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  tabBarStyle: {
-    position: Platform.OS === 'ios' ? 'absolute' : undefined,
-    height: Platform.OS === 'ios' ? 84 : 60,
-  },
-  tabBarItemStyle: {
-    paddingVertical: Platform.OS === 'android' ? 4 : undefined,
-  },
-});
+const createStyles = ({ spacing, fontWeights }: Theme) =>
+  StyleSheet.create({
+    tabBarStyle: {
+      position: Platform.OS === 'ios' ? 'absolute' : undefined,
+      height: Platform.OS === 'ios' ? 84 : 60,
+    },
+    tabBarItemStyle: {
+      paddingVertical: Platform.OS === 'android' ? spacing[1] : undefined,
+    },
+    tabBarLabelStyle: {
+      fontFamily: 'Montserrat',
+      fontWeight: fontWeights.medium,
+    },
+  });
