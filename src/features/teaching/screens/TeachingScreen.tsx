@@ -95,7 +95,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           <SectionHeader
-            title={t('transcriptScreen.title')}
+            title={t('common.transcript')}
             linkTo={{ screen: 'Transcript' }}
           />
 

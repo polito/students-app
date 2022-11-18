@@ -40,7 +40,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       />
       <EventDetails
         title={lecture.title}
-        type={t('Video lecture')}
+        type={t('common.videoLecture')}
         time={lecture.createdAt}
       />
       <SectionList loading={teacherQuery.isLoading}>

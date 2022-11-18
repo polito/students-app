@@ -172,7 +172,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
             <SectionHeader title={t('common.notifications')} />
             <SectionList indented>
               <SwitchListItem
-                title={t('common.notice', { count: 2 })}
+                title={t('common.notice_plural')}
                 subtitle={t('coursePreferencesScreen.noticesSubtitle')}
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.avvisidoc}
@@ -183,7 +183,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               />
 
               <SwitchListItem
-                title={t('common.file', { count: 2 })}
+                title={t('common.file_plural')}
                 subtitle={t('coursePreferencesScreen.filesSubtitle')}
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.matdid}
@@ -194,7 +194,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               />
 
               <SwitchListItem
-                title={t('common.lecture', { count: 2 })}
+                title={t('common.lecture_plural')}
                 subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.videolezioni}
@@ -209,7 +209,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
           </Section>
 
           <Section>
-            <SectionHeader title={t('common.file', { count: 2 })} />
+            <SectionHeader title={t('common.file_plural')} />
             <SectionList indented>
               <CleanCourseFilesListItem />
             </SectionList>

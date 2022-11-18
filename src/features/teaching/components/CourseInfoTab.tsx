@@ -89,7 +89,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
           value={courseQuery.data?.data.cfu}
         />
         <MetricCard
-          name={t('courseInfoTab.periodLabel')}
+          name={t('common.period')}
           value={courseQuery.data?.data.teachingPeriod}
         />
       </Grid>

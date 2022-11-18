@@ -122,14 +122,14 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     const availableSections: Section[] = [
       {
         index: 0,
-        title: t('courseLecturesTab.virtualClassroomsSectionTitle'),
+        title: t('common.virtualClassroom_plural'),
         data: [],
         type: 'VirtualClassroom',
         isExpanded: false,
       },
       {
         index: 1,
-        title: t('courseLecturesTab.videoLecturesSectionTitle'),
+        title: t('common.videoLecture_plural'),
         data: [],
         type: 'VideoLecture',
         isExpanded: false,
@@ -137,12 +137,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     ];
 
     const sectionTitles = vcPreviousYears
-      .map(
-        py =>
-          `${t('courseLecturesTab.virtualClassroomsSectionTitle')} - ${
-            py.year
-          }`,
-      )
+      .map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
       .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
 
     sectionTitles.forEach((title, index) => {

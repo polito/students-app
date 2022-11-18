@@ -30,7 +30,7 @@ const Menu = ({
   return (
     <MenuView
       shouldOpenOnLongPress={shouldOpenOnLongPress}
-      title={t('Course preferences')}
+      title={`${t('common.course')} ${t('common.preferences').toLowerCase()}`}
       actions={[
         {
           title: t('coursePreferencesScreen.hideInExtracts'),

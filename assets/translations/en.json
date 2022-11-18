@@ -16,14 +16,14 @@
     "noResult": "No results found"
   },
   "courseFileListItem": {
-    "reDownloadFile": "Redownload file",
-    "downloadError": "Something went wrong with the download"
+    "downloadError": "Something went wrong with the download",
+    "reDownloadFile": "Redownload file"
   },
   "courseFilesTab": {
-    "title": "Files",
-    "recentSectionTitle": "Recent files",
+    "browseFiles": "Browse files",
     "empty": "No file available",
-    "browseFiles": "Browse files"
+    "recentSectionTitle": "Recent files",
+    "title": "Files"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -32,7 +32,6 @@
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
     "moreSectionTitle": "More",
-    "periodLabel": "Period",
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
     "title": "Info",
@@ -40,32 +39,24 @@
   },
   "courseLecturesTab": {
     "title": "Lectures",
-    "videoLecturesSectionTitle": "Video lectures",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
     "title": "Notices"
   },
-  "courseScreen": {
-    "title": "Course"
-  },
-  "courseVideoLectureScreen": {
-    "title": "Video lecture"
-  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
   "coursePreferencesScreen": {
-    "title": "Preferences",
-    "hideInExtracts": "Hide in extracts",
-    "showInExtracts": "Show in extracts",
-    "showInExtractsSubtitle": "In home screen and agenda",
+    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
-    "noticesSubtitle": "Notices sent by the professor",
     "filesSubtitle": "New material available",
+    "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
-    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them"
+    "noticesSubtitle": "Notices sent by the professor",
+    "showInExtracts": "Show in extracts",
+    "showInExtractsSubtitle": "In home screen and agenda"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
@@ -85,9 +76,9 @@
     "title": "Exams"
   },
   "loginScreen": {
-    "usernameLabel": "Student ID",
+    "cta": "Login",
     "passwordLabel": "Password",
-    "cta": "Login"
+    "usernameLabel": "Student ID"
   },
   "messagesScreen": {
     "title": "Messages archive"
@@ -108,42 +99,55 @@
     "title": "Teaching"
   },
   "transcriptScreen": {
-    "yourCareer": "Your career",
-    "thisYear": "This academic year",
-    "averages": "Averages",
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
+    "averages": "Averages",
     "finalAverageLabel": "Final average",
     "provisionalGradesSectionTitle": "Provisional grades",
-    "title": "Transcript",
-    "weightedAverageLabel": "Weighted average"
+    "thisYear": "This academic year",
+    "weightedAverageLabel": "Weighted average",
+    "yourCareer": "Your career"
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
   },
   "common": {
+    "areYouSure?": "Are you sure?",
+    "booking": "Booking",
+    "booking_plural": "Bookings",
+    "cancel": "Cancel",
     "color": "Color",
-    "icon": "Icon",
+    "course": "Course",
+    "course_plural": "Courses",
     "credits": "Credits",
-    "exam": "Exam",
-    "lecture": "Lecture",
-    "lecture_plural": "Lectures",
-    "teacher": "Teacher",
-    "file": "File",
-    "file_plural": "Files",
+    "deadline": "Deadline",
+    "deadline_plural": "Deadlines",
     "delete": "Delete",
     "download": "Download",
-    "stop": "Stop",
-    "options": "Options",
-    "remove": "Remove",
-    "refresh": "Refresh",
-    "notifications": "Notifications",
-    "visualization": "Visualization",
+    "exam": "Exam",
+    "file": "File",
+    "file_plural": "Files",
+    "icon": "Icon",
+    "lecture": "Lecture",
+    "lecture_plural": "Lectures",
     "notice": "Notice",
     "notice_plural": "Notices",
+    "notifications": "Notifications",
     "ok": "Ok",
-    "cancel": "Cancel",
-    "areYouSure?": "Are you sure?",
-    "retract": "Retract"
+    "options": "Options",
+    "period": "Period",
+    "preferences": "Preferences",
+    "refresh": "Refresh",
+    "remove": "Remove",
+    "retract": "Retract",
+    "services": "Services",
+    "stop": "Stop",
+    "teacher": "Teacher",
+    "transcript": "Transcript",
+    "videoLecture": "Video lecture",
+    "videoLecture_plural": "Video lecture",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classrooms",
+    "visualization": "Visualization"
   }
 }

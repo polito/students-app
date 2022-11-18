@@ -123,7 +123,7 @@ export const AgendaScreen = () => {
             }))
           }
         >
-          {t('Bookings')}
+          {t('common.booking_plural')}
         </Tab>
         <Tab
           selected={selectedEventTypes.deadlines}
@@ -134,7 +134,7 @@ export const AgendaScreen = () => {
             }))
           }
         >
-          {t('Deadlines')}
+          {t('common.deadline_plural')}
         </Tab>
       </Tabs>
       <FlatList

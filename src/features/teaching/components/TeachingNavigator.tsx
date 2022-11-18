@@ -86,9 +86,9 @@ export const TeachingNavigator = () => {
         name="CoursePreferences"
         component={CoursePreferencesScreen}
         options={{
-          title: t('coursePreferencesScreen.title'),
+          title: t('common.preferences'),
           headerLargeTitle: false,
-          headerBackTitle: t('Course'),
+          headerBackTitle: t('common.course'),
         }}
       />
       <Stack.Screen
@@ -117,7 +117,7 @@ export const TeachingNavigator = () => {
         component={CourseGuideScreen}
         options={{
           headerTitle: t('courseGuideScreen.title'),
-          headerBackTitle: t('courseScreen.title'),
+          headerBackTitle: t('common.course'),
         }}
       />
       <Stack.Screen
@@ -125,8 +125,8 @@ export const TeachingNavigator = () => {
         component={CourseVideolectureScreen}
         options={{
           headerLargeTitle: false,
-          headerBackTitle: t('courseScreen.title'),
-          title: t('Video lecture'),
+          headerBackTitle: t('common.course'),
+          title: t('common.videoLecture'),
         }}
       />
       <Stack.Screen
@@ -134,7 +134,7 @@ export const TeachingNavigator = () => {
         component={CourseVirtualClassroomScreen}
         options={{
           headerLargeTitle: false,
-          headerBackTitle: t('courseScreen.title'),
+          headerBackTitle: t('common.course'),
           title: t('courseVirtualClassroomScreen.title'),
         }}
       />
@@ -142,7 +142,7 @@ export const TeachingNavigator = () => {
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
         options={{
-          headerBackTitle: t('courseScreen.title'),
+          headerBackTitle: t('common.course'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
         }}
       />
@@ -166,7 +166,7 @@ export const TeachingNavigator = () => {
         name="Transcript"
         component={TranscriptScreen}
         options={{
-          headerTitle: t('Transcript'),
+          headerTitle: t('common.transcript'),
         }}
       />
     </Stack.Navigator>

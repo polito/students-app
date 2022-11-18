@@ -81,7 +81,7 @@ export const RootNavigator = () => {
         component={PlacesScreen}
         options={{
           headerLeft: () => <HeaderLogo />,
-          tabBarLabel: t('Services'),
+          tabBarLabel: t('common.services'),
           tabBarIcon: ({ color, size }) => (
             <Icon icon={faEllipsis} color={color} size={size} />
           ),

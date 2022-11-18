@@ -41,7 +41,7 @@ export const CoursesScreen = () => {
             <SectionHeader
               title={
                 period !== 'undefined'
-                  ? `${t('Period')} ${period}`
+                  ? `${t('common.period')} ${period}`
                   : t('coursesScreen.otherCoursesSectionTitle')
               }
             />

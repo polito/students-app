@@ -16,14 +16,14 @@
     "noResult": "Nessun risultato trovato"
   },
   "courseFileListItem": {
-    "reDownloadFile": "Ri-scarica file",
-    "downloadError": "Qualcosa è andato storto con durante il download"
+    "downloadError": "Qualcosa è andato storto con durante il download",
+    "reDownloadFile": "Ri-scarica file"
   },
   "courseFilesTab": {
-    "title": "Materiali",
-    "recentSectionTitle": "File recenti",
+    "browseFiles": "Esplora file",
     "empty": "Nessun file disponibile",
-    "browseFiles": "Esplora file"
+    "recentSectionTitle": "File recenti",
+    "title": "Materiali"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -32,7 +32,6 @@
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
     "moreSectionTitle": "Altro",
-    "periodLabel": "Periodo",
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
@@ -40,32 +39,24 @@
   },
   "courseLecturesTab": {
     "title": "Lezioni",
-    "videoLecturesSectionTitle": "Videolezioni",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
     "title": "Avvisi"
   },
-  "courseScreen": {
-    "title": "Corso"
-  },
-  "courseVideoLectureScreen": {
-    "title": "Videolezione"
-  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
   "coursePreferencesScreen": {
-    "title": "Preferenze",
-    "hideInExtracts": "Nascondi negli estratti",
-    "showInExtracts": "Mostra negli estratti",
-    "showInExtractsSubtitle": "In home screen e agenda",
+    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCourseFiles": "Rimuovi file del corso",
     "cleanCourseFilesSubtitle": "Libera {{size}}",
-    "noticesSubtitle": "Avvisi mandati dai professori",
     "filesSubtitle": "Nuovi materiali disponibili",
+    "hideInExtracts": "Nascondi negli estratti",
     "lecturesSubtitle": "Nuove lezioni disponibili",
-    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare"
+    "noticesSubtitle": "Avvisi mandati dai professori",
+    "showInExtracts": "Mostra negli estratti",
+    "showInExtractsSubtitle": "In home screen e agenda"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"
@@ -85,9 +76,9 @@
     "title": "Appelli"
   },
   "loginScreen": {
-    "usernameLabel": "Matricola",
+    "cta": "Accedi",
     "passwordLabel": "Password",
-    "cta": "Accedi"
+    "usernameLabel": "Matricola"
   },
   "messagesScreen": {
     "title": "Archivio messaggi"
@@ -108,42 +99,55 @@
     "title": "Didattica"
   },
   "transcriptScreen": {
-    "yourCareer": "La tua carriera",
-    "thisYear": "Questo anno accademico",
-    "averages": "Medie",
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
+    "averages": "Medie",
     "finalAverageLabel": "Media depurata",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
-    "title": "Libretto",
-    "weightedAverageLabel": "Media ponderata"
+    "thisYear": "Questo anno accademico",
+    "weightedAverageLabel": "Media ponderata",
+    "yourCareer": "La tua carriera"
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
   },
   "common": {
+    "areYouSure?": "Sei sicuro?",
+    "booking": "Prenotazione",
+    "booking_plural": "Prenotazioni",
+    "cancel": "Annulla",
     "color": "Colore",
-    "icon": "Icona",
+    "course": "Corso",
+    "course_plural": "Corsi",
     "credits": "Crediti",
+    "delete": "Elimina",
+    "deadline": "Scadenza",
+    "deadline_plural": "Scadenze",
+    "download": "Scarica",
     "exam": "Esame",
-    "lecture": "Lezione",
-    "lecture_plural": "Lezioni",
-    "teacher": "Docente",
     "file": "File",
     "file_plural": "File",
-    "delete": "Elimina",
-    "download": "Scarica",
-    "stop": "Stop",
-    "options": "Opzioni",
-    "remove": "Rimuovi",
-    "refresh": "Aggiorna",
-    "notifications": "Notifiche",
-    "visualization": "Visualizzazione",
+    "icon": "Icona",
+    "lecture": "Lezione",
+    "lecture_plural": "Lezioni",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
+    "notifications": "Notifiche",
     "ok": "Ok",
-    "cancel": "Annulla",
-    "areYouSure?": "Sei sicuro?",
-    "retract": "Ritira"
+    "options": "Opzioni",
+    "period": "Period",
+    "preferences": "Preferenze",
+    "refresh": "Aggiorna",
+    "remove": "Rimuovi",
+    "retract": "Ritira",
+    "services": "Servizi",
+    "stop": "Stop",
+    "teacher": "Docente",
+    "transcript": "Libretto",
+    "videoLecture": "Video lezione",
+    "videoLecture_plural": "Video lezioni",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classroom",
+    "visualization": "Visualizzazione"
   }
 }

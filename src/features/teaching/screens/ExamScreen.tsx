@@ -41,7 +41,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
       navigation.setOptions({
-        headerBackTitle: t('Course'),
+        headerBackTitle: t('common.course'),
       });
     }
   }, []);

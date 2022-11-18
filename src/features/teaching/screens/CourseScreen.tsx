@@ -41,7 +41,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           color={colors.primary[400]}
           size={fontSizes.lg}
           adjustSpacing="right"
-          accessibilityLabel={t('coursePreferencesScreen.title')}
+          accessibilityLabel={t('common.preferences')}
           onPress={() => {
             navigation.navigate('CoursePreferences', { courseId: id });
           }}

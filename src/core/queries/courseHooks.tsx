@@ -173,7 +173,10 @@ export const useGetCourseDirectory = (
       if (!directoryId) {
         // Root directory
         return new Promise<CourseDirectory>(resolve => {
-          resolve({ name: t('Files'), files: rootDirectoryContent });
+          resolve({
+            name: t('common.file_plural'),
+            files: rootDirectoryContent,
+          });
         });
       }
       const directory = findDirectory(directoryId, rootDirectoryContent);
