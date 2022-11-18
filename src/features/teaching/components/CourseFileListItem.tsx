@@ -193,9 +193,10 @@ export const CourseFileListItem = ({
             icon={faCloudArrowDown}
             label={t('common.refresh')}
             backgroundColor={colors.primary[500]}
-            onPress={() => {
+            onPress={async () => {
               swipeableRef.current?.recenter();
-              refresh();
+              await refresh();
+              open(cachedFilePath);
             }}
           />,
           <SwipeableAction
