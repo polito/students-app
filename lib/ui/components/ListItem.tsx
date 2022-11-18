@@ -110,7 +110,6 @@ export const ListItem = ({
               style={[
                 {
                   fontSize: fontSizes.md,
-                  lineHeight: fontSizes.md * 1.5,
                 },
                 titleStyle,
               ]}
@@ -130,7 +129,6 @@ export const ListItem = ({
                 style={[
                   {
                     fontSize: fontSizes.sm,
-                    lineHeight: fontSizes.sm * 1.5,
                   },
                   subtitleStyle,
                 ]}

@@ -151,8 +151,8 @@ export const lightTheme: Theme = {
     divider: 'rgba(0, 0, 0, .15)',
   },
   fontFamilies: {
-    heading: 'Poppins',
-    body: 'Poppins',
+    heading: 'Montserrat',
+    body: 'Montserrat',
   },
   fontSizes: {
     '2xs': 10,
@@ -171,15 +171,11 @@ export const lightTheme: Theme = {
     '9xl': 128,
   },
   fontWeights: {
-    hairline: '100',
-    thin: '200',
-    light: '300',
     normal: '400',
     medium: '500',
     semibold: '600',
     bold: '700',
     extrabold: '800',
-    black: '900',
   },
   shapes: {
     sm: 4,

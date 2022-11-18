@@ -5,16 +5,16 @@ export const titlesStyles: (
   colors: Colors,
 ) => Partial<NativeStackNavigationOptions> = colors => ({
   headerTitleStyle: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Montserrat',
     fontWeight: '600',
     color: colors.heading,
   },
   headerLargeTitleStyle: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Montserrat',
     fontWeight: '600',
     color: colors.heading,
   },
   headerBackTitleStyle: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Montserrat',
   },
 });

@@ -26,7 +26,7 @@ export const Tab = ({
   textStyle,
   ...rest
 }: PropsWithChildren<TouchableHighlightProps & Props>) => {
-  const { dark, colors, spacing } = useTheme();
+  const { dark, colors, spacing, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>
       selected
@@ -48,7 +48,7 @@ export const Tab = ({
           backgroundColor,
           borderRadius: 10,
           paddingHorizontal: spacing[2.5],
-          paddingVertical: spacing[1],
+          paddingVertical: spacing[1.5],
         },
         style,
       ]}
@@ -62,6 +62,7 @@ export const Tab = ({
               : dark
               ? colors.primary[400]
               : colors.primary[500],
+            fontWeight: fontWeights.medium,
           },
           textStyle,
         ]}

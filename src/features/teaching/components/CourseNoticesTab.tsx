@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
 
 import {
@@ -9,7 +9,6 @@ import {
 import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { defaultLineHeightMultiplier } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';
@@ -44,12 +43,11 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               baseStyle={{
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
-                fontFamily: 'Poppins',
+                fontFamily: 'Montserrat',
                 fontSize: fontSizes.sm,
-                lineHeight: fontSizes.sm * defaultLineHeightMultiplier,
               }}
               source={{ dom }}
-              systemFonts={['Poppins']}
+              systemFonts={['Montserrat']}
             />
           ),
           open: false,

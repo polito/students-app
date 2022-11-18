@@ -57,7 +57,7 @@ public class MainApplication extends Application implements ReactApplication {
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-    ReactFontManager.getInstance().addCustomFont(this, "Poppins", R.font.poppins);
+    ReactFontManager.getInstance().addCustomFont(this, "Montserrat", R.font.montserrat);
   }
 
   /**
