@@ -80,7 +80,7 @@ export const ListItem = ({
       <View
         style={[
           {
-            minHeight: 48,
+            minHeight: 60,
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: spacing[5],
