@@ -29,6 +29,8 @@ export interface VideoControlProps {
   toggleFullscreen?: () => void;
   isLandscape: boolean;
   secondsDuration: number;
+  playbackRate: number;
+  setPlaybackRate: () => void;
 }
 const defaultPadding = 10;
 const Normalize = (n: number) => n;
@@ -43,11 +45,11 @@ export const VideoControl = ({
   newPosition,
   paused,
   togglePaused,
-  toggleMuted,
-  muted,
   secondsDuration,
   toggleFullscreen,
   isLandscape,
+  playbackRate,
+  setPlaybackRate,
 }: VideoControlProps) => {
   // console.log({ secondsDuration, newPosition });
   const [disableControl, setDisableControl] = useState(true);
@@ -77,14 +79,14 @@ export const VideoControl = ({
     if (disableControl) {
       Animated.timing(animatedOpacity, {
         toValue: 1,
-        duration: 200,
+        duration: 250,
         useNativeDriver: false,
       }).start();
       setDisableControl(false);
     } else {
       Animated.timing(animatedOpacity, {
         toValue: 0,
-        duration: 200,
+        duration: 250,
         useNativeDriver: false,
       }).start();
       setDisableControl(true);
@@ -109,8 +111,8 @@ export const VideoControl = ({
           style={[styles.header, isLandscape && styles.headerLandscape]}
           pointerEvents={disableControl ? 'none' : undefined}
         >
-          <VideoControlButton onPress={() => toggleMuted()}>
-            <Icon name={muted ? 'volume-off' : 'volume-high'} color={'white'} />
+          <VideoControlButton onPress={() => setPlaybackRate()}>
+            <Text style={styles.playbackRate}>{playbackRate}x</Text>
           </VideoControlButton>
           <VideoControlButton onPress={() => toggleFullscreen()}>
             <Icon name={'ios-scan'} color={'white'} />
@@ -207,6 +209,9 @@ const createStyles = ({ size }: Theme) =>
       width: SCREEN_HEIGHT,
       height: SCREEN_WIDTH,
     },
+    playbackRate: {
+      color: 'white',
+    },
   });
 
 const VideoControlButton = ({ children, ...rest }: TouchableHighlightProps) => {
@@ -222,9 +227,11 @@ const createStylesControl = ({ size }: Theme) =>
   StyleSheet.create({
     button: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      paddingHorizontal: size.md,
-      paddingVertical: size.xs + 1.5,
+      width: size.lg * 2,
       borderRadius: size.xs,
       color: 'white',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 28,
     },
   });

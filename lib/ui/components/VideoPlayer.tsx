@@ -52,7 +52,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   }, [modalVisible]);
 
   const speedControls = useMemo(() => {
-    if (isIos && parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
+    if (!isIos || parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
 
     return (
       <View style={styles.speedSection}>
@@ -73,6 +73,13 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
       </View>
     );
   }, [playbackRate]);
+
+  const togglePlaybackRate = () => {
+    const rates = [1, 1.5, 2, 2.5];
+    const actualRateIndex = rates.findIndex(rate => rate === playbackRate);
+    const newIndex = actualRateIndex === 3 ? 0 : actualRateIndex + 1;
+    setPlaybackRate(rates[newIndex]);
+  };
 
   const onSeekEnd = useCallback(
     (newProgress: number) => {
@@ -158,6 +165,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
               duration={duration}
               playbackRate={playbackRate}
               handleProgress={handleProgress}
+              setPlaybackRate={togglePlaybackRate}
             />
           </View>
         </Modal>
@@ -192,6 +200,8 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           muted={muted}
           isLandscape={false}
           secondsDuration={duration}
+          playbackRate={playbackRate}
+          setPlaybackRate={togglePlaybackRate}
         />
       )}
       {speedControls}

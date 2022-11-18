@@ -15,7 +15,7 @@ type videoProps = {
   duration: number;
   progress: number;
   playbackRate: number;
-
+  setPlaybackRate: () => void;
   handleProgress: (data: any) => void;
 };
 
@@ -27,6 +27,7 @@ export const VideoPlayerFullScreen = ({
   progress,
   playbackRate,
   handleProgress,
+  setPlaybackRate,
 }: videoProps) => {
   const playerRef = useRef();
   const styles = useStylesheet(createStyles);
@@ -91,6 +92,8 @@ export const VideoPlayerFullScreen = ({
         muted={muted}
         isLandscape={true}
         secondsDuration={duration}
+        setPlaybackRate={setPlaybackRate}
+        playbackRate={playbackRate}
       />
     </>
   );
