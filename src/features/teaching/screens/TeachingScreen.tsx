@@ -20,8 +20,8 @@ import { Theme } from '@lib/ui/types/theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
@@ -56,11 +56,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(
-        coursesQuery,
-        examsQuery,
-        studentQuery,
-      )}
+      refreshControl={
+        <QueryRefreshControl
+          queries={[coursesQuery, examsQuery, studentQuery]}
+        />
+      }
     >
       <View style={styles.sectionsContainer}>
         <Section>

@@ -20,9 +20,9 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { courseColors } from '../../../core/constants';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGetCourse } from '../../../core/queries/courseHooks';
@@ -99,7 +99,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     <CourseContext.Provider value={courseId}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={createRefreshControl(courseQuery)}
+        refreshControl={<QueryRefreshControl queries={[courseQuery]} />}
         contentContainerStyle={bottomBarAwareStyles}
       >
         <View style={{ paddingVertical: spacing[5] }}>

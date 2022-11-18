@@ -13,7 +13,7 @@ import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useBookExam,
@@ -48,7 +48,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   return (
     <>
       <ScrollView
-        refreshControl={createRefreshControl(examsQuery)}
+        refreshControl={<QueryRefreshControl queries={[examsQuery]} />}
         contentContainerStyle={{
           paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
         }}

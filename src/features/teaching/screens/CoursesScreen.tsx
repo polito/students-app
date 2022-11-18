@@ -6,7 +6,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
@@ -26,7 +26,7 @@ export const CoursesScreen = () => {
         },
         bottomBarAwareStyles,
       ]}
-      refreshControl={createRefreshControl(coursesQuery)}
+      refreshControl={<QueryRefreshControl queries={[coursesQuery]} />}
     >
       {!coursesQuery.isLoading &&
         Object.entries(

@@ -15,7 +15,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -61,7 +61,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(noticesQuery)}
+      refreshControl={<QueryRefreshControl queries={[noticesQuery]} />}
     >
       <List dividers>
         {notices.map((notice, index) => (

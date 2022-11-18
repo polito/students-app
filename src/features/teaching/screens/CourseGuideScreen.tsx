@@ -8,7 +8,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -33,7 +33,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(guideQuery)}
+      refreshControl={<QueryRefreshControl queries={[guideQuery]} />}
     >
       {guideSections.map((section, i) => (
         <Section key={i}>

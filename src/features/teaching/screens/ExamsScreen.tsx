@@ -4,7 +4,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
@@ -20,7 +20,7 @@ export const ExamsScreen = () => {
       contentContainerStyle={{
         paddingVertical: spacing[5],
       }}
-      refreshControl={createRefreshControl(examsQuery)}
+      refreshControl={<QueryRefreshControl queries={[examsQuery]} />}
       style={bottomBarAwareStyles}
     >
       {!examsQuery.isLoading && (

@@ -8,7 +8,7 @@ import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -31,7 +31,9 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(teacherQuery, videolecturesQuery)}
+      refreshControl={
+        <QueryRefreshControl queries={[teacherQuery, videolecturesQuery]} />
+      }
     >
       <VideoPlayer
         videoUrl="https://lucapezzolla.com/20210525.mp4"

@@ -9,7 +9,7 @@ import { List } from '@lib/ui/components/List';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -30,7 +30,7 @@ export const CourseAssignmentsTab = ({
   return (
     <>
       <ScrollView
-        refreshControl={createRefreshControl(assignmentsQuery)}
+        refreshControl={<QueryRefreshControl queries={[assignmentsQuery]} />}
         contentContainerStyle={bottomBarAwareStyles}
         scrollEnabled={scrollEnabled}
       >

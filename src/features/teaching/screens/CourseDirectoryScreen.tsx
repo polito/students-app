@@ -9,7 +9,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useGetCourseDirectory,
@@ -74,7 +74,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               />
             )
           }
-          refreshControl={createRefreshControl(directoryQuery)}
+          refreshControl={<QueryRefreshControl queries={[directoryQuery]} />}
           refreshing={directoryQuery.isLoading}
           contentContainerStyle={bottomBarAwareStyles}
           ItemSeparatorComponent={Platform.select({
@@ -120,7 +120,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           onSwipeEnd={() => setScrollEnabled(true)}
         />
       )}
-      refreshControl={createRefreshControl(recentFilesQuery)}
+      refreshControl={<QueryRefreshControl queries={[recentFilesQuery]} />}
       refreshing={recentFilesQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}
       ItemSeparatorComponent={Platform.select({

@@ -12,7 +12,7 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Person } from '@polito/api-client/models/Person';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useGetCourse,
@@ -68,11 +68,11 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(
-        courseQuery,
-        courseExamsQuery,
-        ...staffQueries,
-      )}
+      refreshControl={
+        <QueryRefreshControl
+          queries={[courseQuery, courseExamsQuery, ...staffQueries]}
+        />
+      }
     >
       <Grid style={{ padding: spacing[5] }}>
         <MetricCard

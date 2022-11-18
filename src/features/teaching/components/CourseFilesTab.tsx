@@ -9,7 +9,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -26,7 +26,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
     <>
       <ScrollView
         contentContainerStyle={bottomBarAwareStyles}
-        refreshControl={createRefreshControl(recentFilesQuery)}
+        refreshControl={<QueryRefreshControl queries={[recentFilesQuery]} />}
         scrollEnabled={scrollEnabled}
       >
         <View style={styles.sectionContainer}>

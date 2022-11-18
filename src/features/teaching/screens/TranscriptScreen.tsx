@@ -11,7 +11,7 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
+import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import {
   useGetGrades,
@@ -35,7 +35,9 @@ export const TranscriptScreen = () => {
         },
         bottomBarAwareStyles,
       ]}
-      refreshControl={createRefreshControl(studentQuery, gradesQuery)}
+      refreshControl={
+        <QueryRefreshControl queries={[studentQuery, gradesQuery]} />
+      }
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />
