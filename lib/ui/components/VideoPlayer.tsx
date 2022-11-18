@@ -36,7 +36,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  // const [horizontal, setHorizontal] = useState(false);
+
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -105,13 +105,19 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     setMuted(prev => !prev);
   }, [playerRef]);
 
-  const toggleFullscreen = useCallback(() => {
-    if (!isIos) {
-      setModalVisible(!modalVisible);
-    } else {
-      setFullscreen(prev => !prev);
-    }
-  }, [playerRef, modalVisible]);
+  const toggleFullscreen = useCallback(
+    (newProgress?: number) => {
+      if (!isIos) {
+        if (modalVisible) {
+          onSeekEnd(newProgress * 100);
+        }
+        setModalVisible(!modalVisible);
+      } else {
+        setFullscreen(prev => !prev);
+      }
+    },
+    [playerRef, modalVisible],
+  );
 
   const handleLoad = useCallback((meta: any) => {
     setDuration(meta.duration);
@@ -124,6 +130,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           setLoading(false);
         }
         const p = videoProgress.currentTime / duration;
+        // console.log('handleProgress', videoProgress.currentTime, duration, p)
         if (p === Infinity || isNaN(p)) {
           return;
         }

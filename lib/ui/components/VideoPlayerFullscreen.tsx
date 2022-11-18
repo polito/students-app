@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Video from 'react-native-video';
 
 import { VideoControl } from '@lib/ui/components/VideoControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
 type videoProps = {
   videoUrl: string;
   coverUrl: string;
-  onHideFullScreen: () => void;
+  onHideFullScreen: (newProgress: number) => void;
   duration: number;
   progress: number;
   playbackRate: number;
@@ -32,9 +32,6 @@ export const VideoPlayerFullScreen = ({
   const playerRef = useRef();
   const styles = useStylesheet(createStyles);
   const [paused, setPaused] = useState(false);
-  const [muted, setMuted] = useState(false);
-
-  useEffect(() => {}, []);
 
   const handleLoad = () => {
     onSeekEnd(progress * 100);
@@ -44,9 +41,10 @@ export const VideoPlayerFullScreen = ({
     (newProgress: number) => {
       try {
         const newSeekValue = (newProgress * duration) / 100;
+        // console.log('onSeekEnd', { newSeekValue, duration, newProgress});
         if (playerRef && playerRef.current) {
           // @ts-ignore
-          playerRef.current.seek(newSeekValue);
+          playerRef.current.seek(newSeekValue, 0.5);
         }
       } catch (e) {
         console.log('errorSeek', e);
@@ -57,10 +55,6 @@ export const VideoPlayerFullScreen = ({
 
   const togglePaused = useCallback(() => {
     setPaused(prev => !prev);
-  }, [playerRef]);
-
-  const toggleMuted = useCallback(() => {
-    setMuted(prev => !prev);
   }, [playerRef]);
 
   console.log({ progress });
@@ -79,17 +73,15 @@ export const VideoPlayerFullScreen = ({
         resizeMode="contain"
         onLoad={handleLoad}
         onProgress={handleProgress}
-        muted={true}
+        muted={false}
         fullscreen={true}
       />
       <VideoControl
-        toggleFullscreen={onHideFullScreen}
+        toggleFullscreen={() => onHideFullScreen(progress)}
         onRelease={onSeekEnd}
         newPosition={progress}
         paused={paused}
         togglePaused={togglePaused}
-        toggleMuted={toggleMuted}
-        muted={muted}
         isLandscape={true}
         secondsDuration={duration}
         setPlaybackRate={setPlaybackRate}
@@ -99,7 +91,7 @@ export const VideoPlayerFullScreen = ({
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = () =>
   StyleSheet.create({
     landscapeView: {
       width: SCREEN_HEIGHT,

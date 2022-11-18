@@ -37,8 +37,6 @@ const Normalize = (n: number) => n;
 
 const COMPONENT_WIDTH = SCREEN_WIDTH - defaultPadding * 2;
 const DRAG_DIMENSION = Normalize(30);
-const LINE_WIDTH =
-  COMPONENT_WIDTH - DRAG_DIMENSION - Normalize(30) - Normalize(5);
 
 export const VideoControl = ({
   onRelease,
@@ -51,27 +49,30 @@ export const VideoControl = ({
   playbackRate,
   setPlaybackRate,
 }: VideoControlProps) => {
-  // console.log({ secondsDuration, newPosition });
+  const styles = useStylesheet(createStyles);
+  const [value, setValue] = useState<number>(newPosition * 100);
+  const [isSliding, setIsSliding] = useState<boolean>(false);
   const [disableControl, setDisableControl] = useState(true);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
+  // console.log('value', value, value / 100 * secondsDuration );
+  // console.log('newPosition', newPosition, secondsDuration * newPosition );
 
-  const currentTime = DateTime.fromSeconds(secondsDuration * newPosition)
+  const sliderPosition = isSliding ? value / 100 : newPosition;
+  const currentTime = DateTime.fromSeconds(secondsDuration * sliderPosition)
     .toUTC()
     .toFormat('HH:mm:ss');
   const duration = DateTime.fromSeconds(
-    secondsDuration - secondsDuration * newPosition,
+    secondsDuration - secondsDuration * sliderPosition,
   )
     .toUTC()
     .toFormat('HH:mm:ss');
-
-  const styles = useStylesheet(createStyles);
-  const [value, setValue] = useState<number>(newPosition * 100);
 
   const onSlidingComplete = (evt: number | Array<number>): void => {
     // @ts-ignore
     const updatedValue: number = evt[0];
     console.log('onSlidingComplete', updatedValue);
     setValue(updatedValue);
+    setIsSliding(false);
     onRelease(updatedValue);
   };
 
@@ -136,7 +137,7 @@ export const VideoControl = ({
           >
             <Text style={styles.time}>{currentTime}</Text>
             <Slider
-              value={value}
+              value={isSliding ? value : newPosition * 100}
               // @ts-ignore
               containerStyle={[
                 styles.slider,
@@ -147,11 +148,15 @@ export const VideoControl = ({
               minimumTrackTintColor={'white'}
               trackMarks={[1]}
               onSlidingComplete={onSlidingComplete}
+              onSlidingStart={() => setIsSliding(true)}
               minimumValue={0.001}
               thumbTintColor={'white'}
               maximumValue={100}
               // @ts-ignore
-              onValueChange={setValue}
+              onValueChange={(newValue: number) => {
+                setValue(newValue);
+                onRelease(newValue);
+              }}
             />
             <Text style={styles.timeRemaining}>-{duration}</Text>
           </Row>
