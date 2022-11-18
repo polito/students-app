@@ -121,9 +121,6 @@ export const FileListItem = ({
 
 const createItemStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
-    fileIcon: {
-      color: colors.heading,
-    },
     fileSize: {
       paddingLeft: spacing[1],
     },

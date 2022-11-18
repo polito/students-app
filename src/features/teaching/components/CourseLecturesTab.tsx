@@ -9,7 +9,12 @@ import {
   View,
 } from 'react-native';
 
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChalkboardTeacher,
+  faChevronDown,
+  faChevronUp,
+  faVideo,
+} from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -20,6 +25,7 @@ import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-clie
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
   useGetCourseRelatedVirtualClassrooms,
@@ -56,12 +62,12 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { queries: relatedVCQueries, isLoading: areRelatedLoading } =
     useGetCourseRelatedVirtualClassrooms(vcPreviousYears, vcOtherCourses);
 
-  const queries = [
+  const refreshControl = useRefreshControl(
     courseQuery,
     videolecturesQuery,
     virtualClassroomsQuery,
     ...relatedVCQueries,
-  ];
+  );
 
   const [sections, setSections] = useState<Section[]>([]);
   const [lectures, setLectures] = useState<SectionLectures[]>([]);
@@ -191,15 +197,14 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       ref={sectionListRef}
       contentContainerStyle={bottomBarAwareStyles}
       sections={sections}
-      refreshing={queries.some(q => q.isLoading)}
-      onRefresh={() => queries.forEach(q => q.refetch())}
+      {...refreshControl}
       stickySectionHeadersEnabled={true}
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
       )}
       ItemSeparatorComponent={Platform.select({
-        ios: () => <IndentedDivider indent={spacing[5] as number} />,
+        ios: () => <IndentedDivider />,
       })}
       renderSectionHeader={({ section: { title, index, isExpanded } }) => (
         <Pressable onPress={() => toggleSection(index)}>
@@ -241,6 +246,16 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
             ]
               .filter(i => !!i)
               .join(' - ')}
+            leadingItem={
+              <Icon
+                icon={
+                  section.type === 'VideoLecture'
+                    ? faVideo
+                    : faChalkboardTeacher
+                }
+                size={fontSizes['2xl']}
+              />
+            }
             linkTo={{
               screen:
                 section.type === 'VideoLecture'
