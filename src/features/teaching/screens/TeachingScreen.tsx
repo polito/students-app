@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
@@ -20,9 +21,9 @@ import { Theme } from '@lib/ui/types/theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -44,6 +45,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const refreshControl = useRefreshControl(
+    coursesQuery,
+    examsQuery,
+    studentQuery,
+  );
   const exams = useMemo(
     () =>
       examsQuery.data?.data
@@ -56,11 +62,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={
-        <QueryRefreshControl
-          queries={[coursesQuery, examsQuery, studentQuery]}
-        />
-      }
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <View style={styles.sectionsContainer}>
         <Section>

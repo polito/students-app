@@ -15,8 +15,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 
@@ -24,6 +24,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const { fontSizes, colors, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const noticesQuery = useGetCourseNotices(courseId);
+  const refreshControl = useRefreshControl(noticesQuery);
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={<QueryRefreshControl queries={[noticesQuery]} />}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <List dividers>
         {notices.map((notice, index) => (

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
@@ -9,8 +9,8 @@ import { List } from '@lib/ui/components/List';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { CourseAssignmentListItem } from './CourseAssignmentListItem';
@@ -25,12 +25,13 @@ export const CourseAssignmentsTab = ({
   const swipeableRef = useRef<Swipeable>();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
+  const refreshControl = useRefreshControl(assignmentsQuery);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
     <>
       <ScrollView
-        refreshControl={<QueryRefreshControl queries={[assignmentsQuery]} />}
+        refreshControl={<RefreshControl {...refreshControl} />}
         contentContainerStyle={bottomBarAwareStyles}
         scrollEnabled={scrollEnabled}
       >

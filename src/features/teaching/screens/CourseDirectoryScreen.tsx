@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet } from 'react-native';
+import { FlatList, Platform, RefreshControl, StyleSheet } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Text } from '@lib/ui/components/Text';
@@ -9,8 +9,8 @@ import { Theme } from '@lib/ui/types/theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
@@ -33,6 +33,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
+  const refreshControl = useRefreshControl(directoryQuery);
 
   useEffect(() => {
     navigation.setOptions({
@@ -74,7 +75,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               />
             )
           }
-          refreshControl={<QueryRefreshControl queries={[directoryQuery]} />}
+          refreshControl={<RefreshControl {...refreshControl} />}
           refreshing={directoryQuery.isLoading}
           contentContainerStyle={bottomBarAwareStyles}
           ItemSeparatorComponent={Platform.select({
@@ -94,6 +95,7 @@ interface SearchProps {
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const [searchResults, setSearchResults] = useState([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const refreshControl = useRefreshControl(recentFilesQuery);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
   useEffect(() => {
@@ -120,7 +122,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           onSwipeEnd={() => setScrollEnabled(true)}
         />
       )}
-      refreshControl={<QueryRefreshControl queries={[recentFilesQuery]} />}
+      refreshControl={<RefreshControl {...refreshControl} />}
       refreshing={recentFilesQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}
       ItemSeparatorComponent={Platform.select({

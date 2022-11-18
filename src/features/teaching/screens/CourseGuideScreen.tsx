@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Platform, ScrollView } from 'react-native';
+import { Platform, RefreshControl, ScrollView } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { Section } from '@lib/ui/components/Section';
@@ -8,8 +8,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
@@ -20,6 +20,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   const { spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const guideQuery = useGetCourseGuide(courseId);
+  const refreshControl = useRefreshControl(guideQuery);
   const guideSections = useMemo(
     () =>
       guideQuery.data?.data.map(section => ({
@@ -33,7 +34,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={<QueryRefreshControl queries={[guideQuery]} />}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       {guideSections.map((section, i) => (
         <Section key={i}>

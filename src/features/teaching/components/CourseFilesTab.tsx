@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { List } from '@lib/ui/components/List';
@@ -9,8 +9,8 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { CourseRecentFileListItem } from './CourseRecentFileListItem';
@@ -19,6 +19,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const refreshControl = useRefreshControl(recentFilesQuery);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
@@ -26,7 +27,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
     <>
       <ScrollView
         contentContainerStyle={bottomBarAwareStyles}
-        refreshControl={<QueryRefreshControl queries={[recentFilesQuery]} />}
+        refreshControl={<RefreshControl {...refreshControl} />}
         scrollEnabled={scrollEnabled}
       >
         <View style={styles.sectionContainer}>

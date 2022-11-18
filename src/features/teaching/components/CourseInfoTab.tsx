@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -12,8 +12,8 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Person } from '@polito/api-client/models/Person';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
   useGetCourseExams,
@@ -35,6 +35,11 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   );
   const { queries: staffQueries, isLoading: isStaffLoading } = useGetPersons(
     courseQuery.data?.data.staff.map(s => s.id),
+  );
+  const refreshControl = useRefreshControl(
+    courseQuery,
+    courseExamsQuery,
+    ...staffQueries,
   );
 
   const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -68,11 +73,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={
-        <QueryRefreshControl
-          queries={[courseQuery, courseExamsQuery, ...staffQueries]}
-        />
-      }
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Grid style={{ padding: spacing[5] }}>
         <MetricCard

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -8,8 +8,8 @@ import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -26,14 +26,13 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const lecture = videolecturesQuery.data?.data.find(l => l.id === lectureId);
   const teacherQuery = useGetPerson(lecture.teacherId);
+  const refreshControl = useRefreshControl(teacherQuery, videolecturesQuery);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={
-        <QueryRefreshControl queries={[teacherQuery, videolecturesQuery]} />
-      }
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <VideoPlayer
         videoUrl="https://lucapezzolla.com/20210525.mp4"

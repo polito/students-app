@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
@@ -11,8 +11,8 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetGrades,
   useGetStudent,
@@ -25,6 +25,7 @@ export const TranscriptScreen = () => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
+  const refreshControl = useRefreshControl(studentQuery, gradesQuery);
 
   return (
     <ScrollView
@@ -35,9 +36,7 @@ export const TranscriptScreen = () => {
         },
         bottomBarAwareStyles,
       ]}
-      refreshControl={
-        <QueryRefreshControl queries={[studentQuery, gradesQuery]} />
-      }
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />

@@ -1,11 +1,11 @@
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
 
@@ -13,6 +13,7 @@ export const ExamsScreen = () => {
   const { spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const examsQuery = useGetExams();
+  const refreshControl = useRefreshControl(examsQuery);
 
   return (
     <ScrollView
@@ -20,7 +21,7 @@ export const ExamsScreen = () => {
       contentContainerStyle={{
         paddingVertical: spacing[5],
       }}
-      refreshControl={<QueryRefreshControl queries={[examsQuery]} />}
+      refreshControl={<RefreshControl {...refreshControl} />}
       style={bottomBarAwareStyles}
     >
       {!examsQuery.isLoading && (

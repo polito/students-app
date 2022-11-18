@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -13,8 +13,8 @@ import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useBookExam,
   useCancelExamBooking,
@@ -31,6 +31,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const examsQuery = useGetExams();
+  const refreshControl = useRefreshControl(examsQuery);
   const exam = examsQuery.data?.data.find(e => e.id === id);
   const bookExamMutation = useBookExam(exam?.id);
   const cancelExamBookingMutation = useCancelExamBooking(exam?.id);
@@ -48,7 +49,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   return (
     <>
       <ScrollView
-        refreshControl={<QueryRefreshControl queries={[examsQuery]} />}
+        refreshControl={<RefreshControl {...refreshControl} />}
         contentContainerStyle={{
           paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
         }}

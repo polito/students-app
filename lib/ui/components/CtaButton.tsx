@@ -88,7 +88,7 @@ export const CtaButton = ({
           </View>
           <View style={{ opacity: loading ? 0 : 1 }}>
             {showSuccess ? (
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Icon
                   icon={faCheckCircle}
                   size={fontSizes.xl}

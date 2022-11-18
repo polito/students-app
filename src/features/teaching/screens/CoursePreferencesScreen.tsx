@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
@@ -20,11 +20,11 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { courseColors } from '../../../core/constants';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { CourseIcon } from '../components/CourseIcon';
@@ -88,6 +88,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { courseId } = route.params;
   const courseQuery = useGetCourse(courseId);
+  const refreshControl = useRefreshControl(courseQuery);
   const { courses: coursesPrefs, updatePreference } =
     useContext(PreferencesContext);
   const coursePrefs = useMemo(
@@ -99,7 +100,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     <CourseContext.Provider value={courseId}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<QueryRefreshControl queries={[courseQuery]} />}
+        refreshControl={<RefreshControl {...refreshControl} />}
         contentContainerStyle={bottomBarAwareStyles}
       >
         <View style={{ paddingVertical: spacing[5] }}>

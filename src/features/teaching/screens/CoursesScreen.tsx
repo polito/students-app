@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { QueryRefreshControl } from '../../../core/components/QueryRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
 
@@ -16,6 +16,7 @@ export const CoursesScreen = () => {
   const { spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
+  const refreshControl = useRefreshControl(coursesQuery);
 
   return (
     <ScrollView
@@ -26,7 +27,7 @@ export const CoursesScreen = () => {
         },
         bottomBarAwareStyles,
       ]}
-      refreshControl={<QueryRefreshControl queries={[coursesQuery]} />}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       {!coursesQuery.isLoading &&
         Object.entries(
