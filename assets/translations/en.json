@@ -111,6 +111,15 @@
   "videoPlayer": {
     "speedSectionTitle": "Speed"
   },
+  "colors": {
+    "darkBlue": "Dark blue",
+    "orange": "Orange",
+    "rose":  "Rose",
+    "red": "Red",
+    "green":  "Green",
+    "darkOrange": "Dark orange",
+    "lightBlue":  "Light blue"
+  },
   "common": {
     "areYouSure?": "Are you sure?",
     "booking": "Booking",

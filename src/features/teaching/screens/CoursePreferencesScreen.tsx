@@ -111,9 +111,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 actions={courseColors.map(cc => {
                   return {
                     id: cc.color,
-                    title: cc.name,
+                    title: t(cc.name),
                     image: 'circle.fill',
                     imageColor: cc.color,
+                    state: cc.color === coursePrefs?.color ? 'on' : undefined,
                   };
                 })}
                 onPressAction={({ nativeEvent: { event: color } }) => {

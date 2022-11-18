@@ -111,6 +111,15 @@
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
   },
+  "colors": {
+    "darkBlue": "Blu scuro",
+    "orange": "Arancione",
+    "rose":  "Rosa",
+    "red": "Rosso",
+    "green":  "Verde",
+    "darkOrange": "Arancione scuro",
+    "lightBlue":  "Blu chiaro"
+  },
   "common": {
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
