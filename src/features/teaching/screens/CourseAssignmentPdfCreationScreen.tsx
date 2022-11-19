@@ -24,7 +24,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { tabBarStyle } from '../../../core/components/RootNavigator';
+import { displayTabBar, hideTabBar } from '../../../utils/tab-bar';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -48,15 +48,8 @@ export const CourseAssignmentPdfCreationScreen = ({
 
   useEffect(() => {
     const rootNav = navigation.getParent();
-    rootNav.setOptions({
-      tabBarStyle: {
-        display: 'none',
-      },
-    });
-    return () =>
-      rootNav.setOptions({
-        tabBarStyle,
-      });
+    hideTabBar(rootNav);
+    return () => displayTabBar(rootNav);
   }, []);
 
   const addPage = () => {
@@ -205,7 +198,7 @@ const Action = ({ icon, label, onPress }: ActionProps) => {
     </TouchableHighlight>
   );
 };
-const createStyles = ({ colors, fontSizes, spacing }: Theme) =>
+const createStyles = ({ fontSizes, spacing }: Theme) =>
   StyleSheet.create({
     screen: {
       flex: 1,
