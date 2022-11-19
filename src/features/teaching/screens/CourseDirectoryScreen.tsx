@@ -28,28 +28,23 @@ import { isDirectory } from '../utils/fs-entry';
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
 export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
-  const { courseId, directoryId } = route.params;
+  const { courseId, directoryId, directoryName } = route.params;
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const refreshControl = useRefreshControl(directoryQuery);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     navigation.setOptions({
+      headerTitle: directoryName ?? t('common.file_plural'),
       headerSearchBarOptions: {
         onChangeText: e => setSearchFilter(e.nativeEvent.text),
       },
     });
   }, []);
-
-  useEffect(() => {
-    if (!directoryQuery.data) return;
-
-    navigation.setOptions({
-      headerTitle: directoryQuery.data.name,
-    });
-  }, [directoryQuery.data]);
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -61,9 +56,10 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       ) : (
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
-          data={directoryQuery.data?.files}
+          data={directoryQuery.data}
           scrollEnabled={scrollEnabled}
           keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+          initialNumToRender={15}
           renderItem={({ item }) =>
             isDirectory(item) ? (
               <CourseDirectoryListItem item={item} courseId={courseId} />

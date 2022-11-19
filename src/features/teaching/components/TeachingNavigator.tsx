@@ -27,7 +27,11 @@ export type TeachingStackParamList = {
   Courses: undefined;
   Course: { id: number; courseName: string };
   CoursePreferences: { courseId: number };
-  CourseDirectory: { courseId: number; directoryId?: string };
+  CourseDirectory: {
+    courseId: number;
+    directoryId?: string;
+    directoryName?: string;
+  };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
