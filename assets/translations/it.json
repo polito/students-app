@@ -54,7 +54,6 @@
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
     "ctaDeletePage": "Elimina",
-    "pageNumber": "Pagina {{index}} di {{count}}",
     "title": "Crea PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
