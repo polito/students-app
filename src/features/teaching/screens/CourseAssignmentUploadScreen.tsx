@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 import DocumentPicker, { isInProgress } from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
@@ -29,6 +30,8 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
+  const { t } = useTranslation();
+
   const takePicture = () =>
     openCamera({
       mediaType: 'photo',
@@ -49,8 +52,8 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
       style={[bottomBarAwareStyles, styles.screen]}
     >
       <AssignmentUploadAction
-        title={'Carica un file'}
-        subtitle={'sul tuo dispositivo o dal cloud'}
+        title={t('courseAssignmentUploadScreen.ctaUploadFile')}
+        subtitle={t('courseAssignmentUploadScreen.ctaUploadFileSubtitle')}
         icon={faUpload}
         onPress={() => {
           DocumentPicker.pickSingle({
@@ -66,8 +69,8 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
         }}
       />
       <AssignmentUploadAction
-        title={'Scatta una foto'}
-        subtitle={'con la fotocamera del telefono'}
+        title={t('courseAssignmentUploadScreen.ctaTakePicture')}
+        subtitle={t('courseAssignmentUploadScreen.ctaTakePictureSubtitle')}
         icon={faCamera}
         onPress={() => {
           takePicture()
@@ -80,8 +83,8 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
         }}
       />
       <AssignmentUploadAction
-        title={'Scansiona un documento'}
-        subtitle={'crea un file pdf'}
+        title={t('courseAssignmentUploadScreen.ctaCreatePDF')}
+        subtitle={t('courseAssignmentUploadScreen.ctaCreatePDFSubtitle')}
         icon={faFilePdf}
         onPress={() => {
           takePicture()

@@ -57,12 +57,18 @@
     "title": "Create PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
-    "ctaUpload": "Upload assignment",
+    "ctaUpload": "Upload",
     "descriptionLabel": "Assignment description",
     "previewSectionTitle": "File preview"
   },
   "courseAssignmentUploadScreen": {
-    "title": "Upload assignment"
+    "title": "Upload assignment",
+    "ctaUploadFile" : "Pick a file",
+    "ctaUploadFileSubtitle" : "on your phone or on the cloud",
+    "ctaTakePicture" : "Take a picture",
+    "ctaTakePictureSubtitle" : "with the camera of your phone",
+    "ctaCreatePDF" : "Scan a document",
+    "ctaCreatePDFSubtitle" : "create a pdf file"
   },
   "courseAssignmentsTab": {
     "title": "Assignments"
