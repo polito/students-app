@@ -165,9 +165,9 @@ export const CourseAssignmentPdfCreationScreen = ({
         <View style={styles.dotsContainer}>
           {imageUris.map((_, index) =>
             index === currentPageIndex ? (
-              <Icon icon={faCircleDot} style={styles.dot} />
+              <Icon icon={faCircleDot} style={styles.dot} key={index} />
             ) : (
-              <Icon icon={faCircle} style={styles.dot} />
+              <Icon icon={faCircle} style={styles.dot} key={index} />
             ),
           )}
         </View>
