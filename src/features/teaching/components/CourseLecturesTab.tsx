@@ -205,7 +205,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         <Pressable onPress={() => toggleSection(index)}>
           <View
             style={{
-              paddingVertical: spacing[2],
+              paddingVertical: spacing[3],
               borderBottomWidth: StyleSheet.hairlineWidth,
               borderColor: colors.divider,
               ...(index > 0 && sections[index - 1]?.isExpanded
