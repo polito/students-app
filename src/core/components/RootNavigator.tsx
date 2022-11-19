@@ -31,6 +31,7 @@ export const RootNavigator = () => {
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
+        tabBarHideOnKeyboard: true,
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarLabelStyle: styles.tabBarLabelStyle,
