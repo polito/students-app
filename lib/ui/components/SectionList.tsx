@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { ActivityIndicator, Platform } from 'react-native';
+import { ActivityIndicator, Platform, ViewProps } from 'react-native';
 
 import { List } from '@lib/ui/components/List';
 
@@ -7,6 +7,7 @@ import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 
 type Props = PropsWithChildren<{
+  style?: ViewProps['style'];
   dividers?: boolean;
   loading?: boolean;
   indented?: boolean;
@@ -21,16 +22,20 @@ export const SectionList = ({
   loading = false,
   indented = false,
   dividers,
+  style,
 }: Props) => {
   const { spacing } = useTheme();
 
   return (
     <Card
       rounded={Platform.select({ android: false })}
-      style={{
-        marginVertical: spacing[2],
-        marginHorizontal: Platform.select({ ios: spacing[4] }),
-      }}
+      style={[
+        {
+          marginVertical: spacing[2],
+          marginHorizontal: Platform.select({ ios: spacing[4] }),
+        },
+        style,
+      ]}
     >
       {loading ? (
         <ActivityIndicator

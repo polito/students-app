@@ -2,135 +2,14 @@
   "agendaScreen": {
     "title": "Agenda"
   },
-  "courseAssignmentUploadScreen": {
-    "title": "Upload assignment"
-  },
-  "courseAssignmentsTab": {
-    "title": "Assignments"
-  },
-  "courseAssignmentPdfCreationScreen": {
-    "ctaAddPage": "Add",
-    "ctaConfirm": "Create PDF",
-    "ctaDeletePage": "Delete",
-    "pageNumber": "Page {{index}} of {{count}}",
-    "title": "Create PDF"
-  },
-  "courseAssignmentUploadConfirmationScreen": {
-    "ctaUpload": "Upload assignment",
-    "descriptionLabel": "Assignment description",
-    "previewSectionTitle": "File preview"
-  },
-  "courseDirectoryListItem": {
-    "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} files"
-  },
-  "courseDirectoryScreen": {
-    "noResult": "No results found"
-  },
-  "courseFileListItem": {
-    "downloadError": "Something went wrong with the download",
-    "reDownloadFile": "Redownload file"
-  },
-  "courseFilesTab": {
-    "browseFiles": "Browse files",
-    "empty": "No file available",
-    "recentSectionTitle": "Recent files",
-    "title": "Files"
-  },
-  "courseGuideScreen": {
-    "title": "Course guide"
-  },
-  "courseInfoTab": {
-    "agendaSectionTitle": "This course in the agenda",
-    "creditsLabel": "Credits",
-    "moreSectionTitle": "More",
-    "staffSectionTitle": "Staff",
-    "teacherLabel": "Teacher",
-    "title": "Info",
-    "yearLabel": "Year"
-  },
-  "courseLecturesTab": {
-    "title": "Lectures",
-    "virtualClassroomsSectionTitle": "Virtual classrooms"
-  },
-  "courseNoticesTab": {
-    "title": "Notices"
-  },
-  "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
-  },
-  "coursePreferencesScreen": {
-    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
-    "cleanCourseFiles": "Clean course files",
-    "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
-    "filesSubtitle": "New material available",
-    "hideInExtracts": "Hide in extracts",
-    "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
-    "showInExtracts": "Show in extracts",
-    "showInExtractsSubtitle": "In home screen and agenda"
-  },
-  "courseIconPickerScreen": {
-    "title": "Pick an icon"
-  },
-  "coursesScreen": {
-    "title": "Courses",
-    "otherCoursesSectionTitle": "Other courses"
-  },
-  "examScreen": {
-    "ctaBook": "Book exam",
-    "ctaBookSuccess": "Exam booked",
-    "ctaCancel": "Cancel booking",
-    "ctaCancelSuccess": "Booking cancelled",
-    "location": "Location"
-  },
-  "examsScreen": {
-    "title": "Exams"
-  },
-  "loginScreen": {
-    "cta": "Login",
-    "passwordLabel": "Password",
-    "usernameLabel": "Student ID"
-  },
-  "messagesScreen": {
-    "title": "Messages archive"
-  },
-  "placesScreen": {
-    "title": "Places"
-  },
-  "profileScreen": {
-    "title": "Profile"
-  },
-  "sectionHeader": {
-    "cta": "See all"
-  },
-  "settingsScreen": {
-    "title": "Settings"
-  },
-  "teachingScreen": {
-    "title": "Teaching"
-  },
-  "transcriptScreen": {
-    "acquiredCreditsLabel": "Acquired credits",
-    "attendedCreditsLabel": "Attended credits",
-    "averages": "Averages",
-    "finalAverageLabel": "Final average",
-    "provisionalGradesSectionTitle": "Provisional grades",
-    "thisYear": "This academic year",
-    "weightedAverageLabel": "Weighted average",
-    "yourCareer": "Your career"
-  },
-  "videoPlayer": {
-    "speedSectionTitle": "Speed"
-  },
   "colors": {
     "darkBlue": "Dark blue",
-    "orange": "Orange",
-    "rose":  "Rose",
-    "red": "Red",
-    "green":  "Green",
     "darkOrange": "Dark orange",
-    "lightBlue":  "Light blue"
+    "green": "Green",
+    "lightBlue": "Light blue",
+    "orange": "Orange",
+    "red": "Red",
+    "rose": "Rose"
   },
   "common": {
     "areYouSure?": "Are you sure?",
@@ -170,5 +49,128 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization"
+  },
+  "courseAssignmentPdfCreationScreen": {
+    "ctaAddPage": "Add",
+    "ctaConfirm": "Create PDF",
+    "ctaDeletePage": "Delete",
+    "pageNumber": "Page {{index}} of {{count}}",
+    "title": "Create PDF"
+  },
+  "courseAssignmentUploadConfirmationScreen": {
+    "ctaUpload": "Upload assignment",
+    "descriptionLabel": "Assignment description",
+    "previewSectionTitle": "File preview"
+  },
+  "courseAssignmentUploadScreen": {
+    "title": "Upload assignment"
+  },
+  "courseAssignmentsTab": {
+    "title": "Assignments"
+  },
+  "courseDirectoryListItem": {
+    "subtitle": "{{count}} file",
+    "subtitle_plural": "{{count}} files"
+  },
+  "courseDirectoryScreen": {
+    "noResult": "No results found"
+  },
+  "courseFileListItem": {
+    "downloadError": "Something went wrong with the download",
+    "reDownloadFile": "Redownload file"
+  },
+  "courseFilesTab": {
+    "browseFiles": "Browse files",
+    "empty": "No file available",
+    "recentSectionTitle": "Recent files",
+    "title": "Files"
+  },
+  "courseGuideScreen": {
+    "title": "Course guide"
+  },
+  "courseIconPickerScreen": {
+    "title": "Pick an icon"
+  },
+  "courseInfoTab": {
+    "agendaSectionTitle": "This course in the agenda",
+    "creditsLabel": "Credits",
+    "moreSectionTitle": "More",
+    "staffSectionTitle": "Staff",
+    "teacherLabel": "Teacher",
+    "title": "Info",
+    "yearLabel": "Year"
+  },
+  "courseLecturesTab": {
+    "title": "Lectures",
+    "virtualClassroomsSectionTitle": "Virtual classrooms"
+  },
+  "courseNoticesTab": {
+    "title": "Notices"
+  },
+  "coursePreferencesScreen": {
+    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
+    "cleanCourseFiles": "Clean course files",
+    "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
+    "filesSubtitle": "New material available",
+    "hideInExtracts": "Hide in extracts",
+    "lecturesSubtitle": "New lectures available",
+    "noticesSubtitle": "Notices sent by the professor",
+    "showInExtracts": "Show in extracts",
+    "showInExtractsSubtitle": "In home screen and agenda"
+  },
+  "courseVirtualClassroomScreen": {
+    "title": "Virtual classroom"
+  },
+  "coursesScreen": {
+    "otherCoursesSectionTitle": "Other courses",
+    "title": "Courses"
+  },
+  "examScreen": {
+    "ctaBook": "Book exam",
+    "ctaBookSuccess": "Exam booked",
+    "ctaCancel": "Cancel booking",
+    "ctaCancelSuccess": "Booking cancelled",
+    "location": "Location"
+  },
+  "examsScreen": {
+    "title": "Exams"
+  },
+  "loginScreen": {
+    "cta": "Login",
+    "ctaSuccessMessage": "Logged in",
+    "passwordLabel": "Password",
+    "title": "Log in with your polito.it credentials",
+    "usernameLabel": "Student ID"
+  },
+  "messagesScreen": {
+    "title": "Messages archive"
+  },
+  "placesScreen": {
+    "title": "Places"
+  },
+  "profileScreen": {
+    "title": "Profile"
+  },
+  "sectionHeader": {
+    "cta": "See all"
+  },
+  "settingsScreen": {
+    "title": "Settings"
+  },
+  "teachingScreen": {
+    "title": "Teaching"
+  },
+  "transcriptScreen": {
+    "acquiredCreditsLabel": "Acquired credits",
+    "attendedCreditsLabel": "Attended credits",
+    "averages": "Averages",
+    "finalAverageLabel": "Final average",
+    "provisionalGradesSectionTitle": "Provisional grades",
+    "thisYear": "This academic year",
+    "weightedAverageLabel": "Weighted average",
+    "yourCareer": "Your career"
+  },
+  "videoPlayer": {
+    "speedSectionTitle": "Speed"
   }
 }

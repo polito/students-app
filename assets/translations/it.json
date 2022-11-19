@@ -2,23 +2,71 @@
   "agendaScreen": {
     "title": "Agenda"
   },
-  "courseAssignmentUploadScreen": {
-    "title": "Invia un elaborato"
+  "colors": {
+    "darkBlue": "Blu scuro",
+    "darkOrange": "Arancione scuro",
+    "green": "Verde",
+    "lightBlue": "Blu chiaro",
+    "orange": "Arancione",
+    "red": "Rosso",
+    "rose": "Rosa"
   },
-  "courseAssignmentsTab": {
-    "title": "Elaborati"
+  "common": {
+    "areYouSure?": "Sei sicuro?",
+    "booking": "Prenotazione",
+    "booking_plural": "Prenotazioni",
+    "cancel": "Annulla",
+    "color": "Colore",
+    "course": "Corso",
+    "course_plural": "Corsi",
+    "credits": "Crediti",
+    "deadline": "Scadenza",
+    "deadline_plural": "Scadenze",
+    "delete": "Elimina",
+    "download": "Scarica",
+    "exam": "Esame",
+    "file": "File",
+    "file_plural": "File",
+    "icon": "Icona",
+    "lecture": "Lezione",
+    "lecture_plural": "Lezioni",
+    "notice": "Avviso",
+    "notice_plural": "Avvisi",
+    "notifications": "Notifiche",
+    "ok": "Ok",
+    "options": "Opzioni",
+    "period": "Period",
+    "preferences": "Preferenze",
+    "refresh": "Aggiorna",
+    "remove": "Rimuovi",
+    "retract": "Ritira",
+    "services": "Servizi",
+    "stop": "Stop",
+    "teacher": "Docente",
+    "transcript": "Libretto",
+    "videoLecture": "Video lezione",
+    "videoLecture_plural": "Video lezioni",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classroom",
+    "visualization": "Visualizzazione"
   },
   "courseAssignmentPdfCreationScreen": {
-    "title": "Crea PDF",
-    "pageNumber": "Pagina {{index}} di {{count}}",
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
-    "ctaDeletePage": "Elimina"
+    "ctaDeletePage": "Elimina",
+    "pageNumber": "Pagina {{index}} di {{count}}",
+    "title": "Crea PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Carica elaborato",
     "descriptionLabel": "Descrizione elaborato",
     "previewSectionTitle": "Anteprima del file"
+  },
+  "courseAssignmentUploadScreen": {
+    "title": "Invia un elaborato"
+  },
+  "courseAssignmentsTab": {
+    "title": "Elaborati"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
@@ -40,6 +88,9 @@
   "courseGuideScreen": {
     "title": "Guida del corso"
   },
+  "courseIconPickerScreen": {
+    "title": "Seleziona un'icona"
+  },
   "courseInfoTab": {
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
@@ -56,9 +107,6 @@
   "courseNoticesTab": {
     "title": "Avvisi"
   },
-  "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
-  },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCourseFiles": "Rimuovi file del corso",
@@ -70,12 +118,12 @@
     "showInExtracts": "Mostra negli estratti",
     "showInExtractsSubtitle": "In home screen e agenda"
   },
-  "courseIconPickerScreen": {
-    "title": "Seleziona un'icona"
+  "courseVirtualClassroomScreen": {
+    "title": "Virtual classroom"
   },
   "coursesScreen": {
-    "title": "Corsi",
-    "otherCoursesSectionTitle": "Altri corsi"
+    "otherCoursesSectionTitle": "Altri corsi",
+    "title": "Corsi"
   },
   "examScreen": {
     "ctaBook": "Prenota esame",
@@ -89,7 +137,9 @@
   },
   "loginScreen": {
     "cta": "Accedi",
+    "ctaSuccessMessage": "Accedi",
     "passwordLabel": "Password",
+    "title": "Accedi con le tue credenziali polito.it",
     "usernameLabel": "Matricola"
   },
   "messagesScreen": {
@@ -122,53 +172,5 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
-  },
-  "colors": {
-    "darkBlue": "Blu scuro",
-    "orange": "Arancione",
-    "rose":  "Rosa",
-    "red": "Rosso",
-    "green":  "Verde",
-    "darkOrange": "Arancione scuro",
-    "lightBlue":  "Blu chiaro"
-  },
-  "common": {
-    "areYouSure?": "Sei sicuro?",
-    "booking": "Prenotazione",
-    "booking_plural": "Prenotazioni",
-    "cancel": "Annulla",
-    "color": "Colore",
-    "course": "Corso",
-    "course_plural": "Corsi",
-    "credits": "Crediti",
-    "delete": "Elimina",
-    "deadline": "Scadenza",
-    "deadline_plural": "Scadenze",
-    "download": "Scarica",
-    "exam": "Esame",
-    "file": "File",
-    "file_plural": "File",
-    "icon": "Icona",
-    "lecture": "Lezione",
-    "lecture_plural": "Lezioni",
-    "notice": "Avviso",
-    "notice_plural": "Avvisi",
-    "notifications": "Notifiche",
-    "ok": "Ok",
-    "options": "Opzioni",
-    "period": "Period",
-    "preferences": "Preferenze",
-    "refresh": "Aggiorna",
-    "remove": "Rimuovi",
-    "retract": "Ritira",
-    "services": "Servizi",
-    "stop": "Stop",
-    "teacher": "Docente",
-    "transcript": "Libretto",
-    "videoLecture": "Video lezione",
-    "videoLecture_plural": "Video lezioni",
-    "virtualClassroom": "Virtual classroom",
-    "virtualClassroom_plural": "Virtual classroom",
-    "visualization": "Visualizzazione"
   }
 }

@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   TouchableHighlightProps,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
@@ -14,8 +15,11 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface Props extends TouchableHighlightProps {
+  adjustInsets?: boolean;
+  absolute?: boolean;
   title: string;
   loading?: boolean;
   success?: boolean;
@@ -25,6 +29,8 @@ interface Props extends TouchableHighlightProps {
 
 export const CtaButton = ({
   style,
+  adjustInsets = true,
+  absolute = true,
   title,
   loading,
   success,
@@ -35,6 +41,20 @@ export const CtaButton = ({
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [showSuccess, setShowSuccess] = useState(false);
+  let bottomBarHeight = 0;
+  try {
+    bottomBarHeight = useBottomTabBarHeight();
+  } catch (e) {
+    //
+  }
+  const position: Partial<ViewStyle> = absolute
+    ? {
+        position: 'absolute',
+        bottom: 0,
+        left: Platform.select({ ios: 0 }),
+        right: 0,
+      }
+    : {};
 
   useEffect(() => {
     if (success) {
@@ -44,7 +64,15 @@ export const CtaButton = ({
   }, [success]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        {
+          ...position,
+          marginBottom: adjustInsets ? bottomBarHeight : undefined,
+        },
+        styles.container,
+      ]}
+    >
       <TouchableHighlight
         underlayColor={!destructive ? colors.primary[600] : colors.danger[600]}
         disabled={loading || showSuccess}
@@ -90,11 +118,6 @@ export const CtaButton = ({
 const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
-      position: 'absolute',
-      bottom: 0,
-      left: Platform.select({ ios: 0 }),
-      right: 0,
-      marginBottom: Platform.select({ ios: 80 }),
       padding: spacing[4],
     },
     button: {

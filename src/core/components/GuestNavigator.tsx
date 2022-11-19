@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { LoginScreen } from '../screens/LoginScreen';
+import { HeaderLogo } from './HeaderLogo';
 
 export const GuestNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -8,7 +9,10 @@ export const GuestNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerTransparent: true,
+        headerLargeTitle: false,
+        headerLeft: () => <HeaderLogo />,
+        headerTitle: '',
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
