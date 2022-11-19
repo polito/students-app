@@ -1,8 +1,14 @@
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 import DocumentPicker, { isInProgress } from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import {
+  faCamera,
+  faFilePdf,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -45,7 +51,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
       <AssignmentUploadAction
         title={'Carica un file'}
         subtitle={'sul tuo dispositivo o dal cloud'}
-        iconName="document-attach-outline"
+        icon={faUpload}
         onPress={() => {
           DocumentPicker.pickSingle({
             copyTo: 'cachesDirectory',
@@ -62,7 +68,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
       <AssignmentUploadAction
         title={'Scatta una foto'}
         subtitle={'con la fotocamera del telefono'}
-        iconName="camera-outline"
+        icon={faCamera}
         onPress={() => {
           takePicture()
             .then(image => {
@@ -76,7 +82,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
       <AssignmentUploadAction
         title={'Scansiona un documento'}
         subtitle={'crea un file pdf'}
-        iconName="scan-outline"
+        icon={faFilePdf}
         onPress={() => {
           takePicture()
             .then(image => {
@@ -97,14 +103,14 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
 interface ActionProps {
   title: string;
   subtitle: string;
-  iconName: string;
+  icon: IconDefinition;
   onPress: () => void;
 }
 
 const AssignmentUploadAction = ({
   title,
   subtitle,
-  iconName,
+  icon,
   onPress,
 }: ActionProps) => {
   const styles = useStylesheet(createStyles);
@@ -121,7 +127,7 @@ const AssignmentUploadAction = ({
           <Text variant="secondaryText">{subtitle}</Text>
         </View>
         <Icon
-          name={iconName}
+          icon={icon}
           size={fontSizes['3xl']}
           color={colors.secondary[600]}
         />

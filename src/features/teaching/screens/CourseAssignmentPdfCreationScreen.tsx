@@ -13,8 +13,11 @@ import {
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faCheckCircle, faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faAdd } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -154,17 +157,17 @@ export const CourseAssignmentPdfCreationScreen = ({
       />
       <View style={styles.actionsContainer}>
         <Action
-          iconName="add"
+          icon={faAdd}
           label={t('courseAssignmentPdfCreationScreen.ctaAddPage')}
           onPress={addPage}
         />
         <Action
-          iconName="trash"
+          icon={faTrashCan}
           label={t('courseAssignmentPdfCreationScreen.ctaDeletePage')}
           onPress={deletePage}
         />
         <Action
-          iconName="checkmark-outline"
+          icon={faCheckCircle}
           label={t('courseAssignmentPdfCreationScreen.ctaConfirm')}
           onPress={createPdf}
         />
@@ -174,12 +177,12 @@ export const CourseAssignmentPdfCreationScreen = ({
 };
 
 interface ActionProps {
-  iconName: string;
+  icon: IconDefinition;
   label: string;
   onPress: () => void;
 }
 
-const Action = ({ iconName, label, onPress }: ActionProps) => {
+const Action = ({ icon, label, onPress }: ActionProps) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
   return (
@@ -189,7 +192,7 @@ const Action = ({ iconName, label, onPress }: ActionProps) => {
       underlayColor={colors.touchableHighlight}
     >
       <View style={styles.action}>
-        <Icon name={iconName} style={styles.actionIcon} />
+        <Icon icon={icon} style={styles.actionIcon} />
         <Text>{label}</Text>
       </View>
     </TouchableHighlight>
