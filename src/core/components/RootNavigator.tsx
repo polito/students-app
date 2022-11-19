@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, ViewStyle } from 'react-native';
 
 import {
   faBook,
@@ -21,6 +21,11 @@ import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
+
+export const tabBarStyle: ViewStyle = {
+  position: Platform.OS === 'ios' ? 'absolute' : undefined,
+  height: Platform.OS === 'ios' ? 84 : 60,
+};
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
@@ -97,10 +102,7 @@ export const RootNavigator = () => {
 
 const createStyles = ({ spacing, fontWeights }: Theme) =>
   StyleSheet.create({
-    tabBarStyle: {
-      position: Platform.OS === 'ios' ? 'absolute' : undefined,
-      height: Platform.OS === 'ios' ? 84 : 60,
-    },
+    tabBarStyle,
     tabBarItemStyle: {
       paddingVertical: Platform.OS === 'android' ? spacing[1] : undefined,
     },

@@ -24,6 +24,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { tabBarStyle } from '../../../core/components/RootNavigator';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -46,16 +47,15 @@ export const CourseAssignmentPdfCreationScreen = ({
   const pageSliderRef = useRef<FlatList>();
 
   useEffect(() => {
-    navigation.getParent()?.setOptions({
+    const rootNav = navigation.getParent();
+    rootNav.setOptions({
       tabBarStyle: {
         display: 'none',
       },
     });
     return () =>
-      navigation.getParent()?.setOptions({
-        tabBarStyle: {
-          display: 'flex',
-        },
+      rootNav.setOptions({
+        tabBarStyle,
       });
   }, []);
 
@@ -66,6 +66,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       freeStyleCropEnabled: true,
     })
       .then(image => {
+        console.log(image.path);
         setImageUris(oldUris => [...oldUris, image.path]);
       })
       .catch(e => {
@@ -108,6 +109,8 @@ export const CourseAssignmentPdfCreationScreen = ({
       fileName: 'assignment',
       html: pages.join(''),
     }).then(pdf => {
+      console.log(pdf.filePath);
+
       navigation.navigate('CourseAssignmentUploadConfirmation', {
         courseId,
         fileUri: pdf.filePath,
@@ -192,7 +195,11 @@ const Action = ({ icon, label, onPress }: ActionProps) => {
       underlayColor={colors.touchableHighlight}
     >
       <View style={styles.action}>
-        <Icon icon={icon} style={styles.actionIcon} />
+        <Icon
+          icon={icon}
+          style={styles.actionIcon}
+          color={colors.secondary[600]}
+        />
         <Text>{label}</Text>
       </View>
     </TouchableHighlight>
@@ -235,6 +242,6 @@ const createStyles = ({ colors, fontSizes, spacing }: Theme) =>
     },
     actionIcon: {
       fontSize: fontSizes['2xl'],
-      color: colors.secondary[600],
+      marginBottom: spacing[2],
     },
   });
