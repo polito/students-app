@@ -62,13 +62,13 @@
     "previewSectionTitle": "File preview"
   },
   "courseAssignmentUploadScreen": {
-    "title": "Upload assignment",
-    "ctaUploadFile" : "Pick a file",
-    "ctaUploadFileSubtitle" : "on your phone or on the cloud",
-    "ctaTakePicture" : "Take a picture",
-    "ctaTakePictureSubtitle" : "with the camera of your phone",
-    "ctaCreatePDF" : "Scan a document",
-    "ctaCreatePDFSubtitle" : "create a pdf file"
+    "ctaCreatePDF": "Scan a document",
+    "ctaCreatePDFSubtitle": "Create a pdf file",
+    "ctaTakePicture": "Take a picture",
+    "ctaTakePictureSubtitle": "With the camera of your phone",
+    "ctaUploadFile": "Pick a file",
+    "ctaUploadFileSubtitle": "On your phone or on the cloud",
+    "title": "Upload assignment"
   },
   "courseAssignmentsTab": {
     "title": "Assignments"

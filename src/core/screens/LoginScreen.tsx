@@ -1,6 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import {
+  Keyboard,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as Keychain from 'react-native-keychain';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -9,99 +16,92 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { useHeaderHeight } from '@react-navigation/elements';
 
 import { useApiContext } from '../contexts/ApiContext';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
-  const { fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { mutate: handleLogin, isLoading, isSuccess, data } = useLogin();
-  const headerHeight = useHeaderHeight();
+  const { mutateAsync: login, isLoading, isSuccess, data } = useLogin();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef<TextInput>();
   const { refreshContext } = useApiContext();
 
-  const onLoginButtonPressed = () => {
-    handleLogin({ username, password });
-  };
-
-  const onSuccessfulLogin = async (clientId: string, token: string) => {
-    await Keychain.setGenericPassword(clientId, token);
-    refreshContext(token);
-  };
-
-  useEffect(() => {
-    if (data?.data.token) {
-      onSuccessfulLogin(data.data.clientId, data.data.token).catch(e => {
-        // TODO handle error
-      });
+  const onLoginButtonPressed = async () => {
+    try {
+      const {
+        data: { clientId, token },
+      } = await login({ username, password });
+      await Keychain.setGenericPassword(clientId, token);
+      refreshContext(token);
+    } catch (e) {
+      // TODO feedback
     }
-  }, [data]);
+  };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        marginTop: '30%',
-        paddingTop: headerHeight,
-      }}
-    >
-      <Section>
-        <SectionHeader
-          title={t('loginScreen.title')}
-          titleStyle={{
-            fontSize: fontSizes['3xl'],
-            marginBottom: spacing[8],
-          }}
-          ellipsizeTitle={false}
-        />
-        <SectionList style={styles.sectionList}>
-          <TextField
-            label={t('loginScreen.usernameLabel')}
-            value={username}
-            onChangeText={setUsername}
-            editable={!isLoading}
-            returnKeyType="next"
-            onSubmitEditing={() => {
-              passwordRef.current.focus();
-            }}
-            style={styles.textField}
-          />
-          <TextField
-            inputRef={passwordRef}
-            type="password"
-            label={t('loginScreen.passwordLabel')}
-            onChangeText={setPassword}
-            value={password}
-            returnKeyType="done"
-            editable={!isLoading}
-            style={styles.textField}
-          />
-        </SectionList>
-      </Section>
-      <CtaButton
-        absolute={false}
-        adjustInsets={Platform.OS === 'ios'}
-        title={t('loginScreen.cta')}
-        onPress={onLoginButtonPressed}
-        loading={isLoading}
-        success={isSuccess}
-        successMessage={t('loginScreen.ctaSuccessMessage')}
-      />
-    </View>
+    <>
+      <KeyboardAwareScrollView contentInsetAdjustmentBehavior="automatic">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Section style={styles.section}>
+            <SectionHeader
+              title={t('loginScreen.title')}
+              titleStyle={styles.title}
+              ellipsizeTitle={false}
+            />
+            <SectionList style={styles.sectionList}>
+              <TextField
+                label={t('loginScreen.usernameLabel')}
+                value={username}
+                onChangeText={setUsername}
+                editable={!isLoading}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordRef.current.focus();
+                }}
+                style={styles.textField}
+              />
+              <TextField
+                inputRef={passwordRef}
+                type="password"
+                label={t('loginScreen.passwordLabel')}
+                onChangeText={setPassword}
+                value={password}
+                returnKeyType="done"
+                editable={!isLoading}
+                style={styles.textField}
+              />
+            </SectionList>
+            <CtaButton
+              absolute={false}
+              adjustInsets={Platform.OS === 'ios'}
+              title={t('loginScreen.cta')}
+              onPress={onLoginButtonPressed}
+              loading={isLoading}
+              success={isSuccess}
+              successMessage={t('loginScreen.ctaSuccessMessage')}
+            />
+          </Section>
+        </TouchableWithoutFeedback>
+      </KeyboardAwareScrollView>
+    </>
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
+    section: {
+      marginTop: spacing[32],
+    },
     sectionList: {
       paddingBottom: Platform.select({ android: spacing[4] }),
+    },
+    title: {
+      fontSize: fontSizes['3xl'],
+      marginBottom: spacing[8],
     },
     textField: {
       paddingHorizontal: Platform.select({

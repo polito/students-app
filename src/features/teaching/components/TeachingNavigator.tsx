@@ -48,7 +48,8 @@ const Stack = createNativeStackNavigator<TeachingStackParamList>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
 
   return (
     <Stack.Navigator
@@ -60,7 +61,7 @@ export const TeachingNavigator = () => {
           backgroundColor: colors.background,
         },
         headerBlurEffect: 'systemUltraThinMaterial',
-        ...titlesStyles(colors),
+        ...titlesStyles(theme),
       }}
     >
       <Stack.Screen

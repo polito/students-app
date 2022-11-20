@@ -11,14 +11,14 @@ import { LectureScreen } from '../screens/LectureScreen';
 const Stack = createNativeStackNavigator();
 
 export const AgendaNavigator = () => {
-  const { colors } = useTheme();
+  const theme = useTheme();
   const { t } = useTranslation();
 
   return (
     <Stack.Navigator
       screenOptions={{
         orientation: 'portrait',
-        ...titlesStyles(colors),
+        ...titlesStyles(theme),
       }}
     >
       <Stack.Screen
