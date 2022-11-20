@@ -30,7 +30,7 @@ export const LoginScreen = () => {
   const passwordRef = useRef<TextInput>();
   const { refreshContext } = useApiContext();
 
-  const onLoginButtonPressed = async () => {
+  const handleLogin = async () => {
     try {
       const {
         data: { clientId, token },
@@ -71,6 +71,10 @@ export const LoginScreen = () => {
                 onChangeText={setPassword}
                 value={password}
                 returnKeyType="done"
+                onSubmitEditing={() => {
+                  Keyboard.dismiss();
+                  handleLogin();
+                }}
                 editable={!isLoading}
                 style={styles.textField}
               />
@@ -79,7 +83,7 @@ export const LoginScreen = () => {
               absolute={false}
               adjustInsets={Platform.OS === 'ios'}
               title={t('loginScreen.cta')}
-              onPress={onLoginButtonPressed}
+              onPress={handleLogin}
               loading={isLoading}
               success={isSuccess}
               successMessage={t('loginScreen.ctaSuccessMessage')}
