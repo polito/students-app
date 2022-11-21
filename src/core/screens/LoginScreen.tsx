@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import {
   Keyboard,
   Platform,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as Keychain from 'react-native-keychain';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -44,7 +44,10 @@ export const LoginScreen = () => {
 
   return (
     <>
-      <KeyboardAwareScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustKeyboardInsets
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Section style={styles.section}>
             <SectionHeader
@@ -90,7 +93,7 @@ export const LoginScreen = () => {
             />
           </Section>
         </TouchableWithoutFeedback>
-      </KeyboardAwareScrollView>
+      </ScrollView>
     </>
   );
 };
