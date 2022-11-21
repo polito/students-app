@@ -9,20 +9,19 @@ import {
   StyleSheet,
   TouchableHighlight,
   View,
-  ViewToken,
 } from 'react-native';
+import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
-  faCheckCircle,
-  faCircle,
-  faCircleDot,
-  faTrashCan,
-} from '@fortawesome/free-regular-svg-icons';
-import { faAdd } from '@fortawesome/free-solid-svg-icons';
+  faFileCirclePlus,
+  faFileCircleXmark,
+  faPrint,
+} from '@fortawesome/free-solid-svg-icons';
+import { Divider } from '@lib/ui/components/Divider';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -32,14 +31,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { displayTabBar, hideTabBar } from '../../../utils/tab-bar';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { pdfSizes } from '../constants';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
   'CourseAssignmentPdfCreation'
 >;
 
-const windowDimensions = Dimensions.get('window');
-const PAGE_MARGIN = 20;
+const A4_ASPECT_RATIO = 1.414;
 
 export const CourseAssignmentPdfCreationScreen = ({
   navigation,
@@ -47,11 +46,17 @@ export const CourseAssignmentPdfCreationScreen = ({
 }: Props) => {
   const { courseId, firstImageUri } = route.params;
 
+  const { colors } = useTheme();
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
+  const { bottom: marginBottom } = useSafeAreaInsets();
   const [imageUris, setImageUris] = useState<string[]>([firstImageUri]);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [isCreatingPDF, setIsCreatingPDF] = useState(false);
-
+  const [pageContainerAspectRatio, setPageContainerAspectRatio] = useState(1);
   const pageSliderRef = useRef<FlatList>();
+
+  const windowDimensions = Dimensions.get('window');
 
   useEffect(() => {
     const rootNav = navigation.getParent();
@@ -61,16 +66,18 @@ export const CourseAssignmentPdfCreationScreen = ({
 
   const addPage = () => {
     openCamera({
+      ...pdfSizes,
       mediaType: 'photo',
       cropping: true,
       freeStyleCropEnabled: true,
+      includeBase64: true,
     })
       .then(image => {
-        console.log(image.path);
         setImageUris(oldUris => [...oldUris, image.path]);
+        setTimeout(() => pageSliderRef.current.scrollToEnd());
       })
       .catch(e => {
-        console.log(e);
+        console.error(e);
       });
   };
 
@@ -102,18 +109,35 @@ export const CourseAssignmentPdfCreationScreen = ({
   const createPdf = async () => {
     setIsCreatingPDF(true);
 
-    const pages = imageUris.map(
-      uri =>
-        `<img style='width: 100vw; height: 100vh; object-fit: contain' src='${uri}'/>`,
-    );
+    const html = `
+    <html>
+    <head>
+      <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+        }
+      </style>
+    </head>
+    <body>
+    ${imageUris
+      .map(
+        uri =>
+          `<img style="display: block; width: 1000px; height: 1410px; object-fit: contain; page-break-after: always" src="${uri}"/>`,
+      )
+      .join('\n')}
+    </body>
+    </html>
+    `;
 
     RNHTMLtoPDF.convert({
+      width: 750,
+      height: 1058,
+      padding: 0,
       fileName: 'assignment',
-      html: pages.join(''),
+      html,
     })
       .then(pdf => {
-        console.log(pdf.filePath);
-
         navigation.navigate('CourseAssignmentUploadConfirmation', {
           courseId,
           fileUri: pdf.filePath,
@@ -126,72 +150,127 @@ export const CourseAssignmentPdfCreationScreen = ({
       .finally(() => setIsCreatingPDF(false));
   };
 
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length === 1) {
-        setCurrentPageIndex(viewableItems[0].index);
-      }
-    },
-  );
-
-  const { t } = useTranslation();
-  const styles = useStylesheet(createStyles);
-
-  const { bottom: marginBottom } = useSafeAreaInsets();
-
   return (
-    <View style={[styles.screen, { marginBottom }]}>
+    <View
+      style={[
+        styles.screen,
+        {
+          marginBottom,
+        },
+      ]}
+    >
       <Animated.FlatList
         ref={pageSliderRef}
         data={imageUris}
         horizontal
         pagingEnabled
         keyExtractor={item => item}
-        onViewableItemsChanged={onViewableItemsChanged.current}
+        onScroll={({
+          nativeEvent: {
+            contentOffset: { x },
+          },
+        }) => {
+          setCurrentPageIndex(
+            Math.max(0, Math.round(x / Dimensions.get('window').width)),
+          );
+        }}
+        scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View style={styles.page}>
-            <Image
-              resizeMode="contain"
-              source={{ uri: item }}
-              style={styles.pageImage}
-            />
+          <View
+            style={[
+              {
+                width: windowDimensions.width,
+              },
+              styles.pageContainer,
+            ]}
+            onLayout={({ nativeEvent }) => {
+              setPageContainerAspectRatio(
+                nativeEvent.layout.height / nativeEvent.layout.width,
+              );
+            }}
+          >
+            <View
+              style={[
+                {
+                  ...(pageContainerAspectRatio < A4_ASPECT_RATIO
+                    ? { height: '100%' }
+                    : { width: '100%' }),
+                },
+                styles.page,
+              ]}
+            >
+              <Image
+                resizeMode="contain"
+                source={{ uri: item }}
+                style={styles.pageImage}
+              />
+            </View>
           </View>
         )}
-        contentContainerStyle={styles.sliderContentContainer}
         extraData={imageUris}
       />
-      <View>
-        <View style={styles.dotsContainer}>
-          {imageUris.map((_, index) =>
-            index === currentPageIndex ? (
-              <Icon icon={faCircleDot} style={styles.dot} key={index} />
-            ) : (
-              <Icon icon={faCircle} style={styles.dot} key={index} />
-            ),
-          )}
-        </View>
-        <View style={styles.actionsContainer}>
-          <Action
-            disabled={isCreatingPDF}
-            icon={faAdd}
-            label={t('courseAssignmentPdfCreationScreen.ctaAddPage')}
-            onPress={addPage}
-          />
-          <Action
-            disabled={isCreatingPDF}
-            icon={faTrashCan}
-            label={t('courseAssignmentPdfCreationScreen.ctaDeletePage')}
-            onPress={deletePage}
-          />
-          <Action
-            disabled={isCreatingPDF}
-            loading={isCreatingPDF}
-            icon={faCheckCircle}
-            label={t('courseAssignmentPdfCreationScreen.ctaConfirm')}
-            onPress={createPdf}
-          />
-        </View>
+      <View style={styles.dotsContainer}>
+        <AnimatedDotsCarousel
+          length={imageUris.length ?? 0}
+          currentIndex={currentPageIndex}
+          maxIndicators={4}
+          activeIndicatorConfig={{
+            color: colors.heading,
+            margin: 3,
+            opacity: 1,
+            size: 6,
+          }}
+          inactiveIndicatorConfig={{
+            color: colors.heading,
+            margin: 3,
+            opacity: 0.5,
+            size: 6,
+          }}
+          decreasingDots={[
+            {
+              config: {
+                color: colors.headers,
+                margin: 3,
+                opacity: 0.5,
+                size: 5,
+              },
+              quantity: 1,
+            },
+            {
+              config: {
+                color: colors.headers,
+                margin: 3,
+                opacity: 0.5,
+                size: 4,
+              },
+              quantity: 1,
+            },
+          ]}
+        />
+      </View>
+
+      <Divider />
+      <View style={styles.actionsContainer}>
+        <Action
+          disabled={isCreatingPDF}
+          icon={faFileCircleXmark}
+          label={t('courseAssignmentPdfCreationScreen.ctaDeletePage')}
+          onPress={deletePage}
+        />
+        <Action
+          disabled={isCreatingPDF}
+          icon={faFileCirclePlus}
+          label={t('courseAssignmentPdfCreationScreen.ctaAddPage')}
+          onPress={addPage}
+        />
+        <Action
+          disabled={isCreatingPDF}
+          loading={isCreatingPDF}
+          icon={faPrint}
+          label={t('courseAssignmentPdfCreationScreen.ctaConfirm')}
+          onPress={createPdf}
+        />
       </View>
     </View>
   );
@@ -237,29 +316,27 @@ const Action = ({
     </TouchableHighlight>
   );
 };
-const createStyles = ({ colors, fontSizes, spacing }: Theme) =>
+
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     screen: {
       flex: 1,
     },
-    sliderContentContainer: {
+    pageContainer: {
       alignItems: 'center',
+      justifyContent: 'center',
     },
     page: {
-      width: windowDimensions.width - PAGE_MARGIN * 2,
-      height: (windowDimensions.width - PAGE_MARGIN * 2) * 1.42,
-      marginHorizontal: PAGE_MARGIN,
+      aspectRatio: 1 / A4_ASPECT_RATIO,
       backgroundColor: '#ffffff',
-      padding: 10,
     },
     pageImage: {
       flexGrow: 1,
     },
     dotsContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      paddingVertical: spacing[3],
+      alignItems: 'center',
+      height: 6,
+      marginVertical: spacing[4],
     },
     dot: {
       marginHorizontal: spacing[1],

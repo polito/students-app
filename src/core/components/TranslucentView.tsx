@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle, useColorScheme } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 
 import { BlurView } from '@react-native-community/blur';
 
@@ -12,7 +12,6 @@ export const TranslucentView = ({
   style = null,
   blurAmount = 15,
 }: TranslucentViewProps) => {
-  const scheme = useColorScheme();
   return (
     <BlurView
       blurType="ultraThinMaterial"

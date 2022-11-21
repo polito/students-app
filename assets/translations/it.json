@@ -59,16 +59,18 @@
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Invia",
     "descriptionLabel": "Descrizione elaborato",
-    "previewSectionTitle": "Anteprima del file"
+    "previewSectionTitle": "Anteprima del file",
+    "title": "Anteprima elaborato"
   },
   "courseAssignmentUploadScreen": {
+    "backTitle": "Scegli file",
     "ctaCreatePDF": "Scansiona un documento",
     "ctaCreatePDFSubtitle": "Crea un file pdf",
     "ctaTakePicture": "Scatta una foto",
     "ctaTakePictureSubtitle": "Con la fotocamera del telefono",
     "ctaUploadFile": "Carica un file",
     "ctaUploadFileSubtitle": "Sul tuo dispositivo o dal cloud",
-    "title": "Invia un elaborato"
+    "title": "Carica elaborato"
   },
   "courseAssignmentsTab": {
     "title": "Elaborati"

@@ -59,9 +59,11 @@
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Upload",
     "descriptionLabel": "Assignment description",
-    "previewSectionTitle": "File preview"
+    "previewSectionTitle": "File preview",
+    "title": "Assignment preview"
   },
   "courseAssignmentUploadScreen": {
+    "backTitle": "Pick file",
     "ctaCreatePDF": "Scan a document",
     "ctaCreatePDFSubtitle": "Create a pdf file",
     "ctaTakePicture": "Take a picture",

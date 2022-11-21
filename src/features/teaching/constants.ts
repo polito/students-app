@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faAddressCard,
@@ -556,3 +558,11 @@ export const courseIcons: Record<string, IconProp> = {
   faSeedling,
   faWheatAwn,
 };
+
+export const pdfSizes =
+  Platform.OS === 'ios'
+    ? {
+        width: 1000,
+        height: 1410,
+      }
+    : {};

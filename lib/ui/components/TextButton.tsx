@@ -9,12 +9,13 @@ export const TextButton = ({
   style,
   ...rest
 }: PropsWithChildren<TouchableOpacityProps>) => {
-  const { colors, spacing, fontWeights } = useTheme();
+  const { colors, spacing, fontWeights, fontSizes } = useTheme();
   return (
     <TouchableOpacity
       style={[
         {
           padding: spacing[2],
+          marginRight: -spacing[2],
         },
         style,
       ]}
@@ -24,6 +25,7 @@ export const TextButton = ({
         style={{
           color: colors.primary[400],
           fontWeight: fontWeights.semibold,
+          fontSize: fontSizes.md,
         }}
       >
         {children}

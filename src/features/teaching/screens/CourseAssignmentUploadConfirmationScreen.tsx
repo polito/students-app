@@ -1,17 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Pdf from 'react-native-pdf';
 
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { IconButton } from '@lib/ui/components/IconButton';
+import { TextButton } from '@lib/ui/components/TextButton';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
@@ -20,16 +28,20 @@ type Props = NativeStackScreenProps<
   'CourseAssignmentUploadConfirmation'
 >;
 
-export const CourseAssignmentUploadConfirmationScreen = ({ route }: Props) => {
+const toolbarHeight = 46;
+
+export const CourseAssignmentUploadConfirmationScreen = ({
+  navigation,
+  route,
+}: Props) => {
   const { courseId, fileUri } = route.params;
-
-  const uploadMutation = useUploadAssignment(courseId);
-
   const { t } = useTranslation();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { colors, fontSizes } = useTheme();
+  const uploadMutation = useUploadAssignment(courseId);
   const styles = useStylesheet(createStyles);
-
+  const tabBarHeight = useBottomTabBarHeight();
   const [description, setDescription] = useState('');
+
   const uploadFile = () => {
     if (!description) return;
 
@@ -42,70 +54,116 @@ export const CourseAssignmentUploadConfirmationScreen = ({ route }: Props) => {
           file,
         });
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   };
 
+  useEffect(() => {
+    // TODO loading feedback
+    navigation.setOptions({
+      headerRight: () =>
+        Platform.select({
+          android: (
+            <IconButton
+              icon={faPaperPlane}
+              size={fontSizes.xl}
+              color={colors.heading}
+              onPress={uploadFile}
+              accessibilityLabel={t(
+                'courseAssignmentUploadConfirmationScreen.ctaUpload',
+              )}
+            />
+          ),
+          ios: (
+            <TextButton onPress={uploadFile}>
+              {t('courseAssignmentUploadConfirmationScreen.ctaUpload')}
+            </TextButton>
+          ),
+        }),
+    });
+  }, []);
+
   return (
-    <View style={[bottomBarAwareStyles, styles.screen]}>
-      <Section style={styles.formContainer}>
+    <>
+      <View
+        style={[
+          {
+            height: toolbarHeight,
+          },
+          styles.toolbar,
+        ]}
+      >
         <TextField
           label={t('courseAssignmentUploadConfirmationScreen.descriptionLabel')}
+          style={styles.textField}
+          inputStyle={styles.input}
+          autoCorrect={false}
           value={description}
-          onChangeText={setDescription}
-          editable={!uploadMutation.isLoading}
-          returnKeyType="send"
-          onSubmitEditing={uploadFile}
+          onChangeText={value => setDescription(value)}
         />
-        <CtaButton
-          title={t('courseAssignmentUploadConfirmationScreen.ctaUpload')}
-          onPress={uploadFile}
-          loading={uploadMutation.isLoading}
-          success={uploadMutation.isSuccess}
-        />
-      </Section>
+      </View>
+
       {fileUri.endsWith('pdf') && (
-        <Section style={styles.previewSection}>
-          <SectionHeader
-            title={t(
-              'courseAssignmentUploadConfirmationScreen.previewSectionTitle',
-            )}
-          />
-          <Pdf source={{ uri: fileUri }} style={styles.preview} />
-        </Section>
+        <Pdf
+          source={{ uri: fileUri }}
+          style={[
+            {
+              paddingBottom: tabBarHeight,
+            },
+            styles.preview,
+            styles.grow,
+          ]}
+        />
       )}
-      {/\.jpe?g|gif|png$/i.test(fileUri) && (
-        <Section style={styles.previewSection}>
-          <SectionHeader
-            title={t(
-              'courseAssignmentUploadConfirmationScreen.previewSectionTitle',
-            )}
-          />
+      {/\.jpe?g|gif|png|heic$/i.test(fileUri) && (
+        <ScrollView
+          contentContainerStyle={[
+            styles.grow,
+            {
+              paddingBottom: tabBarHeight,
+            },
+          ]}
+          centerContent
+          minimumZoomScale={0.5}
+        >
           <Image
             source={{ uri: fileUri }}
-            style={styles.preview}
+            style={styles.grow}
             resizeMode="contain"
           />
-        </Section>
+        </ScrollView>
       )}
-    </View>
+    </>
   );
 };
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ colors, spacing, shapes }: Theme) =>
   StyleSheet.create({
-    formContainer: {
-      paddingHorizontal: spacing[5],
-    },
-    screen: {
-      paddingTop: spacing[5],
-      flex: 1,
-    },
-    previewSection: {
-      flex: 1,
+    grow: {
       flexGrow: 1,
+    },
+    toolbar: {
+      justifyContent: 'space-between',
+      backgroundColor: Platform.select({
+        ios: colors.headers,
+        android: colors.surface,
+      }),
+      borderBottomWidth: Platform.select({
+        ios: StyleSheet.hairlineWidth,
+      }),
+      borderBottomColor: colors.divider,
+      elevation: 3,
     },
     preview: {
       width: Dimensions.get('window').width,
-      flexGrow: 1,
-      marginTop: 5,
+    },
+    input: {
+      margin: 0,
+      borderBottomWidth: 0,
+      paddingVertical: spacing[Platform.OS === 'ios' ? 2 : 1],
+    },
+    textField: {
+      backgroundColor: 'rgba(0, 0, 0, .1)',
+      borderRadius: shapes.md,
+      paddingVertical: 0,
+      marginHorizontal: spacing[2],
     },
   });

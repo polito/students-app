@@ -155,6 +155,7 @@ export const TeachingNavigator = () => {
           headerBackTitleVisible: false,
           headerTitle: t('courseAssignmentPdfCreationScreen.title'),
           headerLargeTitle: false,
+          headerTransparent: false,
         }}
       />
       <Stack.Screen
@@ -170,9 +171,14 @@ export const TeachingNavigator = () => {
         name="CourseAssignmentUploadConfirmation"
         component={CourseAssignmentUploadConfirmationScreen}
         options={{
-          headerBackTitle: t('Pick file'),
+          headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
+          headerLargeStyle: {
+            backgroundColor: colors.headers,
+          },
+          headerTransparent: false,
           headerLargeTitle: false,
+          headerShadowVisible: false,
         }}
       />
 
