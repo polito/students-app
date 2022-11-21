@@ -1,3 +1,6 @@
+import { Platform } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import { useMutation } from '@tanstack/react-query';
 
@@ -14,7 +17,27 @@ export const useLogin = () => {
   const authClient = useAuthClient();
 
   return useMutation((dto: LoginRequest) => {
-    return authClient.login({ loginRequest: dto });
+    dto.client = {
+      name: 'Students app',
+    };
+
+    return Promise.all([
+      DeviceInfo.getDeviceName(),
+      DeviceInfo.getModel(),
+      DeviceInfo.getManufacturer(),
+    ])
+      .then(([name, model, manufacturer]) => {
+        dto.device = {
+          name,
+          platform: Platform.OS,
+          version: `${Platform.Version}`,
+          model,
+          manufacturer,
+        };
+      })
+      .then(() => {
+        return authClient.login({ loginRequest: dto });
+      });
   });
 };
 
