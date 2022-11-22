@@ -6,9 +6,15 @@ import {
   TouchableHighlightProps,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  faCompress,
+  faExpand,
+  faPause,
+  faPlay,
+} from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
+import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -116,7 +122,7 @@ export const VideoControl = ({
             <Text style={styles.playbackRate}>{playbackRate}x</Text>
           </VideoControlButton>
           <VideoControlButton onPress={() => toggleFullscreen()}>
-            <Icon name={'ios-scan'} color={'white'} />
+            <Icon icon={paused ? faCompress : faExpand} color={'white'} />
           </VideoControlButton>
         </Row>
         <Row
@@ -127,7 +133,7 @@ export const VideoControl = ({
           pointerEvents={disableControl ? 'none' : undefined}
         >
           <VideoControlButton onPress={() => togglePaused()}>
-            <Icon name={paused ? 'play' : 'pause'} color={'white'} />
+            <Icon icon={paused ? faPlay : faPause} color={'white'} />
           </VideoControlButton>
           <Row
             style={styles.sliderControlWrapper}

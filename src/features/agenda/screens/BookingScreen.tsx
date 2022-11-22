@@ -8,10 +8,11 @@ import {
   View,
 } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -83,7 +84,7 @@ export const BookingScreen = ({ route, navigation }: Props) => {
           <ListItem
             leadingItem={
               <Icon
-                name="location"
+                icon={faLocationDot}
                 style={{ color: colors.secondaryText, marginRight: spacing[2] }}
                 size={fontSizes['2xl']}
               />

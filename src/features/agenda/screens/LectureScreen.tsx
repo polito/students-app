@@ -1,8 +1,13 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  faFolderOpen,
+  faLocationDot,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
 import { Row } from '@lib/ui/components/Row';
@@ -106,7 +111,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           <ListItem
             leadingItem={
               <Icon
-                name="location"
+                icon={faLocationDot}
                 style={styles.iconStyle}
                 size={fontSizes['2xl']}
               />
@@ -119,7 +124,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             <ListItem
               leadingItem={
                 <Icon
-                  name="person-outline"
+                  icon={faUser}
                   style={styles.iconStyle}
                   size={fontSizes['2xl']}
                 />
@@ -134,7 +139,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           <ListItem
             leadingItem={
               <Icon
-                name="ios-folder-outline"
+                icon={faFolderOpen}
                 style={styles.iconStyle}
                 size={fontSizes['2xl']}
               />

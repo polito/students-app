@@ -19,7 +19,7 @@ import { Theme } from '@lib/ui/types/theme';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
-const isIos = Platform.OS === 'ios';
+const isIos = Platform.OS !== 'ios';
 
 export interface VideoPlayerProps {
   videoUrl: string;

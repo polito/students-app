@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faLink } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -66,7 +67,7 @@ export const DeadlineScreen = ({ route }: Props) => {
           <ListItem
             leadingItem={
               <Icon
-                name="link"
+                icon={faLink}
                 style={{ color: colors.secondaryText, marginRight: spacing[2] }}
                 size={fontSizes['2xl']}
               />
