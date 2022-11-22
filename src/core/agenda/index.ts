@@ -1,9 +1,11 @@
+
 import { Colors } from '@lib/ui/types/theme';
 import { Booking, Deadline, Exam, Lecture } from '@polito-it/api-client';
 
 import { DateTime } from 'luxon';
 
 import { AgendaDayInterface, AgendaItemInterface } from '../../utils/types';
+import { PreferencesContextProps } from '../contexts/PreferencesContext';
 
 export const mapAgendaItem = (
   exams: Exam[],
@@ -103,4 +105,16 @@ export const getFromToDateFromPage = (page: number) => {
   // console.log('fromDate', DateTime.fromJSDate(fromDate).toISODate())
   // console.log('toDate', DateTime.fromJSDate(toDate).toISODate())
   return { fromDate, toDate };
+};
+
+export const getAgendaItemColorFromPreferences = (
+  preferences: PreferencesContextProps,
+  colors: Colors,
+  item: AgendaItemInterface,
+) => {
+  if (item.type === 'Lecture') {
+    const lecture = item.content as Lecture;
+    return preferences.courses[lecture.courseId].color;
+  }
+  return preferences.types[item.type]?.color || colors.primary[500];
 };

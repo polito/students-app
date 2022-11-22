@@ -12,6 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
+import { getAgendaItemColorFromPreferences } from '../../../src/core/agenda';
 import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { isLive } from '../../../src/utils';
 import { AgendaItemInterface } from '../../../src/utils/types';
@@ -45,13 +46,10 @@ export const AgendaCard = ({
   const fromHour = DateTime.fromISO(item.fromDate).toFormat('HH:mm');
   const toHour = DateTime.fromISO(item.toDate).toFormat('HH:mm');
   const time = `${fromHour} - ${toHour}`;
+
   const borderColor = useMemo(() => {
-    if (isLecture) {
-      const lecture = item.content as Lecture;
-      return preferences.courses[lecture.courseId].color;
-    }
-    return preferences.types[item.type]?.color || colors.primary[500];
-  }, [item]);
+    return getAgendaItemColorFromPreferences(preferences, colors, item);
+  }, [preferences, colors, item]);
 
   const onPressCard = (): void => {
     console.log('item', item);

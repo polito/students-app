@@ -17,8 +17,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import {
+  faSquareCaretLeft,
+  faSquareCaretRight,
+} from '@fortawesome/free-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -28,6 +33,8 @@ import { Theme } from '@lib/ui/types/theme';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
+import { getAgendaItemColorFromPreferences } from '../../../core/agenda';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { SCREEN_WIDTH } from '../../../utils/conts';
 import { AgendaDayInterface, AgendaItemInterface } from '../../../utils/types';
 import { CalendarService, Day } from './CalendarService';
@@ -180,12 +187,12 @@ export const Calendar = forwardRef(
               style={{ marginBottom: Normalize(15), borderColor: 'blue' }}
             >
               <CalendarMonthIcon
-                iconName={'chevron-back-outline'}
+                icon={faSquareCaretLeft}
                 onPress={onPressPrevMonth}
               />
               <Text style={styles.month}>{month}</Text>
               <CalendarMonthIcon
-                iconName={'chevron-forward-outline'}
+                icon={faSquareCaretRight}
                 onPress={onPressNextMonth}
               />
             </Row>
@@ -242,20 +249,19 @@ export const Calendar = forwardRef(
 );
 
 interface CalendarMonthIconProps {
-  iconName: string;
+  icon: IconProp;
   onPress: () => void;
 }
 
-const CalendarMonthIcon = ({ iconName, onPress }: CalendarMonthIconProps) => {
+const CalendarMonthIcon = ({ icon, onPress }: CalendarMonthIconProps) => {
   const { colors, fontSizes, dark } = useTheme();
 
   return (
     <Pressable onPress={onPress}>
       <Icon
-        name={iconName}
+        icon={icon}
         color={dark ? colors.primary[50] : colors.primary[500]}
         size={fontSizes['2xl']}
-        // style={{ marginRight: -spacing[1] }}
       />
     </Pressable>
   );
@@ -270,14 +276,11 @@ interface RowProp {
   agendaDays: AgendaDayInterface[];
 }
 
-const DOT_COLORS: Record<string, string> = {
-  Booking: 'blue',
-  Exam: 'red',
-  Lecture: 'green',
-};
 const RenderRow = memo(
   ({ item, formattedViewedDate, onPressDay, agendaDays }: RowProp) => {
     const styles = useStylesheet(createItemStyles);
+    const preferences = usePreferencesContext();
+    const { colors } = useTheme();
 
     return (
       <Row spaceBetween width={'100%'}>
@@ -290,7 +293,11 @@ const RenderRow = memo(
           let dots: string[] = [];
           if (agendaDay && agendaDay.items.length) {
             dots = agendaDay.items.map((agendaItem: AgendaItemInterface) => {
-              return DOT_COLORS[agendaItem.type];
+              return getAgendaItemColorFromPreferences(
+                preferences,
+                colors,
+                agendaItem,
+              );
             });
           }
           // const dots = [];
