@@ -230,7 +230,7 @@ export const CourseAssignmentPdfCreationScreen = ({
           decreasingDots={[
             {
               config: {
-                color: colors.headers,
+                color: colors.heading,
                 margin: 3,
                 opacity: 0.5,
                 size: 5,
@@ -239,7 +239,7 @@ export const CourseAssignmentPdfCreationScreen = ({
             },
             {
               config: {
-                color: colors.headers,
+                color: colors.heading,
                 margin: 3,
                 opacity: 0.5,
                 size: 4,
