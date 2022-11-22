@@ -3,7 +3,15 @@ on:
   # run on push
   push:
     branches:
-      - devops/gh_actions
+      - main
+      - develop
+    tags:
+      - "v*"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
   # allow manual run
   workflow_dispatch: {}
 
@@ -14,7 +22,7 @@ jobs:
   install-and-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}\n' > .npmrc
     - name: Install npm dependencies
@@ -24,7 +32,7 @@ jobs:
     needs: install-and-test
     runs-on: ubuntu-latest
     steps: 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}\n' > .npmrc
     - name: Install npm dependencies
