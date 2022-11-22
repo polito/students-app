@@ -57,11 +57,7 @@ export const CourseAssignmentListItem = ({
     () => (
       <FileListItem
         onPress={async () => {
-          if (await Linking.canOpenURL(item.url)) {
-            Linking.openURL(item.url);
-          } else {
-            // TODO feedback
-          }
+          await Linking.openURL(item.url);
         }}
         title={item.description}
         titleStyle={{
