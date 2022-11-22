@@ -16,6 +16,7 @@ import { useSplashContext } from '../contexts/SplashContext';
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const [apiContext, setApiContext] = useState<ApiContextProps>({
     isLogged: null,
+    token: null,
     refreshContext: null,
     clients: {},
   });
@@ -28,6 +29,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       setApiContext(() => {
         return {
           isLogged: !!token,
+          token: token,
           clients: createApiClients(token),
           refreshContext,
         };
