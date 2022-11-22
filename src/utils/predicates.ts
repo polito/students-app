@@ -1,1 +1,1 @@
-export const notNullish = i => i != null;
+export const notNullish = (i: any) => i != null;

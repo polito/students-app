@@ -30,6 +30,7 @@ export const Tabs = ({
 
   return (
     <ScrollView
+      showsHorizontalScrollIndicator={false}
       accessible={true}
       accessibilityRole="tablist"
       horizontal

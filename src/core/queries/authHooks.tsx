@@ -20,6 +20,13 @@ export const useLogin = () => {
     dto.client = {
       name: 'Students app',
     };
+    dto.device = {
+      name: 'S10+ di Luca',
+      platform: 'Android',
+      version: '12',
+      model: 'S10',
+      manufacturer: 'Samsung',
+    };
 
     return Promise.all([
       DeviceInfo.getDeviceName(),
