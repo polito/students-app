@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
   CourseAllOfVcOtherCourses,
@@ -18,6 +17,7 @@ import {
 } from '@tanstack/react-query';
 
 import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
+import { courseColors } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useGetExams } from './examHooks';
@@ -46,9 +46,9 @@ export const useGetCourses = () => {
 
         // eslint-disable-next-line no-prototype-builtins
         if (!courses.hasOwnProperty(c.id)) {
-          const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+          const randomColor = courseColors[Math.round(Math.random() * 6)];
           courses[c.id] = {
-            color: `#${randomColor}`,
+            color: randomColor.color,
             icon: null,
             isHidden: false,
           };
@@ -161,7 +161,6 @@ export const useGetCourseDirectory = (
   courseId: number,
   directoryId?: string,
 ) => {
-  const { t } = useTranslation();
   const filesQuery = useGetCourseFiles(courseId);
 
   const rootDirectoryContent = filesQuery.data?.data;
@@ -171,13 +170,13 @@ export const useGetCourseDirectory = (
     () => {
       if (!directoryId) {
         // Root directory
-        return new Promise<CourseDirectory>(resolve => {
-          resolve({ name: t('Files'), files: rootDirectoryContent });
+        return new Promise<CourseDirectoryContentInner[]>(resolve => {
+          resolve(rootDirectoryContent);
         });
       }
       const directory = findDirectory(directoryId, rootDirectoryContent);
 
-      return new Promise<CourseDirectory>(resolve => {
+      return new Promise<CourseDirectoryContentInner[]>(resolve => {
         resolve(directory);
       });
     },
@@ -197,7 +196,7 @@ export const useGetCourseDirectory = (
 const findDirectory = (
   searchDirectoryId: string,
   directoryContent: CourseDirectoryContentInner[],
-): CourseDirectory => {
+): CourseDirectoryContentInner[] => {
   let result = null;
   const childDirectories = directoryContent.filter(
     f => f.type === 'directory',
@@ -207,7 +206,7 @@ const findDirectory = (
   for (let i = 0; i < childDirectories.length; i++) {
     const currentDir = childDirectories[i];
     if (currentDir.id === searchDirectoryId) {
-      result = currentDir;
+      result = currentDir.files;
       break;
     }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -8,8 +8,8 @@ import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -26,11 +26,13 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const lecture = videolecturesQuery.data?.data.find(l => l.id === lectureId);
   const teacherQuery = useGetPerson(lecture.teacherId);
+  const refreshControl = useRefreshControl(teacherQuery, videolecturesQuery);
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={createRefreshControl(teacherQuery, videolecturesQuery)}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <VideoPlayer
         videoUrl="https://lucapezzolla.com/20210525.mp4"
@@ -38,14 +40,14 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       />
       <EventDetails
         title={lecture.title}
-        type={t('Video lecture')}
+        type={t('common.videoLecture')}
         time={lecture.createdAt}
       />
       <SectionList loading={teacherQuery.isLoading}>
         {teacherQuery.data && (
           <PersonListItem
             person={teacherQuery.data?.data}
-            subtitle={t('words.teacher')}
+            subtitle={t('common.teacher')}
           />
         )}
       </SectionList>

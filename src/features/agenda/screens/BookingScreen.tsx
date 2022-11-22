@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -19,8 +25,8 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -60,6 +66,8 @@ export const BookingScreen = ({ route, navigation }: Props) => {
     bookingMutation.mutate();
   };
 
+  const refreshControl = useRefreshControl(bookingsQuery);
+
   return (
     <>
       <ScrollView
@@ -67,7 +75,7 @@ export const BookingScreen = ({ route, navigation }: Props) => {
         contentContainerStyle={{
           paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
         }}
-        refreshControl={createRefreshControl(bookingsQuery)}
+        refreshControl={<RefreshControl {...refreshControl} />}
         style={styles.wrapper}
       >
         <EventDetails title={title} type={t('Booking')} timeLabel={timeLabel} />

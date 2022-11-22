@@ -1,4 +1,5 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 
 interface Prop {
@@ -14,7 +15,7 @@ export const Divider = ({ style = {} }: Prop) => {
     <View
       style={[
         {
-          flex: 1,
+          // flex: 1,
           minWidth: StyleSheet.hairlineWidth,
           minHeight: StyleSheet.hairlineWidth,
           backgroundColor: colors.divider,

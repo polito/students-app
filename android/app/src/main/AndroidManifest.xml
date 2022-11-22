@@ -2,6 +2,7 @@
   package="it.polito.students">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
       android:name=".MainApplication"
@@ -22,4 +23,11 @@
         </intent-filter>
       </activity>
     </application>
+
+    <queries>
+      <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:mimeType="*/*" />
+      </intent>
+    </queries>
 </manifest>

@@ -24,6 +24,9 @@ interface Props {
   item: AgendaItemInterface;
 }
 
+/**
+ * A card used to present an agenda item
+ */
 export const AgendaCard = ({
   item,
   ...rest
@@ -107,7 +110,7 @@ export const AgendaCard = ({
   };
 
   return (
-    <Card style={[{ borderColor }, styles.agendaCard]} {...rest}>
+    <Card rounded style={[{ borderColor }, styles.agendaCard]} {...rest}>
       <TouchableOpacity style={styles.agendaButtonStyle} onPress={onPressCard}>
         <Col>
           <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>

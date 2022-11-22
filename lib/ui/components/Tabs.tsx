@@ -40,9 +40,11 @@ export const Tabs = ({
       style={[{ flexGrow: 0, flexShrink: 0 }, style]}
       {...rest}
     >
-      {Children.map(children, (c: ReactElement<TabProps>, i) => {
+      {Children.map(children, (c, i) => {
         if (isValidElement(c) && selectedIndexes != null) {
-          c = cloneElement(c, { selected: selectedIndexes.includes(i) });
+          c = cloneElement(c as ReactElement<TabProps>, {
+            selected: selectedIndexes.includes(i),
+          });
         }
         return (
           <>

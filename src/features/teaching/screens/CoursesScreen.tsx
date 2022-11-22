@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
 
@@ -16,15 +16,18 @@ export const CoursesScreen = () => {
   const { spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
+  const refreshControl = useRefreshControl(coursesQuery);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{
-        paddingVertical: spacing[5],
-      }}
-      refreshControl={createRefreshControl(coursesQuery)}
-      style={bottomBarAwareStyles}
+      contentContainerStyle={[
+        {
+          paddingVertical: spacing[5],
+        },
+        bottomBarAwareStyles,
+      ]}
+      refreshControl={<RefreshControl {...refreshControl} />}
     >
       {!coursesQuery.isLoading &&
         Object.entries(
@@ -38,11 +41,11 @@ export const CoursesScreen = () => {
             <SectionHeader
               title={
                 period !== 'undefined'
-                  ? `${t('Period')} ${period}`
+                  ? `${t('common.period')} ${period}`
                   : t('coursesScreen.otherCoursesSectionTitle')
               }
             />
-            <SectionList>
+            <SectionList indented>
               {courses.map(course => (
                 <CourseListItem key={course.shortcode} course={course} />
               ))}

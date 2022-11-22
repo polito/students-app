@@ -1,16 +1,26 @@
 import { Ref } from 'react';
-import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
+  ViewProps,
+} from 'react-native';
 
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
 import { useTheme } from '../hooks/useTheme';
-import { Text } from './Text';
 
-interface Props {
+interface Props extends Omit<TextInputProps, 'placeholder'> {
   inputRef?: Ref<TextInput>;
-  label?: string;
+  label: string;
   type?: 'text' | 'password';
+  icon?: IconDefinition;
+  style?: ViewProps['style'];
+  inputStyle?: TextInputProps['style'];
 }
 
 /**
@@ -21,6 +31,7 @@ export const TextField = ({
   label,
   type,
   style,
+  inputStyle,
   ...rest
 }: TextInputProps & Props) => {
   const { colors } = useTheme();
@@ -39,14 +50,14 @@ export const TextField = ({
   })();
 
   return (
-    <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={[styles.container, style]}>
       <TextInput
         ref={inputRef}
         autoCapitalize="none"
         selectionColor={colors.link}
-        placeholderTextColor={colors.divider}
-        style={[styles.input, style]}
+        placeholder={label}
+        placeholderTextColor={colors.secondaryText}
+        style={[styles.input, inputStyle]}
         {...textInputProps}
         {...rest}
       />
@@ -54,19 +65,17 @@ export const TextField = ({
   );
 };
 
-const createStyles = ({ fontSizes, spacing, colors }: Theme) =>
+const createStyles = ({ colors, fontSizes, spacing, fontFamilies }: Theme) =>
   StyleSheet.create({
     container: {
-      marginBottom: spacing[5],
-    },
-    label: {
-      fontSize: fontSizes.md,
+      paddingVertical: spacing[2],
     },
     input: {
-      fontSize: fontSizes.lg,
-      borderBottomWidth: 1,
-      borderColor: colors.prose,
-      backgroundColor: colors.surface,
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      borderBottomWidth: Platform.select({ android: 1 }),
+      borderColor: colors.secondaryText,
+      // backgroundColor: colors.surface,
       color: colors.prose,
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[2],

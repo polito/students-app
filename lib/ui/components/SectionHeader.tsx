@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  TextProps,
+  TextStyle,
+  View,
+} from 'react-native';
 
 import { Link } from '@react-navigation/native';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -11,6 +17,8 @@ import { Text } from './Text';
 
 interface Props {
   title: string;
+  titleStyle?: StyleProp<TextStyle>;
+  ellipsizeTitle?: boolean;
   linkTo?: To<any>;
   trailingItem?: JSX.Element;
   separator?: boolean;
@@ -22,12 +30,20 @@ interface Props {
  */
 export const SectionHeader = ({
   title,
+  titleStyle,
+  ellipsizeTitle = true,
   linkTo,
   separator = true,
   trailingItem,
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const ellipsis: Partial<TextProps> = ellipsizeTitle
+    ? {
+        numberOfLines: 1,
+        ellipsizeMode: 'tail',
+      }
+    : {};
 
   return (
     <View style={styles.container}>
@@ -35,11 +51,10 @@ export const SectionHeader = ({
       <View style={styles.innerContainer}>
         <Text
           variant="title"
-          style={styles.title}
+          style={[styles.title, titleStyle]}
           accessible={true}
           accessibilityRole="header"
-          numberOfLines={1}
-          ellipsizeMode="tail"
+          {...ellipsis}
         >
           {title}
         </Text>

@@ -1,23 +1,20 @@
-import { FileListItem } from '@lib/ui/components/FileListItem';
-import { CourseFileOverview } from '@polito-it/api-client';
+import { CourseFileOverview } from '@polito/api-client';
+
+import {
+  CourseFileListItem,
+  Props as CourseFileListItemProps,
+} from './CourseFileListItem';
 
 export type CourseRecentFile = CourseFileOverview & {
   location: string;
 };
 
-interface Props {
-  item: CourseRecentFile;
-  isDownloaded: boolean;
-}
-
-export const CourseRecentFileListItem = ({ item, ...rest }: Props) => {
+export const CourseRecentFileListItem = (props: CourseFileListItemProps) => {
   return (
-    <FileListItem
-      onPress={() => {}}
-      title={item.name}
-      subtitle={item.location}
-      sizeInKiloBytes={item.sizeInKiloBytes}
-      {...rest}
+    <CourseFileListItem
+      showLocation={true}
+      showCreatedDate={false}
+      {...props}
     />
   );
 };

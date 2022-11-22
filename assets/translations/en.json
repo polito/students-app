@@ -3,7 +3,74 @@
     "title": "Agenda",
     "backToToday": "Back to today"
   },
+  "colors": {
+    "darkBlue": "Dark blue",
+    "darkOrange": "Dark orange",
+    "green": "Green",
+    "lightBlue": "Light blue",
+    "orange": "Orange",
+    "red": "Red",
+    "rose": "Rose"
+  },
+  "common": {
+    "areYouSure?": "Are you sure?",
+    "booking": "Booking",
+    "booking_plural": "Bookings",
+    "cancel": "Cancel",
+    "color": "Color",
+    "course": "Course",
+    "course_plural": "Courses",
+    "credits": "Credits",
+    "deadline": "Deadline",
+    "deadline_plural": "Deadlines",
+    "delete": "Delete",
+    "download": "Download",
+    "exam": "Exam",
+    "file": "File",
+    "file_plural": "Files",
+    "icon": "Icon",
+    "lecture": "Lecture",
+    "lecture_plural": "Lectures",
+    "notice": "Notice",
+    "notice_plural": "Notices",
+    "notifications": "Notifications",
+    "ok": "Ok",
+    "options": "Options",
+    "period": "Period",
+    "preferences": "Preferences",
+    "refresh": "Refresh",
+    "remove": "Remove",
+    "retract": "Retract",
+    "services": "Services",
+    "stop": "Stop",
+    "teacher": "Teacher",
+    "transcript": "Transcript",
+    "videoLecture": "Video lecture",
+    "videoLecture_plural": "Video lecture",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classrooms",
+    "visualization": "Visualization"
+  },
+  "courseAssignmentPdfCreationScreen": {
+    "ctaAddPage": "Add",
+    "ctaConfirm": "Create PDF",
+    "ctaDeletePage": "Delete",
+    "title": "Create PDF"
+  },
+  "courseAssignmentUploadConfirmationScreen": {
+    "ctaUpload": "Upload",
+    "descriptionLabel": "Assignment description",
+    "previewSectionTitle": "File preview",
+    "title": "Assignment preview"
+  },
   "courseAssignmentUploadScreen": {
+    "backTitle": "Pick file",
+    "ctaCreatePDF": "Scan a document",
+    "ctaCreatePDFSubtitle": "Create a pdf file",
+    "ctaTakePicture": "Take a picture",
+    "ctaTakePictureSubtitle": "With the camera of your phone",
+    "ctaUploadFile": "Pick a file",
+    "ctaUploadFileSubtitle": "On your phone or on the cloud",
     "title": "Upload assignment"
   },
   "courseAssignmentsTab": {
@@ -16,19 +83,26 @@
   "courseDirectoryScreen": {
     "noResult": "No results found"
   },
+  "courseFileListItem": {
+    "downloadError": "Something went wrong with the download",
+    "reDownloadFile": "Redownload file"
+  },
   "courseFilesTab": {
-    "title": "Files",
-    "recentSectionTitle": "Most recent files",
-    "empty": "No file available"
+    "browseFiles": "Browse files",
+    "empty": "No file available",
+    "recentSectionTitle": "Recent files",
+    "title": "Files"
   },
   "courseGuideScreen": {
     "title": "Course guide"
+  },
+  "courseIconPickerScreen": {
+    "title": "Pick an icon"
   },
   "courseInfoTab": {
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
     "moreSectionTitle": "More",
-    "periodLabel": "Period",
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
     "title": "Info",
@@ -36,27 +110,31 @@
   },
   "courseLecturesTab": {
     "title": "Lectures",
-    "videoLecturesSectionTitle": "Video lectures",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
     "title": "Notices"
   },
-  "courseScreen": {
-    "title": "Course"
-  },
-  "courseVideoLectureScreen": {
-    "title": "Video lecture"
+  "coursePreferencesScreen": {
+    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
+    "cleanCourseFiles": "Clean course files",
+    "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
+    "filesSubtitle": "New material available",
+    "hideInExtracts": "Hide in extracts",
+    "lecturesSubtitle": "New lectures available",
+    "noticesSubtitle": "Notices sent by the professor",
+    "showInExtracts": "Show in extracts",
+    "showInExtractsSubtitle": "In home screen and agenda"
   },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
   "coursesScreen": {
-    "title": "Courses",
-    "otherCoursesSectionTitle": "Other courses"
+    "otherCoursesSectionTitle": "Other courses",
+    "title": "Courses"
   },
   "examScreen": {
-    "ctaBook": "Book esame",
+    "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
     "ctaCancelSuccess": "Booking cancelled",
@@ -66,9 +144,11 @@
     "title": "Exams"
   },
   "loginScreen": {
-    "usernameLabel": "Student ID",
+    "cta": "Login",
+    "ctaSuccessMessage": "Logged in",
     "passwordLabel": "Password",
-    "cta": "Login"
+    "title": "Log in with your polito.it credentials",
+    "usernameLabel": "Student ID"
   },
   "messagesScreen": {
     "title": "Messages archive"
@@ -91,18 +171,14 @@
   "transcriptScreen": {
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
+    "averages": "Averages",
     "finalAverageLabel": "Final average",
     "provisionalGradesSectionTitle": "Provisional grades",
-    "title": "Transcript",
-    "weightedAverageLabel": "Weighted average"
+    "thisYear": "This academic year",
+    "weightedAverageLabel": "Weighted average",
+    "yourCareer": "Your career"
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
-  },
-  "words": {
-    "credits": "credits",
-    "exam": "exam",
-    "lecture": "lecture",
-    "teacher": "teacher"
   }
 }

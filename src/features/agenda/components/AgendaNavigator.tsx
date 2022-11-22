@@ -29,16 +29,14 @@ export type AgendaStackParamList = {
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
-  const { colors, dark } = useTheme();
+  const theme = useTheme();
   const { t } = useTranslation();
 
   return (
     <Stack.Navigator
       screenOptions={{
-        ...titlesStyles(colors),
-        headerStyle: {
-          backgroundColor: dark ? colors.primary[700] : undefined,
-        },
+        orientation: 'portrait',
+        ...titlesStyles(theme),
       }}
     >
       <Stack.Screen
@@ -57,7 +55,7 @@ export const AgendaNavigator = () => {
         name="Lecture"
         component={LectureScreen}
         options={{
-          headerTitle: t('Lecture'),
+          headerTitle: t('common.lecture'),
         }}
       />
       <Stack.Screen

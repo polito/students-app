@@ -66,21 +66,18 @@ export interface Theme {
     body: string;
   };
   fontWeights: {
-    hairline?: TextStyle['fontWeight'];
-    thin?: TextStyle['fontWeight'];
-    light?: TextStyle['fontWeight'];
     normal: TextStyle['fontWeight'];
     medium?: TextStyle['fontWeight'];
     semibold: TextStyle['fontWeight'];
     bold: TextStyle['fontWeight'];
     extrabold?: TextStyle['fontWeight'];
-    black?: TextStyle['fontWeight'];
   };
 }
 
 export type Colors = Record<string, string | ColorPalette> & {
   background: string;
   surface: string;
+  headers: string;
   heading: string;
   title: string;
   prose: string;

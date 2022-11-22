@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { RefreshControl, ScrollView } from 'react-native';
 
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -12,8 +13,8 @@ import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useBookExam,
   useCancelExamBooking,
@@ -30,6 +31,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const examsQuery = useGetExams();
+  const refreshControl = useRefreshControl(examsQuery);
   const exam = examsQuery.data?.data.find(e => e.id === id);
   const bookExamMutation = useBookExam(exam?.id);
   const cancelExamBookingMutation = useCancelExamBooking(exam?.id);
@@ -39,7 +41,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
       navigation.setOptions({
-        headerBackTitle: t('Course'),
+        headerBackTitle: t('common.course'),
       });
     }
   }, []);
@@ -47,67 +49,51 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   return (
     <>
       <ScrollView
-        refreshControl={createRefreshControl(examsQuery)}
+        refreshControl={<RefreshControl {...refreshControl} />}
         contentContainerStyle={{
           paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
         }}
         contentInsetAdjustmentBehavior="automatic"
       >
         <EventDetails
-          title={exam?.courseName || ''}
-          type={t('words.exam')}
+          title={exam?.courseName}
+          type={t('common.exam')}
           time={exam?.examStartsAt}
         />
-        <SectionList loading={teacherQuery.isLoading}>
+        <SectionList loading={teacherQuery.isLoading} indented>
           <ListItem
-            leadingItem={
-              <Icon
-                name="location"
-                style={{ color: colors.secondaryText, marginRight: spacing[4] }}
-                size={fontSizes['2xl']}
-              />
-            }
+            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
             title={exam?.classrooms}
-            subtitle={''}
+            subtitle={t('examScreen.location')}
           />
           {teacherQuery.data && (
             <PersonListItem
               person={teacherQuery.data?.data}
-              subtitle={t('words.teacher')}
+              subtitle={t('common.teacher')}
             />
           )}
         </SectionList>
       </ScrollView>
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: spacing[4],
-          paddingBottom: bottomBarAwareStyles.paddingBottom,
-        }}
-      >
-        {exam?.status === ExamStatusEnum.Available && (
-          <CtaButton
-            title={t('examScreen.ctaBook')}
-            onPress={() => bookExamMutation.mutate({})}
-            loading={bookExamMutation.isLoading}
-            success={bookExamMutation.isSuccess}
-            successMessage={t('examScreen.ctaBookSuccess')}
-          />
-        )}
-        {exam?.status === ExamStatusEnum.Booked && (
-          <CtaButton
-            title={t('examScreen.ctaCancel')}
-            onPress={() => cancelExamBookingMutation.mutate()}
-            loading={cancelExamBookingMutation.isLoading}
-            success={cancelExamBookingMutation.isSuccess}
-            successMessage={t('examScreen.ctaCancelSuccess')}
-          />
-        )}
-      </View>
+      {exam?.status === ExamStatusEnum.Available && (
+        <CtaButton
+          title={t('examScreen.ctaBook')}
+          onPress={() => bookExamMutation.mutate({})}
+          loading={bookExamMutation.isLoading}
+          success={bookExamMutation.isSuccess}
+          successMessage={t('examScreen.ctaBookSuccess')}
+        />
+      )}
+      {exam?.status === ExamStatusEnum.Booked && (
+        <CtaButton
+          destructive
+          title={t('examScreen.ctaCancel')}
+          onPress={() => cancelExamBookingMutation.mutate()}
+          loading={cancelExamBookingMutation.isLoading}
+          success={cancelExamBookingMutation.isSuccess}
+          successMessage={t('examScreen.ctaCancelSuccess')}
+        />
+      )}
     </>
   );
 };

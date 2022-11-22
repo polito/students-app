@@ -233,13 +233,13 @@ export const AgendaScreen = () => {
           selected={selectedEventTypes.booking}
           onPress={() => onSelectTab('booking')}
         >
-          {t('Bookings')}
+          {t('common.booking_plural')}
         </Tab>
         <Tab
           selected={selectedEventTypes.deadline}
           onPress={() => onSelectTab('deadline')}
         >
-          {t('Deadlines')}
+          {t('common.deadline_plural')}
         </Tab>
       </Tabs>
       <FlatList

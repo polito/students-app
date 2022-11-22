@@ -3,8 +3,75 @@
     "title": "Agenda",
     "backToToday": "Torna a oggi"
   },
+  "colors": {
+    "darkBlue": "Blu scuro",
+    "darkOrange": "Arancione scuro",
+    "green": "Verde",
+    "lightBlue": "Blu chiaro",
+    "orange": "Arancione",
+    "red": "Rosso",
+    "rose": "Rosa"
+  },
+  "common": {
+    "areYouSure?": "Sei sicuro?",
+    "booking": "Prenotazione",
+    "booking_plural": "Prenotazioni",
+    "cancel": "Annulla",
+    "color": "Colore",
+    "course": "Corso",
+    "course_plural": "Corsi",
+    "credits": "Crediti",
+    "deadline": "Scadenza",
+    "deadline_plural": "Scadenze",
+    "delete": "Elimina",
+    "download": "Scarica",
+    "exam": "Esame",
+    "file": "File",
+    "file_plural": "File",
+    "icon": "Icona",
+    "lecture": "Lezione",
+    "lecture_plural": "Lezioni",
+    "notice": "Avviso",
+    "notice_plural": "Avvisi",
+    "notifications": "Notifiche",
+    "ok": "Ok",
+    "options": "Opzioni",
+    "period": "Period",
+    "preferences": "Preferenze",
+    "refresh": "Aggiorna",
+    "remove": "Rimuovi",
+    "retract": "Ritira",
+    "services": "Servizi",
+    "stop": "Stop",
+    "teacher": "Docente",
+    "transcript": "Libretto",
+    "videoLecture": "Video lezione",
+    "videoLecture_plural": "Video lezioni",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classroom",
+    "visualization": "Visualizzazione"
+  },
+  "courseAssignmentPdfCreationScreen": {
+    "ctaAddPage": "Aggiungi",
+    "ctaConfirm": "Crea PDF",
+    "ctaDeletePage": "Elimina",
+    "title": "Crea PDF"
+  },
+  "courseAssignmentUploadConfirmationScreen": {
+    "ctaUpload": "Invia",
+    "descriptionLabel": "Descrizione elaborato",
+    "previewSectionTitle": "Anteprima del file",
+    "title": "Anteprima elaborato"
+  },
   "courseAssignmentUploadScreen": {
-    "title": "Invia un elaborato"
+    "backTitle": "Scegli file",
+    "ctaCreatePDF": "Scansiona un documento",
+    "ctaCreatePDFSubtitle": "Crea un file pdf",
+    "ctaTakePicture": "Scatta una foto",
+    "ctaTakePictureSubtitle": "Con la fotocamera del telefono",
+    "ctaUploadFile": "Carica un file",
+    "ctaUploadFileSubtitle": "Sul tuo dispositivo o dal cloud",
+    "title": "Carica elaborato"
   },
   "courseAssignmentsTab": {
     "title": "Elaborati"
@@ -16,19 +83,26 @@
   "courseDirectoryScreen": {
     "noResult": "Nessun risultato trovato"
   },
+  "courseFileListItem": {
+    "downloadError": "Qualcosa è andato storto con durante il download",
+    "reDownloadFile": "Ri-scarica file"
+  },
   "courseFilesTab": {
-    "title": "Materiali",
+    "browseFiles": "Esplora file",
+    "empty": "Nessun file disponibile",
     "recentSectionTitle": "File recenti",
-    "empty": "Nessun file disponibile"
+    "title": "Materiali"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
+  },
+  "courseIconPickerScreen": {
+    "title": "Seleziona un'icona"
   },
   "courseInfoTab": {
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
     "moreSectionTitle": "Altro",
-    "periodLabel": "Periodo",
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
@@ -36,24 +110,28 @@
   },
   "courseLecturesTab": {
     "title": "Lezioni",
-    "videoLecturesSectionTitle": "Videolezioni",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
     "title": "Avvisi"
   },
-  "courseScreen": {
-    "title": "Corso"
-  },
-  "courseVideoLectureScreen": {
-    "title": "Videolezione"
+  "coursePreferencesScreen": {
+    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
+    "cleanCourseFiles": "Rimuovi file del corso",
+    "cleanCourseFilesSubtitle": "Libera {{size}}",
+    "filesSubtitle": "Nuovi materiali disponibili",
+    "hideInExtracts": "Nascondi negli estratti",
+    "lecturesSubtitle": "Nuove lezioni disponibili",
+    "noticesSubtitle": "Avvisi mandati dai professori",
+    "showInExtracts": "Mostra negli estratti",
+    "showInExtractsSubtitle": "In home screen e agenda"
   },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
   "coursesScreen": {
-    "title": "Corsi",
-    "otherCoursesSectionTitle": "Altri corsi"
+    "otherCoursesSectionTitle": "Altri corsi",
+    "title": "Corsi"
   },
   "examScreen": {
     "ctaBook": "Prenota esame",
@@ -66,9 +144,11 @@
     "title": "Appelli"
   },
   "loginScreen": {
-    "usernameLabel": "Matricola",
+    "cta": "Accedi",
+    "ctaSuccessMessage": "Accedi",
     "passwordLabel": "Password",
-    "cta": "Accedi"
+    "title": "Accedi con le tue credenziali polito.it",
+    "usernameLabel": "Matricola"
   },
   "messagesScreen": {
     "title": "Archivio messaggi"
@@ -94,18 +174,14 @@
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
+    "averages": "Medie",
     "finalAverageLabel": "Media depurata",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
-    "title": "Libretto",
-    "weightedAverageLabel": "Media ponderata"
+    "thisYear": "Questo anno accademico",
+    "weightedAverageLabel": "Media ponderata",
+    "yourCareer": "La tua carriera"
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
-  },
-  "words": {
-    "credits": "crediti",
-    "exam": "esame",
-    "lecture": "lezione",
-    "teacher": "docente"
   }
 }

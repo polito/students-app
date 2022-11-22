@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { Image, TouchableHighlightProps } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Person } from '@polito/api-client/models/Person';
@@ -15,14 +16,12 @@ export const PersonListItem = ({
   person,
   ...rest
 }: TouchableHighlightProps & Props) => {
-  const { colors, spacing, fontSizes } = useTheme();
+  const { spacing, fontSizes } = useTheme();
   const pictureStyle = useMemo(
     () => ({
-      width: 38,
-      height: 38,
+      width: '100%',
+      height: '100%',
       borderRadius: 20,
-      marginRight: spacing[2],
-      marginLeft: -spacing[2] + 1,
     }),
     [spacing],
   );
@@ -33,18 +32,10 @@ export const PersonListItem = ({
         person.picture ? (
           <Image source={{ uri: person.picture }} style={pictureStyle} />
         ) : (
-          <Icon
-            name="person"
-            style={{
-              color: colors.secondaryText,
-              marginRight: spacing[4],
-            }}
-            size={fontSizes['2xl']}
-          />
+          <Icon icon={faUser} size={fontSizes['2xl']} />
         )
       }
       title={`${person.firstName} ${person.lastName}`}
-      subtitleStyle={{ textTransform: 'capitalize' }}
       linkTo={{
         screen: 'Person',
         params: { id: person.id },

@@ -32,6 +32,7 @@ export const CourseDirectoryListItem = ({
         navigation.navigate('CourseDirectory', {
           courseId,
           directoryId: item.id,
+          directoryName: item.name,
         })
       }
       {...rest}

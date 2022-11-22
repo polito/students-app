@@ -2,13 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
+  Platform,
   Pressable,
   SectionList,
   StyleSheet,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
+import {
+  faChalkboardTeacher,
+  faChevronDown,
+  faChevronUp,
+  faVideo,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -18,6 +25,7 @@ import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-clie
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
   useGetCourseRelatedVirtualClassrooms,
@@ -54,12 +62,12 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { queries: relatedVCQueries, isLoading: areRelatedLoading } =
     useGetCourseRelatedVirtualClassrooms(vcPreviousYears, vcOtherCourses);
 
-  const queries = [
+  const refreshControl = useRefreshControl(
     courseQuery,
     videolecturesQuery,
     virtualClassroomsQuery,
     ...relatedVCQueries,
-  ];
+  );
 
   const [sections, setSections] = useState<Section[]>([]);
   const [lectures, setLectures] = useState<SectionLectures[]>([]);
@@ -114,14 +122,14 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     const availableSections: Section[] = [
       {
         index: 0,
-        title: t('courseLecturesTab.virtualClassroomsSectionTitle'),
+        title: t('common.virtualClassroom_plural'),
         data: [],
         type: 'VirtualClassroom',
         isExpanded: false,
       },
       {
         index: 1,
-        title: t('courseLecturesTab.videoLecturesSectionTitle'),
+        title: t('common.videoLecture_plural'),
         data: [],
         type: 'VideoLecture',
         isExpanded: false,
@@ -129,12 +137,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     ];
 
     const sectionTitles = vcPreviousYears
-      .map(
-        py =>
-          `${t('courseLecturesTab.virtualClassroomsSectionTitle')} - ${
-            py.year
-          }`,
-      )
+      .map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
       .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
 
     sectionTitles.forEach((title, index) => {
@@ -189,19 +192,20 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       ref={sectionListRef}
       contentContainerStyle={bottomBarAwareStyles}
       sections={sections}
-      refreshing={queries.some(q => q.isLoading)}
-      onRefresh={() => queries.forEach(q => q.refetch())}
+      {...refreshControl}
       stickySectionHeadersEnabled={true}
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
       )}
-      ItemSeparatorComponent={IndentedDivider}
+      ItemSeparatorComponent={Platform.select({
+        ios: () => <IndentedDivider />,
+      })}
       renderSectionHeader={({ section: { title, index, isExpanded } }) => (
         <Pressable onPress={() => toggleSection(index)}>
           <View
             style={{
-              paddingVertical: spacing[2],
+              paddingVertical: spacing[3],
               borderBottomWidth: StyleSheet.hairlineWidth,
               borderColor: colors.divider,
               ...(index > 0 && sections[index - 1]?.isExpanded
@@ -217,11 +221,8 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
               separator={false}
               trailingItem={
                 <Icon
-                  name={
-                    isExpanded ? 'chevron-up-outline' : 'chevron-down-outline'
-                  }
+                  icon={isExpanded ? faChevronUp : faChevronDown}
                   color={colors.secondaryText}
-                  size={fontSizes['2xl']}
                 />
               }
             />
@@ -240,6 +241,16 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
             ]
               .filter(i => !!i)
               .join(' - ')}
+            leadingItem={
+              <Icon
+                icon={
+                  section.type === 'VideoLecture'
+                    ? faVideo
+                    : faChalkboardTeacher
+                }
+                size={fontSizes['2xl']}
+              />
+            }
             linkTo={{
               screen:
                 section.type === 'VideoLecture'

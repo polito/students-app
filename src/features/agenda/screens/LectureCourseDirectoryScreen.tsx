@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -8,8 +8,8 @@ import { Theme } from '@lib/ui/types/theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { createRefreshControl } from '../../../core/hooks/createRefreshControl';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
@@ -73,6 +73,8 @@ export const LectureCourseDirectoryScreen = ({ route, navigation }: Props) => {
 
   const bottomBarAwareStyles = useBottomBarAwareStyles();
 
+  const refreshControl = useRefreshControl(directoryQuery);
+
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
@@ -85,7 +87,7 @@ export const LectureCourseDirectoryScreen = ({ route, navigation }: Props) => {
           <CourseFileListItem item={item} isDownloaded={index % 2 === 0} />
         )
       }
-      refreshControl={createRefreshControl(directoryQuery)}
+      refreshControl={<RefreshControl {...refreshControl} />}
       refreshing={directoryQuery.isLoading}
       contentContainerStyle={bottomBarAwareStyles}
       ListEmptyComponent={
