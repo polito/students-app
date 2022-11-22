@@ -20,11 +20,14 @@
     "course": "Corso",
     "course_plural": "Corsi",
     "credits": "Crediti",
+    "creditsWithUnit": "{{credits}} CFU",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
     "download": "Scarica",
     "exam": "Esame",
+    "examCall": "Appello",
+    "examCall_plural": "Appelli",
     "file": "File",
     "file_plural": "File",
     "icon": "Icona",
@@ -73,6 +76,7 @@
     "title": "Carica elaborato"
   },
   "courseAssignmentsTab": {
+    "emptyState": "Non ci sono elaborati",
     "title": "Elaborati"
   },
   "courseDirectoryListItem": {
@@ -99,6 +103,7 @@
     "title": "Seleziona un'icona"
   },
   "courseInfoTab": {
+    "agendaSectionEmptyState": "Non ci sono eventi relativi a questo corso",
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
     "moreSectionTitle": "Altro",
@@ -108,10 +113,12 @@
     "yearLabel": "Anno"
   },
   "courseLecturesTab": {
+    "emptyState": "Non ci sono lezioni",
     "title": "Lezioni",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
+    "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
   },
   "coursePreferencesScreen": {
@@ -142,6 +149,11 @@
   "examsScreen": {
     "title": "Appelli"
   },
+  "grades": {
+    "absent": "Ass",
+    "fail": "Ins",
+    "pass": "Sup"
+  },
   "loginScreen": {
     "cta": "Accedi",
     "ctaSuccessMessage": "Accedi",
@@ -165,6 +177,7 @@
     "title": "Impostazioni"
   },
   "teachingScreen": {
+    "examsEmptyState": "Non ci sono appelli disponibili",
     "title": "Didattica"
   },
   "transcriptScreen": {

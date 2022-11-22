@@ -20,11 +20,14 @@
     "course": "Course",
     "course_plural": "Courses",
     "credits": "Credits",
+    "creditsWithUnit": "{{credits}} ECTS",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
     "download": "Download",
     "exam": "Exam",
+    "examCall": "Exam call",
+    "examCall_plural": "Exam calls",
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",
@@ -73,6 +76,7 @@
     "title": "Upload assignment"
   },
   "courseAssignmentsTab": {
+    "emptyState": "There are no assignments",
     "title": "Assignments"
   },
   "courseDirectoryListItem": {
@@ -88,7 +92,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "No file available",
+    "empty": "No files available",
     "recentSectionTitle": "Recent files",
     "title": "Files"
   },
@@ -99,6 +103,7 @@
     "title": "Pick an icon"
   },
   "courseInfoTab": {
+    "agendaSectionEmptyState": "This course has no entries in the agenda",
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
     "moreSectionTitle": "More",
@@ -108,10 +113,12 @@
     "yearLabel": "Year"
   },
   "courseLecturesTab": {
+    "emptyState": "There are no lectures",
     "title": "Lectures",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseNoticesTab": {
+    "emptyState": "There are no notices",
     "title": "Notices"
   },
   "coursePreferencesScreen": {
@@ -142,6 +149,11 @@
   "examsScreen": {
     "title": "Exams"
   },
+  "grades": {
+    "absent": "Abs",
+    "fail": "Fail",
+    "pass": "Pass"
+  },
   "loginScreen": {
     "cta": "Login",
     "ctaSuccessMessage": "Logged in",
@@ -165,6 +177,7 @@
     "title": "Settings"
   },
   "teachingScreen": {
+    "examsEmptyState": "There are no open exam calls",
     "title": "Teaching"
   },
   "transcriptScreen": {

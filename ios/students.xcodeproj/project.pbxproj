@@ -554,8 +554,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RS2Y9A4G25;
+				DEVELOPMENT_TEAM = V77GJ4FLH4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = students/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "PoliTO Students";
@@ -602,6 +601,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "it.polito.students-dev";
 				PRODUCT_NAME = students;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore it.polito.students";

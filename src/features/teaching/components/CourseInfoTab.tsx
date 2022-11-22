@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
+import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { MetricCard } from '@lib/ui/components/MetricCard';
+import { Metric } from '@lib/ui/components/Metric';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/theme';
 import { Person } from '@polito/api-client/models/Person';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -19,6 +21,7 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
+import { globalStyles } from '../../../core/styles/globalStyles';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { ExamListItem } from './ExamListItem';
 
@@ -26,8 +29,9 @@ type StaffMember = Person & { courseRole: string };
 
 export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const [staff, setStaff] = useState<StaffMember[]>([]);
   const courseQuery = useGetCourse(courseId);
   const courseExamsQuery = useGetCourseExams(
     courseId,
@@ -42,14 +46,11 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     ...staffQueries,
   );
 
-  const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [teacher, setTeacher] = useState<StaffMember>(null);
-
   useEffect(() => {
-    if (isStaffLoading) return;
-
+    if (isStaffLoading) {
+      return;
+    }
     const staffData: StaffMember[] = [];
-    const teacherId = courseQuery.data.data.teacherId;
     courseQuery.data.data.staff.forEach(s =>
       staffData.push({
         courseRole: s.role,
@@ -58,12 +59,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
     staffQueries.forEach((staffQuery, index) => {
       const personData = staffQuery.data.data;
-
       staffData[index] = { ...personData, ...staffData[index] };
-
-      if (personData.id === teacherId) {
-        setTeacher(staffData[index]);
-      }
     });
 
     setStaff(staffData);
@@ -75,29 +71,33 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <Grid style={{ padding: spacing[5] }}>
-        <MetricCard
-          name={t('courseInfoTab.teacherLabel')}
-          value={teacher && `${teacher.firstName} ${teacher.lastName}`}
-        />
-        <MetricCard
-          name={t('courseInfoTab.yearLabel')}
-          value={courseQuery.data?.data.year}
-        />
-        <MetricCard
-          name={t('courseInfoTab.creditsLabel')}
-          value={courseQuery.data?.data.cfu}
-        />
-        <MetricCard
-          name={t('common.period')}
-          value={courseQuery.data?.data.teachingPeriod}
-        />
-      </Grid>
+      <Card style={styles.metricsCard}>
+        <Grid>
+          <Metric
+            title={t('common.period')}
+            value={`${courseQuery.data?.data.teachingPeriod ?? '--'} - ${
+              courseQuery.data?.data.year ?? '--'
+            }`}
+            style={globalStyles.grow}
+          />
+          <Metric
+            title={t('courseInfoTab.creditsLabel')}
+            value={t('common.creditsWithUnit', {
+              credits: courseQuery.data?.data.cfu,
+            })}
+            style={globalStyles.grow}
+          />
+        </Grid>
+      </Card>
+
       <Section>
         <SectionHeader
           title={t('courseInfoTab.agendaSectionTitle')}
           linkTo={{ screen: 'AgendaScreen' }}
         />
+        <SectionList
+          emptyStateText={t('courseInfoTab.agendaSectionEmptyState')}
+        ></SectionList>
       </Section>
       {courseExamsQuery.data?.data.length > 0 && (
         <Section>
@@ -134,3 +134,14 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     </ScrollView>
   );
 };
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    metricsCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: spacing[4],
+      marginVertical: spacing[5],
+      marginBottom: spacing[7],
+    },
+  });

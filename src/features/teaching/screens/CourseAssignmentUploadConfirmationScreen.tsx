@@ -21,6 +21,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
+import { globalStyles } from '../../../core/styles/globalStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -110,14 +111,14 @@ export const CourseAssignmentUploadConfirmationScreen = ({
               paddingBottom: tabBarHeight,
             },
             styles.preview,
-            styles.grow,
+            globalStyles.grow,
           ]}
         />
       )}
       {/\.jpe?g|gif|png|heic$/i.test(fileUri) && (
         <ScrollView
           contentContainerStyle={[
-            styles.grow,
+            globalStyles.grow,
             {
               paddingBottom: tabBarHeight,
             },
@@ -127,7 +128,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         >
           <Image
             source={{ uri: fileUri }}
-            style={styles.grow}
+            style={globalStyles.grow}
             resizeMode="contain"
           />
         </ScrollView>
@@ -137,9 +138,6 @@ export const CourseAssignmentUploadConfirmationScreen = ({
 };
 const createStyles = ({ colors, spacing, shapes }: Theme) =>
   StyleSheet.create({
-    grow: {
-      flexGrow: 1,
-    },
     toolbar: {
       justifyContent: 'space-between',
       backgroundColor: Platform.select({
