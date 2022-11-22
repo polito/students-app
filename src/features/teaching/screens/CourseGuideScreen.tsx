@@ -25,7 +25,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
     () =>
       guideQuery.data?.data.map(section => ({
         ...section,
-        content: section.content.replace(/(\\f|\\n)+/g, '\n\n').trim(),
+        content: section.content.replace(/[\f\n]+/g, '\n').trim(),
       })) ?? [],
     [guideQuery],
   );
@@ -40,7 +40,6 @@ export const CourseGuideScreen = ({ route }: Props) => {
         <Section key={i}>
           <SectionHeader title={section.title} />
           <Card
-            rounded={Platform.select({ android: false })}
             style={{
               marginVertical: spacing[2],
               marginHorizontal: Platform.select({ ios: spacing[4] }),
