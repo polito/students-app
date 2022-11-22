@@ -71,7 +71,14 @@ export const useGetCourse = (courseId: number) => {
   return useQuery(
     [COURSE_QUERY_KEY, courseId, 'overview'],
     () => {
-      return coursesClient.getCourse({ courseId: courseId });
+      return coursesClient.getCourse({ courseId: courseId }).then(course => {
+        const { teachingPeriod } = course.data;
+        const period = teachingPeriod.split('-');
+        if (period.length > 1 && period[0] === period[1]) {
+          course.data.teachingPeriod = period[0];
+        }
+        return course;
+      });
     },
     {
       staleTime: Infinity,
