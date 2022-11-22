@@ -58,3 +58,5 @@ npm-debug.*
 
 # Fastlane
 /ios/fastlane/report.xml
+
+.npmrc
