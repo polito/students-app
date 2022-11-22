@@ -129,6 +129,7 @@ export const ListItem = ({
                 style={[
                   {
                     fontSize: fontSizes.sm,
+                    marginTop: spacing[0.5],
                   },
                   subtitleStyle,
                 ]}
