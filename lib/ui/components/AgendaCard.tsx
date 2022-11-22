@@ -110,7 +110,12 @@ export const AgendaCard = ({
   };
 
   return (
-    <Card rounded style={[{ borderColor }, styles.agendaCard]} {...rest}>
+    <Card
+      rounded
+      style={[{ borderColor }, styles.agendaCard]}
+      {...rest}
+      spaced={false}
+    >
       <TouchableOpacity style={styles.agendaButtonStyle} onPress={onPressCard}>
         <Col>
           <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
