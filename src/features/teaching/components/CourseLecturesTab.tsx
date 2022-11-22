@@ -56,8 +56,8 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
-  const vcPreviousYears = courseQuery.data?.data.vcPreviousYears;
-  const vcOtherCourses = courseQuery.data?.data.vcOtherCourses;
+  const vcPreviousYears = courseQuery.data?.data.vcPreviousYears ?? [];
+  const vcOtherCourses = courseQuery.data?.data.vcOtherCourses ?? [];
 
   const { queries: relatedVCQueries, isLoading: areRelatedLoading } =
     useGetCourseRelatedVirtualClassrooms(vcPreviousYears, vcOtherCourses);
