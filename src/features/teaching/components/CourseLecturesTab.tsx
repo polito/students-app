@@ -117,7 +117,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     onLectureQueryLoaded();
   }, [courseQuery.isLoading, areRelatedLoading]);
 
-  // After all lectures have been retrieve, only render sections containing lectures (the first one should be open)
+  // After all lectures have been retrieved, only render sections containing lectures (the first one should be open)
   useEffect(() => {
     if (loadedLectureQueriesCount < 3) return;
 
@@ -190,7 +190,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     });
   };
 
-  if (!sections.flatMap(s => s.data).length) {
+  if (!lectures.flat().length) {
     return (
       <EmptyState
         message={t('courseLecturesTab.emptyState')}
