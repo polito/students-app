@@ -20,7 +20,8 @@ import { MenuView } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useDownload } from '../../../core/hooks/useDownload';
-import { formatFileDate, formatFileSize } from '../../../utils/files';
+import { formatDateTime } from '../../../utils/dates';
+import { formatFileSize } from '../../../utils/files';
 import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
 
@@ -91,7 +92,7 @@ export const CourseFileListItem = ({
       [
         showSize && formatFileSize(item.sizeInKiloBytes),
         showLocation && item.location,
-        showCreatedDate && formatFileDate(item.createdAt),
+        showCreatedDate && formatDateTime(item.createdAt),
       ]
         .filter(i => !!i)
         .join(' - '),

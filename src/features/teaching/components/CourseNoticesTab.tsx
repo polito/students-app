@@ -20,6 +20,7 @@ import { parseDocument } from 'htmlparser2';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
+import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
@@ -72,7 +73,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
             <Fragment key={notice.id}>
               <ListItem
                 title={notice.title}
-                subtitle={notice.publishedAt.toLocaleString()}
+                subtitle={formatDate(notice.publishedAt)}
                 onPress={() =>
                   setNotices(oldNotices =>
                     oldNotices.map((n, i) =>

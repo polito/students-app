@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { formatDateTime } from '../../utils/dates';
+
 interface Props {
   title: string;
   type: string;
@@ -21,9 +23,7 @@ export const EventDetails = ({ title, type, time }: Props) => {
           {type}
         </Text>
         {time && (
-          <Text style={{ fontSize: fontSizes.md }}>
-            {time.toLocaleString()}
-          </Text>
+          <Text style={{ fontSize: fontSizes.md }}>{formatDateTime(time)}</Text>
         )}
       </View>
     </>
