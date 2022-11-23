@@ -21,6 +21,7 @@ import {
   useGetStudent,
 } from '../../../core/queries/studentHooks';
 import { globalStyles } from '../../../core/styles/globalStyles';
+import { formatDate } from '../../../utils/dates';
 import { formatGrade } from '../../../utils/grades';
 import { ProgressChart } from '../components/ProgressChart';
 
@@ -77,7 +78,7 @@ export const TranscriptScreen = () => {
           </View>
           <ProgressChart
             data={
-              studentQuery.data
+              totalCredits
                 ? [
                     totalAttendedCredits / totalCredits,
                     totalAcquiredCredits / totalCredits,
@@ -106,7 +107,7 @@ export const TranscriptScreen = () => {
           </View>
           <ProgressChart
             data={
-              studentQuery.data
+              enrollmentCredits
                 ? [
                     enrollmentAttendedCredits / enrollmentCredits,
                     enrollmentAcquiredCredits / enrollmentCredits,
@@ -147,7 +148,7 @@ export const TranscriptScreen = () => {
               <ListItem
                 key={grade.courseName}
                 title={grade.courseName}
-                subtitle={new Date(grade.date).toLocaleDateString()}
+                subtitle={formatDate(new Date(grade.date))}
                 trailingItem={
                   <Text variant="title">{t(formatGrade(grade.grade))}</Text>
                 }
