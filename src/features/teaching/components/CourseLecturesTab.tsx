@@ -15,6 +15,7 @@ import {
   faChevronUp,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -136,9 +137,10 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       },
     ];
 
-    const sectionTitles = vcPreviousYears
-      .map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
-      .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
+    const sectionTitles =
+      vcPreviousYears
+        ?.map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
+        .concat(vcOtherCourses?.map(oc => `${oc.name} ${oc.year}`)) ?? [];
 
     sectionTitles.forEach((title, index) => {
       availableSections[2 + index] = {
@@ -186,6 +188,15 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       return [...oldS];
     });
   };
+
+  if (!sections.flatMap(s => s.data).length) {
+    return (
+      <EmptyState
+        message={t('courseLecturesTab.emptyState')}
+        icon={faChalkboardTeacher}
+      />
+    );
+  }
 
   return (
     <SectionList

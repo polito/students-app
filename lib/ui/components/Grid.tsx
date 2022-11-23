@@ -25,9 +25,16 @@ export const Grid = ({
     [[]],
   ) as Array<Array<ReactNode>>;
   return (
-    <View style={style} {...rest}>
+    <View style={[{ flex: 1 }, style]} {...rest}>
       {rows.map((r, ri) => (
-        <View key={ri} style={{ flexDirection: 'row', marginBottom: gap }}>
+        <View
+          key={ri}
+          style={{
+            flexDirection: 'row',
+            marginBottom:
+              rows.length > 1 && ri < rows.length - 1 ? gap : undefined,
+          }}
+        >
           {r.map((c, ci) => (
             <Fragment key={ci}>
               {c}

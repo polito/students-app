@@ -9,9 +9,11 @@ import {
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
+import { useApiContext } from '../contexts/ApiContext';
 import { Download, DownloadsContext } from '../contexts/DownloadsContext';
 
 export const useDownload = (fromUrl: string, toFile: string) => {
+  const { token } = useApiContext();
   const { t } = useTranslation();
   const { downloadsRef, setDownloads } = useContext(DownloadsContext);
   const key = `${fromUrl}:${toFile}`;
@@ -61,6 +63,9 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         const { jobId, promise } = downloadFile({
           fromUrl,
           toFile,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           progressInterval: 200,
           begin: () => {
             /* Needed for progress updates to work */

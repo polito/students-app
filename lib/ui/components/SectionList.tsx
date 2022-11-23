@@ -1,6 +1,7 @@
-import { PropsWithChildren } from 'react';
+import { Children, PropsWithChildren } from 'react';
 import { ActivityIndicator, Platform, ViewProps } from 'react-native';
 
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 
 import { useTheme } from '../hooks/useTheme';
@@ -11,6 +12,7 @@ type Props = PropsWithChildren<{
   dividers?: boolean;
   loading?: boolean;
   indented?: boolean;
+  emptyStateText?: string;
 }>;
 
 /**
@@ -22,6 +24,7 @@ export const SectionList = ({
   loading = false,
   indented = false,
   dividers,
+  emptyStateText,
   style,
 }: Props) => {
   const { spacing } = useTheme();
@@ -43,10 +46,12 @@ export const SectionList = ({
             marginVertical: spacing[8],
           }}
         />
-      ) : (
+      ) : Children.count(children) > 0 ? (
         <List dividers={dividers} indented={indented}>
           {children}
         </List>
+      ) : (
+        emptyStateText && <EmptyState message={emptyStateText} />
       )}
     </Card>
   );

@@ -1,11 +1,14 @@
 import { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
 
 import {
   faChevronDown,
   faChevronRight,
+  faInbox,
 } from '@fortawesome/free-solid-svg-icons';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -21,6 +24,7 @@ import { CourseTabProps } from '../screens/CourseScreen';
 
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const { fontSizes, colors, spacing } = useTheme();
+  const { t } = useTranslation();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const noticesQuery = useGetCourseNotices(courseId);
   const refreshControl = useRefreshControl(noticesQuery);
@@ -62,32 +66,36 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <List dividers>
-        {notices.map((notice, index) => (
-          <Fragment key={notice.id}>
-            <ListItem
-              title={notice.title}
-              subtitle={notice.publishedAt.toLocaleString()}
-              onPress={() =>
-                setNotices(oldNotices =>
-                  oldNotices.map((n, i) =>
-                    i === index ? { ...n, open: !n.open } : n,
-                  ),
-                )
-              }
-              trailingItem={
-                <Icon
-                  icon={notice.open ? faChevronDown : faChevronRight}
-                  color={colors.secondaryText}
-                  size={fontSizes.lg}
-                  style={{ marginRight: -spacing[1] }}
-                />
-              }
-            />
-            {notice.open && notice.content}
-          </Fragment>
-        ))}
-      </List>
+      {notices.length > 0 ? (
+        <List dividers>
+          {notices.map((notice, index) => (
+            <Fragment key={notice.id}>
+              <ListItem
+                title={notice.title}
+                subtitle={notice.publishedAt.toLocaleString()}
+                onPress={() =>
+                  setNotices(oldNotices =>
+                    oldNotices.map((n, i) =>
+                      i === index ? { ...n, open: !n.open } : n,
+                    ),
+                  )
+                }
+                trailingItem={
+                  <Icon
+                    icon={notice.open ? faChevronDown : faChevronRight}
+                    color={colors.secondaryText}
+                    size={fontSizes.lg}
+                    style={{ marginRight: -spacing[1] }}
+                  />
+                }
+              />
+              {notice.open && notice.content}
+            </Fragment>
+          ))}
+        </List>
+      ) : (
+        <EmptyState icon={faInbox} message={t('courseNoticesTab.emptyState')} />
+      )}
     </ScrollView>
   );
 };

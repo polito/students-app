@@ -87,7 +87,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
           />
-          <SectionList loading={examsQuery.isLoading} indented>
+          <SectionList
+            loading={examsQuery.isLoading}
+            indented
+            emptyStateText={t('teachingScreen.examsEmptyState')}
+          >
             {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
@@ -130,7 +134,16 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     </Text>
                   </View>
                   <ProgressChart
-                    data={[80 / 120, 40 / 120]}
+                    data={
+                      studentQuery.data
+                        ? [
+                            studentQuery.data?.data.totalAttendedCredits /
+                              studentQuery.data?.data.totalCredits,
+                            studentQuery.data?.data.totalAcquiredCredits /
+                              studentQuery.data?.data.totalCredits,
+                          ]
+                        : []
+                    }
                     colors={[colors.primary[400], colors.secondary[500]]}
                   />
                 </View>

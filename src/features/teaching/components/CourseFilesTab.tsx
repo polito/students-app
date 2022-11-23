@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
+import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
-import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -30,25 +31,26 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         refreshControl={<RefreshControl {...refreshControl} />}
         scrollEnabled={scrollEnabled}
       >
-        <View style={styles.sectionContainer}>
-          <SectionHeader
-            title={t('courseFilesTab.recentSectionTitle')}
-            separator={false}
-          />
-          <List indented>
-            {recentFilesQuery.data?.slice(0, 5).map(file => (
-              <CourseRecentFileListItem
-                key={file.id}
-                item={file}
-                onSwipeStart={() => setScrollEnabled(false)}
-                onSwipeEnd={() => setScrollEnabled(true)}
-              />
-            ))}
-            {recentFilesQuery.data?.length === 0 && (
-              <ListItem title={t('courseFilesTab.empty')} />
-            )}
-          </List>
-        </View>
+        {recentFilesQuery.data?.length > 0 ? (
+          <View style={styles.sectionContainer}>
+            <SectionHeader
+              title={t('courseFilesTab.recentSectionTitle')}
+              separator={false}
+            />
+            <List indented>
+              {recentFilesQuery.data?.slice(0, 5).map(file => (
+                <CourseRecentFileListItem
+                  key={file.id}
+                  item={file}
+                  onSwipeStart={() => setScrollEnabled(false)}
+                  onSwipeEnd={() => setScrollEnabled(true)}
+                />
+              ))}
+            </List>
+          </View>
+        ) : (
+          <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
+        )}
       </ScrollView>
       {recentFilesQuery.data?.length > 0 && (
         <CtaButton

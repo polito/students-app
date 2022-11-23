@@ -12,6 +12,7 @@ interface Props {
 
 export const ProgressChart = ({ data, colors }: Props) => {
   const { dark, colors: themeColors } = useTheme();
+
   return (
     <View>
       <RNCKProgressChart
@@ -37,7 +38,7 @@ export const ProgressChart = ({ data, colors }: Props) => {
       />
       {data.map((i, index) => (
         <RNCKProgressChart
-          key={i}
+          key={index}
           data={{
             data: [i],
           }}
