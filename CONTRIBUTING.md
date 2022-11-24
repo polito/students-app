@@ -11,6 +11,12 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 
 ## Project structure
 
+The project uses feature modules to keep the main areas semantically organized. Each module should be divided by entity
+type (`components`, `hooks`, `styles`, `screens`). The `core` module contains general-purpose items, used across the app.
+
+The `lib` folder is used to isolate library/design-system-level components that one day may be extracted into a dedicated package
+for reuse.
+
 ```
 ├── assets
 ├── src
@@ -41,7 +47,19 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 
 While not strictly enforced through formatting, conformance
 to [Google's TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
-is encouraged.
+is encouraged. Notably, here are some rules we think are important:
+
+- Don't use `// @ts-ignore` comments. Try to use type narrowing/casting/patching and, when inevitable, use `// @ts-expect-error` comments describing the cause of the error.
+- Do not mark interfaces specially (`IMyInterface` or `MyFooInterface`) unless it's idiomatic in its environment.
+- Respect identifiers casing.
+- When possible, use lambda expressions instead of functions.
+- Don't leave commented statements without a textual explanation.
+
+## Performance and accessibility considerations
+
+- Avoid introducing bulky libraries for common actions that can be performed with built-ins or internal utils.
+- Avoid default or namespace imports (`import * as`) and other constructs that impact tree-shaking.
+- Always assign labels to focusable controls (`accessibilityLabel`).
 
 ## Git workflow
 
@@ -54,19 +72,32 @@ changelog entries for new releases.
 
 We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like branching model. In short:
 
-- `main` is the stable trunk,
-- `develop` is the development trunk,
-- use `feature/...` branches to work on new features,
-- use `hotfix/...`branches to perform urgent fixes,
-- use hyphen separators (ie `feature/data-fetching`),
-- use commit footers to reference related issues (ie `Refs #10`, `Closes #10` etc.).
+- `main` is the stable trunk.
+- `develop` is the development trunk.
+- Use `feature/...` branches to work on new features.
+- Use `hotfix/...`branches to perform urgent fixes.
+- When useful, add a scope to your commits (ie `feat(teaching): implement trascript page`). Don't include branch
+  prefixes here.
+- Use hyphen separators for branch names and scopes (ie `feature/data-fetching`).
+- Use commit footers to reference related issues (ie `Refs #10`, `Closes #10` etc.).
+
+> ⚠️ Respecting these rules is important in order to obtain a clean and coherent changelog. If you have any doubt don't
+> hesitate to ask for help.
 
 ### Hooks
 
 We use git hooks to automatically lint and format the code and commit messages.
 
-### PR process
+### Internal contribution process
 
-- Fork the repo
-- Work on a branch according to the flow rules described above
-- Open a PR against `main`
+- Work on a branch according to the rules described above.
+- Carefully review any linting/formatting errors (ask for help if you don't know how to resolve them).
+- If you can, rebase or pre-merge your branch before submitting the PR.
+- Open a PR against the relevant destination branch.
+
+### External contribution process
+
+- Fork the repo.
+- Work on a branch according to the rules described above.
+- Carefully review any linting/formatting errors (ask for help if you don't know how to resolve them).
+- Open a PR against `main`.
