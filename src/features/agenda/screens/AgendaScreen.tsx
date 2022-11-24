@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   NativeScrollEvent,
@@ -10,16 +9,14 @@ import {
   ViewToken,
 } from 'react-native';
 
-import { Tab } from '@lib/ui/components/Tab';
-import { Tabs } from '@lib/ui/components/Tabs';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import _, { throttle } from 'lodash';
+import { findIndex, flatMap, get, throttle } from 'lodash';
 import { DateTime } from 'luxon';
 
-import { mapAgendaItem } from '../../../core/agenda';
+import { filterAgendaItem, mapAgendaItem } from '../../../core/agenda';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetInfiniteBookings } from '../../../core/queries/bookingHooks';
@@ -29,6 +26,7 @@ import { useGetInfiniteDeadlines } from '../../../core/queries/studentHooks';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
+import { AgendaTabs } from './AgendaTabs';
 
 const viewabilityConfig = {
   // minimumViewTime: 100,
@@ -37,7 +35,6 @@ const viewabilityConfig = {
 };
 
 export const AgendaScreen = () => {
-  const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const { updatePreference } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
@@ -50,16 +47,9 @@ export const AgendaScreen = () => {
   const [viewedDate, setViewedDate] = useState<string>(
     DateTime.now().toISODate(),
   );
-  const flatListRef = useRef();
+  const flatListRef = useRef<FlatList>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const [selectedEventTypes, setSelectedEventTypes] = useState<
-    Record<string, boolean>
-  >({
-    lecture: false,
-    exam: false,
-    booking: false,
-    deadlines: false,
-  });
+  const [filters, setFilters] = useState<string[]>([]);
 
   useEffect(() => {
     updatePreference('types', {
@@ -92,17 +82,13 @@ export const AgendaScreen = () => {
   }, []);
 
   const toFilterAgendaDays = useMemo(() => {
-    const agendaItems = mapAgendaItem(
-      _.flatMap(_.get(examsQuery, 'data.pages', []), page => page.data) || [],
-      _.flatMap(_.get(bookingsQuery, 'data.pages', []), page => page.data) ||
-        [],
-      _.flatMap(_.get(lecturesQuery, 'data.pages', []), page => page.data) ||
-        [],
-      _.flatMap(_.get(deadlinesQuery, 'data.pages', []), page => page.data) ||
-        [],
+    return mapAgendaItem(
+      flatMap(get(examsQuery, 'data.pages', []), page => page.data) || [],
+      flatMap(get(bookingsQuery, 'data.pages', []), page => page.data) || [],
+      flatMap(get(lecturesQuery, 'data.pages', []), page => page.data) || [],
+      flatMap(get(deadlinesQuery, 'data.pages', []), page => page.data) || [],
       colors,
     );
-    return agendaItems;
   }, [
     examsQuery.data,
     bookingsQuery.data,
@@ -111,42 +97,8 @@ export const AgendaScreen = () => {
   ]);
 
   const agendaDays = useMemo(() => {
-    const filters = _.chain(selectedEventTypes)
-      .map((value, key) => {
-        if (value) {
-          return key;
-        }
-      })
-      .compact()
-      .value();
-
-    if (!filters.length) {
-      return toFilterAgendaDays;
-    }
-    return _.chain(toFilterAgendaDays)
-      .map(agendaDay => {
-        const agendaDayItems = agendaDay.items.filter(item =>
-          filters.includes(item.type.toLowerCase()),
-        );
-        if (agendaDayItems.length) {
-          return {
-            ...agendaDay,
-            items: agendaDay.items.filter(item =>
-              filters.includes(item.type.toLowerCase()),
-            ),
-          };
-        }
-      })
-      .compact()
-      .value();
-  }, [toFilterAgendaDays, selectedEventTypes]);
-
-  const onSelectTab = (tabName: string) => {
-    setSelectedEventTypes(types => ({
-      ...types,
-      [tabName]: !types[tabName],
-    }));
-  };
+    return filterAgendaItem(toFilterAgendaDays, filters);
+  }, [toFilterAgendaDays, filters]);
 
   const onPressScrollToToday = () => {
     onPressCalendarDay(new Date());
@@ -176,13 +128,14 @@ export const AgendaScreen = () => {
   const onPressCalendarDay = useCallback(
     (day: Date) => {
       const formattedDay = DateTime.fromJSDate(day).toISODate();
-      const agendaDayIndex = agendaDays.findIndex(
+      const agendaDayIndex = findIndex(
+        agendaDays,
         item => item.id === formattedDay,
       );
+      console.log('agendaDayIndex', agendaDayIndex);
       try {
         if (flatListRef && flatListRef.current) {
           if (agendaDayIndex >= 0) {
-            // @ts-ignore
             flatListRef.current.scrollToIndex({
               animated: true,
               index: agendaDayIndex,
@@ -192,7 +145,6 @@ export const AgendaScreen = () => {
             if (index === undefined) {
               return;
             }
-            // @ts-ignore
             flatListRef.current.scrollToIndex({
               animated: true,
               index: index,
@@ -214,34 +166,13 @@ export const AgendaScreen = () => {
     return <AgendaDay agendaDay={item} />;
   };
 
+  const onChangeTab = (filterValues: string[]) => {
+    setFilters(filterValues);
+  };
+
   return (
     <View style={styles.container}>
-      <Tabs style={styles.tabs}>
-        <Tab
-          selected={selectedEventTypes.lecture}
-          onPress={() => onSelectTab('lecture')}
-        >
-          {t('courseLecturesTab.title')}
-        </Tab>
-        <Tab
-          selected={selectedEventTypes.exam}
-          onPress={() => onSelectTab('exam')}
-        >
-          {t('examsScreen.title')}
-        </Tab>
-        <Tab
-          selected={selectedEventTypes.booking}
-          onPress={() => onSelectTab('booking')}
-        >
-          {t('common.booking_plural')}
-        </Tab>
-        <Tab
-          selected={selectedEventTypes.deadline}
-          onPress={() => onSelectTab('deadline')}
-        >
-          {t('common.deadline_plural')}
-        </Tab>
-      </Tabs>
+      <AgendaTabs onChangeTab={onChangeTab} />
       <FlatList
         // windowSize={12}
         ref={flatListRef}

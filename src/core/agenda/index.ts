@@ -1,7 +1,7 @@
-
 import { Colors } from '@lib/ui/types/theme';
-import { Booking, Deadline, Exam, Lecture } from '@polito-it/api-client';
+import { Booking, Deadline, Exam, Lecture } from '@polito/api-client';
 
+import { chain, filter, isEmpty, toLower } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { AgendaDayInterface, AgendaItemInterface } from '../../utils/types';
@@ -117,4 +117,27 @@ export const getAgendaItemColorFromPreferences = (
     return preferences.courses[lecture.courseId].color;
   }
   return preferences.types[item.type]?.color || colors.primary[500];
+};
+
+export const filterAgendaItem = (
+  toFilterAgendaDays: AgendaDayInterface[],
+  filters: string[],
+) => {
+  if (isEmpty(filters)) {
+    return toFilterAgendaDays;
+  }
+  return chain(toFilterAgendaDays)
+    .map(agendaDay => {
+      const agendaDayItems = filter(agendaDay.items, item =>
+        filters.includes(toLower(item.type)),
+      );
+      if (agendaDayItems.length) {
+        return {
+          ...agendaDay,
+          items: agendaDayItems,
+        };
+      }
+    })
+    .compact()
+    .value();
 };

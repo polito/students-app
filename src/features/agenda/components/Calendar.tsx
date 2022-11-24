@@ -83,6 +83,7 @@ export const Calendar = forwardRef(
     }));
 
     useEffect(() => {
+      console.log(viewedDate, 'viewedDate');
       if (viewedDate) {
         const tempWeeks = service.getMonthCalendar(
           DateTime.fromISO(viewedDate).toJSDate(),
@@ -92,7 +93,7 @@ export const Calendar = forwardRef(
           setTimeout(() => {
             scrollToToday(tempWeeks);
             setFirstOpen(false);
-          }, 500);
+          }, 300);
         }
         scrollToToday(tempWeeks);
       }
@@ -105,22 +106,22 @@ export const Calendar = forwardRef(
 
     const scrollToToday = (tempWeeks = weeks) => {
       if (flatListRef.current && tempWeeks.length) {
-        tempWeeks.forEach((week, index) => {
-          week.days.forEach((day: Day) => {
-            const isToday =
-              DateTime.fromJSDate(day.date).toISODate() === viewedDate;
-            if (isToday) {
-              try {
-                flatListRef.current.scrollToIndex({
-                  animated: true,
-                  index: index,
-                });
-              } catch (e) {
-                console.log({ errorFlatList: e });
-              }
-            }
-          });
-        });
+        const index = tempWeeks.findIndex(week =>
+          week.days.find(
+            (day: Day) =>
+              DateTime.fromJSDate(day.date).toISODate() === viewedDate,
+          ),
+        );
+        if (index > -1) {
+          try {
+            flatListRef.current.scrollToIndex({
+              animated: true,
+              index: index,
+            });
+          } catch (e) {
+            console.log({ errorFlatList: e });
+          }
+        }
       }
     };
 
@@ -279,8 +280,6 @@ interface RowProp {
 const RenderRow = memo(
   ({ item, formattedViewedDate, onPressDay, agendaDays }: RowProp) => {
     const styles = useStylesheet(createItemStyles);
-    const preferences = usePreferencesContext();
-    const { colors } = useTheme();
 
     return (
       <Row spaceBetween width={'100%'}>
@@ -290,16 +289,6 @@ const RenderRow = memo(
           const isToday = DateTime.now().toISODate() === formattedDay;
 
           const agendaDay = agendaDays.find(ad => ad.id === formattedDay);
-          let dots: string[] = [];
-          if (agendaDay && agendaDay.items.length) {
-            dots = agendaDay.items.map((agendaItem: AgendaItemInterface) => {
-              return getAgendaItemColorFromPreferences(
-                preferences,
-                colors,
-                agendaItem,
-              );
-            });
-          }
           // const dots = [];
           // const disable = day.daysFromToday < 0 || day.daysFromToday > 90;
           const disable = false;
@@ -327,21 +316,7 @@ const RenderRow = memo(
                   {day.monthDay}
                 </Text>
               </View>
-              <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
-                {dots.map((dot: string, index: number) => {
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        styles.dot,
-                        {
-                          backgroundColor: dot,
-                        },
-                      ]}
-                    />
-                  );
-                })}
-              </Row>
+              <Dots agendaDay={agendaDay} />
             </TouchableOpacity>
           );
         })}
@@ -349,6 +324,35 @@ const RenderRow = memo(
     );
   },
 );
+
+const Dots = ({ agendaDay }: { agendaDay: AgendaDayInterface }) => {
+  const styles = useStylesheet(createItemStyles);
+  const preferences = usePreferencesContext();
+  const { colors } = useTheme();
+  let dots: string[] = [];
+  if (agendaDay && agendaDay.items.length) {
+    dots = agendaDay.items.map((agendaItem: AgendaItemInterface) => {
+      return getAgendaItemColorFromPreferences(preferences, colors, agendaItem);
+    });
+  }
+  return (
+    <Row style={styles.rowDots} alignCenter justifyCenter noFlex>
+      {dots.map((dot: string, index: number) => {
+        return (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              {
+                backgroundColor: dot,
+              },
+            ]}
+          />
+        );
+      })}
+    </Row>
+  );
+};
 
 const createItemStyles = ({ colors, fontWeights, dark }: Theme) =>
   StyleSheet.create({
