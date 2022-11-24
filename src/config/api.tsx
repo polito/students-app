@@ -19,7 +19,7 @@ import { language } from '../i18n';
 export const createApiConfiguration = (token?: string) => {
   const basePath = API_BASE_PATH ?? BASE_PATH;
 
-  console.log(`Expecting a running API at ${basePath}`);
+  console.debug(`Expecting a running API at ${basePath}`);
 
   const configurationParameters: ConfigurationParameters = {
     basePath,

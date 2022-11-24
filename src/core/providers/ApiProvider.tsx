@@ -45,7 +45,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         refreshContext(token);
       })
       .catch(e => {
-        console.log("Keychain couldn't be accessed!", e);
+        console.warn("Keychain couldn't be accessed!", e);
         refreshContext(null);
       });
 
@@ -57,12 +57,12 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
           // Phone just went offline
           setOnline(false);
           // TODO notify
-          console.log('Phone just went offline');
+          console.debug('Phone just went offline');
         } else if (!wasOnline && state.isConnected) {
           // Phone is back online
           setOnline(true);
           // TODO notify
-          console.log('Phone is back online');
+          console.debug('Phone is back online');
         }
       });
     });
