@@ -33,7 +33,7 @@ import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
 
-export const PersonScreen = ({ route }: Props) => {
+export const PersonScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
@@ -48,7 +48,15 @@ export const PersonScreen = ({ route }: Props) => {
       : 'https://www.placecage.com/g/200/300',
   };
 
+  navigation.setOptions({
+    headerBackTitle: t('common.contacts'),
+  });
+
   const PersonHeader = () => {
+    const onPressProfileUrl = async () => {
+      await Linking.openURL(person?.profileUrl);
+    };
+
     return (
       <Col flexStart maxWidth style={styles.header}>
         <Text weight={'bold'} variant={'title'}>
@@ -66,9 +74,9 @@ export const PersonScreen = ({ route }: Props) => {
             <Text weight={'semibold'}>{person.facilityShortName}</Text>
 
             {!!person?.profileUrl && (
-              <Row alignCenter>
+              <Row alignCenter touchableOpacity onPress={onPressProfileUrl}>
                 <View style={styles.icon}>
-                  <Icon icon={faLink} size={20} color={colors.primary[500]} />
+                  <Icon icon={faLink} size={20} color={colors.primary[400]} />
                 </View>
                 <Text style={styles.link}>{t('personScreen.moreInfo')}</Text>
               </Row>
@@ -119,6 +127,7 @@ export const PersonScreen = ({ route }: Props) => {
     <ScrollView
       contentContainerStyle={{
         paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
+        marginTop: 10,
       }}
       refreshControl={<RefreshControl {...useRefreshControl(personQuery)} />}
       contentInsetAdjustmentBehavior="automatic"
@@ -163,7 +172,7 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
       color: colors.text['500'],
     },
     link: {
-      color: colors.primary[500],
+      color: colors.primary[400],
     },
     header: {
       paddingHorizontal: spacing['3'],
