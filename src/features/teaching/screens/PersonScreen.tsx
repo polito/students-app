@@ -9,7 +9,12 @@ import {
   View,
 } from 'react-native';
 
-import { faEnvelope, faLink, faPhone } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEnvelope,
+  faLink,
+  faPhone,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -42,11 +47,7 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const personQuery = useGetPerson(id);
   const person: Person = personQuery?.data?.data || {};
   const courses: PersonAllOfCourses[] = person.courses;
-  const source = {
-    uri: person?.picture
-      ? person?.picture
-      : 'https://www.placecage.com/g/200/300',
-  };
+  const source = { uri: person?.picture };
 
   navigation.setOptions({
     headerBackTitle: t('common.contacts'),
@@ -63,7 +64,17 @@ export const PersonScreen = ({ route, navigation }: Props) => {
           {person?.firstName} {person?.lastName}
         </Text>
         <Row noFlex mv-xl>
-          <Image source={source} style={styles.image} />
+          {person?.picture ? (
+            <Image source={source} style={styles.image} />
+          ) : (
+            <View style={styles.imageIcon}>
+              <Icon
+                icon={faUser}
+                size={fontSizes['3xl']}
+                color={colors.primary[500]}
+              />
+            </View>
+          )}
           <Col flexStart style={styles.info}>
             <Text>{t('personScreen.role')}</Text>
             <Text weight={'semibold'}>{person.role}</Text>
@@ -191,5 +202,16 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
       width: SCREEN_WIDTH * 0.3,
       height: SCREEN_WIDTH * 0.3,
       borderRadius: SCREEN_WIDTH * 0.3,
+    },
+    imageIcon: {
+      width: SCREEN_WIDTH * 0.3,
+      height: SCREEN_WIDTH * 0.3,
+      borderColor: colors.primary[500],
+      borderWidth: 1,
+      backgroundColor: colors.text['200'],
+      borderRadius: SCREEN_WIDTH * 0.3,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
     },
   });
