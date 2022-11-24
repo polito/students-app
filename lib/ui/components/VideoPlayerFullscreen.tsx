@@ -5,7 +5,6 @@ import Video from 'react-native-video';
 import { VideoControl } from '@lib/ui/components/VideoControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 
-
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
 type videoProps = {
@@ -29,7 +28,7 @@ export const VideoPlayerFullScreen = ({
   handleProgress,
   setPlaybackRate,
 }: videoProps) => {
-  const playerRef = useRef();
+  const playerRef = useRef<Video>();
   const styles = useStylesheet(createStyles);
   const [paused, setPaused] = useState(false);
 
@@ -41,9 +40,7 @@ export const VideoPlayerFullScreen = ({
     (newProgress: number) => {
       try {
         const newSeekValue = (newProgress * duration) / 100;
-        // console.log('onSeekEnd', { newSeekValue, duration, newProgress});
         if (playerRef && playerRef.current) {
-          // @ts-ignore
           playerRef.current.seek(newSeekValue, 0.5);
         }
       } catch (e) {

@@ -74,9 +74,7 @@ export const VideoControl = ({
     .toFormat('HH:mm:ss');
 
   const onSlidingComplete = (evt: number | Array<number>): void => {
-    // @ts-ignore
-    const updatedValue: number = evt[0];
-    console.log('onSlidingComplete', updatedValue);
+    const updatedValue = (evt as number[])[0];
     setValue(updatedValue);
     setIsSliding(false);
     onRelease(updatedValue);
@@ -158,10 +156,10 @@ export const VideoControl = ({
               minimumValue={0.001}
               thumbTintColor={'white'}
               maximumValue={100}
-              // @ts-ignore
-              onValueChange={(newValue: number) => {
-                setValue(newValue);
-                onRelease(newValue);
+              onValueChange={newValue => {
+                const val = newValue as number;
+                setValue(val);
+                onRelease(val);
               }}
             />
             <Text style={styles.timeRemaining}>-{duration}</Text>

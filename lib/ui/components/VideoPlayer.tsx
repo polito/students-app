@@ -31,7 +31,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const playerRef = useRef();
+  const playerRef = useRef<Video>();
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -87,7 +87,6 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         const newSeekValue = (newProgress * duration) / 100;
         console.log('onSeekEnd', { newSeekValue, duration, newProgress });
         if (playerRef && playerRef.current) {
-          // @ts-ignore
           playerRef.current.seek(newSeekValue);
         }
       } catch (e) {
