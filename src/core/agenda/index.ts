@@ -75,7 +75,7 @@ export const mapAgendaItem = (
 
   deadlines.forEach(deadline => {
     // const fromDate = deadline.startsAt.toISOString();
-    const toDate = deadline.endsAt.toISOString();
+    const toDate = deadline.endsAt?.toISOString();
     const ISODate = DateTime.fromISO(toDate).toISODate();
     const item: AgendaItemInterface = {
       fromDate: toDate,

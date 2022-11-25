@@ -19,7 +19,7 @@ import { Theme } from '@lib/ui/types/theme';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
 
-const isIos = Platform.OS !== 'ios';
+const isIos = Platform.OS === 'ios';
 
 export interface VideoPlayerProps {
   videoUrl: string;
@@ -85,7 +85,6 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     (newProgress: number) => {
       try {
         const newSeekValue = (newProgress * duration) / 100;
-        console.log('onSeekEnd', { newSeekValue, duration, newProgress });
         if (playerRef && playerRef.current) {
           playerRef.current.seek(newSeekValue);
         }
@@ -129,7 +128,6 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           setLoading(false);
         }
         const p = videoProgress.currentTime / duration;
-        // console.log('handleProgress', videoProgress.currentTime, duration, p)
         if (p === Infinity || isNaN(p)) {
           return;
         }

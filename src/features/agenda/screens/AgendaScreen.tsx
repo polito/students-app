@@ -13,7 +13,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import { findIndex, flatMap, get, throttle } from 'lodash';
+import { findIndex, flatMap, get } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { filterAgendaItem, mapAgendaItem } from '../../../core/agenda';
@@ -29,7 +29,6 @@ import { DrawerCalendar } from '../components/DrawerCalendar';
 import { AgendaTabs } from './AgendaTabs';
 
 const viewabilityConfig = {
-  // minimumViewTime: 100,
   viewAreaCoveragePercentThreshold: 15,
   waitForInteraction: false,
 };
@@ -108,7 +107,6 @@ export const AgendaScreen = () => {
     viewableItems: Array<ViewToken>;
     changed: Array<ViewToken>;
   }) => {
-    // console.log({ viewableItems: changed.viewableItems });
     if (changed.viewableItems[0]) {
       setViewedDate(changed.viewableItems[0].key);
     }
@@ -118,12 +116,9 @@ export const AgendaScreen = () => {
     setPageDown(pageDown + 1);
   };
 
-  const onTopReached = useCallback(
-    throttle(() => {
-      setPageUp(oldPage => oldPage - 1);
-    }, 2000),
-    [],
-  );
+  const onTopReached = useCallback(() => {
+    setPageUp(oldPage => oldPage - 1);
+  }, []);
 
   const onPressCalendarDay = useCallback(
     (day: Date) => {
@@ -188,7 +183,14 @@ export const AgendaScreen = () => {
         keyExtractor={item => item.id}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
+        // onScroll={throttle((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        //   console.log(event.nativeEvent.contentOffset.y)
+        //   if (event.nativeEvent.contentOffset.y < 0) {
+        //     onTopReached();
+        //   }
+        // }, 2000)}
         onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          console.log(event.nativeEvent.contentOffset.y);
           if (event.nativeEvent.contentOffset.y < 0) {
             onTopReached();
           }

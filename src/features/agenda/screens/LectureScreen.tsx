@@ -19,7 +19,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { Lecture } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import _ from 'lodash';
+import { find } from 'lodash';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -39,7 +39,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { fontSizes } = useTheme();
-  const lecture: Lecture = _.find(lectureQuery?.data?.data, l => l.id === id);
+  const lecture: Lecture = find(lectureQuery?.data?.data, l => l.id === id);
   const teacherQuery = useGetPerson(lecture?.teacherId);
   const videoLecturesQuery = useGetCourseVideolectures(lecture?.courseId);
   const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);

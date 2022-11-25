@@ -30,7 +30,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import _ from 'lodash';
+import { upperFirst } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { getAgendaItemColorFromPreferences } from '../../../core/agenda';
@@ -70,9 +70,7 @@ export const Calendar = forwardRef(
   ) => {
     const { t } = useTranslation();
     const styles = useStylesheet(createItemStyles);
-    // const myFutureReservationsGrouped = useSelector(getMyFutureReservationGrouped);
-    // const reservations: any[] = [];
-    // const reservations = useSelector(smartItemSelectors.myReservationCalendarList);
+
     const service = useRef(new CalendarService()).current;
     const [weeks, setWeeks] = useState([]);
     const [fistOpen, setFirstOpen] = useState(true);
@@ -98,11 +96,6 @@ export const Calendar = forwardRef(
         scrollToToday(tempWeeks);
       }
     }, [viewedDate]);
-
-    useEffect(() => {
-      // const month = DateTime.fromJSDate(_.get(weeks, '[1].days[6].date', '')).toFormat('MM-yyyy');
-      // getMyReservationList(month, ReservationsScreenId);
-    }, [weeks]);
 
     const scrollToToday = (tempWeeks = weeks) => {
       if (flatListRef.current && tempWeeks.length) {
@@ -150,21 +143,8 @@ export const Calendar = forwardRef(
       });
     }, [weeks]);
 
-    // const reservationDots = useMemo(() => {
-    // const state = store.getState();
-    // const userDetail = getUserDetail(state);
-    // const newCalendar = generateDotFromReservations({reservations, userDetail});
-    // const newReal = _.map(newCalendar, (value, key) => {
-    //   return {
-    //     date: DateTime.fromFormat(key, 'yyyy-MM-dd').toFormat('dd/MM/yyyy'),
-    //     dots: value.dots,
-    //   };
-    // });
-    // return newReal;
-    // }, [reservations]);
-
     const month = useMemo(() => {
-      return _.upperFirst(
+      return upperFirst(
         DateTime.fromJSDate(weeks.length ? weeks[1].days[6].date : '').toFormat(
           'MMMM yyyy',
         ),

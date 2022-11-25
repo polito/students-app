@@ -21,17 +21,18 @@ export class CalendarService {
   getCurrentMonth(selectedMonth: Date) {
     this.month = [];
 
-    // ritorna il primo giorno del mese come istante di tempo
+    // returns the first day of the month as an instant of time
     let startMonth = DateTime.fromJSDate(selectedMonth).startOf('month');
     const prevMonth = DateTime.fromJSDate(selectedMonth)
       .startOf('month')
       .minus({ days: 1 });
-    // prevMonth diventa l'ultimo giorno del mese precedente
+
+    // prevMonth becomes the last day of the previous month
     let fored = false;
     const endMonth = DateTime.fromJSDate(selectedMonth).endOf('month');
 
-    // se il giorno di partenza è domenica, fissa startMonth al
-    // lunedì del mese precedente
+    // if the departure day is Sunday, set startMonth to
+    // Monday of the previous month
     // @ts-ignore
     if (startMonth.weekday === 0) {
       startMonth = startMonth.minus({ days: 6 });
