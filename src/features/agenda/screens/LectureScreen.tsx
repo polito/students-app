@@ -33,7 +33,6 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
-  console.log('LectureId', id);
   const { t } = useTranslation();
   const lectureQuery = useGetLectures();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -47,13 +46,6 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const live = useMemo(() => {
     return isLive(lecture?.startsAt, lecture?.endsAt);
   }, []);
-
-  // console.log('virtualClassroomQuery', virtualClassroomQuery?.data);
-  // console.log('courseQuery', coursesQuery?.data);
-  // console.log('teacherQuery', teacherQuery?.data);
-  console.log('lecture', lecture);
-  console.log('videoLecture', videoLecture);
-  console.log('videoLectureQuery', videoLecturesQuery?.data?.data);
 
   const timeLabel = useMemo(() => {
     const endsAtDate = fromDateToFormat(lecture?.endsAt);

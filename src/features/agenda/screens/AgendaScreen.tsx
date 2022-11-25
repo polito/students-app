@@ -19,10 +19,10 @@ import { DateTime } from 'luxon';
 import { filterAgendaItem, mapAgendaItem } from '../../../core/agenda';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetInfiniteBookings } from '../../../core/queries/bookingHooks';
-import { useGetInfiniteExams } from '../../../core/queries/examHooks';
+import { useGetBookings } from '../../../core/queries/bookingHooks';
+import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetInfiniteLectures } from '../../../core/queries/lectureHooks';
-import { useGetInfiniteDeadlines } from '../../../core/queries/studentHooks';
+import { useGetDeadlines } from '../../../core/queries/studentHooks';
 import { AgendaDayInterface } from '../../../utils/types';
 import { AgendaDay } from '../components/AgendaDay';
 import { DrawerCalendar } from '../components/DrawerCalendar';
@@ -37,10 +37,10 @@ export const AgendaScreen = () => {
   const { colors, spacing } = useTheme();
   const { updatePreference } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
-  const examsQuery = useGetInfiniteExams();
-  const bookingsQuery = useGetInfiniteBookings();
+  const examsQuery = useGetExams();
+  const bookingsQuery = useGetBookings();
   const lecturesQuery = useGetInfiniteLectures();
-  const deadlinesQuery = useGetInfiniteDeadlines();
+  const deadlinesQuery = useGetDeadlines();
   const [pageUp, setPageUp] = useState(0);
   const [pageDown, setPageDown] = useState(0);
   const [viewedDate, setViewedDate] = useState<string>(
@@ -74,18 +74,15 @@ export const AgendaScreen = () => {
   }, [pageDown]);
 
   const getNextData = useCallback((newPage: number) => {
-    // examsQuery.fetchNextPage({pageParam: newPage})
-    // bookingsQuery.fetchNextPage({pageParam: newPage})
     // lecturesQuery.fetchNextPage({pageParam: newPage})
-    // deadlinesQuery.fetchNextPage({pageParam: newPage})
   }, []);
 
   const toFilterAgendaDays = useMemo(() => {
     return mapAgendaItem(
-      flatMap(get(examsQuery, 'data.pages', []), page => page.data) || [],
-      flatMap(get(bookingsQuery, 'data.pages', []), page => page.data) || [],
+      examsQuery.data?.data || [],
+      bookingsQuery.data?.data || [],
       flatMap(get(lecturesQuery, 'data.pages', []), page => page.data) || [],
-      flatMap(get(deadlinesQuery, 'data.pages', []), page => page.data) || [],
+      deadlinesQuery.data?.data || [],
       colors,
     );
   }, [
@@ -127,7 +124,6 @@ export const AgendaScreen = () => {
         agendaDays,
         item => item.id === formattedDay,
       );
-      console.log('agendaDayIndex', agendaDayIndex);
       try {
         if (flatListRef && flatListRef.current) {
           if (agendaDayIndex >= 0) {

@@ -1,4 +1,3 @@
-import { API_BASE_PATH } from '@env';
 import {
   AuthApi,
   BASE_PATH,
@@ -17,7 +16,7 @@ import { ApiContextClientsProps } from '../core/contexts/ApiContext';
 import { language } from '../i18n';
 
 export const createApiConfiguration = (token?: string) => {
-  const basePath = API_BASE_PATH ?? BASE_PATH;
+  const basePath = BASE_PATH;
   console.log({ basePath });
   console.log(`Expecting a running API at ${basePath}`);
 

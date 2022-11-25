@@ -40,7 +40,6 @@ export const DeadlineScreen = ({ route }: Props) => {
   const onPressDeadlineUrl = async () => {
     try {
       const { url } = deadline;
-      console.log({ url });
       if (url) {
         await Linking.openURL(url);
       }

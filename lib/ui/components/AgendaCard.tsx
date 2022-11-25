@@ -52,8 +52,6 @@ export const AgendaCard = ({
   }, [preferences, colors, item]);
 
   const onPressCard = (): void => {
-    console.log('item', item);
-
     if (item.type === 'Deadline') {
       const deadline: Deadline = item.content as Deadline;
       navigation.navigate({
@@ -68,7 +66,6 @@ export const AgendaCard = ({
 
     if (item.type === 'Lecture') {
       const lecture = item.content as Lecture;
-      console.log('lecture', lecture);
 
       // if (lecture.roomName === 'AULA VIRTUALE') {
       //   console.log('go to virtual classroom');

@@ -24,7 +24,6 @@ type Props = NativeStackScreenProps<
 export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   const { courseId, lectureId } = route.params;
   const { t } = useTranslation();
-  console.log(courseId, lectureId);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const virtualClassroomQuery = useGetCourseVirtualClassrooms(courseId);
   const lecture = find(
