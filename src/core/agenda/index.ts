@@ -1,7 +1,7 @@
 import { Colors } from '@lib/ui/types/theme';
 import { Booking, Deadline, Exam, Lecture } from '@polito/api-client';
 
-import { chain, filter, isEmpty, toLower } from 'lodash';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import { AgendaDayInterface, AgendaItemInterface } from '../../utils/types';
@@ -120,13 +120,13 @@ export const filterAgendaItem = (
   toFilterAgendaDays: AgendaDayInterface[],
   filters: string[],
 ) => {
-  if (isEmpty(filters)) {
+  if (_.isEmpty(filters)) {
     return toFilterAgendaDays;
   }
-  return chain(toFilterAgendaDays)
+  return _.chain(toFilterAgendaDays)
     .map(agendaDay => {
-      const agendaDayItems = filter(agendaDay.items, item =>
-        filters.includes(toLower(item.type)),
+      const agendaDayItems = _.filter(agendaDay.items, item =>
+        filters.includes(_.toLower(item.type)),
       );
       if (agendaDayItems.length) {
         return {

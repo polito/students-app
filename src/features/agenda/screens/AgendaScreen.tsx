@@ -13,7 +13,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import { findIndex, flatMap, get } from 'lodash';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import { filterAgendaItem, mapAgendaItem } from '../../../core/agenda';
@@ -81,7 +81,8 @@ export const AgendaScreen = () => {
     return mapAgendaItem(
       examsQuery.data?.data || [],
       bookingsQuery.data?.data || [],
-      flatMap(get(lecturesQuery, 'data.pages', []), page => page.data) || [],
+      _.flatMap(_.get(lecturesQuery, 'data.pages', []), page => page.data) ||
+        [],
       deadlinesQuery.data?.data || [],
       colors,
     );
@@ -120,7 +121,7 @@ export const AgendaScreen = () => {
   const onPressCalendarDay = useCallback(
     (day: Date) => {
       const formattedDay = DateTime.fromJSDate(day).toISODate();
-      const agendaDayIndex = findIndex(
+      const agendaDayIndex = _.findIndex(
         agendaDays,
         item => item.id === formattedDay,
       );
