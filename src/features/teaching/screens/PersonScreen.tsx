@@ -101,19 +101,24 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const onPressEmail = async () =>
     await Linking.openURL(`mailto:${person.email}`);
 
-  const renderPhoneNumber = (phoneNumber: string) => {
-    const onPressPhone = async () =>
-      await Linking.openURL(`tel:${phoneNumber}`);
+  const renderPhoneNumber = (
+    phoneNumber: { full?: string; internal?: string },
+    index: number,
+  ) => {
+    const onPressPhone = async () => {
+      const tel = `${phoneNumber?.internal || ''}${phoneNumber?.full}`;
+      await Linking.openURL(`tel:${tel}`);
+    };
 
     return (
       <ListItem
-        key={phoneNumber}
+        key={index}
         titleStyle={styles.titleStyle}
         leadingItem={
           <Icon icon={faPhone} color={colors.text['500']} size={fontSizes.xl} />
         }
         title={t('personScreen.call')}
-        subtitle={phoneNumber}
+        subtitle={`${phoneNumber?.internal || ''}${phoneNumber?.full}`}
         onPress={onPressPhone}
       />
     );
