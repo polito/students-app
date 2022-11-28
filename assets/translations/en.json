@@ -12,6 +12,7 @@
     "rose": "Rose"
   },
   "common": {
+    "actionPotentiallyNotUndoable": "This action may not be undoable",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
@@ -24,6 +25,7 @@
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
+    "done": "Done",
     "download": "Download",
     "exam": "Exam",
     "examCall": "Exam call",
