@@ -73,7 +73,7 @@ export const CourseAssignmentsTab = ({
       </ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
-        onPress={() =>
+        action={() =>
           navigation.navigate({
             name: 'CourseAssignmentUpload',
             params: { courseId },

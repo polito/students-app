@@ -21,11 +21,17 @@ interface Props extends TouchableHighlightProps {
   absolute?: boolean;
   title: string;
   loading?: boolean;
-  action: () => Promise<unknown>;
+  action: () => unknown | Promise<unknown>;
   successMessage?: string;
   destructive?: boolean;
 }
 
+/**
+ * A call-to-action button with in-place async action feedback
+ *
+ * If `action` returns a Promise, its result will be used to show
+ * a temporary success message before moving to the next state
+ */
 export const CtaButton = ({
   style,
   adjustInsets = true,
@@ -52,12 +58,15 @@ export const CtaButton = ({
   const onPress = () => {
     successMessageRef.current = successMessage;
     destructiveRef.current = destructive;
-    action().then(() => {
-      setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 2000);
-    });
+    const promise = action();
+    if (promise instanceof Promise) {
+      promise.then(() => {
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 2000);
+      });
+    }
   };
 
   return (

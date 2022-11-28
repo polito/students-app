@@ -55,7 +55,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       {recentFilesQuery.data?.length > 0 && (
         <CtaButton
           title={t('courseFilesTab.browseFiles')}
-          onPress={() => navigation.navigate('CourseDirectory', { courseId })}
+          action={() => navigation.navigate('CourseDirectory', { courseId })}
         />
       )}
     </>

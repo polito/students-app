@@ -62,7 +62,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
         <CtaButton
           title={t('common.remove')}
           destructive
-          onPress={() => {
+          action={() => {
             updatePreference('courses', {
               ...coursesPrefs,
               [courseId]: {
