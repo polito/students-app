@@ -3,27 +3,24 @@ import { View } from 'react-native';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { formatDateTime } from '../../utils/dates';
-
 interface Props {
-  title: string;
-  type: string;
-  time: Date;
+  placeId: number;
 }
 
-export const EventDetails = ({ title, type, time }: Props) => {
+export const PlacePanel = ({ placeId }: Props) => {
   const { spacing, fontSizes } = useTheme();
+
   return (
-    <View style={{ padding: spacing[5] }}>
+    <View style={{ paddingHorizontal: spacing[5] }}>
       <Text variant="heading" style={{ marginBottom: spacing[2] }}>
-        {title}
+        Aula 1
       </Text>
       <Text variant="caption" style={{ marginBottom: spacing[2] }}>
-        {type}
+        Aula
       </Text>
-      {time && (
-        <Text style={{ fontSize: fontSizes.md }}>{formatDateTime(time)}</Text>
-      )}
+      <Text style={{ fontSize: fontSizes.md }}>
+        Corso Duca degli Abruzzi, 24, 10129, Torino
+      </Text>
     </View>
   );
 };

@@ -28,7 +28,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 export const ExamScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
+  const { fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const examsQuery = useGetExams();
   const refreshControl = useRefreshControl(examsQuery);
@@ -65,6 +65,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
             title={exam?.classrooms}
             subtitle={t('examScreen.location')}
+            onPress={() => {
+              navigation.navigate('Places', { placeId: 1 });
+            }}
           />
           {teacherQuery.data && (
             <PersonListItem
