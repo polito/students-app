@@ -23,6 +23,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "contact": "Contatto",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",

@@ -36,6 +36,12 @@ import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { SCREEN_WIDTH } from '../../../utils/const';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
+// temporary interface, to remove on apiClient update ALPHA_13
+interface PhoneNumber {
+  full?: string;
+  internal?: string;
+}
+
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
 
 export const PersonScreen = ({ route, navigation }: Props) => {
@@ -48,9 +54,10 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const person: Person = personQuery?.data?.data || {};
   const courses: PersonAllOfCourses[] = person.courses;
   const source = { uri: person?.picture };
+  const phoneNumbers: PhoneNumber[] = person?.phoneNumbers as PhoneNumber[];
 
   navigation.setOptions({
-    headerBackTitle: t('common.contacts'),
+    headerBackTitle: t('common.contact'),
   });
 
   const PersonHeader = () => {
@@ -60,7 +67,11 @@ export const PersonScreen = ({ route, navigation }: Props) => {
 
     return (
       <Col flexStart maxWidth style={styles.header}>
-        <Text weight={'bold'} variant={'title'}>
+        <Text
+          weight={'bold'}
+          variant={'title'}
+          style={{ fontSize: fontSizes['3xl'] }}
+        >
           {person?.firstName} {person?.lastName}
         </Text>
         <Row noFlex mv-xl>
@@ -76,7 +87,7 @@ export const PersonScreen = ({ route, navigation }: Props) => {
             </View>
           )}
           <Col flexStart style={styles.info}>
-            <Text>{t('personScreen.role')}</Text>
+            <Text style={styles.role}>{t('personScreen.role')}</Text>
             <Text weight={'semibold'}>{person.role}</Text>
 
             <Text style={styles.department}>
@@ -85,7 +96,12 @@ export const PersonScreen = ({ route, navigation }: Props) => {
             <Text weight={'semibold'}>{person.facilityShortName}</Text>
 
             {!!person?.profileUrl && (
-              <Row alignCenter touchableOpacity onPress={onPressProfileUrl}>
+              <Row
+                alignCenter
+                touchableOpacity
+                onPress={onPressProfileUrl}
+                style={styles.profileUrl}
+              >
                 <View style={styles.icon}>
                   <Icon icon={faLink} size={20} color={colors.primary[400]} />
                 </View>
@@ -101,10 +117,7 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const onPressEmail = async () =>
     await Linking.openURL(`mailto:${person.email}`);
 
-  const renderPhoneNumber = (
-    phoneNumber: { full?: string; internal?: string },
-    index: number,
-  ) => {
+  const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
     const onPressPhone = async () => {
       const tel = `${phoneNumber?.internal || ''}${phoneNumber?.full}`;
       await Linking.openURL(`tel:${tel}`);
@@ -152,7 +165,7 @@ export const PersonScreen = ({ route, navigation }: Props) => {
       <Section>
         <SectionHeader title={t('personScreen.contacts')} />
         <SectionList>
-          {person?.phoneNumbers.map(renderPhoneNumber)}
+          {phoneNumbers?.map(renderPhoneNumber)}
           <ListItem
             titleStyle={styles.titleStyle}
             leadingItem={
@@ -192,21 +205,30 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
     },
     header: {
       paddingHorizontal: spacing['3'],
+      marginBottom: spacing['1'],
     },
     icon: {
       padding: spacing[1],
       flex: 0,
     },
     department: {
-      marginTop: spacing[2],
+      marginTop: fontSizes.md,
+      color: colors.text['600'],
     },
     info: {
-      paddingLeft: spacing[4],
+      paddingLeft: spacing['3'],
+      paddingTop: spacing[1],
+    },
+    role: {
+      color: colors.text['600'],
     },
     image: {
-      width: SCREEN_WIDTH * 0.3,
-      height: SCREEN_WIDTH * 0.3,
-      borderRadius: SCREEN_WIDTH * 0.3,
+      width: SCREEN_WIDTH / 4,
+      height: SCREEN_WIDTH / 4,
+      borderRadius: SCREEN_WIDTH / 4,
+    },
+    profileUrl: {
+      marginTop: spacing['2'],
     },
     imageIcon: {
       width: SCREEN_WIDTH * 0.3,
