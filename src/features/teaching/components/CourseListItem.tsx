@@ -58,16 +58,19 @@ export const CourseListItem = ({ course }: Props) => {
   const { t } = useTranslation();
   const preferences = useContext(PreferencesContext);
 
+  const isEnabled = course.id != null;
+
   const listItem = (
     <ListItem
       linkTo={
-        course.id != null
+        isEnabled
           ? {
               screen: 'Course',
               params: { id: course.id, courseName: course.name },
             }
           : undefined
       }
+      disabled={!isEnabled}
       title={course.name}
       subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
       leadingItem={
@@ -76,20 +79,23 @@ export const CourseListItem = ({ course }: Props) => {
           color={preferences.courses[course.id]?.color}
         />
       }
-      trailingItem={Platform.select({
-        android: (
-          <Menu course={course}>
-            <IconButton
-              style={{
-                padding: spacing[3],
-              }}
-              icon={faEllipsisVertical}
-              color={colors.secondaryText}
-              size={fontSizes.xl}
-            />
-          </Menu>
-        ),
-      })}
+      trailingItem={
+        isEnabled &&
+        Platform.select({
+          android: (
+            <Menu course={course}>
+              <IconButton
+                style={{
+                  padding: spacing[3],
+                }}
+                icon={faEllipsisVertical}
+                color={colors.secondaryText}
+                size={fontSizes.xl}
+              />
+            </Menu>
+          ),
+        })
+      }
       containerStyle={{
         paddingRight: Platform.select({
           android: 0,
@@ -98,7 +104,7 @@ export const CourseListItem = ({ course }: Props) => {
     />
   );
 
-  if (Platform.OS === 'ios') {
+  if (isEnabled && Platform.OS === 'ios') {
     return (
       <Menu course={course} shouldOpenOnLongPress={true}>
         {listItem}

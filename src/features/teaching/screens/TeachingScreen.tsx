@@ -76,7 +76,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   preferences.courses[a.id]?.order -
                   preferences.courses[b.id]?.order,
               )
-              .filter(c => !preferences.courses[c.id]?.isHidden)
+              .filter(c => c.id && !preferences.courses[c.id]?.isHidden)
               .map(course => (
                 <CourseListItem key={course.shortcode} course={course} />
               ))}
