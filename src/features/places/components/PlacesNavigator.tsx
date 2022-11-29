@@ -10,8 +10,7 @@ import { PlacesScreen } from '../screens/PlacesScreen';
 export type PlacesStackParamList = {
   Places: {
     placeType?: string;
-    placeId?: number;
-    campusId?: number;
+    placeId?: string;
   };
 };
 

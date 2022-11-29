@@ -8,38 +8,21 @@ import { Theme } from '@lib/ui/types/theme';
 import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
+import { useGetSites } from '../../../core/queries/placesHooks';
 
-interface Props {
-  campusId?: number;
-}
-
-export const CampusSelector = ({ campusId }: Props) => {
+export const CampusSelector = () => {
   const styles = useStylesheet(createStyles);
+  const { data: sites } = useGetSites();
+
   return (
     <MenuView
       style={styles.touchable}
-      actions={[
-        {
-          title: 'Sede centrale',
-          subtitle: 'Corso Duca degli Abruzzi, 24, 10129, Torino, Italia',
-        },
-        {
-          title: 'Mirafiori',
-          subtitle: 'Corso Duca degli Abruzzi, 24, 10129, Torino, Italia',
-        },
-        {
-          title: 'Castello del Valentino',
-          subtitle: 'Corso Duca degli Abruzzi, 24, 10129, Torino, Italia',
-        },
-        {
-          title: 'Verrès',
-          subtitle: 'Corso Duca degli Abruzzi, 24, 10129, Torino, Italia',
-        },
-        {
-          title: 'Mondovì',
-          subtitle: 'Corso Duca degli Abruzzi, 24, 10129, Torino, Italia',
-        },
-      ]}
+      actions={
+        sites?.data.map(site => ({
+          title: site.name,
+          subtitle: site.city,
+        })) ?? []
+      }
     >
       <View style={styles.container}>
         <TranslucentView style={styles.background} />

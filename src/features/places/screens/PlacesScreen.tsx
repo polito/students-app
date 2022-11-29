@@ -15,8 +15,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { globalStyles } from '../../../core/styles/globalStyles';
 import { CampusSelector } from '../components/CampusSelector';
+import { PlaceMarker } from '../components/PlaceMarker';
 import { PlacePanel } from '../components/PlacePanel';
 import { PlaceTypePanel } from '../components/PlaceTypePanel';
+import { PlacesMarkers } from '../components/PlacesMarkers';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 
 type Props = NativeStackScreenProps<PlacesStackParamList, 'Places'>;
@@ -41,7 +43,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     });
   }, [navigation, searching]);
 
-  const { placeType, placeId, campusId } = route.params ?? {};
+  const { placeType, placeId } = route.params ?? {};
 
   return (
     <>
@@ -53,7 +55,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
-      />
+      >
+        {placeId != null ? (
+          <PlaceMarker placeId={placeId} />
+        ) : placeType != null ? (
+          <PlacesMarkers placeType={placeType} />
+        ) : null}
+      </MapView>
 
       <View
         style={{
@@ -145,9 +153,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             ) : null}
           </BottomSheet>
 
-          {placeType == null && placeId == null && (
-            <CampusSelector campusId={campusId} />
-          )}
+          {placeType == null && placeId == null && <CampusSelector />}
         </View>
       </View>
     </>
