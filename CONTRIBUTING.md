@@ -9,13 +9,23 @@ the [gallium](https://nodejs.org/download/release/v16.16.0/) LTS release).
 [Nvm](https://github.com/nvm-sh/nvm) can be used to automatically select the correct version enforced
 by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/nvm#deeper-shell-integration).
 
+## iOS local development
+
+In order to build and run the application locally (especially if you're not part of the official Apple Development Team)
+you'll have to enable the `Automatically manage signing` option in XCode (students.xcworkspace > students > Signing &
+Capabilities).
+
+Changes to this configuration should not be committed to the repository: the pre-commit hook will warn you if you try to
+do so and give you instructions on how to proceed.
+
 ## Project structure
 
 The project uses feature modules to keep the main areas semantically organized. Each module should be divided by entity
-type (`components`, `hooks`, `styles`, `screens`). The `core` module contains general-purpose items, used across the app.
+type (`components`, `hooks`, `styles`, `screens`). The `core` module contains general-purpose items, used across the
+app.
 
-The `lib` folder is used to isolate library/design-system-level components that one day may be extracted into a dedicated package
-for reuse.
+The `lib` folder is used to isolate library/design-system-level components that one day may be extracted into a
+dedicated package for reuse.
 
 ```
 ├── assets
@@ -49,17 +59,18 @@ While not strictly enforced through formatting, conformance
 to [Google's TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
 is encouraged. Notably, here are some rules we think are important:
 
-- Don't use `// @ts-ignore` comments. Try to use type narrowing/casting/patching and, when inevitable, use `// @ts-expect-error` comments describing the cause of the error.
+- Don't use `// @ts-ignore` comments. Try to use type narrowing/casting/patching and, when inevitable,
+  use `// @ts-expect-error` comments describing the cause of the error.
 - Do not mark interfaces specially (`IMyInterface` or `MyFooInterface`) unless it's idiomatic in its environment.
 - Respect identifiers casing.
 - When possible, use lambda expressions instead of functions.
 - Don't leave commented statements without a textual explanation.
 
-## Performance and accessibility considerations
+## Performance considerations
 
 - Avoid introducing bulky libraries for common actions that can be performed with built-ins or internal utils.
-- Avoid default or namespace imports (`import * as`) and other constructs that impact tree-shaking.
-- Always assign labels to focusable controls (`accessibilityLabel`).
+- Discuss the adoption of libraries with a big impact on bundle size with the rest of the team.
+- If possible, avoid default or namespace imports (`import * as`) and other constructs that impact tree-shaking.
 
 ## Git workflow
 
