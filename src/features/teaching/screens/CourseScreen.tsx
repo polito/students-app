@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, View } from 'react-native';
 
@@ -33,7 +33,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
   const { id, courseName } = route.params;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <IconButton
@@ -50,7 +50,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
     });
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
         <View

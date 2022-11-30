@@ -3,13 +3,24 @@
     "title": "Agenda"
   },
   "colors": {
+    "amber": "Ambra",
+    "blue": "Blu",
+    "cyan": "Ciano",
     "darkBlue": "Blu scuro",
-    "darkOrange": "Arancione scuro",
+    "emerald": "Smeraldo",
+    "fuchsia": "Fucsia",
     "green": "Verde",
+    "indigo": "Indigo",
     "lightBlue": "Blu chiaro",
+    "lime": "Lime",
     "orange": "Arancione",
+    "pink": "Rosa",
+    "purple": "Viola",
     "red": "Rosso",
-    "rose": "Rosa"
+    "rose": "Rosa",
+    "teal": "Turchese",
+    "violet": "Lilla",
+    "yellow": "Giallo"
   },
   "common": {
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
