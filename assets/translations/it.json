@@ -12,6 +12,7 @@
     "rose": "Rosa"
   },
   "common": {
+    "logout": "Logout",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
@@ -169,9 +170,6 @@
   "placesScreen": {
     "title": "Luoghi"
   },
-  "profileScreen": {
-    "title": "Profilo"
-  },
   "sectionHeader": {
     "cta": "Vedi tutto"
   },
@@ -181,6 +179,16 @@
   "teachingScreen": {
     "examsEmptyState": "Non ci sono appelli disponibili",
     "title": "Didattica"
+  },
+  "notificationsScreen": {
+    "title": "Archivio notifiche"
+  },
+  "profileScreen": {
+    "title": "Profilo",
+    "settings": "Impostazioni",
+    "smartCard": "Smartcard",
+    "course": "Corso di laurea",
+    "notifications": "Archivio notifiche"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
