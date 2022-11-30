@@ -149,6 +149,7 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
+    "emptyState": "There are no active courses",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses"
   },
@@ -160,6 +161,7 @@
     "location": "Location"
   },
   "examsScreen": {
+    "emptyState": "There are no open exam calls",
     "title": "Exams"
   },
   "grades": {
@@ -190,7 +192,6 @@
     "title": "Settings"
   },
   "teachingScreen": {
-    "examsEmptyState": "There are no open exam calls",
     "title": "Teaching"
   },
   "transcriptScreen": {

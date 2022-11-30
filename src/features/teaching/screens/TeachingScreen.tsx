@@ -69,7 +69,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
           />
-          <SectionList loading={coursesQuery.isLoading} indented>
+          <SectionList
+            loading={coursesQuery.isLoading}
+            indented
+            emptyStateText={t('coursesScreen.emptyState')}
+          >
             {coursesQuery.data?.data
               .sort(
                 (a, b) =>
@@ -90,7 +94,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionList
             loading={examsQuery.isLoading}
             indented
-            emptyStateText={t('teachingScreen.examsEmptyState')}
+            emptyStateText={t('examsScreen.emptyState')}
           >
             {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />

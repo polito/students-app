@@ -149,6 +149,7 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
+    "emptyState": "Non ci sono corsi",
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi"
   },
