@@ -40,16 +40,21 @@ export const IconButton = ({ iconStyle, adjustSpacing, ...rest }: Props) => {
     transform,
     testID,
   };
+  const padding = spacing[3] as number;
   return (
     <TouchableOpacity
-      style={[{ padding: spacing[3] }, style]}
+      style={[{ padding }, style]}
+      hitSlop={{
+        left: adjustSpacing === 'left' ? padding : undefined,
+        right: adjustSpacing === 'right' ? padding : undefined,
+      }}
       {...otherButtonProps}
     >
       <Icon
         style={[
           {
-            marginLeft: adjustSpacing === 'left' ? -spacing[3] : undefined,
-            marginRight: adjustSpacing === 'right' ? -spacing[3] : undefined,
+            marginLeft: adjustSpacing === 'left' ? -padding : undefined,
+            marginRight: adjustSpacing === 'right' ? -padding : undefined,
           },
           iconStyle,
         ]}
