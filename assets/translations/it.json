@@ -161,6 +161,7 @@
     "location": "Luogo"
   },
   "examsScreen": {
+    "emptyState": "Non ci sono appelli disponibili",
     "title": "Appelli"
   },
   "grades": {
@@ -191,7 +192,6 @@
     "title": "Impostazioni"
   },
   "teachingScreen": {
-    "examsEmptyState": "Non ci sono appelli disponibili",
     "title": "Didattica"
   },
   "transcriptScreen": {
