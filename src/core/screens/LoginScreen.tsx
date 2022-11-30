@@ -24,7 +24,7 @@ import { useLogin } from '../queries/authHooks';
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { mutateAsync: login, isLoading, isSuccess, data } = useLogin();
+  const { mutateAsync: login, isLoading } = useLogin();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef<TextInput>();
@@ -86,9 +86,8 @@ export const LoginScreen = () => {
               absolute={false}
               adjustInsets={Platform.OS === 'ios'}
               title={t('loginScreen.cta')}
-              onPress={handleLogin}
+              action={handleLogin}
               loading={isLoading}
-              success={isSuccess}
               successMessage={t('loginScreen.ctaSuccessMessage')}
             />
           </Section>

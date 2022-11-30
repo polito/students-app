@@ -12,6 +12,7 @@
     "rose": "Rosa"
   },
   "common": {
+    "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
@@ -24,6 +25,7 @@
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
+    "done": "Fatto",
     "download": "Scarica",
     "exam": "Esame",
     "examCall": "Appello",
