@@ -34,7 +34,7 @@ import {
   useGetCourseVirtualClassrooms,
 } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatDateTime } from '../../../utils/dates';
+import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 type SectionLectures =
@@ -246,9 +246,9 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
           <ListItem
             title={lecture.title}
             subtitle={[
-              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
-              lecture.createdAt && formatDateTime(lecture.createdAt),
+              formatDate(lecture.createdAt),
               lecture.duration,
+              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
             ]
               .filter(i => !!i)
               .join(' - ')}
