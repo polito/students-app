@@ -31,26 +31,30 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         refreshControl={<RefreshControl {...refreshControl} />}
         scrollEnabled={scrollEnabled}
       >
-        {recentFilesQuery.data?.length > 0 ? (
-          <View style={styles.sectionContainer}>
-            <SectionHeader
-              title={t('courseFilesTab.recentSectionTitle')}
-              separator={false}
+        {recentFilesQuery.data &&
+          (recentFilesQuery.data.length ? (
+            <View style={styles.sectionContainer}>
+              <SectionHeader
+                title={t('courseFilesTab.recentSectionTitle')}
+                separator={false}
+              />
+              <List indented>
+                {recentFilesQuery.data.slice(0, 5).map(file => (
+                  <CourseRecentFileListItem
+                    key={file.id}
+                    item={file}
+                    onSwipeStart={() => setScrollEnabled(false)}
+                    onSwipeEnd={() => setScrollEnabled(true)}
+                  />
+                ))}
+              </List>
+            </View>
+          ) : (
+            <EmptyState
+              message={t('courseFilesTab.empty')}
+              icon={faFolderOpen}
             />
-            <List indented>
-              {recentFilesQuery.data?.slice(0, 5).map(file => (
-                <CourseRecentFileListItem
-                  key={file.id}
-                  item={file}
-                  onSwipeStart={() => setScrollEnabled(false)}
-                  onSwipeEnd={() => setScrollEnabled(true)}
-                />
-              ))}
-            </List>
-          </View>
-        ) : (
-          <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
-        )}
+          ))}
       </ScrollView>
       {recentFilesQuery.data?.length > 0 && (
         <CtaButton
