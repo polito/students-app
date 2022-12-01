@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HomeScreen } from '../screens/HomeScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
@@ -19,7 +19,7 @@ export const UserNavigator = () => {
     >
       <Stack.Screen
         name="Profile"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           headerShown: false,
         }}
