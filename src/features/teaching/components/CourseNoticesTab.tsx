@@ -5,7 +5,7 @@ import RenderHTML, { Document } from 'react-native-render-html';
 
 import {
   faChevronDown,
-  faChevronRight,
+  faChevronUp,
   faInbox,
 } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -87,10 +87,10 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                 }
                 trailingItem={
                   <Icon
-                    icon={notice.open ? faChevronDown : faChevronRight}
+                    icon={notice.open ? faChevronUp : faChevronDown}
                     color={colors.secondaryText}
                     size={fontSizes.lg}
-                    style={{ marginRight: -spacing[1] }}
+                    style={{ marginLeft: spacing[2], marginRight: -spacing[1] }}
                   />
                 }
               />
