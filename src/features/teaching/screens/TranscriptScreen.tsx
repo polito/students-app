@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
@@ -47,7 +48,7 @@ export const TranscriptScreen = () => {
     [gradesQuery],
   );
   const transcriptGrades = useMemo(
-    () => gradesQuery.data?.data.filter(g => !g.isProvisional) ?? [],
+    () => gradesQuery.data?.data.filter(g => !g.isProvisional),
     [gradesQuery],
   );
 
@@ -160,18 +161,23 @@ export const TranscriptScreen = () => {
       <Section>
         <SectionHeader title={t('common.transcript')} />
         <SectionList>
-          {transcriptGrades.map(grade => (
-            <ListItem
-              key={grade.courseName}
-              title={grade.courseName}
-              subtitle={new Date(grade.date).toLocaleDateString()}
-              trailingItem={
-                <Text variant="title" style={styles.grade}>
-                  {t(formatGrade(grade.grade))}
-                </Text>
-              }
-            />
-          ))}
+          {transcriptGrades &&
+            (transcriptGrades.length ? (
+              transcriptGrades.map(grade => (
+                <ListItem
+                  key={grade.courseName}
+                  title={grade.courseName}
+                  subtitle={new Date(grade.date).toLocaleDateString()}
+                  trailingItem={
+                    <Text variant="title" style={styles.grade}>
+                      {t(formatGrade(grade.grade))}
+                    </Text>
+                  }
+                />
+              ))
+            ) : (
+              <EmptyState message={t('transcriptScreen.emptyState')} />
+            ))}
         </SectionList>
       </Section>
     </ScrollView>

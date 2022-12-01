@@ -198,6 +198,7 @@
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
+    "emptyState": "Non hai sostenuto nessun esame",
     "finalAverageLabel": "Media depurata",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",
