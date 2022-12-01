@@ -45,6 +45,10 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           title,
           content: (
             <RenderHTML
+              defaultTextProps={{
+                selectable: true,
+                selectionColor: colors.secondary[600],
+              }}
               baseStyle={{
                 paddingHorizontal: spacing[5],
                 color: colors.prose,
