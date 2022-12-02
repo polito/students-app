@@ -188,7 +188,8 @@
     "settings": "Impostazioni",
     "smartCard": "Smartcard",
     "course": "Corso di laurea",
-    "notifications": "Archivio notifiche"
+    "notifications": "Archivio notifiche",
+    "trainingOffer": "Offerta formativa"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",

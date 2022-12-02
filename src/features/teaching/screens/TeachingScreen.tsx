@@ -118,18 +118,18 @@ export const TeachingScreen = ({ navigation }: Props) => {
                       style={{ marginBottom: spacing[2] }}
                     >
                       {t('transcriptScreen.weightedAverageLabel')}:{' '}
-                      {studentQuery.data?.data.averageGrade}
+                      {studentQuery.data?.data?.averageGrade}
                     </Text>
                     <Text
                       variant="secondaryText"
                       style={{ marginBottom: spacing[2] }}
                     >
                       {t('transcriptScreen.finalAverageLabel')}:{' '}
-                      {studentQuery.data?.data.averageGradePurged}
+                      {studentQuery.data?.data?.averageGradePurged}
                     </Text>
                     <Text variant="secondaryText">
-                      {studentQuery.data?.data.totalAcquiredCredits}/
-                      {studentQuery.data?.data.totalCredits}{' '}
+                      {studentQuery.data?.data?.totalAcquiredCredits}/
+                      {studentQuery.data?.data?.totalCredits}{' '}
                       {t('common.credits').toLowerCase()}
                     </Text>
                   </View>
@@ -137,10 +137,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     data={
                       studentQuery.data
                         ? [
-                            studentQuery.data?.data.totalAttendedCredits /
-                              studentQuery.data?.data.totalCredits,
-                            studentQuery.data?.data.totalAcquiredCredits /
-                              studentQuery.data?.data.totalCredits,
+                            studentQuery.data?.data?.totalAttendedCredits /
+                              studentQuery.data?.data?.totalCredits,
+                            studentQuery.data?.data?.totalAcquiredCredits /
+                              studentQuery.data?.data?.totalCredits,
                           ]
                         : []
                     }

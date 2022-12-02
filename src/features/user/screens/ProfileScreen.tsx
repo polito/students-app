@@ -1,69 +1,84 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-import {
-  faBell,
-  faCog,
-  faSignOut,
-  faSliders,
-} from '@fortawesome/free-solid-svg-icons';
+import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import {
+  MenuAction,
+  MenuView,
+  NativeActionEvent,
+} from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../../../core/contexts/ApiContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useLogout } from '../../../core/queries/authHooks';
-// import { useGetMe } from '../../../core/queries/studentHooks';
+import { useGetMe } from '../../../core/queries/studentHooks';
+import {
+  ProfileNotificationItem,
+  ProfileSettingItem,
+} from '../components/ProfileItems';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
   navigation: NativeStackNavigationProp<UserStackParamList, 'Profile'>;
 }
 
+const HeaderRightDropdown = () => {
+  const username: string = 'aaaa';
+  const allCareersUsernames: string[] = ['aaaa', 'bbbb', 'ccc'];
+
+  const actions = useMemo((): MenuAction[] => {
+    return allCareersUsernames.map(careerUsername => {
+      return {
+        id: careerUsername,
+        title: careerUsername,
+        state: careerUsername === username ? 'on' : undefined,
+      };
+    });
+  }, []);
+
+  const onPressAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
+    console.debug('nativeEvent', event);
+  };
+
+  return (
+    <MenuView actions={actions} onPressAction={onPressAction}>
+      <Text variant={'link'}>{username}</Text>
+    </MenuView>
+  );
+};
+
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { mutate: handleLogout, isLoading, isSuccess } = useLogout();
-  // const me = useGetMe();
+  const {
+    mutate: handleLogout,
+    isLoading: isLoadingLogout,
+    isSuccess,
+  } = useLogout();
+  const useGetMeQuery = useGetMe();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes } = useTheme();
   const { refreshContext } = useApiContext();
   const client = useQueryClient();
-
-  // console.log('student', me.data);
   const onSuccessfulLogout = async () => {
     await Keychain.resetGenericPassword();
     await client.invalidateQueries([]);
     refreshContext();
   };
-
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <IconButton
-          icon={faSliders}
-          color={colors.primary[400]}
-          size={fontSizes.lg}
-          adjustSpacing="right"
-          accessibilityLabel={t('common.preferences')}
-          onPress={() => {
-            navigation.navigate('Settings');
-          }}
-        />
-      ),
+      headerRight: () => <HeaderRightDropdown />,
     });
   }, []);
 
@@ -86,37 +101,29 @@ export const ProfileScreen = ({ navigation }: Props) => {
       >
         <Section>
           <Text weight={'bold'} variant={'title'} style={styles.title}>
-            Nome Cognome
+            {/* {me?.firstName} {me?.lastName} */}
           </Text>
         </Section>
         <Section>
           <SectionHeader title={t('profileScreen.smartCard')} />
         </Section>
         <Section>
-          <SectionHeader title={t('profileScreen.course')} />
+          <SectionHeader
+            title={t('profileScreen.course')}
+            trailingItem={
+              <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
+            }
+          />
           <SectionList>
             <ListItem
               title={t('profileScreen.settings')}
-              leadingItem={
-                <Icon
-                  icon={faCog}
-                  color={colors.text['500']}
-                  size={fontSizes.xl}
-                />
-              }
+              subtitle={'Area di immatricolazione'}
               linkTo={'Settings'}
             />
-            <ListItem
-              title={t('profileScreen.notifications')}
-              linkTo={'Notifications'}
-              leadingItem={
-                <Icon
-                  icon={faBell}
-                  color={colors.text['500']}
-                  size={fontSizes.xl}
-                />
-              }
-            />
+          </SectionList>
+          <SectionList>
+            <ProfileSettingItem />
+            <ProfileNotificationItem />
           </SectionList>
         </Section>
       </ScrollView>
@@ -124,7 +131,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
         icon={faSignOut}
         title={t('common.logout')}
         action={() => handleLogout()}
-        loading={isLoading}
+        loading={isLoadingLogout}
       />
     </>
   );

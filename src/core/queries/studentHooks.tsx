@@ -24,3 +24,11 @@ export const useGetGrades = () => {
 
   return useQuery([GRADES_QUERY_KEY], () => studentClient.getStudentGrades());
 };
+
+export const useGetMe = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery([STUDENT_QUERY_KEY, 'me'], () =>
+    studentClient.getStudentRaw(),
+  );
+};
