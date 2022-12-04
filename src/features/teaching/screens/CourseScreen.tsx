@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, View } from 'react-native';
+import { Dimensions, Platform, View } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -65,7 +65,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
             variant="title"
             style={{
               marginLeft: spacing[2],
-              maxWidth: 270,
+              maxWidth: Dimensions.get('window').width - 180,
             }}
             numberOfLines={1}
             ellipsizeMode="tail"
