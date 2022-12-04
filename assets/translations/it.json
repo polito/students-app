@@ -132,6 +132,9 @@
     "title": "Lezioni",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
+  "courseListItem": {
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
+  },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
