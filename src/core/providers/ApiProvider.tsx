@@ -1,7 +1,9 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-import { FetchError } from '@polito/api-client/runtime';
+import { ResponseError } from '@polito/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
 import {
   QueryClient,
@@ -14,6 +16,7 @@ import { ApiContext, ApiContextProps } from '../contexts/ApiContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
+  const { t } = useTranslation();
   const [apiContext, setApiContext] = useState<ApiContextProps>({
     isLogged: null,
     token: null,
@@ -77,19 +80,39 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   const isEnvProduction = process.env.NODE_ENV === 'production';
 
+  const onError = async (error: ResponseError, client: QueryClient) => {
+    if (error.response.status === -401) {
+      setApiContext(c => ({
+        ...c,
+        isLogged: false,
+        token: null,
+      }));
+      client.invalidateQueries();
+    }
+    const { message } = await error.response.json();
+    Alert.alert(t('common.error'), message ?? t('common.somethingWentWrong'));
+    if (!isEnvProduction) {
+      console.error(message);
+      console.error(JSON.stringify(error));
+    }
+  };
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: isEnvProduction,
         refetchOnWindowFocus: isEnvProduction,
         onError(error) {
-          // TODO notify query error
-          if (!isEnvProduction && error instanceof FetchError) {
-            console.error(error?.cause?.message ?? error.message);
-            console.error(JSON.stringify(error));
+          if (error instanceof ResponseError) {
+            onError(error, queryClient);
           }
-
-          // TODO handle logout on 401
+        },
+      },
+      mutations: {
+        onError(error) {
+          if (error instanceof ResponseError) {
+            onError(error, queryClient);
+          }
         },
       },
     },

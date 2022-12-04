@@ -31,15 +31,11 @@ export const LoginScreen = () => {
   const { refreshContext } = useApiContext();
 
   const handleLogin = async () => {
-    try {
-      const {
-        data: { clientId, token },
-      } = await login({ username, password });
-      await Keychain.setGenericPassword(clientId, token);
-      refreshContext(token);
-    } catch (e) {
-      // TODO feedback
-    }
+    const {
+      data: { clientId, token },
+    } = await login({ username, password });
+    await Keychain.setGenericPassword(clientId, token);
+    refreshContext(token);
   };
 
   return (
@@ -89,6 +85,7 @@ export const LoginScreen = () => {
               action={handleLogin}
               loading={isLoading}
               successMessage={t('loginScreen.ctaSuccessMessage')}
+              disabled={!username?.length || !password?.length}
             />
           </Section>
         </TouchableWithoutFeedback>
