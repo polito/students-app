@@ -24,8 +24,13 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   const splashContext = useSplashContext();
 
   useEffect(() => {
+    console.debug('newApiContext', apiContext.token);
+  }, [apiContext]);
+
+  useEffect(() => {
     // update ApiContext based on the provided token
-    const refreshContext = (token?: string) =>
+    const refreshContext = (token?: string) => {
+      console.debug('prevApiContext', apiContext.token);
       setApiContext(() => {
         return {
           isLogged: !!token,
@@ -34,7 +39,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
           refreshContext,
         };
       });
-
+    };
     // Retrieve existing token from SecureStore, if any
     Keychain.getGenericPassword()
       .then(credentials => {

@@ -1,7 +1,11 @@
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
+import {
+  AuthApi,
+  LoginRequest,
+  SwitchCareerRequest,
+} from '@polito/api-client';
 import { useMutation } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
@@ -49,6 +53,17 @@ export const useLogout = () => {
 
 export const useSwitchCareer = () => {
   const authClient = useAuthClient();
+
+  // const mutationFn = (dto: SwitchCareerRequest) =>
+  //   authClient.switchCareer({ switchCareerRequest: dto });
+
+  // return useMutation({
+  //   mutationFn,
+  //   onSuccess: async (data, variables, context) => {
+  //     refreshContext(data.data.token);
+  //     return client.invalidateQueries([STUDENT_QUERY_KEY]);
+  //   },
+  // });
 
   return useMutation((dto: SwitchCareerRequest) =>
     authClient.switchCareer({ switchCareerRequest: dto }),

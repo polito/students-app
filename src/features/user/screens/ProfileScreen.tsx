@@ -27,7 +27,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useApiContext } from '../../../core/contexts/ApiContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
-import { useGetMe } from '../../../core/queries/studentHooks';
+import {
+  STUDENT_QUERY_KEY,
+  useGetStudent,
+} from '../../../core/queries/studentHooks';
 import {
   ProfileNotificationItem,
   ProfileSettingItem,
@@ -40,19 +43,16 @@ interface Props {
 
 const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const {
+    isLoading,
     mutate: handleSwitchCareer,
-    isLoading: isLoading,
-    data: data,
     isSuccess,
+    data,
   } = useSwitchCareer();
   const { colors } = useTheme();
+  const { refreshContext } = useApiContext();
+  const client = useQueryClient();
   const username: string = student?.username || '';
   const allCareersUsernames: Array<string> = student?.allCareerUsernames || [];
-
-  useEffect(() => {
-    console.debug('isSuccess', data);
-  }, [isSuccess]);
-
   const actions = useMemo((): MenuAction[] => {
     return allCareersUsernames.map(careerUsername => {
       return {
@@ -61,10 +61,21 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
         state: careerUsername === username ? 'on' : undefined,
       };
     });
-  }, []);
+  }, [allCareersUsernames, username]);
+
+  useEffect(() => {
+    const onRefresh = async () => {
+      if (isSuccess && !isLoading) {
+        console.debug('refreshContext');
+        refreshContext(data.data.token);
+        await Keychain.setGenericPassword(data.data.clientId, data.data.token);
+        await client.invalidateQueries([STUDENT_QUERY_KEY]);
+      }
+    };
+    onRefresh();
+  }, [isSuccess, isLoading, data]);
 
   const onPressAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    console.debug('nativeEvent', event);
     handleSwitchCareer({ username: event });
   };
 
@@ -89,8 +100,8 @@ export const ProfileScreen = ({ navigation }: Props) => {
     isLoading: isLoadingLogout,
     isSuccess,
   } = useLogout();
-  const useGetMeQuery = useGetMe();
-  console.debug('useGetMeQuery', useGetMeQuery.data?.data?.allCareerUsernames);
+  const useGetMeQuery = useGetStudent();
+  const student = useGetMeQuery.data?.data;
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { refreshContext } = useApiContext();
@@ -101,7 +112,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
     refreshContext();
   };
   useEffect(() => {
-    const student = useGetMeQuery.data?.data as Student;
     navigation.setOptions({
       headerRight: () => <HeaderRightDropdown student={student} />,
     });
@@ -126,11 +136,12 @@ export const ProfileScreen = ({ navigation }: Props) => {
       >
         <Section>
           <Text weight={'bold'} variant={'title'} style={styles.title}>
-            {/* {me?.firstName} {me?.lastName} */}
+            {student?.firstName} {student?.lastName}
           </Text>
         </Section>
         <Section>
           <SectionHeader title={t('profileScreen.smartCard')} />
+          {/* <Image source={{uri: student?.smartCardPicture}} /> */}
         </Section>
         <Section>
           <SectionHeader
