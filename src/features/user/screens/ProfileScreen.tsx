@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
-import * as Keychain from 'react-native-keychain';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -22,15 +21,10 @@ import {
   NativeActionEvent,
 } from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
 
-import { useApiContext } from '../../../core/contexts/ApiContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
-import {
-  STUDENT_QUERY_KEY,
-  useGetStudent,
-} from '../../../core/queries/studentHooks';
+import { useGetStudent } from '../../../core/queries/studentHooks';
 import {
   ProfileNotificationItem,
   ProfileSettingItem,
@@ -42,17 +36,10 @@ interface Props {
 }
 
 const HeaderRightDropdown = ({ student }: { student?: Student }) => {
-  const {
-    isLoading,
-    mutate: handleSwitchCareer,
-    isSuccess,
-    data,
-  } = useSwitchCareer();
+  const { mutate } = useSwitchCareer();
   const { colors } = useTheme();
-  const { refreshContext } = useApiContext();
-  const client = useQueryClient();
-  const username: string = student?.username || '';
-  const allCareersUsernames: Array<string> = student?.allCareerUsernames || [];
+  const username = student?.username || '';
+  const allCareersUsernames = student?.allCareerUsernames || [];
   const actions = useMemo((): MenuAction[] => {
     return allCareersUsernames.map(careerUsername => {
       return {
@@ -63,20 +50,8 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
     });
   }, [allCareersUsernames, username]);
 
-  useEffect(() => {
-    const onRefresh = async () => {
-      if (isSuccess && !isLoading) {
-        console.debug('refreshContext');
-        refreshContext(data.data.token);
-        await Keychain.setGenericPassword(data.data.clientId, data.data.token);
-        await client.invalidateQueries([STUDENT_QUERY_KEY]);
-      }
-    };
-    onRefresh();
-  }, [isSuccess, isLoading, data]);
-
   const onPressAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    handleSwitchCareer({ username: event });
+    mutate({ username: event });
   };
 
   return (
@@ -95,35 +70,17 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
 
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const {
-    mutate: handleLogout,
-    isLoading: isLoadingLogout,
-    isSuccess,
-  } = useLogout();
+  const { mutate: handleLogout, isLoading } = useLogout();
   const useGetMeQuery = useGetStudent();
-  const student = useGetMeQuery.data?.data;
+  const student = useGetMeQuery?.data?.data;
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { refreshContext } = useApiContext();
-  const client = useQueryClient();
-  const onSuccessfulLogout = async () => {
-    await Keychain.resetGenericPassword();
-    await client.invalidateQueries([]);
-    refreshContext();
-  };
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => <HeaderRightDropdown student={student} />,
     });
-  }, []);
-
-  useEffect(() => {
-    if (isSuccess) {
-      onSuccessfulLogout().catch(e => {
-        // TODO handle error
-      });
-    }
-  }, [isSuccess]);
+  }, [student]);
 
   return (
     <>
@@ -167,7 +124,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
         icon={faSignOut}
         title={t('common.logout')}
         action={() => handleLogout()}
-        loading={isLoadingLogout}
+        loading={isLoading}
       />
     </>
   );

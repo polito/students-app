@@ -16,7 +16,6 @@ import { ApiContextClientsProps } from '../core/contexts/ApiContext';
 import { language } from '../i18n';
 
 export const createApiConfiguration = (token?: string) => {
-  console.debug('createApiConfiguration', token);
   const basePath = BASE_PATH;
   // const basePath = 'http://192.168.178.36:4010';
 
@@ -38,7 +37,6 @@ export const createApiConfiguration = (token?: string) => {
 
 export const createApiClients = (token?: string) => {
   const configuration = createApiConfiguration(token);
-
   let clients: Partial<ApiContextClientsProps> = {
     auth: new AuthApi(configuration),
   };

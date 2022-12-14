@@ -15,8 +15,17 @@ const useStudentClient = (): StudentApi => {
 
 export const useGetStudent = () => {
   const studentClient = useStudentClient();
+  const { token } = useApiContext();
 
-  return useQuery([STUDENT_QUERY_KEY], () => studentClient.getStudent());
+  return useQuery(
+    [STUDENT_QUERY_KEY, token],
+    () => {
+      return studentClient.getStudent();
+    },
+    {
+      enabled: !!token,
+    },
+  );
 };
 
 export const useGetGrades = () => {

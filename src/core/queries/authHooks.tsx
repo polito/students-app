@@ -1,14 +1,12 @@
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import Keychain from 'react-native-keychain';
 
-import {
-  AuthApi,
-  LoginRequest,
-  SwitchCareerRequest,
-} from '@polito/api-client';
-import { useMutation } from '@tanstack/react-query';
+import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
+import { STUDENT_QUERY_KEY } from './studentHooks';
 
 const useAuthClient = (): AuthApi => {
   const {
@@ -47,25 +45,40 @@ export const useLogin = () => {
 
 export const useLogout = () => {
   const authClient = useAuthClient();
+  const queryClient = useQueryClient();
+  const { refreshContext } = useApiContext();
 
-  return useMutation(() => authClient.logout());
+  return useMutation({
+    mutationFn: () => authClient.logout(),
+    onSuccess: async () => {
+      await Keychain.resetGenericPassword();
+      await queryClient.invalidateQueries([]);
+      refreshContext();
+    },
+    onError: error => {
+      console.debug('errorLogout', error);
+    },
+  });
 };
 
 export const useSwitchCareer = () => {
   const authClient = useAuthClient();
+  const queryClient = useQueryClient();
+  const { refreshContext } = useApiContext();
 
-  // const mutationFn = (dto: SwitchCareerRequest) =>
-  //   authClient.switchCareer({ switchCareerRequest: dto });
-
-  // return useMutation({
-  //   mutationFn,
-  //   onSuccess: async (data, variables, context) => {
-  //     refreshContext(data.data.token);
-  //     return client.invalidateQueries([STUDENT_QUERY_KEY]);
-  //   },
-  // });
-
-  return useMutation((dto: SwitchCareerRequest) =>
-    authClient.switchCareer({ switchCareerRequest: dto }),
-  );
+  return useMutation({
+    mutationFn: (dto?: SwitchCareerRequest) =>
+      authClient.switchCareer({ switchCareerRequest: dto }),
+    onSuccess: data => {
+      Keychain.resetGenericPassword().then(() => {
+        refreshContext(data.data.token);
+        Keychain.setGenericPassword(data.data.clientId, data.data.token).then(
+          () => queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
+        );
+      });
+    },
+    onError: error => {
+      console.debug('onError', error);
+    },
+  });
 };
