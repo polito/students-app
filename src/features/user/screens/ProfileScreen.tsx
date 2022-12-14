@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -20,11 +21,13 @@ import {
   MenuView,
   NativeActionEvent,
 } from '@react-native-menu/menu';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { SCREEN_WIDTH } from '../../../utils/conts';
 import {
   ProfileNotificationItem,
   ProfileSettingItem,
@@ -73,8 +76,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { mutate: handleLogout, isLoading } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const headerHeight = useHeaderHeight();
+
   const styles = useStylesheet(createStyles);
+  const refreshControl = useRefreshControl(useGetMeQuery);
 
   useEffect(() => {
     navigation.setOptions({
@@ -83,13 +88,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
   }, [student]);
 
   return (
-    <>
+    <Col>
       <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={[
-          { paddingBottom: bottomBarAwareStyles.paddingBottom + 40 },
-          styles.listContainer,
-        ]}
+        refreshControl={<RefreshControl {...refreshControl} />}
+        style={{ width: SCREEN_WIDTH, marginTop: headerHeight }}
       >
         <Section>
           <Text weight={'bold'} variant={'title'} style={styles.title}>
@@ -126,7 +128,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
         action={() => handleLogout()}
         loading={isLoading}
       />
-    </>
+    </Col>
   );
 };
 
