@@ -8,7 +8,6 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
-import * as Keychain from 'react-native-keychain';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Section } from '@lib/ui/components/Section';
@@ -18,29 +17,17 @@ import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { useApiContext } from '../contexts/ApiContext';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { mutateAsync: login, isLoading } = useLogin();
+  const { mutate: login, isLoading } = useLogin();
   const [username, setUsername] = useState('S251409');
   const [password, setPassword] = useState('04051980AA');
   const passwordRef = useRef<TextInput>();
-  const { refreshContext } = useApiContext();
 
-  const handleLogin = async () => {
-    try {
-      const {
-        data: { clientId, token },
-      } = await login({ username, password });
-      await Keychain.setGenericPassword(clientId, token);
-      refreshContext(token);
-    } catch (e) {
-      // TODO feedback
-    }
-  };
+  const handleLogin = () => login({ username, password });
 
   return (
     <>

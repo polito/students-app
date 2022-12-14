@@ -132,7 +132,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
+const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     title: {
       fontSize: fontSizes['3xl'],

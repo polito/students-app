@@ -17,29 +17,38 @@ const useAuthClient = (): AuthApi => {
 
 export const useLogin = () => {
   const authClient = useAuthClient();
+  const { refreshContext } = useApiContext();
 
-  return useMutation((dto: LoginRequest) => {
-    dto.client = {
-      name: 'Students app',
-    };
+  return useMutation({
+    mutationFn: (dto: LoginRequest) => {
+      dto.client = { name: 'Students app' };
 
-    return Promise.all([
-      DeviceInfo.getDeviceName(),
-      DeviceInfo.getModel(),
-      DeviceInfo.getManufacturer(),
-    ])
-      .then(([name, model, manufacturer]) => {
-        dto.device = {
-          name,
-          platform: Platform.OS,
-          version: `${Platform.Version}`,
-          model,
-          manufacturer,
-        };
-      })
-      .then(() => {
-        return authClient.login({ loginRequest: dto });
-      });
+      return Promise.all([
+        DeviceInfo.getDeviceName(),
+        DeviceInfo.getModel(),
+        DeviceInfo.getManufacturer(),
+      ])
+        .then(([name, model, manufacturer]) => {
+          dto.device = {
+            name,
+            platform: Platform.OS,
+            version: `${Platform.Version}`,
+            model,
+            manufacturer,
+          };
+        })
+        .then(() => {
+          return authClient.login({ loginRequest: dto });
+        });
+    },
+    onSuccess: async data => {
+      const { token, clientId } = data.data;
+      await Keychain.setGenericPassword(clientId, token);
+      refreshContext(token);
+    },
+    onError: error => {
+      console.debug('loginError', error);
+    },
   });
 };
 
