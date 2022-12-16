@@ -39,7 +39,7 @@ import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
 
-export const PersonScreen = ({ route, navigation }: Props) => {
+export const PersonScreen = ({ route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
@@ -50,10 +50,6 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const courses: PersonAllOfCourses[] = person.courses;
   const source = { uri: person?.picture };
   const phoneNumbers = person?.phoneNumbers;
-
-  navigation.setOptions({
-    headerBackTitle: t('common.contact'),
-  });
 
   const PersonHeader = () => {
     const onPressProfileUrl = async () => {

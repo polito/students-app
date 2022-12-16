@@ -203,6 +203,8 @@ export const TeachingNavigator = () => {
         component={PersonScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
