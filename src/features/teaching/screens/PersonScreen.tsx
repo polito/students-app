@@ -26,9 +26,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { PhoneNumber } from '@polito/api-client';
-import { Person } from '@polito/api-client/models/Person';
-import { PersonAllOfCourses } from '@polito/api-client/models/PersonAllOfCourses';
+import { Person, PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -47,7 +45,7 @@ export const PersonScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
   const person: Person = personQuery?.data?.data || {};
-  const courses: PersonAllOfCourses[] = person.courses;
+  const courses = person.courses;
   const source = { uri: person?.picture };
   const phoneNumbers = person?.phoneNumbers;
 
@@ -125,7 +123,7 @@ export const PersonScreen = ({ route }: Props) => {
     );
   };
 
-  const renderCourse = (course: PersonAllOfCourses) => {
+  const renderCourse = (course: PersonCourse) => {
     const onPressCourse = () => {
       console.debug('onPressCourse', course);
     };
@@ -134,6 +132,7 @@ export const PersonScreen = ({ route }: Props) => {
         key={course.id}
         titleStyle={styles.courseTitleStyle}
         title={course.name}
+        subtitle={`${course.year} - ${course.role}`}
         isNavigationAction
         onPress={onPressCourse}
       />
