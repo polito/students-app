@@ -113,10 +113,8 @@ export const PersonScreen = ({ route, navigation }: Props) => {
     await Linking.openURL(`mailto:${person.email}`);
 
   const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
-    const onPressPhone = async () => {
-      const tel = `${phoneNumber?.internal || ''}${phoneNumber?.full}`;
-      await Linking.openURL(`tel:${tel}`);
-    };
+    const onPressPhone = async () =>
+      await Linking.openURL(`tel:${phoneNumber.full}`);
 
     return (
       <ListItem
