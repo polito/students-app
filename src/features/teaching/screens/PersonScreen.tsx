@@ -58,11 +58,7 @@ export const PersonScreen = ({ route }: Props) => {
 
     return (
       <Col flexStart maxWidth style={styles.header}>
-        <Text
-          weight={'bold'}
-          variant={'title'}
-          style={{ fontSize: fontSizes['3xl'] }}
-        >
+        <Text weight={'bold'} variant={'title'} style={styles.personName}>
           {person?.firstName} {person?.lastName}
         </Text>
         <Row noFlex mv-xl>
@@ -183,6 +179,11 @@ export const PersonScreen = ({ route }: Props) => {
 
 const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
   StyleSheet.create({
+    personName: {
+      fontSize: fontSizes['2xl'],
+      paddingHorizontal: spacing[2],
+      paddingTop: spacing[3],
+    },
     titleStyle: {
       color: colors.primary[400],
       fontWeight: '600',
