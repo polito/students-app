@@ -26,6 +26,7 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { SCREEN_WIDTH } from '../../../utils/const';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -44,6 +45,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+
   const refreshControl = useRefreshControl(
     coursesQuery,
     examsQuery,
@@ -59,7 +61,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="always"
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
@@ -163,6 +165,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     sectionsContainer: {
+      // backgroundColor: 'red',
+      width: SCREEN_WIDTH,
       paddingVertical: spacing[5],
     },
     section: {

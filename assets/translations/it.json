@@ -23,6 +23,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "contact": "Contatto",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
@@ -189,6 +190,15 @@
   },
   "profileScreen": {
     "title": "Profilo"
+  },
+  "personScreen": {
+    "role": "Ruolo",
+    "department": "Dipartimento",
+    "moreInfo": "Maggiori informazioni",
+    "contacts": "Contatti",
+    "call": "Chiama",
+    "sentEmail": "Invia e-mail",
+    "courses": "Corsi"
   },
   "sectionHeader": {
     "cta": "Vedi tutto"

@@ -23,6 +23,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "contact": "Contacts",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
