@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   Animated,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableHighlightProps,
@@ -39,10 +40,6 @@ export interface VideoControlProps {
   setPlaybackRate: () => void;
 }
 const defaultPadding = 10;
-const Normalize = (n: number) => n;
-
-const COMPONENT_WIDTH = SCREEN_WIDTH - defaultPadding * 2;
-const DRAG_DIMENSION = Normalize(30);
 
 export const VideoControl = ({
   onRelease,
@@ -56,12 +53,11 @@ export const VideoControl = ({
   setPlaybackRate,
 }: VideoControlProps) => {
   const styles = useStylesheet(createStyles);
+  const statusBarHeight = useMemo(() => StatusBar.currentHeight, []);
   const [value, setValue] = useState<number>(newPosition * 100);
   const [isSliding, setIsSliding] = useState<boolean>(false);
   const [disableControl, setDisableControl] = useState(true);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
-  // console.log('value', value, value / 100 * secondsDuration );
-  // console.log('newPosition', newPosition, secondsDuration * newPosition );
 
   const sliderPosition = isSliding ? value / 100 : newPosition;
   const currentTime = DateTime.fromSeconds(secondsDuration * sliderPosition)
@@ -106,7 +102,13 @@ export const VideoControl = ({
         noFlex
         flexStart
         spaceBetween
-        style={[styles.wrapper, isLandscape && styles.wrapperLandscape]}
+        style={[
+          styles.wrapper,
+          isLandscape && {
+            ...styles.wrapperLandscape,
+            height: SCREEN_WIDTH - statusBarHeight,
+          },
+        ]}
         onPress={onPressVideoControls}
       >
         <Row
@@ -181,9 +183,7 @@ const createStyles = ({ size }: Theme) =>
     header: {
       top: 10,
     },
-    headerLandscape: {
-      top: 20,
-    },
+    headerLandscape: {},
     timeRemaining: {
       width: 50,
       color: 'white',
@@ -216,7 +216,7 @@ const createStyles = ({ size }: Theme) =>
     },
     wrapperLandscape: {
       width: SCREEN_HEIGHT,
-      height: SCREEN_WIDTH,
+      height: SCREEN_WIDTH * 0.9,
     },
     playbackRate: {
       color: 'white',

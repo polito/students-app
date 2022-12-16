@@ -6,29 +6,36 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Modal, Platform, StyleSheet, View } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
 import { Text } from '@lib/ui/components/Text';
 import { VideoControl } from '@lib/ui/components/VideoControl';
-import { VideoPlayerFullScreen } from '@lib/ui/components/VideoPlayerFullscreen';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
+import { useNavigation } from '@react-navigation/native';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
+import { displayTabBar, hideTabBar } from '../../../src/utils/tab-bar';
 
 const isIos = Platform.OS === 'ios';
 
 export interface VideoPlayerProps {
   videoUrl: string;
   coverUrl: string;
-  onOpenFullScreen?: (params: { videoUrl: string; coverUrl: string }) => void;
 }
 
 export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
+  const statusBarHeight = useMemo(() => StatusBar.currentHeight, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const playerRef = useRef<Video>();
@@ -36,20 +43,26 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-
+  const navigation = useNavigation();
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-
   const [playbackRate, setPlaybackRate] = useState(1);
 
   useEffect(() => {
-    if (modalVisible) {
-      Orientation.lockToLandscapeLeft();
-    } else {
-      Orientation.lockToPortrait();
+    const navRoot = navigation.getParent();
+    if (!isIos) {
+      if (fullscreen) {
+        Orientation.lockToLandscapeLeft();
+        hideTabBar(navRoot);
+      } else {
+        Orientation.lockToPortrait();
+        displayTabBar(navRoot);
+        // navigation.setOptions({
+        //   headerShown: true
+        // })
+      }
     }
-  }, [modalVisible]);
+  }, [fullscreen]);
 
   const speedControls = useMemo(() => {
     if (!isIos || parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
@@ -103,19 +116,9 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     setMuted(prev => !prev);
   }, [playerRef]);
 
-  const toggleFullscreen = useCallback(
-    (newProgress?: number) => {
-      if (!isIos) {
-        if (modalVisible) {
-          onSeekEnd(newProgress * 100);
-        }
-        setModalVisible(!modalVisible);
-      } else {
-        setFullscreen(prev => !prev);
-      }
-    },
-    [playerRef, modalVisible],
-  );
+  const toggleFullscreen = useCallback(() => {
+    setFullscreen(prev => !prev);
+  }, [playerRef]);
 
   const handleLoad = useCallback((meta: any) => {
     setDuration(meta.duration);
@@ -141,46 +144,20 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
 
   return (
     <View>
-      {modalVisible && (
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible}
-          supportedOrientations={['portrait']}
-          onOrientationChange={or => {
-            console.log('onOrientationChange', or);
-          }}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View
-            style={{
-              height: SCREEN_HEIGHT,
-              width: SCREEN_WIDTH,
-              backgroundColor: 'black',
-            }}
-          >
-            <VideoPlayerFullScreen
-              videoUrl={videoUrl}
-              coverUrl={coverUrl}
-              onHideFullScreen={toggleFullscreen}
-              progress={progress}
-              duration={duration}
-              playbackRate={playbackRate}
-              handleProgress={handleProgress}
-              setPlaybackRate={togglePlaybackRate}
-            />
-          </View>
-        </Modal>
-      )}
       <Video
         ref={playerRef}
         controls={isIos}
-        paused={paused || modalVisible}
-        style={{
-          height: (width / 16) * 9,
-        }}
+        paused={paused}
+        style={[
+          {
+            height: (width / 16) * 9,
+          },
+          fullscreen &&
+            !isIos && {
+              ...styles.landscapeView,
+              height: SCREEN_WIDTH - statusBarHeight + 1,
+            },
+        ]}
         source={{
           uri: videoUrl,
         }}
@@ -190,10 +167,10 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         onLoad={handleLoad}
         onProgress={handleProgress}
         muted={muted}
-        fullscreen={fullscreen}
+        fullscreen={isIos ? fullscreen : false}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
-      {!isIos && !modalVisible && (
+      {!isIos && (
         <VideoControl
           toggleFullscreen={toggleFullscreen}
           onRelease={onSeekEnd}
@@ -202,7 +179,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           togglePaused={togglePaused}
           toggleMuted={toggleMuted}
           muted={muted}
-          isLandscape={false}
+          isLandscape={fullscreen}
           secondsDuration={duration}
           playbackRate={playbackRate}
           setPlaybackRate={togglePlaybackRate}
@@ -222,6 +199,11 @@ const createStyles = ({ spacing }: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+    },
+    landscapeView: {
+      width: SCREEN_HEIGHT,
+      height: SCREEN_WIDTH - 29,
+      backgroundColor: 'black',
     },
     speedTabsContainer: {
       display: 'flex',

@@ -1,5 +1,5 @@
 import { Colors } from '@lib/ui/types/theme';
-import { Booking, Deadline, Exam, Lecture } from '@polito/api-client';
+import { Lecture } from '@polito/api-client';
 
 import _ from 'lodash';
 import { DateTime } from 'luxon';
@@ -7,13 +7,7 @@ import { DateTime } from 'luxon';
 import { AgendaDayInterface, AgendaItemInterface } from '../../utils/types';
 import { PreferencesContextProps } from '../contexts/PreferencesContext';
 
-export const mapAgendaItem = (
-  exams: Exam[],
-  bookings: Booking[],
-  lectures: Lecture[],
-  deadlines: Deadline[],
-  colors: Colors,
-) => {
+export const mapAgendaItem = (lectures?: Lecture[], colors?: Colors) => {
   const agendaDays: AgendaDayInterface[] = [];
   console.log({ colors });
   const pushItemToList = (item: AgendaItemInterface, ISODate: string) => {
@@ -28,36 +22,6 @@ export const mapAgendaItem = (
     }
   };
 
-  exams.forEach(exam => {
-    const fromDate = exam.examStartsAt.toISOString();
-    const toDate = exam.bookingEndsAt?.toISOString();
-    const ISODate = DateTime.fromISO(fromDate).toISODate();
-    const item: AgendaItemInterface = {
-      fromDate: fromDate,
-      toDate: toDate,
-      title: exam?.courseName,
-      content: exam,
-      type: 'Exam',
-      classroom: exam?.classrooms,
-    };
-    pushItemToList(item, ISODate);
-  });
-
-  bookings.forEach(booking => {
-    const fromDate = booking.startsAt.toISOString();
-    const toDate = booking.endsAt.toISOString();
-    const ISODate = DateTime.fromISO(fromDate).toISODate();
-    const item: AgendaItemInterface = {
-      fromDate: fromDate,
-      toDate: toDate,
-      title: booking?.topic?.title,
-      content: booking,
-      type: 'Booking',
-      classroom: booking.location?.description || ' - ',
-    };
-    pushItemToList(item, ISODate);
-  });
-
   lectures.forEach(lecture => {
     const fromDate = lecture.startsAt.toISOString();
     const toDate = lecture.endsAt.toISOString();
@@ -69,21 +33,6 @@ export const mapAgendaItem = (
       content: lecture,
       type: 'Lecture',
       classroom: lecture.roomName || ' - ',
-    };
-    pushItemToList(item, ISODate);
-  });
-
-  deadlines.forEach(deadline => {
-    // const fromDate = deadline.startsAt.toISOString();
-    const toDate = deadline.endsAt?.toISOString();
-    const ISODate = DateTime.fromISO(toDate).toISODate();
-    const item: AgendaItemInterface = {
-      fromDate: toDate,
-      toDate: toDate,
-      title: deadline?.name,
-      content: deadline,
-      type: 'Deadline',
-      classroom: ' - ',
     };
     pushItemToList(item, ISODate);
   });

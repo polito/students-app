@@ -79,19 +79,11 @@ export const AgendaScreen = () => {
 
   const toFilterAgendaDays = useMemo(() => {
     return mapAgendaItem(
-      examsQuery.data?.data || [],
-      bookingsQuery.data?.data || [],
       _.flatMap(_.get(lecturesQuery, 'data.pages', []), page => page.data) ||
         [],
-      deadlinesQuery.data?.data || [],
       colors,
     );
-  }, [
-    examsQuery.data,
-    bookingsQuery.data,
-    lecturesQuery.data,
-    deadlinesQuery.data,
-  ]);
+  }, [lecturesQuery.data]);
 
   const agendaDays = useMemo(() => {
     return filterAgendaItem(toFilterAgendaDays, filters);
