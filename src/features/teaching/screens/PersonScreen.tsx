@@ -26,6 +26,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { PhoneNumber } from '@polito/api-client';
 import { Person } from '@polito/api-client/models/Person';
 import { PersonAllOfCourses } from '@polito/api-client/models/PersonAllOfCourses';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -35,12 +36,6 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { SCREEN_WIDTH } from '../../../utils/const';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-
-// temporary interface, to remove on apiClient update ALPHA_13
-interface PhoneNumber {
-  full?: string;
-  internal?: string;
-}
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
 
@@ -54,7 +49,7 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const person: Person = personQuery?.data?.data || {};
   const courses: PersonAllOfCourses[] = person.courses;
   const source = { uri: person?.picture };
-  const phoneNumbers: PhoneNumber[] = person?.phoneNumbers as PhoneNumber[];
+  const phoneNumbers = person?.phoneNumbers;
 
   navigation.setOptions({
     headerBackTitle: t('common.contact'),
