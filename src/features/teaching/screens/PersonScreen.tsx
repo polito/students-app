@@ -124,7 +124,10 @@ export const PersonScreen = ({ route, navigation }: Props) => {
           <Icon icon={faPhone} color={colors.text['500']} size={fontSizes.xl} />
         }
         title={t('personScreen.call')}
-        subtitle={`${phoneNumber?.internal || ''}${phoneNumber?.full}`}
+        subtitle={
+          phoneNumber.full +
+          (phoneNumber?.internal ? ` / ${phoneNumber?.internal}` : '')
+        }
         onPress={onPressPhone}
       />
     );
