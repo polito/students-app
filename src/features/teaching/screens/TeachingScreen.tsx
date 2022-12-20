@@ -19,16 +19,15 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { ExamStatusEnum } from '@polito/api-client';
-import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { SCREEN_WIDTH } from '../../../utils/conts';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -40,13 +39,13 @@ interface Props {
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const headerHeight = useHeaderHeight();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const preferences = useContext(PreferencesContext);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
+  const scrollViewStyle = useScrollViewStyle();
   const studentQuery = useGetStudent();
   const refreshControl = useRefreshControl(
     coursesQuery,
@@ -64,7 +63,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   return (
     <Col>
       <ScrollView
-        style={{ width: SCREEN_WIDTH, marginTop: headerHeight }}
+        style={scrollViewStyle}
         contentContainerStyle={bottomBarAwareStyles}
         refreshControl={<RefreshControl {...refreshControl} />}
       >

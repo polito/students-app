@@ -21,13 +21,12 @@ import {
   MenuView,
   NativeActionEvent,
 } from '@react-native-menu/menu';
-import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { SCREEN_WIDTH } from '../../../utils/conts';
 import {
   ProfileNotificationItem,
   ProfileSettingItem,
@@ -76,7 +75,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { mutate: handleLogout, isLoading } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
-  const headerHeight = useHeaderHeight();
+  const scrollViewStyle = useScrollViewStyle();
 
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
@@ -91,7 +90,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
     <Col>
       <ScrollView
         refreshControl={<RefreshControl {...refreshControl} />}
-        style={{ width: SCREEN_WIDTH, marginTop: headerHeight }}
+        style={scrollViewStyle}
       >
         <Section>
           <Text weight={'bold'} variant={'title'} style={styles.title}>

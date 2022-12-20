@@ -64,9 +64,6 @@ export const useLogout = () => {
       await queryClient.invalidateQueries([]);
       refreshContext();
     },
-    onError: error => {
-      console.debug('errorLogout', error);
-    },
   });
 };
 
@@ -85,9 +82,6 @@ export const useSwitchCareer = () => {
           () => queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
         );
       });
-    },
-    onError: error => {
-      console.debug('onError', error);
     },
   });
 };
