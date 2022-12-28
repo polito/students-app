@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { Image, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -27,6 +27,7 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { SCREEN_WIDTH } from '../../../utils/conts';
 import {
   ProfileNotificationItem,
   ProfileSettingItem,
@@ -99,7 +100,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           <SectionHeader title={t('profileScreen.smartCard')} />
-          {/* <Image source={{uri: student?.smartCardPicture}} /> */}
+          <Image
+            style={styles.smartCard}
+            source={{ uri: student?.smartCardPicture }}
+          />
         </Section>
         <Section>
           <SectionHeader
@@ -131,7 +135,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, fontSizes }: Theme) =>
+const createStyles = ({ spacing, fontSizes, shapes }: Theme) =>
   StyleSheet.create({
     title: {
       fontSize: fontSizes['3xl'],
@@ -139,5 +143,13 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     listContainer: {
       marginTop: spacing[3],
+    },
+    smartCard: {
+      borderRadius: shapes.lg,
+      marginHorizontal: spacing[5],
+      resizeMode: 'contain',
+      height: (SCREEN_WIDTH - Number(spacing[10])) / 1.583,
+      width: SCREEN_WIDTH - Number(spacing[10]),
+      marginTop: spacing[2],
     },
   });
