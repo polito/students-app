@@ -47,6 +47,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
+
   useEffect(() => {
     const navRoot = navigation.getParent();
     return () => displayTabBar(navRoot);
@@ -57,13 +58,21 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     if (!isIos) {
       if (fullscreen) {
         Orientation.lockToLandscapeLeft();
+        navigation.setOptions({
+          headerShown: false,
+        });
         hideTabBar(navRoot);
+        setTimeout(() => {
+          Orientation.lockToLandscapeLeft();
+        }, 10);
       } else {
-        Orientation.lockToPortrait();
+        navigation.setOptions({
+          headerShown: true,
+        });
         displayTabBar(navRoot);
-        // navigation.setOptions({
-        //   headerShown: true
-        // })
+        setTimeout(() => {
+          Orientation.lockToPortrait();
+        }, 10);
       }
     }
   }, [fullscreen]);
