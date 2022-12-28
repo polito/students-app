@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
+import { useOrientationChange } from 'react-native-orientation-locker';
 
 import {
   faFolderOpen,
@@ -42,10 +43,19 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const teacherQuery = useGetPerson(lecture?.teacherId);
   const videoLecturesQuery = useGetCourseVideolectures(lecture?.courseId);
   const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
-
+  const [showLecturesInfo, setShowLectureInfo] = useState(true);
   const live = useMemo(() => {
     return isLive(lecture?.startsAt, lecture?.endsAt);
   }, []);
+
+  useOrientationChange(o => {
+    const orientation = o as string;
+    if (orientation === 'LANDSCAPE-LEFT') {
+      setShowLectureInfo(() => false);
+    } else {
+      setShowLectureInfo(() => true);
+    }
+  });
 
   const timeLabel = useMemo(() => {
     const endsAtDate = fromDateToFormat(lecture?.endsAt);
@@ -77,7 +87,9 @@ export const LectureScreen = ({ route, navigation }: Props) => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
-          paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
+          paddingBottom: showLecturesInfo
+            ? bottomBarAwareStyles.paddingBottom + 40
+            : 0,
         }}
         style={styles.wrapper}
       >
@@ -85,60 +97,64 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           videoUrl="https://lucapezzolla.com/20210525.mp4"
           coverUrl={videoLecture?.coverUrl}
         />
-        <Row maxWidth noFlex spaceBetween alignCenter>
-          <EventDetails
-            title={lecture?.roomName}
-            type={t('Lecture')}
-            timeLabel={timeLabel}
-          />
-          {live && (
-            <Row alignEnd noFlex justifyEnd>
-              <LiveIndicator showText />
+        {showLecturesInfo && (
+          <>
+            <Row maxWidth noFlex spaceBetween alignCenter>
+              <EventDetails
+                title={lecture?.roomName}
+                type={t('Lecture')}
+                timeLabel={timeLabel}
+              />
+              {live && (
+                <Row alignEnd noFlex justifyEnd>
+                  <LiveIndicator showText />
+                </Row>
+              )}
             </Row>
-          )}
-        </Row>
-        <SectionList>
-          <ListItem
-            leadingItem={
-              <Icon
-                icon={faLocationDot}
-                style={styles.iconStyle}
-                size={fontSizes['2xl']}
+            <SectionList>
+              <ListItem
+                leadingItem={
+                  <Icon
+                    icon={faLocationDot}
+                    style={styles.iconStyle}
+                    size={fontSizes['2xl']}
+                  />
+                }
+                title={lecture?.roomName}
+                subtitle={'Sede Centrale - piano terra'}
+                onPress={onPressLectureLocation}
               />
-            }
-            title={lecture?.roomName}
-            subtitle={'Sede Centrale - piano terra'}
-            onPress={onPressLectureLocation}
-          />
-          {teacherQuery.data && (
-            <ListItem
-              leadingItem={
-                <Icon
-                  icon={faUser}
-                  style={styles.iconStyle}
-                  size={fontSizes['2xl']}
+              {teacherQuery.data && (
+                <ListItem
+                  leadingItem={
+                    <Icon
+                      icon={faUser}
+                      style={styles.iconStyle}
+                      size={fontSizes['2xl']}
+                    />
+                  }
+                  title={`${teacherQuery.data?.data?.firstName || ''} ${
+                    teacherQuery.data?.data?.lastName || ''
+                  }`}
+                  subtitle={t('Teacher Lecture')}
+                  onPress={onPressTeacherCard}
                 />
-              }
-              title={`${teacherQuery.data?.data?.firstName || ''} ${
-                teacherQuery.data?.data?.lastName || ''
-              }`}
-              subtitle={t('Teacher Lecture')}
-              onPress={onPressTeacherCard}
-            />
-          )}
-          <ListItem
-            leadingItem={
-              <Icon
-                icon={faFolderOpen}
-                style={styles.iconStyle}
-                size={fontSizes['2xl']}
+              )}
+              <ListItem
+                leadingItem={
+                  <Icon
+                    icon={faFolderOpen}
+                    style={styles.iconStyle}
+                    size={fontSizes['2xl']}
+                  />
+                }
+                title={t('Material')}
+                subtitle={t('lectureScreen.goToMaterial')}
+                onPress={onPressMaterialCard}
               />
-            }
-            title={t('Material')}
-            subtitle={t('lectureScreen.goToMaterial')}
-            onPress={onPressMaterialCard}
-          />
-        </SectionList>
+            </SectionList>
+          </>
+        )}
       </ScrollView>
     </>
   );

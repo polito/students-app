@@ -47,6 +47,10 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
+  useEffect(() => {
+    const navRoot = navigation.getParent();
+    return () => displayTabBar(navRoot);
+  }, []);
 
   useEffect(() => {
     const navRoot = navigation.getParent();
