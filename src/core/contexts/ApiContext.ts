@@ -11,10 +11,14 @@ import {
   StudentApi,
 } from '@polito/api-client';
 
-export interface ApiContextProps {
-  isLogged: boolean;
+export interface Credentials {
+  username: string;
   token: string;
-  refreshContext: (token?: string) => void;
+}
+
+export interface ApiContextProps extends Partial<Credentials> {
+  isLogged: boolean;
+  refreshContext: (credentials?: Credentials) => void;
   clients: Partial<ApiContextClientsProps>;
 }
 

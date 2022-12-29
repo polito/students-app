@@ -12,14 +12,17 @@ import {
 } from '@tanstack/react-query';
 
 import { createApiClients } from '../../config/api';
-import { ApiContext, ApiContextProps } from '../contexts/ApiContext';
+import {
+  ApiContext,
+  ApiContextProps,
+  Credentials,
+} from '../contexts/ApiContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [apiContext, setApiContext] = useState<ApiContextProps>({
     isLogged: null,
-    token: null,
     refreshContext: null,
     clients: {},
   });
@@ -28,28 +31,31 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     // update ApiContext based on the provided token
-    const refreshContext = (token?: string) =>
+    const refreshContext = (credentials?: Credentials) =>
       setApiContext(() => {
         return {
-          isLogged: !!token,
-          token: token,
-          clients: createApiClients(token),
+          isLogged: !!credentials,
+          ...credentials,
+          clients: createApiClients(credentials.token),
           refreshContext,
         };
       });
 
     // Retrieve existing token from SecureStore, if any
     Keychain.getGenericPassword()
-      .then(credentials => {
-        let token = null;
-        if (credentials) {
-          token = credentials.password;
+      .then(keychainCredentials => {
+        let credentials = null;
+        if (keychainCredentials) {
+          credentials = {
+            username: keychainCredentials.username,
+            token: keychainCredentials.password,
+          };
         }
-        refreshContext(token);
+        refreshContext(credentials);
       })
       .catch(e => {
         console.warn("Keychain couldn't be accessed!", e);
-        refreshContext(null);
+        refreshContext();
       });
 
     // Handle login status
