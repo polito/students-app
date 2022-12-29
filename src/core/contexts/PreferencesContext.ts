@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
 export interface PreferencesContextProps {
+  clientId?: string;
   colorScheme?: 'light' | 'dark';
   courses: {
     [courseId: number]: CoursePreferencesProps;
