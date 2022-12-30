@@ -18,6 +18,7 @@ import {
 
 import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
 import { notNullish } from '../../utils/predicates';
+import { prefixKey } from '../../utils/queries';
 import { courseColors } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -37,7 +38,7 @@ export const useGetCourses = () => {
   const coursesClient = useCoursesClient();
   const { courses, updatePreference } = usePreferencesContext();
 
-  return useQuery([COURSES_QUERY_KEY], () =>
+  return useQuery(prefixKey([COURSES_QUERY_KEY]), () =>
     coursesClient.getCourses().then(p => {
       let hasNewPreferences = false;
       // Associate each course with a set of preferences, if missing
@@ -84,7 +85,7 @@ export const useGetCourse = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
   return useQuery(
-    [COURSE_QUERY_KEY, courseId, 'overview'],
+    prefixKey([COURSE_QUERY_KEY, courseId, 'overview']),
     () => {
       return coursesClient.getCourse({ courseId: courseId }).then(course => {
         const { teachingPeriod } = course.data;
@@ -108,7 +109,7 @@ export const useGetCourseFiles = (courseId: number) => {
   const client = useQueryClient();
 
   return useQuery(
-    [COURSE_QUERY_KEY, courseId, 'files'],
+    prefixKey([COURSE_QUERY_KEY, courseId, 'files']),
     () => {
       return coursesClient.getCourseFiles({ courseId: courseId });
     },
@@ -128,7 +129,7 @@ export const useGetCourseFilesRecent = (courseId: number) => {
   const filesQuery = useGetCourseFiles(courseId);
 
   const recentFilesQuery = useQuery(
-    [COURSE_QUERY_KEY, courseId, 'recentFiles'],
+    prefixKey([COURSE_QUERY_KEY, courseId, 'recentFiles']),
     () => sortRecentFiles(filesQuery.data.data),
     {
       enabled: !!filesQuery.data && !filesQuery.isRefetching,
@@ -188,7 +189,7 @@ export const useGetCourseDirectory = (
   const rootDirectoryContent = filesQuery.data?.data;
 
   return useQuery(
-    [COURSE_QUERY_KEY, courseId, 'directories', directoryId],
+    prefixKey([COURSE_QUERY_KEY, courseId, 'directories', directoryId]),
     () => {
       if (!directoryId) {
         // Root directory
@@ -245,7 +246,7 @@ const findDirectory = (
 export const useGetCourseAssignments = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'assignments'], () =>
+  return useQuery(prefixKey([COURSE_QUERY_KEY, courseId, 'assignments']), () =>
     coursesClient.getCourseAssignments({ courseId: courseId }),
   );
 };
@@ -272,7 +273,7 @@ export const useUploadAssignment = (courseId: number) => {
 export const useGetCourseGuide = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'guide'], () =>
+  return useQuery(prefixKey([COURSE_QUERY_KEY, courseId, 'guide']), () =>
     coursesClient.getCourseGuide({ courseId: courseId }),
   );
 };
@@ -280,7 +281,7 @@ export const useGetCourseGuide = (courseId: number) => {
 export const useGetCourseNotices = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'notices'], () =>
+  return useQuery(prefixKey([COURSE_QUERY_KEY, courseId, 'notices']), () =>
     coursesClient.getCourseNotices({ courseId: courseId }),
   );
 };
@@ -288,8 +289,9 @@ export const useGetCourseNotices = (courseId: number) => {
 export const useGetCourseVirtualClassrooms = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'virtual-classrooms'], () =>
-    coursesClient.getCourseVirtualClassrooms({ courseId: courseId }),
+  return useQuery(
+    prefixKey([COURSE_QUERY_KEY, courseId, 'virtual-classrooms']),
+    () => coursesClient.getCourseVirtualClassrooms({ courseId: courseId }),
   );
 };
 
@@ -304,7 +306,11 @@ export const useGetCourseRelatedVirtualClassrooms = (
       .concat(vcOtherCourses ?? [])
       .map(relatedVC => {
         return {
-          queryKey: [COURSE_QUERY_KEY, relatedVC.id, 'virtual-classrooms'],
+          queryKey: prefixKey([
+            COURSE_QUERY_KEY,
+            relatedVC.id,
+            'virtual-classrooms',
+          ]),
           queryFn: () =>
             coursesClient.getCourseVirtualClassrooms({
               courseId: relatedVC.id,
@@ -323,8 +329,9 @@ export const useGetCourseRelatedVirtualClassrooms = (
 export const useGetCourseVideolectures = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_KEY, courseId, 'videolectures'], () =>
-    coursesClient.getCourseVideolectures({ courseId: courseId }),
+  return useQuery(
+    prefixKey([COURSE_QUERY_KEY, courseId, 'videolectures']),
+    () => coursesClient.getCourseVideolectures({ courseId: courseId }),
   );
 };
 
@@ -334,7 +341,7 @@ export const useGetCourseExams = (
 ) => {
   const { data: exams } = useGetExams();
   return useQuery(
-    [COURSE_QUERY_KEY, courseId, 'exams'],
+    prefixKey([COURSE_QUERY_KEY, courseId, 'exams']),
     () => ({
       data: exams.data.filter(exam => {
         return exam.courseShortcode === courseShortcode;
