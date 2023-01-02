@@ -27,6 +27,7 @@ interface Props {
    * A subtitle (ie event type)
    */
   subtitle?: string;
+  onPress?: () => void;
 }
 
 /**
@@ -40,6 +41,7 @@ export const AgendaCard = ({
   time = '--:--',
   subtitle,
   children,
+  onPress,
   ...rest
 }: PropsWithChildren<CardProps & Props>) => {
   const { colors, spacing, fontSizes } = useTheme();
@@ -62,6 +64,7 @@ export const AgendaCard = ({
         style={{
           padding: spacing[5],
         }}
+        onPress={onPress}
       >
         <View>
           <View

@@ -7,10 +7,14 @@ import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { AgendaStackParamList } from '../components/AgendaNavigator';
 
-export const AgendaScreen = () => {
+type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
+
+export const AgendaScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -154,10 +158,13 @@ export const AgendaScreen = () => {
             </View>
             <AgendaCard
               style={{ flex: 1 }}
-              title={item.title}
-              subtitle={item.type}
-              color={item.color}
-              live={item.live}
+              title={item.type}
+              subtitle={'Lecture'}
+              color={item.type}
+              live={false}
+              onPress={() => {
+                navigation.push('Lecture', { id: null });
+              }}
             >
               <Text variant="prose">{item.description}</Text>
             </AgendaCard>

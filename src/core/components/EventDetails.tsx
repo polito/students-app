@@ -8,10 +8,11 @@ import { formatDateTime } from '../../utils/dates';
 interface Props {
   title: string;
   type: string;
-  time: Date;
+  time?: Date;
+  timeLabel?: string;
 }
 
-export const EventDetails = ({ title, type, time }: Props) => {
+export const EventDetails = ({ title, type, time, timeLabel }: Props) => {
   const { spacing, fontSizes } = useTheme();
   return (
     <>
@@ -24,6 +25,9 @@ export const EventDetails = ({ title, type, time }: Props) => {
         </Text>
         {time && (
           <Text style={{ fontSize: fontSizes.md }}>{formatDateTime(time)}</Text>
+        )}
+        {!!timeLabel && (
+          <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
         )}
       </View>
     </>

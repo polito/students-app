@@ -8,7 +8,12 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
-const Stack = createNativeStackNavigator();
+export type AgendaStackParamList = {
+  Agenda: undefined;
+  Lecture: { id: number };
+};
+
+const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
   const theme = useTheme();
