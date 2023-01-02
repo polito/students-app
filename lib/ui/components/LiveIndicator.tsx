@@ -1,19 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleProp, View, ViewStyle } from 'react-native';
-
-import { Text } from '@lib/ui/components/Text';
+import { Animated, Easing, View } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
+import { Text } from './Text';
 
 const liveIndicatorSize = 8;
 
 interface Props {
-  style?: StyleProp<ViewStyle>;
   showText?: boolean;
 }
 
-export const LiveIndicator = ({ style, showText = false }: Props) => {
-  const { spacing, colors, fontSizes, size } = useTheme();
+export const LiveIndicator = ({ showText }: Props) => {
+  const { spacing, colors, fontSizes } = useTheme();
   const anim = useRef(new Animated.Value(1));
 
   useEffect(() => {
@@ -31,14 +29,11 @@ export const LiveIndicator = ({ style, showText = false }: Props) => {
 
   return (
     <View
-      style={[
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginEnd: spacing[2],
-        },
-        style,
-      ]}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginEnd: spacing[2],
+      }}
     >
       <View style={{ position: 'relative', marginEnd: spacing[2] }}>
         <Animated.View
@@ -69,10 +64,7 @@ export const LiveIndicator = ({ style, showText = false }: Props) => {
         />
       </View>
       {showText && (
-        <Text
-          variant="secondaryText"
-          style={{ fontSize: fontSizes.xs, marginTop: size.xs }}
-        >
+        <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
           Live
         </Text>
       )}

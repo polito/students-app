@@ -4,15 +4,28 @@
     "backToToday": "Torna a oggi"
   },
   "colors": {
+    "amber": "Ambra",
+    "blue": "Blu",
+    "cyan": "Ciano",
     "darkBlue": "Blu scuro",
-    "darkOrange": "Arancione scuro",
+    "emerald": "Smeraldo",
+    "fuchsia": "Fucsia",
     "green": "Verde",
+    "indigo": "Indigo",
     "lightBlue": "Blu chiaro",
+    "lime": "Lime",
     "orange": "Arancione",
+    "pink": "Rosa",
+    "purple": "Viola",
     "red": "Rosso",
-    "rose": "Rosa"
+    "rose": "Rosa",
+    "teal": "Turchese",
+    "violet": "Lilla",
+    "yellow": "Giallo"
   },
   "common": {
+    "contact": "Contatto",
+    "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
@@ -21,11 +34,16 @@
     "course": "Corso",
     "course_plural": "Corsi",
     "credits": "Crediti",
+    "creditsWithUnit": "{{credits}} CFU",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
+    "done": "Fatto",
     "download": "Scarica",
+    "error": "Errore",
     "exam": "Esame",
+    "examCall": "Appello",
+    "examCall_plural": "Appelli",
     "file": "File",
     "file_plural": "File",
     "icon": "Icona",
@@ -36,12 +54,13 @@
     "notifications": "Notifiche",
     "ok": "Ok",
     "options": "Opzioni",
-    "period": "Period",
+    "period": "Semestre",
     "preferences": "Preferenze",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
     "retract": "Ritira",
     "services": "Servizi",
+    "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "stop": "Stop",
     "teacher": "Docente",
     "transcript": "Libretto",
@@ -74,6 +93,7 @@
     "title": "Carica elaborato"
   },
   "courseAssignmentsTab": {
+    "emptyState": "Non ci sono elaborati",
     "title": "Elaborati"
   },
   "courseDirectoryListItem": {
@@ -100,6 +120,7 @@
     "title": "Seleziona un'icona"
   },
   "courseInfoTab": {
+    "agendaSectionEmptyState": "Non ci sono eventi relativi a questo corso",
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
     "moreSectionTitle": "Altro",
@@ -109,10 +130,15 @@
     "yearLabel": "Anno"
   },
   "courseLecturesTab": {
+    "emptyState": "Non ci sono lezioni",
     "title": "Lezioni",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
+  "courseListItem": {
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
+  },
   "courseNoticesTab": {
+    "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
   },
   "coursePreferencesScreen": {
@@ -130,6 +156,7 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
+    "emptyState": "Non ci sono corsi",
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi"
   },
@@ -141,7 +168,13 @@
     "location": "Luogo"
   },
   "examsScreen": {
+    "emptyState": "Non ci sono appelli disponibili",
     "title": "Appelli"
+  },
+  "grades": {
+    "absent": "Ass",
+    "fail": "Ins",
+    "pass": "Sup"
   },
   "loginScreen": {
     "cta": "Accedi",
@@ -159,6 +192,15 @@
   "profileScreen": {
     "title": "Profilo"
   },
+  "personScreen": {
+    "role": "Ruolo",
+    "department": "Dipartimento",
+    "moreInfo": "Maggiori informazioni",
+    "contacts": "Contatti",
+    "call": "Chiama",
+    "sentEmail": "Invia e-mail",
+    "courses": "Corsi"
+  },
   "sectionHeader": {
     "cta": "Vedi tutto"
   },
@@ -175,6 +217,7 @@
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
+    "emptyState": "Non hai sostenuto nessun esame",
     "finalAverageLabel": "Media depurata",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",

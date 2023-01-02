@@ -2,9 +2,10 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView } from 'react-native';
 
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faFileLines, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -35,37 +36,47 @@ export const CourseAssignmentsTab = ({
         contentContainerStyle={bottomBarAwareStyles}
         scrollEnabled={scrollEnabled}
       >
-        <List indented>
-          {assignmentsQuery.data?.data.map(assignment =>
-            assignment.deletedAt == null ? (
-              <Swipeable
-                key={assignment.id}
-                onRef={ref => (swipeableRef.current = ref)}
-                rightContainerStyle={{ backgroundColor: colors.danger[500] }}
-                rightButtons={[
-                  <SwipeableAction
-                    icon={faTrashCan}
-                    label={t('common.retract')}
-                    backgroundColor={colors.danger[500]}
-                    onPress={() => {
-                      swipeableRef.current?.recenter();
+        {assignmentsQuery.data &&
+          (assignmentsQuery.data.data.length > 0 ? (
+            <List indented>
+              {assignmentsQuery.data?.data.map(assignment =>
+                assignment.deletedAt == null ? (
+                  <Swipeable
+                    key={assignment.id}
+                    onRef={ref => (swipeableRef.current = ref)}
+                    rightContainerStyle={{
+                      backgroundColor: colors.danger[500],
                     }}
-                  ></SwipeableAction>,
-                ]}
-                onSwipeStart={() => setScrollEnabled(false)}
-                onSwipeComplete={() => setScrollEnabled(true)}
-              >
-                <CourseAssignmentListItem item={assignment} />
-              </Swipeable>
-            ) : (
-              <CourseAssignmentListItem item={assignment} />
-            ),
-          )}
-        </List>
+                    rightButtons={[
+                      <SwipeableAction
+                        icon={faTrashCan}
+                        label={t('common.retract')}
+                        backgroundColor={colors.danger[500]}
+                        onPress={() => {
+                          swipeableRef.current?.recenter();
+                        }}
+                      ></SwipeableAction>,
+                    ]}
+                    onSwipeStart={() => setScrollEnabled(false)}
+                    onSwipeComplete={() => setScrollEnabled(true)}
+                  >
+                    <CourseAssignmentListItem item={assignment} />
+                  </Swipeable>
+                ) : (
+                  <CourseAssignmentListItem item={assignment} />
+                ),
+              )}
+            </List>
+          ) : (
+            <EmptyState
+              message={t('courseAssignmentsTab.emptyState')}
+              icon={faFileLines}
+            ></EmptyState>
+          ))}
       </ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
-        onPress={() =>
+        action={() =>
           navigation.navigate({
             name: 'CourseAssignmentUpload',
             params: { courseId },

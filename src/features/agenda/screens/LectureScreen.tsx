@@ -1,18 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { useOrientationChange } from 'react-native-orientation-locker';
 
-import {
-  faFolderOpen,
-  faLocationDot,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
-import { Row } from '@lib/ui/components/Row';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -20,14 +10,10 @@ import { Theme } from '@lib/ui/types/theme';
 import { Lecture } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { find } from 'lodash';
-
-import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { fromDateToFormat, isLive, weekDay } from '../../../utils';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
@@ -39,14 +25,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { fontSizes } = useTheme();
-  const lecture: Lecture = find(lectureQuery?.data?.data, l => l.id === id);
+  const lecture: Lecture = lectureQuery?.data?.data.find(l => l.id === id);
   const teacherQuery = useGetPerson(lecture?.teacherId);
   const videoLecturesQuery = useGetCourseVideolectures(lecture?.courseId);
   const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
   const [showLecturesInfo, setShowLectureInfo] = useState(true);
-  const live = useMemo(() => {
-    return isLive(lecture?.startsAt, lecture?.endsAt);
-  }, []);
+  const live = true;
 
   useOrientationChange(o => {
     const orientation = o as string;
@@ -57,29 +41,22 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     }
   });
 
-  const timeLabel = useMemo(() => {
-    const endsAtDate = fromDateToFormat(lecture?.endsAt);
-    const day = lecture?.endsAt ? `${weekDay(lecture.endsAt, t)}, ` : '';
-
-    return `${day}  ${endsAtDate}`;
-  }, [lecture]);
-
   const onPressLectureLocation = () => {
-    console.log('onPressLectureLocation');
+    console.debug('onPressLectureLocation');
   };
 
   const onPressTeacherCard = () => {
-    console.log('onPressTeacherCard');
+    console.debug('onPressTeacherCard');
   };
 
   const onPressMaterialCard = () => {
-    navigation.navigate({
-      name: 'LectureCourseDirectory',
-      params: {
-        lectureId: lecture.id,
-        courseId: lecture.courseId,
-      },
-    });
+    // navigation.navigate({
+    //   name: 'LectureCourseDirectory',
+    //   params: {
+    //     lectureId: lecture.id,
+    //     courseId: lecture.courseId,
+    //   },
+    // });
   };
 
   return (
@@ -97,81 +74,81 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           videoUrl="https://lucapezzolla.com/20210525.mp4"
           coverUrl={videoLecture?.coverUrl}
         />
-        {showLecturesInfo && (
-          <>
-            <Row maxWidth noFlex spaceBetween alignCenter>
-              <EventDetails
-                title={lecture?.roomName}
-                type={t('Lecture')}
-                timeLabel={timeLabel}
-              />
-              {live && (
-                <Row alignEnd noFlex justifyEnd>
-                  <LiveIndicator showText />
-                </Row>
-              )}
-            </Row>
-            <SectionList>
-              <ListItem
-                leadingItem={
-                  <Icon
-                    icon={faLocationDot}
-                    style={styles.iconStyle}
-                    size={fontSizes['2xl']}
-                  />
-                }
-                title={lecture?.roomName}
-                subtitle={'Sede Centrale - piano terra'}
-                onPress={onPressLectureLocation}
-              />
-              {teacherQuery.data && (
-                <ListItem
-                  leadingItem={
-                    <Icon
-                      icon={faUser}
-                      style={styles.iconStyle}
-                      size={fontSizes['2xl']}
-                    />
-                  }
-                  title={`${teacherQuery.data?.data?.firstName || ''} ${
-                    teacherQuery.data?.data?.lastName || ''
-                  }`}
-                  subtitle={t('Teacher Lecture')}
-                  onPress={onPressTeacherCard}
-                />
-              )}
-              <ListItem
-                leadingItem={
-                  <Icon
-                    icon={faFolderOpen}
-                    style={styles.iconStyle}
-                    size={fontSizes['2xl']}
-                  />
-                }
-                title={t('Material')}
-                subtitle={t('lectureScreen.goToMaterial')}
-                onPress={onPressMaterialCard}
-              />
-            </SectionList>
-          </>
-        )}
+        {/* {showLecturesInfo && ( */}
+        {/*   <> */}
+        {/*     <Row maxWidth noFlex spaceBetween alignCenter> */}
+        {/*       <EventDetails */}
+        {/*         title={lecture?.roomName} */}
+        {/*         type={t('Lecture')} */}
+        {/*         time={lecture.startsAt} */}
+        {/*       /> */}
+        {/*       {live && ( */}
+        {/*         <Row alignEnd noFlex justifyEnd> */}
+        {/*           <LiveIndicator showText /> */}
+        {/*         </Row> */}
+        {/*       )} */}
+        {/*     </Row> */}
+        {/*     <SectionList> */}
+        {/*       <ListItem */}
+        {/*         leadingItem={ */}
+        {/*           <Icon */}
+        {/*             icon={faLocationDot} */}
+        {/*             style={styles.iconStyle} */}
+        {/*             size={fontSizes['2xl']} */}
+        {/*           /> */}
+        {/*         } */}
+        {/*         title={lecture?.roomName} */}
+        {/*         subtitle={'Sede Centrale - piano terra'} */}
+        {/*         onPress={onPressLectureLocation} */}
+        {/*       /> */}
+        {/*       {teacherQuery.data && ( */}
+        {/*         <ListItem */}
+        {/*           leadingItem={ */}
+        {/*             <Icon */}
+        {/*               icon={faUser} */}
+        {/*               style={styles.iconStyle} */}
+        {/*               size={fontSizes['2xl']} */}
+        {/*             /> */}
+        {/*           } */}
+        {/*           title={`${teacherQuery.data?.data?.firstName || ''} ${ */}
+        {/*             teacherQuery.data?.data?.lastName || '' */}
+        {/*           }`} */}
+        {/*           subtitle={t('Teacher Lecture')} */}
+        {/*           onPress={onPressTeacherCard} */}
+        {/*         /> */}
+        {/*       )} */}
+        {/*       <ListItem */}
+        {/*         leadingItem={ */}
+        {/*           <Icon */}
+        {/*             icon={faFolderOpen} */}
+        {/*             style={styles.iconStyle} */}
+        {/*             size={fontSizes['2xl']} */}
+        {/*           /> */}
+        {/*         } */}
+        {/*         title={t('Material')} */}
+        {/*         subtitle={t('lectureScreen.goToMaterial')} */}
+        {/*         onPress={onPressMaterialCard} */}
+        {/*       /> */}
+        {/*     </SectionList> */}
+        {/*   </> */}
+        {/* )} */}
       </ScrollView>
     </>
   );
 };
 
-const createStyles = ({ spacing, colors, size }: Theme) =>
+const createStyles = ({ spacing, colors, shapes }: Theme) =>
   StyleSheet.create({
     iconStyle: {
       color: colors.secondaryText,
       marginRight: spacing[2],
     },
     sectionSeparator: {
-      paddingHorizontal: size.lg,
-      marginTop: size.xs,
+      paddingHorizontal: shapes.lg,
+      marginTop: shapes.md / 2,
     },
     sectionContainer: {
-      paddingHorizontal: size.md,
+      paddingHorizontal: shapes.md,
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
@@ -183,7 +160,7 @@ const createStyles = ({ spacing, colors, size }: Theme) =>
     booking: {
       color: colors.primary[400],
       textTransform: 'uppercase',
-      marginVertical: size.sm,
+      marginVertical: shapes.sm,
     },
     time: {
       textTransform: 'capitalize',

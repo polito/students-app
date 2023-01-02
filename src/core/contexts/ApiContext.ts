@@ -13,6 +13,7 @@ import {
 
 export interface ApiContextProps {
   isLogged: boolean;
+  token: string;
   refreshContext: (token?: string) => void;
   clients: Partial<ApiContextClientsProps>;
 }

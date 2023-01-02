@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useContext, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { open } from 'react-native-file-viewer';
@@ -15,12 +15,14 @@ import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseFileOverview } from '@polito/api-client';
+import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useDownload } from '../../../core/hooks/useDownload';
-import { formatFileDate, formatFileSize } from '../../../utils/files';
+import { formatDateTime } from '../../../utils/dates';
+import { formatFileSize } from '../../../utils/files';
+import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
 
 export type CourseRecentFile = CourseFileOverview & {
@@ -56,6 +58,7 @@ export const CourseFileListItem = ({
     }),
     [colors, fontSizes, spacing],
   );
+  const courseId = useContext(CourseContext);
   const courseFilesCache = useCourseFilesCache();
   const cachedFilePath = useMemo(() => {
     if (courseFilesCache) {
@@ -73,9 +76,7 @@ export const CourseFileListItem = ({
     remove,
     notifyFileSystemChange,
   } = useDownload(
-    'https://www.africau.edu/images/default/sample.pdf',
-    // 'https://www.hq.nasa.gov/alsj/a17/A17_FlightPlan.pdf',
-    // 'https://cartographicperspectives.org/index.php/journal/article/download/cp43-complete-issue/pdf/2712',
+    `${BASE_PATH}/courses/${courseId}/files/${item.id}`,
     cachedFilePath,
   );
 
@@ -91,7 +92,7 @@ export const CourseFileListItem = ({
       [
         showSize && formatFileSize(item.sizeInKiloBytes),
         showLocation && item.location,
-        showCreatedDate && formatFileDate(item.createdAt),
+        showCreatedDate && formatDateTime(item.createdAt),
       ]
         .filter(i => !!i)
         .join(' - '),

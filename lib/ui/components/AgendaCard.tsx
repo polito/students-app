@@ -1,187 +1,113 @@
-import { PropsWithChildren, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { PropsWithChildren } from 'react';
+import { TouchableHighlight, View } from 'react-native';
 
-import { Col } from '@lib/ui/components/Col';
-import { Row } from '@lib/ui/components/Row';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
-import { Deadline, Lecture } from '@polito/api-client';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { DateTime } from 'luxon';
-
-import { getAgendaItemColorFromPreferences } from '../../../src/core/agenda';
-import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
-import { isLive } from '../../../src/utils';
-import { AgendaItemInterface } from '../../../src/utils/types';
 import { useTheme } from '../hooks/useTheme';
 import { Card, Props as CardProps } from './Card';
 import { LiveIndicator } from './LiveIndicator';
 import { Text } from './Text';
 
 interface Props {
-  item: AgendaItemInterface;
+  /**
+   * The event title
+   */
+  title: string | JSX.Element;
+  /**
+   * The color of the event
+   */
+  color?: string;
+  /**
+   * Shows a live indicator
+   */
+  live?: boolean;
+  /**
+   * Event time information
+   */
+  time?: string;
+  /**
+   * A subtitle (ie event type)
+   */
+  subtitle?: string;
+  onPress?: () => void;
 }
 
 /**
  * A card used to present an agenda item
  */
 export const AgendaCard = ({
-  item,
+  title,
+  style,
+  color,
+  live = true,
+  time = '--:--',
+  subtitle,
+  children,
+  onPress,
   ...rest
 }: PropsWithChildren<CardProps & Props>) => {
-  const { t } = useTranslation();
-  const preferences = usePreferencesContext();
-  const { colors, fontSizes } = useTheme();
-  const styles = useStylesheet(createStyles);
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const isLecture = item.type === 'Lecture';
-  const live = useMemo(() => {
-    if (!isLecture) return false;
-    const lecture = item.content as Lecture;
-    return isLive(lecture.startsAt, lecture.endsAt);
-  }, []);
-  const fromHour = DateTime.fromISO(item.fromDate).toFormat('HH:mm');
-  const toHour = DateTime.fromISO(item.toDate).toFormat('HH:mm');
-  const time = `${fromHour} - ${toHour}`;
-
-  const borderColor = useMemo(() => {
-    return getAgendaItemColorFromPreferences(preferences, colors, item);
-  }, [preferences, colors, item]);
-
-  const onPressCard = (): void => {
-    if (item.type === 'Deadline') {
-      const deadline: Deadline = item.content as Deadline;
-      navigation.navigate({
-        name: item.type,
-        params: {
-          type: deadline.type,
-          date: deadline?.endsAt ? deadline.endsAt.toISOString() : null,
-        },
-      });
-      return;
-    }
-
-    if (item.type === 'Lecture') {
-      const lecture = item.content as Lecture;
-
-      // if (lecture.roomName === 'AULA VIRTUALE') {
-      //   console.log('go to virtual classroom');
-      //   navigation.navigate({
-      //     name: 'CourseVirtualClassroom',
-      //     params: {
-      //       lectureId: lecture.id,
-      //       courseId: lecture.courseId,
-      //     },
-      //   });
-      //   return;
-      // } else {
-      navigation.navigate({
-        name: 'Lecture',
-        params: {
-          id: lecture.id,
-        },
-      });
-      // }
-      // return;
-    }
-
-    navigation.navigate({
-      name: item.type,
-      params: {
-        id: item.content?.id,
-      },
-    });
-
-    // if (item.type === 'Lecture') {
-    //   const lecture = item.content as Lecture;
-    //   const virtualClassroom = useGetCourseVirtualClassrooms(lecture.courseId);
-    //
-    //   console.log('virtualClassroom', virtualClassroom);
-    //   return;
-    // }
-  };
+  const { colors, spacing, fontSizes } = useTheme();
+  const borderColor = color ?? colors.primary[500];
 
   return (
     <Card
       rounded
-      style={[{ borderColor }, styles.agendaCard]}
+      style={[
+        {
+          flex: 1,
+          borderWidth: 2,
+          borderColor,
+        },
+        style,
+      ]}
       {...rest}
-      spaced={false}
     >
-      <TouchableOpacity style={styles.agendaButtonStyle} onPress={onPressCard}>
-        <Col>
-          <Row justifyCenter alignCenter spaceBetween noFlex maxWidth>
-            <Text
-              weight={'semibold'}
-              numberOfLines={1}
-              variant={'secondaryText'}
-              style={styles.title}
-            >
-              {item.title}
-            </Text>
-            <Row noFlex justifyCenter alignCenter>
-              {live && <LiveIndicator />}
-              <Text variant="secondaryText" style={styles.textTime}>
-                {time}
-              </Text>
-            </Row>
-          </Row>
-          <Row
-            justifyCenter
-            alignCenter
-            spaceBetween
-            noFlex
-            maxWidth
-            style={styles.rowBottom}
+      <TouchableHighlight
+        style={{
+          padding: spacing[5],
+        }}
+        onPress={onPress}
+      >
+        <View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
           >
-            <Col alignCenter noFlex justifyCenter style={styles.itemType}>
-              <Text style={{ ...styles.textType }} variant={'prose'}>
-                {t(item.type)}
+            {typeof title === 'string' ? (
+              <Text
+                variant="title"
+                style={{
+                  flex: 1,
+                }}
+              >
+                {title}
               </Text>
-            </Col>
-            <Text weight={'medium'}>{item.classroom}</Text>
-          </Row>
-        </Col>
-      </TouchableOpacity>
+            ) : (
+              title
+            )}
+            {live && <LiveIndicator />}
+            <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
+              {time}
+            </Text>
+          </View>
+          {subtitle && (
+            <Text
+              variant="caption"
+              style={{
+                marginTop: spacing[1.5],
+              }}
+            >
+              {subtitle}
+            </Text>
+          )}
+          {typeof children === 'string' ? (
+            <Text style={{ marginTop: spacing[2.5] }}>{children}</Text>
+          ) : (
+            children
+          )}
+        </View>
+      </TouchableHighlight>
     </Card>
   );
 };
-
-const createStyles = ({ spacing, colors, size, fontSizes, dark }: Theme) =>
-  StyleSheet.create({
-    rowBottom: {
-      marginTop: size.sm,
-    },
-    itemType: {
-      borderRadius: size.xs,
-      paddingHorizontal: spacing[1.5],
-      paddingTop: size.xs,
-      borderColor: dark ? colors.headline : colors.primary[600],
-      borderWidth: 1,
-    },
-    textType: {
-      fontSize: 12,
-    },
-    title: {
-      maxWidth: '50%',
-      color: colors.title,
-      fontSize: fontSizes.md,
-    },
-    agendaCard: {
-      flex: 1,
-      width: '100%',
-      borderWidth: 3,
-      marginTop: spacing['2'],
-      backgroundColor: dark ? colors.primary[700] : 'white',
-    },
-    agendaButtonStyle: {
-      padding: spacing[4],
-      paddingBottom: spacing[3],
-    },
-    textTime: {
-      color: dark ? colors.headline : undefined,
-    },
-  });

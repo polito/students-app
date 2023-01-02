@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 
-import * as _ from 'lodash';
-
-const defaultStyleProps: { [key: string]: number } = {
+const defaultStyleProps: Record<string, number> = {
   xs: 2,
   sm: 4,
   md: 8,
@@ -10,7 +8,7 @@ const defaultStyleProps: { [key: string]: number } = {
   xl: 16,
 };
 
-const propertyBind: { [key: string]: string } = {
+const propertyBind: Record<string, string> = {
   w: 'width',
   h: 'height',
   m: 'margin',
@@ -32,15 +30,12 @@ const propertyBind: { [key: string]: string } = {
 };
 
 const isValidStyleProp = (propStyle: string) => {
-  const [property, propertyValue] = _.split(propStyle, '-');
+  const [property, propertyValue] = propStyle.split('-');
   return !!property && !!propertyValue;
 };
 
 const stylePropValue = (propStyle: string): string | number => {
-  const [property, propertyValue] = _.split(propStyle, '-');
-  // if (_.toLower(property).includes('color')) {
-  //   return COLORS[_.toUpper(property)] ? COLORS[_.toUpper(property)] : propertyValue;
-  // }
+  const [property, propertyValue] = propStyle.split('-');
 
   const val = defaultStyleProps[propertyValue]
     ? defaultStyleProps[propertyValue]
@@ -49,20 +44,18 @@ const stylePropValue = (propStyle: string): string | number => {
 };
 
 const stylePropKey = (propStyle: string): string => {
-  const [property, propertyValue] = _.split(propStyle, '-');
+  const [property, propertyValue] = propStyle.split('-');
   return propertyBind[property] ? propertyBind[property] : property;
 };
 
 export const usePropsStyle = (propsStyle: { [key: string]: any }): any => {
-  return useMemo((): { [key: string]: any } => {
-    return _.reduce(
-      Object.keys(propsStyle).filter(isValidStyleProp),
-      (acc: { [key: string]: any }, value: string) => {
+  return useMemo((): Record<string, string | number> => {
+    return Object.keys(propsStyle)
+      .filter(isValidStyleProp)
+      .reduce((acc: Record<string, string | number>, value: string) => {
         const key: string = stylePropKey(value);
         acc[key] = stylePropValue(value);
         return acc;
-      },
-      {},
-    );
+      }, {});
   }, [propsStyle]);
 };

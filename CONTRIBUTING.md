@@ -9,7 +9,23 @@ the [gallium](https://nodejs.org/download/release/v16.16.0/) LTS release).
 [Nvm](https://github.com/nvm-sh/nvm) can be used to automatically select the correct version enforced
 by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/nvm#deeper-shell-integration).
 
+## iOS local development
+
+In order to build and run the application locally (especially if you're not part of the official Apple Development Team)
+you'll have to enable the `Automatically manage signing` option in XCode (students.xcworkspace > students > Signing &
+Capabilities).
+
+Changes to this configuration should not be committed to the repository: the pre-commit hook will warn you if you try to
+do so and give you instructions on how to proceed.
+
 ## Project structure
+
+The project uses feature modules to keep the main areas semantically organized. Each module should be divided by entity
+type (`components`, `hooks`, `styles`, `screens`). The `core` module contains general-purpose items, used across the
+app.
+
+The `lib` folder is used to isolate library/design-system-level components that one day may be extracted into a
+dedicated package for reuse.
 
 ```
 ├── assets
@@ -41,7 +57,20 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 
 While not strictly enforced through formatting, conformance
 to [Google's TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
-is encouraged.
+is encouraged. Notably, here are some rules we think are important:
+
+- Don't use `// @ts-ignore` comments. Try to use type narrowing/casting/patching and, when inevitable,
+  use `// @ts-expect-error` comments describing the cause of the error.
+- Do not mark interfaces specially (`IMyInterface` or `MyFooInterface`) unless it's idiomatic in its environment.
+- Respect identifiers casing.
+- When possible, use lambda expressions instead of functions.
+- Don't leave commented statements without a textual explanation.
+
+## Performance considerations
+
+- Avoid introducing bulky libraries for common actions that can be performed with built-ins or internal utils.
+- Discuss the adoption of libraries with a big impact on bundle size with the rest of the team.
+- If possible, avoid default or namespace imports (`import * as`) and other constructs that impact tree-shaking.
 
 ## Git workflow
 
@@ -54,19 +83,32 @@ changelog entries for new releases.
 
 We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like branching model. In short:
 
-- `main` is the stable trunk,
-- `develop` is the development trunk,
-- use `feature/...` branches to work on new features,
-- use `hotfix/...`branches to perform urgent fixes,
-- use hyphen separators (ie `feature/data-fetching`),
-- use commit footers to reference related issues (ie `Refs #10`, `Closes #10` etc.).
+- `main` is the stable trunk.
+- `develop` is the development trunk.
+- Use `feature/...` branches to work on new features.
+- Use `hotfix/...`branches to perform urgent fixes.
+- When useful, add a scope to your commits (ie `feat(teaching): implement trascript page`). Don't include branch
+  prefixes here.
+- Use hyphen separators for branch names and scopes (ie `feature/data-fetching`).
+- Use commit footers to reference related issues (ie `Refs #10`, `Closes #10` etc.).
+
+> ⚠️ Respecting these rules is important in order to obtain a clean and coherent changelog. If you have any doubt don't
+> hesitate to ask for help.
 
 ### Hooks
 
 We use git hooks to automatically lint and format the code and commit messages.
 
-### PR process
+### Internal contribution process
 
-- Fork the repo
-- Work on a branch according to the flow rules described above
-- Open a PR against `main`
+- Work on a branch according to the rules described above.
+- Carefully review any linting/formatting errors (ask for help if you don't know how to resolve them).
+- If you can, rebase or pre-merge your branch before submitting the PR.
+- Open a PR against the relevant destination branch.
+
+### External contribution process
+
+- Fork the repo.
+- Work on a branch according to the rules described above.
+- Carefully review any linting/formatting errors (ask for help if you don't know how to resolve them).
+- Open a PR against `main`.

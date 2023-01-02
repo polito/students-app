@@ -17,6 +17,7 @@ import {
 } from '@tanstack/react-query';
 
 import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
+import { notNullish } from '../../utils/predicates';
 import { courseColors } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -44,11 +45,25 @@ export const useGetCourses = () => {
         // Skip courses without id (such as thesis)
         if (!c.id) return;
 
-        // eslint-disable-next-line no-prototype-builtins
-        if (!courses.hasOwnProperty(c.id)) {
-          const randomColor = courseColors[Math.round(Math.random() * 6)];
+        if (!(c.id in courses)) {
+          const usedColors = Object.values(courses)
+            .map(cp => cp.color)
+            .filter(notNullish);
+          let colorData: typeof courseColors[0];
+          for (const currentColor of courseColors) {
+            if (!usedColors.includes(currentColor.color)) {
+              colorData = currentColor;
+              break;
+            }
+          }
+          if (!colorData) {
+            colorData =
+              courseColors[
+                Math.round(Math.random() * (courseColors.length - 1))
+              ];
+          }
           courses[c.id] = {
-            color: randomColor.color,
+            color: colorData.color,
             icon: null,
             isHidden: false,
           };
@@ -71,7 +86,14 @@ export const useGetCourse = (courseId: number) => {
   return useQuery(
     [COURSE_QUERY_KEY, courseId, 'overview'],
     () => {
-      return coursesClient.getCourse({ courseId: courseId });
+      return coursesClient.getCourse({ courseId: courseId }).then(course => {
+        const { teachingPeriod } = course.data;
+        const period = teachingPeriod.split('-');
+        if (period.length > 1 && period[0] === period[1]) {
+          course.data.teachingPeriod = period[0];
+        }
+        return course;
+      });
     },
     {
       staleTime: Infinity,

@@ -26,6 +26,7 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { SCREEN_WIDTH } from '../../../utils/const';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -44,6 +45,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+
   const refreshControl = useRefreshControl(
     coursesQuery,
     examsQuery,
@@ -59,7 +61,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="always"
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
@@ -69,14 +71,18 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
           />
-          <SectionList loading={coursesQuery.isLoading} indented>
+          <SectionList
+            loading={coursesQuery.isLoading}
+            indented
+            emptyStateText={t('coursesScreen.emptyState')}
+          >
             {coursesQuery.data?.data
               .sort(
                 (a, b) =>
                   preferences.courses[a.id]?.order -
                   preferences.courses[b.id]?.order,
               )
-              .filter(c => !preferences.courses[c.id]?.isHidden)
+              .filter(c => c.id && !preferences.courses[c.id]?.isHidden)
               .map(course => (
                 <CourseListItem key={course.shortcode} course={course} />
               ))}
@@ -87,7 +93,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
           />
-          <SectionList loading={examsQuery.isLoading} indented>
+          <SectionList
+            loading={examsQuery.isLoading}
+            indented
+            emptyStateText={t('examsScreen.emptyState')}
+          >
             {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
@@ -130,7 +140,16 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     </Text>
                   </View>
                   <ProgressChart
-                    data={[80 / 120, 40 / 120]}
+                    data={
+                      studentQuery.data
+                        ? [
+                            studentQuery.data?.data.totalAttendedCredits /
+                              studentQuery.data?.data.totalCredits,
+                            studentQuery.data?.data.totalAcquiredCredits /
+                              studentQuery.data?.data.totalCredits,
+                          ]
+                        : []
+                    }
                     colors={[colors.primary[400], colors.secondary[500]]}
                   />
                 </View>
@@ -146,6 +165,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     sectionsContainer: {
+      // backgroundColor: 'red',
+      width: SCREEN_WIDTH,
       paddingVertical: spacing[5],
     },
     section: {

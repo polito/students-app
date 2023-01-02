@@ -21,6 +21,7 @@ import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomS
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
+import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
 
@@ -28,6 +29,7 @@ export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
+  Person: { id: number };
   CoursePreferences: { courseId: number };
   CourseDirectory: {
     courseId: number;
@@ -202,7 +204,15 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
         }}
       />
-
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
       <Stack.Screen
         name="Transcript"
         component={TranscriptScreen}

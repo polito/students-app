@@ -24,23 +24,18 @@ import { useLogin } from '../queries/authHooks';
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { mutateAsync: login, isLoading, isSuccess, data } = useLogin();
+  const { mutateAsync: login, isLoading } = useLogin();
   const [username, setUsername] = useState('S251409');
   const [password, setPassword] = useState('04051980AA');
   const passwordRef = useRef<TextInput>();
   const { refreshContext } = useApiContext();
 
   const handleLogin = async () => {
-    try {
-      const {
-        data: { clientId, token },
-      } = await login({ username, password });
-      await Keychain.setGenericPassword(clientId, token);
-      refreshContext(token);
-    } catch (e) {
-      console.debug({ e });
-      // TODO feedback
-    }
+    const {
+      data: { clientId, token },
+    } = await login({ username, password });
+    await Keychain.setGenericPassword(clientId, token);
+    refreshContext(token);
   };
 
   return (
@@ -87,10 +82,10 @@ export const LoginScreen = () => {
               absolute={false}
               adjustInsets={Platform.OS === 'ios'}
               title={t('loginScreen.cta')}
-              onPress={handleLogin}
+              action={handleLogin}
               loading={isLoading}
-              success={isSuccess}
               successMessage={t('loginScreen.ctaSuccessMessage')}
+              disabled={!username?.length || !password?.length}
             />
           </Section>
         </TouchableWithoutFeedback>

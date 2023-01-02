@@ -9,7 +9,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseAssignment } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
-import { formatFileDate, formatFileSize } from '../../../utils/files';
+import { formatDateTime } from '../../../utils/dates';
+import { formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
@@ -57,18 +58,14 @@ export const CourseAssignmentListItem = ({
     () => (
       <FileListItem
         onPress={async () => {
-          if (await Linking.canOpenURL(item.url)) {
-            Linking.openURL(item.url);
-          } else {
-            // TODO feedback
-          }
+          await Linking.openURL(item.url);
         }}
         title={item.description}
         titleStyle={{
           textDecorationLine:
             item.deletedAt != null ? 'line-through' : undefined,
         }}
-        subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${formatFileDate(
+        subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
           item.uploadedAt,
         )}`}
         mimeType={item.mimeType}

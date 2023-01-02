@@ -15,6 +15,7 @@ import {
   faChevronUp,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -33,6 +34,7 @@ import {
   useGetCourseVirtualClassrooms,
 } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 type SectionLectures =
@@ -56,8 +58,8 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
-  const vcPreviousYears = courseQuery.data?.data.vcPreviousYears;
-  const vcOtherCourses = courseQuery.data?.data.vcOtherCourses;
+  const vcPreviousYears = courseQuery.data?.data.vcPreviousYears ?? [];
+  const vcOtherCourses = courseQuery.data?.data.vcOtherCourses ?? [];
 
   const { queries: relatedVCQueries, isLoading: areRelatedLoading } =
     useGetCourseRelatedVirtualClassrooms(vcPreviousYears, vcOtherCourses);
@@ -115,7 +117,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     onLectureQueryLoaded();
   }, [courseQuery.isLoading, areRelatedLoading]);
 
-  // After all lectures have been retrieve, only render sections containing lectures (the first one should be open)
+  // After all lectures have been retrieved, only render sections containing lectures (the first one should be open)
   useEffect(() => {
     if (loadedLectureQueriesCount < 3) return;
 
@@ -136,9 +138,10 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       },
     ];
 
-    const sectionTitles = vcPreviousYears
-      .map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
-      .concat(vcOtherCourses.map(oc => `${oc.name} ${oc.year}`));
+    const sectionTitles =
+      vcPreviousYears
+        ?.map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
+        .concat(vcOtherCourses?.map(oc => `${oc.name} ${oc.year}`)) ?? [];
 
     sectionTitles.forEach((title, index) => {
       availableSections[2 + index] = {
@@ -153,7 +156,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     const renderedSections: Section[] = [];
     let shouldExpand = true;
     availableSections.forEach(section => {
-      if (section.index in lectures) {
+      if (section.index in lectures && lectures[section.index].length) {
         renderedSections.push({
           ...section,
           isExpanded: shouldExpand,
@@ -194,6 +197,14 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       sections={sections}
       {...refreshControl}
       stickySectionHeadersEnabled={true}
+      ListEmptyComponent={
+        loadedLectureQueriesCount === 3 && (
+          <EmptyState
+            message={t('courseLecturesTab.emptyState')}
+            icon={faChalkboardTeacher}
+          />
+        )
+      }
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
@@ -235,9 +246,9 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
           <ListItem
             title={lecture.title}
             subtitle={[
-              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
-              lecture.createdAt?.toLocaleDateString(),
+              formatDate(lecture.createdAt),
               lecture.duration,
+              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
             ]
               .filter(i => !!i)
               .join(' - ')}

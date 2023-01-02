@@ -5,25 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
-import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
-import { BookingScreen } from '../screens/BookingScreen';
-import { DeadlineScreen } from '../screens/DeadlineScreen';
-import { LectureCourseDirectoryScreen } from '../screens/LectureCourseDirectoryScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 
 export type AgendaStackParamList = {
   Agenda: undefined;
   Lecture: { id: number };
-  Exam: { id: number };
-  Deadline: { type: string; date: string };
-  CourseVideolecture?: { courseId: number; lectureId: number };
-  CourseVirtualClassroom?: { courseId: number; lectureId: number };
-  LectureCourseDirectory?: {
-    courseId: number;
-    lectureId: number;
-  };
-  Booking: { id: number };
 };
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
@@ -56,34 +43,6 @@ export const AgendaNavigator = () => {
         component={LectureScreen}
         options={{
           headerTitle: t('common.lecture'),
-        }}
-      />
-      <Stack.Screen
-        name="LectureCourseDirectory"
-        component={LectureCourseDirectoryScreen}
-        options={{
-          headerTitle: t('Lecture'),
-        }}
-      />
-      <Stack.Screen
-        name="Exam"
-        component={ExamScreen}
-        options={{
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="Booking"
-        component={BookingScreen}
-        options={{
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="Deadline"
-        component={DeadlineScreen}
-        options={{
-          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>

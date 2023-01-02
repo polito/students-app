@@ -23,7 +23,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 
 import { DateTime } from 'luxon';
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
 
 export interface VideoControlProps {
   onRelease: (percentage: number) => void;
@@ -172,7 +172,7 @@ export const VideoControl = ({
   );
 };
 
-const createStyles = ({ size }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     slider: {
       width: SCREEN_WIDTH - 200,
@@ -201,9 +201,9 @@ const createStyles = ({ size }: Theme) =>
     sliderControlWrapper: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       height: 28,
-      borderRadius: size.xs,
+      borderRadius: Number(spacing['2']),
       marginLeft: 10,
-      paddingHorizontal: size.xs,
+      paddingHorizontal: Number(spacing['2']),
     },
     animatedWrapper: {
       position: 'absolute',
@@ -232,12 +232,12 @@ const VideoControlButton = ({ children, ...rest }: TouchableHighlightProps) => {
   );
 };
 
-const createStylesControl = ({ size }: Theme) =>
+const createStylesControl = ({ shapes }: Theme) =>
   StyleSheet.create({
     button: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      width: size.lg * 2,
-      borderRadius: size.xs,
+      width: shapes.lg * 2,
+      borderRadius: shapes.md,
       color: 'white',
       alignItems: 'center',
       justifyContent: 'center',

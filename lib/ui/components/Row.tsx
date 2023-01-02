@@ -3,6 +3,7 @@ import {
   Pressable,
   StyleProp,
   StyleSheet,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
@@ -26,6 +27,7 @@ export interface RowProps {
   maxWidth?: boolean;
   onLayout?: any;
   noFlex?: boolean;
+  touchableOpacity?: boolean;
   width?: number | string;
 }
 
@@ -47,10 +49,15 @@ export const Row = ({
   onPress,
   backgroundColor,
   maxWidth,
+  touchableOpacity,
   ...rest
 }: RowProps) => {
-  const renderedStyle: { [key: string]: any } = usePropsStyle(rest);
-  const Component: any = onPress ? Pressable : View;
+  const renderedStyle: Record<string, string | number> = usePropsStyle(rest);
+  const Component: any = onPress
+    ? touchableOpacity
+      ? TouchableOpacity
+      : Pressable
+    : View;
 
   return (
     <Component

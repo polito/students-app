@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -6,7 +6,6 @@ import {
   TouchableHighlight,
   TouchableHighlightProps,
   View,
-  ViewStyle,
 } from 'react-native';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
@@ -22,77 +21,83 @@ interface Props extends TouchableHighlightProps {
   absolute?: boolean;
   title: string;
   loading?: boolean;
-  success?: boolean;
-  icon?: string;
+  action: () => unknown | Promise<unknown>;
   successMessage?: string;
-  onSuccess?: () => void;
   destructive?: boolean;
 }
 
+/**
+ * A call-to-action button with in-place async action feedback
+ *
+ * If `action` returns a Promise, its result will be used to show
+ * a temporary success message before moving to the next state
+ */
 export const CtaButton = ({
   style,
   adjustInsets = true,
   absolute = true,
   title,
   loading,
-  success,
   successMessage,
-  icon,
-  onSuccess,
+  disabled,
   destructive = false,
+  action,
   ...rest
 }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [showSuccess, setShowSuccess] = useState(false);
+  const successMessageRef = useRef<string>();
+  const destructiveRef = useRef<boolean>();
   let bottomBarHeight = 0;
   try {
     bottomBarHeight = useBottomTabBarHeight();
   } catch (e) {
-    //
+    // Not available in this context
   }
-  const position: Partial<ViewStyle> = absolute
-    ? {
-        position: 'absolute',
-        bottom: 0,
-        left: Platform.select({ ios: 0 }),
-        right: 0,
-      }
-    : {};
 
-  useEffect(() => {
-    if (success) {
-      setShowSuccess(true);
-      onSuccess && onSuccess();
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 2000);
+  const onPress = () => {
+    successMessageRef.current = successMessage;
+    destructiveRef.current = destructive;
+    const promise = action();
+    if (promise instanceof Promise) {
+      promise.then(() => {
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 2000);
+      });
     }
-  }, [success]);
+  };
 
   return (
     <View
       style={[
-        {
-          ...position,
-          marginBottom: adjustInsets ? bottomBarHeight : undefined,
-        },
         styles.container,
+        absolute && styles.absolute,
+        adjustInsets && { marginBottom: bottomBarHeight },
       ]}
     >
       <TouchableHighlight
-        underlayColor={!destructive ? colors.primary[600] : colors.danger[600]}
-        disabled={loading || showSuccess}
+        underlayColor={
+          (showSuccess ? destructiveRef.current : destructive)
+            ? colors.danger[600]
+            : colors.primary[600]
+        }
+        disabled={disabled || loading || showSuccess}
         style={[
           styles.button,
           {
-            backgroundColor: !destructive
-              ? colors.primary[500]
-              : colors.danger[500],
+            backgroundColor: (
+              showSuccess ? destructiveRef.current : destructive
+            )
+              ? colors.danger[500]
+              : colors.primary[500],
           },
           style,
         ]}
         accessibilityLabel={title}
+        onPress={onPress}
         {...rest}
       >
         <View>
@@ -108,8 +113,10 @@ export const CtaButton = ({
                   color="white"
                   style={styles.icon}
                 />
-                {successMessage && (
-                  <Text style={styles.textStyle}>{successMessage}</Text>
+                {successMessageRef.current && (
+                  <Text style={styles.textStyle}>
+                    {successMessageRef.current}
+                  </Text>
                 )}
               </View>
             ) : (
@@ -126,6 +133,12 @@ const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[4],
+    },
+    absolute: {
+      position: 'absolute',
+      bottom: 0,
+      left: Platform.select({ ios: 0 }),
+      right: 0,
     },
     button: {
       paddingHorizontal: spacing[5],

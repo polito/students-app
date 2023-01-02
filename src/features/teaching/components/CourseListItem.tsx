@@ -1,6 +1,6 @@
 import { PropsWithChildren, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
+import { Alert, Platform, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -26,6 +26,7 @@ const Menu = ({
 }>) => {
   const { t } = useTranslation();
   const preferences = useContext(PreferencesContext);
+  const isHidden = preferences.courses[course.id]?.isHidden ?? false;
 
   return (
     <MenuView
@@ -33,9 +34,11 @@ const Menu = ({
       title={`${t('common.course')} ${t('common.preferences').toLowerCase()}`}
       actions={[
         {
-          title: t('coursePreferencesScreen.hideInExtracts'),
+          title: isHidden
+            ? t('coursePreferencesScreen.showInExtracts')
+            : t('coursePreferencesScreen.hideInExtracts'),
           subtitle: t('coursePreferencesScreen.showInExtractsSubtitle'),
-          image: 'eye.slash',
+          image: isHidden ? 'eye' : 'eye.slash',
         },
       ]}
       onPressAction={() => {
@@ -43,7 +46,7 @@ const Menu = ({
           ...preferences.courses,
           [course.id]: {
             ...preferences.courses[course.id],
-            isHidden: true,
+            isHidden: !isHidden,
           },
         });
       }}
@@ -58,16 +61,23 @@ export const CourseListItem = ({ course }: Props) => {
   const { t } = useTranslation();
   const preferences = useContext(PreferencesContext);
 
+  const hasDetails = course.id != null;
+
   const listItem = (
     <ListItem
       linkTo={
-        course.id != null
+        hasDetails
           ? {
               screen: 'Course',
               params: { id: course.id, courseName: course.name },
             }
           : undefined
       }
+      onPress={() => {
+        if (!hasDetails) {
+          Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
+        }
+      }}
       title={course.name}
       subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
       leadingItem={
@@ -76,20 +86,26 @@ export const CourseListItem = ({ course }: Props) => {
           color={preferences.courses[course.id]?.color}
         />
       }
-      trailingItem={Platform.select({
-        android: (
-          <Menu course={course}>
-            <IconButton
-              style={{
-                padding: spacing[3],
-              }}
-              icon={faEllipsisVertical}
-              color={colors.secondaryText}
-              size={fontSizes.xl}
-            />
-          </Menu>
-        ),
-      })}
+      trailingItem={
+        hasDetails ? (
+          Platform.select({
+            android: (
+              <Menu course={course}>
+                <IconButton
+                  style={{
+                    padding: spacing[3],
+                  }}
+                  icon={faEllipsisVertical}
+                  color={colors.secondaryText}
+                  size={fontSizes.xl}
+                />
+              </Menu>
+            ),
+          })
+        ) : (
+          <View style={{ width: 20 }} />
+        )
+      }
       containerStyle={{
         paddingRight: Platform.select({
           android: 0,
@@ -98,7 +114,7 @@ export const CourseListItem = ({ course }: Props) => {
     />
   );
 
-  if (Platform.OS === 'ios') {
+  if (hasDetails && Platform.OS === 'ios') {
     return (
       <Menu course={course} shouldOpenOnLongPress={true}>
         {listItem}

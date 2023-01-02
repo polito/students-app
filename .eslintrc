@@ -32,8 +32,10 @@
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/ban-ts-comment": "off"
-      }
+        "no-console": ["error", {
+          "allow": ["warn", "error", "debug"]
+        }],
+        "@typescript-eslint/ban-ts-comment": "off"}
     }
   ]
 }

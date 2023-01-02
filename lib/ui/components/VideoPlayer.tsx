@@ -23,7 +23,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { useNavigation } from '@react-navigation/native';
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/conts';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
 import { displayTabBar, hideTabBar } from '../../../src/utils/tab-bar';
 
 const isIos = Platform.OS === 'ios';
@@ -115,7 +115,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           playerRef.current.seek(newSeekValue);
         }
       } catch (e) {
-        console.log('errorSeek', e);
+        console.debug('errorSeek', e);
       }
     },
     [playerRef, duration],
@@ -149,7 +149,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         }
         setProgress(p);
       } catch (e) {
-        console.log('errorHandleProgress', e);
+        console.debug('errorHandleProgress', e);
       }
     },
     [duration, loading],

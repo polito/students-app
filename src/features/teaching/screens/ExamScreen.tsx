@@ -14,6 +14,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useBookExam,
@@ -28,15 +29,23 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 export const ExamScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
+  const { fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const examsQuery = useGetExams();
   const refreshControl = useRefreshControl(examsQuery);
   const exam = examsQuery.data?.data.find(e => e.id === id);
-  const bookExamMutation = useBookExam(exam?.id);
-  const cancelExamBookingMutation = useCancelExamBooking(exam?.id);
+  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(exam?.id);
+  const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
+    useCancelExamBooking(exam?.id);
   const teacherQuery = useGetPerson(exam?.teacherId);
+  const confirm = useConfirmationDialog();
   const routes = navigation.getState()?.routes;
+
+  const mutationsLoading = isBooking || isCancelingBooking;
+  const examAvailable = exam?.status === ExamStatusEnum.Available;
+  const showCta = (
+    [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
+  ).includes(exam?.status);
 
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
@@ -46,14 +55,24 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     }
   }, []);
 
+  const action = async () => {
+    if (examAvailable) {
+      return bookExam({});
+    }
+    if (await confirm()) {
+      return cancelBooking();
+    }
+    return Promise.reject();
+  };
+
   return (
     <>
       <ScrollView
         refreshControl={<RefreshControl {...refreshControl} />}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
           paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
         }}
-        contentInsetAdjustmentBehavior="automatic"
       >
         <EventDetails
           title={exam?.courseName}
@@ -75,23 +94,19 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         </SectionList>
       </ScrollView>
 
-      {exam?.status === ExamStatusEnum.Available && (
+      {showCta && (
         <CtaButton
-          title={t('examScreen.ctaBook')}
-          onPress={() => bookExamMutation.mutate({})}
-          loading={bookExamMutation.isLoading}
-          success={bookExamMutation.isSuccess}
-          successMessage={t('examScreen.ctaBookSuccess')}
-        />
-      )}
-      {exam?.status === ExamStatusEnum.Booked && (
-        <CtaButton
-          destructive
-          title={t('examScreen.ctaCancel')}
-          onPress={() => cancelExamBookingMutation.mutate()}
-          loading={cancelExamBookingMutation.isLoading}
-          success={cancelExamBookingMutation.isSuccess}
-          successMessage={t('examScreen.ctaCancelSuccess')}
+          destructive={!examAvailable}
+          title={
+            examAvailable ? t('examScreen.ctaBook') : t('examScreen.ctaCancel')
+          }
+          action={action}
+          loading={mutationsLoading}
+          successMessage={
+            examAvailable
+              ? t('examScreen.ctaBookSuccess')
+              : t('examScreen.ctaCancelSuccess')
+          }
         />
       )}
     </>

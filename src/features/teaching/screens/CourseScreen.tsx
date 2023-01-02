@@ -1,19 +1,20 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Dimensions, Platform, View } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
+import { CourseIndicator } from '../components/CourseIndicator';
 import { CourseInfoTab } from '../components/CourseInfoTab';
 import { CourseLecturesTab } from '../components/CourseLecturesTab';
 import { CourseNoticesTab } from '../components/CourseNoticesTab';
@@ -29,11 +30,10 @@ export type CourseTabProps = {
 
 export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, fontSizes } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
   const { id, courseName } = route.params;
-  useScreenTitle(courseName);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <IconButton
@@ -50,10 +50,30 @@ export const CourseScreen = ({ route, navigation }: Props) => {
     });
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: courseName,
-      headerBackTitleVisible: courseName.length <= 20,
+      headerTitle: () => (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            left: Platform.select({ android: -20 }),
+          }}
+        >
+          <CourseIndicator courseId={id} />
+          <Text
+            variant="title"
+            style={{
+              marginLeft: spacing[2],
+              maxWidth: Dimensions.get('window').width - 180,
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {courseName}
+          </Text>
+        </View>
+      ),
     });
   }, [courseName]);
 

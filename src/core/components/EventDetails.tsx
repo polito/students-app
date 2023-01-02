@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { formatDateTime } from '../../utils/dates';
+
 interface Props {
   title: string;
   type: string;
@@ -11,30 +13,21 @@ interface Props {
 }
 
 export const EventDetails = ({ title, type, time, timeLabel }: Props) => {
-  const { spacing, fontSizes, colors } = useTheme();
+  const { spacing, fontSizes } = useTheme();
   return (
     <>
       <View style={{ padding: spacing[5] }}>
         <Text variant="heading" style={{ marginBottom: spacing[2] }}>
           {title}
         </Text>
-        <Text
-          variant="caption"
-          weight={'light'}
-          uppercase
-          style={{ marginBottom: spacing[2], color: colors.primary[300] }}
-        >
+        <Text variant="caption" style={{ marginBottom: spacing[2] }}>
           {type}
         </Text>
         {time && (
-          <Text style={{ fontSize: fontSizes.md }}>
-            {time.toLocaleString()}
-          </Text>
+          <Text style={{ fontSize: fontSizes.md }}>{formatDateTime(time)}</Text>
         )}
-        {timeLabel && (
-          <Text style={{ fontSize: fontSizes.md, textTransform: 'capitalize' }}>
-            {timeLabel}
-          </Text>
+        {!!timeLabel && (
+          <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
         )}
       </View>
     </>

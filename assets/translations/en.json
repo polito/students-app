@@ -4,15 +4,28 @@
     "backToToday": "Back to today"
   },
   "colors": {
+    "amber": "Amber",
+    "blue": "Blue",
+    "cyan": "Cyan",
     "darkBlue": "Dark blue",
-    "darkOrange": "Dark orange",
+    "emerald": "Elemerald",
+    "fuchsia": "Fuchsia",
     "green": "Green",
+    "indigo": "Indigo",
     "lightBlue": "Light blue",
+    "lime": "Lime",
     "orange": "Orange",
+    "pink": "Pink",
+    "purple": "Purple",
     "red": "Red",
-    "rose": "Rose"
+    "rose": "Rose",
+    "teal": "Teal",
+    "violet": "Violet",
+    "yellow": "Yellow"
   },
   "common": {
+    "contact": "Contacts",
+    "actionPotentiallyNotUndoable": "This action may not be undoable",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
@@ -21,11 +34,16 @@
     "course": "Course",
     "course_plural": "Courses",
     "credits": "Credits",
+    "creditsWithUnit": "{{credits}} ECTS",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
+    "done": "Done",
     "download": "Download",
+    "error": "Error",
     "exam": "Exam",
+    "examCall": "Exam call",
+    "examCall_plural": "Exam calls",
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",
@@ -42,6 +60,7 @@
     "remove": "Remove",
     "retract": "Retract",
     "services": "Services",
+    "somethingWentWrong": "Something went wrong, try again later",
     "stop": "Stop",
     "teacher": "Teacher",
     "transcript": "Transcript",
@@ -74,6 +93,7 @@
     "title": "Upload assignment"
   },
   "courseAssignmentsTab": {
+    "emptyState": "There are no assignments",
     "title": "Assignments"
   },
   "courseDirectoryListItem": {
@@ -89,7 +109,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "No file available",
+    "empty": "No files available",
     "recentSectionTitle": "Recent files",
     "title": "Files"
   },
@@ -100,6 +120,7 @@
     "title": "Pick an icon"
   },
   "courseInfoTab": {
+    "agendaSectionEmptyState": "This course has no entries in the agenda",
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
     "moreSectionTitle": "More",
@@ -109,10 +130,15 @@
     "yearLabel": "Year"
   },
   "courseLecturesTab": {
+    "emptyState": "There are no lectures",
     "title": "Lectures",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
+  "courseListItem": {
+    "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
+  },
   "courseNoticesTab": {
+    "emptyState": "There are no notices",
     "title": "Notices"
   },
   "coursePreferencesScreen": {
@@ -130,6 +156,7 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
+    "emptyState": "There are no active courses",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses"
   },
@@ -141,7 +168,13 @@
     "location": "Location"
   },
   "examsScreen": {
+    "emptyState": "There are no open exam calls",
     "title": "Exams"
+  },
+  "grades": {
+    "absent": "Abs",
+    "fail": "Fail",
+    "pass": "Pass"
   },
   "loginScreen": {
     "cta": "Login",

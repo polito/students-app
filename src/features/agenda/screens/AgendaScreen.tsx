@@ -1,257 +1,176 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  FlatList,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Platform,
-  StyleSheet,
-  View,
-  ViewToken,
-} from 'react-native';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { AgendaCard } from '@lib/ui/components/AgendaCard';
+import { Tab } from '@lib/ui/components/Tab';
+import { Tabs } from '@lib/ui/components/Tabs';
+import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { findIndex, flatMap, get } from 'lodash';
-import { DateTime } from 'luxon';
-
-import { filterAgendaItem, mapAgendaItem } from '../../../core/agenda';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useGetBookings } from '../../../core/queries/bookingHooks';
-import { useGetExams } from '../../../core/queries/examHooks';
-import { useGetInfiniteLectures } from '../../../core/queries/lectureHooks';
-import { useGetDeadlines } from '../../../core/queries/studentHooks';
-import { AgendaDayInterface } from '../../../utils/types';
-import { AgendaDay } from '../components/AgendaDay';
-import { DrawerCalendar } from '../components/DrawerCalendar';
-import { AgendaTabs } from './AgendaTabs';
+import { AgendaStackParamList } from '../components/AgendaNavigator';
 
-const viewabilityConfig = {
-  viewAreaCoveragePercentThreshold: 15,
-  waitForInteraction: false,
-};
+type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
 
-export const AgendaScreen = () => {
+export const AgendaScreen = ({ navigation }: Props) => {
+  const { t } = useTranslation();
   const { colors, spacing } = useTheme();
-  const { updatePreference } = usePreferencesContext();
-  const styles = useStylesheet(createStyles);
-  const examsQuery = useGetExams();
-  const bookingsQuery = useGetBookings();
-  const lecturesQuery = useGetInfiniteLectures();
-  const deadlinesQuery = useGetDeadlines();
-  const [pageUp, setPageUp] = useState(0);
-  const [pageDown, setPageDown] = useState(0);
-  const [viewedDate, setViewedDate] = useState<string>(
-    DateTime.now().toISODate(),
-  );
-  const flatListRef = useRef<FlatList>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const [filters, setFilters] = useState<string[]>([]);
-
-  useEffect(() => {
-    updatePreference('types', {
-      Lecture: { color: colors.primary[500] },
-      Deadline: { color: colors.success[500] },
-      Booking: { color: colors.error[400] },
-    });
-    setTimeout(() => {
-      onPressScrollToToday();
-    }, 2000);
-  }, []);
-
-  useEffect(() => {
-    if (pageUp !== 0) {
-      getNextData(pageUp);
-    }
-  }, [pageUp]);
-
-  useEffect(() => {
-    if (pageDown !== 0) {
-      getNextData(pageDown);
-    }
-  }, [pageDown]);
-
-  const getNextData = useCallback((newPage: number) => {
-    // lecturesQuery.fetchNextPage({pageParam: newPage})
-  }, []);
-
-  const toFilterAgendaDays = useMemo(() => {
-    return mapAgendaItem(
-      examsQuery.data?.data || [],
-      bookingsQuery.data?.data || [],
-      flatMap(get(lecturesQuery, 'data.pages', []), page => page.data) || [],
-      deadlinesQuery.data?.data || [],
-      colors,
-    );
-  }, [
-    examsQuery.data,
-    bookingsQuery.data,
-    lecturesQuery.data,
-    deadlinesQuery.data,
-  ]);
-
-  const agendaDays = useMemo(() => {
-    return filterAgendaItem(toFilterAgendaDays, filters);
-  }, [toFilterAgendaDays, filters]);
-
-  const onPressScrollToToday = () => {
-    onPressCalendarDay(new Date());
-  };
-
-  const onViewableItemsChanged = (changed: {
-    viewableItems: Array<ViewToken>;
-    changed: Array<ViewToken>;
-  }) => {
-    if (changed.viewableItems[0]) {
-      setViewedDate(changed.viewableItems[0].key);
-    }
-  };
-
-  const onEndReached = () => {
-    setPageDown(pageDown + 1);
-  };
-
-  const onTopReached = useCallback(() => {
-    setPageUp(oldPage => oldPage - 1);
-  }, []);
-
-  const onPressCalendarDay = useCallback(
-    (day: Date) => {
-      const formattedDay = DateTime.fromJSDate(day).toISODate();
-      const agendaDayIndex = findIndex(
-        agendaDays,
-        item => item.id === formattedDay,
-      );
-      try {
-        if (flatListRef && flatListRef.current) {
-          if (agendaDayIndex >= 0) {
-            flatListRef.current.scrollToIndex({
-              animated: true,
-              index: agendaDayIndex,
-            });
-          } else {
-            const index = searchNearestIndexDate(agendaDays, day);
-            if (index === undefined) {
-              return;
-            }
-            flatListRef.current.scrollToIndex({
-              animated: true,
-              index: index,
-            });
-          }
-        }
-      } catch (e) {
-        console.log({ e });
-      }
-    },
-    [agendaDays, flatListRef],
+  const [selectedEventTypes, setSelectedEventTypes] = useState({
+    lectures: false,
+    exams: false,
+    bookings: false,
+    deadlines: false,
+  });
+  const agendaItems = useMemo(
+    () => [
+      {
+        title: 'Fisica 1',
+        live: true,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+      {
+        title: 'Fisica 1',
+        live: false,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+      {
+        title: 'Fisica 1',
+        live: false,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+      {
+        title: 'Fisica 1',
+        live: true,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+      {
+        title: 'Fisica 1',
+        live: true,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+      {
+        title: 'Fisica 1',
+        live: true,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+      {
+        title: 'Fisica 1',
+        live: true,
+        type: 'Lesson',
+        color: colors.info[500],
+        startsAt: new Date(),
+        description: 'Event description text test',
+      },
+    ],
+    [colors],
   );
-
-  const viewabilityConfigCallbackPairs = useRef([
-    { viewabilityConfig, onViewableItemsChanged },
-  ]);
-
-  const renderItem = ({ item }: { item: AgendaDayInterface }) => {
-    return <AgendaDay agendaDay={item} />;
-  };
-
-  const onChangeTab = (filterValues: string[]) => {
-    setFilters(filterValues);
-  };
 
   return (
-    <View style={styles.container}>
-      <AgendaTabs onChangeTab={onChangeTab} />
-      <FlatList
-        // windowSize={12}
-        ref={flatListRef}
-        style={styles.list}
-        removeClippedSubviews
-        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
-        contentContainerStyle={[bottomBarAwareStyles, styles.listContainer]}
-        data={agendaDays}
-        // maxToRenderPerBatch={8}
-        // initialNumToRender={8}
-        ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
-        // onScroll={throttle((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        //   console.log(event.nativeEvent.contentOffset.y)
-        //   if (event.nativeEvent.contentOffset.y < 0) {
-        //     onTopReached();
-        //   }
-        // }, 2000)}
-        onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          console.log(event.nativeEvent.contentOffset.y);
-          if (event.nativeEvent.contentOffset.y < 0) {
-            onTopReached();
-          }
+    <View style={{ flex: 1 }}>
+      <Tabs
+        style={{
+          backgroundColor: colors.surface,
+          borderBottomWidth: Platform.select({
+            ios: StyleSheet.hairlineWidth,
+          }),
+          borderBottomColor: colors.divider,
+          elevation: 3,
+          zIndex: 1,
         }}
-      />
-      <DrawerCalendar
-        onPressDay={onPressCalendarDay}
-        viewedDate={viewedDate}
-        agendaDays={agendaDays}
-        onPressScrollToToday={onPressScrollToToday}
+      >
+        <Tab
+          selected={selectedEventTypes.lectures}
+          onPress={() =>
+            setSelectedEventTypes(types => ({
+              ...types,
+              lectures: !types.lectures,
+            }))
+          }
+        >
+          {t('courseLecturesTab.title')}
+        </Tab>
+        <Tab
+          selected={selectedEventTypes.exams}
+          onPress={() =>
+            setSelectedEventTypes(types => ({ ...types, exams: !types.exams }))
+          }
+        >
+          {t('examsScreen.title')}
+        </Tab>
+        <Tab
+          selected={selectedEventTypes.bookings}
+          onPress={() =>
+            setSelectedEventTypes(types => ({
+              ...types,
+              bookings: !types.bookings,
+            }))
+          }
+        >
+          {t('common.booking_plural')}
+        </Tab>
+        <Tab
+          selected={selectedEventTypes.deadlines}
+          onPress={() =>
+            setSelectedEventTypes(types => ({
+              ...types,
+              deadlines: !types.deadlines,
+            }))
+          }
+        >
+          {t('common.deadline_plural')}
+        </Tab>
+      </Tabs>
+      <FlatList
+        style={{ flex: 1 }}
+        contentContainerStyle={[{ padding: spacing[5] }, bottomBarAwareStyles]}
+        data={agendaItems}
+        ItemSeparatorComponent={() => <View style={{ height: spacing[5] }} />}
+        renderItem={({ item, index }) => (
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ width: '15%' }}>
+              {index === 0 && (
+                <View>
+                  <Text variant="title">LUN</Text>
+                  <Text variant="title">18</Text>
+                </View>
+              )}
+            </View>
+            <AgendaCard
+              style={{ flex: 1 }}
+              title={item.type}
+              subtitle={'Lecture'}
+              color={item.type}
+              live={false}
+              onPress={() => {
+                navigation.push('Lecture', { id: null });
+              }}
+            >
+              <Text variant="prose">{item.description}</Text>
+            </AgendaCard>
+          </View>
+        )}
       />
     </View>
   );
-};
-
-const createStyles = ({ colors, spacing, dark }: Theme) =>
-  StyleSheet.create({
-    agendaCard: { flex: 1 },
-    tabs: {
-      backgroundColor: dark ? colors.primary[700] : colors.surface,
-      borderBottomWidth: Platform.select({
-        ios: StyleSheet.hairlineWidth,
-      }),
-      borderBottomColor: colors.divider,
-      elevation: 3,
-      zIndex: 1,
-    },
-    container: {
-      flex: 1,
-      backgroundColor: dark ? colors.primary[700] : undefined,
-    },
-    list: {
-      flex: 1,
-      paddingTop: 120,
-    },
-    listContainer: {
-      padding: spacing[5],
-      paddingBottom: 240,
-    },
-  });
-
-const searchNearestIndexDate = (
-  agendaDays: AgendaDayInterface[],
-  date: Date,
-) => {
-  const luxonDate = DateTime.fromJSDate(date);
-  let minDifference: null | number = null;
-  const differences = agendaDays.map(agendaDay => {
-    const difference = luxonDate.diff(
-      DateTime.fromISO(agendaDay.id),
-    ).milliseconds;
-    if (minDifference === null) {
-      minDifference = difference;
-    }
-    if (difference < minDifference && minDifference > 0) {
-      minDifference = difference;
-    } else {
-      if (difference > minDifference) {
-        minDifference = difference;
-      }
-    }
-    return difference;
-  });
-
-  return minDifference === null
-    ? undefined
-    : differences.findIndex(diff => diff === minDifference);
 };

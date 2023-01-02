@@ -2,3 +2,13 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
+
+# Prevent changing the Apple Development Team
+diff=$(git --no-pager diff --cached -G 'DEVELOPMENT_TEAM' **/project.pbxproj)
+if [ ! -z "$diff" ]; then
+  echo "$diff"
+  echo "\n"
+  echo "🚨 Cannot commit an Apple Development Team change."
+  echo "   Please unstage or revert the line shown above."
+  exit 1
+fi
