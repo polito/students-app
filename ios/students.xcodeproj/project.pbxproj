@@ -16,8 +16,6 @@
 		2BA0016F9B0543F5BBDA41F8 /* Montserrat-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */; };
 		41C88311FAB6499EBDE63ED5 /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B813406DDE44447AB8717E6E /* Montserrat-SemiBold.ttf */; };
 		421B0ABE59B5422AA80527B9 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */; };
-		61C130BF292CD8AD006E720C /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C130BE292CD8AD006E720C /* hermes.xcframework */; };
-		61C130C0292CD8AD006E720C /* hermes.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 61C130BE292CD8AD006E720C /* hermes.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7699B88040F8A987B510C191 /* libPods-students-studentsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-students-studentsTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		944531432DCE469C9F10AB4F /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */; };
@@ -38,20 +36,6 @@
 			remoteInfo = students;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		616C0AB928FD85F800866D67 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				61C130C0292CD8AD006E720C /* hermes.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* studentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = studentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,7 +83,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-students.a in Frameworks */,
-				61C130BF292CD8AD006E720C /* hermes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,7 +225,6 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
-				616C0AB928FD85F800866D67 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
