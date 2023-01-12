@@ -36,7 +36,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         return {
           isLogged: !!credentials,
           ...credentials,
-          clients: createApiClients(credentials.token),
+          clients: createApiClients(credentials?.token),
           refreshContext,
         };
       });
