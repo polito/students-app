@@ -20,7 +20,7 @@ export interface CoursePreferencesProps {
   order?: number;
 }
 
-export const storageKeys = ['colorScheme', 'courses', 'language'];
+export const storageKeys = ['clientId', 'colorScheme', 'courses', 'language'];
 
 // Require serialization/deserialization
 export const storageObjectKeys = ['courses'];
