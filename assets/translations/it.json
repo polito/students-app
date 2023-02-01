@@ -105,6 +105,7 @@
     "reDownloadFile": "Ri-scarica file"
   },
   "courseFilesTab": {
+    "navigateFolders": "Sfoglia le cartelle",
     "browseFiles": "Esplora file",
     "empty": "Nessun file disponibile",
     "recentSectionTitle": "File recenti",
