@@ -85,8 +85,6 @@
     "backTitle": "Pick file",
     "ctaCreatePDF": "Scan a document",
     "ctaCreatePDFSubtitle": "Create a pdf file",
-    "ctaTakePicture": "Take a picture",
-    "ctaTakePictureSubtitle": "With the camera of your phone",
     "ctaUploadFile": "Pick a file",
     "ctaUploadFileSubtitle": "On your phone or on the cloud",
     "title": "Upload assignment"
