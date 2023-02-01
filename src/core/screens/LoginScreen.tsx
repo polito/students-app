@@ -19,6 +19,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
 import { useApiContext } from '../contexts/ApiContext';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
@@ -29,13 +30,17 @@ export const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const passwordRef = useRef<TextInput>();
   const { refreshContext } = useApiContext();
+  const { updatePreference } = usePreferencesContext();
 
   const handleLogin = async () => {
     const {
       data: { clientId, token },
     } = await login({ username, password });
-    await Keychain.setGenericPassword(clientId, token);
-    refreshContext(token);
+
+    updatePreference('clientId', clientId);
+
+    await Keychain.setGenericPassword(username, token);
+    refreshContext({ username, token });
   };
 
   return (
