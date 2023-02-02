@@ -12,9 +12,7 @@ import {
 export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
-      colorScheme: null,
       courses: {},
-      language: null,
       updatePreference: () => {},
     });
 

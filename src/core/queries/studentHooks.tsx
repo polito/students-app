@@ -1,6 +1,7 @@
 import { StudentApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
+import { prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const STUDENT_QUERY_KEY = 'student';
@@ -15,21 +16,16 @@ const useStudentClient = (): StudentApi => {
 
 export const useGetStudent = () => {
   const studentClient = useStudentClient();
-  const { token } = useApiContext();
 
-  return useQuery(
-    [STUDENT_QUERY_KEY, token],
-    () => {
-      return studentClient.getStudent();
-    },
-    {
-      enabled: !!token,
-    },
+  return useQuery(prefixKey([STUDENT_QUERY_KEY]), () =>
+    studentClient.getStudent(),
   );
 };
 
 export const useGetGrades = () => {
   const studentClient = useStudentClient();
 
-  return useQuery([GRADES_QUERY_KEY], () => studentClient.getStudentGrades());
+  return useQuery(prefixKey([GRADES_QUERY_KEY]), () =>
+    studentClient.getStudentGrades(),
+  );
 };

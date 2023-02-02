@@ -4,11 +4,7 @@ import DocumentPicker, { isInProgress } from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import {
-  faCamera,
-  faFilePdf,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -70,21 +66,6 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
               })
               .catch(e => {
                 if (DocumentPicker.isCancel(e) || isInProgress(e)) return;
-                console.error(e);
-              });
-          }}
-        />
-        <ListItem
-          isNavigationAction
-          title={t('courseAssignmentUploadScreen.ctaTakePicture')}
-          subtitle={t('courseAssignmentUploadScreen.ctaTakePictureSubtitle')}
-          leadingItem={<Icon icon={faCamera} size={fontSizes.xl} />}
-          onPress={() => {
-            takePicture()
-              .then(image => {
-                handlePickedFile(image.path);
-              })
-              .catch(e => {
                 console.error(e);
               });
           }}

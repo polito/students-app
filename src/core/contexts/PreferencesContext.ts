@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
 export interface PreferencesContextProps {
+  clientId?: string;
   colorScheme?: 'light' | 'dark';
   courses: {
     [courseId: number]: CoursePreferencesProps;
@@ -19,7 +20,7 @@ export interface CoursePreferencesProps {
   order?: number;
 }
 
-export const storageKeys = ['colorScheme', 'courses', 'language'];
+export const storageKeys = ['clientId', 'colorScheme', 'courses', 'language'];
 
 // Require serialization/deserialization
 export const storageObjectKeys = ['courses'];
