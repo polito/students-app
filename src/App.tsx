@@ -1,4 +1,5 @@
-import { Settings } from 'luxon';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 import { AppContent } from './core/components/AppContent';
 import { ApiProvider } from './core/providers/ApiProvider';
@@ -9,7 +10,7 @@ import { UiProvider } from './core/providers/UiProvider';
 import './i18n';
 
 export const App = () => {
-  Settings.defaultLocale = 'it-IT';
+  // Settings.defaultLocale = 'it-IT';
 
   return (
     <SplashProvider>

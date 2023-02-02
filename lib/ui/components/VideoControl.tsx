@@ -54,12 +54,13 @@ export const VideoControl = ({
 }: VideoControlProps) => {
   const styles = useStylesheet(createStyles);
   const statusBarHeight = useMemo(() => StatusBar.currentHeight, []);
-  const [value, setValue] = useState<number>(newPosition * 100);
-  const [isSliding, setIsSliding] = useState<boolean>(false);
+  const [value, setValue] = useState(newPosition * 100);
+  const [isSliding, setIsSliding] = useState(false);
   const [disableControl, setDisableControl] = useState(true);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
 
-  const sliderPosition = isSliding ? value / 100 : newPosition;
+  const sliderPosition =
+    isSliding || (paused && !isSliding) ? value / 100 : newPosition;
   const currentTime = DateTime.fromSeconds(secondsDuration * sliderPosition)
     .toUTC()
     .toFormat('HH:mm:ss');
@@ -143,7 +144,9 @@ export const VideoControl = ({
           >
             <Text style={styles.time}>{currentTime}</Text>
             <Slider
-              value={isSliding ? value : newPosition * 100}
+              value={
+                isSliding || (paused && !isSliding) ? value : newPosition * 100
+              }
               // @ts-ignore
               containerStyle={[
                 styles.slider,

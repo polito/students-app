@@ -3,6 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { useOrientationChange } from 'react-native-orientation-locker';
 
+import {
+  faFolderOpen,
+  faLocationDot,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
+import { ListItem } from '@lib/ui/components/ListItem';
+import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
+import { Row } from '@lib/ui/components/Row';
+import { SectionList } from '@lib/ui/components/SectionList';
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -10,6 +20,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { Lecture } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
@@ -30,7 +41,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const videoLecturesQuery = useGetCourseVideolectures(lecture?.courseId);
   const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
   const [showLecturesInfo, setShowLectureInfo] = useState(true);
-  const live = true;
+  const live = false;
 
   useOrientationChange(o => {
     const orientation = o as string;
@@ -74,64 +85,64 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           videoUrl="https://lucapezzolla.com/20210525.mp4"
           coverUrl={videoLecture?.coverUrl}
         />
-        {/* {showLecturesInfo && ( */}
-        {/*   <> */}
-        {/*     <Row maxWidth noFlex spaceBetween alignCenter> */}
-        {/*       <EventDetails */}
-        {/*         title={lecture?.roomName} */}
-        {/*         type={t('Lecture')} */}
-        {/*         time={lecture.startsAt} */}
-        {/*       /> */}
-        {/*       {live && ( */}
-        {/*         <Row alignEnd noFlex justifyEnd> */}
-        {/*           <LiveIndicator showText /> */}
-        {/*         </Row> */}
-        {/*       )} */}
-        {/*     </Row> */}
-        {/*     <SectionList> */}
-        {/*       <ListItem */}
-        {/*         leadingItem={ */}
-        {/*           <Icon */}
-        {/*             icon={faLocationDot} */}
-        {/*             style={styles.iconStyle} */}
-        {/*             size={fontSizes['2xl']} */}
-        {/*           /> */}
-        {/*         } */}
-        {/*         title={lecture?.roomName} */}
-        {/*         subtitle={'Sede Centrale - piano terra'} */}
-        {/*         onPress={onPressLectureLocation} */}
-        {/*       /> */}
-        {/*       {teacherQuery.data && ( */}
-        {/*         <ListItem */}
-        {/*           leadingItem={ */}
-        {/*             <Icon */}
-        {/*               icon={faUser} */}
-        {/*               style={styles.iconStyle} */}
-        {/*               size={fontSizes['2xl']} */}
-        {/*             /> */}
-        {/*           } */}
-        {/*           title={`${teacherQuery.data?.data?.firstName || ''} ${ */}
-        {/*             teacherQuery.data?.data?.lastName || '' */}
-        {/*           }`} */}
-        {/*           subtitle={t('Teacher Lecture')} */}
-        {/*           onPress={onPressTeacherCard} */}
-        {/*         /> */}
-        {/*       )} */}
-        {/*       <ListItem */}
-        {/*         leadingItem={ */}
-        {/*           <Icon */}
-        {/*             icon={faFolderOpen} */}
-        {/*             style={styles.iconStyle} */}
-        {/*             size={fontSizes['2xl']} */}
-        {/*           /> */}
-        {/*         } */}
-        {/*         title={t('Material')} */}
-        {/*         subtitle={t('lectureScreen.goToMaterial')} */}
-        {/*         onPress={onPressMaterialCard} */}
-        {/*       /> */}
-        {/*     </SectionList> */}
-        {/*   </> */}
-        {/* )} */}
+        {showLecturesInfo && (
+          <>
+            <Row maxWidth noFlex spaceBetween alignCenter>
+              <EventDetails
+                title={lecture?.roomName}
+                type={t('Lecture')}
+                time={lecture?.startsAt}
+              />
+              {live && (
+                <Row alignEnd noFlex justifyEnd>
+                  <LiveIndicator showText />
+                </Row>
+              )}
+            </Row>
+            <SectionList>
+              <ListItem
+                leadingItem={
+                  <Icon
+                    icon={faLocationDot}
+                    style={styles.iconStyle}
+                    size={fontSizes['2xl']}
+                  />
+                }
+                title={lecture?.roomName}
+                subtitle={'Sede Centrale - piano terra'}
+                onPress={onPressLectureLocation}
+              />
+              {teacherQuery.data && (
+                <ListItem
+                  leadingItem={
+                    <Icon
+                      icon={faUser}
+                      style={styles.iconStyle}
+                      size={fontSizes['2xl']}
+                    />
+                  }
+                  title={`${teacherQuery.data?.data?.firstName || ''} ${
+                    teacherQuery.data?.data?.lastName || ''
+                  }`}
+                  subtitle={t('Teacher Lecture')}
+                  onPress={onPressTeacherCard}
+                />
+              )}
+              <ListItem
+                leadingItem={
+                  <Icon
+                    icon={faFolderOpen}
+                    style={styles.iconStyle}
+                    size={fontSizes['2xl']}
+                  />
+                }
+                title={t('Material')}
+                subtitle={t('lectureScreen.goToMaterial')}
+                onPress={onPressMaterialCard}
+              />
+            </SectionList>
+          </>
+        )}
       </ScrollView>
     </>
   );

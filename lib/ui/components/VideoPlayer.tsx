@@ -109,6 +109,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
 
   const onSeekEnd = useCallback(
     (newProgress: number) => {
+      console.debug({ newProgress });
       try {
         const newSeekValue = (newProgress * duration) / 100;
         if (playerRef && playerRef.current) {
