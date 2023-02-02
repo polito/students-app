@@ -25,7 +25,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   const guideSections = useMemo(() => {
     const sections: CourseGuideSection[] = [];
 
-    guideQuery.data?.data.forEach(section => {
+    guideQuery.data?.data?.forEach(section => {
       const content = section.content.replace(/[\f\n]+/g, '\n').trim();
 
       // Remove empty sections
@@ -38,7 +38,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={bottomBarAwareStyles}
+      contentContainerStyle={[bottomBarAwareStyles, { paddingTop: spacing[6] }]}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {guideSections.map((section, i) => (

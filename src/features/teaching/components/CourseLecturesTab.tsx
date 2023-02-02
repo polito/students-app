@@ -34,7 +34,7 @@ import {
   useGetCourseVirtualClassrooms,
 } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatDateTime } from '../../../utils/dates';
+import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 type SectionLectures =
@@ -156,7 +156,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     const renderedSections: Section[] = [];
     let shouldExpand = true;
     availableSections.forEach(section => {
-      if (section.index in lectures) {
+      if (section.index in lectures && lectures[section.index].length) {
         renderedSections.push({
           ...section,
           isExpanded: shouldExpand,
@@ -190,15 +190,6 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     });
   };
 
-  if (!lectures.flat().length) {
-    return (
-      <EmptyState
-        message={t('courseLecturesTab.emptyState')}
-        icon={faChalkboardTeacher}
-      />
-    );
-  }
-
   return (
     <SectionList
       ref={sectionListRef}
@@ -206,6 +197,14 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       sections={sections}
       {...refreshControl}
       stickySectionHeadersEnabled={true}
+      ListEmptyComponent={
+        loadedLectureQueriesCount === 3 && (
+          <EmptyState
+            message={t('courseLecturesTab.emptyState')}
+            icon={faChalkboardTeacher}
+          />
+        )
+      }
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
@@ -247,9 +246,9 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
           <ListItem
             title={lecture.title}
             subtitle={[
-              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
-              lecture.createdAt && formatDateTime(lecture.createdAt),
+              formatDate(lecture.createdAt),
               lecture.duration,
+              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
             ]
               .filter(i => !!i)
               .join(' - ')}

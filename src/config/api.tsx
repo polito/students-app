@@ -37,6 +37,7 @@ export const createApiConfiguration = (token?: string) => {
 
 export const createApiClients = (token?: string) => {
   const configuration = createApiConfiguration(token);
+
   let clients: Partial<ApiContextClientsProps> = {
     auth: new AuthApi(configuration),
   };

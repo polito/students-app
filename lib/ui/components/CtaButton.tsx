@@ -40,6 +40,7 @@ export const CtaButton = ({
   title,
   loading,
   successMessage,
+  disabled,
   destructive = false,
   action,
   icon,
@@ -85,7 +86,7 @@ export const CtaButton = ({
             ? colors.danger[600]
             : colors.primary[600]
         }
-        disabled={loading || showSuccess}
+        disabled={disabled || loading || showSuccess}
         style={[
           styles.button,
           {

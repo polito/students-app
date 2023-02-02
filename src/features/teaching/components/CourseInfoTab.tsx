@@ -10,6 +10,7 @@ import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { Person } from '@polito/api-client/models/Person';
@@ -71,6 +72,10 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
+      <Section style={styles.heading}>
+        <Text variant="heading">{courseQuery.data?.data.name}</Text>
+        <Text variant="caption">{courseQuery.data?.data.shortcode}</Text>
+      </Section>
       <Card style={styles.metricsCard}>
         <Grid>
           <Metric
@@ -137,11 +142,15 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
+    heading: {
+      padding: spacing[5],
+      paddingBottom: 0,
+    },
     metricsCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: spacing[4],
-      marginVertical: spacing[5],
+      marginTop: 0,
       marginBottom: spacing[7],
     },
   });
