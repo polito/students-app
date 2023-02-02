@@ -42,9 +42,9 @@ export const useLogin = () => {
         });
     },
     onSuccess: async data => {
-      const { token, clientId } = data.data;
+      const { token, clientId, username } = data.data;
       await Keychain.setGenericPassword(clientId, token);
-      refreshContext(token);
+      refreshContext({ username, token });
     },
     onError: error => {
       console.debug('loginError', error);
@@ -77,7 +77,10 @@ export const useSwitchCareer = () => {
       authClient.switchCareer({ switchCareerRequest: dto }),
     onSuccess: data => {
       Keychain.resetGenericPassword().then(() => {
-        refreshContext(data.data.token);
+        refreshContext({
+          token: data.data.token,
+          username: data.data.username,
+        });
         Keychain.setGenericPassword(data.data.clientId, data.data.token).then(
           () => queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
         );
