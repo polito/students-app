@@ -35,7 +35,6 @@ export interface VideoPlayerProps {
 
 export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
-  const statusBarHeight = useMemo(() => StatusBar.currentHeight, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const playerRef = useRef<Video>();
@@ -61,6 +60,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         navigation.setOptions({
           headerShown: false,
         });
+        StatusBar.setHidden(true, 'none');
         hideTabBar(navRoot);
         setTimeout(() => {
           Orientation.lockToLandscapeLeft();
@@ -69,6 +69,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         navigation.setOptions({
           headerShown: true,
         });
+        StatusBar.setHidden(false, 'slide');
         displayTabBar(navRoot);
         setTimeout(() => {
           Orientation.lockToPortrait();
@@ -169,7 +170,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           fullscreen &&
             !isIos && {
               ...styles.landscapeView,
-              height: SCREEN_WIDTH - statusBarHeight + 1,
+              height: SCREEN_WIDTH,
             },
         ]}
         source={{

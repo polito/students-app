@@ -1,7 +1,6 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Animated,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableHighlightProps,
@@ -53,7 +52,6 @@ export const VideoControl = ({
   setPlaybackRate,
 }: VideoControlProps) => {
   const styles = useStylesheet(createStyles);
-  const statusBarHeight = useMemo(() => StatusBar.currentHeight, []);
   const [value, setValue] = useState(newPosition * 100);
   const [isSliding, setIsSliding] = useState(false);
   const [disableControl, setDisableControl] = useState(true);
@@ -107,7 +105,7 @@ export const VideoControl = ({
           styles.wrapper,
           isLandscape && {
             ...styles.wrapperLandscape,
-            height: SCREEN_WIDTH - statusBarHeight,
+            height: SCREEN_WIDTH,
           },
         ]}
         onPress={onPressVideoControls}
@@ -220,16 +218,21 @@ const createStyles = ({ spacing }: Theme) =>
     wrapperLandscape: {
       width: SCREEN_HEIGHT,
       height: SCREEN_WIDTH * 0.9,
+      padding: 5,
     },
     playbackRate: {
       color: 'white',
     },
   });
 
-const VideoControlButton = ({ children, ...rest }: TouchableHighlightProps) => {
+const VideoControlButton = ({
+  children,
+  style,
+  ...rest
+}: TouchableHighlightProps) => {
   const stylesButton = useStylesheet(createStylesControl);
   return (
-    <TouchableOpacity style={stylesButton.button} {...rest}>
+    <TouchableOpacity style={[stylesButton.button, style]} {...rest}>
       {children}
     </TouchableOpacity>
   );
@@ -239,11 +242,12 @@ const createStylesControl = ({ shapes }: Theme) =>
   StyleSheet.create({
     button: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      width: shapes.lg * 2,
+      width: shapes.lg * 3,
       borderRadius: shapes.md,
+      padding: 2,
       color: 'white',
       alignItems: 'center',
       justifyContent: 'center',
-      height: 28,
+      height: shapes.lg * 2,
     },
   });
