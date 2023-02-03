@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useOrientationChange } from 'react-native-orientation-locker';
 
 import {
@@ -69,8 +69,6 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     //   },
     // });
   };
-
-  const Component = showLecturesInfo ? ScrollView : View;
 
   return (
     <>

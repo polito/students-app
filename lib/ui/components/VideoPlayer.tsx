@@ -76,6 +76,11 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         }, 10);
       }
     }
+
+    return () => {
+      displayTabBar(navRoot);
+      Orientation.lockToPortrait();
+    };
   }, [fullscreen]);
 
   const speedControls = useMemo(() => {
