@@ -42,6 +42,7 @@ export const AgendaNavigator = () => {
         name="Lecture"
         component={LectureScreen}
         options={{
+          orientation: 'portrait',
           headerTitle: t('common.lecture'),
         }}
       />

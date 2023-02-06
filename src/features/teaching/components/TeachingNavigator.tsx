@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
-import Orientation from 'react-native-orientation-locker';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -54,10 +52,6 @@ export const TeachingNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
-
-  useEffect(() => {
-    Orientation.lockToPortrait();
-  }, []);
 
   return (
     <Stack.Navigator

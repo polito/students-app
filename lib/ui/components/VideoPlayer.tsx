@@ -13,7 +13,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import Orientation from 'react-native-orientation-locker';
 import Video from 'react-native-video';
 
 import { Tab } from '@lib/ui/components/Tab';
@@ -26,7 +25,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
 import { displayTabBar, hideTabBar } from '../../../src/utils/tab-bar';
 
-const isIos = Platform.OS === 'ios';
+const isIos = Platform.OS === 'android';
 
 export interface VideoPlayerProps {
   videoUrl: string;
@@ -56,15 +55,12 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     const navRoot = navigation.getParent();
     if (!isIos) {
       if (fullscreen) {
-        Orientation.lockToLandscapeLeft();
         navigation.setOptions({
           headerShown: false,
+          orientation: 'landscape',
         });
         StatusBar.setHidden(true, 'none');
         hideTabBar(navRoot);
-        setTimeout(() => {
-          Orientation.lockToLandscapeLeft();
-        }, 10);
       } else {
         navigation.setOptions({
           headerShown: true,
@@ -72,14 +68,20 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         StatusBar.setHidden(false, 'slide');
         displayTabBar(navRoot);
         setTimeout(() => {
-          Orientation.lockToPortrait();
+          navigation.setOptions({
+            headerShown: false,
+            orientation: 'portrait',
+          });
         }, 10);
       }
     }
 
     return () => {
       displayTabBar(navRoot);
-      Orientation.lockToPortrait();
+      navigation.setOptions({
+        headerShown: false,
+        orientation: 'portrait',
+      });
     };
   }, [fullscreen]);
 

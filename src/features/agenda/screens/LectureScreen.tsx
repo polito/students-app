@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
-import { useOrientationChange } from 'react-native-orientation-locker';
 
 import {
   faFolderOpen,
@@ -22,6 +21,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import useDeviceOrientation from '../../../core/hooks/useDeviceOrientation';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetLectures } from '../../../core/queries/lectureHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -30,6 +30,7 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route, navigation }: Props) => {
+  const deviceOrientation = useDeviceOrientation();
   const { id } = route.params;
   const { t } = useTranslation();
   const lectureQuery = useGetLectures();
@@ -43,14 +44,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const [showLecturesInfo, setShowLectureInfo] = useState(true);
   const live = false;
 
-  useOrientationChange(o => {
-    const orientation = o as string;
-    if (orientation === 'LANDSCAPE-LEFT') {
+  useEffect(() => {
+    if (deviceOrientation === 'landscape') {
       setShowLectureInfo(() => false);
     } else {
       setShowLectureInfo(() => true);
     }
-  });
+  }, [deviceOrientation]);
 
   const onPressLectureLocation = () => {
     console.debug('onPressLectureLocation');
