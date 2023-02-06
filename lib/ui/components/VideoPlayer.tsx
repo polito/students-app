@@ -25,7 +25,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
 import { displayTabBar, hideTabBar } from '../../../src/utils/tab-bar';
 
-const isIos = Platform.OS === 'android';
+const isIos = Platform.OS === 'ios';
 
 export interface VideoPlayerProps {
   videoUrl: string;
