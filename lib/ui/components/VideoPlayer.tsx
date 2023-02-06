@@ -64,15 +64,10 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
       } else {
         navigation.setOptions({
           headerShown: true,
+          orientation: 'portrait',
         });
         StatusBar.setHidden(false, 'slide');
         displayTabBar(navRoot);
-        setTimeout(() => {
-          navigation.setOptions({
-            headerShown: false,
-            orientation: 'portrait',
-          });
-        }, 10);
       }
     }
 
