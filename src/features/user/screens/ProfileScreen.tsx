@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
+import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
@@ -21,6 +22,7 @@ import {
   MenuView,
   NativeActionEvent,
 } from '@react-native-menu/menu';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -73,6 +75,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
 
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const { mutate: handleLogout, isLoading } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
@@ -80,6 +83,13 @@ export const ProfileScreen = ({ navigation }: Props) => {
 
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
+
+  let bottomBarHeight = 0;
+  try {
+    bottomBarHeight = useBottomTabBarHeight();
+  } catch (e) {
+    // Not available in this context
+  }
 
   useEffect(() => {
     navigation.setOptions({
@@ -92,6 +102,9 @@ export const ProfileScreen = ({ navigation }: Props) => {
       <ScrollView
         refreshControl={<RefreshControl {...refreshControl} />}
         style={scrollViewStyle}
+        contentContainerStyle={{
+          paddingBottom: bottomBarHeight + +spacing['16'],
+        }}
       >
         <Section>
           <Text weight={'bold'} variant={'title'} style={styles.title}>
@@ -100,10 +113,12 @@ export const ProfileScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           <SectionHeader title={t('profileScreen.smartCard')} />
-          <Image
-            style={styles.smartCard}
-            source={{ uri: student?.smartCardPicture }}
-          />
+          <SectionList style={{ marginTop: spacing[3] }}>
+            <ImageLoader
+              imageStyle={styles.smartCard}
+              source={{ uri: student?.smartCardPicture }}
+            />
+          </SectionList>
         </Section>
         <Section>
           <SectionHeader
@@ -135,7 +150,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, fontSizes, shapes }: Theme) =>
+const createStyles = ({ spacing, fontSizes, shapes, colors }: Theme) =>
   StyleSheet.create({
     title: {
       fontSize: fontSizes['3xl'],
@@ -144,12 +159,8 @@ const createStyles = ({ spacing, fontSizes, shapes }: Theme) =>
     listContainer: {
       marginTop: spacing[3],
     },
+    smartCardContainer: {},
     smartCard: {
-      borderRadius: shapes.lg,
-      marginHorizontal: spacing[5],
-      resizeMode: 'contain',
       height: (SCREEN_WIDTH - Number(spacing[10])) / 1.583,
-      width: SCREEN_WIDTH - Number(spacing[10]),
-      marginTop: spacing[2],
     },
   });

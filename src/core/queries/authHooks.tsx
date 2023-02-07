@@ -54,15 +54,14 @@ export const useLogin = () => {
 
 export const useLogout = () => {
   const authClient = useAuthClient();
-  const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
 
   return useMutation({
     mutationFn: () => authClient.logout(),
     onSuccess: async () => {
-      await Keychain.resetGenericPassword();
-      await queryClient.invalidateQueries([]);
       refreshContext();
+      await Keychain.resetGenericPassword();
+      // await queryClient.invalidateQueries([]);
     },
   });
 };

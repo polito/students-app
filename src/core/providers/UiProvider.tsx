@@ -24,7 +24,10 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
         backgroundColor={Platform.select({
           android: uiTheme.colors.primary[700],
         })}
-        barStyle={Platform.select({ android: 'light-content' })}
+        barStyle={Platform.select({
+          android: 'light-content',
+          ios: colorScheme === 'dark' ? 'light-content' : 'dark-content',
+        })}
       />
       <SafeAreaProvider>
         <NavigationContainer theme={navigationTheme}>
