@@ -50,7 +50,10 @@ export const CoursesScreen = () => {
               />
               <SectionList indented>
                 {courses.map(course => (
-                  <CourseListItem key={course.shortcode} course={course} />
+                  <CourseListItem
+                    key={course.shortcode + '' + course.id}
+                    course={course}
+                  />
                 ))}
               </SectionList>
             </Section>
