@@ -139,18 +139,18 @@ export const ProfileScreen = ({ navigation }: Props) => {
             <ProfileNotificationItem />
           </SectionList>
         </Section>
+        <CtaButton
+          icon={faSignOut}
+          title={t('common.logout')}
+          action={() => handleLogout()}
+          loading={isLoading}
+        />
       </ScrollView>
-      <CtaButton
-        icon={faSignOut}
-        title={t('common.logout')}
-        action={() => handleLogout()}
-        loading={isLoading}
-      />
     </Col>
   );
 };
 
-const createStyles = ({ spacing, fontSizes, shapes, colors }: Theme) =>
+const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     title: {
       fontSize: fontSizes['3xl'],
