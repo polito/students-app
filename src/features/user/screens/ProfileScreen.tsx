@@ -87,6 +87,8 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const student = useGetMeQuery?.data?.data;
   const scrollViewStyle = useScrollViewStyle();
 
+  console.debug('student', student);
+
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
 
@@ -119,22 +121,12 @@ export const ProfileScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           <SectionHeader title={t('profileScreen.smartCard')} />
-          <SectionList style={{ marginTop: spacing[3] }}>
-            {Platform.OS === 'ios' && (
-              <ImageLoader
-                imageStyle={styles.smartCard}
-                source={{ uri: student?.smartCardPicture }}
-              />
-            )}
-          </SectionList>
-          {Platform.OS === 'android' && (
-            <View>
-              <ImageLoader
-                imageStyle={styles.smartCard}
-                source={{ uri: student?.smartCardPicture }}
-              />
-            </View>
-          )}
+          <View style={{ marginTop: Platform.select({ ios: spacing[3] }) }}>
+            <ImageLoader
+              imageStyle={styles.smartCard}
+              source={{ uri: student?.smartCardPicture }}
+            />
+          </View>
         </Section>
         <Section>
           <SectionHeader
@@ -177,6 +169,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     smartCardContainer: {},
     smartCard: {
+      // width: SCREEN_WIDTH - (+spacing[4]*2)
       height: (SCREEN_WIDTH - Number(spacing[10])) / 1.583,
     },
   });
