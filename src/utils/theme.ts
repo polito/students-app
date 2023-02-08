@@ -27,6 +27,7 @@ const propertyBind: Record<string, string> = {
   pv: 'paddingVertical',
   br: 'borderRadius',
   bgColor: 'backgroundColor',
+  bg: 'backgroundColor',
 };
 
 const isValidStyleProp = (propStyle: string) => {
@@ -48,7 +49,7 @@ const stylePropKey = (propStyle: string): string => {
   return propertyBind[property] ? propertyBind[property] : property;
 };
 
-export const usePropsStyle = (propsStyle: { [key: string]: any }): any => {
+export const usePropsStyle = (propsStyle: Record<string, any>): any => {
   return useMemo((): Record<string, string | number> => {
     return Object.keys(propsStyle)
       .filter(isValidStyleProp)
@@ -57,5 +58,5 @@ export const usePropsStyle = (propsStyle: { [key: string]: any }): any => {
         acc[key] = stylePropValue(value);
         return acc;
       }, {});
-  }, [propsStyle]);
+  }, []);
 };

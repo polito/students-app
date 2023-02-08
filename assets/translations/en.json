@@ -31,6 +31,7 @@
     "cancel": "Cancel",
     "color": "Color",
     "course": "Course",
+    "logout": "Logout",
     "course_plural": "Courses",
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} ECTS",
@@ -188,7 +189,12 @@
     "title": "Places"
   },
   "profileScreen": {
-    "title": "Profile"
+    "title": "Profile",
+    "settings": "Settings",
+    "smartCard": "Smartcard",
+    "course": "Couse",
+    "notifications": "Notifications archive",
+    "trainingOffer": "Training offer"
   },
   "sectionHeader": {
     "cta": "See all"

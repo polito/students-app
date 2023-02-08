@@ -23,6 +23,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "logout": "Logout",
     "contact": "Contatto",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
@@ -187,9 +188,6 @@
   "placesScreen": {
     "title": "Luoghi"
   },
-  "profileScreen": {
-    "title": "Profilo"
-  },
   "personScreen": {
     "role": "Ruolo",
     "department": "Dipartimento",
@@ -207,6 +205,17 @@
   },
   "teachingScreen": {
     "title": "Didattica"
+  },
+  "notificationsScreen": {
+    "title": "Archivio notifiche"
+  },
+  "profileScreen": {
+    "title": "Profilo",
+    "settings": "Impostazioni",
+    "smartCard": "Smartcard",
+    "course": "Corso di laurea",
+    "notifications": "Archivio notifiche",
+    "trainingOffer": "Offerta formativa"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",

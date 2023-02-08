@@ -18,6 +18,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface Props extends TouchableHighlightProps {
   adjustInsets?: boolean;
+  icon?: any;
   absolute?: boolean;
   title: string;
   loading?: boolean;
@@ -42,9 +43,10 @@ export const CtaButton = ({
   disabled,
   destructive = false,
   action,
+  icon,
   ...rest
 }: Props) => {
-  const { colors, fontSizes } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const [showSuccess, setShowSuccess] = useState(false);
   const successMessageRef = useRef<string>();
@@ -120,7 +122,17 @@ export const CtaButton = ({
                 )}
               </View>
             ) : (
-              <Text style={styles.textStyle}>{title}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {icon && (
+                  <Icon
+                    icon={icon}
+                    size={fontSizes.xl}
+                    color={colors.text[100]}
+                    style={{ marginRight: spacing['2'] }}
+                  />
+                )}
+                <Text style={styles.textStyle}>{title}</Text>
+              </View>
             )}
           </View>
         </View>
