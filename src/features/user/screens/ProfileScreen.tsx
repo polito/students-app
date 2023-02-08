@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -114,11 +120,21 @@ export const ProfileScreen = ({ navigation }: Props) => {
         <Section>
           <SectionHeader title={t('profileScreen.smartCard')} />
           <SectionList style={{ marginTop: spacing[3] }}>
-            <ImageLoader
-              imageStyle={styles.smartCard}
-              source={{ uri: student?.smartCardPicture }}
-            />
+            {Platform.OS === 'ios' && (
+              <ImageLoader
+                imageStyle={styles.smartCard}
+                source={{ uri: student?.smartCardPicture }}
+              />
+            )}
           </SectionList>
+          {Platform.OS === 'android' && (
+            <View>
+              <ImageLoader
+                imageStyle={styles.smartCard}
+                source={{ uri: student?.smartCardPicture }}
+              />
+            </View>
+          )}
         </Section>
         <Section>
           <SectionHeader
