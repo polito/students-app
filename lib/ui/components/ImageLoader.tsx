@@ -10,7 +10,7 @@ export const ImageLoader = ({ source, imageStyle }: Props) => {
   const [loading, setLoading] = useState(true);
 
   const onLoadEnd = () => setLoading(() => false);
-  const onLoadStart = () => setLoading(() => true);
+  // const onLoadStart = () => setLoading(() => true);
 
   return (
     <View style={styles.container}>
@@ -18,7 +18,7 @@ export const ImageLoader = ({ source, imageStyle }: Props) => {
         resizeMode={'contain'}
         style={imageStyle}
         onLoadEnd={onLoadEnd}
-        onLoadStart={onLoadStart}
+        // onLoadStart={onLoadStart}
         source={source}
       />
       {loading && <ActivityIndicator style={styles.activityIndicator} />}

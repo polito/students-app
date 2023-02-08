@@ -50,16 +50,16 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const { mutate } = useSwitchCareer();
   const { colors } = useTheme();
   const username = student?.username || '';
-  const allCareersUsernames = student?.allCareerUsernames || [];
+  const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
   const actions = useMemo((): MenuAction[] => {
-    return allCareersUsernames.map(careerUsername => {
+    return allCareerIds.map(careerId => {
       return {
-        id: careerUsername,
-        title: careerUsername,
-        state: careerUsername === username ? 'on' : undefined,
+        id: careerId,
+        title: careerId,
+        state: careerId === username ? 'on' : undefined,
       };
     });
-  }, [allCareersUsernames, username]);
+  }, [allCareerIds, username]);
 
   const onPressAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
     mutate({ username: event });
@@ -71,7 +71,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
         <Text variant={'link'} style={{ marginRight: 5 }}>
           {username}
         </Text>
-        {allCareersUsernames?.length > 0 && (
+        {allCareerIds?.length > 0 && (
           <Icon icon={faAngleDown} color={colors.primary[500]} />
         )}
       </Row>
