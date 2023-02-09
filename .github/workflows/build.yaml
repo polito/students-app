@@ -20,6 +20,11 @@ on:
         description: Gather artifacts
         required: true
         default: false
+      upload_to_testflight:
+        type: boolean
+        description: Upload to TestFlight
+        required: true
+        default: false
   repository_dispatch:
     types: [deploy-command]
 
@@ -57,9 +62,12 @@ jobs:
 
         if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
           echo "publish_artifacts=${{ github.event.inputs.publish_artifacts }}" >> $GITHUB_OUTPUT
+          echo "push_to_testflight=${{ github.event.inputs.push_to_testflight }}" >> $GITHUB_OUTPUT
         elif [[ "${{ steps.version.outputs.version }}" != "" ]]; then
           echo "publish_artifacts=true" >> $GITHUB_OUTPUT
+          echo "push_to_testflight=true" >> $GITHUB_OUTPUT
         fi
+
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup .npmrc
@@ -99,6 +107,7 @@ jobs:
       CI: "true"
       MATCH_GIT_PRIVATE_KEY: "./github_access.pk"
       GYM_SILENT: "true"
+      IOS_TESTFLIGHT_DO_PUSH: ${{ needs.configure.outputs.push_to_testflight }}
 
     needs: configure
     runs-on: [self-hosted, macos-12]
