@@ -23,8 +23,8 @@ export const LoginScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { mutate: login, isLoading } = useLogin();
-  const [username, setUsername] = useState('S251409');
-  const [password, setPassword] = useState('04051980AA');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const passwordRef = useRef<TextInput>();
 
   const handleLogin = () => login({ username, password });
@@ -76,6 +76,7 @@ export const LoginScreen = () => {
               action={handleLogin}
               loading={isLoading}
               successMessage={t('loginScreen.ctaSuccessMessage')}
+              disabled={!username?.length || !password?.length}
             />
           </Section>
         </TouchableWithoutFeedback>

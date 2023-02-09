@@ -1,6 +1,6 @@
 import { useHeaderHeight } from '@react-navigation/elements';
 
-import { IS_IOS, SCREEN_WIDTH } from '../../utils/conts';
+import { IS_IOS, SCREEN_WIDTH } from '../../core/constants';
 
 export const useScrollViewStyle = () => {
   const headerHeight = useHeaderHeight();

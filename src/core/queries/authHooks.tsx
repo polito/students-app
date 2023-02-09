@@ -37,9 +37,7 @@ export const useLogin = () => {
             manufacturer,
           };
         })
-        .then(() => {
-          return authClient.login({ loginRequest: dto });
-        });
+        .then(() => authClient.login({ loginRequest: dto }));
     },
     onSuccess: async data => {
       const { token, clientId, username } = data.data;

@@ -31,11 +31,11 @@ import {
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { IS_ANDROID, SCREEN_WIDTH } from '../../../core/constants';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { SCREEN_WIDTH } from '../../../utils/conts';
 import {
   ProfileNotificationItem,
   ProfileSettingItem,
@@ -87,10 +87,12 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const student = useGetMeQuery?.data?.data;
   const scrollViewStyle = useScrollViewStyle();
 
-  console.debug('student', student);
-
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
+  const firstEnrollmentYear = student?.firstEnrollmentYear;
+  const enrollmentYear = student
+    ? `${firstEnrollmentYear}/${firstEnrollmentYear + 1}`
+    : '...';
 
   let bottomBarHeight = 0;
   try {
@@ -137,9 +139,9 @@ export const ProfileScreen = ({ navigation }: Props) => {
           />
           <SectionList>
             <ListItem
-              title={t('profileScreen.settings')}
-              subtitle={'Area di immatricolazione'}
-              // linkTo={'Settings'}
+              title={student?.degreeName}
+              subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+              // linkTo={'TODO'}
             />
           </SectionList>
           <SectionList>
@@ -150,7 +152,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
         <CtaButton
           icon={faSignOut}
           title={t('common.logout')}
-          action={() => handleLogout()}
+          action={handleLogout}
           loading={isLoading}
         />
       </ScrollView>
@@ -163,13 +165,14 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     title: {
       fontSize: fontSizes['3xl'],
       paddingHorizontal: spacing[5],
+      paddingTop: spacing[IS_ANDROID ? 4 : 1],
     },
     listContainer: {
       marginTop: spacing[3],
     },
     smartCardContainer: {},
     smartCard: {
-      // width: SCREEN_WIDTH - (+spacing[4]*2)
       height: (SCREEN_WIDTH - Number(spacing[10])) / 1.583,
+      marginVertical: spacing[IS_ANDROID ? 3 : 1],
     },
   });

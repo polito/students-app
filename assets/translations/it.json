@@ -215,6 +215,7 @@
     "smartCard": "Smartcard",
     "course": "Corso di laurea",
     "notifications": "Archivio notifiche",
+    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "trainingOffer": "Offerta formativa"
   },
   "transcriptScreen": {

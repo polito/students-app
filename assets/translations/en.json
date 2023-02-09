@@ -52,6 +52,7 @@
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
+    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "ok": "Ok",
     "options": "Options",
     "period": "Period",
