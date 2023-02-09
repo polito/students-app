@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
+import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -159,6 +160,15 @@ export const TeachingScreen = ({ navigation }: Props) => {
               </TouchableHighlight>
             )}
           </Card>
+        </Section>
+        <Section>
+          <SectionHeader title={t('common.services')} />
+          <SectionList>
+            <ListItem
+              title={t('common.tickets')}
+              linkTo={{ screen: 'Tickets' }}
+            />
+          </SectionList>
         </Section>
       </View>
     </ScrollView>

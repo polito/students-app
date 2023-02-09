@@ -1,5 +1,4 @@
 import {
-  Platform,
   StyleProp,
   TextStyle,
   TouchableHighlight,
@@ -14,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { IS_IOS } from '../../../src/utils/const';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -143,9 +143,7 @@ export const ListItem = ({
             )
           ) : null}
         </View>
-        {!trailingItem &&
-        (linkTo || isNavigationAction) &&
-        Platform.OS === 'ios' ? (
+        {!trailingItem && (linkTo || isNavigationAction) && IS_IOS ? (
           <Icon
             icon={faChevronRight}
             color={colors.secondaryText}

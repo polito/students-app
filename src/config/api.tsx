@@ -11,6 +11,7 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
+  TicketsApi,
 } from '@polito/api-client';
 
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
@@ -51,6 +52,7 @@ export const createApiClients = (token?: string) => {
       people: new PeopleApi(configuration),
       places: new PlacesApi(configuration),
       student: new StudentApi(configuration),
+      tickets: new TicketsApi(configuration),
     };
   }
 

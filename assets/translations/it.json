@@ -23,6 +23,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "tickets": "Ticket",
     "contact": "Contatto",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
@@ -189,6 +190,13 @@
   },
   "profileScreen": {
     "title": "Profilo"
+  },
+  "ticketsScreen": {
+    "title": "Ticket",
+    "opened": "Ticket aperti",
+    "closed": "Ticket chiusi",
+    "openEmptyState": "Non ci sono ticket aperti",
+    "closedEmptyState": "Non ci sono ticket chiusi"
   },
   "personScreen": {
     "role": "Ruolo",
