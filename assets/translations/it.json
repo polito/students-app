@@ -54,6 +54,7 @@
     "notifications": "Notifiche",
     "ok": "Ok",
     "options": "Opzioni",
+    "confirm": "Conferma",
     "period": "Semestre",
     "preferences": "Preferenze",
     "refresh": "Aggiorna",
@@ -201,7 +202,8 @@
   },
   "tickets": {
     "menuAction": "Azioni ticket",
-    "close": "Close ticket"
+    "close": "Close ticket",
+    "closeTip": "Sei sicuro di voler chiudere questo ticket?",
   },
   "personScreen": {
     "role": "Ruolo",

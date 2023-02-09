@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
@@ -27,16 +28,21 @@ interface Props {
 export const TicketListItem = ({ ticket }: Props) => {
   const { fontSizes, colors, spacing } = useTheme();
   const { t } = useTranslation();
-  console.debug({ ticket });
+  const markTicketAsClosedEnabled = ticket?.status !== 'closed';
 
-  const actions = [
-    {
-      title: t('tickets.close'),
-      color: 'red',
-      image: 'trash.fill',
-      imageColor: 'red',
-    },
-  ];
+  const actions = useMemo(() => {
+    if (!markTicketAsClosedEnabled) {
+      return [];
+    }
+    return [
+      {
+        title: t('tickets.close'),
+        color: 'red',
+        image: 'trash.fill',
+        imageColor: 'red',
+      },
+    ];
+  }, [markTicketAsClosedEnabled]);
 
   const UnReadCount = () => {
     return (
@@ -58,11 +64,15 @@ export const TicketListItem = ({ ticket }: Props) => {
   };
 
   const onPressCloseTicket = () => {
-    Alert.alert(t('tickets.close'), t('tickets.close'), [
+    Alert.alert(t('tickets.close'), t('tickets.closeTip'), [
       {
-        text: 'Confirm',
-        onPress: () => console.debug('Cancel Pressed'),
-        style: 'cancel',
+        text: t('common.cancel'),
+        onPress: () => console.debug('cancel'),
+      },
+      {
+        text: t('common.confirm'),
+        onPress: () => {},
+        style: 'destructive',
       },
     ]);
   };
@@ -72,7 +82,7 @@ export const TicketListItem = ({ ticket }: Props) => {
       title={t('tickets.menuAction')}
       actions={actions}
       onPressAction={onPressCloseTicket}
-      shouldOpenOnLongPress={!IS_IOS}
+      shouldOpenOnLongPress={IS_IOS}
     >
       <ListItem
         linkTo={{
@@ -96,7 +106,7 @@ export const TicketListItem = ({ ticket }: Props) => {
               ]}
             />
             {ticket.unreadCount > 0 && <UnReadCount />}
-            {IS_IOS ? (
+            {IS_IOS && (
               <Icon
                 icon={faChevronRight}
                 color={colors.secondaryText}
@@ -104,7 +114,8 @@ export const TicketListItem = ({ ticket }: Props) => {
                   marginRight: -spacing[1],
                 }}
               />
-            ) : (
+            )}
+            {!IS_IOS && markTicketAsClosedEnabled && (
               <MenuView
                 title={t('tickets.menuAction')}
                 actions={actions}
