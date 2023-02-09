@@ -208,6 +208,8 @@
   "ticketFaqsScreen": {
     "title": "FAQ",
     "findFAQ": "Cerca tra le FAQ",
+    "search": "Paola chiave",
+    "emptyState": "Nessun risutato trovato",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta \ntra le FAQ.\nInserisci delle parole chiave da ricercare."
   },
   "personScreen": {

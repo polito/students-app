@@ -61,10 +61,25 @@ export const useGetTicketTopics = () => {
   );
 };
 
+// export const useSearchTicketFaqs = (search: string) => {
+//   const ticketsClient = useTicketsClient();
+//
+//
+//   return useQuery(prefixKey([TICKETS_FAQS_QUERY_KEY]), () =>
+//     ticketsClient.searchTicketFAQs({ search }),
+//   );
+// };
+
 export const useSearchTicketFaqs = (search: string) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(prefixKey([TICKETS_FAQS_QUERY_KEY]), () =>
-    ticketsClient.searchTicketFAQs({ search }),
+  return useQuery(
+    [TICKETS_FAQS_QUERY_KEY],
+    () => ticketsClient.searchTicketFAQs({ search }),
+    {
+      enabled: false,
+      retryOnMount: false,
+      staleTime: 0,
+    },
   );
 };
