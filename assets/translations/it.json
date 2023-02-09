@@ -203,7 +203,12 @@
   "tickets": {
     "menuAction": "Azioni ticket",
     "close": "Close ticket",
-    "closeTip": "Sei sicuro di voler chiudere questo ticket?",
+    "closeTip": "Sei sicuro di voler chiudere questo ticket?"
+  },
+  "ticketFaqsScreen": {
+    "title": "FAQ",
+    "findFAQ": "Cerca tra le FAQ",
+    "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta \ntra le FAQ.\nInserisci delle parole chiave da ricercare."
   },
   "personScreen": {
     "role": "Ruolo",

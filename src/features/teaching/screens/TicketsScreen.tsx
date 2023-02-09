@@ -9,6 +9,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { orderBy, slice } from 'lodash';
 
@@ -17,19 +18,26 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { IS_IOS } from '../../../utils/const';
+import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
-export const TicketsScreen = () => {
+interface Props {
+  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Tickets'>;
+}
+
+export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
 
-  const handleOpenNewTicket = () => {};
+  const handleOpenNewTicket = () => {
+    navigation.navigate('TicketFaqs');
+  };
 
   const TicketsOpened = () => {
-    const openTickets = ticketsQuery?.data?.data.filter(
+    const openTickets = ticketsQuery?.data?.data?.filter(
       ticket => ticket.status !== 'closed',
     );
     return (

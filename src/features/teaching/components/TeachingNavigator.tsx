@@ -21,6 +21,7 @@ import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
+import { TicketFaqsScreen } from '../screens/TicketFaqs';
 import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
@@ -48,6 +49,7 @@ export type TeachingStackParamList = {
   Transcript: undefined;
   Tickets: undefined;
   Ticket: { id: number };
+  TicketFaqs: undefined;
 };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -198,10 +200,9 @@ export const TeachingNavigator = () => {
         name="Tickets"
         component={TicketsScreen}
         options={{
-          headerTitle: t('ticketsScreen.title'),
+          headerLeft: () => <HeaderLogo />,
           headerLargeTitle: false,
-          headerShadowVisible: false,
-          headerTransparent: Platform.select({ ios: true }),
+          // headerTitle: t('teachingScreen.title'),
         }}
       />
       <Stack.Screen
@@ -209,6 +210,14 @@ export const TeachingNavigator = () => {
         component={TicketScreen}
         options={{
           headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="TicketFaqs"
+        component={TicketFaqsScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('ticketFaqsScreen.title'),
         }}
       />
       <Stack.Screen

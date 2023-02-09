@@ -5,6 +5,8 @@ import { prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const TICKETS_QUERY_KEY = 'tickets';
+export const TICKETS_TOPICS_QUERY_KEY = 'topics';
+export const TICKETS_FAQS_QUERY_KEY = 'faqs';
 
 const useTicketsClient = (): TicketsApi => {
   const {
@@ -49,4 +51,20 @@ export const useMarkTicketAsRead = (ticketId: number) => {
       return client.invalidateQueries([TICKETS_QUERY_KEY]);
     },
   });
+};
+
+export const useGetTicketTopics = () => {
+  const ticketsClient = useTicketsClient();
+
+  return useQuery(prefixKey([TICKETS_TOPICS_QUERY_KEY]), () =>
+    ticketsClient.getTicketTopics(),
+  );
+};
+
+export const useSearchTicketFaqs = (search: string) => {
+  const ticketsClient = useTicketsClient();
+
+  return useQuery(prefixKey([TICKETS_FAQS_QUERY_KEY]), () =>
+    ticketsClient.searchTicketFAQs({ search }),
+  );
 };
