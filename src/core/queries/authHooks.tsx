@@ -1,10 +1,12 @@
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
+import { STUDENT_QUERY_KEY } from './studentHooks';
 
 const useAuthClient = (): AuthApi => {
   const {
@@ -15,49 +17,71 @@ const useAuthClient = (): AuthApi => {
 
 export const useLogin = () => {
   const authClient = useAuthClient();
+  const { refreshContext } = useApiContext();
 
-  return useMutation((dto: LoginRequest) => {
-    dto.client = {
-      name: 'Students app',
-    };
-    dto.device = {
-      name: 'S10+ di Luca',
-      platform: 'Android',
-      version: '12',
-      model: 'S10',
-      manufacturer: 'Samsung',
-    };
+  return useMutation({
+    mutationFn: (dto: LoginRequest) => {
+      dto.client = { name: 'Students app' };
 
-    return Promise.all([
-      DeviceInfo.getDeviceName(),
-      DeviceInfo.getModel(),
-      DeviceInfo.getManufacturer(),
-    ])
-      .then(([name, model, manufacturer]) => {
-        dto.device = {
-          name,
-          platform: Platform.OS,
-          version: `${Platform.Version}`,
-          model,
-          manufacturer,
-        };
-      })
-      .then(() => {
-        return authClient.login({ loginRequest: dto });
-      });
+      return Promise.all([
+        DeviceInfo.getDeviceName(),
+        DeviceInfo.getModel(),
+        DeviceInfo.getManufacturer(),
+      ])
+        .then(([name, model, manufacturer]) => {
+          dto.device = {
+            name,
+            platform: Platform.OS,
+            version: `${Platform.Version}`,
+            model,
+            manufacturer,
+          };
+        })
+        .then(() => authClient.login({ loginRequest: dto }));
+    },
+    onSuccess: async data => {
+      const { token, clientId, username } = data.data;
+      await Keychain.setGenericPassword(clientId, token);
+      refreshContext({ username, token });
+    },
+    onError: error => {
+      console.debug('loginError', error);
+    },
   });
 };
 
 export const useLogout = () => {
   const authClient = useAuthClient();
+  const { refreshContext } = useApiContext();
 
-  return useMutation(() => authClient.logout());
+  return useMutation({
+    mutationFn: () => authClient.logout(),
+    onSuccess: async () => {
+      refreshContext();
+      await Keychain.resetGenericPassword();
+      // await queryClient.invalidateQueries([]);
+    },
+  });
 };
 
 export const useSwitchCareer = () => {
   const authClient = useAuthClient();
+  const queryClient = useQueryClient();
+  const { refreshContext } = useApiContext();
 
-  return useMutation((dto: SwitchCareerRequest) =>
-    authClient.switchCareer({ switchCareerRequest: dto }),
-  );
+  return useMutation({
+    mutationFn: (dto?: SwitchCareerRequest) =>
+      authClient.switchCareer({ switchCareerRequest: dto }),
+    onSuccess: data => {
+      Keychain.resetGenericPassword().then(() => {
+        refreshContext({
+          token: data.data.token,
+          username: data.data.username,
+        });
+        Keychain.setGenericPassword(data.data.clientId, data.data.token).then(
+          () => queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
+        );
+      });
+    },
+  });
 };
