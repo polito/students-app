@@ -18,6 +18,7 @@ default_platform(:ios)
 platform :ios do
   before_all do
     ENV["ENTRY_FILE"] = "index.tsx"
+    ENV["PATH"] = "/usr/local/opt/ccache/libexec/;"+ENV["PATH"]
   end
 
   desc "Push a new beta build to TestFlight"
@@ -26,6 +27,6 @@ platform :ios do
     #increment_build_number(xcodeproj: "students.xcodeproj")
     sync_code_signing(type: "appstore", readonly: true)
     build_app(scheme: "students",export_method: "app-store")
-    # upload_to_testflight(skip_submission: true, submit_beta_review: false)
+    upload_to_testflight(skip_submission: true, submit_beta_review: false, apple_id: "6443913305") if ENV['IOS_TESTFLIGHT_DO_PUSH']
   end
 end
