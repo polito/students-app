@@ -199,6 +199,10 @@
     "closedEmptyState": "Non ci sono ticket chiusi",
     "addNew": "Aggiungi nuovo"
   },
+  "tickets": {
+    "menuAction": "Azioni ticket",
+    "close": "Close ticket"
+  },
   "personScreen": {
     "role": "Ruolo",
     "department": "Dipartimento",
