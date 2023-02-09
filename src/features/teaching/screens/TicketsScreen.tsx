@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView } from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { Icon } from '@lib/ui/components/Icon';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -13,6 +16,7 @@ import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareSt
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
+import { IS_IOS } from '../../../utils/const';
 import { TicketListItem } from '../components/TicketListItem';
 
 export const TicketsScreen = () => {
@@ -21,6 +25,8 @@ export const TicketsScreen = () => {
   const scrollViewStyles = useScrollViewStyle();
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
+
+  const handleOpenNewTicket = () => {};
 
   const TicketsOpened = () => {
     const openTickets = ticketsQuery?.data?.data.filter(
@@ -57,7 +63,7 @@ export const TicketsScreen = () => {
     return (
       <Section>
         <SectionHeader
-          title={t('ticketsScreen.opened')}
+          title={t('ticketsScreen.closed')}
           linkTo={
             closedTickets?.length > 3
               ? { screen: 'TicketList', params: { status: 'closed' } }
@@ -77,7 +83,7 @@ export const TicketsScreen = () => {
             </Section>
           ) : (
             <EmptyState
-              message={t('ticketsScreen.openEmptyState')}
+              message={t('ticketsScreen.closedEmptyState')}
               icon={faComments}
             />
           ))}
@@ -86,12 +92,21 @@ export const TicketsScreen = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
-      refreshControl={<RefreshControl {...refreshControl} />}
-    >
-      <TicketsOpened />
-      <TicketsClosed />
-    </ScrollView>
+    <>
+      <ScrollView
+        contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
+        refreshControl={<RefreshControl {...refreshControl} />}
+      >
+        <TicketsOpened />
+        <TicketsClosed />
+      </ScrollView>
+      <CtaButton
+        absolute={true}
+        adjustInsets={IS_IOS}
+        title={t('ticketsScreen.addNew')}
+        action={handleOpenNewTicket}
+        icon={<Icon icon={faPlus} size={20} color="white" />}
+      />
+    </>
   );
 };

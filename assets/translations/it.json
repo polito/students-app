@@ -196,7 +196,8 @@
     "opened": "Ticket aperti",
     "closed": "Ticket chiusi",
     "openEmptyState": "Non ci sono ticket aperti",
-    "closedEmptyState": "Non ci sono ticket chiusi"
+    "closedEmptyState": "Non ci sono ticket chiusi",
+    "addNew": "Aggiungi nuovo"
   },
   "personScreen": {
     "role": "Ruolo",

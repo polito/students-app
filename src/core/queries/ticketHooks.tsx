@@ -20,3 +20,11 @@ export const useGetTickets = () => {
     ticketsClient.getTickets(),
   );
 };
+
+export const useGetTicket = (ticketId: number) => {
+  const ticketsClient = useTicketsClient();
+
+  return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
+    ticketsClient.getTicket({ ticketId }),
+  );
+};

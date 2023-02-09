@@ -41,7 +41,7 @@ export const TicketListItem = ({ ticket }: Props) => {
   return (
     <ListItem
       linkTo={{
-        screen: 'Exam',
+        screen: 'Ticket',
         params: { id: ticket.id },
       }}
       title={ticket.subject}

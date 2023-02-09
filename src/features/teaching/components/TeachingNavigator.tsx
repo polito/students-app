@@ -21,6 +21,7 @@ import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
+import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
 
@@ -46,6 +47,7 @@ export type TeachingStackParamList = {
   Exam: { id: number };
   Transcript: undefined;
   Tickets: undefined;
+  Ticket: { id: number };
 };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -200,6 +202,13 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerTransparent: Platform.select({ ios: true }),
+        }}
+      />
+      <Stack.Screen
+        name="Ticket"
+        component={TicketScreen}
+        options={{
+          headerLargeTitle: false,
         }}
       />
       <Stack.Screen
