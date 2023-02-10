@@ -1,12 +1,14 @@
 {
   "agendaScreen": {
-    "title": "Agenda"
+    "title": "Agenda",
+    "backToToday": "Torna a oggi"
   },
   "colors": {
     "amber": "Amber",
     "blue": "Blue",
     "cyan": "Cyan",
     "darkBlue": "Dark blue",
+    "darkOrange": "Dark orange",
     "emerald": "Elemerald",
     "fuchsia": "Fuchsia",
     "green": "Green",
@@ -27,9 +29,11 @@
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
+    "language": "Language",
     "booking_plural": "Bookings",
     "cancel": "Cancel",
     "color": "Color",
+    "cleanCourseFiles": "Remove all course files",
     "course": "Course",
     "logout": "Logout",
     "course_plural": "Courses",
@@ -38,6 +42,10 @@
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
+    "it": "Italian",
+    "theme": "Theme",
+    "en": "English",
+    "system": "System",
     "done": "Done",
     "download": "Download",
     "error": "Error",
@@ -141,6 +149,11 @@
     "emptyState": "There are no notices",
     "title": "Notices"
   },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "Sistem"
+  },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
     "cleanCourseFiles": "Clean course files",
@@ -156,9 +169,14 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
-    "emptyState": "There are no active courses",
+    "emptyState": "No courses available",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses"
+  },
+  "notifications": {
+    "important": "Important",
+    "events": "Events",
+    "reservationPresence": "Reservations"
   },
   "examScreen": {
     "ctaBook": "Book exam",
