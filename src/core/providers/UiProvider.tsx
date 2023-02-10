@@ -12,8 +12,9 @@ import { lightTheme } from '../themes/light';
 
 export const UiProvider = ({ children }: PropsWithChildren) => {
   let { colorScheme } = usePreferencesContext();
-  if (!colorScheme) {
-    colorScheme = useColorScheme();
+  const systemColorSchema = useColorScheme();
+  if (!colorScheme || colorScheme === 'system') {
+    colorScheme = systemColorSchema;
   }
   const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
   const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);

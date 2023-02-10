@@ -1,6 +1,7 @@
 {
   "agendaScreen": {
-    "title": "Agenda"
+    "title": "Agenda",
+    "backToToday": "Torna a oggi"
   },
   "colors": {
     "amber": "Ambra",
@@ -9,6 +10,7 @@
     "darkBlue": "Blu scuro",
     "emerald": "Smeraldo",
     "fuchsia": "Fucsia",
+    "darkOrange": "Arancione scuro",
     "green": "Verde",
     "indigo": "Indigo",
     "lightBlue": "Blu chiaro",
@@ -28,11 +30,17 @@
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
+    "language": "Lingua",
     "booking_plural": "Prenotazioni",
     "cancel": "Annulla",
     "color": "Colore",
+    "cleanCourseFiles": "Rimuovi file dei corsi",
     "course": "Corso",
+    "it": "Italiano",
+    "en": "Inglese",
+    "system": "Di sistema",
     "course_plural": "Corsi",
+    "theme": "Tema",
     "credits": "Crediti",
     "creditsWithUnit": "{{credits}} CFU",
     "deadline": "Scadenza",
@@ -50,6 +58,7 @@
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "notice": "Avviso",
+    "cache": "Cache",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
     "ok": "Ok",
@@ -76,6 +85,11 @@
     "ctaDeletePage": "Elimina",
     "title": "Crea PDF"
   },
+  "theme": {
+    "dark": "Scuro",
+    "light": "Chiaro",
+    "system": "Di sistema"
+  },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Invia",
     "descriptionLabel": "Descrizione elaborato",
@@ -86,6 +100,8 @@
     "backTitle": "Scegli file",
     "ctaCreatePDF": "Scansiona un documento",
     "ctaCreatePDFSubtitle": "Crea un file pdf",
+    "ctaTakePicture": "Scatta una foto",
+    "ctaTakePictureSubtitle": "Con la fotocamera del telefono",
     "ctaUploadFile": "Carica un file",
     "ctaUploadFileSubtitle": "Sul tuo dispositivo o dal cloud",
     "title": "Carica elaborato"
@@ -159,6 +175,11 @@
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi"
   },
+  "notifications": {
+    "important": "Importanti",
+    "events": "Eventi e iniziative",
+    "reservationPresence": "Prenotazione presenza"
+  },
   "examScreen": {
     "ctaBook": "Prenota esame",
     "ctaBookSuccess": "Esame prenotato",
@@ -201,7 +222,8 @@
     "cta": "Vedi tutto"
   },
   "settingsScreen": {
-    "title": "Impostazioni"
+    "title": "Impostazioni",
+    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare"
   },
   "teachingScreen": {
     "title": "Didattica"
