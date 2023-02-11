@@ -9,7 +9,9 @@ import {
   View,
 } from 'react-native';
 
+import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { Card } from '@lib/ui/components/Card';
+import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -165,6 +167,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionHeader title={t('common.services')} />
           <SectionList>
             <ListItem
+              leadingItem={<Icon icon={faComments} size={20} />}
               title={t('common.tickets')}
               linkTo={{ screen: 'Tickets' }}
             />
