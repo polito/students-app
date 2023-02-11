@@ -43,13 +43,15 @@ export const TicketsScreen = ({ navigation }: Props) => {
             openTickets?.length > 3
               ? {
                   screen: 'TicketList',
-                  params: { status: [TicketStatus.Pending, TicketStatus.New] },
+                  params: {
+                    statuses: [TicketStatus.Pending, TicketStatus.New],
+                  },
                 }
               : undefined
           }
         />
         {!ticketsQuery.isLoading &&
-          (openTickets.length > 0 ? (
+          (openTickets.length > 3 ? (
             <Section>
               <SectionList>
                 {openTickets?.slice(0, 2)?.map(ticket => (
@@ -77,10 +79,10 @@ export const TicketsScreen = ({ navigation }: Props) => {
         <SectionHeader
           title={t('ticketsScreen.closed')}
           linkTo={
-            closedTickets?.length > 3
+            closedTickets?.length > 0
               ? {
                   screen: 'TicketList',
-                  params: { status: [TicketStatus.Closed] },
+                  params: { statuses: [TicketStatus.Closed] },
                 }
               : undefined
           }

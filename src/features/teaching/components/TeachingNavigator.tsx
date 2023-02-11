@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { TicketStatus } from '@polito/api-client';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
@@ -22,6 +23,7 @@ import { ExamsScreen } from '../screens/ExamsScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqs';
+import { TicketListScreen } from '../screens/TicketList';
 import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
@@ -50,6 +52,9 @@ export type TeachingStackParamList = {
   Tickets: undefined;
   Ticket: { id: number };
   TicketFaqs: undefined;
+  TicketList: {
+    statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
+  };
 };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -202,6 +207,14 @@ export const TeachingNavigator = () => {
         options={{
           headerLeft: () => <HeaderLogo />,
           headerLargeTitle: false,
+          // headerTitle: t('teachingScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="TicketList"
+        component={TicketListScreen}
+        options={{
+          headerLargeTitle: true,
           // headerTitle: t('teachingScreen.title'),
         }}
       />
