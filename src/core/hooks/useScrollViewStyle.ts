@@ -7,6 +7,6 @@ export const useScrollViewStyle = () => {
 
   return {
     width: SCREEN_WIDTH,
-    marginTop: IS_IOS ? headerHeight : undefined,
+    paddingTop: IS_IOS ? headerHeight : undefined,
   };
 };

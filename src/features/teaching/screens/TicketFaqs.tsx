@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Platform,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
@@ -31,7 +30,6 @@ import { parseDocument } from 'htmlparser2';
 
 import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -44,43 +42,17 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
   const styles = createStyles(theme);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
+  const [enabled, setEnabled] = useState(true);
   const [search, setSearch] = useState('');
-  const ticketFaqsQuery = useSearchTicketFaqs(search);
-  const refreshControl = useRefreshControl(ticketFaqsQuery);
-  const ticketFAQS = ticketFaqsQuery?.data?.data;
-
-  console.debug({
-    ticketFAQS,
-    ticketFaqsQuery,
-    isLoading: ticketFaqsQuery.isFetching,
-  });
-
-  const onPressSearch = async () => {
-    await ticketFaqsQuery.refetch();
-  };
-
-  useEffect(() => {
-    // if (routes[routes.length - 2]?.name === 'Course') {
-    //   navigation.setOptions({
-    //     headerBackTitle: t('common.course'),
-    //   });
-    // }
-  }, []);
-
-  const action = async () => {
-    // if (examAvailable) {
-    //   return bookExam({});
-    // }
-    // if (await confirm()) {
-    //   return cancelBooking();
-    // }
-    // return Promise.reject();
-  };
+  const ticketFaqsQuery = useSearchTicketFaqs(search, enabled);
+  const ticketFAQS =
+    ticketFaqsQuery?.data?.data?.sort((a, b) =>
+      a.question > b.question ? 1 : -1,
+    ) ?? [];
 
   return (
     <ScrollView
       contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
-      refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section>
         <SectionHeader title={t('ticketFaqsScreen.findFAQ')} />
@@ -95,7 +67,7 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
             label={t('ticketFaqsScreen.search')}
             value={search}
             onChangeText={setSearch}
-            onPressIn={() => console.debug('on press in')}
+            onPressIn={() => setEnabled(false)}
             editable={!ticketFaqsQuery?.isFetching}
             returnKeyType="next"
             style={styles.textField}
@@ -108,12 +80,13 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
                 icon={faSearch}
                 color={theme.colors.text['400']}
                 size={22}
-                onPress={onPressSearch}
+                onPress={() => setEnabled(true)}
               />
             )}
           </View>
         </Row>
         {!!search &&
+          enabled &&
           !ticketFaqsQuery.isFetching &&
           ticketFaqsQuery.data?.data?.length === 0 && (
             <EmptyState
@@ -123,7 +96,9 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
           )}
         <SectionList>
           {!!search &&
-            ticketFaqsQuery.data?.data?.map(faq => {
+            enabled &&
+            !ticketFaqsQuery.isFetching &&
+            ticketFAQS?.map(faq => {
               const dom = parseDocument(
                 faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
               ) as Document;

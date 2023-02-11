@@ -70,17 +70,16 @@ export const useGetTicketTopics = () => {
 //   );
 // };
 
-export const useSearchTicketFaqs = (search: string) => {
+export const useSearchTicketFaqs = (search: string, enabled: boolean) => {
   const ticketsClient = useTicketsClient();
 
   return useQuery(
     [FAQS_QUERY_KEY],
     () => ticketsClient.searchTicketFAQs({ search }),
     {
-      // enabled: true,
-      // retryOnMount: true,
-      // staleTime: 0,
+      enabled: enabled,
       keepPreviousData: false,
+      staleTime: 0,
     },
   );
 };

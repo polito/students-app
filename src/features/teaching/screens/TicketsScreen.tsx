@@ -8,6 +8,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
+import { TicketStatus } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { IS_IOS } from '../../../core/constants';
@@ -29,24 +30,29 @@ export const TicketsScreen = ({ navigation }: Props) => {
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
 
-  const handleOpenNewTicket = () => {
-    navigation.navigate('TicketFaqs');
-  };
-
   const TicketsOpened = () => {
     const openTickets = (ticketsQuery?.data?.data || [])
-      .filter(ticket => ticket.status !== 'closed')
-      .slice(0, 2)
+      .filter(ticket => ticket.status !== TicketStatus.Closed)
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
       <Section>
-        <SectionHeader title={t('ticketsScreen.opened')} />
+        <SectionHeader
+          title={t('ticketsScreen.opened')}
+          linkTo={
+            openTickets?.length > 3
+              ? {
+                  screen: 'TicketList',
+                  params: { status: [TicketStatus.Pending, TicketStatus.New] },
+                }
+              : undefined
+          }
+        />
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
             <Section>
               <SectionList>
-                {openTickets.map(ticket => (
+                {openTickets?.slice(0, 2)?.map(ticket => (
                   <TicketListItem ticket={ticket} key={ticket.id} />
                 ))}
               </SectionList>
@@ -63,8 +69,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
 
   const TicketsClosed = () => {
     const closedTickets = (ticketsQuery?.data?.data || [])
-      .filter(ticket => ticket.status === 'closed')
-      .slice(0, 2)
+      .filter(ticket => ticket.status === TicketStatus.Closed)
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
@@ -73,7 +78,10 @@ export const TicketsScreen = ({ navigation }: Props) => {
           title={t('ticketsScreen.closed')}
           linkTo={
             closedTickets?.length > 3
-              ? { screen: 'TicketList', params: { status: 'closed' } }
+              ? {
+                  screen: 'TicketList',
+                  params: { status: [TicketStatus.Closed] },
+                }
               : undefined
           }
         />
@@ -81,7 +89,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
           (closedTickets.length > 0 ? (
             <Section>
               <SectionList>
-                {closedTickets.map(ticket => (
+                {closedTickets?.slice(0, 2)?.map(ticket => (
                   <TicketListItem ticket={ticket} key={ticket.id} />
                 ))}
               </SectionList>
@@ -109,7 +117,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
         absolute={true}
         adjustInsets={IS_IOS}
         title={t('ticketsScreen.addNew')}
-        action={handleOpenNewTicket}
+        action={() => navigation.navigate('TicketFaqs')}
         icon={faPlus}
       />
     </>
