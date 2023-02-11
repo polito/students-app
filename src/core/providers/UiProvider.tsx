@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { fromUiTheme } from '../../utils/navigation-theme';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';
 
 export const UiProvider = ({ children }: PropsWithChildren) => {
@@ -14,8 +15,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
   if (!colorScheme) {
     colorScheme = useColorScheme();
   }
-  // const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
-  const uiTheme = lightTheme;
+  const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
   const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 
   return (

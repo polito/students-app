@@ -5,19 +5,16 @@ import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { Icon } from '@lib/ui/components/Icon';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { orderBy, slice } from 'lodash';
-
+import { IS_IOS } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
-import { IS_IOS } from '../../../utils/const';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
@@ -37,9 +34,11 @@ export const TicketsScreen = ({ navigation }: Props) => {
   };
 
   const TicketsOpened = () => {
-    const openTickets = ticketsQuery?.data?.data?.filter(
-      ticket => ticket.status !== 'closed',
-    );
+    const openTickets = (ticketsQuery?.data?.data || [])
+      .filter(ticket => ticket.status !== 'closed')
+      .slice(0, 2)
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
     return (
       <Section>
         <SectionHeader title={t('ticketsScreen.opened')} />
@@ -47,11 +46,9 @@ export const TicketsScreen = ({ navigation }: Props) => {
           (openTickets.length > 0 ? (
             <Section>
               <SectionList>
-                {orderBy(slice(openTickets, 0, 3), ['updatedAt']).map(
-                  ticket => (
-                    <TicketListItem ticket={ticket} key={ticket.id} />
-                  ),
-                )}
+                {openTickets.map(ticket => (
+                  <TicketListItem ticket={ticket} key={ticket.id} />
+                ))}
               </SectionList>
             </Section>
           ) : (
@@ -65,9 +62,11 @@ export const TicketsScreen = ({ navigation }: Props) => {
   };
 
   const TicketsClosed = () => {
-    const closedTickets = (ticketsQuery?.data?.data || []).filter(ticket =>
-      ['closed'].includes(ticket.status),
-    );
+    const closedTickets = (ticketsQuery?.data?.data || [])
+      .filter(ticket => ticket.status === 'closed')
+      .slice(0, 2)
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
     return (
       <Section>
         <SectionHeader
@@ -82,11 +81,9 @@ export const TicketsScreen = ({ navigation }: Props) => {
           (closedTickets.length > 0 ? (
             <Section>
               <SectionList>
-                {orderBy(slice(closedTickets, 0, 3), ['updatedAt']).map(
-                  ticket => (
-                    <TicketListItem ticket={ticket} key={ticket.id} />
-                  ),
-                )}
+                {closedTickets.map(ticket => (
+                  <TicketListItem ticket={ticket} key={ticket.id} />
+                ))}
               </SectionList>
             </Section>
           ) : (
@@ -113,7 +110,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
         adjustInsets={IS_IOS}
         title={t('ticketsScreen.addNew')}
         action={handleOpenNewTicket}
-        icon={<Icon icon={faPlus} size={20} color="white" />}
+        icon={faPlus}
       />
     </>
   );

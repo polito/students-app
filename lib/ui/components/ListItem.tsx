@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
-import { IS_IOS } from '../../../src/utils/const';
+import { IS_IOS } from '../../../src/core/constants';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 

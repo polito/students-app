@@ -22,7 +22,6 @@ interface Props extends TouchableHighlightProps {
   absolute?: boolean;
   title: string;
   loading?: boolean;
-  icon?: any;
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
   destructive?: boolean;
@@ -108,9 +107,9 @@ export const CtaButton = ({
             {loading && <ActivityIndicator color="white" />}
           </View>
           <View style={{ opacity: loading ? 0 : 1, flexDirection: 'row' }}>
-            {!loading && (
-              <View style={{ marginHorizontal: spacing['1'] }}>{icon}</View>
-            )}
+            {/* {!loading && ( */}
+            {/*   <View style={{ marginHorizontal: spacing['1'] }}>{icon}</View> */}
+            {/* )} */}
             {showSuccess ? (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Icon

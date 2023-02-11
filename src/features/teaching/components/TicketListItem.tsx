@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -15,10 +15,13 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
-import { IS_IOS } from '../../../utils/const';
+import { IS_IOS } from '../../../core/constants';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { useMarkTicketAsClosed } from '../../../core/queries/ticketHooks';
 import { formatDateTime } from '../../../utils/dates';
 
 interface Props {
@@ -26,8 +29,14 @@ interface Props {
 }
 
 export const TicketListItem = ({ ticket }: Props) => {
-  const { fontSizes, colors, spacing } = useTheme();
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const { t } = useTranslation();
+  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
+  const confirm = useConfirmationDialog({
+    message: t('tickets.closeTip'),
+  });
+  const { fontSizes, colors, spacing } = theme;
   const markTicketAsClosedEnabled = ticket?.status !== 'closed';
 
   const actions = useMemo(() => {
@@ -46,35 +55,17 @@ export const TicketListItem = ({ ticket }: Props) => {
 
   const UnReadCount = () => {
     return (
-      <Col
-        justifyCenter
-        alignCenter
-        noFlex
-        style={{
-          height: 22,
-          width: 22,
-          marginHorizontal: spacing['2'],
-          borderRadius: 22 / 2,
-          backgroundColor: colors.error['500'],
-        }}
-      >
-        <Text style={{ color: 'white' }}>{ticket?.unreadCount || 0}</Text>
+      <Col justifyCenter alignCenter noFlex style={styles.unreadCount}>
+        <Text style={styles.unreadCountText}>{ticket?.unreadCount || 0}</Text>
       </Col>
     );
   };
 
-  const onPressCloseTicket = () => {
-    Alert.alert(t('tickets.close'), t('tickets.closeTip'), [
-      {
-        text: t('common.cancel'),
-        onPress: () => console.debug('cancel'),
-      },
-      {
-        text: t('common.confirm'),
-        onPress: () => {},
-        style: 'destructive',
-      },
-    ]);
+  const onPressCloseTicket = async () => {
+    if (await confirm()) {
+      return markTicketAsClosed();
+    }
+    return Promise.reject();
   };
 
   return (
@@ -91,9 +82,7 @@ export const TicketListItem = ({ ticket }: Props) => {
         }}
         title={ticket.subject}
         subtitle={`${formatDateTime(ticket.updatedAt)} - ${ticket.message}`}
-        subtitleStyle={{
-          fontSize: fontSizes.xs,
-        }}
+        subtitleStyle={styles.listItemSubtitle}
         leadingItem={<Icon icon={faComments} size={20} />}
         trailingItem={
           <Row noFlex alignCenter>
@@ -110,9 +99,7 @@ export const TicketListItem = ({ ticket }: Props) => {
               <Icon
                 icon={faChevronRight}
                 color={colors.secondaryText}
-                style={{
-                  marginRight: -spacing[1],
-                }}
+                style={styles.icon}
               />
             )}
             {!IS_IOS && markTicketAsClosedEnabled && (
@@ -122,9 +109,7 @@ export const TicketListItem = ({ ticket }: Props) => {
                 onPressAction={onPressCloseTicket}
               >
                 <IconButton
-                  style={{
-                    marginRight: -spacing[1],
-                  }}
+                  style={styles.icon}
                   icon={faEllipsisVertical}
                   color={colors.secondaryText}
                   size={fontSizes.xl}
@@ -137,3 +122,21 @@ export const TicketListItem = ({ ticket }: Props) => {
     </MenuView>
   );
 };
+
+const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+  StyleSheet.create({
+    unreadCount: {
+      height: 22,
+      width: 22,
+      marginHorizontal: spacing['2'],
+      borderRadius: 22 / 2,
+      backgroundColor: colors.error['500'],
+    },
+    unreadCountText: { color: 'white' },
+    listItemSubtitle: {
+      fontSize: fontSizes.xs,
+    },
+    icon: {
+      marginRight: -spacing[1],
+    },
+  });

@@ -29,32 +29,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
+import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
-import { SCREEN_WIDTH } from '../../../utils/const';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
-
-export const removeHtmlFromText = (text: any, removeOtherSymbol?: any) => {
-  try {
-    const regex = /<(?:.|\n)*?>/gm;
-    let htmlFixed = text.replaceAll('<br />', '\n');
-    htmlFixed = htmlFixed.replace(regex, '');
-    if (removeOtherSymbol) {
-      htmlFixed = htmlFixed.replaceAll('&egrave;', 'è');
-      htmlFixed = htmlFixed.replaceAll('&agrave;', 'à');
-      htmlFixed = htmlFixed.replaceAll('&eacute;', 'é');
-      htmlFixed = htmlFixed.replaceAll('&ograve;', 'ò');
-      htmlFixed = htmlFixed.replaceAll('&ugrave;', 'ù');
-      htmlFixed = htmlFixed.replaceAll('&igrave;', 'ì');
-    }
-    return htmlFixed;
-  } catch (e) {
-    return '';
-  }
-};
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'TicketFaqs'>;
 
@@ -68,8 +48,6 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
   const ticketFaqsQuery = useSearchTicketFaqs(search);
   const refreshControl = useRefreshControl(ticketFaqsQuery);
   const ticketFAQS = ticketFaqsQuery?.data?.data;
-  const confirm = useConfirmationDialog();
-  const routes = navigation.getState()?.routes;
 
   console.debug({
     ticketFAQS,
@@ -111,11 +89,13 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
             {t('ticketFaqsScreen.findFAQSubtitle')}
           </Text>
         </View>
-        <Row noFlex spaceBetween alignCenter style={styles.rowSearch}>
+        <SectionList />
+        <Row spaceBetween alignCenter style={styles.rowSearch}>
           <TextField
             label={t('ticketFaqsScreen.search')}
             value={search}
-            onChangeText={v => setSearch(() => v)}
+            onChangeText={setSearch}
+            onPressIn={() => console.debug('on press in')}
             editable={!ticketFaqsQuery?.isFetching}
             returnKeyType="next"
             style={styles.textField}
@@ -199,12 +179,12 @@ const createStyles = ({
       fontSize: fontSizes.sm,
     },
     textField: {
-      backgroundColor: 'white',
+      // backgroundColor: 'white',
       // height: 40,
       borderRadius: shapes.sm,
       paddingVertical: 0,
       borderWidth: 1,
-      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: colors.divider,
       width: SCREEN_WIDTH * 0.82,
     },
     icon: {
