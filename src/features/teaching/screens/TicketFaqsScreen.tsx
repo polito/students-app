@@ -108,8 +108,8 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
                   key={faq.id}
                   leadingItem={<Icon icon={faQuestionCircle} size={28} />}
                   linkTo={{
-                    screen: 'Ticket',
-                    params: { id: faq.id },
+                    screen: 'TicketFaq',
+                    params: { faq },
                   }}
                   title={
                     <Text style={styles.faqTitle} numberOfLines={3}>

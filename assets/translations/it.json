@@ -210,6 +210,10 @@
     "emptyState": "Nessun risutato trovato",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta \ntra le FAQ.\nInserisci delle parole chiave da ricercare."
   },
+  "ticketFaqScreen": {
+    "title": "FAQ",
+    "headerBackTitle": "Nuovo"
+  },
   "personScreen": {
     "role": "Ruolo",
     "department": "Dipartimento",
