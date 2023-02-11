@@ -24,6 +24,7 @@
   },
   "common": {
     "tickets": "Ticket",
+    "logout": "Logout",
     "contact": "Contatto",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
@@ -189,9 +190,6 @@
   "placesScreen": {
     "title": "Luoghi"
   },
-  "profileScreen": {
-    "title": "Profilo"
-  },
   "ticketsScreen": {
     "title": "Ticket",
     "opened": "Ticket aperti",
@@ -229,6 +227,18 @@
   },
   "teachingScreen": {
     "title": "Didattica"
+  },
+  "notificationsScreen": {
+    "title": "Archivio notifiche"
+  },
+  "profileScreen": {
+    "title": "Profilo",
+    "settings": "Impostazioni",
+    "smartCard": "Smartcard",
+    "course": "Corso di laurea",
+    "notifications": "Archivio notifiche",
+    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
+    "trainingOffer": "Offerta formativa"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",

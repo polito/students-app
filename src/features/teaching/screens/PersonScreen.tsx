@@ -29,10 +29,10 @@ import { Theme } from '@lib/ui/types/theme';
 import { Person, PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { SCREEN_WIDTH } from '../../../utils/const';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
@@ -125,6 +125,7 @@ export const PersonScreen = ({ route }: Props) => {
 
   const renderCourse = (course: PersonCourse) => {
     const onPressCourse = () => {
+      // TODO
       console.debug('onPressCourse', course);
     };
     return (
