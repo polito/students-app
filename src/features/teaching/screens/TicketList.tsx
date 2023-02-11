@@ -24,6 +24,8 @@ export const TicketListScreen = ({ navigation, route }: Props) => {
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
 
+  console.debug({ ticketsQuery });
+
   const tickets = (ticketsQuery?.data?.data || [])
     .filter(ticket => statuses.includes(ticket.status))
     .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());

@@ -86,14 +86,18 @@ export const TicketListItem = ({ ticket }: Props) => {
         leadingItem={<Icon icon={faComments} size={20} />}
         trailingItem={
           <Row noFlex alignCenter>
-            <Icon
-              icon={faLink}
-              size={20}
-              color={colors.text['400']}
-              style={[
-                ticket.unreadCount === 0 && { marginHorizontal: spacing['2'] },
-              ]}
-            />
+            {ticket?.hasAttachments && (
+              <Icon
+                icon={faLink}
+                size={20}
+                color={colors.text['400']}
+                style={[
+                  ticket.unreadCount === 0 && {
+                    marginHorizontal: spacing['2'],
+                  },
+                ]}
+              />
+            )}
             {ticket.unreadCount > 0 && <UnReadCount />}
             {IS_IOS && (
               <Icon
