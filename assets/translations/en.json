@@ -29,6 +29,7 @@
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
+    "cache": "Cache",
     "cancel": "Cancel",
     "cleanCourseFiles": "Remove all course files",
     "color": "Color",
@@ -44,7 +45,6 @@
     "done": "Done",
     "download": "Download",
     "en": "English",
-    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "error": "Error",
     "exam": "Exam",
     "examCall": "Exam call",
@@ -200,11 +200,24 @@
     "important": "Important",
     "reservationPresence": "Reservations"
   },
+  "notificationsScreen": {
+    "title": "Notifications archive"
+  },
+  "personScreen": {
+    "call": "Call",
+    "contacts": "Contacts",
+    "courses": "Courses",
+    "department": "Department",
+    "moreInfo": "More information",
+    "role": "Role",
+    "sentEmail": "Send e-mail"
+  },
   "placesScreen": {
     "title": "Places"
   },
   "profileScreen": {
     "course": "Course",
+    "enrollmentYear": "Enrollment year {{- enrollmentYear}}",
     "notifications": "Notifications archive",
     "settings": "Settings",
     "smartCard": "Smartcard",
@@ -215,6 +228,7 @@
     "cta": "See all"
   },
   "settingsScreen": {
+    "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "title": "Settings"
   },
   "teachingScreen": {
@@ -229,6 +243,7 @@
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
+    "emptyState": "You have not taken any exams",
     "finalAverageLabel": "Final average",
     "provisionalGradesSectionTitle": "Provisional grades",
     "thisYear": "This academic year",
