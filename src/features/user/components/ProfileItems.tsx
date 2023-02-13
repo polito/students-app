@@ -11,7 +11,7 @@ export const ProfileNotificationItem = () => {
   const { t } = useTranslation();
   return (
     <ListItem
-      title={t('profileScreen.notifications')}
+      title={t('messagesScreen.title')}
       linkTo={'Notifications'}
       leadingItem={
         <Icon icon={faBell} color={colors.text['500']} size={fontSizes.xl} />

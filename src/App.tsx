@@ -4,7 +4,6 @@ import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { PreferencesProvider } from './core/providers/PreferencesProvider';
 import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
-import './i18n';
 
 export const App = () => {
   return (

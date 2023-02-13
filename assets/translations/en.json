@@ -200,9 +200,6 @@
     "important": "Important",
     "reservationPresence": "Reservations"
   },
-  "notificationsScreen": {
-    "title": "Notifications archive"
-  },
   "personScreen": {
     "call": "Call",
     "contacts": "Contacts",

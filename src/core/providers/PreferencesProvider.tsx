@@ -1,61 +1,48 @@
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import { initReactI18next } from 'react-i18next';
-import { Appearance } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import i18n from 'i18next';
-import i18next from 'i18next';
-
-import en from '../../../assets/translations/en.json';
-import it from '../../../assets/translations/it.json';
-import { language } from '../../i18n';
 import {
+  EditablePreferenceKeys,
   PreferencesContext,
   PreferencesContextProps,
-  storageKeys,
-  storageObjectKeys,
+  editablePreferenceKeys,
+  objectPreferenceKeys,
 } from '../contexts/PreferencesContext';
-import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
-
-const fallbackPreferencesContext: Record<'language' | 'colorScheme', string> = {
-  language: 'it',
-  colorScheme: Appearance.getColorScheme() || 'system',
-};
 
 export const PreferencesProvider = ({ children }: PropsWithChildren) => {
-  const deviceLanguage = useDeviceLanguage();
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
-      colorScheme: null,
+      colorScheme: 'system',
       courses: {},
-      types: {},
-      language: null,
+      language: 'system',
       updatePreference: () => {},
     });
 
   const preferencesInitialized = useRef<boolean>(false);
-  const updatePreference = (key: string, value: any) => {
-    if (!storageKeys.includes(key))
-      throw new Error('You are trying to update an invalid preference');
 
+  const updatePreference = (key: EditablePreferenceKeys, value: unknown) => {
+    const stringKey = key.toString();
     if (value === null) {
-      AsyncStorage.removeItem(key).then(() =>
+      AsyncStorage.removeItem(stringKey).then(() =>
         setPreferencesContext(oldP => ({
           ...oldP,
-          [key]: value,
+          [stringKey]: value,
         })),
       );
     } else {
-      const storedValue = storageObjectKeys.includes(key)
-        ? JSON.stringify(value)
-        : value;
-      AsyncStorage.setItem(key, storedValue).then(() =>
+      let storageValue: string;
+
+      if (objectPreferenceKeys.includes(key)) {
+        storageValue = JSON.stringify(value);
+      } else {
+        storageValue = value as string;
+      }
+
+      AsyncStorage.setItem(stringKey, storageValue).then(() =>
         setPreferencesContext(oldP => ({
           ...oldP,
-          [key]:
-            value ||
-            fallbackPreferencesContext[key as 'language' | 'colorScheme'],
+          [stringKey]: value,
         })),
       );
     }
@@ -63,44 +50,21 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
 
   // Initialize preferences from AsyncStorage
   useEffect(() => {
-    AsyncStorage.multiGet(storageKeys).then(storagePreferences => {
+    AsyncStorage.multiGet(editablePreferenceKeys).then(storagePreferences => {
       const preferences: Partial<PreferencesContextProps> = {
         updatePreference,
       };
       storagePreferences.map(([key, value]) => {
-        const lang = value === 'system' ? deviceLanguage : value ?? language;
-        if (key === 'language') {
-          i18n
-            .use(initReactI18next)
-            .init({
-              compatibilityJSON: 'v3',
-              lng: lang,
-              fallbackLng: 'it',
-              resources: {
-                en: { translation: en },
-                it: { translation: it },
-              },
-            })
-            .then(() => {
-              i18next
-                .changeLanguage(lang)
-                .then(() => console.debug('i18n initialized'));
-            });
-        }
+        if (value === null) return;
 
-        if (storageObjectKeys.includes(key)) {
-          // @ts-expect-error temporary type fix // TODO
-          preferences[key] = JSON.parse(value) ?? {};
-        }
-        else if (key in fallbackPreferencesContext) {
-          // @ts-expect-error temporary type fix // TODO
-          preferences[key] = value ?? fallbackPreferencesContext[key];
+        const typedKey = key as EditablePreferenceKeys;
+
+        if (objectPreferenceKeys.includes(key)) {
+          preferences[typedKey] = JSON.parse(value) ?? {};
         } else {
-          // @ts-expect-error temporary type fix // TODO
-          preferences[key] = value;
+          preferences[typedKey] = value as any;
         }
       });
-
 
       setPreferencesContext(oldP => {
         return { ...oldP, ...preferences };

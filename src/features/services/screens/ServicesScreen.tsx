@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
@@ -12,14 +13,16 @@ export const ServicesScreen = () => {
 
   return (
     <SafeAreaView>
-      <Text variant="heading" style={{ padding: spacing[4] }}>
-        {t('common.services')}
-      </Text>
-      <EmptyState
-        icon={faTriangleExclamation}
-        iconColor={colors.orange[600]}
-        message={t('common.comingSoon')}
-      />
+      <ScrollView>
+        <Text variant="heading" style={{ padding: spacing[4] }}>
+          {t('common.services')}
+        </Text>
+        <EmptyState
+          icon={faTriangleExclamation}
+          iconColor={colors.orange[600]}
+          message={t('common.comingSoon')}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 };
