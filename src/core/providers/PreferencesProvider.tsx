@@ -92,9 +92,15 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
           // @ts-expect-error temporary type fix // TODO
           preferences[key] = JSON.parse(value) ?? {};
         }
-        // @ts-expect-error temporary type fix // TODO
-        preferences[key] = value ?? fallbackPreferencesContext[key];
+        else if (key in fallbackPreferencesContext) {
+          // @ts-expect-error temporary type fix // TODO
+          preferences[key] = value ?? fallbackPreferencesContext[key];
+        } else {
+          // @ts-expect-error temporary type fix // TODO
+          preferences[key] = value;
+        }
       });
+
 
       setPreferencesContext(oldP => {
         return { ...oldP, ...preferences };
