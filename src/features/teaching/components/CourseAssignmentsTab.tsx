@@ -78,7 +78,9 @@ export const CourseAssignmentsTab = ({
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
         disabled={true}
-        rightExtra={<Badge text="Coming soon" style={{ marginLeft: 10 }} />}
+        rightExtra={
+          <Badge text={t('common.comingSoon')} style={{ marginLeft: 10 }} />
+        }
         action={() =>
           navigation.navigate({
             name: 'CourseAssignmentUpload',

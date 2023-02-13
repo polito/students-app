@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
@@ -133,8 +134,11 @@ export const ProfileScreen = ({ navigation }: Props) => {
         <Section>
           <SectionHeader
             title={t('profileScreen.course')}
+            /* trailingItem={
+                                      <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
+                                    }*/
             trailingItem={
-              <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
+              <Badge text={t('common.comingSoon')} variant="outlined" />
             }
           />
           <SectionList>

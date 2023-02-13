@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import { faBroom, faCircleHalfStroke } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Section } from '@lib/ui/components/Section';
@@ -252,7 +253,12 @@ export const SettingsScreen = () => {
             </SectionList>
           </Section>
           <Section>
-            <SectionHeader title={t('common.notifications')} />
+            <SectionHeader
+              title={t('common.notifications')}
+              trailingItem={
+                <Badge text={t('common.comingSoon')} variant="outlined" />
+              }
+            />
             <SectionList indented>
               <NotificationListItem />
             </SectionList>

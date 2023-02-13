@@ -1,7 +1,7 @@
 {
   "agendaScreen": {
-    "title": "Agenda",
-    "backToToday": "Torna a oggi"
+    "backToToday": "Torna a oggi",
+    "title": "Agenda"
   },
   "colors": {
     "amber": "Amber",
@@ -25,29 +25,26 @@
     "yellow": "Yellow"
   },
   "common": {
-    "contact": "Contacts",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
-    "language": "Language",
     "booking_plural": "Bookings",
     "cancel": "Cancel",
-    "color": "Color",
     "cleanCourseFiles": "Remove all course files",
+    "color": "Color",
+    "comingSoon": "Coming soon",
+    "contact": "Contacts",
     "course": "Course",
-    "logout": "Logout",
     "course_plural": "Courses",
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} ECTS",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
-    "it": "Italian",
-    "theme": "Theme",
-    "en": "English",
-    "system": "System",
     "done": "Done",
     "download": "Download",
+    "en": "English",
+    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "error": "Error",
     "exam": "Exam",
     "examCall": "Exam call",
@@ -55,12 +52,14 @@
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",
+    "it": "Italian",
+    "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "logout": "Logout",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
-    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "ok": "Ok",
     "options": "Options",
     "period": "Period",
@@ -71,7 +70,9 @@
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
     "stop": "Stop",
+    "system": "System",
     "teacher": "Teacher",
+    "theme": "Theme",
     "transcript": "Transcript",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
@@ -115,9 +116,9 @@
     "reDownloadFile": "Redownload file"
   },
   "courseFilesTab": {
-    "navigateFolders": "Navigate folders",
     "browseFiles": "Browse files",
     "empty": "No files available",
+    "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
   },
@@ -149,11 +150,6 @@
     "emptyState": "There are no notices",
     "title": "Notices"
   },
-  "theme": {
-    "dark": "Dark",
-    "light": "Light",
-    "system": "Sistem"
-  },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
     "cleanCourseFiles": "Clean course files",
@@ -172,11 +168,6 @@
     "emptyState": "No courses available",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses"
-  },
-  "notifications": {
-    "important": "Important",
-    "events": "Events",
-    "reservationPresence": "Reservations"
   },
   "examScreen": {
     "ctaBook": "Book exam",
@@ -204,15 +195,20 @@
   "messagesScreen": {
     "title": "Messages archive"
   },
+  "notifications": {
+    "events": "Events",
+    "important": "Important",
+    "reservationPresence": "Reservations"
+  },
   "placesScreen": {
     "title": "Places"
   },
   "profileScreen": {
-    "title": "Profile",
+    "course": "Course",
+    "notifications": "Notifications archive",
     "settings": "Settings",
     "smartCard": "Smartcard",
-    "course": "Couse",
-    "notifications": "Notifications archive",
+    "title": "Profile",
     "trainingOffer": "Training offer"
   },
   "sectionHeader": {
@@ -223,6 +219,11 @@
   },
   "teachingScreen": {
     "title": "Teaching"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "Sistem"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Acquired credits",

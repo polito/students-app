@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { StyleSheet, Text, TextProps, View } from 'react-native';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -7,12 +8,14 @@ import { Theme } from '@lib/ui/types/theme';
 interface Props {
   text: string;
   style?: TextProps['style'];
+  variant?: 'outlined' | 'filled';
 }
 
-export const Badge = ({ text, style }: Props) => {
+export const Badge = ({ text, style, variant = 'filled' }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
+  const isOutlined = useMemo(() => variant === 'outlined', [variant]);
   return (
     <View
       style={[
@@ -20,10 +23,19 @@ export const Badge = ({ text, style }: Props) => {
         {
           backgroundColor: colors.orange[600],
         },
+        isOutlined && {
+          backgroundColor: colors.surface,
+          borderColor: colors.orange[600],
+          borderWidth: 2,
+        },
         style,
       ]}
     >
-      <Text style={styles.badgeText}>{text}</Text>
+      <Text
+        style={[styles.badgeText, isOutlined && { color: colors.orange[600] }]}
+      >
+        {text}
+      </Text>
     </View>
   );
 };
