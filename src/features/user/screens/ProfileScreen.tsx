@@ -137,9 +137,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
             /* trailingItem={
                                       <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
                                     }*/
-            trailingItem={
-              <Badge text={t('common.comingSoon')} variant="outlined" />
-            }
+            trailingItem={<Badge text={t('common.comingSoon')} />}
           />
           <SectionList>
             <ListItem

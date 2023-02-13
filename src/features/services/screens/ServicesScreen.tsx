@@ -7,7 +7,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const ServicesScreen = () => {
-  const { spacing } = useTheme();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation();
 
   return (
@@ -16,8 +16,9 @@ export const ServicesScreen = () => {
         {t('common.services')}
       </Text>
       <EmptyState
-        message={t('common.comingSoon')}
         icon={faTriangleExclamation}
+        iconColor={colors.orange[600]}
+        message={t('common.comingSoon')}
       />
     </SafeAreaView>
   );

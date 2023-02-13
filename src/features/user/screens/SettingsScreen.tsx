@@ -255,9 +255,7 @@ export const SettingsScreen = () => {
           <Section>
             <SectionHeader
               title={t('common.notifications')}
-              trailingItem={
-                <Badge text={t('common.comingSoon')} variant="outlined" />
-              }
+              trailingItem={<Badge text={t('common.comingSoon')} />}
             />
             <SectionList indented>
               <NotificationListItem />

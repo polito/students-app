@@ -8,7 +8,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const PlacesScreen = () => {
-  const { spacing } = useTheme();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation();
 
   return (
@@ -19,6 +19,7 @@ export const PlacesScreen = () => {
         </Text>
         <EmptyState
           icon={faTriangleExclamation}
+          iconColor={colors.orange[600]}
           message={t('common.comingSoon')}
         />
       </ScrollView>
