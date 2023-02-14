@@ -1,4 +1,4 @@
-import { TicketsApi } from '@polito/api-client';
+import { CreateTicketRequest, TicketsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { prefixKey } from '../../utils/queries';
@@ -20,6 +20,14 @@ export const useGetTickets = () => {
 
   return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
     ticketsClient.getTickets(),
+  );
+};
+
+export const useCreateTicket = (ticket: CreateTicketRequest) => {
+  const ticketsClient = useTicketsClient();
+
+  return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
+    ticketsClient.createTicket(ticket),
   );
 };
 
@@ -75,7 +83,7 @@ export const useSearchTicketFaqs = (search: string, enabled: boolean) => {
 
   return useQuery(
     [FAQS_QUERY_KEY],
-    () => ticketsClient.searchTicketFAQs({ search }),
+    () => ticketsClient.searchTicketFAQs({ search, test: true }),
     {
       enabled: enabled,
       keepPreviousData: false,

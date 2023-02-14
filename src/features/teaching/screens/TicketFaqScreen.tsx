@@ -1,9 +1,11 @@
-import { ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
 
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { parseDocument } from 'htmlparser2';
@@ -11,13 +13,17 @@ import { parseDocument } from 'htmlparser2';
 import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
+import { CreateTicketCta } from '../components/CreateTicketCta';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'TicketFaq'>;
 
-export const TicketFaqScreen = ({ route }: Props) => {
+export const TicketFaqScreen = ({ route, navigation }: Props) => {
   const { faq } = route.params;
-  const { colors, spacing, fontSizes } = useTheme();
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const styles = createStyles(theme);
+  const { colors, spacing, fontSizes } = theme;
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
 
@@ -27,7 +33,11 @@ export const TicketFaqScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
-      contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
+      contentContainerStyle={[
+        bottomBarAwareStyles,
+        scrollViewStyles,
+        styles.scrollViewStyle,
+      ]}
     >
       <Section style={{ marginTop: spacing[2] }}>
         <SectionHeader title={faq.question} ellipsizeTitle={false} />
@@ -48,6 +58,31 @@ export const TicketFaqScreen = ({ route }: Props) => {
           systemFonts={['Montserrat']}
         />
       </Section>
+      <CreateTicketCta action={() => navigation.navigate('TicketFaqs')} />
     </ScrollView>
   );
 };
+
+const createStyles = ({
+  spacing,
+  colors,
+  fontSizes,
+  fontWeights,
+  shapes,
+}: Theme) =>
+  StyleSheet.create({
+    noResultFound: {
+      textAlign: 'center',
+      color: colors.text['100'],
+    },
+    scrollViewStyle: {
+      justifyContent: 'space-between',
+      height: '100%',
+    },
+    action: {
+      display: 'flex',
+      backgroundColor: 'red',
+      flexDirection: 'column',
+      flex: 0,
+    },
+  });

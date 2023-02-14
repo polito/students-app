@@ -28,10 +28,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { SCREEN_WIDTH } from '../../../core/constants';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
+import { CreateTicketCta } from '../components/CreateTicketCta';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'TicketFaqs'>;
@@ -52,7 +53,11 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
 
   return (
     <ScrollView
-      contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
+      contentContainerStyle={[
+        bottomBarAwareStyles,
+        scrollViewStyles,
+        { minHeight: SCREEN_HEIGHT },
+      ]}
     >
       <Section>
         <SectionHeader title={t('ticketFaqsScreen.findFAQ')} />
@@ -121,6 +126,9 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
             })}
         </SectionList>
       </Section>
+      {enabled && !!search && !ticketFaqsQuery.isFetching && (
+        <CreateTicketCta action={() => navigation.navigate('TicketFaqs')} />
+      )}
     </ScrollView>
   );
 };
@@ -133,6 +141,10 @@ const createStyles = ({
   shapes,
 }: Theme) =>
   StyleSheet.create({
+    noResultFound: {
+      textAlign: 'center',
+      color: colors.text['100'],
+    },
     card: {
       marginTop: spacing[2],
       marginHorizontal: Platform.select({ ios: spacing[4] }),

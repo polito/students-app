@@ -208,11 +208,15 @@
     "findFAQ": "Cerca tra le FAQ",
     "search": "Paola chiave",
     "emptyState": "Nessun risutato trovato",
+    "noResultFound": "Non hai trovato quello che cerchi?",
+    "writeTicket": "Scrivi ticket",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta \ntra le FAQ.\nInserisci delle parole chiave da ricercare."
   },
   "ticketFaqScreen": {
     "title": "FAQ",
-    "headerBackTitle": "Nuovo"
+    "headerBackTitle": "Nuovo",
+    "noResultFound": "Non hai trovato quello che cerchi?",
+    "writeTicket": "Scrivi ticket"
   },
   "personScreen": {
     "role": "Ruolo",
