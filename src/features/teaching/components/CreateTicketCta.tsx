@@ -32,13 +32,7 @@ export const CreateTicketCta = ({ action }: Props) => {
   );
 };
 
-const createStyles = ({
-  spacing,
-  colors,
-  fontSizes,
-  fontWeights,
-  shapes,
-}: Theme) =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     noResultFound: {
       textAlign: 'center',

@@ -212,6 +212,17 @@
     "writeTicket": "Scrivi ticket",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta \ntra le FAQ.\nInserisci delle parole chiave da ricercare."
   },
+  "ticketCreationScreen": {
+    "title": "Nuovo ticket",
+    "headerBackTitle": "Ticket",
+    "subtitle": "Inserisci la tua richiesta",
+    "topicDropdownLabel": "Argomento",
+    "topicDropdownPlaceholder": "Seleziona l'argomento",
+    "subtopicDropdownLabel": "Seleziona Sottoargomento",
+    "subtopicDropdownPlaceholder": "Seleziona il sottoargomento",
+    "subject": "Oggetto",
+    "subjectLabel": "Inserisci l'oggetto del ticket"
+  },
   "ticketFaqScreen": {
     "title": "FAQ",
     "headerBackTitle": "Nuovo",

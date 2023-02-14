@@ -58,7 +58,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
           systemFonts={['Montserrat']}
         />
       </Section>
-      <CreateTicketCta action={() => navigation.navigate('TicketFaqs')} />
+      <CreateTicketCta action={() => navigation.navigate('TicketCreation')} />
     </ScrollView>
   );
 };

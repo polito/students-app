@@ -127,7 +127,7 @@ export const TicketFaqsScreen = ({ route, navigation }: Props) => {
         </SectionList>
       </Section>
       {enabled && !!search && !ticketFaqsQuery.isFetching && (
-        <CreateTicketCta action={() => navigation.navigate('TicketFaqs')} />
+        <CreateTicketCta action={() => navigation.navigate('TicketCreation')} />
       )}
     </ScrollView>
   );

@@ -23,6 +23,7 @@ import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
+import { TicketCreationScreen } from '../screens/TicketCreationScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
 import { TicketListScreen } from '../screens/TicketListScreen';
@@ -58,6 +59,7 @@ export type TeachingStackParamList = {
   TicketList: {
     statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
   };
+  TicketCreation: undefined;
 };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -224,6 +226,15 @@ export const TeachingNavigator = () => {
         component={TicketScreen}
         options={{
           headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="TicketCreation"
+        component={TicketCreationScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitle: t('ticketCreationScreen.headerBackTitle'),
+          headerTitle: t('ticketCreationScreen.title'),
         }}
       />
       <Stack.Screen

@@ -23,11 +23,18 @@ export const useGetTickets = () => {
   );
 };
 
-export const useCreateTicket = (ticket: CreateTicketRequest) => {
+export const useCreateTicket = () => {
+  const client = useQueryClient();
   const ticketsClient = useTicketsClient();
 
-  return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
-    ticketsClient.createTicket(ticket),
+  return useMutation(
+    (dto?: CreateTicketRequest) =>
+      ticketsClient.createTicket(dto, { test: true }),
+    {
+      onSuccess() {
+        return client.invalidateQueries([TICKETS_QUERY_KEY]);
+      },
+    },
   );
 };
 
