@@ -1,5 +1,6 @@
 {
   "agendaScreen": {
+    "backToToday": "Torna a oggi",
     "title": "Agenda"
   },
   "colors": {
@@ -7,6 +8,7 @@
     "blue": "Blu",
     "cyan": "Ciano",
     "darkBlue": "Blu scuro",
+    "darkOrange": "Arancione scuro",
     "emerald": "Smeraldo",
     "fuchsia": "Fucsia",
     "green": "Verde",
@@ -30,8 +32,11 @@
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
+    "cache": "Cache",
     "cancel": "Annulla",
+    "cleanCourseFiles": "Rimuovi file dei corsi",
     "color": "Colore",
+    "comingSoon": "Coming soon",
     "course": "Corso",
     "course_plural": "Corsi",
     "credits": "Crediti",
@@ -41,6 +46,7 @@
     "delete": "Elimina",
     "done": "Fatto",
     "download": "Scarica",
+    "en": "Inglese",
     "error": "Errore",
     "exam": "Esame",
     "examCall": "Appello",
@@ -48,6 +54,8 @@
     "file": "File",
     "file_plural": "File",
     "icon": "Icona",
+    "it": "Italiano",
+    "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "notice": "Avviso",
@@ -64,7 +72,9 @@
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "stop": "Stop",
+    "system": "Di sistema",
     "teacher": "Docente",
+    "theme": "Tema",
     "transcript": "Libretto",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
@@ -187,8 +197,10 @@
   "messagesScreen": {
     "title": "Archivio messaggi"
   },
-  "placesScreen": {
-    "title": "Luoghi"
+  "notifications": {
+    "events": "Eventi e iniziative",
+    "important": "Importanti",
+    "reservationPresence": "Prenotazione presenza"
   },
   "ticketsScreen": {
     "title": "Ticket",
@@ -230,18 +242,31 @@
     "writeTicket": "Scrivi ticket"
   },
   "personScreen": {
-    "role": "Ruolo",
+    "call": "Chiama",
+    "contacts": "Contatti",
+    "courses": "Corsi",
     "department": "Dipartimento",
     "moreInfo": "Maggiori informazioni",
-    "contacts": "Contatti",
-    "call": "Chiama",
-    "sentEmail": "Invia e-mail",
-    "courses": "Corsi"
+    "role": "Ruolo",
+    "sentEmail": "Invia e-mail"
+  },
+  "placesScreen": {
+    "title": "Luoghi"
+  },
+  "profileScreen": {
+    "course": "Corso di laurea",
+    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
+    "notifications": "Archivio notifiche",
+    "settings": "Impostazioni",
+    "smartCard": "Smartcard",
+    "title": "Profilo",
+    "trainingOffer": "Offerta formativa"
   },
   "sectionHeader": {
     "cta": "Vedi tutto"
   },
   "settingsScreen": {
+    "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "title": "Impostazioni"
   },
   "teachingScreen": {
@@ -249,15 +274,6 @@
   },
   "notificationsScreen": {
     "title": "Archivio notifiche"
-  },
-  "profileScreen": {
-    "title": "Profilo",
-    "settings": "Impostazioni",
-    "smartCard": "Smartcard",
-    "course": "Corso di laurea",
-    "notifications": "Archivio notifiche",
-    "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
-    "trainingOffer": "Offerta formativa"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",

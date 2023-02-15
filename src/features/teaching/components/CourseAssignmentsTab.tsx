@@ -4,6 +4,7 @@ import { RefreshControl, ScrollView } from 'react-native';
 
 import { faFileLines, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
+import { Badge } from '@lib/ui/components/Badge';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
@@ -76,6 +77,10 @@ export const CourseAssignmentsTab = ({
       </ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
+        disabled={true}
+        rightExtra={
+          <Badge text={t('common.comingSoon')} style={{ marginLeft: 10 }} />
+        }
         action={() =>
           navigation.navigate({
             name: 'CourseAssignmentUpload',

@@ -21,6 +21,7 @@ interface Props extends TouchableHighlightProps {
   icon?: any;
   absolute?: boolean;
   title: string;
+  rightExtra?: JSX.Element;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
@@ -44,6 +45,7 @@ export const CtaButton = ({
   destructive = false,
   action,
   icon,
+  rightExtra,
   ...rest
 }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
@@ -96,6 +98,7 @@ export const CtaButton = ({
               ? colors.danger[500]
               : colors.primary[500],
           },
+          disabled && styles.disabledButton,
           style,
         ]}
         accessibilityLabel={title}
@@ -135,6 +138,7 @@ export const CtaButton = ({
                   />
                 )}
                 <Text style={styles.textStyle}>{title}</Text>
+                {rightExtra && rightExtra}
               </View>
             )}
           </View>
@@ -144,7 +148,13 @@ export const CtaButton = ({
   );
 };
 
-const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
+const createStyles = ({
+  colors,
+  shapes,
+  spacing,
+  fontSizes,
+  fontWeights,
+}: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[4],
@@ -165,6 +175,9 @@ const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
       alignItems: 'center',
       elevation: 12,
     },
+    disabledButton: {
+      backgroundColor: colors.secondaryText,
+    },
     stack: {
       ...StyleSheet.absoluteFillObject,
       alignItems: 'center',
@@ -179,5 +192,8 @@ const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
     icon: {
       marginVertical: -2,
       marginRight: spacing[2],
+    },
+    subtitle: {
+      marginTop: spacing[2],
     },
   });

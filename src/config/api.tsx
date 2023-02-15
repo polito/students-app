@@ -15,7 +15,7 @@ import {
 } from '@polito/api-client';
 
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
-import { language } from '../i18n';
+import { deviceLanguage } from '../utils/device';
 
 export const createApiConfiguration = (token?: string) => {
   const basePath = API_BASE_PATH ?? BASE_PATH;
@@ -24,7 +24,7 @@ export const createApiConfiguration = (token?: string) => {
   const configurationParameters: ConfigurationParameters = {
     basePath,
     headers: {
-      'Accept-Language': language,
+      'Accept-Language': deviceLanguage, // TODO refactor
     },
   };
 
