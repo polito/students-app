@@ -12,19 +12,31 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-## iOS
+## Android
 
-### ios release
-
-```sh
-[bundle exec] fastlane ios release
-```
-
-### ios verify
+### android verify
 
 ```sh
-[bundle exec] fastlane ios verify
+[bundle exec] fastlane android verify
 ```
+
+Build and sign bundle
+
+### android beta
+
+```sh
+[bundle exec] fastlane android beta
+```
+
+Build and sign bundle, then push it to the Google Play beta track
+
+### android release
+
+```sh
+[bundle exec] fastlane android release
+```
+
+Build and sign bundle, then push it to the Google Play production track
 
 ---
 
