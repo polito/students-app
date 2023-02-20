@@ -14,12 +14,12 @@ export const titlesStyles: (
     fontFamily: fontFamilies.heading,
     fontSize: Platform.select({ android: 20 }),
     fontWeight: fontWeights.semibold,
-    color: colors.heading,
+    color: colors.title,
   },
   headerLargeTitleStyle: {
     fontFamily: fontFamilies.heading,
     fontWeight: fontWeights.semibold,
-    color: colors.heading,
+    color: colors.title,
   },
   headerBackTitleStyle: {
     fontFamily: fontFamilies.heading,

@@ -7,6 +7,7 @@ import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -70,7 +71,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section style={styles.heading}>
-        <Text variant="heading">{courseQuery.data?.data.name}</Text>
+        <ScreenTitle title={courseQuery.data?.data.name} />
         <Text variant="caption">{courseQuery.data?.data.shortcode}</Text>
       </Section>
       <Card style={styles.metricsCard}>

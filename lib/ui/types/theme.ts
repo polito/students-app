@@ -72,7 +72,6 @@ export type Colors = Record<string, string | ColorPalette> & {
   surface: string;
   headers: string;
   heading: string;
-  title: string;
   prose: string;
   headline: string;
   secondaryText: string;
@@ -81,6 +80,7 @@ export type Colors = Record<string, string | ColorPalette> & {
   divider: string;
   tabBar: string;
   tabBarInactive: string;
+  title: string;
   touchableHighlight: string;
   text: ColorPalette;
   primary: ColorPalette;

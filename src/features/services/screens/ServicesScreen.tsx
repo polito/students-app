@@ -14,7 +14,7 @@ export const ServicesScreen = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <Text variant="heading" style={{ padding: spacing[4] }}>
+        <Text variant="title" style={{ padding: spacing[4] }}>
           {t('common.services')}
         </Text>
         <EmptyState

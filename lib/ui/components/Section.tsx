@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { View, ViewProps } from 'react-native';
+
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const Section = ({
@@ -16,6 +17,7 @@ export const Section = ({
           marginBottom: spacing[5],
         },
       ]}
+      accessible={true}
       {...rest}
     >
       {children}

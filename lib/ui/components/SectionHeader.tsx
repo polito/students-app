@@ -12,7 +12,6 @@ import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/theme';
-import { Separator } from './Separator';
 import { Text } from './Text';
 
 interface Props {
@@ -33,7 +32,6 @@ export const SectionHeader = ({
   titleStyle,
   ellipsizeTitle = true,
   linkTo,
-  separator = true,
   trailingItem,
 }: Props) => {
   const styles = useStylesheet(createStyles);
@@ -47,12 +45,10 @@ export const SectionHeader = ({
 
   return (
     <View style={styles.container}>
-      {separator && <Separator />}
       <View style={styles.innerContainer}>
         <Text
-          variant="title"
+          variant="heading"
           style={[styles.title, titleStyle]}
-          accessible={true}
           accessibilityRole="header"
           {...ellipsis}
         >
@@ -73,11 +69,12 @@ export const SectionHeader = ({
 const createStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
     container: {
-      paddingHorizontal: spacing[5],
+      paddingHorizontal: spacing[4],
     },
     title: {
       color: colors.heading,
       flex: 1,
+      textTransform: 'uppercase',
       marginEnd: spacing[5],
     },
     innerContainer: {

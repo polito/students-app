@@ -19,7 +19,7 @@ interface Props {
 }
 
 const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
-  heading: 'extrabold',
+  heading: 'semibold',
   title: 'semibold',
   headline: 'normal',
   caption: 'bold',
@@ -70,10 +70,10 @@ export const Text = ({
 const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
-      fontSize: fontSizes.xl,
+      fontSize: fontSizes.sm,
     },
     title: {
-      fontSize: fontSizes.lg,
+      fontSize: fontSizes.xl,
     },
     headline: {
       fontSize: fontSizes.md,
