@@ -149,7 +149,7 @@ export const TranscriptScreen = () => {
               <ListItem
                 key={grade.courseName}
                 title={grade.courseName}
-                subtitle={formatDate(new Date(grade.date))}
+                subtitle={formatDate(grade.date)}
                 trailingItem={
                   <Text variant="title">{t(formatGrade(grade.grade))}</Text>
                 }
@@ -167,7 +167,7 @@ export const TranscriptScreen = () => {
                 <ListItem
                   key={grade.courseName}
                   title={grade.courseName}
-                  subtitle={new Date(grade.date).toLocaleDateString()}
+                  subtitle={formatDate(grade.date)}
                   trailingItem={
                     <Text variant="title" style={styles.grade}>
                       {t(formatGrade(grade.grade))}
