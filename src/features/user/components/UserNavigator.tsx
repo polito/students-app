@@ -24,7 +24,6 @@ export const UserNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        orientation: 'portrait',
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {

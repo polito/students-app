@@ -20,7 +20,6 @@ import { Theme } from '@lib/ui/types/theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { SCREEN_WIDTH } from '../../../core/constants';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -74,8 +73,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView
-      contentInsetAdjustmentBehavior="always"
       contentContainerStyle={bottomBarAwareStyles}
+      contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <View style={styles.sectionsContainer}>
@@ -181,8 +180,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     sectionsContainer: {
-      // backgroundColor: 'red',
-      width: SCREEN_WIDTH,
       paddingVertical: spacing[5],
     },
     section: {
