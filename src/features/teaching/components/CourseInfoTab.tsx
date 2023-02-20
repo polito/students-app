@@ -15,7 +15,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { Person } from '@polito/api-client/models/Person';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
@@ -31,7 +30,6 @@ type StaffMember = Person & { courseRole: string };
 export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const courseQuery = useGetCourse(courseId);
   const courseExamsQuery = useGetCourseExams(
@@ -69,7 +67,6 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   return (
     <ScrollView
       style={{ flex: 1 }}
-      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section style={styles.heading}>

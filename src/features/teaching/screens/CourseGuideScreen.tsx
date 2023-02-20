@@ -9,7 +9,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -19,7 +18,6 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseGuide'>;
 export const CourseGuideScreen = ({ route }: Props) => {
   const { courseId } = route.params;
   const { spacing } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const guideQuery = useGetCourseGuide(courseId);
   const refreshControl = useRefreshControl(guideQuery);
   const guideSections = useMemo(() => {
@@ -38,7 +36,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={[bottomBarAwareStyles, { paddingTop: spacing[6] }]}
+      contentContainerStyle={{ paddingTop: spacing[6] }}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {guideSections.map((section, i) => (

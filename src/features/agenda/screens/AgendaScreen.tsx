@@ -8,13 +8,11 @@ import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { formatDate } from '../../../utils/dates';
 
 export const AgendaScreen = () => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [selectedEventTypes, setSelectedEventTypes] = useState({
     lectures: false,
     exams: false,
@@ -78,7 +76,7 @@ export const AgendaScreen = () => {
           {t('common.deadline_plural')}
         </Tab>
       </Tabs>
-      <ScrollView style={[{ padding: spacing[5] }, bottomBarAwareStyles]}>
+      <ScrollView style={[{ padding: spacing[5] }]}>
         <EmptyState
           icon={faTriangleExclamation}
           iconColor={colors.orange[600]}

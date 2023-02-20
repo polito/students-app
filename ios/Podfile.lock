@@ -365,7 +365,7 @@ PODS:
     - glog
   - react-native-blob-util (0.16.3):
     - React-Core
-  - react-native-blur (4.2.0):
+  - react-native-blur (4.3.0):
     - React-Core
   - react-native-document-picker (8.1.1):
     - React-Core
@@ -753,7 +753,7 @@ SPEC CHECKSUMS:
   React-jsinspector: ea8101acf525ec08b2d87ddf0637d45f8e3b4148
   React-logger: 97987f46779d8dd24656474ad0c43a5b459f31d6
   react-native-blob-util: 4ec16cc21bfc8de8f0ddfd2c81ada00f8c34b646
-  react-native-blur: 3e9c8e8e9f7d17fa1b94e1a0ae9fd816675f5382
+  react-native-blur: 50c9feabacbc5f49b61337ebc32192c6be7ec3c3
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-menu: 9edb6f68924cad8fc62dbd8f03f658d8499bb968

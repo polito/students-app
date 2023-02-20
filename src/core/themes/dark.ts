@@ -19,5 +19,6 @@ export const darkTheme: Theme = {
     link: lightTheme.colors.primary[400],
     divider: 'rgba(255, 255, 255, .15)',
     touchableHighlight: 'rgba(255, 255, 255, .08)',
+    tabBar: lightTheme.colors.darkBlue[100],
   },
 };

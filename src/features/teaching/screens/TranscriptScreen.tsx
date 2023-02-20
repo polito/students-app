@@ -15,7 +15,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetGrades,
@@ -30,7 +29,6 @@ export const TranscriptScreen = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
   const refreshControl = useRefreshControl(studentQuery, gradesQuery);
@@ -55,7 +53,7 @@ export const TranscriptScreen = () => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={[styles.container, bottomBarAwareStyles]}
+      contentContainerStyle={styles.container}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section>

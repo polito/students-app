@@ -19,7 +19,6 @@ import { MenuView } from '@react-native-menu/menu';
 import i18next from 'i18next';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
 import { lightTheme } from '../../../core/themes/light';
@@ -231,45 +230,39 @@ const NotificationListItem = () => {
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
-    <View>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={bottomBarAwareStyles}
-      >
-        <View style={styles.container}>
-          <Section>
-            <SectionHeader title={t('common.visualization')} />
-            <SectionList indented>
-              <VisualizationListItem />
-            </SectionList>
-          </Section>
-          <Section>
-            <SectionHeader title={t('common.language')} />
-            <SectionList indented>
-              <LanguageListItem />
-            </SectionList>
-          </Section>
-          <Section>
-            <SectionHeader
-              title={t('common.notifications')}
-              trailingItem={<Badge text={t('common.comingSoon')} />}
-            />
-            <SectionList indented>
-              <NotificationListItem />
-            </SectionList>
-          </Section>
-          <Section>
-            <SectionHeader title={t('common.cache')} />
-            <SectionList indented>
-              <CleanCacheListItem />
-            </SectionList>
-          </Section>
-        </View>
-      </ScrollView>
-    </View>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <View style={styles.container}>
+        <Section>
+          <SectionHeader title={t('common.visualization')} />
+          <SectionList indented>
+            <VisualizationListItem />
+          </SectionList>
+        </Section>
+        <Section>
+          <SectionHeader title={t('common.language')} />
+          <SectionList indented>
+            <LanguageListItem />
+          </SectionList>
+        </Section>
+        <Section>
+          <SectionHeader
+            title={t('common.notifications')}
+            trailingItem={<Badge text={t('common.comingSoon')} />}
+          />
+          <SectionList indented>
+            <NotificationListItem />
+          </SectionList>
+        </Section>
+        <Section>
+          <SectionHeader title={t('common.cache')} />
+          <SectionList indented>
+            <CleanCacheListItem />
+          </SectionList>
+        </Section>
+      </View>
+    </ScrollView>
   );
 };
 

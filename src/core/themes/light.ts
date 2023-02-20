@@ -149,6 +149,8 @@ export const lightTheme: Theme = {
     caption: text[400],
     link: darkBlue[500],
     divider: 'rgba(0, 0, 0, .15)',
+    tabBar: darkBlue[600],
+    tabBarInactive: darkBlue[400] + '99', // 60% opacity
   },
   fontFamilies: {
     heading: 'Montserrat',

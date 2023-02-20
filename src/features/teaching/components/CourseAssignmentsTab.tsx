@@ -11,7 +11,6 @@ import { List } from '@lib/ui/components/List';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -28,13 +27,11 @@ export const CourseAssignmentsTab = ({
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const refreshControl = useRefreshControl(assignmentsQuery);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
     <>
       <ScrollView
         refreshControl={<RefreshControl {...refreshControl} />}
-        contentContainerStyle={bottomBarAwareStyles}
         scrollEnabled={scrollEnabled}
       >
         {assignmentsQuery.data &&

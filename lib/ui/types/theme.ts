@@ -79,6 +79,8 @@ export type Colors = Record<string, string | ColorPalette> & {
   caption: string;
   link: string;
   divider: string;
+  tabBar: string;
+  tabBarInactive: string;
   touchableHighlight: string;
   text: ColorPalette;
   primary: ColorPalette;

@@ -21,7 +21,6 @@ import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
@@ -40,7 +39,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const preferences = useContext(PreferencesContext);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -73,7 +71,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView
-      contentContainerStyle={bottomBarAwareStyles}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
     >

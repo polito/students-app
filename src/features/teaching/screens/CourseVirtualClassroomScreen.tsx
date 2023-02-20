@@ -8,7 +8,6 @@ import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -22,7 +21,6 @@ type Props = NativeStackScreenProps<
 export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   const { courseId, lectureId } = route.params;
   const { t } = useTranslation();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const virtualClassroomQuery = useGetCourseVirtualClassrooms(courseId);
   const lecture = virtualClassroomQuery.data?.data.find(
     l => l.id === lectureId,
@@ -33,7 +31,6 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <VideoPlayer
