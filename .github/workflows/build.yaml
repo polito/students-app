@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
     tags:
       - "v*"
   pull_request:
@@ -15,11 +14,30 @@ on:
   # allow manual run
   workflow_dispatch:
     inputs:
-      publish_artifacts:
+      push_to_testflight:
         type: boolean
-        description: Gather artifacts
+        description: Upload to TestFlight
         required: true
         default: false
+      push_to_playstore:
+        type: choice
+        description: Push to PlayStore
+        options:
+        - 'false'
+        - internal
+        - beta
+        - production
+        type: boolean
+        required: true
+      version:
+        type: string
+        description: App version
+        required: true
+        default: LATEST
+      build_piece:
+        type: string
+        description: Build piece (last 2 digits of build_no)
+        required: true
   repository_dispatch:
     types: [deploy-command]
 
@@ -30,36 +48,79 @@ jobs:
   configure:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.version }}
-      ref: ${{ steps.configure.outputs.ref }}
-      publish_artifacts: ${{ steps.configure.outputs.publish_artifacts }}
+      version: ${{ steps.configure.outputs.version }}
+      build_no: ${{ steps.configure.outputs.build_no }}
+      push_to_testflight: ${{ steps.configure.outputs.push_to_testflight }}
+      push_to_playstore: ${{ steps.configure.outputs.push_to_playstore }}
     steps:
-    - name: Get version
+    - name: Get version from tag (new release)
       id: version
-      run: echo "version=${GITHUB_REF/refs\/tags\//}"
+      run: echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
       if: |
         github.event_name == 'push' &&
         github.event.repository.full_name == github.repository &&
-        startsWith(github.ref, 'refs/tags/v')
+        github.ref_type == 'tag'
+    - name: Get version from last release
+      id: last_release
+      uses: pozetroninc/github-action-get-latest-release@master
+      with:
+        repository: ${{ github.repository }}
+        excludes: prerelease, draft
     - name: Gather workflow info
       id: configure
       run: |
-        # The ref of the commit to checkout (do not use the merge commit if pull request)
+        VERSION=""
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          echo "ref=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
-        elif [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
-          echo "ref=${{ github.event.client_payload.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+          # On pull_request event, no need to publish
+          PUSH_TESTFLIGHT=false
+          PUSH_PLAYSTORE=false
         elif [[ "${{ steps.version.outputs.version }}" != "" ]]; then
-          echo "ref=${{ steps.version.outputs.version }}" >> $GITHUB_OUTPUT
+          # On tag push (release), we're in production
+          PUSH_TESTFLIGHT=true
+          PUSH_PLAYSTORE=production
+          VERSION="${{ steps.version.outputs.version }}"
+          BUILD_PIECE=0
+        elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
+          # On repo manual dispatch
+          PUSH_TESTFLIGHT="${{ github.event.inputs.push_to_testflight }}"
+          PUSH_PLAYSTORE="${{ github.event.inputs.push_to_playstore }}"
+          if [[ "${{ github.event.inputs.version }}" == "LATEST" ]]; then
+            VERSION="${{ steps.last_release.outputs.release }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          BUILD_PIECE="${{ github.event.inputs.build_piece }}"
+        elif [[ "${{ steps.last_release.outputs.release }}" != "" ]]; then
+          # we're supopsed to be on push on main (e.g. pr merge) here
+          PUSH_TESTFLIGHT=true
+          PUSH_PLAYSTORE=beta
+          VERSION="${{ steps.last_release.outputs.release }}"
+          BUILD_PIECE=$(( $(git rev-list $VERSION.. --count) + 1))
         else
-          echo "ref=${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "UNHANDLED EVENT. CANNOT CONFIG SAFELY."
+          exit 1
+        fi
+        
+        if  [[ "$BUILD_PIECE" != "" && ! "$BUILD_PIECE" =~ ^[0-9]{1,2}$ ]]; then
+          echo "INVALID BUILD PIECE FORMAT: $BUILD_PIECE"
+          exit 1
         fi
 
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          echo "publish_artifacts=${{ github.event.inputs.publish_artifacts }}" >> $GITHUB_OUTPUT
-        elif [[ "${{ steps.version.outputs.version }}" != "" ]]; then
-          echo "publish_artifacts=true" >> $GITHUB_OUTPUT
+        if [[ $VERSION =~ ^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{1,2})$ ]]; then
+          MAJOR=BASH_REMATCH[1]
+          MINOR=BASH_REMATCH[2]
+          SUBV=BASH_REMATCH[3]
+          BUILD_NO=$(( MAJOR*1000000 + MINOR*10000 + SUBV*100 + BUILD_PIECE ))
+          echo "build_no=$BUILD_NO" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        else 
+          echo "INVALID VERSION FORMAT: $VERSION"
+          exit 2
         fi
+
+        echo "push_to_testflight=$PUSH_TESTFLIGHT" >> $GITHUB_OUTPUT
+        echo "push_to_playstore=$PUSH_PLAYSTORE" >> $GITHUB_OUTPUT
+
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup .npmrc
@@ -70,35 +131,69 @@ jobs:
   build-android:
     needs: configure
     runs-on: ubuntu-latest
+    env:
+      LANG: en_US.UTF-8
+      CI: "true"
+      BUILD_NO: ${{ needs.configure.outputs.build_no }}
+      APP_VERSION: ${{ needs.configure.outputs.version }}
+      SUPPLY_GOOGLE_JSON_PATH: "./pc-api-secret.json"
+      KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PW }}
+      KEYSTORE_PATH: "./keystore.jks"
     steps: 
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Gradle Wrapper Validation
+      uses: gradle/wrapper-validation-action@v1
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: ${{ runner.os }}-gradle-
+
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}\n' > .npmrc
     - name: Install npm dependencies
       run: npm install
-    - name: Build Android Release
+    - name: Prepare fastlane
+      working-directory: ./ios
+      run: |
+        echo "${{ secrets.SUPPLY_GOOGLE_JSON_SECRET }}" > ${SUPPLY_GOOGLE_JSON_PATH}
+        chmod 600 ${SUPPLY_GOOGLE_JSON_PATH}
+        echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
+        chmod 600 ${KEYSTORE_PATH}
+    - name: Fastlane VERIFY lane
+      if: ${{ ! needs.configure.outputs.push_to_playstore }}
       working-directory: ./android
-      run: ./gradlew assembleRelease
-    - name: Bundle Android Release
+      run: |
+        bundle exec fastlane verify
+    - name: Fastlane RELEASE lane
+      if: ${{ contains(fromJSON('["internal", "beta", "production"]'), needs.configure.outputs.push_to_playstore) }}
       working-directory: ./android
-      run: ./gradlew bundleRelease
-    - name: Upload Artifacts
-      if: needs.configure.outputs.publish_artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: android-release
-        path: android/app/build/outputs/
+      run: |
+        bundle exec fastlane ${{ needs.configure.outputs.push_to_playstore }}
 
   build-ios:
     env:
+      ImageOS: macos12
+      LANG: en_US.UTF-8
+      CI: "true"
+      BUILD_NO: ${{ needs.configure.outputs.build_no }}
+      APP_VERSION: ${{ needs.configure.outputs.version }}
       MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_KEY }}
+      MATCH_GIT_PRIVATE_KEY: "./github_access.pk"
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
-      LANG: ${{ 'en_US.UTF-8' }}
-      ImageOS: macos12
-      CI: "true"
-      MATCH_GIT_PRIVATE_KEY: "./github_access.pk"
-      GYM_SILENT: "true"
 
     needs: configure
     runs-on: [self-hosted, macos-12]
@@ -132,19 +227,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ./ios/Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('./ios/Podfile') }}
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
     - name: Install pod dependencies
       working-directory: ./ios
       run: bundle exec pod install
-    - name: Fastlane BETA lane
+    - name: Prepare fastlane
       working-directory: ./ios
       run: |
         echo "${{ secrets.MATCH_GIT_AUTH_PK }}" > ${MATCH_GIT_PRIVATE_KEY}
         chmod 600 ${MATCH_GIT_PRIVATE_KEY}
+    - name: Fastlane VERIFY lane
+      if: ${{ ! needs.configure.outputs.push_to_testflight }}
+      working-directory: ./ios
+      run: |
+        bundle exec fastlane verify
+    - name: Fastlane RELEASE lane
+      if: ${{ needs.configure.outputs.push_to_testflight }}
+      working-directory: ./ios
+      run: |
         bundle exec fastlane beta
-    - name: Upload Artifacts
-      if: needs.configure.outputs.publish_artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: ios-release
-        path: ios/build/students.ipa
