@@ -51,13 +51,26 @@ export const TeachingScreen = ({ navigation }: Props) => {
     examsQuery,
     studentQuery,
   );
-  const exams = useMemo(
-    () =>
-      examsQuery.data?.data
-        .sort(a => (a.status === ExamStatusEnum.Booked ? -1 : 1))
-        .slice(0, 4) ?? [],
-    [examsQuery],
-  );
+  const exams = useMemo(() => {
+    if (!coursesQuery.data?.data || !examsQuery.data?.data) return [];
+
+    const hiddenNonModuleCourses: string[] = [];
+
+    Object.keys(preferences.courses).forEach((key: string) => {
+      if (preferences.courses[+key].isHidden) {
+        const hiddenCourse = coursesQuery.data.data.find(c => c.id === +key);
+        if (hiddenCourse && !hiddenCourse.isModule)
+          hiddenNonModuleCourses.push(hiddenCourse.shortcode);
+      }
+    });
+
+    return (
+      examsQuery.data.data
+        .filter(e => !hiddenNonModuleCourses.includes(e.courseShortcode))
+        .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
+        .slice(0, 4) ?? []
+    );
+  }, [coursesQuery, examsQuery]);
 
   return (
     <ScrollView
