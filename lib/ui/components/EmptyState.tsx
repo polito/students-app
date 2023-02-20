@@ -11,11 +11,17 @@ import { globalStyles } from '../../../src/core/styles/globalStyles';
 
 interface Props {
   icon?: IconDefinition;
+  iconColor?: string;
   message: string;
   spacing?: keyof Theme['spacing'];
 }
 
-export const EmptyState = ({ icon, message, spacing = '12' }: Props) => {
+export const EmptyState = ({
+  icon,
+  iconColor,
+  message,
+  spacing = '12',
+}: Props) => {
   const { colors, fontSizes, spacing: _spacing } = useTheme();
   const styles = useStylesheet(createStyles);
 
@@ -30,7 +36,7 @@ export const EmptyState = ({ icon, message, spacing = '12' }: Props) => {
       {icon && (
         <Icon
           icon={icon}
-          color={colors.secondaryText}
+          color={iconColor ?? colors.secondaryText}
           size={fontSizes['3xl']}
           style={styles.icon}
         />

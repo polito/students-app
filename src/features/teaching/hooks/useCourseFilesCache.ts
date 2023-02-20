@@ -12,3 +12,7 @@ export const useCourseFilesCache = () => {
     '/',
   );
 };
+
+export const useCoursesFilesCache = () => {
+  return CachesDirectoryPath;
+};
