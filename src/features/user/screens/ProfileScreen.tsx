@@ -52,7 +52,11 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const { colors } = useTheme();
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
+  const canSwitchCareer = allCareerIds.length > 1;
+
   const actions = useMemo((): MenuAction[] => {
+    if (!canSwitchCareer) return [];
+
     return allCareerIds.map(careerId => {
       return {
         id: careerId,
@@ -72,7 +76,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
         <Text variant={'link'} style={{ marginRight: 5 }}>
           {username}
         </Text>
-        {allCareerIds?.length > 0 && (
+        {canSwitchCareer && (
           <Icon icon={faAngleDown} color={colors.primary[500]} />
         )}
       </Row>
