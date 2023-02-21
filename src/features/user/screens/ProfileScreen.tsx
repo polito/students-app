@@ -92,7 +92,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const refreshControl = useRefreshControl(useGetMeQuery);
   const firstEnrollmentYear = student?.firstEnrollmentYear;
   const enrollmentYear = student
-    ? `${firstEnrollmentYear}/${firstEnrollmentYear + 1}`
+    ? `${firstEnrollmentYear - 1}/${firstEnrollmentYear}`
     : '...';
 
   let bottomBarHeight = 0;
