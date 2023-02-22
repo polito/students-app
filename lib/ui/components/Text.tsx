@@ -70,7 +70,7 @@ export const Text = ({
 const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.md,
     },
     title: {
       fontSize: fontSizes.xl,

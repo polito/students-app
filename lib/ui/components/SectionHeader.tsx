@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 
+import { Separator } from '@lib/ui/components/Separator';
 import { Link } from '@react-navigation/native';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
@@ -32,6 +33,7 @@ export const SectionHeader = ({
   titleStyle,
   ellipsizeTitle = true,
   linkTo,
+  separator = true,
   trailingItem,
 }: Props) => {
   const styles = useStylesheet(createStyles);
@@ -46,14 +48,17 @@ export const SectionHeader = ({
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text
-          variant="heading"
-          style={[styles.title, titleStyle]}
-          accessibilityRole="header"
-          {...ellipsis}
-        >
-          {title}
-        </Text>
+        <View style={styles.titleContainer}>
+          {separator && <Separator />}
+          <Text
+            variant="heading"
+            style={[styles.title, titleStyle]}
+            accessibilityRole="header"
+            {...ellipsis}
+          >
+            {title}
+          </Text>
+        </View>
         {trailingItem
           ? trailingItem
           : linkTo && (
@@ -71,14 +76,15 @@ const createStyles = ({ spacing, colors }: Theme) =>
     container: {
       paddingHorizontal: spacing[4],
     },
-    title: {
-      color: colors.heading,
-      flex: 1,
-      textTransform: 'uppercase',
-      marginEnd: spacing[5],
-    },
     innerContainer: {
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'flex-end',
+    },
+    title: {
+      color: colors.heading,
+      marginEnd: spacing[5],
+    },
+    titleContainer: {
+      flex: 1,
     },
   });
