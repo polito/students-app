@@ -1,25 +1,36 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  ImageStyle,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 interface Props {
-  imageStyle?: any;
+  imageStyle?: StyleProp<ImageStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
   source: { uri: string };
 }
 
-export const ImageLoader = ({ source, imageStyle }: Props) => {
+export const ImageLoader = ({ source, containerStyle, imageStyle }: Props) => {
   const [loading, setLoading] = useState(true);
+  // Workaround to force image rerender after screen rotation
+  const [src, setSrc] = useState(source);
 
-  const onLoadEnd = () => setLoading(() => false);
-  const onLoadStart = () => setLoading(() => true);
+  const onLoadEnd = () => setLoading(false);
+  const onLoadStart = () => setLoading(true);
 
   return (
-    <View style={styles.container}>
+    <View style={containerStyle} onLayout={() => setSrc(source)}>
       <Image
-        resizeMode={'contain'}
+        resizeMode="contain"
         style={imageStyle}
         onLoadEnd={onLoadEnd}
         onLoadStart={onLoadStart}
-        source={source}
+        source={src}
       />
       {loading && <ActivityIndicator style={styles.activityIndicator} />}
     </View>
@@ -27,9 +38,6 @@ export const ImageLoader = ({ source, imageStyle }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   activityIndicator: {
     position: 'absolute',
     left: 0,

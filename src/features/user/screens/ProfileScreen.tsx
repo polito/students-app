@@ -1,17 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
-import { Col } from '@lib/ui/components/Col';
-import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -29,12 +21,10 @@ import {
   MenuView,
   NativeActionEvent,
 } from '@react-native-menu/menu';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { IS_ANDROID, SCREEN_WIDTH } from '../../../core/constants';
+import { IS_ANDROID } from '../../../core/constants';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
-import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import {
@@ -86,11 +76,10 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
 
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
   const { mutate: handleLogout, isLoading } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
-  const scrollViewStyle = useScrollViewStyle();
 
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
@@ -99,13 +88,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
     ? `${firstEnrollmentYear - 1}/${firstEnrollmentYear}`
     : '...';
 
-  let bottomBarHeight = 0;
-  try {
-    bottomBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    // Not available in this context
-  }
-
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => <HeaderRightDropdown student={student} />,
@@ -113,56 +95,57 @@ export const ProfileScreen = ({ navigation }: Props) => {
   }, [student]);
 
   return (
-    <Col>
-      <ScrollView
-        refreshControl={<RefreshControl {...refreshControl} />}
-        style={scrollViewStyle}
-        contentContainerStyle={{
-          paddingBottom: bottomBarHeight + +spacing['16'],
-        }}
-      >
-        <Section>
-          <Text weight={'bold'} variant={'title'} style={styles.title}>
-            {student?.firstName} {student?.lastName}
-          </Text>
-        </Section>
-        <Section>
-          <SectionHeader title={t('profileScreen.smartCard')} />
-          <View style={{ marginTop: Platform.select({ ios: spacing[3] }) }}>
-            <ImageLoader
-              imageStyle={styles.smartCard}
-              source={{ uri: student?.smartCardPicture }}
-            />
-          </View>
-        </Section>
-        <Section>
-          <SectionHeader
-            title={t('profileScreen.course')}
-            /* trailingItem={
-                                      <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
-                                    }*/
-            trailingItem={<Badge text={t('common.comingSoon')} />}
-          />
-          <SectionList>
-            <ListItem
-              title={student?.degreeName}
-              subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
-              // linkTo={'TODO'}
-            />
-          </SectionList>
-          <SectionList>
-            <ProfileSettingItem />
-            <ProfileNotificationItem />
-          </SectionList>
-        </Section>
-        <CtaButton
-          icon={faSignOut}
-          title={t('common.logout')}
-          action={handleLogout}
-          loading={isLoading}
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      refreshControl={<RefreshControl {...refreshControl} />}
+    >
+      <Section>
+        <Text weight={'bold'} variant={'title'} style={styles.title}>
+          {student?.firstName} {student?.lastName}
+        </Text>
+      </Section>
+      <Section>
+        <SectionHeader title={t('profileScreen.smartCard')} />
+        <ImageLoader
+          imageStyle={styles.smartCard}
+          source={{ uri: student?.smartCardPicture }}
+          containerStyle={styles.smartCardContainer}
         />
-      </ScrollView>
-    </Col>
+      </Section>
+      <Section>
+        <SectionHeader
+          title={t('profileScreen.course')}
+          /* trailingItem={
+                                                                    <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
+                                                                  }*/
+          trailingItem={<Badge text={t('common.comingSoon')} />}
+        />
+        <SectionList>
+          <ListItem
+            title={student?.degreeName}
+            subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+            // linkTo={'TODO'}
+          />
+        </SectionList>
+        <SectionList>
+          <ProfileSettingItem />
+          <ProfileNotificationItem />
+        </SectionList>
+        <SectionList>
+          <ListItem
+            title={t('common.logout')}
+            onPress={() => handleLogout()}
+            leadingItem={
+              <Icon
+                icon={faSignOut}
+                color={colors.text['500']}
+                size={fontSizes.xl}
+              />
+            }
+          />
+        </SectionList>
+      </Section>
+    </ScrollView>
   );
 };
 
@@ -173,12 +156,13 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       paddingHorizontal: spacing[5],
       paddingTop: spacing[IS_ANDROID ? 4 : 1],
     },
-    listContainer: {
-      marginTop: spacing[3],
-    },
-    smartCardContainer: {},
     smartCard: {
-      height: (SCREEN_WIDTH - Number(spacing[10])) / 1.583,
-      marginVertical: spacing[IS_ANDROID ? 3 : 1],
+      aspectRatio: 1.586,
+      height: null,
+    },
+    smartCardContainer: {
+      marginVertical: spacing[2],
+      marginHorizontal: spacing[5],
+      maxWidth: 540, // width of a physical card in dp
     },
   });
