@@ -90,8 +90,8 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     title: {
       fontSize: fontSizes['3xl'],
-      marginBottom: spacing[5],
-      marginLeft: spacing[4],
+      marginBottom: spacing[3],
+      marginHorizontal: spacing[5],
     },
     textField: {
       paddingHorizontal: Platform.select({
