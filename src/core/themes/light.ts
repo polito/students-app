@@ -117,6 +117,8 @@ const lightBlue = {
   900: '#0c4a6e',
 };
 
+const backgroundColor = '#F0F3F5';
+
 export const lightTheme: Theme = {
   dark: false,
   colors: {
@@ -138,8 +140,9 @@ export const lightTheme: Theme = {
     muted: trueGray,
     info: lightBlue,
     touchableHighlight: 'rgba(0, 0, 0, .08)',
-    background: '#F0F3F5',
+    background: backgroundColor,
     surface: '#FFFFFF',
+    surfaceDark: '#143959',
     headers: '#edeef0',
     heading: darkBlue[700],
     title: 'black',
@@ -149,8 +152,8 @@ export const lightTheme: Theme = {
     caption: text[400],
     link: darkBlue[500],
     divider: 'rgba(0, 0, 0, .15)',
-    tabBar: darkBlue[600],
-    tabBarInactive: darkBlue[400] + '99', // 60% opacity
+    tabBar: darkBlue[200],
+    tabBarInactive: backgroundColor,
   },
   fontFamilies: {
     heading: 'Montserrat',

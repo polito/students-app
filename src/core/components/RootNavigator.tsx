@@ -29,6 +29,8 @@ export const RootNavigator = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
+  const tabBarIconSize = 20;
+
   return (
     <TabNavigator.Navigator
       backBehavior="history"
@@ -37,7 +39,6 @@ export const RootNavigator = () => {
         tabBarActiveTintColor: colors.tabBar,
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarHideOnKeyboard: true,
-        tabBarShowLabel: false,
         tabBarStyle: styles.tabBarStyle,
       }}
     >
@@ -45,9 +46,9 @@ export const RootNavigator = () => {
         name="TeachingTab"
         component={TeachingNavigator}
         options={{
-          tabBarAccessibilityLabel: t('teachingScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faBookOpen} color={color} size={size} />
+          tabBarLabel: t('teachingScreen.title'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -55,9 +56,9 @@ export const RootNavigator = () => {
         name="AgendaTab"
         component={AgendaNavigator}
         options={{
-          tabBarAccessibilityLabel: t('agendaScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faCalendarDay} color={color} size={size} />
+          tabBarLabel: t('agendaScreen.title'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCalendarDay} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -65,9 +66,9 @@ export const RootNavigator = () => {
         name="PlacesTab"
         component={PlacesScreen}
         options={{
-          tabBarAccessibilityLabel: t('placesScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faCompass} color={color} size={size} />
+          tabBarLabel: t('placesScreen.title'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCompass} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -76,9 +77,9 @@ export const RootNavigator = () => {
         component={ServicesScreen}
         options={{
           headerLeft: () => <HeaderLogo />,
-          tabBarAccessibilityLabel: t('common.services'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faCircleInfo} color={color} size={size} />
+          tabBarLabel: t('common.services'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -86,9 +87,9 @@ export const RootNavigator = () => {
         name="ProfileTab"
         component={UserNavigator}
         options={{
-          tabBarAccessibilityLabel: t('profileScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faUser} color={color} size={size} />
+          tabBarLabel: t('profileScreen.title'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -100,7 +101,7 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: colors.surface,
-      borderColor: colors.background,
+      backgroundColor: colors.surfaceDark,
+      borderColor: colors.primary[700],
     },
   });
