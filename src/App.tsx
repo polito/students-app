@@ -1,6 +1,3 @@
-import 'intl';
-import 'intl/locale-data/jsonp/en';
-
 import { AppContent } from './core/components/AppContent';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';

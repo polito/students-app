@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
+import Smartlook, { Properties } from 'react-native-smartlook-analytics';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
@@ -57,11 +58,22 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   }, [navigation, routes, t]);
 
   const action = async () => {
+    const properties = new Properties();
+    properties.putString('courseShortcode', exam.courseShortcode);
+    properties.putString('teacherId', exam.teacherId.toString());
+
     if (examAvailable) {
-      return bookExam({});
+      return bookExam({}).then(_ => {
+        Smartlook.instance.analytics.trackEvent('bookExam', properties);
+      });
     }
     if (await confirm()) {
-      return cancelBooking();
+      return cancelBooking().then(_ => {
+        Smartlook.instance.analytics.trackEvent(
+          'cancelExamBooking',
+          properties,
+        );
+      });
     }
     return Promise.reject();
   };
