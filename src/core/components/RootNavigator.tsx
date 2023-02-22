@@ -40,6 +40,7 @@ export const RootNavigator = () => {
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarHideOnKeyboard: true,
         tabBarStyle: styles.tabBarStyle,
+        tabBarItemStyle: styles.tabBarItemStyle,
       }}
     >
       <TabNavigator.Screen
@@ -103,5 +104,8 @@ const createStyles = ({ colors }: Theme) =>
       ...tabBarStyle,
       backgroundColor: colors.surfaceDark,
       borderColor: colors.primary[700],
+    },
+    tabBarItemStyle: {
+      paddingVertical: 3,
     },
   });
