@@ -80,32 +80,29 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        behavior={IS_IOS ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <FlatList
-          ListFooterComponentStyle={styles.header}
-          contentInsetAdjustmentBehavior="automatic"
-          data={replies}
-          contentContainerStyle={[
-            bottomBarAwareStyles,
-            { paddingBottom: ticketStatusHeight },
-            { paddingTop: IS_ANDROID && bottomBarHeight },
-          ]}
-          keyExtractor={item => item.id.toString()}
-          inverted
-          renderItem={({ item: reply }) => (
-            <ChatMessage
-              message={reply}
-              ticketId={ticket.id}
-              received={!!reply?.agentId}
-            />
-          )}
-        />
+      <FlatList
+        ListFooterComponentStyle={styles.header}
+        contentInsetAdjustmentBehavior="automatic"
+        data={replies}
+        contentContainerStyle={[
+          bottomBarAwareStyles,
+          { paddingBottom: ticketStatusHeight },
+          { paddingTop: IS_ANDROID && bottomBarHeight },
+        ]}
+        keyExtractor={item => item.id.toString()}
+        inverted
+        renderItem={({ item: reply }) => (
+          <ChatMessage
+            message={reply}
+            ticketId={ticket.id}
+            received={!!reply?.agentId}
+          />
+        )}
+      />
+      <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'}>
         <TicketTextField ticketId={id} />
-        <Header />
       </KeyboardAvoidingView>
+      <Header />
     </>
   );
 };
