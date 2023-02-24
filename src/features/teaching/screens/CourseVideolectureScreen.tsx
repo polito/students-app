@@ -31,10 +31,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <VideoPlayer
-        videoUrl="https://lucapezzolla.com/20210525.mp4"
-        coverUrl={lecture.coverUrl}
-      />
+      <VideoPlayer videoUrl={lecture.videoUrl} coverUrl={lecture.coverUrl} />
       <EventDetails
         title={lecture.title}
         type={t('common.videoLecture')}
