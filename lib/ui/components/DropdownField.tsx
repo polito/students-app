@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
+import { TextField } from '@lib/ui/components/TextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { MenuView } from '@react-native-menu/menu';
-
-import { SCREEN_WIDTH } from '../../../src/core/constants';
 
 interface DropdownOption {
   id: string;
@@ -46,6 +46,7 @@ export const DropdownField = ({
     <View style={styles.textFieldWrapper}>
       <Text style={styles.textFieldLabel}>{label}</Text>
       <MenuView
+        style={{ width: '100%' }}
         title={label}
         shouldOpenOnLongPress={false}
         actions={options}
@@ -53,66 +54,66 @@ export const DropdownField = ({
           !disabled && onSelectOption(event);
         }}
       >
-        <View
-          style={[
-            styles.textFieldContainer,
-            disabled && styles.textFieldDisabled,
-          ]}
-        >
-          <Text
-            numberOfLines={1}
-            style={[
-              styles.displayedValue,
-              !displayedValue && styles.placeholderText,
-            ]}
-          >
-            {displayedValue || placeholder}
-          </Text>
+        <TextField
+          style={[styles.textField, disabled && styles.textFieldDisabled]}
+          label={'label'}
+          placeholder={placeholder}
+          value={displayedValue}
+          editable={false}
+          inputStyle={styles.textFieldInput}
+        />
+        <Col justifyCenter alignCenter style={styles.iconContainer}>
           <Icon icon={faChevronDown} />
-        </View>
+        </Col>
       </MenuView>
     </View>
   );
 };
 
-const createStyles = ({ colors, shapes, spacing }: Theme) =>
+const createStyles = ({
+  colors,
+  shapes,
+  spacing,
+  fontWeights,
+  fontSizes,
+}: Theme) =>
   StyleSheet.create({
-    placeholderText: {
-      opacity: 0.9,
+    iconContainer: {
+      position: 'absolute',
+      right: 0,
+      height: '100%',
+      paddingHorizontal: spacing[4],
+      backgroundColor: 'transparent',
     },
     textFieldWrapper: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
+      width: '100%',
     },
-    displayedValue: {
-      maxWidth: '80%',
-    },
-    textFieldContainer: {
+    textField: {
       borderRadius: shapes.sm,
       borderWidth: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing['2.5'],
+      backgroundColor: colors.surface,
+      paddingVertical: 0,
+      borderBottomLeftRadius: shapes.sm,
       borderColor: colors.divider,
-      width: SCREEN_WIDTH * 0.9,
+      width: '100%',
+      textAlign: 'left',
+    },
+    textFieldInput: {
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.normal,
+      borderBottomWidth: 0,
+      maxWidth: '90%',
     },
     textFieldDisabled: {
       opacity: 0.5,
     },
     textFieldLabel: {
-      color: colors.text['200'],
+      color: colors.text['500'],
+      fontWeight: fontWeights.normal,
       marginHorizontal: spacing['2'],
       marginVertical: spacing['1'],
-    },
-    textField: {
-      // backgroundColor: 'white',
-      // height: 40,
-      borderRadius: shapes.sm,
-      paddingVertical: 0,
-      borderWidth: 1,
-      borderColor: colors.divider,
-      width: SCREEN_WIDTH * 0.9,
     },
   });

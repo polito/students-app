@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
 
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -13,10 +15,9 @@ import { parseDocument } from 'htmlparser2';
 import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
-import { CreateTicketCta } from '../components/CreateTicketCta';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { ServiceStackParamList } from '../components/ServiceNavigator';
 
-type Props = NativeStackScreenProps<TeachingStackParamList, 'TicketFaq'>;
+type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaq'>;
 
 export const TicketFaqScreen = ({ route, navigation }: Props) => {
   const { faq } = route.params;
@@ -39,7 +40,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
         styles.scrollViewStyle,
       ]}
     >
-      <Section style={{ marginTop: spacing[2] }}>
+      <Section style={{ paddingVertical: spacing[2] }}>
         <SectionHeader title={faq.question} ellipsizeTitle={false} />
         <RenderHTML
           defaultTextProps={{
@@ -58,18 +59,17 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
           systemFonts={['Montserrat']}
         />
       </Section>
-      <CreateTicketCta action={() => navigation.navigate('TicketCreation')} />
+      <CtaButton
+        title={t('ticketFaqsScreen.writeTicket')}
+        textExtra={t('ticketFaqsScreen.noResultFound')}
+        action={() => navigation.navigate('TicketInsert')}
+        icon={faPencil}
+      />
     </ScrollView>
   );
 };
 
-const createStyles = ({
-  spacing,
-  colors,
-  fontSizes,
-  fontWeights,
-  shapes,
-}: Theme) =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     noResultFound: {
       textAlign: 'center',

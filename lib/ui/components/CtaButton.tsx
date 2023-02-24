@@ -26,6 +26,7 @@ interface Props extends TouchableHighlightProps {
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
   destructive?: boolean;
+  textExtra?: string;
 }
 
 /**
@@ -46,6 +47,7 @@ export const CtaButton = ({
   action,
   icon,
   rightExtra,
+  textExtra,
   ...rest
 }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
@@ -79,9 +81,15 @@ export const CtaButton = ({
       style={[
         styles.container,
         absolute && styles.absolute,
+        !!textExtra && { paddingTop: spacing[3] },
         adjustInsets && { marginBottom: bottomBarHeight },
       ]}
     >
+      {textExtra && (
+        <View>
+          <Text style={styles.textExtra}>{textExtra}</Text>
+        </View>
+      )}
       <TouchableHighlight
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
@@ -158,6 +166,12 @@ const createStyles = ({
   StyleSheet.create({
     container: {
       padding: spacing[4],
+    },
+    textExtra: {
+      fontSize: fontSizes.xs,
+      color: colors.text['500'],
+      paddingBottom: spacing[2],
+      textAlign: Platform.select({ ios: 'center' }),
     },
     absolute: {
       position: 'absolute',

@@ -27,6 +27,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
   isNavigationAction?: boolean;
+  card?: boolean;
 }
 
 /**
@@ -47,6 +48,7 @@ export const ListItem = ({
   isNavigationAction,
   disabled,
   style,
+  card,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -81,7 +83,7 @@ export const ListItem = ({
         style={[
           {
             minHeight: 60,
-            flexDirection: 'row',
+            flexDirection: card ? 'column' : 'row',
             alignItems: 'center',
             paddingHorizontal: spacing[5],
             paddingVertical: spacing[2],
@@ -96,8 +98,8 @@ export const ListItem = ({
               height: 38,
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: -7,
-              marginRight: spacing[2],
+              marginLeft: card ? undefined : -7,
+              marginRight: card ? undefined : spacing[2],
             }}
           >
             {leadingItem}
@@ -143,17 +145,21 @@ export const ListItem = ({
             )
           ) : null}
         </View>
-        {!trailingItem && (linkTo || isNavigationAction) && IS_IOS ? (
-          <Icon
-            icon={faChevronRight}
-            color={colors.secondaryText}
-            style={{
-              marginLeft: spacing[1],
-              marginRight: -spacing[1],
-            }}
-          />
-        ) : (
-          trailingItem
+        {!card && (
+          <>
+            {!trailingItem && (linkTo || isNavigationAction) && IS_IOS ? (
+              <Icon
+                icon={faChevronRight}
+                color={colors.secondaryText}
+                style={{
+                  marginLeft: spacing[1],
+                  marginRight: -spacing[1],
+                }}
+              />
+            ) : (
+              trailingItem
+            )}
+          </>
         )}
       </View>
     </TouchableHighlight>

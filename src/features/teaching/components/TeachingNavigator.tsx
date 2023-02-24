@@ -2,8 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { TicketStatus } from '@polito/api-client';
-import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
@@ -20,15 +18,8 @@ import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamScreen } from '../screens/ExamScreen';
-import { ExamsScreen } from '../screens/ExamsScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
-import { TicketCreationScreen } from '../screens/TicketCreationScreen';
-import { TicketFaqScreen } from '../screens/TicketFaqScreen';
-import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
-import { TicketListScreen } from '../screens/TicketListScreen';
-import { TicketScreen } from '../screens/TicketScreen';
-import { TicketsScreen } from '../screens/TicketsScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
 
 export type TeachingStackParamList = {
@@ -52,14 +43,6 @@ export type TeachingStackParamList = {
   Exams: undefined;
   Exam: { id: number };
   Transcript: undefined;
-  Tickets: undefined;
-  Ticket: { id: number };
-  TicketFaqs: undefined;
-  TicketFaq: { faq: TicketFAQ };
-  TicketList: {
-    statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
-  };
-  TicketCreation: undefined;
 };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -197,61 +180,6 @@ export const TeachingNavigator = () => {
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Exams"
-        component={ExamsScreen}
-        options={{
-          headerTitle: t('examsScreen.title'),
-        }}
-      />
-      <Stack.Screen
-        name="Tickets"
-        component={TicketsScreen}
-        options={{
-          headerLeft: () => <HeaderLogo />,
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="TicketList"
-        component={TicketListScreen}
-        options={{
-          headerLargeTitle: true,
-        }}
-      />
-      <Stack.Screen
-        name="Ticket"
-        component={TicketScreen}
-        options={{
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="TicketCreation"
-        component={TicketCreationScreen}
-        options={{
-          headerLargeTitle: false,
-          headerBackTitle: t('ticketCreationScreen.headerBackTitle'),
-          headerTitle: t('ticketCreationScreen.title'),
-        }}
-      />
-      <Stack.Screen
-        name="TicketFaqs"
-        component={TicketFaqsScreen}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('ticketFaqsScreen.title'),
-        }}
-      />
-      <Stack.Screen
-        name="TicketFaq"
-        component={TicketFaqScreen}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('ticketFaqScreen.title'),
-          headerBackTitle: t('ticketFaqScreen.headerBackTitle'),
         }}
       />
       <Stack.Screen

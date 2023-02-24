@@ -10,7 +10,6 @@ import {
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
-import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
@@ -109,56 +108,56 @@ export const ProfileScreen = ({ navigation }: Props) => {
   }, [student]);
 
   return (
-    <Col>
-      <ScrollView
-        refreshControl={<RefreshControl {...refreshControl} />}
-        style={scrollViewStyle}
-        contentContainerStyle={{
+    <ScrollView
+      refreshControl={<RefreshControl {...refreshControl} />}
+      contentContainerStyle={[
+        scrollViewStyle,
+        {
           paddingBottom: bottomBarHeight + +spacing['16'],
-        }}
-      >
-        <Section>
-          <Text weight={'bold'} variant={'title'} style={styles.title}>
-            {student?.firstName} {student?.lastName}
-          </Text>
-        </Section>
-        <Section>
-          <SectionHeader title={t('profileScreen.smartCard')} />
-          <View style={{ marginTop: Platform.select({ ios: spacing[3] }) }}>
-            <ImageLoader
-              imageStyle={styles.smartCard}
-              source={{ uri: student?.smartCardPicture }}
-            />
-          </View>
-        </Section>
-        <Section>
-          <SectionHeader
-            title={t('profileScreen.course')}
-            /* trailingItem={
+        },
+      ]}
+    >
+      <Section>
+        <Text weight={'bold'} variant={'title'} style={styles.title}>
+          {student?.firstName} {student?.lastName}
+        </Text>
+      </Section>
+      <Section>
+        <SectionHeader title={t('profileScreen.smartCard')} />
+        <View style={{ marginTop: Platform.select({ ios: spacing[3] }) }}>
+          <ImageLoader
+            imageStyle={styles.smartCard}
+            source={{ uri: student?.smartCardPicture }}
+          />
+        </View>
+      </Section>
+      <Section>
+        <SectionHeader
+          title={t('profileScreen.course')}
+          /* trailingItem={
                                       <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
                                     }*/
-            trailingItem={<Badge text={t('common.comingSoon')} />}
-          />
-          <SectionList>
-            <ListItem
-              title={student?.degreeName}
-              subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
-              // linkTo={'TODO'}
-            />
-          </SectionList>
-          <SectionList>
-            <ProfileSettingItem />
-            <ProfileNotificationItem />
-          </SectionList>
-        </Section>
-        <CtaButton
-          icon={faSignOut}
-          title={t('common.logout')}
-          action={handleLogout}
-          loading={isLoading}
+          trailingItem={<Badge text={t('common.comingSoon')} />}
         />
-      </ScrollView>
-    </Col>
+        <SectionList>
+          <ListItem
+            title={student?.degreeName}
+            subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+            // linkTo={'TODO'}
+          />
+        </SectionList>
+        <SectionList>
+          <ProfileSettingItem />
+          <ProfileNotificationItem />
+        </SectionList>
+      </Section>
+      <CtaButton
+        icon={faSignOut}
+        title={t('common.logout')}
+        action={handleLogout}
+        loading={isLoading}
+      />
+    </ScrollView>
   );
 };
 
