@@ -49,6 +49,9 @@ export const ChatMessage = ({
     return <Text style={[styles.hour, right && styles.hourRight]}>{text}</Text>;
   };
 
+  const attachments = message?.attachments ?? [];
+  console.debug('attachments', attachments);
+
   if (received) {
     return (
       <View style={styles.containerMessage}>

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
@@ -12,17 +12,27 @@ import { formatDate, formatDateTime } from '../../../utils/dates';
 
 interface TicketStatusProps {
   ticket: TicketOverview;
+  loading?: boolean;
+  refetching?: boolean;
 }
 
-export const TicketStatusInfo = ({ ticket }: TicketStatusProps) => {
+export const TicketStatusInfo = ({
+  ticket,
+  loading,
+  refetching,
+}: TicketStatusProps) => {
   const theme = useTheme();
-  const { fontSizes } = theme;
+  const { fontSizes, spacing } = theme;
   const { t } = useTranslation();
   const styles = createStyles(theme);
   const isClosed = ticket?.status === TicketStatus.Closed;
 
-  if (!ticket) {
-    return <View />;
+  if (loading) {
+    return (
+      <Col style={[styles.container, { paddingVertical: spacing[4] }]}>
+        <ActivityIndicator />
+      </Col>
+    );
   }
 
   return (
@@ -39,28 +49,34 @@ export const TicketStatusInfo = ({ ticket }: TicketStatusProps) => {
         <Text style={styles.text}>{t('ticketScreen.updatedAt')}</Text>
         <Text style={styles.text}>{formatDateTime(ticket?.updatedAt)}</Text>
       </Row>
-      <Row style={[styles.row]}>
-        <Text style={[styles.text, isClosed && styles.closed]}>
-          {t('ticketScreen.status')}
-        </Text>
-        <Text
-          style={[
-            styles.text,
-            isClosed && styles.closed,
-            { textTransform: 'uppercase' },
-          ]}
-        >
-          {t(`ticketScreen.infoStatus-${ticket?.status}`)}
-        </Text>
-      </Row>
-      {isClosed && (
-        <Row style={[styles.row]}>
-          <Text
-            style={[styles.text, styles.closed, { fontSize: fontSizes.xs }]}
-          >
-            {t('ticketScreen.youCanReopenTheTicket')}
-          </Text>
-        </Row>
+      {refetching ? (
+        <ActivityIndicator />
+      ) : (
+        <>
+          <Row style={[styles.row]}>
+            <Text style={[styles.text, isClosed && styles.closed]}>
+              {t('ticketScreen.status')}
+            </Text>
+            <Text
+              style={[
+                styles.text,
+                isClosed && styles.closed,
+                { textTransform: 'uppercase' },
+              ]}
+            >
+              {t(`ticketScreen.infoStatus-${ticket?.status}`)}
+            </Text>
+          </Row>
+          {isClosed && (
+            <Row style={[styles.row]}>
+              <Text
+                style={[styles.text, styles.closed, { fontSize: fontSizes.xs }]}
+              >
+                {t('ticketScreen.youCanReopenTheTicket')}
+              </Text>
+            </Row>
+          )}
+        </>
       )}
     </Col>
   );

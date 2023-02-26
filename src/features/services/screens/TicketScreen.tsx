@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -7,17 +8,23 @@ import {
   View,
 } from 'react-native';
 
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { HeaderBackButton, useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   useGetTicket,
+  useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
 import { ChatMessage } from '../components/ChatMessage';
@@ -26,6 +33,57 @@ import { TicketStatusInfo } from '../components/TicketStatusInfo';
 import { TicketTextField } from '../components/TicketTextField';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
+
+const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const { colors, fontSizes } = theme;
+  const styles = createStyles(theme);
+  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
+  const confirm = useConfirmationDialog({
+    message: t('tickets.closeTip'),
+  });
+
+  const actions = useMemo(() => {
+    if (ticket?.status !== TicketStatus.Closed) {
+      return [
+        {
+          title: t('tickets.close'),
+          color: 'red',
+          image: 'trash.fill',
+          imageColor: 'red',
+        },
+      ];
+    }
+    return [];
+  }, [ticket]);
+
+  const onPressCloseTicket = async () => {
+    if (await confirm()) {
+      return markTicketAsClosed();
+    }
+    return Promise.reject();
+  };
+
+  if (ticket?.status !== TicketStatus.Closed) {
+    return (
+      <MenuView
+        title={t('tickets.menuAction')}
+        actions={actions}
+        onPressAction={onPressCloseTicket}
+      >
+        <IconButton
+          style={styles.icon}
+          icon={faEllipsisVertical}
+          color={colors.secondaryText}
+          size={fontSizes.xl}
+        />
+      </MenuView>
+    );
+  }
+
+  return <View />;
+};
 
 export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
@@ -38,6 +96,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const routes = navigation.getState()?.routes;
   const [ticketStatusHeight, setTicketStatusHeight] = useState(0);
+  const ticket = ticketQuery?.data?.data;
 
   useEffect(() => {
     mutate();
@@ -54,7 +113,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     }
   }, []);
 
-  const ticket = ticketQuery?.data?.data;
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <HeaderRight ticket={ticket} />,
+    });
+  }, [ticket]);
 
   const replies = useMemo(() => {
     return ticket?.replies.sort(
@@ -73,7 +136,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         }}
       >
         <SectionHeader title={ticket?.subject} />
-        <TicketStatusInfo ticket={ticket} />
+        <TicketStatusInfo
+          ticket={ticket}
+          loading={ticketQuery?.isLoading}
+          refetching={ticketQuery?.isRefetching}
+        />
       </View>
     );
   };
@@ -151,5 +218,11 @@ const createStyles = ({
     textFieldInput: {
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.normal,
+    },
+    listItemSubtitle: {
+      fontSize: fontSizes.xs,
+    },
+    icon: {
+      marginRight: -spacing[3],
     },
   });
