@@ -72,6 +72,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                 editable={!ticketFaqsQuery?.isFetching}
                 returnKeyType="next"
                 style={styles.textField}
+                inputStyle={styles.textFieldInput}
               />
               <View style={styles.icon}>
                 {ticketFaqsQuery.isFetching ? (
@@ -175,12 +176,14 @@ const createStyles = ({
     },
     textField: {
       backgroundColor: colors.surface,
-      // height: 40,
       borderRadius: shapes.sm,
       paddingVertical: 0,
       borderWidth: 1,
       borderColor: colors.divider,
       width: SCREEN_WIDTH * 0.82,
+    },
+    textFieldInput: {
+      borderBottomWidth: 0,
     },
     icon: {
       paddingRight: spacing[1],

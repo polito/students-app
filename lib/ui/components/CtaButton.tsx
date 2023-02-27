@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   TouchableHighlightProps,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
@@ -18,6 +19,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface Props extends TouchableHighlightProps {
   adjustInsets?: boolean;
+  containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
   title: string;
@@ -48,6 +50,7 @@ export const CtaButton = ({
   icon,
   rightExtra,
   textExtra,
+  containerStyle,
   ...rest
 }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
@@ -83,6 +86,7 @@ export const CtaButton = ({
         absolute && styles.absolute,
         !!textExtra && { paddingTop: spacing[3] },
         adjustInsets && { marginBottom: bottomBarHeight },
+        containerStyle,
       ]}
     >
       {textExtra && (

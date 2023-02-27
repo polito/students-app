@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -29,6 +30,7 @@ import {
 } from '../../../core/queries/ticketHooks';
 import { ChatMessage } from '../components/ChatMessage';
 import { ServiceStackParamList } from '../components/ServiceNavigator';
+import { TicketRequest } from '../components/TicketRequest';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
 import { TicketTextField } from '../components/TicketTextField';
 
@@ -95,8 +97,22 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const bottomBarHeight = useBottomTabBarHeight();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const routes = navigation.getState()?.routes;
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [ticketStatusHeight, setTicketStatusHeight] = useState(0);
   const ticket = ticketQuery?.data?.data;
+
+  useEffect(() => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
+      setKeyboardVisible(false),
+    );
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () =>
+      setKeyboardVisible(true),
+    );
+    return () => {
+      hideSubscription.remove();
+      showSubscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     mutate();
@@ -126,6 +142,9 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   }, [ticket]);
 
   const Header = () => {
+    if (keyboardVisible) {
+      return <View />;
+    }
     return (
       <View
         style={[styles.header, IS_IOS && { top: headerHeight }]}
@@ -146,9 +165,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   };
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <FlatList
-        ListFooterComponentStyle={styles.header}
         contentInsetAdjustmentBehavior="automatic"
         data={replies}
         contentContainerStyle={[
@@ -158,6 +176,9 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         ]}
         keyExtractor={item => item.id.toString()}
         inverted
+        ListFooterComponent={
+          !ticketQuery?.isLoading && <TicketRequest ticket={ticket} />
+        }
         renderItem={({ item: reply }) => (
           <ChatMessage
             message={reply}
@@ -170,7 +191,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         <TicketTextField ticketId={id} />
       </KeyboardAvoidingView>
       <Header />
-    </>
+    </View>
   );
 };
 

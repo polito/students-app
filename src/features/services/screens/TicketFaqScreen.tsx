@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import RenderHTML, { Document } from 'react-native-render-html';
 
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
@@ -34,32 +34,32 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
 
   return (
     <ScrollView
-      contentContainerStyle={[
-        bottomBarAwareStyles,
-        scrollViewStyles,
-        styles.scrollViewStyle,
-      ]}
+      contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
     >
-      <Section style={{ paddingVertical: spacing[2] }}>
+      <Section style={styles.section}>
         <SectionHeader title={faq.question} ellipsizeTitle={false} />
-        <RenderHTML
-          defaultTextProps={{
-            selectable: true,
-            selectionColor: colors.secondary[600],
-          }}
-          contentWidth={SCREEN_WIDTH}
-          baseStyle={{
-            paddingHorizontal: spacing[5],
-            marginTop: spacing[10],
-            color: colors.prose,
-            fontFamily: 'Montserrat',
-            fontSize: fontSizes.sm,
-          }}
-          source={{ dom }}
-          systemFonts={['Montserrat']}
-        />
+        <View style={{ flex: 1, backgroundColor: 'red' }}>
+          <RenderHTML
+            defaultTextProps={{
+              selectable: true,
+              selectionColor: colors.secondary[600],
+            }}
+            contentWidth={SCREEN_WIDTH}
+            baseStyle={{
+              paddingHorizontal: spacing[5],
+              paddingBottom: spacing[5],
+              marginTop: spacing[10],
+              color: colors.prose,
+              fontFamily: 'Montserrat',
+              fontSize: fontSizes.sm,
+            }}
+            source={{ dom }}
+            systemFonts={['Montserrat']}
+          />
+        </View>
       </Section>
       <CtaButton
+        adjustInsets={true}
         title={t('ticketFaqsScreen.writeTicket')}
         textExtra={t('ticketFaqsScreen.noResultFound')}
         action={() => navigation.navigate('TicketInsert')}
@@ -69,20 +69,14 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     noResultFound: {
       textAlign: 'center',
       color: colors.text['100'],
     },
-    scrollViewStyle: {
-      justifyContent: 'space-between',
-      height: '100%',
-    },
-    action: {
-      display: 'flex',
-      backgroundColor: 'red',
-      flexDirection: 'column',
-      flex: 0,
+    section: {
+      paddingTop: spacing[2],
+      paddingBottom: spacing[8],
     },
   });

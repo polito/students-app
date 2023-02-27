@@ -55,6 +55,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
   const modalRef = useRef<Modal>();
   const { t } = useTranslation();
   const theme = useTheme();
+  const { colors } = theme;
   const styles = createStyles(theme);
   const [visible, setVisible] = useState(false);
   const translateY = useRef(new Animated.Value(0)).current;
@@ -126,7 +127,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
     );
   };
 
-  const onPressOption = (option: ActionSheetOption, index?: number) => {
+  const onPressOption = (option: ActionSheetOption) => {
     close(option?.onPress || undefined);
   };
 
@@ -138,13 +139,13 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
       transparent
       onRequestClose={close}
     >
-      <Animated.View style={[styles.background, { opacity: opacity }]}>
+      <Animated.View style={[styles.background, { opacity }]}>
         <Pressable onPress={close} style={{ flex: 1 }} />
       </Animated.View>
       <Animated.View
-        style={[styles.container, { height: translateY, opacity: opacity }]}
+        style={[styles.container, { height: translateY, opacity }]}
       >
-        <View style={[styles.optionContainer]}>
+        <Animated.View style={[styles.optionContainer, { opacity }]}>
           {options.map((option, index) => {
             return (
               <Col noFlex key={index}>
@@ -156,6 +157,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
                     <Icon
                       icon={option.icon}
                       style={[option.iconStyle]}
+                      color={colors.surface}
                       size={IS_ANDROID ? 22 : 20}
                     />
                   </View>
@@ -183,7 +185,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
               </Col>
             );
           })}
-        </View>
+        </Animated.View>
         {IS_IOS && <CancelButtonIOS />}
       </Animated.View>
     </Modal>
@@ -207,6 +209,9 @@ const createStyles = ({
       alignItems: 'center',
       // backgroundColor: 'red',
       // marginHorizontal: spacing[3]
+    },
+    icon: {
+      color: 'white',
     },
     iconContainer: {
       width: BUTTON_HEIGHT * 0.7,

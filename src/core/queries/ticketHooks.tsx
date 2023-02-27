@@ -9,7 +9,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const TICKETS_QUERY_KEY = 'tickets';
-export const REPLIES_QUERY_KEY = 'replies';
 export const TOPICS_QUERY_KEY = 'topics';
 export const FAQS_QUERY_KEY = 'faqs';
 /* eslint-disable */
@@ -24,10 +23,7 @@ const useTicketsClient = (): TicketsApi => {
 export const useGetTickets = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TICKETS_QUERY_KEY], () =>
-    // @ts-ignore
-    ticketsClient.getTickets({ test: true }),
-  );
+  return useQuery([TICKETS_QUERY_KEY], () => ticketsClient.getTickets());
 };
 
 export const useCreateTicket = () => {
@@ -50,32 +46,17 @@ export const useReplyToTicket = (ticketId: number) => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
 
-  // return useMutation(
-  //   (dto?: ReplyToTicketRequest) =>
-  //     // @ts-ignore
-  //     ticketsClient.replyToTicket({...dto, test: true}, { test: true }),
-  //   {
-  //     onSuccess() {
-  //       console.debug('onSuccess')
-  //       return client.invalidateQueries(prefixKey([TICKETS_QUERY_KEY]));
-  //     },
-  //     onError: error => {
-  //       console.debug('loginError', error);
-  //     },
-  //   },
-  // );
-
   return useMutation({
     mutationFn: (dto: ReplyToTicketRequest) => {
-      console.debug(dto, 'dto');
-      return ticketsClient.replyToTicket(dto, { test: true });
+      console.debug({ dto });
+      return ticketsClient.replyToTicket(dto);
     },
     onSuccess: async data => {
       console.debug('onSuccess', data);
-      return await client.invalidateQueries([TICKETS_QUERY_KEY, ticketId]);
+      return await client.invalidateQueries([TICKETS_QUERY_KEY]);
     },
     onError: error => {
-      console.debug('loginError', error);
+      console.debug('error', { error });
     },
   });
 };
@@ -85,8 +66,7 @@ export const useGetTicket = (ticketId?: number) => {
 
   return useQuery(
     [TICKETS_QUERY_KEY, ticketId],
-    // @ts-ignore
-    () => ticketsClient.getTicket({ ticketId, test: true }),
+    () => ticketsClient.getTicket({ ticketId }),
     {
       enabled: !!ticketId,
     },
@@ -97,15 +77,11 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
 
-  // @ts-ignore
-  return useMutation(
-    () => ticketsClient.markTicketAsClosed({ ticketId }, { test: true }),
-    {
-      onSuccess() {
-        return client.invalidateQueries([TICKETS_QUERY_KEY]);
-      },
+  return useMutation(() => ticketsClient.markTicketAsClosed({ ticketId }), {
+    onSuccess() {
+      return client.invalidateQueries([TICKETS_QUERY_KEY]);
     },
-  );
+  });
 };
 
 export const useMarkTicketAsRead = (ticketId: number) => {
@@ -127,42 +103,40 @@ export const useGetTicketTopics = () => {
 
 export const useGetTicketReplyAttachments = (
   request: GetTicketReplyAttachmentRequest,
+  enabled: boolean,
 ) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TICKETS_QUERY_KEY], () =>
-    // @ts-ignore
-    ticketsClient.getTicketReplyAttachment(request),
+  return useQuery(
+    [TICKETS_QUERY_KEY],
+    () => ticketsClient.getTicketReplyAttachment(request),
+    {
+      enabled,
+    },
   );
 };
 
 export const useGetTicketAttachments = (
   request: GetTicketAttachmentRequest,
+  enabled: boolean,
 ) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TICKETS_QUERY_KEY], () =>
-    // @ts-ignore
-    ticketsClient.getTicketAttachment(request),
+  return useQuery(
+    [TICKETS_QUERY_KEY],
+    () => ticketsClient.getTicketAttachment(request),
+    {
+      enabled,
+    },
   );
 };
-
-// export const useSearchTicketFaqs = (search: string) => {
-//   const ticketsClient = useTicketsClient();
-//
-//
-//   return useQuery(prefixKey([TICKETS_FAQS_QUERY_KEY]), () =>
-//     ticketsClient.searchTicketFAQs({ search }),
-//   );
-// };
 
 export const useSearchTicketFaqs = (search: string, enabled: boolean) => {
   const ticketsClient = useTicketsClient();
 
   return useQuery(
     [FAQS_QUERY_KEY],
-    // @ts-ignore
-    () => ticketsClient.searchTicketFAQs({ search, test: true }),
+    () => ticketsClient.searchTicketFAQs({ search }),
     {
       enabled: enabled,
       keepPreviousData: false,

@@ -6,10 +6,9 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketReply } from '@polito/api-client/models/TicketReply';
 
-import i18n from 'i18next';
-import { DateTime } from 'luxon';
-
 import { AttachmentCard } from './AttachmentCard';
+import { TextMessage } from './TextMessage';
+import { TimeWidget } from './TimeWidget';
 
 interface ChatMessageProps {
   received?: boolean;
@@ -24,38 +23,15 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
   const theme = useTheme();
   const styles = createStyles(theme);
-  const locale = i18n.language;
   const { t } = useTranslation();
 
-  const Time = ({ right }: { right?: boolean }) => {
-    const createdAt = DateTime.fromJSDate(message?.createdAt);
-    const now = DateTime.now();
-    const dateIso = createdAt.toISODate();
-    const isToday = now.toISODate() === dateIso;
-    const isTomorrow = now.plus({ days: 1 }).toISODate() === dateIso;
-
-    let text = `${createdAt.toFormat('DDD HH:mm', { locale })}`;
-
-    if (isToday) {
-      text = `${t('common.today')} ${createdAt.toFormat('HH:mm', { locale })}`;
-    }
-
-    if (isTomorrow) {
-      text = `${t('common.tomorrow')} ${createdAt.toFormat('HH:mm', {
-        locale,
-      })}`;
-    }
-
-    return <Text style={[styles.hour, right && styles.hourRight]}>{text}</Text>;
-  };
-
   const attachments = message?.attachments ?? [];
-  console.debug('attachments', attachments);
+  // console.debug('attachments', attachments);
 
   if (received) {
     return (
       <View style={styles.containerMessage}>
-        <Time />
+        <TimeWidget time={message?.createdAt} />
         <View style={styles.leftMessage}>
           <FlatList
             data={message.attachments ?? []}
@@ -74,7 +50,7 @@ export const ChatMessage = ({
           <Text style={styles.agentText}>
             #{t('common.agent')} {message.agentId}
           </Text>
-          <Text style={styles.messageText}>{message.message}</Text>
+          <TextMessage message={message.message} />
           <View style={styles.leftArrow} />
           <View style={styles.leftArrowOverlap} />
         </View>
@@ -84,7 +60,7 @@ export const ChatMessage = ({
 
   return (
     <View style={styles.containerMessage}>
-      <Time right />
+      <TimeWidget time={message?.createdAt} right />
       <View style={styles.rightMessage}>
         <FlatList
           data={message.attachments ?? []}
@@ -100,7 +76,7 @@ export const ChatMessage = ({
             />
           )}
         />
-        <Text style={styles.messageText}>{message.message}</Text>
+        <TextMessage message={message.message} />
         <View style={styles.rightArrow} />
         <View style={styles.rightArrowOverlap} />
       </View>
@@ -108,13 +84,7 @@ export const ChatMessage = ({
   );
 };
 
-const createStyles = ({
-  colors,
-  shapes,
-  spacing,
-  fontSizes,
-  fontWeights,
-}: Theme) =>
+const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     section: {
       marginVertical: spacing[2],
@@ -129,22 +99,6 @@ const createStyles = ({
     attachmentContainer: {
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    hour: {
-      marginLeft: spacing[4],
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-      textTransform: 'capitalize',
-      width: '70%',
-      textAlign: 'center',
-      fontSize: fontSizes['2xs'],
-      color: colors.text['500'],
-      fontWeight: fontWeights.normal,
-    },
-    hourRight: {
-      alignSelf: 'flex-end',
-      marginRight: spacing[4],
     },
     messageText: {
       fontSize: fontSizes.sm,

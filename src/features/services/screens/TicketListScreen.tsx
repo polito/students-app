@@ -56,18 +56,18 @@ export const TicketListScreen = ({ navigation, route }: Props) => {
         refreshControl={<RefreshControl {...refreshControl} />}
       >
         <View style={{ paddingVertical: spacing[5] }}>
-          <Section>
-            {!ticketsQuery.isLoading &&
-              (tickets.length > 0 ? (
+          {!ticketsQuery.isLoading &&
+            (tickets.length > 0 ? (
+              <Section>
                 <SectionList>
                   {tickets?.map(ticket => (
                     <TicketListItem ticket={ticket} key={ticket.id} />
                   ))}
                 </SectionList>
-              ) : (
-                <EmptyState message={labels.emptyState} icon={faComments} />
-              ))}
-          </Section>
+              </Section>
+            ) : (
+              <EmptyState message={labels.emptyState} icon={faComments} />
+            ))}
         </View>
       </ScrollView>
     </>

@@ -35,7 +35,7 @@ export const AttachmentBlobCard = ({
           {attachment?._data?.name}
         </Text>
         <Text numberOfLines={1} style={styles.size}>
-          {formatFileSize(attachment?._data?.size / 1000)}
+          {formatFileSize(attachment?._data?.size / 1000, 0)}
         </Text>
       </Col>
       {!!onPressCancelAttachment && (
@@ -43,7 +43,7 @@ export const AttachmentBlobCard = ({
           style={styles.deleteIcon}
           onPress={onPressCancelAttachment}
         >
-          <Icon icon={faTimes} size={14} color={'white'} />
+          <Icon icon={faTimes} size={12} color={'white'} />
         </TouchableOpacity>
       )}
     </Row>

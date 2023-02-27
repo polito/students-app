@@ -6,7 +6,7 @@ import { faComments } from '@fortawesome/free-regular-svg-icons';
 import {
   faChevronRight,
   faEllipsisVertical,
-  faLink,
+  faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
@@ -16,7 +16,7 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { TicketOverview } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
 import { IS_IOS } from '../../../core/constants';
@@ -37,20 +37,20 @@ export const TicketListItem = ({ ticket }: Props) => {
     message: t('tickets.closeTip'),
   });
   const { fontSizes, colors, spacing } = theme;
-  const markTicketAsClosedEnabled = ticket?.status !== 'closed';
+  const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
 
   const actions = useMemo(() => {
-    if (!markTicketAsClosedEnabled) {
-      return [];
+    if (markTicketAsClosedEnabled) {
+      return [
+        {
+          title: t('tickets.close'),
+          color: 'red',
+          image: 'trash.fill',
+          imageColor: 'red',
+        },
+      ];
     }
-    return [
-      {
-        title: t('tickets.close'),
-        color: 'red',
-        image: 'trash.fill',
-        imageColor: 'red',
-      },
-    ];
+    return [];
   }, [markTicketAsClosedEnabled]);
 
   const UnReadCount = () => {
@@ -68,13 +68,8 @@ export const TicketListItem = ({ ticket }: Props) => {
     return Promise.reject();
   };
 
-  return (
-    <MenuView
-      title={t('tickets.menuAction')}
-      actions={actions}
-      onPressAction={onPressCloseTicket}
-      shouldOpenOnLongPress={IS_IOS}
-    >
+  const Item = () => {
+    return (
       <ListItem
         linkTo={{
           screen: 'Ticket',
@@ -88,7 +83,7 @@ export const TicketListItem = ({ ticket }: Props) => {
           <Row noFlex alignCenter>
             {ticket?.hasAttachments && (
               <Icon
-                icon={faLink}
+                icon={faPaperclip}
                 size={20}
                 color={colors.text['400']}
                 style={[
@@ -111,6 +106,7 @@ export const TicketListItem = ({ ticket }: Props) => {
                 title={t('tickets.menuAction')}
                 actions={actions}
                 onPressAction={onPressCloseTicket}
+                isAnchoredToRight={true}
               >
                 <IconButton
                   style={styles.icon}
@@ -123,7 +119,24 @@ export const TicketListItem = ({ ticket }: Props) => {
           </Row>
         }
       />
-    </MenuView>
+    );
+  };
+
+  return (
+    <>
+      {IS_IOS ? (
+        <MenuView
+          title={t('tickets.menuAction')}
+          actions={actions}
+          onPressAction={onPressCloseTicket}
+          shouldOpenOnLongPress={IS_IOS}
+        >
+          <Item />
+        </MenuView>
+      ) : (
+        <Item />
+      )}
+    </>
   );
 };
 

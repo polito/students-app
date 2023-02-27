@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
-import { faCamera, faLink, faShare } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCamera,
+  faPaperclip,
+  faShare,
+} from '@fortawesome/free-solid-svg-icons';
 import { ActionSheet } from '@lib/ui/components/ActionSheet';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -42,6 +46,7 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
   const scrollViewStyles = useScrollViewStyle();
   const ticketTopicQuery = useGetTicketTopics();
   const styles = createStyles(theme);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [topicId, setTopicId] = useState(undefined);
   const [ticketBody, setTicketBody] = useState<CreateTicketRequest>({
     subject: undefined,
@@ -56,6 +61,13 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
     isSuccess,
     data,
   } = useCreateTicket();
+
+  useEffect(() => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
+      setKeyboardVisible(false),
+    );
+    return () => hideSubscription.remove();
+  }, []);
 
   useEffect(() => {
     if (isSuccess && !!data?.data?.id) {
@@ -125,7 +137,7 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
             title: t('common.uploadFile'),
             titleAndroid: t('common.upload'),
             subtitle: t('common.uploadFileSubtitle'),
-            icon: faLink,
+            icon: faPaperclip,
             iconStyle: {},
             onPress: onPressUploadFile,
           },
@@ -139,7 +151,11 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
           },
         ]}
       />
-      <ScrollView style={[bottomBarAwareStyles, scrollViewStyles]}>
+      <ScrollView
+        style={[bottomBarAwareStyles, scrollViewStyles]}
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustKeyboardInsets
+      >
         <View style={styles.sectionsContainer}>
           <Section>
             <SectionHeader title={t('ticketInsertScreen.subtitle')} />
@@ -185,6 +201,7 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
                   onChangeText={updateTicketBodyField('subject')}
                   editable={!!ticketBody?.subtopicId}
                   returnKeyType="next"
+                  onPressIn={() => setKeyboardVisible(true)}
                   style={[
                     styles.textField,
                     !ticketBody?.subtopicId && styles.textFieldDisabled,
@@ -202,7 +219,6 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
                 >
                   <FlatList
                     data={[ticketBody?.attachment]}
-                    style={{ width: SCREEN_WIDTH }}
                     contentContainerStyle={{
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -233,7 +249,7 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
                   <IconButton
                     disabled={!ticketBody.subtopicId}
                     onPress={() => actionSheetRef.current.show()}
-                    icon={faLink}
+                    icon={faPaperclip}
                     size={24}
                     color={colors.text['100']}
                   />
@@ -245,10 +261,14 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
                     onChangeText={updateTicketBodyField('message')}
                     returnKeyType="next"
                     multiline
+                    onPressIn={() => setKeyboardVisible(true)}
                     numberOfLines={5}
                     editable={!!ticketBody.subject}
                     style={[styles.textFieldSendMessage]}
-                    inputStyle={styles.textFieldInput}
+                    inputStyle={[
+                      styles.textFieldInput,
+                      !ticketBody.subject && { opacity: 0.5 },
+                    ]}
                   />
                 </Col>
                 <View style={styles.rightArrow} />
@@ -258,13 +278,16 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
           </Section>
         </View>
       </ScrollView>
-      <CtaButton
-        absolute={true}
-        title={t('ticketInsertScreen.sendTicket')}
-        action={() => handleCreateTicket(ticketBody)}
-        loading={isLoading}
-        icon={faShare}
-      />
+      {!keyboardVisible && (
+        <CtaButton
+          disabled={!ticketBody.message}
+          absolute={true}
+          title={t('ticketInsertScreen.sendTicket')}
+          action={() => handleCreateTicket(ticketBody)}
+          loading={isLoading}
+          icon={faShare}
+        />
+      )}
     </>
   );
 };
@@ -351,9 +374,11 @@ const createStyles = ({
       borderColor: colors.divider,
       width: '100%',
       minHeight: 100,
+      textAlignVertical: 'top',
     },
     textFieldInput: {
       fontSize: fontSizes.sm,
+      textAlignVertical: 'top',
       borderBottomWidth: 0,
       fontWeight: fontWeights.normal,
     },

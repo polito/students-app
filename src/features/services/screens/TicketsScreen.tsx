@@ -37,7 +37,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
-      <Section>
+      <>
         <SectionHeader
           title={t('ticketsScreen.opened')}
           linkTo={
@@ -61,12 +61,14 @@ export const TicketsScreen = ({ navigation }: Props) => {
               </SectionList>
             </Section>
           ) : (
-            <EmptyState
-              message={t('ticketsScreen.openEmptyState')}
-              icon={faComments}
-            />
+            <SectionList>
+              <EmptyState
+                message={t('ticketsScreen.openEmptyState')}
+                icon={faComments}
+              />
+            </SectionList>
           ))}
-      </Section>
+      </>
     );
   };
 
@@ -76,7 +78,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
-      <Section>
+      <>
         <SectionHeader
           title={t('ticketsScreen.closed')}
           linkTo={
@@ -98,12 +100,14 @@ export const TicketsScreen = ({ navigation }: Props) => {
               </SectionList>
             </Section>
           ) : (
-            <EmptyState
-              message={t('ticketsScreen.closedEmptyState')}
-              icon={faComments}
-            />
+            <SectionList>
+              <EmptyState
+                message={t('ticketsScreen.closedEmptyState')}
+                icon={faComments}
+              />
+            </SectionList>
           ))}
-      </Section>
+      </>
     );
   };
 

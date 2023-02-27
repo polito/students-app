@@ -4,7 +4,11 @@ import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
-import { faCamera, faLink, faShare } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCamera,
+  faPaperclip,
+  faShare,
+} from '@fortawesome/free-solid-svg-icons';
 import { ActionSheet } from '@lib/ui/components/ActionSheet';
 import { Col } from '@lib/ui/components/Col';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -58,6 +62,7 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
     if (isSuccess) {
       setText('');
       setAttachment(null);
+      Keyboard.dismiss();
     }
   }, [isSuccess]);
 
@@ -99,6 +104,11 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
   };
 
   const onPressSend = async () => {
+    console.debug({
+      ticketId: ticketId,
+      attachment: attachment,
+      message: text,
+    });
     await handleReply({
       ticketId: ticketId,
       attachment: attachment,
@@ -107,7 +117,7 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
   };
 
   return (
-    <View style={{ flex: 0 }}>
+    <View>
       <ActionSheet
         ref={actionSheetRef}
         options={[
@@ -115,7 +125,7 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
             title: t('common.uploadFile'),
             titleAndroid: t('common.upload'),
             subtitle: t('common.uploadFileSubtitle'),
-            icon: faLink,
+            icon: faPaperclip,
             iconStyle: {},
             onPress: onPressUploadFile,
           },
@@ -146,7 +156,8 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
               data={[attachment]}
               contentContainerStyle={{
                 justifyContent: 'center',
-                alignItems: 'center',
+                alignSelf: 'center',
+                width: '100%',
               }}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
@@ -166,7 +177,7 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
           <Col noFlex>
             <IconButton
               onPress={() => actionSheetRef.current.show()}
-              icon={faLink}
+              icon={faPaperclip}
               size={24}
               color={colors.text['500']}
             />
@@ -218,7 +229,7 @@ const createStyles = ({
       marginBottom: spacing[4],
     },
     textField: {
-      borderRadius: shapes.md,
+      borderRadius: shapes.lg,
       borderWidth: 1,
       backgroundColor: colors.surface,
       paddingVertical: 0,
