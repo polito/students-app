@@ -105,7 +105,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
       setKeyboardVisible(false),
     );
-    const showSubscription = Keyboard.addListener('keyboardWillShow', () =>
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () =>
       setKeyboardVisible(true),
     );
     return () => {
