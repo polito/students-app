@@ -153,7 +153,6 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
       />
       <ScrollView
         style={[bottomBarAwareStyles, scrollViewStyles]}
-        contentInsetAdjustmentBehavior="automatic"
         automaticallyAdjustKeyboardInsets
       >
         <View style={styles.sectionsContainer}>
@@ -201,7 +200,9 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
                   onChangeText={updateTicketBodyField('subject')}
                   editable={!!ticketBody?.subtopicId}
                   returnKeyType="next"
-                  onPressIn={() => setKeyboardVisible(true)}
+                  onPressIn={() =>
+                    !!ticketBody?.subtopicId && setKeyboardVisible(true)
+                  }
                   style={[
                     styles.textField,
                     !ticketBody?.subtopicId && styles.textFieldDisabled,
@@ -261,7 +262,9 @@ export const TicketInsertScreen = ({ navigation }: Props) => {
                     onChangeText={updateTicketBodyField('message')}
                     returnKeyType="next"
                     multiline
-                    onPressIn={() => setKeyboardVisible(true)}
+                    onPressIn={() =>
+                      !!ticketBody.subject && setKeyboardVisible(true)
+                    }
                     numberOfLines={5}
                     editable={!!ticketBody.subject}
                     style={[styles.textFieldSendMessage]}
