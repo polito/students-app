@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, View } from 'react-native';
 
-import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -66,7 +65,7 @@ export const TicketListScreen = ({ navigation, route }: Props) => {
                 </SectionList>
               </Section>
             ) : (
-              <EmptyState message={labels.emptyState} icon={faComments} />
+              <EmptyState message={labels.emptyState} />
             ))}
         </View>
       </ScrollView>

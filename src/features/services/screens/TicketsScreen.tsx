@@ -62,10 +62,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
             </Section>
           ) : (
             <SectionList>
-              <EmptyState
-                message={t('ticketsScreen.openEmptyState')}
-                icon={faComments}
-              />
+              <EmptyState message={t('ticketsScreen.openEmptyState')} />
             </SectionList>
           ))}
       </>
