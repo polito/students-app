@@ -38,7 +38,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
     >
       <Section style={styles.section}>
         <SectionHeader title={faq.question} ellipsizeTitle={false} />
-        <View style={{ flex: 1, backgroundColor: 'red' }}>
+        <View style={{ flex: 1 }}>
           <RenderHTML
             defaultTextProps={{
               selectable: true,
