@@ -1,13 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { FlatList, Keyboard, Platform, StyleSheet, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -17,7 +10,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { HeaderBackButton, useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
@@ -90,43 +83,30 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
 export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const ticketQuery = useGetTicket(id);
-  const { mutate } = useMarkTicketAsRead(id);
+  const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const theme = useTheme();
   const styles = createStyles(theme);
   const headerHeight = useHeaderHeight();
   const bottomBarHeight = useBottomTabBarHeight();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const routes = navigation.getState()?.routes;
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [ticketStatusHeight, setTicketStatusHeight] = useState(0);
   const ticket = ticketQuery?.data?.data;
+
+  useEffect(markAsRead, []);
 
   useEffect(() => {
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
       setKeyboardVisible(false),
     );
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () =>
-      setKeyboardVisible(true),
-    );
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+      setTicketStatusHeight(headerHeight);
+    });
     return () => {
       hideSubscription.remove();
       showSubscription.remove();
     };
-  }, []);
-
-  useEffect(() => {
-    mutate();
-    if (routes[routes.length - 2]?.name === 'TicketInsert') {
-      navigation.setOptions({
-        headerLeft: props => (
-          <HeaderBackButton
-            {...props}
-            labelVisible={true}
-            onPress={() => navigation.replace('Tickets')}
-          />
-        ),
-      });
-    }
   }, []);
 
   useEffect(() => {
@@ -142,12 +122,14 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   }, [ticket]);
 
   const Header = () => {
-    if (keyboardVisible) {
-      return <View />;
-    }
     return (
       <View
-        style={[styles.header, IS_IOS && { top: headerHeight }]}
+        style={[
+          styles.header,
+          IS_IOS && { top: headerHeight },
+          { height: keyboardVisible ? 0 : undefined },
+          { opacity: keyboardVisible ? 0 : 1 },
+        ]}
         onLayout={({ nativeEvent }) => {
           setTicketStatusHeight(
             nativeEvent.layout.height + (IS_IOS ? headerHeight : 0),
@@ -155,11 +137,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         }}
       >
         <SectionHeader title={ticket?.subject} />
-        <TicketStatusInfo
-          ticket={ticket}
-          loading={ticketQuery?.isLoading}
-          refetching={ticketQuery?.isRefetching}
-        />
+        <TicketStatusInfo ticket={ticket} loading={ticketQuery?.isLoading} />
       </View>
     );
   };
@@ -172,7 +150,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         contentContainerStyle={[
           bottomBarAwareStyles,
           { paddingBottom: ticketStatusHeight },
-          { paddingTop: IS_ANDROID && bottomBarHeight },
+          { paddingTop: IS_ANDROID ? bottomBarHeight : theme.spacing[5] },
+          { marginTop: IS_IOS && keyboardVisible ? -bottomBarHeight : 0 },
         ]}
         keyExtractor={item => item.id.toString()}
         inverted
@@ -187,9 +166,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           />
         )}
       />
-      <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'}>
-        <TicketTextField ticketId={id} />
-      </KeyboardAvoidingView>
+      <TicketTextField ticketId={id} />
       <Header />
     </View>
   );

@@ -157,7 +157,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
                     <Icon
                       icon={option.icon}
                       style={[option.iconStyle]}
-                      color={colors.surface}
+                      color={IS_ANDROID ? colors.surface : colors.text[900]}
                       size={IS_ANDROID ? 22 : 20}
                     />
                   </View>

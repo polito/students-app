@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
@@ -117,97 +123,99 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
   };
 
   return (
-    <View>
-      <ActionSheet
-        ref={actionSheetRef}
-        options={[
-          {
-            title: t('common.uploadFile'),
-            titleAndroid: t('common.upload'),
-            subtitle: t('common.uploadFileSubtitle'),
-            icon: faPaperclip,
-            iconStyle: {},
-            onPress: onPressUploadFile,
-          },
-          {
-            title: t('common.takePhoto'),
-            titleAndroid: t('common.camera'),
-            subtitle: t('common.takePhotoSubtitle'),
-            icon: faCamera,
-            iconStyle: {},
-            onPress: onPressTakePhoto,
-          },
-        ]}
-      />
-      <Col
-        justifyCenter
-        alignCenter
-        style={[styles.wrapper, extraStyle]}
-        noFlex
-      >
-        {!!attachment && (
-          <Row
-            noFlex
-            justifyCenter
-            alignCenter
-            style={styles.attachmentContainer}
-          >
-            <FlatList
-              data={[attachment]}
-              contentContainerStyle={{
-                justifyContent: 'center',
-                alignSelf: 'center',
-                width: '100%',
-              }}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => {
-                return (
-                  <AttachmentBlobCard
-                    attachment={item}
-                    onPressCancelAttachment={() => setAttachment(null)}
-                  />
-                );
-              }}
-            />
-          </Row>
-        )}
-        <Row alignCenter justifyCenter noFlex>
-          <Col noFlex>
-            <IconButton
-              onPress={() => actionSheetRef.current.show()}
-              icon={faPaperclip}
-              size={24}
-              color={colors.text['500']}
-            />
-          </Col>
-          <Col>
-            <TextField
-              label={t('ticketScreen.reply')}
-              value={text}
-              onChangeText={setText}
-              returnKeyType="next"
-              multiline
-              editable={!disable}
-              style={[styles.textField, disable && styles.textFieldDisabled]}
-              inputStyle={styles.textFieldInput}
-            />
-          </Col>
-          {!!text && (
+    <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'}>
+      <View>
+        <ActionSheet
+          ref={actionSheetRef}
+          options={[
+            {
+              title: t('common.uploadFile'),
+              titleAndroid: t('common.upload'),
+              subtitle: t('common.uploadFileSubtitle'),
+              icon: faPaperclip,
+              iconStyle: {},
+              onPress: onPressUploadFile,
+            },
+            {
+              title: t('common.takePhoto'),
+              titleAndroid: t('common.camera'),
+              subtitle: t('common.takePhotoSubtitle'),
+              icon: faCamera,
+              iconStyle: {},
+              onPress: onPressTakePhoto,
+            },
+          ]}
+        />
+        <Col
+          justifyCenter
+          alignCenter
+          style={[styles.wrapper, extraStyle]}
+          noFlex
+        >
+          {!!attachment && (
+            <Row
+              noFlex
+              justifyCenter
+              alignCenter
+              style={styles.attachmentContainer}
+            >
+              <FlatList
+                data={[attachment]}
+                contentContainerStyle={{
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                  width: '100%',
+                }}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => {
+                  return (
+                    <AttachmentBlobCard
+                      attachment={item}
+                      onPressCancelAttachment={() => setAttachment(null)}
+                    />
+                  );
+                }}
+              />
+            </Row>
+          )}
+          <Row alignCenter justifyCenter noFlex>
             <Col noFlex>
               <IconButton
-                onPress={onPressSend}
-                icon={faShare}
+                onPress={() => actionSheetRef.current.show()}
+                icon={faPaperclip}
                 size={24}
-                loading={isLoading}
                 color={colors.text['500']}
               />
             </Col>
-          )}
-        </Row>
-      </Col>
-    </View>
+            <Col>
+              <TextField
+                label={t('ticketScreen.reply')}
+                value={text}
+                onChangeText={setText}
+                returnKeyType="next"
+                multiline
+                editable={!disable}
+                style={[styles.textField, disable && styles.textFieldDisabled]}
+                inputStyle={styles.textFieldInput}
+              />
+            </Col>
+            {!!text && (
+              <Col noFlex>
+                <IconButton
+                  onPress={onPressSend}
+                  icon={faShare}
+                  size={24}
+                  loading={isLoading}
+                  color={colors.text['500']}
+                />
+              </Col>
+            )}
+          </Row>
+        </Col>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -223,7 +231,7 @@ const createStyles = ({
       paddingVertical: spacing['2'],
       paddingHorizontal: spacing['4'],
       backgroundColor: colors.background,
-      minHeight: 60,
+      // minHeight: 60,
     },
     attachmentContainer: {
       marginBottom: spacing[4],

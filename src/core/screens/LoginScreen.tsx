@@ -23,8 +23,8 @@ export const LoginScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { mutate: login, isLoading } = useLogin();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('S251409');
+  const [password, setPassword] = useState('04051980AA');
   const passwordRef = useRef<TextInput>();
 
   const handleLogin = () => login({ username, password });

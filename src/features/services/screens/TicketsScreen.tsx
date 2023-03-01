@@ -75,7 +75,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
-      <>
+      <View style={{ paddingTop: spacing[5] }}>
         <SectionHeader
           title={t('ticketsScreen.closed')}
           linkTo={
@@ -104,7 +104,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
               />
             </SectionList>
           ))}
-      </>
+      </View>
     );
   };
 
