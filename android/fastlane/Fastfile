@@ -38,27 +38,16 @@ platform :android do
   end
 
   desc "Build and sign bundle, then push it to the Google Play beta track"
-  lane :beta do
-    gradle(
-      task: "bundleRelease",
-      properties: buildProps
-    )
-    upload_to_play_store(
-      version_name: ENV['VERSION'],
-      version_code: ENV['BUILD_NO'],
-      track: 'beta'
-    )
-  end
-
-  desc "Build and sign bundle, then push it to the Google Play production track"
   lane :release do
+    android_set_version_name(version_name: ENV['APP_VERSION'])
+    android_set_version_code(version_code: ENV['BUILD_NO'])
     gradle(
       task: "bundleRelease",
       properties: buildProps
     )
     upload_to_play_store(
-      version_name: ENV['VERSION'],
-      version_code: ENV['BUILD_NO']
+      track: ENV['STORE_TRACK'],
+      release_status: "draft",
     )
   end
 end

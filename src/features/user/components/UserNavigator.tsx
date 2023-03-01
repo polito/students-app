@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -24,7 +25,6 @@ export const UserNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        orientation: 'portrait',
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
@@ -34,7 +34,14 @@ export const UserNavigator = () => {
         ...titlesStyles(theme),
       }}
     >
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          headerLeft: () => <HeaderLogo />,
+          headerTitle: t('profileScreen.title'),
+        }}
+      />
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}

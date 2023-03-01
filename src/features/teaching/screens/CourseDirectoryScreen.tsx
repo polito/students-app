@@ -9,7 +9,6 @@ import { Theme } from '@lib/ui/types/theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourseDirectory,
@@ -29,7 +28,6 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
 export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { courseId, directoryId, directoryName } = route.params;
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
@@ -72,7 +70,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             )
           }
           {...refreshControl}
-          contentContainerStyle={bottomBarAwareStyles}
           ItemSeparatorComponent={Platform.select({
             ios: IndentedDivider,
           })}
@@ -100,7 +97,6 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   }, [searchFilter]);
 
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   const { t } = useTranslation();
 
@@ -118,7 +114,6 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
         />
       )}
       {...refreshControl}
-      contentContainerStyle={bottomBarAwareStyles}
       ItemSeparatorComponent={Platform.select({
         ios: () => <IndentedDivider />,
       })}

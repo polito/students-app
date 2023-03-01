@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -37,11 +37,7 @@ export const LoginScreen = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Section style={styles.section}>
-            <SectionHeader
-              title={t('loginScreen.title')}
-              titleStyle={styles.title}
-              ellipsizeTitle={false}
-            />
+            <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
             <SectionList style={styles.sectionList}>
               <TextField
                 label={t('loginScreen.usernameLabel')}
@@ -71,7 +67,6 @@ export const LoginScreen = () => {
             </SectionList>
             <CtaButton
               absolute={false}
-              adjustInsets={Platform.OS === 'ios'}
               title={t('loginScreen.cta')}
               action={handleLogin}
               loading={isLoading}
@@ -95,7 +90,8 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     title: {
       fontSize: fontSizes['3xl'],
-      marginBottom: spacing[8],
+      marginBottom: spacing[3],
+      marginHorizontal: spacing[5],
     },
     textField: {
       paddingHorizontal: Platform.select({

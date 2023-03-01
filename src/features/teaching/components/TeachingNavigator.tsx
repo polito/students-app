@@ -55,7 +55,6 @@ export const TeachingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        orientation: 'portrait',
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {

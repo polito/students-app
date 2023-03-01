@@ -14,7 +14,7 @@ export const PlacesScreen = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <Text variant="heading" style={{ padding: spacing[4] }}>
+        <Text variant="title" style={{ padding: spacing[4] }}>
           {t('placesScreen.title')}
         </Text>
         <EmptyState

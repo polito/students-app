@@ -1,16 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
-import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -28,12 +21,10 @@ import {
   MenuView,
   NativeActionEvent,
 } from '@react-native-menu/menu';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { IS_ANDROID, SCREEN_WIDTH } from '../../../core/constants';
+import { IS_ANDROID } from '../../../core/constants';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
-import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import {
@@ -51,7 +42,11 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const { colors } = useTheme();
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
+  const canSwitchCareer = allCareerIds.length > 1;
+
   const actions = useMemo((): MenuAction[] => {
+    if (!canSwitchCareer) return [];
+
     return allCareerIds.map(careerId => {
       return {
         id: careerId,
@@ -71,7 +66,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
         <Text variant={'link'} style={{ marginRight: 5 }}>
           {username}
         </Text>
-        {allCareerIds?.length > 0 && (
+        {canSwitchCareer && (
           <Icon icon={faAngleDown} color={colors.primary[500]} />
         )}
       </Row>
@@ -81,25 +76,17 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
 
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
   const { mutate: handleLogout, isLoading } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
-  const scrollViewStyle = useScrollViewStyle();
 
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
   const firstEnrollmentYear = student?.firstEnrollmentYear;
   const enrollmentYear = student
-    ? `${firstEnrollmentYear}/${firstEnrollmentYear + 1}`
+    ? `${firstEnrollmentYear - 1}/${firstEnrollmentYear}`
     : '...';
-
-  let bottomBarHeight = 0;
-  try {
-    bottomBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    // Not available in this context
-  }
 
   useEffect(() => {
     navigation.setOptions({
@@ -109,13 +96,8 @@ export const ProfileScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
-      contentContainerStyle={[
-        scrollViewStyle,
-        {
-          paddingBottom: bottomBarHeight + +spacing['16'],
-        },
-      ]}
     >
       <Section>
         <Text weight={'bold'} variant={'title'} style={styles.title}>
@@ -124,19 +106,18 @@ export const ProfileScreen = ({ navigation }: Props) => {
       </Section>
       <Section>
         <SectionHeader title={t('profileScreen.smartCard')} />
-        <View style={{ marginTop: Platform.select({ ios: spacing[3] }) }}>
-          <ImageLoader
-            imageStyle={styles.smartCard}
-            source={{ uri: student?.smartCardPicture }}
-          />
-        </View>
+        <ImageLoader
+          imageStyle={styles.smartCard}
+          source={{ uri: student?.smartCardPicture }}
+          containerStyle={styles.smartCardContainer}
+        />
       </Section>
       <Section>
         <SectionHeader
           title={t('profileScreen.course')}
           /* trailingItem={
-                                      <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
-                                    }*/
+                                                                    <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
+                                                                  }*/
           trailingItem={<Badge text={t('common.comingSoon')} />}
         />
         <SectionList>
@@ -150,13 +131,20 @@ export const ProfileScreen = ({ navigation }: Props) => {
           <ProfileSettingItem />
           <ProfileNotificationItem />
         </SectionList>
+        <SectionList>
+          <ListItem
+            title={t('common.logout')}
+            onPress={() => handleLogout()}
+            leadingItem={
+              <Icon
+                icon={faSignOut}
+                color={colors.text['500']}
+                size={fontSizes.xl}
+              />
+            }
+          />
+        </SectionList>
       </Section>
-      <CtaButton
-        icon={faSignOut}
-        title={t('common.logout')}
-        action={handleLogout}
-        loading={isLoading}
-      />
     </ScrollView>
   );
 };
@@ -168,12 +156,13 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       paddingHorizontal: spacing[5],
       paddingTop: spacing[IS_ANDROID ? 4 : 1],
     },
-    listContainer: {
-      marginTop: spacing[3],
-    },
-    smartCardContainer: {},
     smartCard: {
-      height: (SCREEN_WIDTH - Number(spacing[10])) / 1.583,
-      marginVertical: spacing[IS_ANDROID ? 3 : 1],
+      aspectRatio: 1.586,
+      height: null,
+    },
+    smartCardContainer: {
+      marginVertical: spacing[2],
+      marginHorizontal: spacing[5],
+      maxWidth: 540, // width of a physical card in dp
     },
   });

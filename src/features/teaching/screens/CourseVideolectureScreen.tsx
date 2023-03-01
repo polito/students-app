@@ -8,7 +8,6 @@ import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -22,7 +21,6 @@ type Props = NativeStackScreenProps<
 export const CourseVideolectureScreen = ({ route }: Props) => {
   const { courseId, lectureId } = route.params;
   const { t } = useTranslation();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const videolecturesQuery = useGetCourseVideolectures(courseId);
   const lecture = videolecturesQuery.data?.data.find(l => l.id === lectureId);
   const teacherQuery = useGetPerson(lecture.teacherId);
@@ -31,13 +29,9 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <VideoPlayer
-        videoUrl="https://lucapezzolla.com/20210525.mp4"
-        coverUrl={lecture.coverUrl}
-      />
+      <VideoPlayer videoUrl={lecture.videoUrl} coverUrl={lecture.coverUrl} />
       <EventDetails
         title={lecture.title}
         type={t('common.videoLecture')}

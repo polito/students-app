@@ -22,7 +22,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { courseColors } from '../../../core/constants';
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourse } from '../../../core/queries/courseHooks';
@@ -84,8 +83,7 @@ type Props = NativeStackScreenProps<
 
 export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
-  const { spacing, colors, fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { spacing, fontSizes } = useTheme();
   const { courseId } = route.params;
   const courseQuery = useGetCourse(courseId);
   const refreshControl = useRefreshControl(courseQuery);
@@ -101,7 +99,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl {...refreshControl} />}
-        contentContainerStyle={bottomBarAwareStyles}
       >
         <View style={{ paddingVertical: spacing[5] }}>
           <Section>

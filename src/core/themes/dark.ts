@@ -8,7 +8,7 @@ export const darkTheme: Theme = {
   colors: {
     ...lightTheme.colors,
     background: lightTheme.colors.primary[700],
-    surface: '#143959',
+    surface: lightTheme.colors.surfaceDark,
     headers: '#1e3444',
     heading: lightTheme.colors.text[50],
     title: 'white',
