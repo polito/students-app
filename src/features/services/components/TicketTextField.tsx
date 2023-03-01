@@ -24,7 +24,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-import { IS_IOS } from '../../../core/constants';
+import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useKeyboard } from '../../../core/hooks/useKeyboard';
 import { useReplyToTicket } from '../../../core/queries/ticketHooks';
 import { pdfSizes } from '../../teaching/constants';
@@ -62,7 +62,7 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
 
   const extraStyle = useMemo(() => {
     return {
-      bottom: keyboardVisible ? 0 : bottomBarHeight,
+      bottom: keyboardVisible ? (IS_ANDROID ? 0 : bottomBarHeight) : 0,
     };
   }, [keyboardVisible]);
 
@@ -227,7 +227,7 @@ const createStyles = ({
       paddingVertical: 0,
       borderColor: colors.divider,
       width: '100%',
-      height: 'auto',
+      // height: 'auto',
       // width: SCREEN_WIDTH * 0.9,
     },
     textFieldDisabled: {

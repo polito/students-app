@@ -85,6 +85,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const theme = useTheme();
+  const { spacing } = theme;
   const styles = createStyles(theme);
   const headerHeight = useHeaderHeight();
   const bottomBarHeight = useBottomTabBarHeight();
@@ -132,7 +133,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         ]}
         onLayout={({ nativeEvent }) => {
           setTicketStatusHeight(
-            nativeEvent.layout.height + (IS_IOS ? headerHeight : 0),
+            nativeEvent.layout.height + (IS_IOS ? +spacing[3] : -headerHeight),
           );
         }}
       >
@@ -152,8 +153,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           {
             paddingBottom: keyboardVisible ? -headerHeight : ticketStatusHeight,
           },
-          { paddingTop: IS_ANDROID ? bottomBarHeight : 0 },
-          { marginTop: keyboardVisible ? -bottomBarHeight : 0 },
+          { paddingTop: keyboardVisible || IS_ANDROID ? bottomBarHeight : 0 },
+          { marginTop: keyboardVisible ? -bottomBarHeight : -bottomBarHeight },
         ]}
         keyExtractor={item => item.id.toString()}
         inverted
@@ -168,8 +169,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           />
         )}
       />
-      <TicketTextField ticketId={id} />
       <Header />
+      <TicketTextField ticketId={id} />
     </View>
   );
 };

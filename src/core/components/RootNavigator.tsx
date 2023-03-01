@@ -77,7 +77,6 @@ export const RootNavigator = () => {
         name="ServicesTab"
         component={ServiceNavigator}
         options={{
-          tabBarHideOnKeyboard: true,
           headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('common.services'),
           tabBarIcon: ({ color }) => (

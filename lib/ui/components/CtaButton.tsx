@@ -15,7 +15,6 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface Props extends TouchableHighlightProps {
   adjustInsets?: boolean;
@@ -39,7 +38,6 @@ interface Props extends TouchableHighlightProps {
  */
 export const CtaButton = ({
   style,
-  adjustInsets = true,
   absolute = true,
   title,
   loading,
@@ -58,12 +56,6 @@ export const CtaButton = ({
   const [showSuccess, setShowSuccess] = useState(false);
   const successMessageRef = useRef<string>();
   const destructiveRef = useRef<boolean>();
-  let bottomBarHeight = 0;
-  try {
-    bottomBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    // Not available in this context
-  }
 
   const onPress = () => {
     successMessageRef.current = successMessage;
@@ -85,7 +77,6 @@ export const CtaButton = ({
         styles.container,
         absolute && styles.absolute,
         !!textExtra && { paddingTop: spacing[3] },
-        adjustInsets && { marginBottom: bottomBarHeight },
         containerStyle,
       ]}
     >

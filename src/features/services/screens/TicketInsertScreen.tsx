@@ -25,7 +25,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { CreateTicketRequest } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { IS_IOS, SCREEN_WIDTH } from '../../../core/constants';
+import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import {
@@ -167,7 +167,7 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
         <View style={styles.sectionsContainer}>
           <Section>
             <SectionHeader title={t('ticketInsertScreen.subtitle')} />
-            <View style={styles.section}>
+            <View style={[styles.section]}>
               <DropdownField
                 options={topics.map(topic => {
                   return {
@@ -296,7 +296,6 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
       </KeyboardAwareScrollView>
       <CtaButton
         absolute={true}
-        adjustInsets={IS_IOS || !keyboardVisible}
         disabled={!ticketBody.message}
         title={t('ticketInsertScreen.sendTicket')}
         action={() => handleCreateTicket(ticketBody)}
