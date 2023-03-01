@@ -7,6 +7,7 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -41,10 +42,10 @@ export const ServicesScreen = () => {
         </Section>
         <Section>
           <SectionHeader title={t('servicesScreen.subTitleTwo')} />
-          <Row spaceBetween wrap style={styles.listContainer}>
+          <Row wrap style={styles.listContainer}>
             <ListItem
               leadingItem={
-                <Icon icon={faComments} size={24} color={colors.primary[500]} />
+                <Icon icon={faComments} size={30} color={colors.primary[500]} />
               }
               title={t('common.tickets')}
               titleStyle={styles.titleStyle}
@@ -52,6 +53,30 @@ export const ServicesScreen = () => {
               style={styles.card}
               card
             />
+            <ListItem
+              leadingItem={
+                <Icon
+                  icon={faComments}
+                  size={30}
+                  color={colors.darkOrange[400]}
+                />
+              }
+              title={t('common.feedbackApp')}
+              titleStyle={styles.titleStyle}
+              linkTo={{
+                screen: 'TicketInsert',
+                params: {
+                  topicId: 1101,
+                  subtopicId: 2001,
+                },
+              }}
+              style={[styles.card, { overflow: 'hidden' }]}
+              card
+            >
+              <View style={styles.beta}>
+                <Text style={styles.betaText}>BETA</Text>
+              </View>
+            </ListItem>
           </Row>
         </Section>
       </View>
@@ -68,22 +93,39 @@ const createStyles = ({
 }: Theme) =>
   StyleSheet.create({
     listContainer: {
-      paddingHorizontal: spacing[4],
+      paddingHorizontal: spacing[2],
       flexWrap: 'wrap',
+    },
+    beta: {
+      position: 'absolute',
+      resizeMode: 'contain',
+      top: -spacing[1],
+      left: -spacing['5'],
+      width: 90,
+      backgroundColor: colors.darkOrange[400],
+      transform: [{ rotate: '-42deg' }],
+    },
+    betaText: {
+      color: colors.text[50],
+      fontWeight: fontWeights.semibold,
+      paddingHorizontal: spacing[5],
+      fontSize: fontSizes.xs,
     },
     disabled: {
       opacity: 0.8,
     },
     card: {
       width: '30%',
-      minHeight: 100,
+      minHeight: 110,
       backgroundColor: colors.surface,
       borderRadius: shapes.lg,
       justifyContent: 'center',
       marginVertical: spacing[2],
+      marginHorizontal: spacing[2],
     },
     titleStyle: {
       fontWeight: fontWeights.semibold,
+      textAlign: 'center',
       fontSize: fontSizes.sm,
     },
     sectionsContainer: {

@@ -23,6 +23,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
+  children?: any;
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
@@ -49,6 +50,7 @@ export const ListItem = ({
   disabled,
   style,
   card,
+  children,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -91,6 +93,7 @@ export const ListItem = ({
           containerStyle,
         ]}
       >
+        {children}
         {leadingItem && (
           <View
             style={{
@@ -116,7 +119,7 @@ export const ListItem = ({
                 titleStyle,
               ]}
               weight="normal"
-              numberOfLines={1}
+              numberOfLines={card ? 2 : 1}
               ellipsizeMode="tail"
             >
               {title}

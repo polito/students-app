@@ -62,7 +62,12 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
         adjustInsets={true}
         title={t('ticketFaqsScreen.writeTicket')}
         textExtra={t('ticketFaqsScreen.noResultFound')}
-        action={() => navigation.navigate('TicketInsert')}
+        action={() =>
+          navigation.navigate('TicketInsert', {
+            subtopicId: undefined,
+            topicId: undefined,
+          })
+        }
         icon={faPencil}
       />
     </ScrollView>

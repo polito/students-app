@@ -15,7 +15,6 @@ import {
   StyleSheet,
   TextStyle,
   TouchableOpacity,
-  View,
 } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
@@ -75,31 +74,29 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
   }, [options]);
 
   const show = () => {
-    setVisible(() => true);
-    setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(translateY, {
-          toValue: height,
-          duration: 250,
-          useNativeDriver: false,
-        }),
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 250,
-          useNativeDriver: false,
-        }),
-      ]).start();
-    }, 50);
+    setVisible(true);
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: height,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+    ]).start();
   };
 
   const close = (callback?: any) => {
     Animated.parallel([
-      Animated.timing(translateY, {
+      Animated.timing(opacity, {
         toValue: 0,
         duration: 200,
         useNativeDriver: false,
       }),
-      Animated.timing(opacity, {
+      Animated.timing(translateY, {
         toValue: 0,
         duration: 200,
         useNativeDriver: false,
@@ -153,14 +150,16 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
                   style={[styles.option]}
                   onPress={() => onPressOption(option)}
                 >
-                  <View style={[IS_ANDROID && styles.iconContainer]}>
+                  <Animated.View
+                    style={[IS_ANDROID && styles.iconContainer, { opacity }]}
+                  >
                     <Icon
                       icon={option.icon}
                       style={[option.iconStyle]}
                       color={IS_ANDROID ? colors.surface : colors.text[900]}
                       size={IS_ANDROID ? 22 : 20}
                     />
-                  </View>
+                  </Animated.View>
                   <Col noFlex flexStart style={styles.optionRow}>
                     <Text
                       numberOfLines={1}

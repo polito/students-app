@@ -26,6 +26,7 @@
   },
   "common": {
     "tickets": "Ticket",
+    "feedbackApp": "Feedback App",
     "agent": "Operatore",
     "uploadFile": "Carica file",
     "uploadFileSubtitle": "Dal tuo dispositivio o dal cloud",

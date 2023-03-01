@@ -149,9 +149,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         data={replies}
         contentContainerStyle={[
           bottomBarAwareStyles,
-          { paddingBottom: ticketStatusHeight },
-          { paddingTop: IS_ANDROID ? bottomBarHeight : theme.spacing[5] },
-          { marginTop: IS_IOS && keyboardVisible ? -bottomBarHeight : 0 },
+          {
+            paddingBottom: keyboardVisible ? -headerHeight : ticketStatusHeight,
+          },
+          { paddingTop: IS_ANDROID ? bottomBarHeight : 0 },
+          { marginTop: keyboardVisible ? -bottomBarHeight : 0 },
         ]}
         keyExtractor={item => item.id.toString()}
         inverted

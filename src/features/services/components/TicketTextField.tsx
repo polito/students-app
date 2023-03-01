@@ -25,6 +25,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { IS_IOS } from '../../../core/constants';
+import { useKeyboard } from '../../../core/hooks/useKeyboard';
 import { useReplyToTicket } from '../../../core/queries/ticketHooks';
 import { pdfSizes } from '../../teaching/constants';
 import { AttachmentBlobCard } from './AttachmentBlobCard';
@@ -43,26 +44,13 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
   const styles = createStyles(theme);
   const [text, setText] = useState<string>('');
   const [attachment, setAttachment] = useState<Blob>(null);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const keyboardVisible = useKeyboard();
+
   const {
     mutateAsync: handleReply,
     isLoading,
     isSuccess,
   } = useReplyToTicket(ticketId);
-
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardWillShow', () => {
-      setKeyboardVisible(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardWillHide', () => {
-      setKeyboardVisible(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -74,11 +62,7 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
 
   const extraStyle = useMemo(() => {
     return {
-      bottom: keyboardVisible
-        ? IS_IOS
-          ? 0
-          : -bottomBarHeight
-        : bottomBarHeight,
+      bottom: keyboardVisible ? 0 : bottomBarHeight,
     };
   }, [keyboardVisible]);
 

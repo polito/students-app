@@ -20,7 +20,10 @@ export type ServiceStackParamList = {
   Home: undefined;
   Tickets: undefined;
   Ticket: { id: number };
-  TicketInsert: undefined;
+  TicketInsert: {
+    topicId?: number;
+    subtopicId?: number;
+  };
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
   TicketList: {

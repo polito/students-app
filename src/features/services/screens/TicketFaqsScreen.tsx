@@ -128,7 +128,12 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
           <CtaButton
             title={t('ticketFaqsScreen.writeTicket')}
             textExtra={t('ticketFaqsScreen.noResultFound')}
-            action={() => navigation.navigate('TicketInsert')}
+            action={() =>
+              navigation.navigate('TicketInsert', {
+                subtopicId: undefined,
+                topicId: undefined,
+              })
+            }
             icon={faPencil}
           />
         )}

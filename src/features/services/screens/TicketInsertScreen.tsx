@@ -25,7 +25,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { CreateTicketRequest } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { SCREEN_WIDTH } from '../../../core/constants';
+import { IS_IOS, SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import {
@@ -40,20 +40,26 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketInsert'>;
 
 export const TicketInsertScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
+  const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
+    route.params;
+  console.debug(initialTopicId, initialSubtopicId);
   const theme = useTheme();
   const { colors } = theme;
   const actionSheetRef = useRef(null);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
   const scroll = useRef(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const ticketTopicQuery = useGetTicketTopics();
   const topics = ticketTopicQuery?.data?.data ?? [];
   const styles = createStyles(theme);
-  const [topicId, setTopicId] = useState(undefined);
+  const [topicId, setTopicId] = useState(
+    initialTopicId?.toString() || undefined,
+  );
   const [ticketBody, setTicketBody] = useState<CreateTicketRequest>({
     subject: undefined,
     message: undefined,
-    subtopicId: undefined,
+    subtopicId: initialSubtopicId,
     attachment: null,
   });
 
@@ -63,6 +69,13 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
     isSuccess,
     data,
   } = useCreateTicket();
+
+  useEffect(() => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
+      setKeyboardVisible(false),
+    );
+    return () => hideSubscription.remove();
+  }, []);
 
   useEffect(() => {
     if (isSuccess && !!data?.data?.id) {
@@ -147,7 +160,6 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
       <KeyboardAwareScrollView
         contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
         ref={scroll}
-        keyboardShouldPersistTaps="handled"
         innerRef={ref => {
           scroll.current = ref;
         }}
@@ -164,6 +176,7 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                   };
                 })}
                 onSelectOption={updateTopicId}
+                disabled={!!initialTopicId}
                 value={topicId}
                 placeholder={t('ticketInsertScreen.topicDropdownPlaceholder')}
                 label={t('ticketInsertScreen.topicDropdownLabel')}
@@ -178,7 +191,7 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                   };
                 })}
                 onSelectOption={updateTicketBodyField('subtopicId')}
-                disabled={!topicId}
+                disabled={!topicId || !!initialTopicId}
                 value={ticketBody?.subtopicId?.toString()}
                 placeholder={t(
                   'ticketInsertScreen.subtopicDropdownPlaceholder',
@@ -197,6 +210,9 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                   onChangeText={updateTicketBodyField('subject')}
                   editable={!!ticketBody?.subtopicId}
                   returnKeyType="next"
+                  onPressIn={() =>
+                    !!ticketBody.subtopicId && setKeyboardVisible(true)
+                  }
                   style={[
                     styles.textField,
                     !ticketBody?.subtopicId && styles.textFieldDisabled,
@@ -260,6 +276,9 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                     onKeyPress={({ nativeEvent }) => {
                       nativeEvent.key === 'Enter' && Keyboard.dismiss();
                     }}
+                    onPressIn={() =>
+                      !!ticketBody.subject && setKeyboardVisible(true)
+                    }
                     editable={!!ticketBody.subject}
                     style={[styles.textFieldSendMessage]}
                     inputStyle={[
@@ -276,6 +295,8 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
         </View>
       </KeyboardAwareScrollView>
       <CtaButton
+        absolute={true}
+        adjustInsets={IS_IOS || !keyboardVisible}
         disabled={!ticketBody.message}
         title={t('ticketInsertScreen.sendTicket')}
         action={() => handleCreateTicket(ticketBody)}
