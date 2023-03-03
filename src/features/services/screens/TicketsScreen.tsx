@@ -31,8 +31,6 @@ export const TicketsScreen = ({ navigation }: Props) => {
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
 
-  console.debug(ticketsQuery?.data?.data);
-
   const TicketsOpened = () => {
     const openTickets = (ticketsQuery?.data?.data || [])
       .filter(ticket => ticket.status !== TicketStatus.Closed)

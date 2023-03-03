@@ -42,17 +42,16 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
     route.params;
-  console.debug(initialTopicId, initialSubtopicId);
   const theme = useTheme();
   const { colors } = theme;
   const actionSheetRef = useRef(null);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
   const scroll = useRef(null);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const ticketTopicQuery = useGetTicketTopics();
   const topics = ticketTopicQuery?.data?.data ?? [];
   const styles = createStyles(theme);
+
   const [topicId, setTopicId] = useState(
     initialTopicId?.toString() || undefined,
   );
@@ -71,14 +70,8 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
   } = useCreateTicket();
 
   useEffect(() => {
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
-      setKeyboardVisible(false),
-    );
-    return () => hideSubscription.remove();
-  }, []);
-
-  useEffect(() => {
     if (isSuccess && !!data?.data?.id) {
+      navigation.navigate(initialTopicId ? 'Home' : 'Tickets');
       navigation.navigate('Ticket', { id: data?.data?.id });
     }
   }, [isSuccess, data]);
@@ -210,9 +203,6 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                   onChangeText={updateTicketBodyField('subject')}
                   editable={!!ticketBody?.subtopicId}
                   returnKeyType="next"
-                  onPressIn={() =>
-                    !!ticketBody.subtopicId && setKeyboardVisible(true)
-                  }
                   style={[
                     styles.textField,
                     !ticketBody?.subtopicId && styles.textFieldDisabled,
@@ -276,9 +266,6 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                     onKeyPress={({ nativeEvent }) => {
                       nativeEvent.key === 'Enter' && Keyboard.dismiss();
                     }}
-                    onPressIn={() =>
-                      !!ticketBody.subject && setKeyboardVisible(true)
-                    }
                     editable={!!ticketBody.subject}
                     style={[styles.textFieldSendMessage]}
                     inputStyle={[

@@ -14,6 +14,7 @@ import {
   useGetTicketAttachments,
   useGetTicketReplyAttachments,
 } from '../../../core/queries/ticketHooks';
+import { formatFileSize } from '../../../utils/files';
 
 interface AttachmentCardProps {
   attachment?: TicketAttachment;
@@ -68,14 +69,14 @@ export const AttachmentCard = ({
 
   useEffect(() => {
     if (isSuccessReply) {
-      console.debug({ replyAttachment });
+      console.debug('replyAttachment', replyAttachment);
       setEnabled(null);
     }
   }, [isSuccessReply]);
 
   useEffect(() => {
     if (isSuccessTicket) {
-      console.debug({ ticketAttachments });
+      console.debug('ticketAttachments', ticketAttachments);
       setEnabled(null);
     }
   }, [isSuccessTicket]);
@@ -88,8 +89,7 @@ export const AttachmentCard = ({
     <Row noFlex style={styles.attachmentContainer} onPress={onPressAttachment}>
       {loading ? (
         <View>
-          {' '}
-          <ActivityIndicator />{' '}
+          <ActivityIndicator />
         </View>
       ) : (
         <Icon icon={faFile} size={25} color={'white'} />
@@ -99,7 +99,7 @@ export const AttachmentCard = ({
           {attachment?.filename}
         </Text>
         <Text numberOfLines={1} style={styles.size}>
-          size
+          {formatFileSize(attachment?.sizeInKiloBytes, 0)}
         </Text>
       </Col>
     </Row>

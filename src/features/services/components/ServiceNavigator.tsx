@@ -89,8 +89,8 @@ export const ServiceNavigator = () => {
         component={TicketInsertScreen}
         options={{
           headerLargeTitle: false,
-          headerBackTitle: '',
           headerTitle: t('ticketInsertScreen.title'),
+          headerBackTitle: t('ticketInsertScreen.headerBackTitle'),
         }}
       />
       <Stack.Screen

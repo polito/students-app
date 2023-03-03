@@ -25,9 +25,6 @@ export const ChatMessage = ({
   const styles = createStyles(theme);
   const { t } = useTranslation();
 
-  const attachments = message?.attachments ?? [];
-  console.debug('message', message?.agentId, message?.isFromAgent);
-
   if (received) {
     return (
       <View style={styles.containerMessage}>
@@ -92,7 +89,10 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
     agentText: {
       color: colors.primary[800],
     },
-    attachmentContainer: {},
+    attachmentContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
     messageText: {
       fontSize: fontSizes.sm,
       color: 'white',

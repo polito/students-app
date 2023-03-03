@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const TICKETS_QUERY_KEY = 'tickets';
+export const TICKETS_ATTACHMENTS_KEY = 'attachments';
 export const TOPICS_QUERY_KEY = 'topics';
 export const FAQS_QUERY_KEY = 'faqs';
 /* eslint-disable */
@@ -108,7 +109,7 @@ export const useGetTicketReplyAttachments = (
   const ticketsClient = useTicketsClient();
 
   return useQuery(
-    [TICKETS_QUERY_KEY],
+    [TICKETS_QUERY_KEY, TICKETS_ATTACHMENTS_KEY],
     () => ticketsClient.getTicketReplyAttachment(request),
     {
       enabled,
