@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -26,27 +26,25 @@ export const ChatMessage = ({
   const { t } = useTranslation();
 
   const attachments = message?.attachments ?? [];
-  // console.debug('attachments', attachments);
+  console.debug('message', message?.agentId, message?.isFromAgent);
 
   if (received) {
     return (
       <View style={styles.containerMessage}>
         <TimeWidget time={message?.createdAt} />
         <View style={styles.leftMessage}>
-          <FlatList
-            data={message.attachments ?? []}
-            contentContainerStyle={styles.attachmentContainer}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <AttachmentCard
-                attachment={item}
-                ticketId={ticketId}
-                replyId={message.id}
-              />
-            )}
-          />
+          <View style={styles.attachmentContainer}>
+            {(message?.attachments ?? []).map(item => {
+              return (
+                <AttachmentCard
+                  key={item.id.toString()}
+                  attachment={item}
+                  ticketId={ticketId}
+                  replyId={message.id}
+                />
+              );
+            })}
+          </View>
           <Text style={styles.agentText}>
             #{t('common.agent')} {message.agentId}
           </Text>
@@ -62,20 +60,18 @@ export const ChatMessage = ({
     <View style={styles.containerMessage}>
       <TimeWidget time={message?.createdAt} right />
       <View style={styles.rightMessage}>
-        <FlatList
-          data={message.attachments ?? []}
-          contentContainerStyle={styles.attachmentContainer}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <AttachmentCard
-              attachment={item}
-              ticketId={ticketId}
-              replyId={message.id}
-            />
-          )}
-        />
+        <View style={styles.attachmentContainer}>
+          {(message?.attachments ?? []).map(item => {
+            return (
+              <AttachmentCard
+                key={item.id.toString()}
+                attachment={item}
+                ticketId={ticketId}
+                replyId={message.id}
+              />
+            );
+          })}
+        </View>
         <TextMessage message={message.message} />
         <View style={styles.rightArrow} />
         <View style={styles.rightArrowOverlap} />
@@ -96,10 +92,7 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
     agentText: {
       color: colors.primary[800],
     },
-    attachmentContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+    attachmentContainer: {},
     messageText: {
       fontSize: fontSizes.sm,
       color: 'white',

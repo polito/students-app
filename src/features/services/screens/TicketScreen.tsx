@@ -165,7 +165,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           <ChatMessage
             message={reply}
             ticketId={ticket.id}
-            received={!!reply?.agentId}
+            received={!!reply?.isFromAgent}
           />
         )}
       />

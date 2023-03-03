@@ -1,5 +1,6 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { Row } from '@lib/ui/components/Row';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { Ticket } from '@polito/api-client/models/Ticket';
@@ -22,16 +23,17 @@ export const TicketRequest = ({ ticket }: TicketRequestProps) => {
     <View style={styles.containerMessage}>
       <TimeWidget time={ticket?.createdAt} right />
       <View style={styles.rightMessage}>
-        <FlatList
-          data={ticket?.attachments ?? []}
-          contentContainerStyle={styles.attachmentContainer}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <AttachmentCard attachment={item} ticketId={ticket?.id} />
-          )}
-        />
+        <Row noFlex style={styles.attachmentContainer}>
+          {(ticket?.attachments ?? []).map(item => {
+            return (
+              <AttachmentCard
+                key={item.id.toString()}
+                attachment={item}
+                ticketId={ticket?.id}
+              />
+            );
+          })}
+        </Row>
         <TextMessage message={ticket?.message} />
         <View style={styles.rightArrow} />
         <View style={styles.rightArrowOverlap} />
@@ -46,8 +48,8 @@ const createStyles = ({ spacing, shapes, fontSizes, colors }: Theme) =>
       marginTop: spacing['1.5'],
     },
     attachmentContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
     },
     messageText: {
       fontSize: fontSizes.sm,

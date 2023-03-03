@@ -27,6 +27,8 @@ export const TicketStatusInfo = ({
   const styles = createStyles(theme);
   const isClosed = ticket?.status === TicketStatus.Closed;
 
+  console.debug({ ticket });
+
   if (loading) {
     return (
       <Col style={[styles.container, { paddingVertical: spacing[4] }]}>
@@ -43,11 +45,15 @@ export const TicketStatusInfo = ({
       </Row>
       <Row style={styles.row}>
         <Text style={styles.text}>{t('ticketScreen.createdAt')}</Text>
-        <Text style={styles.text}>{formatDate(ticket?.createdAt)}</Text>
+        <Text style={styles.text}>
+          {formatDate(ticket?.createdAt ?? new Date())}
+        </Text>
       </Row>
       <Row style={styles.row}>
         <Text style={styles.text}>{t('ticketScreen.updatedAt')}</Text>
-        <Text style={styles.text}>{formatDateTime(ticket?.updatedAt)}</Text>
+        <Text style={styles.text}>
+          {formatDateTime(ticket?.updatedAt ?? new Date())}
+        </Text>
       </Row>
       {refetching ? (
         <ActivityIndicator />

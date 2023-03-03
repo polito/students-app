@@ -23,6 +23,7 @@ import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useMarkTicketAsClosed } from '../../../core/queries/ticketHooks';
 import { formatDateTime } from '../../../utils/dates';
+import { parseText } from '../../../utils/html-parse';
 
 interface Props {
   ticket: TicketOverview;
@@ -36,6 +37,7 @@ export const TicketListItem = ({ ticket }: Props) => {
   const confirm = useConfirmationDialog({
     message: t('tickets.closeTip'),
   });
+
   const { fontSizes, colors, spacing } = theme;
   const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
 
@@ -75,8 +77,10 @@ export const TicketListItem = ({ ticket }: Props) => {
           screen: 'Ticket',
           params: { id: ticket.id },
         }}
-        title={ticket.subject}
-        subtitle={`${formatDateTime(ticket.updatedAt)} - ${ticket.message}`}
+        title={parseText(ticket?.subject)}
+        subtitle={`${formatDateTime(ticket.updatedAt)} - ${parseText(
+          ticket?.message,
+        )}`}
         subtitleStyle={styles.listItemSubtitle}
         leadingItem={<Icon icon={faComments} size={20} />}
         trailingItem={

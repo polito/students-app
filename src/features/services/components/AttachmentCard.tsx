@@ -29,6 +29,7 @@ export const AttachmentCard = ({
   const theme = useTheme();
   const styles = createStyles(theme);
   const [enabled, setEnabled] = useState<'reply' | 'ticket'>(null);
+  // console.debug(a)
   const {
     data: replyAttachment,
     isLoading: isLoadingReply,
@@ -91,11 +92,14 @@ export const AttachmentCard = ({
           <ActivityIndicator />{' '}
         </View>
       ) : (
-        <Icon icon={faFile} size={35} />
+        <Icon icon={faFile} size={25} color={'white'} />
       )}
-      <Col noFlex flexStart>
+      <Col noFlex flexStart style={styles.textContainer}>
         <Text numberOfLines={1} style={styles.name}>
           {attachment?.filename}
+        </Text>
+        <Text numberOfLines={1} style={styles.size}>
+          size
         </Text>
       </Col>
     </Row>
@@ -111,22 +115,25 @@ const createStyles = ({
 }: Theme) =>
   StyleSheet.create({
     attachmentContainer: {
-      borderRadius: shapes.lg * 1.5,
-      backgroundColor: colors.text['200'],
-      justifyContent: 'center',
+      flexDirection: 'row',
+      borderRadius: shapes.lg,
+      justifyContent: 'flex-start',
       alignItems: 'center',
-      paddingLeft: spacing[2],
-      paddingBottom: spacing[2],
-      paddingTop: spacing[5],
-      paddingRight: spacing[6],
-      marginRight: spacing[3],
+      paddingBottom: spacing[1],
+      marginBottom: spacing[1],
+      width: '50%',
+    },
+    textContainer: {
+      paddingLeft: spacing[1],
     },
     name: {
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.xs,
       fontWeight: fontWeights.semibold,
+      color: 'white',
     },
     size: {
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
+      color: 'white',
     },
   });
