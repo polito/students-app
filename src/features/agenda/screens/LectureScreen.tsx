@@ -29,7 +29,7 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
-export const LectureScreen = ({ route, navigation }: Props) => {
+export const LectureScreen = ({ route }: Props) => {
   const deviceOrientation = useDeviceOrientation();
   const { id } = route.params;
   const { t } = useTranslation();

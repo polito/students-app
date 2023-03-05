@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import {
   Animated,
+  AppRegistry,
   StyleSheet,
   Text,
   TouchableHighlightProps,
@@ -24,9 +25,11 @@ import { DateTime } from 'luxon';
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
 
+import setSurfaceProps = AppRegistry.setSurfaceProps;
+
 export interface VideoControlProps {
   onRelease: (percentage: number) => void;
-  newPosition: number;
+  progress: number;
   paused: boolean;
   togglePaused: () => void;
   muted?: boolean;
@@ -42,7 +45,7 @@ const defaultPadding = 10;
 
 export const VideoControl = ({
   onRelease,
-  newPosition,
+  progress,
   paused,
   togglePaused,
   secondsDuration,
@@ -52,13 +55,13 @@ export const VideoControl = ({
   setPlaybackRate,
 }: VideoControlProps) => {
   const styles = useStylesheet(createStyles);
-  const [value, setValue] = useState(newPosition * 100);
+  const [value, setValue] = useState(progress * 100);
   const [isSliding, setIsSliding] = useState(false);
   const [disableControl, setDisableControl] = useState(true);
   const animatedOpacity = useRef(new Animated.Value(0)).current;
 
   const sliderPosition =
-    isSliding || (paused && !isSliding) ? value / 100 : newPosition;
+    isSliding || (paused && !isSliding) ? value / 100 : progress;
   const currentTime = DateTime.fromSeconds(secondsDuration * sliderPosition)
     .toUTC()
     .toFormat('HH:mm:ss');
@@ -143,7 +146,7 @@ export const VideoControl = ({
             <Text style={styles.time}>{currentTime}</Text>
             <Slider
               value={
-                isSliding || (paused && !isSliding) ? value : newPosition * 100
+                isSliding || (paused && !isSliding) ? value : progress * 100
               }
               // @ts-ignore
               containerStyle={[
@@ -159,8 +162,8 @@ export const VideoControl = ({
               minimumValue={0.001}
               thumbTintColor={'white'}
               maximumValue={100}
-              onValueChange={newValue => {
-                const val = newValue as number;
+              onValueChange={evt => {
+                const val = (evt as number[])[0];
                 setValue(val);
                 onRelease(val);
               }}

@@ -1,15 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
   Dimensions,
   Platform,
-  StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
@@ -20,10 +14,10 @@ import { Text } from '@lib/ui/components/Text';
 import { VideoControl } from '@lib/ui/components/VideoControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
-import { useNavigation } from '@react-navigation/native';
 
+import { useHandleFullscreen } from '../../../src/core/hooks/useHandleFullscreen';
+import { useVideoControls } from '../../../src/core/hooks/useVideoControls';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
-import { displayTabBar, hideTabBar } from '../../../src/utils/tab-bar';
 
 const isIos = Platform.OS === 'ios';
 
@@ -36,49 +30,43 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const playerRef = useRef<Video>();
+  const {
+    fullscreen,
+    togglePaused,
+    toggleFullscreen,
+    toggleMuted,
+    muted,
+    ready,
+    paused,
+    handleLoad,
+    duration,
+    onReadyForDisplay,
+  } = useVideoControls();
+  useHandleFullscreen(fullscreen);
   const [progress, setProgress] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
-  const navigation = useNavigation();
-  const [duration, setDuration] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const playerRef = useRef<Video>();
 
-  useEffect(() => {
-    const navRoot = navigation.getParent();
-    return () => displayTabBar(navRoot);
+  // console.debug({ready})
+
+  const source = useMemo(() => {
+    return {
+      uri: videoUrl,
+    };
   }, []);
 
-  useEffect(() => {
-    const navRoot = navigation.getParent();
-    if (!isIos) {
-      if (fullscreen) {
-        navigation.setOptions({
-          headerShown: false,
-          orientation: 'landscape',
-        });
-        StatusBar.setHidden(true, 'none');
-        hideTabBar(navRoot);
-      } else {
-        navigation.setOptions({
-          headerShown: true,
-          orientation: 'portrait',
-        });
-        StatusBar.setHidden(false, 'slide');
-        displayTabBar(navRoot);
-      }
-    }
-
-    return () => {
-      displayTabBar(navRoot);
-      navigation.setOptions({
-        headerShown: false,
-        orientation: 'portrait',
-      });
-    };
-  }, [fullscreen]);
+  const playerStyle = useMemo(() => {
+    return [
+      {
+        height: (width / 16) * 9,
+      },
+      fullscreen &&
+        !isIos && {
+          ...styles.landscapeView,
+          height: SCREEN_WIDTH,
+        },
+    ];
+  }, [fullscreen, isIos]);
 
   const speedControls = useMemo(() => {
     if (!isIos || parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
@@ -110,13 +98,13 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     setPlaybackRate(rates[newIndex]);
   };
 
-  const onSeekEnd = useCallback(
+  const onRelease = useCallback(
     (newProgress: number) => {
-      console.debug({ newProgress });
       try {
         const newSeekValue = (newProgress * duration) / 100;
+        console.debug({ newProgress, newSeekValue, duration });
         if (playerRef && playerRef.current) {
-          playerRef.current.seek(newSeekValue);
+          playerRef.current.seek(newSeekValue, 50);
         }
       } catch (e) {
         console.debug('errorSeek', e);
@@ -125,28 +113,9 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     [playerRef, duration],
   );
 
-  const togglePaused = useCallback(() => {
-    setPaused(prev => !prev);
-  }, [playerRef]);
-
-  const toggleMuted = useCallback(() => {
-    setMuted(prev => !prev);
-  }, [playerRef]);
-
-  const toggleFullscreen = useCallback(() => {
-    setFullscreen(prev => !prev);
-  }, [playerRef]);
-
-  const handleLoad = useCallback((meta: any) => {
-    setDuration(meta.duration);
-  }, []);
-
   const handleProgress = useCallback(
     (videoProgress: any) => {
       try {
-        if (loading) {
-          setLoading(false);
-        }
         const p = videoProgress.currentTime / duration;
         if (p === Infinity || isNaN(p)) {
           return;
@@ -156,42 +125,37 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
         console.debug('errorHandleProgress', e);
       }
     },
-    [duration, loading],
+    [duration],
   );
 
   return (
     <View>
+      {!ready && (
+        <View style={[playerStyle, styles.loader]}>
+          <ActivityIndicator />
+        </View>
+      )}
       <Video
         ref={playerRef}
         controls={isIos}
         paused={paused}
-        style={[
-          {
-            height: (width / 16) * 9,
-          },
-          fullscreen &&
-            !isIos && {
-              ...styles.landscapeView,
-              height: SCREEN_WIDTH,
-            },
-        ]}
-        source={{
-          uri: videoUrl,
-        }}
+        style={playerStyle}
+        source={source}
         poster={coverUrl}
         rate={playbackRate}
         resizeMode="contain"
         onLoad={handleLoad}
         onProgress={handleProgress}
         muted={muted}
+        onReadyForDisplay={onReadyForDisplay}
         fullscreen={isIos ? fullscreen : false}
         onFullscreenPlayerDidDismiss={toggleFullscreen}
       />
       {!isIos && (
         <VideoControl
           toggleFullscreen={toggleFullscreen}
-          onRelease={onSeekEnd}
-          newPosition={progress}
+          onRelease={onRelease}
+          progress={progress}
           paused={paused}
           togglePaused={togglePaused}
           toggleMuted={toggleMuted}
@@ -216,6 +180,14 @@ const createStyles = ({ spacing }: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+    },
+    loader: {
+      position: 'absolute',
+      top: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      zIndex: 99,
     },
     landscapeView: {
       width: SCREEN_HEIGHT,
