@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { List } from '@lib/ui/components/List';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -22,59 +20,37 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const refreshControl = useRefreshControl(recentFilesQuery);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const styles = useStylesheet(createStyles);
 
   return (
     <>
-      <ScrollView
-        contentContainerStyle={bottomBarAwareStyles}
-        refreshControl={<RefreshControl {...refreshControl} />}
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={recentFilesQuery.data}
         scrollEnabled={scrollEnabled}
-      >
-        {recentFilesQuery.data &&
-          (recentFilesQuery.data.length ? (
-            <View style={styles.sectionContainer}>
-              <SectionHeader
-                title={t('courseFilesTab.recentSectionTitle')}
-                separator={false}
-              />
-              <List indented>
-                {recentFilesQuery.data.slice(0, 5).map(file => (
-                  <CourseRecentFileListItem
-                    key={file.id}
-                    item={file}
-                    onSwipeStart={() => setScrollEnabled(false)}
-                    onSwipeEnd={() => setScrollEnabled(true)}
-                  />
-                ))}
-              </List>
-            </View>
-          ) : (
-            <EmptyState
-              message={t('courseFilesTab.empty')}
-              icon={faFolderOpen}
-            />
-          ))}
-      </ScrollView>
+        keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+        initialNumToRender={15}
+        renderItem={({ item }) => (
+          <CourseRecentFileListItem
+            item={item}
+            onSwipeStart={() => setScrollEnabled(false)}
+            onSwipeEnd={() => setScrollEnabled(true)}
+          />
+        )}
+        {...refreshControl}
+        contentContainerStyle={bottomBarAwareStyles}
+        ItemSeparatorComponent={Platform.select({
+          ios: IndentedDivider,
+        })}
+        ListEmptyComponent={
+          <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
+        }
+      />
       {recentFilesQuery.data?.length > 0 && (
         <CtaButton
-          title={t('courseFilesTab.browseFiles')}
+          title={t('courseFilesTab.navigateFolders')}
           action={() => navigation.navigate('CourseDirectory', { courseId })}
         />
       )}
     </>
   );
 };
-
-const createStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    sectionContainer: {
-      paddingVertical: spacing[5],
-    },
-    buttonContainer: {
-      paddingHorizontal: spacing[4],
-    },
-    noResultText: {
-      padding: spacing[4],
-    },
-  });

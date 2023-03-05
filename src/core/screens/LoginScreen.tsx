@@ -8,35 +8,26 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
-import * as Keychain from 'react-native-keychain';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
-import { useApiContext } from '../contexts/ApiContext';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { mutateAsync: login, isLoading } = useLogin();
+  const { mutate: login, isLoading } = useLogin();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef<TextInput>();
-  const { refreshContext } = useApiContext();
 
-  const handleLogin = async () => {
-    const {
-      data: { clientId, token },
-    } = await login({ username, password });
-    await Keychain.setGenericPassword(clientId, token);
-    refreshContext(token);
-  };
+  const handleLogin = () => login({ username, password });
 
   return (
     <>
@@ -46,11 +37,7 @@ export const LoginScreen = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Section style={styles.section}>
-            <SectionHeader
-              title={t('loginScreen.title')}
-              titleStyle={styles.title}
-              ellipsizeTitle={false}
-            />
+            <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
             <SectionList style={styles.sectionList}>
               <TextField
                 label={t('loginScreen.usernameLabel')}
@@ -80,7 +67,6 @@ export const LoginScreen = () => {
             </SectionList>
             <CtaButton
               absolute={false}
-              adjustInsets={Platform.OS === 'ios'}
               title={t('loginScreen.cta')}
               action={handleLogin}
               loading={isLoading}
@@ -104,7 +90,8 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     title: {
       fontSize: fontSizes['3xl'],
-      marginBottom: spacing[8],
+      marginBottom: spacing[3],
+      marginHorizontal: spacing[5],
     },
     textField: {
       paddingHorizontal: Platform.select({

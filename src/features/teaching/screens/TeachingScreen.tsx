@@ -21,12 +21,10 @@ import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { SCREEN_WIDTH } from '../../../utils/const';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -41,7 +39,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const preferences = useContext(PreferencesContext);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -51,18 +48,30 @@ export const TeachingScreen = ({ navigation }: Props) => {
     examsQuery,
     studentQuery,
   );
-  const exams = useMemo(
-    () =>
-      examsQuery.data?.data
-        .sort(a => (a.status === ExamStatusEnum.Booked ? -1 : 1))
-        .slice(0, 4) ?? [],
-    [examsQuery],
-  );
+  const exams = useMemo(() => {
+    if (!coursesQuery.data?.data || !examsQuery.data?.data) return [];
+
+    const hiddenNonModuleCourses: string[] = [];
+
+    Object.keys(preferences.courses).forEach((key: string) => {
+      if (preferences.courses[+key].isHidden) {
+        const hiddenCourse = coursesQuery.data.data.find(c => c.id === +key);
+        if (hiddenCourse && !hiddenCourse.isModule)
+          hiddenNonModuleCourses.push(hiddenCourse.shortcode);
+      }
+    });
+
+    return (
+      examsQuery.data.data
+        .filter(e => !hiddenNonModuleCourses.includes(e.courseShortcode))
+        .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
+        .slice(0, 4) ?? []
+    );
+  }, [coursesQuery, examsQuery]);
 
   return (
     <ScrollView
-      contentInsetAdjustmentBehavior="always"
-      contentContainerStyle={bottomBarAwareStyles}
+      contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <View style={styles.sectionsContainer}>
@@ -84,7 +93,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
               )
               .filter(c => c.id && !preferences.courses[c.id]?.isHidden)
               .map(course => (
-                <CourseListItem key={course.shortcode} course={course} />
+                <CourseListItem
+                  key={course.shortcode + '' + course.id}
+                  course={course}
+                />
               ))}
           </SectionList>
         </Section>
@@ -165,8 +177,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     sectionsContainer: {
-      // backgroundColor: 'red',
-      width: SCREEN_WIDTH,
       paddingVertical: spacing[5],
     },
     section: {

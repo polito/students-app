@@ -17,7 +17,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { formatDate } from '../../../utils/dates';
@@ -34,7 +33,6 @@ interface RenderedNotice {
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const { fontSizes, colors, spacing } = useTheme();
   const { t } = useTranslation();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const noticesQuery = useGetCourseNotices(courseId);
   const refreshControl = useRefreshControl(noticesQuery);
   const [notices, setNotices] = useState<RenderedNotice[]>();
@@ -78,7 +76,6 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   return (
     <ScrollView
       style={{ flex: 1 }}
-      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {notices &&

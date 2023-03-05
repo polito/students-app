@@ -3,42 +3,46 @@ import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
+  EditablePreferenceKeys,
   PreferencesContext,
   PreferencesContextProps,
-  storageKeys,
-  storageObjectKeys,
+  editablePreferenceKeys,
+  objectPreferenceKeys,
 } from '../contexts/PreferencesContext';
 
 export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
-      colorScheme: null,
+      colorScheme: 'system',
       courses: {},
-      language: null,
+      language: 'system',
       updatePreference: () => {},
     });
 
-  const preferencesInitialized = useRef(false);
+  const preferencesInitialized = useRef<boolean>(false);
 
-  const updatePreference = (key: string, value: any) => {
-    if (!storageKeys.includes(key))
-      throw new Error('You are trying to update an invalid preference');
-
+  const updatePreference = (key: EditablePreferenceKeys, value: unknown) => {
+    const stringKey = key.toString();
     if (value === null) {
-      AsyncStorage.removeItem(key).then(() =>
+      AsyncStorage.removeItem(stringKey).then(() =>
         setPreferencesContext(oldP => ({
           ...oldP,
-          [key]: value,
+          [stringKey]: value,
         })),
       );
     } else {
-      const storedValue = storageObjectKeys.includes(key)
-        ? JSON.stringify(value)
-        : value;
-      AsyncStorage.setItem(key, storedValue).then(() =>
+      let storageValue: string;
+
+      if (objectPreferenceKeys.includes(key)) {
+        storageValue = JSON.stringify(value);
+      } else {
+        storageValue = value as string;
+      }
+
+      AsyncStorage.setItem(stringKey, storageValue).then(() =>
         setPreferencesContext(oldP => ({
           ...oldP,
-          [key]: value,
+          [stringKey]: value,
         })),
       );
     }
@@ -46,15 +50,20 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
 
   // Initialize preferences from AsyncStorage
   useEffect(() => {
-    AsyncStorage.multiGet(storageKeys).then(storagePreferences => {
+    AsyncStorage.multiGet(editablePreferenceKeys).then(storagePreferences => {
       const preferences: Partial<PreferencesContextProps> = {
         updatePreference,
       };
       storagePreferences.map(([key, value]) => {
-        // @ts-expect-error temporary type fix
-        preferences[key] = storageObjectKeys.includes(key)
-          ? JSON.parse(value) ?? {}
-          : value;
+        if (value === null) return;
+
+        const typedKey = key as EditablePreferenceKeys;
+
+        if (objectPreferenceKeys.includes(key)) {
+          preferences[typedKey] = JSON.parse(value) ?? {};
+        } else {
+          preferences[typedKey] = value as any;
+        }
       });
 
       setPreferencesContext(oldP => {

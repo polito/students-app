@@ -1,6 +1,7 @@
-import { StudentApi } from '@polito/api-client';
+import { GetStudentGrades200Response, StudentApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
+import { prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const STUDENT_QUERY_KEY = 'student';
@@ -17,13 +18,24 @@ const useStudentClient = (): StudentApi => {
 export const useGetStudent = () => {
   const studentClient = useStudentClient();
 
-  return useQuery([STUDENT_QUERY_KEY], () => studentClient.getStudent());
+  return useQuery(prefixKey([STUDENT_QUERY_KEY]), () =>
+    studentClient.getStudent(),
+  );
+};
+
+const sortGrades = (response: GetStudentGrades200Response) => {
+  response.data = response.data.sort(
+    (a, b) => b.date.getTime() - a.date.getTime(),
+  );
+  return response;
 };
 
 export const useGetGrades = () => {
   const studentClient = useStudentClient();
 
-  return useQuery([GRADES_QUERY_KEY], () => studentClient.getStudentGrades());
+  return useQuery(prefixKey([GRADES_QUERY_KEY]), () =>
+    studentClient.getStudentGrades().then(sortGrades),
+  );
 };
 
 export const useGetDeadlines = () => {

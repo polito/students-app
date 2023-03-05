@@ -1,15 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import {
-  faBook,
-  faCalendar,
-  faEllipsis,
-  faLocationDot,
+  faBookOpen,
+  faCalendarDay,
+  faCircleInfo,
+  faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -20,26 +21,26 @@ import { TeachingNavigator } from '../../features/teaching/components/TeachingNa
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
 import { HeaderLogo } from './HeaderLogo';
-import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+
+  const tabBarIconSize = 20;
 
   return (
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.tabBar,
+        tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarHideOnKeyboard: true,
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: styles.tabBarLabelStyle,
-        tabBarBackground: Platform.select({
-          ios: () => <TranslucentView />,
-        }),
-        headerShown: false,
       }}
     >
       <TabNavigator.Screen
@@ -47,8 +48,8 @@ export const RootNavigator = () => {
         component={TeachingNavigator}
         options={{
           tabBarLabel: t('teachingScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faBook} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -57,8 +58,8 @@ export const RootNavigator = () => {
         component={AgendaNavigator}
         options={{
           tabBarLabel: t('agendaScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faCalendar} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCalendarDay} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -67,18 +68,8 @@ export const RootNavigator = () => {
         component={PlacesScreen}
         options={{
           tabBarLabel: t('placesScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faLocationDot} color={color} size={size} />
-          ),
-        }}
-      />
-      <TabNavigator.Screen
-        name="ProfileTab"
-        component={UserNavigator}
-        options={{
-          tabBarLabel: t('profileScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faUser} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCompass} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -88,8 +79,18 @@ export const RootNavigator = () => {
         options={{
           headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('common.services'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faEllipsis} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
+          ),
+        }}
+      />
+      <TabNavigator.Screen
+        name="ProfileTab"
+        component={UserNavigator}
+        options={{
+          tabBarLabel: t('profileScreen.title'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -97,14 +98,14 @@ export const RootNavigator = () => {
   );
 };
 
-const createStyles = ({ spacing, fontWeights }: Theme) =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
-    tabBarStyle,
-    tabBarItemStyle: {
-      paddingVertical: Platform.OS === 'android' ? spacing[1] : undefined,
+    tabBarStyle: {
+      ...tabBarStyle,
+      backgroundColor: colors.surfaceDark,
+      borderColor: colors.primary[700],
     },
-    tabBarLabelStyle: {
-      fontFamily: 'Montserrat',
-      fontWeight: fontWeights.medium,
+    tabBarItemStyle: {
+      paddingVertical: 3,
     },
   });

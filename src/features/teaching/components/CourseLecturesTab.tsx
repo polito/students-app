@@ -25,7 +25,6 @@ import { VideoLecture } from '@polito/api-client';
 import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
@@ -52,7 +51,6 @@ interface Section {
 export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const { spacing, colors, fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseQuery = useGetCourse(courseId);
   const videolecturesQuery = useGetCourseVideolectures(courseId);
@@ -193,7 +191,6 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   return (
     <SectionList
       ref={sectionListRef}
-      contentContainerStyle={bottomBarAwareStyles}
       sections={sections}
       {...refreshControl}
       stickySectionHeadersEnabled={true}

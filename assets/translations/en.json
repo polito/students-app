@@ -1,13 +1,14 @@
 {
   "agendaScreen": {
-    "title": "Agenda",
-    "backToToday": "Back to today"
+    "backToToday": "Torna a oggi",
+    "title": "Agenda"
   },
   "colors": {
     "amber": "Amber",
     "blue": "Blue",
     "cyan": "Cyan",
     "darkBlue": "Dark blue",
+    "darkOrange": "Dark orange",
     "emerald": "Elemerald",
     "fuchsia": "Fuchsia",
     "green": "Green",
@@ -24,13 +25,16 @@
     "yellow": "Yellow"
   },
   "common": {
-    "contact": "Contacts",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
+    "cache": "Cache",
     "cancel": "Cancel",
+    "cleanCourseFiles": "Remove all course files",
     "color": "Color",
+    "comingSoon": "Coming soon",
+    "contact": "Contacts",
     "course": "Course",
     "course_plural": "Courses",
     "credits": "Credits",
@@ -40,6 +44,7 @@
     "delete": "Delete",
     "done": "Done",
     "download": "Download",
+    "en": "English",
     "error": "Error",
     "exam": "Exam",
     "examCall": "Exam call",
@@ -47,8 +52,11 @@
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",
+    "it": "Italian",
+    "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "logout": "Logout",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
@@ -62,7 +70,9 @@
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
     "stop": "Stop",
+    "system": "System",
     "teacher": "Teacher",
+    "theme": "Theme",
     "transcript": "Transcript",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
@@ -86,8 +96,6 @@
     "backTitle": "Pick file",
     "ctaCreatePDF": "Scan a document",
     "ctaCreatePDFSubtitle": "Create a pdf file",
-    "ctaTakePicture": "Take a picture",
-    "ctaTakePictureSubtitle": "With the camera of your phone",
     "ctaUploadFile": "Pick a file",
     "ctaUploadFileSubtitle": "On your phone or on the cloud",
     "title": "Upload assignment"
@@ -110,6 +118,7 @@
   "courseFilesTab": {
     "browseFiles": "Browse files",
     "empty": "No files available",
+    "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
   },
@@ -156,7 +165,7 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
-    "emptyState": "There are no active courses",
+    "emptyState": "No courses available",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses"
   },
@@ -186,25 +195,52 @@
   "messagesScreen": {
     "title": "Messages archive"
   },
+  "notifications": {
+    "events": "Events",
+    "important": "Important",
+    "reservationPresence": "Reservations"
+  },
+  "personScreen": {
+    "call": "Call",
+    "contacts": "Contacts",
+    "courses": "Courses",
+    "department": "Department",
+    "moreInfo": "More information",
+    "role": "Role",
+    "sentEmail": "Send e-mail"
+  },
   "placesScreen": {
     "title": "Places"
   },
   "profileScreen": {
-    "title": "Profile"
+    "course": "Course",
+    "enrollmentYear": "Enrollment year {{- enrollmentYear}}",
+    "notifications": "Notifications archive",
+    "settings": "Settings",
+    "smartCard": "Smartcard",
+    "title": "Profile",
+    "trainingOffer": "Training offer"
   },
   "sectionHeader": {
     "cta": "See all"
   },
   "settingsScreen": {
+    "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "title": "Settings"
   },
   "teachingScreen": {
     "title": "Teaching"
   },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "Sistem"
+  },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
+    "emptyState": "You have not taken any exams",
     "finalAverageLabel": "Final average",
     "provisionalGradesSectionTitle": "Provisional grades",
     "thisYear": "This academic year",

@@ -19,3 +19,9 @@ buck-out/
 
 # Bundle artifacts
 *.jsbundle
+
+# Google Cloud secret
+pc-api-secret.json
+
+# Fastlane
+fastlane/report.xml

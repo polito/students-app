@@ -7,6 +7,7 @@ import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -15,7 +16,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { Person } from '@polito/api-client/models/Person';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
@@ -31,7 +31,6 @@ type StaffMember = Person & { courseRole: string };
 export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const courseQuery = useGetCourse(courseId);
   const courseExamsQuery = useGetCourseExams(
@@ -69,11 +68,10 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   return (
     <ScrollView
       style={{ flex: 1 }}
-      contentContainerStyle={bottomBarAwareStyles}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section style={styles.heading}>
-        <Text variant="heading">{courseQuery.data?.data.name}</Text>
+        <ScreenTitle title={courseQuery.data?.data.name} />
         <Text variant="caption">{courseQuery.data?.data.shortcode}</Text>
       </Section>
       <Card style={styles.metricsCard}>

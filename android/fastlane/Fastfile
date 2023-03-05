@@ -1,0 +1,53 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+KEYSTORE_PATH = Dir.pwd+'/../'+ENV['KEYSTORE_PATH']
+buildProps = {
+  "android.injected.signing.store.file" => KEYSTORE_PATH,
+  "android.injected.signing.store.password" => ENV['KEYSTORE_PW'],
+  "android.injected.signing.key.alias" => "key0",
+  "android.injected.signing.key.password" => ENV['KEYSTORE_PW'],
+}
+
+platform :android do
+  before_all do
+    ENV["ENTRY_FILE"] = "../../index.ts"
+    setup_ci if ENV['CI']
+  end
+
+  desc "Build and sign bundle"
+  lane :verify do
+    gradle(
+      task: "bundleRelease",
+      properties: buildProps
+    )
+  end
+
+  desc "Build and sign bundle, then push it to the Google Play beta track"
+  lane :release do
+    android_set_version_name(version_name: ENV['APP_VERSION'])
+    android_set_version_code(version_code: ENV['BUILD_NO'])
+    gradle(
+      task: "bundleRelease",
+      properties: buildProps
+    )
+    upload_to_play_store(
+      track: ENV['STORE_TRACK'],
+      release_status: "draft",
+    )
+  end
+end

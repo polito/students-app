@@ -14,12 +14,12 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 interface Props extends TouchableHighlightProps {
-  adjustInsets?: boolean;
+  icon?: any;
   absolute?: boolean;
   title: string;
+  rightExtra?: JSX.Element;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
@@ -34,7 +34,6 @@ interface Props extends TouchableHighlightProps {
  */
 export const CtaButton = ({
   style,
-  adjustInsets = true,
   absolute = true,
   title,
   loading,
@@ -42,19 +41,15 @@ export const CtaButton = ({
   disabled,
   destructive = false,
   action,
+  icon,
+  rightExtra,
   ...rest
 }: Props) => {
-  const { colors, fontSizes } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const [showSuccess, setShowSuccess] = useState(false);
   const successMessageRef = useRef<string>();
   const destructiveRef = useRef<boolean>();
-  let bottomBarHeight = 0;
-  try {
-    bottomBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    // Not available in this context
-  }
 
   const onPress = () => {
     successMessageRef.current = successMessage;
@@ -71,13 +66,7 @@ export const CtaButton = ({
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        absolute && styles.absolute,
-        adjustInsets && { marginBottom: bottomBarHeight },
-      ]}
-    >
+    <View style={[styles.container, absolute && styles.absolute]}>
       <TouchableHighlight
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
@@ -94,6 +83,7 @@ export const CtaButton = ({
               ? colors.danger[500]
               : colors.primary[500],
           },
+          disabled && styles.disabledButton,
           style,
         ]}
         accessibilityLabel={title}
@@ -120,7 +110,18 @@ export const CtaButton = ({
                 )}
               </View>
             ) : (
-              <Text style={styles.textStyle}>{title}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {icon && (
+                  <Icon
+                    icon={icon}
+                    size={fontSizes.xl}
+                    color={colors.text[100]}
+                    style={{ marginRight: spacing['2'] }}
+                  />
+                )}
+                <Text style={styles.textStyle}>{title}</Text>
+                {rightExtra && rightExtra}
+              </View>
             )}
           </View>
         </View>
@@ -129,7 +130,13 @@ export const CtaButton = ({
   );
 };
 
-const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
+const createStyles = ({
+  colors,
+  shapes,
+  spacing,
+  fontSizes,
+  fontWeights,
+}: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[4],
@@ -150,6 +157,9 @@ const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
       alignItems: 'center',
       elevation: 12,
     },
+    disabledButton: {
+      backgroundColor: colors.secondaryText,
+    },
     stack: {
       ...StyleSheet.absoluteFillObject,
       alignItems: 'center',
@@ -164,5 +174,8 @@ const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) =>
     icon: {
       marginVertical: -2,
       marginRight: spacing[2],
+    },
+    subtitle: {
+      marginTop: spacing[2],
     },
   });

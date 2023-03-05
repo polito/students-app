@@ -8,7 +8,6 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
@@ -16,19 +15,15 @@ import { CourseListItem } from '../components/CourseListItem';
 export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const coursesQuery = useGetCourses();
   const refreshControl = useRefreshControl(coursesQuery);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={[
-        {
-          paddingVertical: spacing[5],
-        },
-        bottomBarAwareStyles,
-      ]}
+      contentContainerStyle={{
+        paddingVertical: spacing[5],
+      }}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {!coursesQuery.isLoading &&
@@ -38,7 +33,7 @@ export const CoursesScreen = () => {
               (byPeriod[course.teachingPeriod] =
                 byPeriod[course.teachingPeriod] ?? []).push(course);
               return byPeriod;
-            }, {} as Record<string, Array<typeof coursesQuery.data.data[0]>>),
+            }, {} as Record<string, Array<(typeof coursesQuery.data.data)[0]>>),
           ).map(([period, courses]) => (
             <Section key={period}>
               <SectionHeader
@@ -50,7 +45,10 @@ export const CoursesScreen = () => {
               />
               <SectionList indented>
                 {courses.map(course => (
-                  <CourseListItem key={course.shortcode} course={course} />
+                  <CourseListItem
+                    key={course.shortcode + '' + course.id}
+                    course={course}
+                  />
                 ))}
               </SectionList>
             </Section>

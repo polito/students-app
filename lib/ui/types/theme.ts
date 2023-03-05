@@ -77,15 +77,18 @@ export interface Theme {
 export type Colors = Record<string, string | ColorPalette> & {
   background: string;
   surface: string;
+  surfaceDark: string;
   headers: string;
   heading: string;
-  title: string;
   prose: string;
   headline: string;
   secondaryText: string;
   caption: string;
   link: string;
   divider: string;
+  tabBar: string;
+  tabBarInactive: string;
+  title: string;
   touchableHighlight: string;
   text: ColorPalette;
   primary: ColorPalette;

@@ -4,13 +4,13 @@ import { RefreshControl, ScrollView } from 'react-native';
 
 import { faFileLines, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
+import { Badge } from '@lib/ui/components/Badge';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -27,13 +27,11 @@ export const CourseAssignmentsTab = ({
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const refreshControl = useRefreshControl(assignmentsQuery);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
     <>
       <ScrollView
         refreshControl={<RefreshControl {...refreshControl} />}
-        contentContainerStyle={bottomBarAwareStyles}
         scrollEnabled={scrollEnabled}
       >
         {assignmentsQuery.data &&
@@ -76,6 +74,10 @@ export const CourseAssignmentsTab = ({
       </ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
+        disabled={true}
+        rightExtra={
+          <Badge text={t('common.comingSoon')} style={{ marginLeft: 10 }} />
+        }
         action={() =>
           navigation.navigate({
             name: 'CourseAssignmentUpload',
