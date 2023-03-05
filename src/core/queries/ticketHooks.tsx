@@ -109,10 +109,21 @@ export const useGetTicketReplyAttachments = (
   const ticketsClient = useTicketsClient();
 
   return useQuery(
-    [TICKETS_QUERY_KEY, TICKETS_ATTACHMENTS_KEY],
+    [
+      TICKETS_ATTACHMENTS_KEY,
+      request.ticketId,
+      request.replyId,
+      request.attachmentId,
+    ],
     () => ticketsClient.getTicketReplyAttachment(request),
     {
       enabled,
+      onSuccess(data) {
+        console.debug({ successData: data });
+      },
+      onError(data) {
+        console.debug({ errorData: data });
+      },
     },
   );
 };
@@ -124,10 +135,16 @@ export const useGetTicketAttachments = (
   const ticketsClient = useTicketsClient();
 
   return useQuery(
-    [TICKETS_QUERY_KEY],
+    [TICKETS_ATTACHMENTS_KEY, request.ticketId, request.attachmentId],
     () => ticketsClient.getTicketAttachment(request),
     {
       enabled,
+      onSuccess(data) {
+        console.debug({ successData: data });
+      },
+      onError(data) {
+        console.debug({ errorData: data });
+      },
     },
   );
 };

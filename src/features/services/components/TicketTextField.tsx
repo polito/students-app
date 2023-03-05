@@ -20,6 +20,7 @@ import { Col } from '@lib/ui/components/Col';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
 import { TextField } from '@lib/ui/components/TextField';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -38,10 +39,9 @@ interface Props {
 export const TicketTextField = ({ disable, ticketId }: Props) => {
   const { t } = useTranslation();
   const bottomBarHeight = useBottomTabBarHeight();
-  const theme = useTheme();
   const actionSheetRef = useRef<any>(null);
-  const { colors } = theme;
-  const styles = createStyles(theme);
+  const { colors } = useTheme();
+  const styles = useStylesheet(createStyles);
   const [text, setText] = useState<string>('');
   const [attachment, setAttachment] = useState<Blob>(null);
   const keyboardVisible = useKeyboard();

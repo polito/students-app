@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
@@ -21,10 +22,9 @@ export const TicketStatusInfo = ({
   loading,
   refetching,
 }: TicketStatusProps) => {
-  const theme = useTheme();
-  const { fontSizes, spacing } = theme;
+  const { fontSizes, spacing } = useTheme();
   const { t } = useTranslation();
-  const styles = createStyles(theme);
+  const styles = useStylesheet(createStyles);
   const isClosed = ticket?.status === TicketStatus.Closed;
 
   console.debug({ ticket });
@@ -33,6 +33,16 @@ export const TicketStatusInfo = ({
     return (
       <Col style={[styles.container, { paddingVertical: spacing[4] }]}>
         <ActivityIndicator />
+      </Col>
+    );
+  }
+
+  if (!loading && !ticket?.id) {
+    return (
+      <Col style={[styles.container]}>
+        <Text style={[styles.text, styles.closed]}>
+          {t('ticketScreen.error')}
+        </Text>
       </Col>
     );
   }

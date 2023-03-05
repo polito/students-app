@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Row } from '@lib/ui/components/Row';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { Ticket } from '@polito/api-client/models/Ticket';
 
@@ -14,10 +14,7 @@ export interface TicketRequestProps {
 }
 
 export const TicketRequest = ({ ticket }: TicketRequestProps) => {
-  const theme = useTheme();
-  const styles = createStyles(theme);
-
-  console.debug({ ticket });
+  const styles = useStylesheet(createStyles);
 
   return (
     <View style={styles.containerMessage}>

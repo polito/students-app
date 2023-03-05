@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketReply } from '@polito/api-client/models/TicketReply';
 
@@ -21,20 +21,20 @@ export const ChatMessage = ({
   message,
   ticketId,
 }: ChatMessageProps) => {
-  const theme = useTheme();
-  const styles = createStyles(theme);
+  const styles = useStylesheet(createStyles);
+  const hasAttachment = message?.attachments?.length > 0;
   const { t } = useTranslation();
 
-  if (received) {
+  const Attachments = () => {
     return (
-      <View style={styles.containerMessage}>
-        <TimeWidget time={message?.createdAt} />
-        <View style={styles.leftMessage}>
+      <>
+        {hasAttachment && (
           <View style={styles.attachmentContainer}>
+            A
             {(message?.attachments ?? []).map(item => {
               return (
                 <AttachmentCard
-                  key={item.id.toString()}
+                  key={item.id?.toString()}
                   attachment={item}
                   ticketId={ticketId}
                   replyId={message.id}
@@ -42,10 +42,23 @@ export const ChatMessage = ({
               );
             })}
           </View>
-          <Text style={styles.agentText}>
-            #{t('common.agent')} {message.agentId}
-          </Text>
-          <TextMessage message={message.message} />
+        )}
+      </>
+    );
+  };
+
+  if (received) {
+    return (
+      <View style={styles.containerMessage}>
+        <TimeWidget time={message?.createdAt} />
+        <View style={styles.leftMessage}>
+          <Attachments />
+          {!!message?.agentId && (
+            <Text style={styles.agentText}>
+              #{t('common.agent')} {message.agentId}
+            </Text>
+          )}
+          <TextMessage message={message?.message || ''} />
           <View style={styles.leftArrow} />
           <View style={styles.leftArrowOverlap} />
         </View>
@@ -57,19 +70,8 @@ export const ChatMessage = ({
     <View style={styles.containerMessage}>
       <TimeWidget time={message?.createdAt} right />
       <View style={styles.rightMessage}>
-        <View style={styles.attachmentContainer}>
-          {(message?.attachments ?? []).map(item => {
-            return (
-              <AttachmentCard
-                key={item.id.toString()}
-                attachment={item}
-                ticketId={ticketId}
-                replyId={message.id}
-              />
-            );
-          })}
-        </View>
-        <TextMessage message={message.message} />
+        <Attachments />
+        <TextMessage message={message?.message || ''} />
         <View style={styles.rightArrow} />
         <View style={styles.rightArrowOverlap} />
       </View>

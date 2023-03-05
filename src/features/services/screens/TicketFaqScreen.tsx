@@ -6,6 +6,7 @@ import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,9 +23,8 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaq'>;
 export const TicketFaqScreen = ({ route, navigation }: Props) => {
   const { faq } = route.params;
   const { t } = useTranslation();
-  const theme = useTheme();
-  const styles = createStyles(theme);
-  const { colors, spacing, fontSizes } = theme;
+  const styles = useStylesheet(createStyles);
+  const { colors, spacing, fontSizes } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
 

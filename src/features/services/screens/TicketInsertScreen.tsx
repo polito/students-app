@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  Keyboard,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -20,6 +26,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { CreateTicketRequest } from '@polito/api-client';
@@ -27,6 +34,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import {
   useCreateTicket,
@@ -42,15 +50,15 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
     route.params;
-  const theme = useTheme();
-  const { colors } = theme;
+  const { colors } = useTheme();
   const actionSheetRef = useRef(null);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
   const scroll = useRef(null);
   const ticketTopicQuery = useGetTicketTopics();
   const topics = ticketTopicQuery?.data?.data ?? [];
-  const styles = createStyles(theme);
+  const styles = useStylesheet(createStyles);
+  const refreshControl = useRefreshControl(ticketTopicQuery);
 
   const [topicId, setTopicId] = useState(
     initialTopicId?.toString() || undefined,
@@ -151,6 +159,7 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
         ]}
       />
       <KeyboardAwareScrollView
+        refreshControl={<RefreshControl {...refreshControl} />}
         contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
         ref={scroll}
         innerRef={ref => {

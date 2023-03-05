@@ -16,6 +16,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,10 +34,10 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
 
 export const TicketFaqsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const styles = createStyles(theme);
+  const styles = useStylesheet(createStyles);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollViewStyles = useScrollViewStyle();
+  const { colors } = useTheme();
   const [enabled, setEnabled] = useState(true);
   const [search, setSearch] = useState('');
   const ticketFaqsQuery = useSearchTicketFaqs(search, enabled);
@@ -80,7 +81,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                 ) : (
                   <IconButton
                     icon={faSearch}
-                    color={theme.colors.text['400']}
+                    color={colors.text['400']}
                     size={22}
                     onPress={() => setEnabled(true)}
                   />

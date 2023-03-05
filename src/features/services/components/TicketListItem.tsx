@@ -14,6 +14,7 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
@@ -30,15 +31,14 @@ interface Props {
 }
 
 export const TicketListItem = ({ ticket }: Props) => {
-  const theme = useTheme();
-  const styles = createStyles(theme);
+  const { fontSizes, colors, spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
   const confirm = useConfirmationDialog({
     message: t('tickets.closeTip'),
   });
 
-  const { fontSizes, colors, spacing } = theme;
   const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
 
   const actions = useMemo(() => {

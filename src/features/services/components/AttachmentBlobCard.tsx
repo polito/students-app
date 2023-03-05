@@ -6,7 +6,7 @@ import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
 import { formatFileSize } from '../../../utils/files';
@@ -20,8 +20,7 @@ export const AttachmentBlobCard = ({
   attachment,
   onPressCancelAttachment,
 }: AttachmentCardProps) => {
-  const theme = useTheme();
-  const styles = createStyles(theme);
+  const styles = useStylesheet(createStyles);
 
   if (!attachment) {
     return <View />;

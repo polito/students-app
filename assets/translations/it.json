@@ -243,6 +243,7 @@
   "ticketScreen": {
     "new": "Nuovo ticket",
     "title": "Ticket",
+    "error": "Si è verificato un errore",
     "reply": "Rispondi",
     "ticket": "Ticket: ",
     "createdAt": "Creato il: ",

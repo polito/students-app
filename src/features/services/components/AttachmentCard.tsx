@@ -6,6 +6,7 @@ import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
@@ -27,13 +28,13 @@ export const AttachmentCard = ({
   ticketId,
   replyId,
 }: AttachmentCardProps) => {
-  const theme = useTheme();
-  const styles = createStyles(theme);
+  const { colors } = useTheme();
+  const styles = useStylesheet(createStyles);
   const [enabled, setEnabled] = useState<'reply' | 'ticket'>(null);
-  // console.debug(a)
+  console.debug(enabled);
   const {
     data: replyAttachment,
-    isLoading: isLoadingReply,
+    isFetching: isLoadingReply,
     isSuccess: isSuccessReply,
   } = useGetTicketReplyAttachments(
     {
@@ -41,29 +42,33 @@ export const AttachmentCard = ({
       ticketId,
       attachmentId: attachment?.id,
     },
-    enabled === 'reply' && !!attachment?.id && !!replyId,
+    enabled === 'reply' && !!attachment?.id.toString() && !!replyId,
   );
 
   const {
     data: ticketAttachments,
-    isLoading: isLoadingTicket,
+    isFetching: isLoadingTicket,
     isSuccess: isSuccessTicket,
   } = useGetTicketAttachments(
     {
       ticketId,
       attachmentId: attachment?.id,
     },
-    enabled === 'reply' && !!attachment?.id,
+    enabled === 'ticket' && !!attachment?.id.toString(),
   );
 
   const loading = isLoadingReply || isLoadingTicket;
 
   const onPressAttachment = () => {
-    if (ticketId && attachment?.id && replyId) {
-      setEnabled('reply');
-    }
-    if (ticketId && attachment?.id) {
+    console.debug({ ticketId, attachment, replyId });
+    if (ticketId && !!attachment?.id.toString()) {
+      console.debug('qui');
       setEnabled('ticket');
+      console.debug({ enabled });
+      return;
+    }
+    if (ticketId && !!attachment?.id.toString() && !!replyId) {
+      setEnabled('reply');
     }
   };
 
@@ -86,10 +91,15 @@ export const AttachmentCard = ({
   }
 
   return (
-    <Row noFlex style={styles.attachmentContainer} onPress={onPressAttachment}>
+    <Row
+      noFlex
+      style={styles.attachmentContainer}
+      onPress={onPressAttachment}
+      touchableOpacity
+    >
       {loading ? (
         <View>
-          <ActivityIndicator />
+          <ActivityIndicator color={colors.primary[50]} />
         </View>
       ) : (
         <Icon icon={faFile} size={25} color={'white'} />

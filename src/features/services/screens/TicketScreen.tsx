@@ -5,6 +5,7 @@ import { FlatList, Keyboard, Platform, StyleSheet, View } from 'react-native';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
@@ -84,15 +85,16 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
-  const theme = useTheme();
-  const { spacing } = theme;
-  const styles = createStyles(theme);
+  const { spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const headerHeight = useHeaderHeight();
   const bottomBarHeight = useBottomTabBarHeight();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [ticketStatusHeight, setTicketStatusHeight] = useState(0);
   const ticket = ticketQuery?.data?.data;
+
+  console.debug({ ticket });
 
   useEffect(markAsRead, []);
 
@@ -117,10 +119,14 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   }, [ticket]);
 
   const replies = useMemo(() => {
-    return ticket?.replies.sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+    return (
+      ticket?.replies.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+      ) || []
     );
   }, [ticket]);
+
+  console.debug({ replies });
 
   const Header = () => {
     return (
@@ -137,7 +143,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           );
         }}
       >
-        <SectionHeader title={ticket?.subject} />
+        {!!ticket?.subject && <SectionHeader title={ticket?.subject} />}
         <TicketStatusInfo ticket={ticket} loading={ticketQuery?.isLoading} />
       </View>
     );
@@ -159,7 +165,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         keyExtractor={item => item.id.toString()}
         inverted
         ListFooterComponent={
-          !ticketQuery?.isLoading && <TicketRequest ticket={ticket} />
+          !ticketQuery?.isLoading &&
+          !!ticket && <TicketRequest ticket={ticket} />
         }
         renderItem={({ item: reply }) => (
           <ChatMessage
