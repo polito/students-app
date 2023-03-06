@@ -10,9 +10,11 @@ import { CourseIcon } from './CourseIcon';
 
 interface Props {
   exam: Exam;
+  accessible?: boolean;
+  accessibilityLabel?: string;
 }
 
-export const ExamListItem = ({ exam }: Props) => {
+export const ExamListItem = ({ exam, ...rest }: Props) => {
   const { t } = useTranslation();
   const { courses: coursesPreferences } = usePreferencesContext();
 
@@ -45,6 +47,7 @@ export const ExamListItem = ({ exam }: Props) => {
           color={coursesPreferences[exam.courseId]?.color}
         />
       }
+      {...rest}
     />
   );
 };

@@ -53,32 +53,34 @@ export const LoginScreen = () => {
     });
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      automaticallyAdjustKeyboardInsets
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Section style={styles.section}>
-          <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
-          <SectionList style={styles.sectionList}>
-            <TextField
-              textContentType="username"
-              label={t('loginScreen.usernameLabel')}
-              value={username}
-              onChangeText={setUsername}
-              editable={!isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                passwordRef.current.focus();
-              }}
-              style={styles.textFieldInput}
-            />
-            <Row alignCenter>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustKeyboardInsets
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Section style={styles.section}>
+            <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
+            <SectionList style={styles.sectionList}>
+              <TextField
+                textContentType="username"
+                label={t('loginScreen.usernameLabel')}
+                value={username}
+                accessibilityLabel={t('loginScreen.usernameLabelAccessibility')}
+                onChangeText={setUsername}
+                editable={!isLoading}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordRef.current.focus();
+                }}
+                style={styles.textFieldInput}
+              />
+              <Row alignCenter>
               <TextField
                 inputRef={passwordRef}
                 textContentType="password"
                 type="password"
                 label={t('loginScreen.passwordLabel')}
+                accessibilityLabel={t('loginScreen.passwordLabelAccessibility')}
                 onChangeText={setPassword}
                 value={password}
                 returnKeyType="done"
