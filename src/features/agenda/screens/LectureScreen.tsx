@@ -89,7 +89,7 @@ export const LectureScreen = ({ route }: Props) => {
           <>
             <Row maxWidth noFlex spaceBetween alignCenter>
               <EventDetails
-                title={lecture?.roomName}
+                title={lecture?.place?.roomId}
                 type={t('Lecture')}
                 time={lecture?.startsAt}
               />
@@ -108,7 +108,7 @@ export const LectureScreen = ({ route }: Props) => {
                     size={fontSizes['2xl']}
                   />
                 }
-                title={lecture?.roomName}
+                title={lecture?.place?.name}
                 subtitle={'Sede Centrale - piano terra'}
                 onPress={onPressLectureLocation}
               />

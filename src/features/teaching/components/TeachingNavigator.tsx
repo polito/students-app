@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -56,12 +55,6 @@ export const TeachingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerLargeTitle: true,
-        headerTransparent: Platform.select({ ios: true }),
-        headerLargeStyle: {
-          backgroundColor: colors.background,
-        },
-        headerBlurEffect: 'systemUltraThinMaterial',
         ...titlesStyles(theme),
       }}
     >

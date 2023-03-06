@@ -4,6 +4,7 @@ import { OnLoadData } from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 
 import { displayTabBar } from '../../utils/tab-bar';
+import useDeviceOrientation from './useDeviceOrientation';
 
 export const useVideoControls = () => {
   const navigation = useNavigation();
@@ -12,6 +13,7 @@ export const useVideoControls = () => {
   const [fullscreen, setFullscreen] = useState(false);
   const [duration, setDuration] = useState(0);
   const [ready, setReady] = useState(false);
+  const orientation = useDeviceOrientation();
 
   const togglePaused = useCallback(() => {
     setPaused(prev => !prev);
@@ -22,8 +24,18 @@ export const useVideoControls = () => {
   }, []);
 
   const toggleFullscreen = useCallback(() => {
+    // if(orientation === ORIENTATION.LANDSCAPE) {
+    //   navigation.setOptions({
+    //     he: ORIENTATION.PORTRAIT,
+    //   })
+    //   navigation.setOptions({ orientation: undefined })
+    // } else {
+    //   navigation.setOptions({orientation: ORIENTATION.PORTRAIT})
+    //   navigation.setOptions({ orientation: undefined })
+    //
+    // }
     setFullscreen(prev => !prev);
-  }, []);
+  }, [orientation]);
 
   const handleLoad = useCallback((meta: OnLoadData) => {
     setDuration(meta.duration);

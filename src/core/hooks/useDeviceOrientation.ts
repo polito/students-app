@@ -26,7 +26,7 @@ function useDeviceOrientation() {
     return () => {
       changeDimensionListener.remove();
     };
-  }, []);
+  }, [deviceOrientation]);
 
   return deviceOrientation;
 }

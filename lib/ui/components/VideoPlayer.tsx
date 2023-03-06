@@ -15,9 +15,12 @@ import { VideoControl } from '@lib/ui/components/VideoControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/core/constants';
+import useDeviceOrientation, {
+  ORIENTATION,
+} from '../../../src/core/hooks/useDeviceOrientation';
 import { useHandleFullscreen } from '../../../src/core/hooks/useHandleFullscreen';
 import { useVideoControls } from '../../../src/core/hooks/useVideoControls';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
 
 const isIos = Platform.OS === 'ios';
 
@@ -29,6 +32,7 @@ export interface VideoPlayerProps {
 export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const width = useMemo(() => Dimensions.get('window').width, []);
   const styles = useStylesheet(createStyles);
+  const orientation = useDeviceOrientation();
   const { t } = useTranslation();
   const {
     fullscreen,
@@ -47,7 +51,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const playerRef = useRef<Video>();
 
-  // console.debug({ready})
+  // console.debug({styles})
 
   const source = useMemo(() => {
     return {
@@ -60,13 +64,13 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
       {
         height: (width / 16) * 9,
       },
-      fullscreen &&
+      orientation === ORIENTATION.LANDSCAPE &&
         !isIos && {
           ...styles.landscapeView,
           height: SCREEN_WIDTH,
         },
     ];
-  }, [fullscreen, isIos]);
+  }, [orientation, isIos]);
 
   const speedControls = useMemo(() => {
     if (!isIos || parseInt(Platform.Version as string, 10) >= 16) return; // Speed controls are included in native player since iOS 16
@@ -160,7 +164,7 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
           togglePaused={togglePaused}
           toggleMuted={toggleMuted}
           muted={muted}
-          isLandscape={fullscreen}
+          isLandscape={orientation === ORIENTATION.LANDSCAPE}
           secondsDuration={duration}
           playbackRate={playbackRate}
           setPlaybackRate={togglePlaybackRate}

@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
   Animated,
-  AppRegistry,
   StyleSheet,
   Text,
   TouchableHighlightProps,
@@ -23,9 +22,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 
 import { DateTime } from 'luxon';
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/utils/const';
-
-import setSurfaceProps = AppRegistry.setSurfaceProps;
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../src/core/constants';
 
 export interface VideoControlProps {
   onRelease: (percentage: number) => void;

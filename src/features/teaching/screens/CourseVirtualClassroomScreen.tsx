@@ -5,9 +5,13 @@ import { RefreshControl, ScrollView } from 'react-native';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
+import useDeviceOrientation, {
+  ORIENTATION,
+} from '../../../core/hooks/useDeviceOrientation';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -28,25 +32,40 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   const teacherQuery = useGetPerson(lecture.teacherId);
   const refreshControl = useRefreshControl(virtualClassroomQuery, teacherQuery);
 
+  const orientation = useDeviceOrientation();
+  const headerHeight = useHeaderHeight();
+
+  console.debug({ headerHeight });
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
+      contentContainerStyle={{
+        justifyContent: 'center',
+        height:
+          orientation === ORIENTATION.PORTRAIT && headerHeight > 0
+            ? undefined
+            : '100%',
+      }}
     >
       <VideoPlayer videoUrl={lecture.videoUrl} coverUrl={lecture.coverUrl} />
-      <EventDetails
-        title={lecture.title}
-        type={t('courseVirtualClassroomScreen.title')}
-        time={lecture.createdAt}
-      />
-      <SectionList loading={teacherQuery.isLoading}>
-        {teacherQuery.data && (
-          <PersonListItem
-            person={teacherQuery.data?.data}
-            subtitle={t('common.teacher')}
+      {orientation === ORIENTATION.PORTRAIT && headerHeight > 0 && (
+        <>
+          <EventDetails
+            title={lecture.title}
+            type={t('courseVirtualClassroomScreen.title')}
+            time={lecture.createdAt}
           />
-        )}
-      </SectionList>
+          <SectionList loading={teacherQuery.isLoading}>
+            {teacherQuery.data && (
+              <PersonListItem
+                person={teacherQuery.data?.data}
+                subtitle={t('common.teacher')}
+              />
+            )}
+          </SectionList>
+        </>
+      )}
     </ScrollView>
   );
 };
