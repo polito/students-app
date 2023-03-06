@@ -1,4 +1,8 @@
-import { GetStudentGrades200Response, StudentApi } from '@polito/api-client';
+import {
+  GetStudent200Response,
+  GetStudentGrades200Response,
+  StudentApi,
+} from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
 import { prefixKey } from '../../utils/queries';
@@ -14,11 +18,19 @@ const useStudentClient = (): StudentApi => {
   return studentClient;
 };
 
+const handleAcquiredCredits = (response: GetStudent200Response) => {
+  if (response.data.totalCredits < response.data.totalAttendedCredits) {
+    response.data.totalCredits = response.data.totalAttendedCredits;
+  }
+
+  return response;
+};
+
 export const useGetStudent = () => {
   const studentClient = useStudentClient();
 
   return useQuery(prefixKey([STUDENT_QUERY_KEY]), () =>
-    studentClient.getStudent(),
+    studentClient.getStudent().then(s => handleAcquiredCredits(s)),
   );
 };
 
