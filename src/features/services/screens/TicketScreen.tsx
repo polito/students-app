@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, Platform, StyleSheet, View } from 'react-native';
+import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -12,7 +12,11 @@ import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
@@ -33,9 +37,13 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ServiceStackParamList, 'Ticket'>>();
   const { colors, fontSizes } = theme;
   const styles = createStyles(theme);
-  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
+  const { mutateAsync: markTicketAsClosed, isSuccess } = useMarkTicketAsClosed(
+    ticket?.id,
+  );
   const confirm = useConfirmationDialog({
     message: t('tickets.closeTip'),
   });
@@ -60,6 +68,12 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
     }
     return Promise.reject();
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigation.navigate('Tickets');
+    }
+  }, [isSuccess]);
 
   if (ticket?.status !== TicketStatus.Closed) {
     return (
@@ -144,7 +158,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         }}
       >
         {!!ticket?.subject && <SectionHeader title={ticket?.subject} />}
-        <TicketStatusInfo ticket={ticket} loading={ticketQuery?.isLoading} />
+        {/* <TicketStatusInfo ticket={ticket} loading={ticketQuery?.isLoading} /> */}
       </View>
     );
   };
@@ -166,7 +180,15 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         inverted
         ListFooterComponent={
           !ticketQuery?.isLoading &&
-          !!ticket && <TicketRequest ticket={ticket} />
+          !!ticket && (
+            <>
+              <TicketStatusInfo
+                ticket={ticket}
+                loading={ticketQuery?.isLoading}
+              />
+              <TicketRequest ticket={ticket} />
+            </>
+          )
         }
         renderItem={({ item: reply }) => (
           <ChatMessage
@@ -190,14 +212,20 @@ const createStyles = ({
   shapes,
 }: Theme) =>
   StyleSheet.create({
+    sectionHeader: {
+      width: '100%',
+      position: 'absolute',
+      height: undefined,
+      backgroundColor: colors.background,
+      paddingTop: spacing[2],
+    },
     header: {
       width: '100%',
       position: 'absolute',
       height: undefined,
       backgroundColor: colors.background,
-      paddingTop: Platform.select({
-        android: spacing[2],
-      }),
+      paddingTop: spacing[2],
+      paddingBottom: spacing[1],
     },
     container: {
       flex: 1,

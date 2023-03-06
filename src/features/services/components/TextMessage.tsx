@@ -16,6 +16,7 @@ export const TextMessage = ({ message }: TextMessageProps) => {
   const textMessage = useMemo(() => {
     const dom = parseDocument(
       (message ?? '').replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+      // (message ?? '').replace(/<br>/g, '\n').replace(/\\r+/g, '\n'),
     ) as Document;
     return innerText(dom.children as any[]);
   }, [message]);

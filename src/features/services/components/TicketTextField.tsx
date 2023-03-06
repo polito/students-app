@@ -94,15 +94,15 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
   };
 
   const onPressSend = async () => {
-    console.debug({
-      ticketId: ticketId,
-      attachment: attachment,
-      message: text,
-    });
+    // console.debug({
+    //   ticketId: ticketId,
+    //   attachment: attachment,
+    //   message: text.replace(/\n/g, '<br>'),
+    // });
     await handleReply({
       ticketId: ticketId,
       attachment: attachment,
-      message: text,
+      message: text.replace(/\n/g, '<br>'),
     });
   };
 
@@ -178,7 +178,6 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
                 label={t('ticketScreen.reply')}
                 value={text}
                 onChangeText={setText}
-                returnKeyType="next"
                 multiline
                 editable={!disable}
                 style={[styles.textField, disable && styles.textFieldDisabled]}

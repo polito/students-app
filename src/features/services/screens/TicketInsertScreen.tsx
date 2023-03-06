@@ -1,12 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  Keyboard,
-  RefreshControl,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -77,6 +71,11 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
     data,
   } = useCreateTicket();
 
+  const createTopicEnabled = useMemo(() => {
+    const { subject, message, subtopicId } = ticketBody;
+    return !!subject && !!message && !!subtopicId;
+  }, [ticketBody]);
+
   useEffect(() => {
     if (isSuccess && !!data?.data?.id) {
       navigation.navigate(initialTopicId ? 'Home' : 'Tickets');
@@ -100,9 +99,8 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
 
   const updateTopicId = (value: string) => {
     setTopicId(value);
-    setTicketBody(() => ({
-      subject: undefined,
-      message: undefined,
+    setTicketBody(prevState => ({
+      ...prevState,
       subtopicId: undefined,
       attachment: null,
     }));
@@ -273,12 +271,13 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
                     numberOfLines={5}
                     returnKeyType="done"
                     onKeyPress={({ nativeEvent }) => {
-                      nativeEvent.key === 'Enter' && Keyboard.dismiss();
+                      // nativeEvent.key === 'Enter' && Keyboard.dismiss();
                     }}
                     editable={!!ticketBody.subject}
                     style={[styles.textFieldSendMessage]}
                     inputStyle={[
                       styles.textFieldInput,
+                      { textAlignVertical: 'center' },
                       !ticketBody.subject && { opacity: 0.5 },
                     ]}
                   />
@@ -292,7 +291,7 @@ export const TicketInsertScreen = ({ navigation, route }: Props) => {
       </KeyboardAwareScrollView>
       <CtaButton
         absolute={true}
-        disabled={!ticketBody.message}
+        disabled={!createTopicEnabled}
         title={t('ticketInsertScreen.sendTicket')}
         action={() => handleCreateTicket(ticketBody)}
         loading={isLoading}
@@ -388,7 +387,7 @@ const createStyles = ({
     },
     textFieldInput: {
       fontSize: fontSizes.sm,
-      textAlignVertical: 'top',
+      textAlignVertical: 'center',
       borderBottomWidth: 0,
       fontWeight: fontWeights.normal,
     },

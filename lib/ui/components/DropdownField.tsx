@@ -44,7 +44,8 @@ export const DropdownField = ({
 
   return (
     <View
-      style={[styles.textFieldWrapper, disabled && { pointerEvents: 'none' }]}
+      style={[styles.textFieldWrapper]}
+      pointerEvents={disabled ? 'none' : undefined}
     >
       <Text style={styles.textFieldLabel}>{label}</Text>
       <MenuView

@@ -41,7 +41,7 @@ export const ServiceNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        orientation: 'portrait',
+        // orientation: 'portrait',
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
