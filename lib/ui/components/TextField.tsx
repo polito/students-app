@@ -58,9 +58,14 @@ export const TextField = ({
         rest.editable === false && styles.disabled,
         style,
       ]}
+      accessibilityLabel={rest?.accessibilityLabel ?? label}
+      accessible={true}
+      importantForAccessibility={'yes'}
     >
       <TextInput
+        accessible={false}
         ref={inputRef}
+        importantForAccessibility={'no'}
         autoCapitalize="none"
         selectionColor={colors.link}
         placeholder={label}

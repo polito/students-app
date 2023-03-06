@@ -35,7 +35,13 @@ export const CoursesScreen = () => {
               return byPeriod;
             }, {} as Record<string, Array<typeof coursesQuery.data.data[0]>>),
           ).map(([period, courses]) => (
-            <Section key={period}>
+            <Section
+              key={period}
+              accessibilityHint={t('common.elementCount', {
+                count: 1,
+                total: coursesQuery.data.data.length,
+              })}
+            >
               <SectionHeader
                 title={
                   period !== 'undefined'

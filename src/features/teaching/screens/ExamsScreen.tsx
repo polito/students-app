@@ -23,14 +23,26 @@ export const ExamsScreen = () => {
       contentContainerStyle={{
         paddingVertical: spacing[5],
       }}
+      accessibilityRole="list"
+      accessibilityLabel={t('examsScreen.total', {
+        total: examsQuery.data?.length ?? 0,
+      })}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {!examsQuery.isLoading &&
         (examsQuery.data?.length > 0 ? (
           <Section>
             <SectionList>
-              {examsQuery.data.map(exam => (
-                <ExamListItem key={exam.id} exam={exam} />
+              {examsQuery.data.map((exam, index) => (
+                <ExamListItem
+                  key={exam.id}
+                  exam={exam}
+                  accessible={true}
+                  accessibilityLabel={t('common.elementCount', {
+                    count: index,
+                    total: examsQuery.data.length,
+                  })}
+                />
               ))}
             </SectionList>
           </Section>

@@ -65,6 +65,7 @@
     "examCall_plural": "Appelli",
     "file": "File",
     "file_plural": "File",
+    "elementCount": "Elemento {{count}} di {{total}}",
     "icon": "Icona",
     "it": "Italiano",
     "language": "Lingua",
@@ -222,7 +223,8 @@
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
-    "title": "Appelli"
+    "title": "Appelli",
+    "total": "Sono presenti {{ total }} appelli"
   },
   "grades": {
     "absent": "Ass",
@@ -249,10 +251,12 @@
     "forgotYourPassword": "Hai dimenticato la password?",
     "hidePassword": "Nascondi password",
     "passwordLabel": "Password",
+    "passwordLabelAccessibility": "Inserisci qui la tua password",
     "showPassword": "Mostra password",
     "title": "Accedi con le tue credenziali polito.it",
     "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
-    "usernameLabel": "Matricola"
+    "usernameLabel": "Matricola",
+    "usernameLabelAccessibility": "Inserisci qui il tuo username"
   },
   "messagesScreen": {
     "title": "Archivio messaggi"
