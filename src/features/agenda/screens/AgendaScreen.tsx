@@ -109,7 +109,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
   }, []);
 
   return (
-    <View>
+    <View style={styles.container}>
       <Tabs
         style={{
           backgroundColor: colors.surface,
@@ -209,14 +209,10 @@ export const AgendaScreen = ({ navigation }: Props) => {
             <Text>Nessun evento in programma questa settimana!</Text>
           }
           ListHeaderComponent={
-            isFetchingPreviousPage && (
-              <ActivityIndicator color="black" size="small" />
-            )
+            isFetchingPreviousPage && <ActivityIndicator size="small" />
           } // TODO wrap into component to improve styling
           ListFooterComponent={
-            isFetchingNextPage && (
-              <ActivityIndicator color="black" size="small" />
-            )
+            isFetchingNextPage && <ActivityIndicator size="small" />
           }
           // onLayout={handleLayoutLoaded} TODO HANDLE INITIAL SCROLL
         />
@@ -227,6 +223,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
 const createStyles = ({ colors, spacing, dark }: Theme) =>
   StyleSheet.create({
+    container: { flex: 1 },
     agendaCard: { flex: 1 },
     tabs: {
       backgroundColor: dark ? colors.primary[700] : colors.surface,
