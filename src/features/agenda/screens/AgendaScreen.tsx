@@ -205,12 +205,9 @@ export const AgendaScreen = ({ navigation }: Props) => {
           renderSectionFooter={({ section }) =>
             !section.data.length && <EmptyWeek />
           }
-          ListEmptyComponent={
-            <Text>Nessun evento in programma questa settimana!</Text>
-          }
           ListHeaderComponent={
             isFetchingPreviousPage && <ActivityIndicator size="small" />
-          } // TODO wrap into component to improve styling
+          }
           ListFooterComponent={
             isFetchingNextPage && <ActivityIndicator size="small" />
           }

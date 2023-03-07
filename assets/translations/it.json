@@ -1,6 +1,7 @@
 {
   "agendaScreen": {
     "backToToday": "Torna a oggi",
+    "emptyWeek": "Non hai impegni questa settimana",
     "title": "Agenda"
   },
   "colors": {
