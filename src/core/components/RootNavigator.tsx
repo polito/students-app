@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
-  faCalendarDay,
   faCircleInfo,
   faCompass,
   faUser,
@@ -59,7 +59,7 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color }) => (
-            <Icon icon={faCalendarDay} color={color} size={tabBarIconSize} />
+            <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
           ),
         }}
       />

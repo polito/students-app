@@ -49,7 +49,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
     studentQuery,
   );
   const exams = useMemo(() => {
-    if (!coursesQuery.data?.data || !examsQuery.data?.data) return [];
+    if (!coursesQuery.data?.data || !examsQuery.data) return [];
 
     const hiddenNonModuleCourses: string[] = [];
 
@@ -62,7 +62,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
     });
 
     return (
-      examsQuery.data.data
+      examsQuery.data
         .filter(e => !hiddenNonModuleCourses.includes(e.courseShortcode))
         .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
         .slice(0, 4) ?? []

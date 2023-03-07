@@ -1,3 +1,5 @@
+import { InfiniteQueryObserverResult } from '@tanstack/react-query';
+
 import { useApiContext } from '../core/contexts/ApiContext';
 
 /**
@@ -8,4 +10,33 @@ import { useApiContext } from '../core/contexts/ApiContext';
 export const prefixKey = (queryKey: (string | number)[]) => {
   const { username } = useApiContext();
   return [username, ...queryKey];
+};
+
+/**
+ * Pluck data from API response
+ *
+ * @param response
+ *
+ * TODO define API generics to use everywhere
+ */
+export const pluckData = (response: { data: unknown[] }) => {
+  return response.data;
+};
+
+/**
+ * Take the last page of data currently persisted in store by the infinite query
+ */
+export const popPage: {
+  <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
+} = infiniteQuery => {
+  return [...infiniteQuery.data.pages].pop();
+};
+
+/**
+ * Take the first page of data currently persisted in store by the infinite query
+ */
+export const shiftPage: {
+  <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
+} = infiniteQuery => {
+  return [...infiniteQuery.data.pages].shift();
 };

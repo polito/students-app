@@ -1,24 +1,44 @@
 import { PropsWithChildren } from 'react';
-import { TouchableHighlight, View } from 'react-native';
+import { StyleSheet, TouchableHighlight, View } from 'react-native';
 
-import { useTheme } from '../hooks/useTheme';
-import { Card, Props as CardProps } from './Card';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
+
+import { AgendaIcon } from '../../../src/features/agenda/components/AgendaIcon';
+import { Card } from './Card';
 import { LiveIndicator } from './LiveIndicator';
 import { Text } from './Text';
 
-interface Props {
+export interface AgendaCardProps {
   /**
    * The event title
    */
-  title: string | JSX.Element;
+  title: string;
   /**
-   * The color of the event
+   * The color of the event type
    */
-  color?: string;
+  color: string;
+  /**
+   * Extra information on this event
+   */
+  description?: string;
+  /**
+   * The icon of the event
+   */
+  icon?: string;
+  /**
+   * The color of the event icon
+   */
+  iconColor?: string;
   /**
    * Shows a live indicator
    */
   live?: boolean;
+  /**
+   * The room in which this event takes place
+   */
+  location?: string;
   /**
    * Event time information
    */
@@ -26,7 +46,11 @@ interface Props {
   /**
    * A subtitle (ie event type)
    */
-  subtitle?: string;
+  type: string;
+  /**
+   * On card pressed handler
+   */
+  onPress?: () => void;
 }
 
 /**
@@ -34,77 +58,94 @@ interface Props {
  */
 export const AgendaCard = ({
   title,
-  style,
-  color,
-  live = true,
-  time = '--:--',
-  subtitle,
   children,
-  ...rest
-}: PropsWithChildren<CardProps & Props>) => {
-  const { colors, spacing, fontSizes } = useTheme();
-  const borderColor = color ?? colors.primary[500];
-
+  color,
+  icon,
+  iconColor,
+  live = false,
+  time,
+  type,
+  location,
+  onPress,
+}: PropsWithChildren<AgendaCardProps>) => {
+  const styles = useStylesheet(createStyles);
+  const { colors } = useTheme();
   return (
     <Card
       rounded
+      spaced
       style={[
-        {
-          flex: 1,
+        styles.card,
+        color && {
           borderWidth: 2,
-          borderColor,
+          borderColor: color,
         },
-        style,
       ]}
-      {...rest}
     >
       <TouchableHighlight
-        style={{
-          padding: spacing[5],
-        }}
+        underlayColor={colors.touchableHighlight}
+        style={styles.touchable}
+        onPress={onPress}
       >
         <View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            {typeof title === 'string' ? (
-              <Text
-                variant="title"
-                style={{
-                  flex: 1,
-                }}
-              >
-                {title}
-              </Text>
-            ) : (
-              title
-            )}
-            {live && <LiveIndicator />}
-            <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
-              {time}
+          <View style={styles.headingRow}>
+            <Text style={styles.time}>{time && time}</Text>
+            <Text uppercase style={styles.type}>
+              {type}
             </Text>
           </View>
-          {subtitle && (
-            <Text
-              variant="caption"
-              style={{
-                marginTop: spacing[1.5],
-              }}
-            >
-              {subtitle}
+          <View style={styles.titleView}>
+            {iconColor && <AgendaIcon icon={icon} color={iconColor} />}
+            <Text style={[styles.title, icon && styles.titleWithIcon]}>
+              {title}
             </Text>
-          )}
-          {typeof children === 'string' ? (
-            <Text style={{ marginTop: spacing[2.5] }}>{children}</Text>
-          ) : (
-            children
-          )}
+          </View>
+          <View>{live && <LiveIndicator />}</View>
+          {children}
+          {location && <Text style={styles.location}>{location}</Text>}
         </View>
       </TouchableHighlight>
     </Card>
   );
 };
+
+const createStyles = ({ colors, fontSizes, fontWeights, spacing }: Theme) =>
+  StyleSheet.create({
+    card: {
+      width: '100%',
+    },
+    headingRow: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      marginBottom: spacing[2],
+    },
+    title: {
+      fontWeight: fontWeights.semibold,
+      fontSize: fontSizes.md,
+    },
+    titleWithIcon: {
+      marginLeft: spacing[1],
+    },
+    titleView: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    touchable: {
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[3],
+    },
+    time: {
+      fontSize: fontSizes.sm,
+    },
+    type: {
+      color: colors.caption,
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.semibold,
+      marginTop: spacing[1.5],
+    },
+    location: {
+      marginTop: spacing[1.5],
+    },
+  });

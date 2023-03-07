@@ -1,19 +1,11 @@
 import React from 'react';
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { usePropsStyle } from '../../../src/utils/theme';
 
 export interface RowProps {
   children?: ViewStyle | ViewStyle[] | any;
   style?: StyleProp<ViewStyle>;
-  pointerEvents?: string;
   alignStart?: boolean;
   alignCenter?: boolean;
   spaceBetween?: boolean;
@@ -27,14 +19,12 @@ export interface RowProps {
   maxWidth?: boolean;
   onLayout?: any;
   noFlex?: boolean;
-  touchableOpacity?: boolean;
   width?: number | string;
 }
 
 export const Row = ({
   children,
   style,
-  pointerEvents = null,
   alignStart,
   onLayout,
   noFlex,
@@ -46,21 +36,14 @@ export const Row = ({
   justifyStart,
   alignEnd,
   justifyEnd,
-  onPress,
   backgroundColor,
   maxWidth,
-  touchableOpacity,
   ...rest
 }: RowProps) => {
   const renderedStyle: Record<string, string | number> = usePropsStyle(rest);
-  const Component: any = onPress
-    ? touchableOpacity
-      ? TouchableOpacity
-      : Pressable
-    : View;
 
   return (
-    <Component
+    <View
       style={[
         renderedStyle,
         styles.row,
@@ -78,13 +61,11 @@ export const Row = ({
         width && { width },
         style,
       ]}
-      pointerEvents={pointerEvents}
       collapsable={false}
       onLayout={onLayout}
-      onPress={onPress}
     >
       {children}
-    </Component>
+    </View>
   );
 };
 

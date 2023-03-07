@@ -102,11 +102,11 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
           emptyStateText={t('courseInfoTab.agendaSectionEmptyState')}
         ></SectionList>
       </Section>
-      {courseExamsQuery.data?.data.length > 0 && (
+      {courseExamsQuery.data?.length > 0 && (
         <Section>
           <SectionHeader title={t('examsScreen.title')} />
           <SectionList loading={courseExamsQuery.isLoading} indented>
-            {courseExamsQuery.data?.data.map(exam => (
+            {courseExamsQuery.data?.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>

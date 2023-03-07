@@ -1,28 +1,115 @@
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+  SectionList,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
+import {
+  faCalendarDay,
+  faEllipsisVertical,
+} from '@fortawesome/free-solid-svg-icons';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
+import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { formatDate } from '../../../utils/dates';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { DailyAgenda } from '../components/DailyAgenda';
+import { EmptyWeek } from '../components/EmptyWeek';
+import { useGetAgendaWeeks } from '../queries/agendaHooks';
+import { AgendaDay } from '../types/AgendaDay';
+import { AgendaWeek } from '../types/AgendaWeek';
 
-export const AgendaScreen = () => {
+type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
+
+export const AgendaScreen = ({ navigation }: Props) => {
+  const { colors, fontSizes } = useTheme();
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
-  const [selectedEventTypes, setSelectedEventTypes] = useState({
-    lectures: false,
-    exams: false,
-    bookings: false,
-    deadlines: false,
-  });
+  const styles = useStylesheet(createStyles);
+  const { courses: coursesPreferences } = usePreferencesContext();
 
-  const today = useMemo(() => formatDate(new Date()), []);
+  const {
+    data,
+    fetchNextPage,
+    fetchPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+  } = useGetAgendaWeeks(coursesPreferences);
+
+  const todayRef = useRef<AgendaDay>();
+  const sectionListRef = useRef<SectionList<AgendaDay, AgendaWeek>>();
+
+  const scrollToToday = () => {};
+  /* sectionListRef.current &&
+  todayRef.current &&
+  sectionListRef.current.getScrollResponder().scrollTo(todayRef.current.)*/
+
+  /* scrollToLocation({
+       animated,
+       item: todayRef.current,
+     });*/
+
+  /* const [selectedEventTypes, setSelectedEventTypes] = useState<
+    Record<AgendaItemTypes, boolean>
+  >({
+    lecture: false,
+    exam: false,
+    booking: false,
+    deadline: false
+  });*/
+
+  /*  const onSelectTab = (tabName: string) => {
+      setSelectedEventTypes(types => ({
+        ...types,
+        [tabName]: !types[tabName],
+      }));
+    };*/
+
+  /*  const handleLayoutLoaded = () => {
+    sectionListRef.current.scrollToLocation({
+      sectionIndex: 0,
+      itemIndex: 5,
+      animated: false
+    });
+  };*/
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <>
+          <IconButton
+            icon={faCalendarDay}
+            color={colors.primary[400]}
+            size={fontSizes.lg}
+            adjustSpacing="left"
+            // accessibilityLabel={t("common.preferences")}
+            onPress={() => scrollToToday()}
+          />
+          <IconButton
+            icon={faEllipsisVertical}
+            color={colors.primary[400]}
+            size={fontSizes.lg}
+            adjustSpacing="right"
+            // accessibilityLabel={t("common.preferences")}
+          />
+        </>
+      ),
+    });
+  }, []);
+
   return (
-    <View style={{ flex: 1 }}>
+    <View>
       <Tabs
         style={{
           backgroundColor: colors.surface,
@@ -35,54 +122,132 @@ export const AgendaScreen = () => {
         }}
       >
         <Tab
-          selected={selectedEventTypes.lectures}
-          onPress={() =>
-            setSelectedEventTypes(types => ({
-              ...types,
-              lectures: !types.lectures,
-            }))
-          }
+          selected={true}
+          textStyle={{ color: colors.heading }}
+          style={{
+            borderWidth: 2,
+            backgroundColor: 'transparent',
+            borderColor: colors.agendaLecture,
+          }}
         >
           {t('courseLecturesTab.title')}
         </Tab>
         <Tab
-          selected={selectedEventTypes.exams}
-          onPress={() =>
-            setSelectedEventTypes(types => ({ ...types, exams: !types.exams }))
-          }
+          selected={true}
+          textStyle={{ color: colors.heading }}
+          style={{
+            borderWidth: 2,
+            backgroundColor: 'transparent',
+            borderColor: colors.agendaExam,
+          }}
         >
           {t('examsScreen.title')}
         </Tab>
         <Tab
-          selected={selectedEventTypes.bookings}
-          onPress={() =>
-            setSelectedEventTypes(types => ({
-              ...types,
-              bookings: !types.bookings,
-            }))
-          }
+          selected={true}
+          textStyle={{ color: colors.heading }}
+          style={{
+            borderWidth: 2,
+            backgroundColor: 'transparent',
+            borderColor: colors.agendaBooking,
+          }}
         >
           {t('common.booking_plural')}
         </Tab>
         <Tab
-          selected={selectedEventTypes.deadlines}
-          onPress={() =>
-            setSelectedEventTypes(types => ({
-              ...types,
-              deadlines: !types.deadlines,
-            }))
-          }
+          selected={true}
+          textStyle={{ color: colors.heading }}
+          style={{
+            borderWidth: 2,
+            backgroundColor: 'transparent',
+            borderColor: colors.agendaDeadline,
+          }}
         >
           {t('common.deadline_plural')}
         </Tab>
       </Tabs>
-      <ScrollView style={[{ padding: spacing[5] }]}>
-        <EmptyState
-          icon={faTriangleExclamation}
-          iconColor={colors.orange[600]}
-          message={t('common.comingSoon')}
+      {data && (
+        <SectionList<AgendaDay, AgendaWeek>
+          ref={sectionListRef}
+          removeClippedSubviews
+          contentContainerStyle={styles.listContainer}
+          onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            if (
+              event.nativeEvent.contentOffset.y < 0 &&
+              !isFetchingPreviousPage
+            ) {
+              return fetchPreviousPage({ cancelRefetch: false });
+            }
+          }}
+          onEndReached={() => fetchNextPage({ cancelRefetch: false })}
+          onEndReachedThreshold={0.5}
+          sections={data?.pages}
+          extraData={isFetchingNextPage}
+          stickySectionHeadersEnabled={false}
+          renderSectionHeader={({ section }) => {
+            // TODO refactor date printing style into helper
+            return (
+              <Text
+                variant="secondaryText"
+                style={styles.weekHeader}
+                capitalize
+              >
+                {section.since.toFormat('d MMM')}
+                {' - '}
+                {section.until.toFormat('d MMM')}
+              </Text>
+            );
+          }}
+          renderItem={({ item }: { item: AgendaDay }) => {
+            if (item.isToday) todayRef.current = item;
+            return <DailyAgenda agendaDay={item} />;
+          }}
+          renderSectionFooter={({ section }) =>
+            !section.data.length && <EmptyWeek />
+          }
+          ListEmptyComponent={
+            <Text>Nessun evento in programma questa settimana!</Text>
+          }
+          ListHeaderComponent={
+            isFetchingPreviousPage && (
+              <ActivityIndicator color="black" size="small" />
+            )
+          } // TODO wrap into component to improve styling
+          ListFooterComponent={
+            isFetchingNextPage && (
+              <ActivityIndicator color="black" size="small" />
+            )
+          }
+          // onLayout={handleLayoutLoaded} TODO HANDLE INITIAL SCROLL
         />
-      </ScrollView>
+      )}
     </View>
   );
 };
+
+const createStyles = ({ colors, spacing, dark }: Theme) =>
+  StyleSheet.create({
+    agendaCard: { flex: 1 },
+    tabs: {
+      backgroundColor: dark ? colors.primary[700] : colors.surface,
+      borderBottomWidth: Platform.select({
+        ios: StyleSheet.hairlineWidth,
+      }),
+      borderBottomColor: colors.divider,
+      elevation: 3,
+      zIndex: 1,
+    },
+    list: {
+      flex: 1,
+    },
+    listContainer: {
+      paddingLeft: spacing[1],
+      paddingRight: spacing[3],
+      paddingVertical: spacing[5],
+    },
+    weekHeader: {
+      marginLeft: '15%',
+      paddingTop: spacing[4],
+      paddingBottom: spacing[2],
+    },
+  });

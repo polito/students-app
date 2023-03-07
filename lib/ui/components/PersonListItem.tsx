@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { Image, TouchableHighlightProps } from 'react-native';
+import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -16,31 +15,35 @@ export const PersonListItem = ({
   person,
   ...rest
 }: TouchableHighlightProps & Props) => {
-  const { spacing, fontSizes } = useTheme();
-  const pictureStyle = useMemo(
-    () => ({
-      width: '100%',
-      height: '100%',
-      borderRadius: 20,
-    }),
-    [spacing],
-  );
+  const { fontSizes } = useTheme();
 
   return (
     <ListItem
       leadingItem={
-        person.picture ? (
-          <Image source={{ uri: person.picture }} style={pictureStyle} />
+        person?.picture ? (
+          <Image source={{ uri: person.picture }} style={styles.picture} />
         ) : (
           <Icon icon={faUser} size={fontSizes['2xl']} />
         )
       }
-      title={`${person.firstName} ${person.lastName}`}
-      linkTo={{
-        screen: 'Person',
-        params: { id: person.id },
-      }}
+      title={person ? `${person.firstName} ${person.lastName}` : ''}
+      linkTo={
+        person?.id
+          ? {
+              screen: 'Person',
+              params: { id: person.id },
+            }
+          : undefined
+      }
       {...rest}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  picture: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+  },
+});

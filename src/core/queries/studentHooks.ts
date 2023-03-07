@@ -3,10 +3,14 @@ import {
   GetStudentGrades200Response,
   StudentApi,
 } from '@polito/api-client';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+
+import { DateTime, Duration } from 'luxon';
 
 import { prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
+
+export const DEADLINES_QUERY_KEY = 'deadlines';
 
 export const STUDENT_QUERY_KEY = 'student';
 export const GRADES_QUERY_KEY = 'grades';
@@ -46,5 +50,28 @@ export const useGetGrades = () => {
 
   return useQuery(prefixKey([GRADES_QUERY_KEY]), () =>
     studentClient.getStudentGrades().then(sortGrades),
+  );
+};
+
+export const useGetDeadlineWeeks = () => {
+  const studentClient = useStudentClient();
+
+  const oneWeek = Duration.fromDurationLike({ week: 1 });
+
+  return useInfiniteQuery(
+    [DEADLINES_QUERY_KEY],
+    ({ pageParam: since = DateTime.now().startOf('week') }) => {
+      const until = since.plus(oneWeek);
+
+      return studentClient
+        .getDeadlines({
+          fromDate: since.toJSDate(),
+          toDate: until.toJSDate(),
+        })
+        .then(r => r.data);
+    },
+    {
+      staleTime: Infinity,
+    },
   );
 };
