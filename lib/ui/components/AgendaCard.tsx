@@ -96,7 +96,7 @@ export const AgendaCard = ({
           </View>
           <View style={styles.titleView}>
             {iconColor && <AgendaIcon icon={icon} color={iconColor} />}
-            <Text style={[styles.title, icon && styles.titleWithIcon]}>
+            <Text style={[styles.title, iconColor && styles.titleWithIcon]}>
               {title}
             </Text>
           </View>
