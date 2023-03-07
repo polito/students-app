@@ -119,7 +119,7 @@ const groupItemsByDay = (
         day = {
           key: item.date,
           date: DateTime.fromSQL(item.date),
-          isToday: false,
+          isToday: item.date === todayString,
           items: [],
         };
       }

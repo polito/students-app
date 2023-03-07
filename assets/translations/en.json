@@ -1,6 +1,7 @@
 {
   "agendaScreen": {
     "backToToday": "Back to today",
+    "emptyDay": "You have no events today",
     "emptyWeek": "You have no events during this week",
     "title": "Agenda"
   },

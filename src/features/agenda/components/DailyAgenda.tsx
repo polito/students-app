@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AgendaCardProps } from '@lib/ui/components/AgendaCard';
 import { Col } from '@lib/ui/components/Col';
@@ -28,38 +28,33 @@ export const DailyAgenda = ({ agendaDay }: Props) => {
 
   return (
     <Row>
-      <Col
-        style={[
-          styles.dayColumn,
-          agendaDay.isToday ? styles.todayColumn : undefined,
-        ]}
-        flexStart
-        noFlex
-      >
-        <Text
-          variant="heading"
-          style={[
-            styles.secondaryDay,
-            agendaDay.isToday ? styles.today : undefined,
-          ]}
-        >
-          {weekDay}
-        </Text>
-        <Text
-          variant="heading"
-          style={[agendaDay.isToday ? styles.today : undefined]}
-        >
-          {dayOfMonth}
-        </Text>
-        {monthOfYear && (
-          <Text variant="heading" style={styles.secondaryDay}>
-            {monthOfYear}
-          </Text>
-        )}
-        {year && (
-          <Text variant="heading" style={styles.secondaryDay}>
-            {year}
-          </Text>
+      <Col style={[styles.dayColumn]} noFlex>
+        {agendaDay.isToday ? (
+          <View style={[styles.dayBox, styles.todayBox]}>
+            <Text variant="heading" style={[styles.secondaryDay, styles.today]}>
+              {weekDay}
+            </Text>
+            <Text variant="heading" style={styles.today}>
+              {dayOfMonth}
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.dayBox}>
+            <Text variant="heading" style={styles.secondaryDay}>
+              {weekDay}
+            </Text>
+            <Text variant="heading">{dayOfMonth}</Text>
+            {monthOfYear && (
+              <Text variant="heading" style={styles.secondaryDay}>
+                {monthOfYear}
+              </Text>
+            )}
+            {year && (
+              <Text variant="heading" style={styles.secondaryDay}>
+                {year}
+              </Text>
+            )}
+          </View>
         )}
       </Col>
       <Col style={styles.itemsColumn}>
@@ -95,9 +90,8 @@ const createStyles = ({ colors, fontWeights, shapes, spacing }: Theme) =>
     dayColumn: {
       width: '15%',
       maxWidth: 200,
-      paddingTop: spacing[2],
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'stretch',
     },
     itemsColumn: {
       flexGrow: 1,
@@ -107,10 +101,18 @@ const createStyles = ({ colors, fontWeights, shapes, spacing }: Theme) =>
       textTransform: 'capitalize',
       fontWeight: fontWeights.medium,
     },
-    todayColumn: {
+    dayBox: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: spacing[3],
+      paddingVertical: spacing[2],
+    },
+    todayBox: {
+      display: 'flex',
       backgroundColor: colors.heading,
       borderRadius: shapes.lg,
-      paddingBottom: spacing[1],
+      marginLeft: spacing[1],
+      marginRight: spacing[2],
     },
     today: {
       color: colors.surface,
