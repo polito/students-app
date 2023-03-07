@@ -24,6 +24,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import {
   IS_ANDROID,
@@ -47,7 +48,6 @@ interface ActionSheetOption {
 interface ActionSheetProps {
   options: ActionSheetOption[];
 }
-export const ACTION_SHEET_PADDING_BOTTOM = IS_IOS ? 35 : 45;
 export const BUTTON_HEIGHT = IS_IOS ? 50 : 100;
 
 export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
@@ -56,22 +56,22 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
   const theme = useTheme();
   const { colors } = theme;
   const styles = createStyles(theme);
+  const bottomBarHeight = useBottomTabBarHeight();
   const [visible, setVisible] = useState(false);
   const translateY = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
   const height = useMemo(() => {
     if (IS_IOS) {
-      return (options.length + 1) * BUTTON_HEIGHT + ACTION_SHEET_PADDING_BOTTOM;
+      return (options.length + 1) * BUTTON_HEIGHT + bottomBarHeight + 60;
     }
     if (IS_ANDROID) {
       return (
-        Math.ceil(options.length / 3) * BUTTON_HEIGHT +
-        ACTION_SHEET_PADDING_BOTTOM
+        Math.ceil(options.length / 3) * BUTTON_HEIGHT + bottomBarHeight + 60
       );
     }
     return 0;
-  }, [options]);
+  }, [options, bottomBarHeight]);
 
   const show = () => {
     setVisible(true);
@@ -140,7 +140,11 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
         <Pressable onPress={close} style={{ flex: 1 }} />
       </Animated.View>
       <Animated.View
-        style={[styles.container, { height: translateY, opacity }]}
+        style={[
+          styles.container,
+          { paddingBottom: bottomBarHeight + 60 },
+          { height: translateY, opacity },
+        ]}
       >
         <Animated.View style={[styles.optionContainer, { opacity }]}>
           {options.map((option, index) => {
@@ -202,12 +206,9 @@ const createStyles = ({
     container: {
       position: 'absolute',
       bottom: 0,
-      paddingBottom: ACTION_SHEET_PADDING_BOTTOM,
       width: SCREEN_WIDTH,
       justifyContent: 'center',
       alignItems: 'center',
-      // backgroundColor: 'red',
-      // marginHorizontal: spacing[3]
     },
     icon: {
       color: 'white',
@@ -245,9 +246,6 @@ const createStyles = ({
       flexDirection: Platform.select({
         ios: 'column',
         android: 'row',
-      }),
-      height: Platform.select({
-        // android: BUTTON_HEIGHT
       }),
       paddingVertical: Platform.select({
         android: spacing[5],
