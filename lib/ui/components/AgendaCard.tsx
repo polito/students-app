@@ -141,7 +141,7 @@ const createStyles = ({ colors, fontSizes, fontWeights, spacing }: Theme) =>
       fontSize: fontSizes.sm,
     },
     type: {
-      color: colors.caption,
+      color: colors.agendaCardType,
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.semibold,
       marginTop: spacing[1.5],
