@@ -24,9 +24,9 @@ export const BookingCard = ({ item }: Props) => {
       time={`${item.fromTime} - ${item.toTime}`}
       onPress={() =>
         navigate({
-          name: 'Deadline',
+          name: 'Booking',
           params: {
-            item: item,
+            id: item.id,
           },
         })
       }
