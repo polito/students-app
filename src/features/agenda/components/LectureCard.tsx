@@ -1,25 +1,29 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { AgendaCard } from '@lib/ui/components/AgendaCard';
+import { Icon } from '@lib/ui/components/Icon';
+import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp as NavigationProp } from '@react-navigation/native-stack';
 
 import { LectureItem } from '../types/AgendaItem';
+import { AgendaStackParamList as AgendaStack } from './AgendaNavigator';
 
 interface Props {
   item: LectureItem;
 }
 
 export const LectureCard = ({ item }: Props) => {
-  const { navigate } = useNavigation<NativeStackNavigationProp<any>>();
+  const { navigate } = useNavigation<NavigationProp<AgendaStack, 'Lecture'>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { colors } = useTheme();
+  const { colors, fontSizes } = useTheme();
 
   return (
     <AgendaCard
@@ -39,6 +43,16 @@ export const LectureCard = ({ item }: Props) => {
         })
       }
     >
+      {item.virtualClassrooms?.map(vc => {
+        return (
+          <Row alignCenter style={styles.vcRow}>
+            <Icon icon={faVideo} color={colors.prose} size={fontSizes.sm} />
+            <Text variant="secondaryText" style={styles.vcTitle}>
+              {vc.title}
+            </Text>
+          </Row>
+        );
+      })}
       {item.description && (
         <Text
           variant="secondaryText"
@@ -57,5 +71,11 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     description: {
       marginTop: spacing[1.5],
+    },
+    vcTitle: {
+      marginLeft: spacing[1.5],
+    },
+    vcRow: {
+      padding: spacing[1],
     },
   });
