@@ -1,6 +1,5 @@
 import { StyleSheet, View } from 'react-native';
 
-import { AgendaCardProps } from '@lib/ui/components/AgendaCard';
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
@@ -9,6 +8,7 @@ import { Theme } from '@lib/ui/types/theme';
 
 import { isCurrentMonth, isCurrentYear } from '../../../utils/dates';
 import { AgendaDay } from '../types/AgendaDay';
+import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';
 import { EmptyDay } from './EmptyDay';
 import { ExamCard } from './ExamCard';
@@ -58,17 +58,13 @@ export const DailyAgenda = ({ agendaDay }: Props) => {
         )}
       </Col>
       <Col style={styles.itemsColumn}>
-        {}
         {!agendaDay.items.length ? (
           <EmptyDay />
         ) : (
           agendaDay.items.map(item => {
-            const typeDependentProps: Partial<AgendaCardProps> = {};
-
             switch (item.type) {
               case 'booking':
-                typeDependentProps.time = `${item.fromTime} - ${item.toTime}`;
-                break;
+                return <BookingCard key={item.key} item={item} />;
               case 'deadline':
                 return <DeadlineCard key={item.key} item={item} />;
               case 'exam':
