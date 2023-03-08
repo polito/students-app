@@ -125,7 +125,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           selected={true}
           textStyle={{ color: colors.heading }}
           style={{
-            borderWidth: 2,
+            borderWidth: 1,
             backgroundColor: 'transparent',
             borderColor: colors.agendaLecture,
           }}
@@ -136,7 +136,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           selected={true}
           textStyle={{ color: colors.heading }}
           style={{
-            borderWidth: 2,
+            borderWidth: 1,
             backgroundColor: 'transparent',
             borderColor: colors.agendaExam,
           }}
@@ -147,7 +147,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           selected={true}
           textStyle={{ color: colors.heading }}
           style={{
-            borderWidth: 2,
+            borderWidth: 1,
             backgroundColor: 'transparent',
             borderColor: colors.agendaBooking,
           }}
@@ -158,7 +158,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           selected={true}
           textStyle={{ color: colors.heading }}
           style={{
-            borderWidth: 2,
+            borderWidth: 1,
             backgroundColor: 'transparent',
             borderColor: colors.agendaDeadline,
           }}
@@ -169,7 +169,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
       {data && (
         <SectionList<AgendaDay, AgendaWeek>
           ref={sectionListRef}
-          removeClippedSubviews
           contentContainerStyle={styles.listContainer}
           onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
             if (
@@ -185,7 +184,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
           extraData={isFetchingNextPage}
           stickySectionHeadersEnabled={false}
           renderSectionHeader={({ section }) => {
-            // TODO refactor date printing style into helper
             return (
               <Text
                 variant="secondaryText"
@@ -194,7 +192,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
               >
                 {section.since.toFormat('d MMM')}
                 {' - '}
-                {section.until.toFormat('d MMM')}
+                {section.until.minus(1).toFormat('d MMM')}
               </Text>
             );
           }}
