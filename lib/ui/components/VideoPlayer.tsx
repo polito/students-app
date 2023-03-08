@@ -51,8 +51,6 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const playerRef = useRef<Video>();
 
-  // console.debug({styles})
-
   const source = useMemo(() => {
     return {
       uri: videoUrl,
@@ -106,10 +104,10 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
     (newProgress: number) => {
       try {
         const newSeekValue = (newProgress * duration) / 100;
-        console.debug({ newProgress, newSeekValue, duration });
         if (playerRef && playerRef.current) {
           playerRef.current.seek(newSeekValue, 50);
         }
+        setProgress(newProgress / 100);
       } catch (e) {
         console.debug('errorSeek', e);
       }

@@ -4,7 +4,7 @@ import { OnLoadData } from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 
 import { displayTabBar } from '../../utils/tab-bar';
-import useDeviceOrientation from './useDeviceOrientation';
+import useDeviceOrientation, { ORIENTATION } from './useDeviceOrientation';
 
 export const useVideoControls = () => {
   const navigation = useNavigation();
@@ -24,16 +24,16 @@ export const useVideoControls = () => {
   }, []);
 
   const toggleFullscreen = useCallback(() => {
-    // if(orientation === ORIENTATION.LANDSCAPE) {
-    //   navigation.setOptions({
-    //     he: ORIENTATION.PORTRAIT,
-    //   })
-    //   navigation.setOptions({ orientation: undefined })
-    // } else {
-    //   navigation.setOptions({orientation: ORIENTATION.PORTRAIT})
-    //   navigation.setOptions({ orientation: undefined })
-    //
-    // }
+    if (orientation === ORIENTATION.LANDSCAPE) {
+      // this function constrains the orientation of the device
+      navigation.setOptions({ orientation: 'portrait' });
+
+      // After 5 seconds we expect the user to have turned the device and re-enable free rotation
+      setTimeout(() => {
+        navigation.setOptions({ orientation: 'default' });
+      }, 5000);
+    }
+
     setFullscreen(prev => !prev);
   }, [orientation]);
 

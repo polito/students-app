@@ -11,8 +11,6 @@ export const useHandleFullscreen = (fullscreen: boolean) => {
   const navigation = useNavigation();
   const orientation = useDeviceOrientation();
 
-  console.debug({ orientation });
-
   useEffect(() => {
     const navRoot = navigation.getParent();
     if (IS_ANDROID) {
