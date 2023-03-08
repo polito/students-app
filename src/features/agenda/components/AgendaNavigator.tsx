@@ -18,10 +18,6 @@ export type AgendaStackParamList = {
   Lecture: { item: LectureItem };
   Exam: { id: number };
   Deadline: { item: DeadlineItem };
-  LectureCourseDirectory?: {
-    courseId: number;
-    lectureId: number;
-  };
   Booking: { id: number };
   Person: { id: number };
 };

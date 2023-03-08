@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-const MACHINE_DATE_REGEX = /([0-9]{4})-0*([1-9]+)-0*([1-9]+)/;
+const MACHINE_DATE_REGEX = /([0-9]{4})-0?([0-9]+)-0?([0-9]+)/;
 
 export const formatDate = (date: Date) => {
   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;

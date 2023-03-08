@@ -188,6 +188,9 @@
     "fail": "Fail",
     "pass": "Pass"
   },
+  "lectureScreen": {
+    "courseFilesCta": "Go to course files"
+  },
   "loginScreen": {
     "cta": "Login",
     "ctaSuccessMessage": "Logged in",

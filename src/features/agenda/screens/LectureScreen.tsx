@@ -1,11 +1,10 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { faLocation } from '@fortawesome/free-solid-svg-icons';
-import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -18,6 +17,7 @@ import { EventDetails } from '../../../core/components/EventDetails';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { convertMachineDateToFormatDate } from '../../../utils/dates';
+import { CourseIcon } from '../../teaching/components/CourseIcon';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
@@ -31,29 +31,19 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const { data: virtualClassrooms } = useGetCourseVirtualClassrooms(
     lecture.courseId,
   );
-  // TODO REFACTOR, JUST A TEST
-  const virtualClassroom = virtualClassrooms?.data.find(
-    l => l.id === lecture?.virtualClassrooms[0].id ?? false,
-  );
+  const virtualClassroom = useMemo(() => {
+    if (!lecture.virtualClassrooms.length) return;
 
-  const live = false;
+    // Temporary behaviour until multiple videos in 1 screen are managed
+    const vcId = [...lecture.virtualClassrooms].shift()?.vcId;
+    if (!vcId) return;
 
-  const onPressMaterialCard = () => {
-    navigation.navigate({
-      name: 'LectureCourseDirectory',
-      params: {
-        lectureId: lecture.id,
-        courseId: lecture.courseId,
-      },
-    });
-  };
+    return virtualClassrooms?.data.find(vcs => vcs.id === vcId);
+  }, [virtualClassrooms]);
 
   return (
     <>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.wrapper}
-      >
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         {virtualClassroom?.videoUrl && (
           <VideoPlayer
             videoUrl={virtualClassroom?.videoUrl}
@@ -62,17 +52,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         )}
         <Row maxWidth noFlex spaceBetween alignCenter>
           <EventDetails
-            title={lecture?.title}
+            title={virtualClassroom?.title ?? lecture.title}
             type={t('common.lecture')}
             time={`${convertMachineDateToFormatDate(lecture.date)} ${
               lecture.fromTime
             } - ${lecture.toTime}`}
           />
-          {live && (
-            <Row alignEnd noFlex justifyEnd>
-              <LiveIndicator />
-            </Row>
-          )}
         </Row>
         <SectionList>
           <ListItem
@@ -85,10 +70,19 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             person={teacherQuery.data?.data}
             subtitle={t('common.teacher')}
           />
-          <DirectoryListItem
-            title={t('Material')}
-            subtitle={t('lectureScreen.goToMaterial')}
-            onPress={onPressMaterialCard}
+          <ListItem
+            title={lecture.title}
+            subtitle={t('lectureScreen.courseFilesCta')}
+            leadingItem={
+              <CourseIcon icon={lecture.icon} color={lecture.color} />
+            }
+            linkTo={{
+              screen: 'LectureCourseDirectory',
+              params: {
+                lectureId: lecture.id,
+                courseId: lecture.courseId,
+              },
+            }}
           />
         </SectionList>
       </ScrollView>
@@ -113,7 +107,6 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
       alignItems: 'center',
     },
     wrapper: {
-      marginTop: spacing[2],
       // padding: size.sm,
     },
     booking: {
