@@ -77,7 +77,7 @@ export const AgendaCard = ({
       style={[
         styles.card,
         color && {
-          borderWidth: 2,
+          borderWidth: 1,
           borderColor: color,
         },
       ]}
@@ -126,11 +126,12 @@ const createStyles = ({ colors, fontSizes, fontWeights, spacing }: Theme) =>
       fontSize: fontSizes.md,
     },
     titleWithIcon: {
-      marginLeft: spacing[1],
+      marginLeft: spacing[1.5],
     },
     titleView: {
       display: 'flex',
       flexDirection: 'row',
+      alignItems: 'center',
     },
     touchable: {
       paddingHorizontal: spacing[5],
