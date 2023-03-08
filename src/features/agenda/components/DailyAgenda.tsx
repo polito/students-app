@@ -11,14 +11,16 @@ import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';
 import { EmptyDay } from './EmptyDay';
+import { EmptyWeek } from './EmptyWeek';
 import { ExamCard } from './ExamCard';
 import { LectureCard } from './LectureCard';
 
 interface Props {
   agendaDay: AgendaDay;
+  isEmptyWeek: boolean;
 }
 
-export const DailyAgenda = ({ agendaDay }: Props) => {
+export const DailyAgenda = ({ agendaDay, isEmptyWeek }: Props) => {
   const styles = useStylesheet(createStyles);
   const dayOfMonth = agendaDay.date.toFormat('d');
   const weekDay = agendaDay.date.toFormat('EEE');
@@ -59,9 +61,13 @@ export const DailyAgenda = ({ agendaDay }: Props) => {
       </Col>
       <Col style={styles.itemsColumn}>
         {!agendaDay.items.length ? (
-          <EmptyDay />
+          isEmptyWeek ? (
+            <EmptyWeek />
+          ) : (
+            <EmptyDay />
+          )
         ) : (
-          agendaDay.items.map(item => {
+          agendaDay?.items.map(item => {
             switch (item.type) {
               case 'booking':
                 return <BookingCard key={item.key} item={item} />;

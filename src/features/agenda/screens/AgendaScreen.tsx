@@ -14,7 +14,9 @@ import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { Row } from '@lib/ui/components/Row';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
@@ -196,12 +198,23 @@ export const AgendaScreen = ({ navigation }: Props) => {
               </Text>
             );
           }}
-          renderItem={({ item }: { item: AgendaDay }) => {
-            if (item.isToday) todayRef.current = item;
-            return <DailyAgenda agendaDay={item} />;
+          renderItem={({ item, section }) => {
+            return (
+              <DailyAgenda
+                agendaDay={item}
+                isEmptyWeek={!!section.data.length}
+              />
+            );
           }}
           renderSectionFooter={({ section }) =>
-            !section.data.length && <EmptyWeek />
+            !section.data.length && (
+              <Row>
+                <Col noFlex style={styles.dayColumn}></Col>
+                <Col style={styles.itemsColumn}>
+                  <EmptyWeek />
+                </Col>
+              </Row>
+            )
           }
           ListHeaderComponent={
             isFetchingPreviousPage && <ActivityIndicator size="small" />
@@ -241,5 +254,13 @@ const createStyles = ({ colors, spacing, dark }: Theme) =>
       marginLeft: '15%',
       paddingTop: spacing[4],
       paddingBottom: spacing[2],
+    },
+    dayColumn: {
+      width: '15%',
+      maxWidth: 200,
+    },
+    itemsColumn: {
+      flexGrow: 1,
+      justifyContent: 'center',
     },
   });
