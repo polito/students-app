@@ -186,10 +186,16 @@
     "pass": "Pass"
   },
   "loginScreen": {
+    "authnError": "Authentication error",
+    "authnErrorDescription": "The credentials you provided may be wrong.",
     "cta": "Login",
     "ctaSuccessMessage": "Logged in",
+    "forgotYourPassword": "Forgot your password?",
+    "hidePassword": "Hide password",
     "passwordLabel": "Password",
+    "showPassword": "Show password",
     "title": "Log in with your polito.it credentials",
+    "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID"
   },
   "messagesScreen": {
