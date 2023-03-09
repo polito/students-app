@@ -158,6 +158,7 @@ export const lightTheme: Theme = {
     agendaDeadline: red[700],
     agendaExam: orange[600],
     agendaLecture: darkBlue[700],
+    agendaCardType: text[400],
   },
   fontFamilies: {
     heading: 'Montserrat',
