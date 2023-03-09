@@ -128,7 +128,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <HeaderRight ticket={ticket} />,
+      headerRight: () =>
+        ticket?.status &&
+        ticket?.status !== TicketStatus.Closed && (
+          <HeaderRight ticket={ticket} />
+        ),
     });
   }, [ticket]);
 
