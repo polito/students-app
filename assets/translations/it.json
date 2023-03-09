@@ -102,7 +102,15 @@
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
-    "visualization": "Visualizzazione"
+    "visualization": "Visualizzazione",
+    "examStatus": {
+      "available": "Disponibile",
+      "booked": "Prenotato",
+      "requestable": "Prenotabile",
+      "requested": "Prenotazione richiesta",
+      "requestRejected": "Prenotazione rifiutata",
+      "unavailable": "Non prenotabile"
+    }
   },
   "contactsScreen": {
     "title": "Contacts"
