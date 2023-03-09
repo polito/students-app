@@ -14,6 +14,8 @@ import { CourseIcon } from './CourseIcon';
 
 interface Props {
   course: CourseOverview;
+  accessible?: boolean;
+  accessibilityLabel?: string;
 }
 
 const Menu = ({
@@ -116,9 +118,17 @@ export const CourseListItem = ({ course }: Props) => {
 
   if (hasDetails && Platform.OS === 'ios') {
     return (
-      <Menu course={course} shouldOpenOnLongPress={true}>
-        {listItem}
-      </Menu>
+      <View
+        accessible={true}
+        accessibilityRole={'button'}
+        accessibilityLabel={`${course.name},  ${course.cfu} ${t(
+          'common.credits',
+        ).toLowerCase()}`}
+      >
+        <Menu course={course} shouldOpenOnLongPress={true}>
+          {listItem}
+        </Menu>
+      </View>
     );
   }
   return listItem;

@@ -4,11 +4,13 @@ import {
   StyleSheet,
   TextProps,
   TextStyle,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
 import { Separator } from '@lib/ui/components/Separator';
-import { Link } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { parseText } from '../../../src/utils/html-parse';
@@ -41,6 +43,7 @@ export const SectionHeader = ({
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const ellipsis: Partial<TextProps> = ellipsizeTitle
     ? {
         numberOfLines: 1,
@@ -49,7 +52,20 @@ export const SectionHeader = ({
     : {};
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      accessible={true}
+      accessibilityRole={'button'}
+      onPress={() => {
+        navigation.navigate({
+          name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
+          params:
+            typeof linkTo === 'object' && 'params' in linkTo
+              ? linkTo.params
+              : undefined,
+        });
+      }}
+    >
       <View style={styles.innerContainer}>
         <View style={styles.titleContainer}>
           {separator && <Separator />}
@@ -81,7 +97,7 @@ export const SectionHeader = ({
               </Link>
             )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

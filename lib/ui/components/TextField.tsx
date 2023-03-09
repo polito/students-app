@@ -63,7 +63,7 @@ export const TextField = ({
       importantForAccessibility={'yes'}
     >
       <TextInput
-        accessible={false}
+        accessible={true}
         ref={inputRef}
         importantForAccessibility={'no'}
         autoCapitalize="none"

@@ -5,7 +5,7 @@ import {
   cloneElement,
   isValidElement,
 } from 'react';
-import { ScrollView, ScrollViewProps, View } from 'react-native';
+import { Platform, ScrollView, ScrollViewProps, View } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Props as TabProps } from './Tab';
@@ -31,7 +31,7 @@ export const Tabs = ({
   return (
     <ScrollView
       showsHorizontalScrollIndicator={false}
-      accessible={true}
+      accessible={Platform.select({ android: true, ios: false })}
       accessibilityRole="tablist"
       horizontal
       contentContainerStyle={{

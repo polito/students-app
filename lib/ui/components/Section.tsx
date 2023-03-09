@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { View, ViewProps } from 'react-native';
+import { Platform, View, ViewProps } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -18,7 +18,10 @@ export const Section = ({
         },
         style,
       ]}
-      accessible={true}
+      accessible={Platform.select({
+        android: true,
+        ios: false,
+      })}
       {...rest}
     >
       {children}
