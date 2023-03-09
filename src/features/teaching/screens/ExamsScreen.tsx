@@ -7,6 +7,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
@@ -15,6 +16,7 @@ export const ExamsScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const examsQuery = useGetExams();
+  const { accessibilityListLabel } = useAccessibility();
   const refreshControl = useRefreshControl(examsQuery);
 
   return (
@@ -38,10 +40,10 @@ export const ExamsScreen = () => {
                   key={exam.id}
                   exam={exam}
                   accessible={true}
-                  accessibilityLabel={t('common.elementCount', {
-                    count: index,
-                    total: examsQuery.data.length,
-                  })}
+                  accessibilityLabel={accessibilityListLabel(
+                    index,
+                    examsQuery.data.length,
+                  )}
                 />
               ))}
             </SectionList>

@@ -114,17 +114,15 @@ export const ProfileScreen = ({ navigation }: Props) => {
           containerStyle={styles.smartCardContainer}
         />
       </Section>
-      <Section>
+      <Section accessible={false}>
         <SectionHeader
           title={t('profileScreen.course')}
-          /* trailingItem={<Text variant="link">{t('profileScreen.trainingOffer')}</Text>}*/
           trailingItem={<Badge text={t('common.comingSoon')} />}
         />
         <SectionList>
           <ListItem
             title={student?.degreeName}
             subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
-            // linkTo={'TODO'}
           />
         </SectionList>
         <SectionList>

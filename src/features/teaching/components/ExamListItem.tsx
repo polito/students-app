@@ -14,7 +14,7 @@ interface Props {
   accessibilityLabel?: string;
 }
 
-export const ExamListItem = ({ exam, ...rest }: Props) => {
+export const ExamListItem = ({ exam, accessibilityLabel, ...rest }: Props) => {
   const { t } = useTranslation();
   const { courses: coursesPreferences } = usePreferencesContext();
 
@@ -40,6 +40,10 @@ export const ExamListItem = ({ exam, ...rest }: Props) => {
         params: { id: exam.id },
       }}
       title={exam.courseName}
+      accessibilityRole={'button'}
+      accessibilityLabel={`${accessibilityLabel ?? ''} ${
+        exam.courseName
+      } ${formatDateTime(exam.examStartsAt)}`}
       subtitle={subtitle}
       leadingItem={
         <CourseIcon

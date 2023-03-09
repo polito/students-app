@@ -7,13 +7,15 @@ import { List } from '@lib/ui/components/List';
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 
-type Props = PropsWithChildren<{
-  style?: ViewProps['style'];
-  dividers?: boolean;
-  loading?: boolean;
-  indented?: boolean;
-  emptyStateText?: string;
-}>;
+type Props = PropsWithChildren<
+  ViewProps & {
+    style?: ViewProps['style'];
+    dividers?: boolean;
+    loading?: boolean;
+    indented?: boolean;
+    emptyStateText?: string;
+  }
+>;
 
 /**
  * Displays a list of items with automatic dividers inside a card.
@@ -26,11 +28,13 @@ export const SectionList = ({
   dividers,
   emptyStateText,
   style,
+  ...rest
 }: Props) => {
   const { spacing } = useTheme();
 
   return (
     <Card
+      accessible={Platform.select({ android: true, ios: false })}
       rounded={Platform.select({ android: false })}
       style={[
         {
@@ -39,6 +43,7 @@ export const SectionList = ({
         },
         style,
       ]}
+      {...rest}
     >
       {loading ? (
         <ActivityIndicator

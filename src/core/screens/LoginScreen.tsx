@@ -57,11 +57,12 @@ export const LoginScreen = () => {
         contentInsetAdjustmentBehavior="automatic"
         automaticallyAdjustKeyboardInsets
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <Section style={styles.section}>
             <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
-            <SectionList style={styles.sectionList}>
+            <SectionList style={styles.sectionList} accessible={false}>
               <TextField
+                accessible={true}
                 textContentType="username"
                 label={t('loginScreen.usernameLabel')}
                 value={username}
@@ -76,6 +77,7 @@ export const LoginScreen = () => {
               />
               <Row alignCenter>
               <TextField
+                accessible={true}
                 inputRef={passwordRef}
                 textContentType="password"
                 type="password"

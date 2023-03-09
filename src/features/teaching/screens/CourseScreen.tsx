@@ -42,6 +42,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           icon={faSliders}
           color={colors.primary[400]}
           size={fontSizes.lg}
+          accessibilityRole={'button'}
           adjustSpacing="right"
           accessibilityLabel={t('common.preferences')}
           onPress={() => {
@@ -111,7 +112,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   return (
     <CourseContext.Provider value={id}>
       <FilesCacheProvider>
-        <View style={GlobalStyles.grow}>
+        <View style={GlobalStyles.grow} accessible={false}>
           <Tabs />
           <TabsContent />
         </View>
