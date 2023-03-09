@@ -63,7 +63,6 @@ export const ServiceNavigator = () => {
         name="Tickets"
         component={TicketsScreen}
         options={{
-          headerLeft: () => <HeaderLogo />,
           headerLargeTitle: false,
         }}
       />
