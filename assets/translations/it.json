@@ -63,6 +63,7 @@
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",
+    "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
     "file": "File",
     "file_plural": "File",
     "elementCount": "Elemento {{count}} di {{total}}",

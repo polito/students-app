@@ -62,6 +62,8 @@ export const Row = ({
       ]}
       collapsable={false}
       onLayout={onLayout}
+      onPress={onPress}
+      {...rest}
     >
       {children}
     </View>
