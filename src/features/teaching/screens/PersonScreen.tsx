@@ -85,6 +85,8 @@ export const PersonScreen = ({ route }: Props) => {
           {!!person?.profileUrl && (
             <TouchableOpacity
               onPress={() => Linking.openURL(person?.profileUrl)}
+              accessible={true}
+              accessibilityRole={'link'}
             >
               <Row noFlex alignCenter>
                 <Icon
