@@ -16,6 +16,8 @@ interface Props {
 
 export const ExamListItem = ({ exam, accessibilityLabel, ...rest }: Props) => {
   const { t } = useTranslation();
+  const examStatus = exam.status;
+
   const { courses: coursesPreferences } = usePreferencesContext();
 
   const subtitle = useMemo(() => {
@@ -43,7 +45,9 @@ export const ExamListItem = ({ exam, accessibilityLabel, ...rest }: Props) => {
       accessibilityRole={'button'}
       accessibilityLabel={`${accessibilityLabel ?? ''} ${
         exam.courseName
-      } ${formatDateTime(exam.examStartsAt)}`}
+      } ${formatDateTime(exam.examStartsAt)} ${t(
+        `common.examStatus.${examStatus}`,
+      )}`}
       subtitle={subtitle}
       leadingItem={
         <CourseIcon
