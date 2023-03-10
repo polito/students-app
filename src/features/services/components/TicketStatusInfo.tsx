@@ -25,9 +25,7 @@ export const TicketStatusInfo = ({
   const { fontSizes, spacing } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const isClosed = ticket?.status === TicketStatus.Closed;
-
-  console.debug({ ticket });
+  const isClosed = ticket.status === TicketStatus.Closed;
 
   if (loading) {
     return (
@@ -37,33 +35,19 @@ export const TicketStatusInfo = ({
     );
   }
 
-  if (!loading && !ticket?.id) {
-    return (
-      <Col style={[styles.container]}>
-        <Text style={[styles.text, styles.closed]}>
-          {t('ticketScreen.error')}
-        </Text>
-      </Col>
-    );
-  }
-
   return (
     <Col style={styles.container}>
       <Row style={styles.row}>
         <Text style={styles.text}>{t('ticketScreen.ticket')}</Text>
-        <Text style={styles.text}>#{ticket?.id}</Text>
+        <Text style={styles.text}>#{ticket.id}</Text>
       </Row>
       <Row style={styles.row}>
         <Text style={styles.text}>{t('ticketScreen.createdAt')}</Text>
-        <Text style={styles.text}>
-          {formatDate(ticket?.createdAt ?? new Date())}
-        </Text>
+        <Text style={styles.text}>{formatDate(ticket.createdAt)}</Text>
       </Row>
       <Row style={styles.row}>
         <Text style={styles.text}>{t('ticketScreen.updatedAt')}</Text>
-        <Text style={styles.text}>
-          {formatDateTime(ticket?.updatedAt ?? new Date())}
-        </Text>
+        <Text style={styles.text}>{formatDateTime(ticket.updatedAt)}</Text>
       </Row>
       {refetching ? (
         <ActivityIndicator />
@@ -80,7 +64,7 @@ export const TicketStatusInfo = ({
                 { textTransform: 'uppercase' },
               ]}
             >
-              {t(`ticketScreen.infoStatus-${ticket?.status}`)}
+              {t(`ticketScreen.infoStatus-${ticket.status}`)}
             </Text>
           </Row>
           {isClosed && (

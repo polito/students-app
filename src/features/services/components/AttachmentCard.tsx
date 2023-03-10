@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { open } from 'react-native-file-viewer';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -12,13 +13,13 @@ import { Theme } from '@lib/ui/types/theme';
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
 
 import {
-  useGetTicketAttachments,
-  useGetTicketReplyAttachments,
+  useGetTicketAttachment,
+  useGetTicketReplyAttachment,
 } from '../../../core/queries/ticketHooks';
 import { formatFileSize } from '../../../utils/files';
 
 interface AttachmentCardProps {
-  attachment?: TicketAttachment;
+  attachment: TicketAttachment;
   replyId?: number;
   ticketId: number;
 }
@@ -30,65 +31,43 @@ export const AttachmentCard = ({
 }: AttachmentCardProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const [enabled, setEnabled] = useState<'reply' | 'ticket'>(null);
-  console.debug(enabled);
-  const {
-    data: replyAttachment,
-    isFetching: isLoadingReply,
-    isSuccess: isSuccessReply,
-  } = useGetTicketReplyAttachments(
-    {
-      replyId,
-      ticketId,
-      attachmentId: attachment?.id,
-    },
-    enabled === 'reply' && !!attachment?.id.toString() && !!replyId,
-  );
+  const [shouldOpen, setShouldOpen] = useState<boolean>(false);
+  const isReply = useMemo(() => replyId !== undefined, [replyId]);
 
-  const {
-    data: ticketAttachments,
-    isFetching: isLoadingTicket,
-    isSuccess: isSuccessTicket,
-  } = useGetTicketAttachments(
-    {
-      ticketId,
-      attachmentId: attachment?.id,
-    },
-    enabled === 'ticket' && !!attachment?.id.toString(),
-  );
+  const { isFetching: isDownloadingReplyAttachment, data: replyAttachment } =
+    useGetTicketReplyAttachment(
+      {
+        replyId,
+        ticketId,
+        attachmentId: attachment.id,
+      },
+      attachment.filename,
+      isReply && shouldOpen,
+    );
 
-  const loading = isLoadingReply || isLoadingTicket;
+  const { isFetching: isDownloadingTicketAttachment, data: ticketAttachment } =
+    useGetTicketAttachment(
+      {
+        ticketId,
+        attachmentId: attachment.id,
+      },
+      attachment.filename,
+      !isReply && shouldOpen,
+    );
 
-  const onPressAttachment = () => {
-    console.debug({ ticketId, attachment, replyId });
-    if (ticketId && !!attachment?.id.toString()) {
-      console.debug('qui');
-      setEnabled('ticket');
-      console.debug({ enabled });
-      return;
-    }
-    if (ticketId && !!attachment?.id.toString() && !!replyId) {
-      setEnabled('reply');
-    }
-  };
+  const onPressAttachment = () => setShouldOpen(true);
 
   useEffect(() => {
-    if (isSuccessReply) {
-      console.debug('replyAttachment', replyAttachment);
-      setEnabled(null);
-    }
-  }, [isSuccessReply]);
+    if (!shouldOpen || !ticketAttachment) return;
+    open(ticketAttachment);
+    setShouldOpen(false);
+  }, [shouldOpen, ticketAttachment]);
 
   useEffect(() => {
-    if (isSuccessTicket) {
-      console.debug('ticketAttachments', ticketAttachments);
-      setEnabled(null);
-    }
-  }, [isSuccessTicket]);
-
-  if (!attachment) {
-    return <View />;
-  }
+    if (!shouldOpen || !replyAttachment) return;
+    open(replyAttachment);
+    setShouldOpen(false);
+  }, [shouldOpen, replyAttachment]);
 
   return (
     <Row
@@ -97,8 +76,8 @@ export const AttachmentCard = ({
       onPress={onPressAttachment}
       touchableOpacity
     >
-      {loading ? (
-        <View>
+      {isDownloadingReplyAttachment || isDownloadingTicketAttachment ? (
+        <View style={styles.loaderView}>
           <ActivityIndicator color={colors.primary[50]} />
         </View>
       ) : (
@@ -106,32 +85,23 @@ export const AttachmentCard = ({
       )}
       <Col noFlex flexStart style={styles.textContainer}>
         <Text numberOfLines={1} style={styles.name}>
-          {attachment?.filename}
+          {attachment.filename}
         </Text>
         <Text numberOfLines={1} style={styles.size}>
-          {formatFileSize(attachment?.sizeInKiloBytes, 0)}
+          {formatFileSize(attachment.sizeInKiloBytes, 0)}
         </Text>
       </Col>
     </Row>
   );
 };
 
-const createStyles = ({
-  colors,
-  shapes,
-  spacing,
-  fontSizes,
-  fontWeights,
-}: Theme) =>
+const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     attachmentContainer: {
-      flexDirection: 'row',
-      borderRadius: shapes.lg,
-      justifyContent: 'flex-start',
       alignItems: 'center',
-      paddingBottom: spacing[1],
-      marginBottom: spacing[1],
-      width: '50%',
+    },
+    loaderView: {
+      width: 25,
     },
     textContainer: {
       paddingLeft: spacing[1],

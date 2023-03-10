@@ -1,4 +1,8 @@
-import { CreateTicketRequest, TicketsApi } from '@polito/api-client';
+import { Platform } from 'react-native';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+import { TemporaryDirectoryPath } from 'react-native-fs';
+
+import { BASE_PATH, CreateTicketRequest, TicketsApi } from '@polito/api-client';
 import {
   GetTicketAttachmentRequest,
   GetTicketReplyAttachmentRequest,
@@ -6,14 +10,16 @@ import {
 } from '@polito/api-client/apis/TicketsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { prefixKey, prefixKeys } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const TICKETS_QUERY_KEY = 'tickets';
+export const TICKET_QUERY_KEY = 'ticket';
+
 export const TICKETS_ATTACHMENTS_KEY = 'attachments';
 export const TOPICS_QUERY_KEY = 'topics';
 export const FAQS_QUERY_KEY = 'faqs';
-/* eslint-disable */
-// TODO: remove all @ts-ignore
+
 const useTicketsClient = (): TicketsApi => {
   const {
     clients: { tickets: ticketsClient },
@@ -24,20 +30,21 @@ const useTicketsClient = (): TicketsApi => {
 export const useGetTickets = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TICKETS_QUERY_KEY], () => ticketsClient.getTickets());
+  return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
+    ticketsClient.getTickets(),
+  );
 };
 
 export const useCreateTicket = () => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
+  const invalidatesQuery = prefixKey([TICKETS_QUERY_KEY]);
 
   return useMutation(
-    (dto?: CreateTicketRequest) =>
-      // @ts-ignore
-      ticketsClient.createTicket({ ...dto, test: true }, { test: true }),
+    (dto?: CreateTicketRequest) => ticketsClient.createTicket(dto),
     {
       onSuccess() {
-        return client.invalidateQueries([TICKETS_QUERY_KEY]);
+        return client.invalidateQueries(invalidatesQuery);
       },
     },
   );
@@ -46,41 +53,40 @@ export const useCreateTicket = () => {
 export const useReplyToTicket = (ticketId: number) => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
+  const invalidatesQueries = prefixKeys([
+    [TICKETS_QUERY_KEY],
+    [TICKET_QUERY_KEY, ticketId],
+  ]);
 
   return useMutation({
     mutationFn: (dto: ReplyToTicketRequest) => {
-      console.debug({ dto });
       return ticketsClient.replyToTicket(dto);
     },
-    onSuccess: async data => {
-      console.debug('onSuccess', data);
-      return await client.invalidateQueries([TICKETS_QUERY_KEY]);
-    },
-    onError: error => {
-      console.debug('error', { error });
+    onSuccess() {
+      return invalidatesQueries.map(q => client.invalidateQueries(q));
     },
   });
 };
 
-export const useGetTicket = (ticketId?: number) => {
+export const useGetTicket = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(
-    [TICKETS_QUERY_KEY, ticketId],
-    () => ticketsClient.getTicket({ ticketId }),
-    {
-      enabled: !!ticketId,
-    },
+  return useQuery(prefixKey([TICKET_QUERY_KEY, ticketId]), () =>
+    ticketsClient.getTicket({ ticketId }),
   );
 };
 
 export const useMarkTicketAsClosed = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
+  const invalidatesQueries = prefixKeys([
+    [TICKETS_QUERY_KEY],
+    [TICKET_QUERY_KEY, ticketId],
+  ]);
 
   return useMutation(() => ticketsClient.markTicketAsClosed({ ticketId }), {
     onSuccess() {
-      return client.invalidateQueries([TICKETS_QUERY_KEY]);
+      return invalidatesQueries.map(q => client.invalidateQueries(q));
     },
   });
 };
@@ -88,10 +94,11 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
 export const useMarkTicketAsRead = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
+  const invalidatesQuery = prefixKey([TICKETS_QUERY_KEY]);
 
   return useMutation(() => ticketsClient.markTicketAsRead({ ticketId }), {
     onSuccess() {
-      return client.invalidateQueries([TICKETS_QUERY_KEY]);
+      return client.invalidateQueries(invalidatesQuery);
     },
   });
 };
@@ -102,49 +109,69 @@ export const useGetTicketTopics = () => {
   return useQuery([TOPICS_QUERY_KEY], () => ticketsClient.getTicketTopics());
 };
 
-export const useGetTicketReplyAttachments = (
-  request: GetTicketReplyAttachmentRequest,
+export const useGetTicketReplyAttachment = (
+  { ticketId, replyId, attachmentId }: GetTicketReplyAttachmentRequest,
+  fileName: string,
   enabled: boolean,
 ) => {
-  const ticketsClient = useTicketsClient();
+  const { token } = useApiContext();
 
   return useQuery(
-    [
-      TICKETS_ATTACHMENTS_KEY,
-      request.ticketId,
-      request.replyId,
-      request.attachmentId,
-    ],
-    () => ticketsClient.getTicketReplyAttachment(request),
+    prefixKey([TICKETS_ATTACHMENTS_KEY, ticketId, replyId, attachmentId]),
+    () =>
+      ReactNativeBlobUtil.config({
+        fileCache: true,
+        path:
+          TemporaryDirectoryPath +
+          Platform.select({ android: '/', ios: '' }) +
+          fileName,
+      })
+        .fetch(
+          'GET',
+          BASE_PATH +
+            `/tickets/${ticketId}/replies/${replyId}/attachments/${attachmentId}`,
+          {
+            Authorization: `Bearer ${token}`,
+          },
+        )
+        .then(
+          res => Platform.select({ android: 'file://', ios: '' }) + res.path(),
+        ),
     {
       enabled,
-      onSuccess(data) {
-        console.debug({ successData: data });
-      },
-      onError(data) {
-        console.debug({ errorData: data });
-      },
     },
   );
 };
 
-export const useGetTicketAttachments = (
-  request: GetTicketAttachmentRequest,
+export const useGetTicketAttachment = (
+  { ticketId, attachmentId }: GetTicketAttachmentRequest,
+  fileName: string,
   enabled: boolean,
 ) => {
-  const ticketsClient = useTicketsClient();
+  const { token } = useApiContext();
 
   return useQuery(
-    [TICKETS_ATTACHMENTS_KEY, request.ticketId, request.attachmentId],
-    () => ticketsClient.getTicketAttachment(request),
+    prefixKey([TICKETS_ATTACHMENTS_KEY, ticketId, attachmentId]),
+    () =>
+      ReactNativeBlobUtil.config({
+        fileCache: true,
+        path:
+          TemporaryDirectoryPath +
+          Platform.select({ android: '/', ios: '' }) +
+          fileName,
+      })
+        .fetch(
+          'GET',
+          BASE_PATH + `/tickets/${ticketId}/attachments/${attachmentId}`,
+          {
+            Authorization: `Bearer ${token}`,
+          },
+        )
+        .then(
+          res => Platform.select({ android: 'file://', ios: '' }) + res.path(),
+        ),
     {
       enabled,
-      onSuccess(data) {
-        console.debug({ successData: data });
-      },
-      onError(data) {
-        console.debug({ errorData: data });
-      },
     },
   );
 };
