@@ -16,6 +16,8 @@ interface Props {
     | 'link';
   weight?: keyof Theme['fontWeights'];
   italic?: boolean;
+  capitalize?: boolean;
+  uppercase?: boolean;
 }
 
 const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
@@ -37,6 +39,8 @@ export const Text = ({
   weight,
   italic = false,
   style,
+  capitalize,
+  uppercase,
   children,
   ...rest
 }: PropsWithChildren<TextProps & Props>) => {
@@ -58,6 +62,8 @@ export const Text = ({
           fontStyle: 'italic',
         },
         styles[variant],
+        capitalize && { textTransform: 'capitalize' },
+        uppercase && { textTransform: 'uppercase' },
         style,
       ]}
       {...rest}

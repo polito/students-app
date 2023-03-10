@@ -186,6 +186,7 @@ export const TeachingNavigator = () => {
         component={ExamScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
         }}
       />
       <Stack.Screen

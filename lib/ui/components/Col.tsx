@@ -1,19 +1,11 @@
 import React from 'react';
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { usePropsStyle } from '../../../src/utils/theme';
 
 export interface ColProps {
   children?: JSX.Element | JSX.Element[];
   style?: StyleProp<ViewStyle>;
-  pointerEvents?: string;
   alignStart?: boolean;
   alignCenter?: boolean;
   spaceBetween?: boolean;
@@ -26,19 +18,16 @@ export interface ColProps {
   justifyEnd?: boolean;
   flex?: number;
   backgroundColor?: string;
-  onPress?: () => any;
   maxWidth?: boolean;
   onLayout?: any;
   shadow?: boolean;
   noFlex?: boolean;
-  touchableOpacity?: boolean;
   width?: number;
 }
 
 export const Col = ({
   children,
   style,
-  pointerEvents = null,
   alignCenter,
   flexStart,
   justifyStart,
@@ -50,21 +39,14 @@ export const Col = ({
   spaceAround,
   width,
   flex,
-  onPress,
   backgroundColor,
-  touchableOpacity,
   maxWidth,
   ...rest
 }: ColProps) => {
   const renderedStyle: Record<string, string | number> = usePropsStyle(rest);
-  const Component: any = onPress
-    ? touchableOpacity
-      ? TouchableOpacity
-      : Pressable
-    : View;
 
   return (
-    <Component
+    <View
       style={[
         renderedStyle,
         styles.row,
@@ -83,11 +65,9 @@ export const Col = ({
         flex && { flex },
         style,
       ]}
-      pointerEvents={pointerEvents}
-      onPress={onPress}
     >
       {children}
-    </Component>
+    </View>
   );
 };
 

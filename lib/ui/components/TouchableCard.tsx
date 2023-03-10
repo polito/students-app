@@ -28,10 +28,11 @@ export const TouchableCard = ({
   rounded = true,
   ...rest
 }: Props) => {
-  const { shapes } = useTheme();
+  const { colors, shapes } = useTheme();
 
   return (
     <TouchableHighlight
+      underlayColor={colors.touchableHighlight}
       style={[{ borderRadius: rounded ? shapes.lg : undefined }, style]}
       {...rest}
     >

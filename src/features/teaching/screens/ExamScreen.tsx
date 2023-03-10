@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView } from 'react-native';
 
@@ -22,6 +22,7 @@ import {
   useGetExams,
 } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { formatDate, formatDateTime } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
@@ -33,7 +34,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const examsQuery = useGetExams();
   const refreshControl = useRefreshControl(examsQuery);
-  const exam = examsQuery.data?.data.find(e => e.id === id);
+  const exam = examsQuery.data?.find(e => e.id === id);
   const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(exam?.id);
   const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
     useCancelExamBooking(exam?.id);
@@ -65,6 +66,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     return Promise.reject();
   };
 
+  const time = useMemo(() => {
+    if (exam.isTimeToBeDefined) {
+      return `${formatDate(exam.examStartsAt)}, ${t('common.timeToBeDefined')}`;
+    }
+    return formatDateTime(exam.examStartsAt);
+  }, [exam.isTimeToBeDefined, exam.examStartsAt]);
+
   return (
     <>
       <ScrollView
@@ -76,8 +84,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       >
         <EventDetails
           title={exam?.courseName}
-          type={t('common.exam')}
-          time={exam?.examStartsAt}
+          type={t('common.examCall')}
+          time={time}
         />
         <SectionList loading={teacherQuery.isLoading} indented>
           <ListItem

@@ -23,6 +23,7 @@ import { Theme } from '@lib/ui/types/theme';
 import { MenuView } from '@react-native-menu/menu';
 
 import i18next from 'i18next';
+import { Settings } from 'luxon';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -194,9 +195,11 @@ const LanguageListItem = () => {
       onPressAction={({ nativeEvent: { event } }) => {
         const lang = event as 'it' | 'en' | 'system';
         updatePreference('language', lang);
+
+        const uiLanguage = lang === 'system' ? deviceLanguage : lang;
         i18next
-          .changeLanguage(lang === 'system' ? deviceLanguage : lang)
-          .then(() => console.debug('language changed', lang));
+          .changeLanguage(uiLanguage)
+          .then(() => (Settings.defaultLocale = uiLanguage));
       }}
     >
       <ListItem isNavigationAction title={languageLabel(language)} />

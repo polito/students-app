@@ -1,6 +1,9 @@
 {
   "agendaScreen": {
     "backToToday": "Torna a oggi",
+    "emptyDay": "Non hai impegni oggi",
+    "emptyWeek": "Non hai impegni questa settimana",
+    "refresh": "Aggiorna",
     "title": "Agenda"
   },
   "colors": {
@@ -79,6 +82,7 @@
     "takePhotoSubtitle": "Scatta una o più foto e genera un file",
     "teacher": "Docente",
     "theme": "Tema",
+    "timeToBeDefined": "Orario da definire",
     "tickets": "Ticket",
     "today": "Oggi",
     "tomorrow": "Domani",
@@ -136,7 +140,7 @@
     "browseFiles": "Esplora file",
     "empty": "Nessun file disponibile",
     "recentSectionTitle": "File recenti",
-    "title": "Materiali"
+    "title": "Materiale"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -208,6 +212,9 @@
     "absent": "Ass",
     "fail": "Ins",
     "pass": "Sup"
+  },
+  "lectureScreen": {
+    "courseFilesCta": "Vai al materiale del corso"
   },
   "loginScreen": {
     "authnError": "Errore di autenticazione",

@@ -11,6 +11,7 @@ import { EventDetails } from '../../../core/components/EventDetails';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -35,7 +36,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       <EventDetails
         title={lecture.title}
         type={t('common.videoLecture')}
-        time={lecture.createdAt}
+        time={formatDateWithTimeIfNotNull(lecture.createdAt)}
       />
       <SectionList loading={teacherQuery.isLoading}>
         {teacherQuery.data && (

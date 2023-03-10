@@ -1,6 +1,9 @@
 {
   "agendaScreen": {
-    "backToToday": "Torna a oggi",
+    "backToToday": "Back to today",
+    "emptyDay": "You have no events today",
+    "emptyWeek": "You have no events during this week",
+    "refresh": "Refresh",
     "title": "Agenda"
   },
   "colors": {
@@ -78,6 +81,7 @@
     "takePhoto": "Take photo",
     "takePhotoSubtitle": "Take one or more photos and generate a file",
     "theme": "Theme",
+    "timeToBeDefined": "Time to be defined",
     "transcript": "Transcript",
     "upload": "Carica",
     "uploadFile": "Upload file",
@@ -199,6 +203,9 @@
     "absent": "Abs",
     "fail": "Fail",
     "pass": "Pass"
+  },
+  "lectureScreen": {
+    "courseFilesCta": "Go to course files"
   },
   "loginScreen": {
     "authnError": "Authentication error",

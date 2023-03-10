@@ -83,6 +83,10 @@ export type Colors = Record<string, string | ColorPalette> & {
   tabBarInactive: string;
   title: string;
   touchableHighlight: string;
+  agendaBooking: string;
+  agendaDeadline: string;
+  agendaExam: string;
+  agendaLecture: string;
   text: ColorPalette;
   primary: ColorPalette;
   secondary: ColorPalette;

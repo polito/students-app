@@ -342,14 +342,13 @@ export const useGetCourseExams = (
   const { data: exams } = useGetExams();
   return useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'exams']),
-    () => ({
-      data: exams.data.filter(exam => {
+    () =>
+      exams.filter(exam => {
         return exam.courseShortcode === courseShortcode;
       }),
-    }),
     {
-      enabled: courseShortcode != null && exams != null,
-      initialData: { data: [] },
+      enabled: courseShortcode != null && exams !== undefined,
+      initialData: [],
     },
   );
 };
