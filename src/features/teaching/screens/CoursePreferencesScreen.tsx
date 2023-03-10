@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { Platform, RefreshControl, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
@@ -30,12 +30,12 @@ import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const courseFilesCache = useCourseFilesCache();
+  const courseFilesCache = useCourseFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(null);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -109,7 +109,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   return {
                     id: cc.color,
                     title: t(cc.name),
-                    image: 'circle.fill',
+                    image: Platform.select({
+                      ios: 'circle.fill',
+                      android: 'circle',
+                    }),
                     imageColor: cc.color,
                     state: cc.color === coursePrefs?.color ? 'on' : undefined,
                   };

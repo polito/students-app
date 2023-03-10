@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   TouchableHighlightProps,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
@@ -16,6 +17,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
 interface Props extends TouchableHighlightProps {
+  adjustInsets?: boolean;
+  containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
   title: string;
@@ -24,6 +27,7 @@ interface Props extends TouchableHighlightProps {
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
   destructive?: boolean;
+  textExtra?: string;
 }
 
 /**
@@ -43,6 +47,8 @@ export const CtaButton = ({
   action,
   icon,
   rightExtra,
+  textExtra,
+  containerStyle,
   ...rest
 }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
@@ -66,7 +72,19 @@ export const CtaButton = ({
   };
 
   return (
-    <View style={[styles.container, absolute && styles.absolute]}>
+    <View
+      style={[
+        styles.container,
+        absolute && styles.absolute,
+        !!textExtra && { paddingTop: spacing[3] },
+        containerStyle,
+      ]}
+    >
+      {textExtra && (
+        <View>
+          <Text style={styles.textExtra}>{textExtra}</Text>
+        </View>
+      )}
       <TouchableHighlight
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
@@ -94,7 +112,10 @@ export const CtaButton = ({
           <View style={styles.stack}>
             {loading && <ActivityIndicator color="white" />}
           </View>
-          <View style={{ opacity: loading ? 0 : 1 }}>
+          <View style={{ opacity: loading ? 0 : 1, flexDirection: 'row' }}>
+            {/* {!loading && ( */}
+            {/*   <View style={{ marginHorizontal: spacing['1'] }}>{icon}</View> */}
+            {/* )} */}
             {showSuccess ? (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Icon
@@ -140,6 +161,12 @@ const createStyles = ({
   StyleSheet.create({
     container: {
       padding: spacing[4],
+    },
+    textExtra: {
+      fontSize: fontSizes.xs,
+      color: colors.text['500'],
+      paddingBottom: spacing[2],
+      textAlign: Platform.select({ ios: 'center' }),
     },
     absolute: {
       position: 'absolute',

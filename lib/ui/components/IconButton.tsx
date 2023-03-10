@@ -1,4 +1,8 @@
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
 import { Icon } from '@lib/ui/components/Icon';
@@ -8,9 +12,15 @@ type Props = Omit<FAProps, 'style'> &
   TouchableOpacityProps & {
     iconStyle?: FAProps['style'];
     adjustSpacing?: 'left' | 'right';
+    loading?: boolean;
   };
 
-export const IconButton = ({ iconStyle, adjustSpacing, ...rest }: Props) => {
+export const IconButton = ({
+  iconStyle,
+  loading,
+  adjustSpacing,
+  ...rest
+}: Props) => {
   const { spacing } = useTheme();
   const {
     icon,
@@ -50,16 +60,20 @@ export const IconButton = ({ iconStyle, adjustSpacing, ...rest }: Props) => {
       }}
       {...otherButtonProps}
     >
-      <Icon
-        style={[
-          {
-            marginLeft: adjustSpacing === 'left' ? -padding : undefined,
-            marginRight: adjustSpacing === 'right' ? -padding : undefined,
-          },
-          iconStyle,
-        ]}
-        {...iconProps}
-      />
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <Icon
+          style={[
+            {
+              marginLeft: adjustSpacing === 'left' ? -padding : undefined,
+              marginRight: adjustSpacing === 'right' ? -padding : undefined,
+            },
+            iconStyle,
+          ]}
+          {...iconProps}
+        />
+      )}
     </TouchableOpacity>
   );
 };

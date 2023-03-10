@@ -28,16 +28,18 @@
     "yellow": "Giallo"
   },
   "common": {
+    "agent": "Operatore",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "cache": "Cache",
+    "camera": "Fotocamera",
     "cancel": "Annulla",
     "cleanCourseFiles": "Rimuovi file dei corsi",
+    "contact": "Contatto",
     "color": "Colore",
     "comingSoon": "Coming soon",
-    "contact": "Contatto",
     "course": "Corso",
     "course_plural": "Corsi",
     "credits": "Crediti",
@@ -52,6 +54,7 @@
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",
+    "feedbackApp": "Feedback App",
     "file": "File",
     "file_plural": "File",
     "icon": "Icona",
@@ -65,6 +68,7 @@
     "notifications": "Notifiche",
     "ok": "Ok",
     "options": "Opzioni",
+    "confirm": "Conferma",
     "period": "Semestre",
     "preferences": "Preferenze",
     "refresh": "Aggiorna",
@@ -74,15 +78,26 @@
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "stop": "Stop",
     "system": "Di sistema",
+    "takePhoto": "Acquisci con la fotocamera",
+    "takePhotoSubtitle": "Scatta una o più foto e genera un file",
     "teacher": "Docente",
     "theme": "Tema",
     "timeToBeDefined": "Orario da definire",
+    "tickets": "Ticket",
+    "today": "Oggi",
+    "tomorrow": "Domani",
     "transcript": "Libretto",
+    "upload": "Carica",
+    "uploadFile": "Carica file",
+    "uploadFileSubtitle": "Dal tuo dispositivio o dal cloud",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione"
+  },
+  "contactsScreen": {
+    "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -117,17 +132,23 @@
   },
   "courseFileListItem": {
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file"
   },
   "courseFilesTab": {
+    "navigateFolders": "Sfoglia le cartelle",
     "browseFiles": "Esplora file",
     "empty": "Nessun file disponibile",
-    "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
+  },
+  "servicesScreen": {
+    "title": "Servizi",
+    "subTitleOne": "Servizi informativi",
+    "subTitleTwo": "Servizi operativi"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"
@@ -165,6 +186,9 @@
     "showInExtracts": "Mostra negli estratti",
     "showInExtractsSubtitle": "In home screen e agenda"
   },
+  "courseScreen": {
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
@@ -193,10 +217,16 @@
     "courseFilesCta": "Vai al materiale del corso"
   },
   "loginScreen": {
+    "authnError": "Errore di autenticazione",
+    "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
     "ctaSuccessMessage": "Accedi",
+    "forgotYourPassword": "Hai dimenticato la password?",
+    "hidePassword": "Nascondi password",
     "passwordLabel": "Password",
+    "showPassword": "Mostra password",
     "title": "Accedi con le tue credenziali polito.it",
+    "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola"
   },
   "messagesScreen": {
@@ -206,6 +236,63 @@
     "events": "Eventi e iniziative",
     "important": "Importanti",
     "reservationPresence": "Prenotazione presenza"
+  },
+  "ticketsScreen": {
+    "title": "Ticket",
+    "opened": "Ticket aperti",
+    "closed": "Ticket chiusi",
+    "openEmptyState": "Non ci sono ticket aperti",
+    "closedEmptyState": "Non ci sono ticket chiusi",
+    "addNew": "Aggiungi nuovo"
+  },
+  "tickets": {
+    "menuAction": "Azioni ticket",
+    "close": "Close ticket",
+    "closeTip": "Sei sicuro di voler chiudere questo ticket?"
+  },
+  "ticketFaqsScreen": {
+    "title": "FAQ",
+    "findFAQ": "Cerca tra le FAQ",
+    "search": "Parola chiave",
+    "emptyState": "Nessun risutato trovato",
+    "noResultFound": "Non hai trovato quello che cerchi?",
+    "writeTicket": "Scrivi ticket",
+    "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta \ntra le FAQ.\nInserisci delle parole chiave da ricercare."
+  },
+  "ticketScreen": {
+    "new": "Nuovo ticket",
+    "title": "Ticket",
+    "error": "Si è verificato un errore",
+    "reply": "Rispondi",
+    "ticket": "Ticket: ",
+    "createdAt": "Creato il: ",
+    "status": "Stato:  ",
+    "updatedAt": "Ultimo aggiornamento: ",
+    "youCanReopenTheTicket": "(Puoi riaprire il ticket in qualsiasi momento, inviando una risposta)",
+    "infoStatus-new": "Aperto",
+    "infoStatus-pending": "Aperto",
+    "headerBackTitle": "Tickets",
+    "infoStatus-closed": "Chiuso"
+  },
+  "ticketInsertScreen": {
+    "insert": "Inserimento ticket",
+    "title": "Ticket",
+    "sendTicket": "Invia ticket",
+    "headerBackTitle": "Ticket",
+    "subtitle": "Inserisci la tua richiesta",
+    "topicDropdownLabel": "Argomento",
+    "topicDropdownPlaceholder": "Seleziona l'argomento",
+    "subtopicDropdownLabel": "Seleziona Sottoargomento",
+    "subtopicDropdownPlaceholder": "Seleziona il sottoargomento",
+    "subject": "Oggetto",
+    "subjectLabel": "Inserisci l'oggetto del ticket",
+    "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file"
+  },
+  "ticketFaqScreen": {
+    "title": "FAQ",
+    "headerBackTitle": "Nuovo",
+    "noResultFound": "Non hai trovato quello che cerchi?",
+    "writeTicket": "Scrivi ticket"
   },
   "personScreen": {
     "call": "Chiama",
@@ -238,10 +325,8 @@
   "teachingScreen": {
     "title": "Didattica"
   },
-  "theme": {
-    "dark": "Scuro",
-    "light": "Chiaro",
-    "system": "Di sistema"
+  "notificationsScreen": {
+    "title": "Archivio notifiche"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
