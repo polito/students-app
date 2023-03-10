@@ -32,7 +32,7 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 
-export const BookingScreen = ({ route }: Props) => {
+export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
@@ -53,7 +53,8 @@ export const BookingScreen = ({ route }: Props) => {
   const onPressLocation = () => {};
 
   const onPressDelete = () => {
-    bookingMutation.mutate();
+    // TODO ADD FEEDBACK
+    bookingMutation.mutateAsync().then(() => navigation.goBack());
   };
 
   return (
@@ -67,21 +68,23 @@ export const BookingScreen = ({ route }: Props) => {
         {...useRefreshControl(bookingsQuery)}
       >
         <EventDetails title={title} type={t('Booking')} time={timeLabel} />
-        <SectionList>
-          <ListItem
-            leadingItem={
-              <Icon
-                icon={faLocation}
-                size={20}
-                color={colors.secondaryText}
-                style={{ marginRight: spacing[2] }}
-              />
-            }
-            title={booking?.location?.name}
-            subtitle={booking?.location?.type}
-            onPress={onPressLocation}
-          />
-        </SectionList>
+        {booking?.location?.name && (
+          <SectionList>
+            <ListItem
+              leadingItem={
+                <Icon
+                  icon={faLocation}
+                  size={20}
+                  color={colors.secondaryText}
+                  style={{ marginRight: spacing[2] }}
+                />
+              }
+              title={booking.location.name}
+              subtitle={booking.location?.type}
+              onPress={onPressLocation}
+            />
+          </SectionList>
+        )}
         <Section style={styles.sectionSeparator}>
           <Separator />
           <Text variant={'caption'}>{t('Barcode')}</Text>
@@ -106,14 +109,18 @@ export const BookingScreen = ({ route }: Props) => {
           marginBottom: bottomBarHeight,
         }}
       >
-        <CtaButton
-          icon={'close'}
-          title={t('Delete Booking')}
-          action={onPressDelete}
-          loading={bookingMutation.isLoading}
-          successMessage={t('Exam booked')}
-          // onSuccess={() => navigation.goBack()}
-        />
+        {booking.canBeCancelled && (
+          <CtaButton
+            icon={'close'}
+            title={t('Delete Booking')}
+            action={onPressDelete}
+            absolute={false}
+            destructive={true}
+            loading={bookingMutation.isLoading}
+            successMessage={t('Exam booked')}
+            // onSuccess={() => navigation.goBack()}
+          />
+        )}
       </View>
       {/* )}*/}
     </>
