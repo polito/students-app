@@ -26,6 +26,7 @@ interface Props {
   linkToMoreCount?: number;
   trailingItem?: JSX.Element;
   separator?: boolean;
+  accessible?: boolean;
 }
 
 /**
@@ -37,6 +38,7 @@ export const SectionHeader = ({
   titleStyle,
   ellipsizeTitle = true,
   linkTo,
+  accessible = true,
   linkToMoreCount,
   separator = true,
   trailingItem,
@@ -54,16 +56,17 @@ export const SectionHeader = ({
   return (
     <TouchableOpacity
       style={styles.container}
-      accessible={true}
-      accessibilityRole={'button'}
+      accessible={accessible}
+      accessibilityRole={linkTo ? 'button' : undefined}
       onPress={() => {
-        navigation.navigate({
-          name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
-          params:
-            typeof linkTo === 'object' && 'params' in linkTo
-              ? linkTo.params
-              : undefined,
-        });
+        linkTo &&
+          navigation.navigate({
+            name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
+            params:
+              typeof linkTo === 'object' && 'params' in linkTo
+                ? linkTo.params
+                : undefined,
+          });
       }}
     >
       <View style={styles.innerContainer}>

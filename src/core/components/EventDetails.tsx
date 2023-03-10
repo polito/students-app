@@ -1,20 +1,20 @@
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-interface Props {
+type Props = ViewProps & {
   title: string;
   type: string;
   time: string;
 }
 
-export const EventDetails = ({ title, type, time }: Props) => {
+export const EventDetails = ({ title, type, time, ...rest }: Props) => {
   const { spacing, fontSizes } = useTheme();
   return (
     <>
-      <View style={{ padding: spacing[5] }}>
+      <View style={{ padding: spacing[5] }} {...rest}>
         <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
         <Text variant="caption" style={{ marginBottom: spacing[2] }}>
           {type}

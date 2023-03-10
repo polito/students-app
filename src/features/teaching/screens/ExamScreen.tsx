@@ -71,6 +71,25 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     return formatDateTime(exam.examStartsAt);
   }, [exam.isTimeToBeDefined, exam.examStartsAt]);
 
+  const examAccessibilityLabel = useMemo(() => {
+    console.debug(exam.classrooms);
+    const title = exam?.courseName;
+    const time = formatDateTime(exam?.examStartsAt);
+    const classrooms =
+      exam?.classrooms && exam?.classrooms !== '-'
+        ? `${t('examScreen.location')}: ${exam?.classrooms}`
+        : '';
+    const teacher = teacherQuery.data?.data
+      ? `${t('common.teacher')}: ${teacherQuery.data?.data?.firstName} ${
+          teacherQuery.data?.data?.lastName
+        }`
+      : '';
+
+    return `${title}. ${t(
+      'common.dateAndHours',
+    )}: ${time}. ${classrooms} ${teacher}`;
+  }, [exam, t, teacherQuery]);
+
   return (
     <>
       <ScrollView
@@ -79,6 +98,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       >
         <EventDetails
           title={exam?.courseName}
+          accessible={true}
+          accessibilityLabel={examAccessibilityLabel}
           type={t('common.examCall')}
           time={time}
         />

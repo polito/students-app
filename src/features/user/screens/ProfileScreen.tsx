@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   faAngleDown,
@@ -41,7 +41,8 @@ interface Props {
 
 const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const { mutate } = useSwitchCareer();
-  const { colors } = useTheme();
+  const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
   const canSwitchCareer = allCareerIds.length > 1;
@@ -63,16 +64,25 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   };
 
   return (
-    <MenuView actions={actions} onPressAction={onPressAction}>
-      <Row>
-        <Text variant={'link'} style={{ marginRight: 5 }}>
-          {username}
-        </Text>
-        {canSwitchCareer && (
-          <Icon icon={faAngleDown} color={colors.primary[500]} />
-        )}
-      </Row>
-    </MenuView>
+    <View
+      style={{ padding: spacing[2] }}
+      accessible={true}
+      accessibilityRole={canSwitchCareer ? 'button' : 'text'}
+      accessibilityLabel={`${t('common.username')} ${username} ${
+        canSwitchCareer ? t('common.switchCareerLabel') : ''
+      }`}
+    >
+      <MenuView actions={actions} onPressAction={onPressAction}>
+        <Row>
+          <Text variant={'link'} style={{ marginRight: 5 }}>
+            {username}
+          </Text>
+          {canSwitchCareer && (
+            <Icon icon={faAngleDown} color={colors.primary[500]} />
+          )}
+        </Row>
+      </MenuView>
+    </View>
   );
 };
 
@@ -106,7 +116,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
           {student?.firstName} {student?.lastName}
         </Text>
       </Section>
-      <Section>
+      <Section accessible={true}>
         <SectionHeader title={t('profileScreen.smartCard')} />
         <ImageLoader
           imageStyle={styles.smartCard}
