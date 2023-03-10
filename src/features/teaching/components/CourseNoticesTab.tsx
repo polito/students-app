@@ -16,6 +16,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
+import { DateTime } from 'luxon';
 
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -53,6 +54,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           id,
           publishedAt,
           title,
+          contentString: content,
           content: (
             <HtmlView
               baseStyle={{
@@ -76,33 +78,46 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
       {notices &&
         (notices.length ? (
           <List dividers>
-            {notices.map((notice, index) => (
-              <Fragment key={notice.id}>
-                <ListItem
-                  title={notice.title}
-                  subtitle={formatDate(notice.publishedAt)}
-                  onPress={() =>
-                    setNotices(oldNotices =>
-                      oldNotices.map((n, i) =>
-                        i === index ? { ...n, open: !n.open } : n,
-                      ),
-                    )
-                  }
-                  trailingItem={
-                    <Icon
-                      icon={notice.open ? faChevronUp : faChevronDown}
-                      color={colors.secondaryText}
-                      size={fontSizes.lg}
-                      style={{
-                        marginLeft: spacing[2],
-                        marginRight: -spacing[1],
-                      }}
-                    />
-                  }
-                />
-                {notice.open && notice.content}
-              </Fragment>
-            ))}
+            {notices.map((notice, index) => {
+              const linkCount =
+                notice?.contentString?.toString().split(/<a\b[^>]*>/i).length -
+                1;
+              console.debug(linkCount);
+              return (
+                <Fragment key={notice.id}>
+                  <ListItem
+                    title={notice.title}
+                    accessibilityLabel={`${DateTime.fromJSDate(
+                      notice.publishedAt,
+                    ).toFormat('dd/MM/yyyy')}, ${notice.title}. ${
+                      linkCount > 0 && !notice.open
+                        ? t('common.doubleClickToSeeLinks')
+                        : ''
+                    }`}
+                    subtitle={formatDate(notice.publishedAt)}
+                    onPress={() =>
+                      setNotices(oldNotices =>
+                        oldNotices.map((n, i) =>
+                          i === index ? { ...n, open: !n.open } : n,
+                        ),
+                      )
+                    }
+                    trailingItem={
+                      <Icon
+                        icon={notice.open ? faChevronUp : faChevronDown}
+                        color={colors.secondaryText}
+                        size={fontSizes.lg}
+                        style={{
+                          marginLeft: spacing[2],
+                          marginRight: -spacing[1],
+                        }}
+                      />
+                    }
+                  />
+                  {notice.open && notice.content}
+                </Fragment>
+              );
+            })}
           </List>
         ) : (
           <EmptyState

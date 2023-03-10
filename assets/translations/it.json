@@ -72,6 +72,7 @@
     "file": "File",
     "file_plural": "File",
     "elementCount": "Elemento {{count}} di {{total}}",
+    "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "icon": "Icona",
     "it": "Italiano",
     "language": "Lingua",
