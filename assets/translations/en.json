@@ -124,6 +124,7 @@
   },
   "courseFileListItem": {
     "downloadError": "Something went wrong with the download",
+    "openFileError": "Cannot open the file.",
     "reDownloadFile": "Redownload file"
   },
   "courseFilesTab": {
@@ -172,6 +173,9 @@
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda"
   },
+  "courseScreen": {
+    "fileDownloadFailed": "The download failed. Please try again later."
+  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
@@ -197,10 +201,16 @@
     "pass": "Pass"
   },
   "loginScreen": {
+    "authnError": "Authentication error",
+    "authnErrorDescription": "The credentials you provided may be wrong.",
     "cta": "Login",
     "ctaSuccessMessage": "Logged in",
+    "forgotYourPassword": "Forgot your password?",
+    "hidePassword": "Hide password",
     "passwordLabel": "Password",
+    "showPassword": "Show password",
     "title": "Log in with your polito.it credentials",
+    "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID"
   },
   "messagesScreen": {

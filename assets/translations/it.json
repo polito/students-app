@@ -128,6 +128,7 @@
   },
   "courseFileListItem": {
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file"
   },
   "courseFilesTab": {
@@ -181,6 +182,9 @@
     "showInExtracts": "Mostra negli estratti",
     "showInExtractsSubtitle": "In home screen e agenda"
   },
+  "courseScreen": {
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
@@ -206,10 +210,16 @@
     "pass": "Sup"
   },
   "loginScreen": {
+    "authnError": "Errore di autenticazione",
+    "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
     "ctaSuccessMessage": "Accedi",
+    "forgotYourPassword": "Hai dimenticato la password?",
+    "hidePassword": "Nascondi password",
     "passwordLabel": "Password",
+    "showPassword": "Mostra password",
     "title": "Accedi con le tue credenziali polito.it",
+    "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola"
   },
   "messagesScreen": {

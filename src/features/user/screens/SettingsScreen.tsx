@@ -1,6 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+  useColorScheme,
+} from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import { faBroom, faCircleHalfStroke } from '@fortawesome/free-solid-svg-icons';
@@ -23,12 +29,12 @@ import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog
 import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCache } from '../../teaching/hooks/useCourseFilesCache';
+import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const filesCache = useCoursesFilesCache();
+  const filesCache = useCoursesFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(null);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -108,7 +114,7 @@ const VisualizationListItem = () => {
       title: 'theme.dark',
       color: colorSchema.dark,
       state: 'dark' === colorScheme,
-      image: 'circle.fill',
+      image: Platform.select({ ios: 'circle.fill', android: 'circle' }),
     },
     {
       colorSchema: 'light',
@@ -116,7 +122,7 @@ const VisualizationListItem = () => {
       title: 'theme.light',
       color: colorSchema.light,
       state: 'dark' === colorScheme,
-      image: 'circle.fill',
+      image: Platform.select({ ios: 'circle.fill', android: 'circle' }),
     },
     {
       colorSchema: 'light',
@@ -128,7 +134,10 @@ const VisualizationListItem = () => {
           ? 'white'
           : colorSchema.dark,
       state: colorScheme === 'system',
-      image: 'circle.lefthalf.fill',
+      image: Platform.select({
+        ios: 'circle.lefthalf.fill',
+        android: 'circle_half',
+      }),
     },
   ];
 

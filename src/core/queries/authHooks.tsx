@@ -6,6 +6,7 @@ import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
+import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { STUDENT_QUERY_KEY } from './studentHooks';
 
 const useAuthClient = (): AuthApi => {
@@ -37,7 +38,15 @@ export const useLogin = () => {
             manufacturer,
           };
         })
-        .then(() => authClient.login({ loginRequest: dto }));
+        .then(() => authClient.login({ loginRequest: dto }))
+        .then(res => {
+          if (res.data?.type !== 'student') {
+            throw new UnsupportedUserTypeError(
+              `User type ${res.data?.type} not supported by this app`,
+            );
+          }
+          return res;
+        });
     },
     onSuccess: async data => {
       const { token, clientId, username } = data.data;
@@ -45,7 +54,7 @@ export const useLogin = () => {
       refreshContext({ username, token });
     },
     onError: error => {
-      console.debug('loginError', error);
+      console.debug('loginError', JSON.stringify(error));
     },
   });
 };
