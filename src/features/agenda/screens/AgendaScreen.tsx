@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -233,6 +228,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
               shouldLoadNext: true,
             }))
           }
+          onLayout={() => scrollToToday()}
         />
       )}
     </View>
