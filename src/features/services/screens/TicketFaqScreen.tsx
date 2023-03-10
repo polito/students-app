@@ -16,7 +16,7 @@ import { parseDocument } from 'htmlparser2';
 import { SCREEN_WIDTH } from '../../../core/constants';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
-import { ServiceStackParamList } from '../components/ServiceNavigator';
+import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaq'>;
 

@@ -36,7 +36,7 @@ import {
 } from '../../../core/queries/ticketHooks';
 import { pdfSizes } from '../../teaching/constants';
 import { AttachmentBlobCard } from '../components/AttachmentBlobCard';
-import { ServiceStackParamList } from '../components/ServiceNavigator';
+import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketInsert'>;
 

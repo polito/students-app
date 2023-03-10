@@ -16,7 +16,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
-import { ServiceNavigator } from '../../features/services/components/ServiceNavigator';
+import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
@@ -75,7 +75,7 @@ export const RootNavigator = () => {
       />
       <TabNavigator.Screen
         name="ServicesTab"
-        component={ServiceNavigator}
+        component={ServicesNavigator}
         options={{
           headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('common.services'),

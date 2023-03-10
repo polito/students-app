@@ -33,7 +33,7 @@ export type ServiceStackParamList = {
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
 
-export const ServiceNavigator = () => {
+export const ServicesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;

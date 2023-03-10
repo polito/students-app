@@ -12,7 +12,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
-import { ServiceStackParamList } from '../components/ServiceNavigator';
+import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketList'>;

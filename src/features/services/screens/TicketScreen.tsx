@@ -27,7 +27,7 @@ import {
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
 import { ChatMessage } from '../components/ChatMessage';
-import { ServiceStackParamList } from '../components/ServiceNavigator';
+import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketRequest } from '../components/TicketRequest';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
 import { TicketTextField } from '../components/TicketTextField';
@@ -108,9 +108,10 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const [ticketStatusHeight, setTicketStatusHeight] = useState(0);
   const ticket = ticketQuery?.data?.data;
 
-  console.debug({ ticket });
-
-  useEffect(markAsRead, []);
+  useEffect(() => {
+    if (!ticket || ticket.unreadCount === 0) return;
+    markAsRead();
+  }, [ticket]);
 
   useEffect(() => {
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
@@ -143,8 +144,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
       ) || []
     );
   }, [ticket]);
-
-  console.debug({ replies });
 
   const Header = () => {
     return (
@@ -238,8 +237,6 @@ const createStyles = ({
       color: 'red',
     },
     wrapper: {
-      // position: 'absolute',
-      // zIndex: 100,
       paddingVertical: spacing['2'],
       paddingHorizontal: spacing['4'],
     },
@@ -250,7 +247,6 @@ const createStyles = ({
       paddingVertical: 0,
       borderColor: colors.divider,
       width: '100%',
-      // width: SCREEN_WIDTH * 0.9,
     },
     textFieldDisabled: {
       opacity: 0.5,

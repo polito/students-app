@@ -5,6 +5,5 @@ export const formatDateTime = (date: Date) => {
 };
 
 export const formatDate = (date: Date) => {
-  console.debug('date', date);
   return date.toLocaleDateString();
 };

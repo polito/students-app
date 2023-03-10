@@ -67,13 +67,9 @@ export const TicketTextField = ({ disable, ticketId }: Props) => {
   }, [keyboardVisible]);
 
   const onPressUploadFile = async () => {
-    try {
-      const asset = await DocumentPicker.pickSingle({});
-      const blob = await fetch(asset.uri).then(r => r.blob());
-      setAttachment(blob);
-    } catch (e) {
-      console.debug({ errorUploadFile: e });
-    }
+    const asset = await DocumentPicker.pickSingle({});
+    const blob = await fetch(asset.uri).then(r => r.blob());
+    setAttachment(blob);
   };
 
   const onPressTakePhoto = async () => {
@@ -214,7 +210,6 @@ const createStyles = ({
       paddingVertical: spacing['2'],
       paddingHorizontal: spacing['4'],
       backgroundColor: colors.background,
-      // minHeight: 60,
     },
     attachmentContainer: {
       marginBottom: spacing[4],
@@ -226,8 +221,6 @@ const createStyles = ({
       paddingVertical: 0,
       borderColor: colors.divider,
       width: '100%',
-      // height: 'auto',
-      // width: SCREEN_WIDTH * 0.9,
     },
     textFieldDisabled: {
       opacity: 0.5,
