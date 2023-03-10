@@ -29,6 +29,7 @@ export interface RowProps {
   noFlex?: boolean;
   touchableOpacity?: boolean;
   width?: number | string;
+  wrap?: boolean;
 }
 
 export const Row = ({
@@ -50,6 +51,7 @@ export const Row = ({
   backgroundColor,
   maxWidth,
   touchableOpacity,
+  wrap,
   ...rest
 }: RowProps) => {
   const renderedStyle: Record<string, string | number> = usePropsStyle(rest);
@@ -74,6 +76,7 @@ export const Row = ({
         justifyEnd && { justifyContent: 'flex-end' },
         spaceBetween && { justifyContent: 'space-between' },
         spaceAround && { justifyContent: 'space-around' },
+        wrap && { flexWrap: 'wrap' },
         backgroundColor && { backgroundColor },
         width && { width },
         style,

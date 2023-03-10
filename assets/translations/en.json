@@ -26,10 +26,12 @@
   },
   "common": {
     "actionPotentiallyNotUndoable": "This action may not be undoable",
+    "agent": "Agent",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
     "cache": "Cache",
+    "camera": "Camera",
     "cancel": "Cancel",
     "cleanCourseFiles": "Remove all course files",
     "color": "Color",
@@ -49,6 +51,7 @@
     "exam": "Exam",
     "examCall": "Exam call",
     "examCall_plural": "Exam calls",
+    "feedbackApp": "Feedback App",
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",
@@ -72,13 +75,21 @@
     "stop": "Stop",
     "system": "System",
     "teacher": "Teacher",
+    "takePhoto": "Take photo",
+    "takePhotoSubtitle": "Take one or more photos and generate a file",
     "theme": "Theme",
     "transcript": "Transcript",
+    "upload": "Carica",
+    "uploadFile": "Upload file",
+    "uploadFileSubtitle": "From your device or from the cloud",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization"
+  },
+  "contactsScreen": {
+    "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
@@ -209,6 +220,68 @@
     "events": "Events",
     "important": "Important",
     "reservationPresence": "Reservations"
+  },
+  "servicesScreen": {
+    "title": "Services",
+    "subTitleOne": "Information services",
+    "subTitleTwo": "Operational services"
+  },
+  "ticketsScreen": {
+    "title": "Ticket",
+    "opened": "Open tickets",
+    "closed": "Closed tickets",
+    "openEmptyState": "There are no open tickets",
+    "closedEmptyState": "There are no closed tickets",
+    "addNew": "Add ticket"
+  },
+  "tickets": {
+    "menuAction": "Ticket actions",
+    "close": "Close ticket",
+    "closeTip": "Are you sure you want to close this ticket?"
+  },
+  "ticketFaqsScreen": {
+    "title": "FAQ",
+    "findFAQ": "Search the FAQs",
+    "search": "Search",
+    "emptyState": "No results found",
+    "noResultFound": "Didn't find what you are looking for?",
+    "writeTicket": "Write ticket",
+    "findFAQSubtitle": "Before posting a ticket, look for an answer\nin the FAQs.\nEnter keywords to search for."
+  },
+  "ticketScreen": {
+    "new": "New ticket",
+    "title": "Tickets",
+    "error": "Error",
+    "reply": "Reply",
+    "ticket": "Ticket: ",
+    "createdAt": "Created on: ",
+    "status": "Status:  ",
+    "updatedAt": "Last update: ",
+    "youCanReopenTheTicket": "(You can reopen the ticket at any time by submitting a reply)",
+    "infoStatus-new": "Open",
+    "infoStatus-pending": "Open",
+    "headerBackTitle": "Tickets",
+    "infoStatus-closed": "Closed"
+  },
+  "ticketInsertScreen": {
+    "insert": "Insert ticket",
+    "title": "Ticket",
+    "sendTicket": "Send ticket",
+    "headerBackTitle": "Ticket",
+    "subtitle": "Enter your request",
+    "topicDropdownLabel": "Topic",
+    "topicDropdownPlaceholder": "Select topic",
+    "subtopicDropdownLabel": "Select sub topic",
+    "subtopicDropdownPlaceholder": "Select il sub topic",
+    "subject": "Subject",
+    "subjectLabel": "Enter the subject of the ticket",
+    "messageLabel": "Describe your problem and, if you want, attach a file"
+  },
+  "ticketFaqScreen": {
+    "title": "FAQ",
+    "headerBackTitle": "New",
+    "noResultFound": "Didn't find what you are looking for?",
+    "writeTicket": "Open ticket"
   },
   "personScreen": {
     "call": "Call",

@@ -11,6 +11,7 @@ import { Separator } from '@lib/ui/components/Separator';
 import { Link } from '@react-navigation/native';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { parseText } from '../../../src/utils/html-parse';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/theme';
 import { Text } from './Text';
@@ -56,7 +57,7 @@ export const SectionHeader = ({
             accessibilityRole="header"
             {...ellipsis}
           >
-            {title}
+            {parseText(title)}
           </Text>
         </View>
         {trailingItem

@@ -1,5 +1,4 @@
 import {
-  Platform,
   StyleProp,
   TextStyle,
   TouchableHighlight,
@@ -14,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { IS_IOS } from '../../../src/core/constants';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -23,10 +23,12 @@ export interface ListItemProps extends TouchableHighlightProps {
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
+  children?: any;
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
   isNavigationAction?: boolean;
+  card?: boolean;
 }
 
 /**
@@ -47,6 +49,8 @@ export const ListItem = ({
   isNavigationAction,
   disabled,
   style,
+  card,
+  children,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -81,7 +85,7 @@ export const ListItem = ({
         style={[
           {
             minHeight: 60,
-            flexDirection: 'row',
+            flexDirection: card ? 'column' : 'row',
             alignItems: 'center',
             paddingHorizontal: spacing[5],
             paddingVertical: spacing[2],
@@ -89,6 +93,7 @@ export const ListItem = ({
           containerStyle,
         ]}
       >
+        {children}
         {leadingItem && (
           <View
             style={{
@@ -96,8 +101,8 @@ export const ListItem = ({
               height: 38,
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: -7,
-              marginRight: spacing[2],
+              marginLeft: card ? undefined : -7,
+              marginRight: card ? undefined : spacing[2],
             }}
           >
             {leadingItem}
@@ -114,7 +119,7 @@ export const ListItem = ({
                 titleStyle,
               ]}
               weight="normal"
-              numberOfLines={1}
+              numberOfLines={card ? 2 : 1}
               ellipsizeMode="tail"
             >
               {title}
@@ -143,19 +148,21 @@ export const ListItem = ({
             )
           ) : null}
         </View>
-        {!trailingItem &&
-        (linkTo || isNavigationAction) &&
-        Platform.OS === 'ios' ? (
-          <Icon
-            icon={faChevronRight}
-            color={colors.secondaryText}
-            style={{
-              marginLeft: spacing[1],
-              marginRight: -spacing[1],
-            }}
-          />
-        ) : (
-          trailingItem
+        {!card && (
+          <>
+            {!trailingItem && (linkTo || isNavigationAction) && IS_IOS ? (
+              <Icon
+                icon={faChevronRight}
+                color={colors.secondaryText}
+                style={{
+                  marginLeft: spacing[1],
+                  marginRight: -spacing[1],
+                }}
+              />
+            ) : (
+              trailingItem
+            )}
+          </>
         )}
       </View>
     </TouchableHighlight>

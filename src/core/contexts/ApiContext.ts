@@ -9,6 +9,7 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
+  TicketsApi,
 } from '@polito/api-client';
 
 export interface Credentials {
@@ -31,6 +32,7 @@ export interface ApiContextClientsProps {
   people: PeopleApi;
   places: PlacesApi;
   student: StudentApi;
+  tickets: TicketsApi;
 }
 
 export const ApiContext = createContext<ApiContextProps | undefined>(undefined);

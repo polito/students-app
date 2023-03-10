@@ -1,5 +1,5 @@
 export const formatDateTime = (date: Date) => {
-  return `${date.toLocaleDateString()} ${date
+  return `${date?.toLocaleDateString()} ${date
     .toLocaleTimeString()
     .slice(0, -3)}`;
 };
