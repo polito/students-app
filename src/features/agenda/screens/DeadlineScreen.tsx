@@ -25,17 +25,7 @@ export const DeadlineScreen = ({ route }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
-  // TODO refactor
-  const onPressDeadlineUrl = async () => {
-    try {
-      const { url } = deadline;
-      if (url) {
-        await Linking.openURL(url);
-      }
-    } catch (e) {
-      // TODO replace with browser url?!
-    }
-  };
+  const onPressDeadlineUrl = () => Linking.openURL(deadline.url);
 
   return (
     <>
@@ -52,21 +42,23 @@ export const DeadlineScreen = ({ route }: Props) => {
           time={convertMachineDateToFormatDate(deadline?.date)}
         />
         {/* TODO show link only when relevant*/}
-        <SectionList>
-          <ListItem
-            leadingItem={
-              <Icon
-                icon={faLink}
-                size={20}
-                color={colors.primary[400]}
-                style={{ marginRight: spacing[2] }}
-              />
-            }
-            title={deadline?.type}
-            subtitle={deadline?.title}
-            onPress={deadline?.url ? onPressDeadlineUrl : null}
-          />
-        </SectionList>
+        {deadline?.url && (
+          <SectionList>
+            <ListItem
+              leadingItem={
+                <Icon
+                  icon={faLink}
+                  size={20}
+                  color={colors.primary[400]}
+                  style={{ marginRight: spacing[2] }}
+                />
+              }
+              title={deadline?.type}
+              subtitle={deadline?.title}
+              onPress={onPressDeadlineUrl}
+            />
+          </SectionList>
+        )}
       </ScrollView>
     </>
   );
