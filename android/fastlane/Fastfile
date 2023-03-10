@@ -25,7 +25,6 @@ buildProps = {
 
 platform :android do
   before_all do
-    ENV["ENTRY_FILE"] = "index.ts"
     setup_ci if ENV['CI']
   end
 
