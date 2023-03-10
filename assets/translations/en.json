@@ -25,24 +25,18 @@
     "yellow": "Yellow"
   },
   "common": {
-    "tickets": "Ticket",
-    "feedbackApp": "Feedback App",
-    "agent": "Agent",
-    "uploadFile": "Upload file",
-    "uploadFileSubtitle": "From your device or from the cloud",
-    "takePhoto": "Take photo",
-    "takePhotoSubtitle": "Take one or more photos and generate a file",
-    "contact": "Contacts",
-    "camera": "Camera",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
+    "agent": "Agent",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
     "cache": "Cache",
+    "camera": "Camera",
     "cancel": "Cancel",
     "cleanCourseFiles": "Remove all course files",
     "color": "Color",
     "comingSoon": "Coming soon",
+    "contact": "Contacts",
     "course": "Course",
     "course_plural": "Courses",
     "credits": "Credits",
@@ -57,6 +51,7 @@
     "exam": "Exam",
     "examCall": "Exam call",
     "examCall_plural": "Exam calls",
+    "feedbackApp": "Feedback App",
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",
@@ -80,13 +75,21 @@
     "stop": "Stop",
     "system": "System",
     "teacher": "Teacher",
+    "takePhoto": "Take photo",
+    "takePhotoSubtitle": "Take one or more photos and generate a file",
     "theme": "Theme",
     "transcript": "Transcript",
+    "upload": "Carica",
+    "uploadFile": "Upload file",
+    "uploadFileSubtitle": "From your device or from the cloud",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization"
+  },
+  "contactsScreen": {
+    "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
@@ -132,11 +135,6 @@
   },
   "courseGuideScreen": {
     "title": "Course guide"
-  },
-  "servicesScreen": {
-    "title": "Services",
-    "subTitleOne": "Information services",
-    "subTitleTwo": "Operational services"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
@@ -213,6 +211,11 @@
     "important": "Important",
     "reservationPresence": "Reservations"
   },
+  "servicesScreen": {
+    "title": "Services",
+    "subTitleOne": "Information services",
+    "subTitleTwo": "Operational services"
+  },
   "ticketsScreen": {
     "title": "Ticket",
     "opened": "Open tickets",
@@ -237,7 +240,7 @@
   },
   "ticketScreen": {
     "new": "New ticket",
-    "title": "Ticket",
+    "title": "Tickets",
     "error": "Error",
     "reply": "Reply",
     "ticket": "Ticket: ",

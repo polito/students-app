@@ -33,7 +33,7 @@ export const ServicesScreen = () => {
               leadingItem={
                 <Icon icon={faIdCard} size={24} color={colors.primary[500]} />
               }
-              title={t('common.addressBook')}
+              title={t('contactsScreen.title')}
               titleStyle={styles.titleStyle}
               style={[styles.card, styles.disabled]}
               card
@@ -47,7 +47,7 @@ export const ServicesScreen = () => {
               leadingItem={
                 <Icon icon={faComments} size={30} color={colors.primary[500]} />
               }
-              title={t('common.tickets')}
+              title={t('ticketScreen.title')}
               titleStyle={styles.titleStyle}
               linkTo={{ screen: 'Tickets' }}
               style={styles.card}
