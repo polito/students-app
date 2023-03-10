@@ -61,6 +61,7 @@ const CleanCacheListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
+      accessibilityRole={'button'}
       disabled={cacheSize === 0}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
@@ -189,6 +190,8 @@ const LanguageListItem = () => {
         return {
           id: cc,
           title: languageLabel(cc),
+          accessible: true,
+          accessibilityLabel: 'bho spero che lo dica però',
           state: cc === language ? 'on' : undefined,
         };
       })}
@@ -220,21 +223,41 @@ const NotificationListItem = () => {
 
   return (
     <>
-      <SwitchListItem
-        title={t('notifications.important')}
-        value={notifications?.important}
-        onChange={onChangeNotification('important')}
-      />
-      <SwitchListItem
-        title={t('notifications.events')}
-        value={notifications?.events}
-        onChange={onChangeNotification('events')}
-      />
-      <SwitchListItem
-        title={t('notifications.reservationPresence')}
-        value={notifications?.presence}
-        onChange={onChangeNotification('presence')}
-      />
+      <>
+        <SwitchListItem
+          onMagicTap={() => {
+            console.debug('first tap');
+          }}
+          accessible={true}
+          accessibilityLabel={`${t('notifications.important')}. ${t(
+            `common.activeStatus.${notifications?.important}`,
+          )} `}
+          accessibilityRole={'switch'}
+          title={t('notifications.important')}
+          value={notifications?.important}
+          onChange={onChangeNotification('important')}
+        />
+        <SwitchListItem
+          accessible={true}
+          accessibilityLabel={`${t('notifications.events')}. ${t(
+            `common.activeStatus.${notifications?.events}`,
+          )} `}
+          accessibilityRole={'switch'}
+          title={t('notifications.events')}
+          value={notifications?.events}
+          onChange={onChangeNotification('events')}
+        />
+        <SwitchListItem
+          accessible={true}
+          accessibilityLabel={`${t('notifications.presence')}. ${t(
+            `common.activeStatus.${notifications?.presence}`,
+          )} `}
+          accessibilityRole={'switch'}
+          title={t('notifications.reservationPresence')}
+          value={notifications?.presence}
+          onChange={onChangeNotification('presence')}
+        />
+      </>
     </>
   );
 };

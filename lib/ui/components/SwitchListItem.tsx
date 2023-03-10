@@ -22,6 +22,7 @@ export const SwitchListItem = ({
     <ListItem
       title={
         <Text
+          accessible={false}
           variant="title"
           style={{
             fontSize: fontSizes.md,
@@ -40,7 +41,6 @@ export const SwitchListItem = ({
         <Switch
           value={value ?? false}
           disabled={disabled}
-          accessibilityLabel={title}
           onChange={() => {
             onChange?.(!value);
           }}

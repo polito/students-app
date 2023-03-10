@@ -1,5 +1,6 @@
 import {
   StyleProp,
+  TextProps,
   TextStyle,
   TouchableHighlight,
   TouchableHighlightProps,
@@ -31,6 +32,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   subtitleStyle?: StyleProp<TextStyle>;
   isAction?: boolean;
   card?: boolean;
+  titleProps?: TextProps;
 }
 
 /**
@@ -53,6 +55,7 @@ export const ListItem = ({
   style,
   card,
   children,
+  titleProps,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -117,6 +120,7 @@ export const ListItem = ({
               weight="normal"
               numberOfLines={card ? 2 : 1}
               ellipsizeMode="tail"
+              {...titleProps}
             >
               {title}
             </Text>

@@ -45,6 +45,10 @@
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
     "contact": "Contatto",
+    "doubleTapToActive": "Doppio tocco per attivare",
+    "doubleTapToDeactivate": "Doppio tocco per disattivare",
+    "dateAndHours": "Data e ora",
+    "classroomsNotSpecified": "Luogo non specificato",
     "course": "Corso",
     "course_plural": "Corsi",
     "createdAt": "Creato il",
@@ -54,6 +58,7 @@
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
     "done": "Fatto",
+    "username": "Matricola",
     "download": "Scarica",
     "downloadError": "Qualcosa è andato storto con durante il download",
     "ects": "CFU",
@@ -104,6 +109,7 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
+    "switchCareerLabel": "Premi per affettuare un cambio matricola",
     "examStatus": {
       "available": "Disponibile",
       "booked": "Prenotato",
@@ -111,6 +117,10 @@
       "requested": "Prenotazione richiesta",
       "requestRejected": "Prenotazione rifiutata",
       "unavailable": "Non prenotabile"
+    },
+    "activeStatus": {
+      "true": "Attiva",
+      "false": "Non attiva"
     }
   },
   "contactsScreen": {
