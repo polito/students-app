@@ -98,9 +98,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
           title={t('courseInfoTab.agendaSectionTitle')}
           linkTo={{ screen: 'AgendaScreen' }}
         />
-        <SectionList
-          emptyStateText={t('courseInfoTab.agendaSectionEmptyState')}
-        ></SectionList>
+        <SectionList emptyStateText={t('common.comingSoon')}></SectionList>
       </Section>
       {courseExamsQuery.data?.length > 0 && (
         <Section>
@@ -115,10 +113,9 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       <Section>
         <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
         <SectionList indented>
-          {staff.map((member, index) => (
-            // TODO cleanup key when real API are used
+          {staff.map(member => (
             <PersonListItem
-              key={`${member.id}${index}`}
+              key={`${member.id}`}
               person={member}
               subtitle={member.courseRole}
             />
