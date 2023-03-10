@@ -4,7 +4,7 @@ import { CachesDirectoryPath } from 'react-native-fs';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { CourseContext } from '../contexts/CourseContext';
 
-export const useCourseFilesCache = () => {
+export const useCourseFilesCachePath = () => {
   const { data: student } = useGetStudent();
   const courseId = useContext(CourseContext);
 
@@ -13,6 +13,6 @@ export const useCourseFilesCache = () => {
   );
 };
 
-export const useCoursesFilesCache = () => {
+export const useCoursesFilesCachePath = () => {
   return CachesDirectoryPath;
 };
