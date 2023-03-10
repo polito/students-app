@@ -51,7 +51,7 @@ export const ChatMessage = ({
       <View style={styles.containerMessage}>
         <TimeWidget time={message.createdAt} />
         <View style={styles.leftMessage}>
-          {message.isFromAgent && (
+          {message.agentId && (
             <Text style={styles.agentText}>
               #{t('common.agent')} {message.agentId}
             </Text>
