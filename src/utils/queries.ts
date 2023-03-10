@@ -13,6 +13,16 @@ export const prefixKey = (queryKey: (string | number)[]) => {
 };
 
 /**
+ * Add student username as key prefix to all passed keys to allow identity switch while keeping cache
+ *
+ * @param queryKeys
+ */
+export const prefixKeys = (queryKeys: (string | number)[][]) => {
+  const { username } = useApiContext();
+  return queryKeys.map(q => [username, ...q]);
+};
+
+/**
  * Pluck data from API response
  *
  * @param response

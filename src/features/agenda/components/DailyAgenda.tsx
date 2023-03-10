@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
@@ -18,9 +18,10 @@ import { LectureCard } from './LectureCard';
 interface Props {
   agendaDay: AgendaDay;
   isEmptyWeek: boolean;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }
 
-export const DailyAgenda = ({ agendaDay, isEmptyWeek }: Props) => {
+export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
   const styles = useStylesheet(createStyles);
   const dayOfMonth = agendaDay.date.toFormat('d');
   const weekDay = agendaDay.date.toFormat('EEE');
@@ -29,7 +30,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek }: Props) => {
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
 
   return (
-    <Row>
+    <Row onLayout={onLayout}>
       <Col style={[styles.dayColumn]} noFlex>
         {agendaDay.isToday ? (
           <View style={[styles.dayBox, styles.todayBox]}>

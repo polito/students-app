@@ -1,7 +1,7 @@
 import { Booking, Deadline, Lecture } from '@polito/api-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { DateTime, Duration } from 'luxon';
+import { DateTime, Duration, Interval } from 'luxon';
 
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
@@ -11,6 +11,7 @@ import { Exam } from '../../../core/types/Exam';
 import { formatMachineDate, formatTime } from '../../../utils/dates';
 import { popPage, prefixKey, shiftPage } from '../../../utils/queries';
 import { AgendaDay } from '../types/AgendaDay';
+import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import {
   AgendaItem,
   BookingItem,
@@ -147,7 +148,10 @@ const groupItemsByDay = (
   });
 };
 
-export const useGetAgendaWeeks = (coursesPreferences: CoursesPreferences) => {
+export const useGetAgendaWeeks = (
+  coursesPreferences: CoursesPreferences,
+  filters: AgendaFiltersState,
+) => {
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
   const lecturesQuery = useGetLectureWeeks(coursesPreferences);
@@ -158,40 +162,62 @@ export const useGetAgendaWeeks = (coursesPreferences: CoursesPreferences) => {
   const thisMonday = DateTime.now().startOf('week');
 
   return useInfiniteQuery<AgendaWeek>(
-    prefixKey([AGENDA_QUERY_KEY]),
+    prefixKey([AGENDA_QUERY_KEY, JSON.stringify(filters)]),
     async ({ pageParam = thisMonday }: { pageParam?: DateTime }) => {
       const until = pageParam.plus(oneWeek);
 
       const jsSince = pageParam.toJSDate();
       const jsUntil = until.toJSDate();
 
-      const exams = examsQuery.data.filter(
-        e => e.examStartsAt > jsSince && e.examStartsAt < jsUntil,
-      );
-      const bookings = bookingsQuery.data.data.filter(
-        b => b.startsAt > jsSince && b.startsAt < jsUntil,
-      );
+      let exams: Exam[] = [],
+        bookings: Booking[] = [];
 
-      let lectures: Lecture[], deadlines: Deadline[];
+      if (filters.exam) {
+        exams = examsQuery.data.filter(
+          e => e.examStartsAt > jsSince && e.examStartsAt < jsUntil,
+        );
+      }
+
+      if (filters.booking) {
+        bookings = bookingsQuery.data.data.filter(
+          b => b.startsAt > jsSince && b.startsAt < jsUntil,
+        );
+      }
+
+      let lectures: Lecture[] = [],
+        deadlines: Deadline[] = [];
 
       if (pageParam < thisMonday) {
         // Retrieve a week back in time.
         // May cause an API call if data are not cached
         [lectures, deadlines] = await Promise.all([
-          lecturesQuery.fetchPreviousPage({ pageParam }).then(shiftPage),
-          deadlinesQuery.fetchPreviousPage({ pageParam }).then(shiftPage),
+          filters.lecture
+            ? lecturesQuery.fetchPreviousPage({ pageParam }).then(shiftPage)
+            : [],
+          filters.deadline
+            ? deadlinesQuery.fetchPreviousPage({ pageParam }).then(shiftPage)
+            : [],
         ]);
       } else if (pageParam > thisMonday) {
         // Retrieve a week forward in time.
         // May cause an API call if data are not cached
         [lectures, deadlines] = await Promise.all([
-          lecturesQuery.fetchNextPage({ pageParam }).then(popPage),
-          deadlinesQuery.fetchNextPage({ pageParam }).then(popPage),
+          filters.lecture
+            ? lecturesQuery.fetchNextPage({ pageParam }).then(popPage)
+            : [],
+          filters.deadline
+            ? deadlinesQuery.fetchNextPage({ pageParam }).then(popPage)
+            : [],
         ]);
       } else {
         // First page is already fetched, EZ
-        lectures = shiftPage(lecturesQuery);
-        deadlines = shiftPage(deadlinesQuery);
+        if (filters.lecture) {
+          lectures = shiftPage(lecturesQuery);
+        }
+
+        if (filters.deadline) {
+          deadlines = shiftPage(deadlinesQuery);
+        }
       }
 
       const days = groupItemsByDay(
@@ -203,9 +229,11 @@ export const useGetAgendaWeeks = (coursesPreferences: CoursesPreferences) => {
         pageParam === thisMonday,
       );
 
+      const key = pageParam.toSQLDate();
+
       return {
-        since: pageParam,
-        until,
+        key,
+        dateRange: Interval.fromDateTimes(pageParam, until),
         data: days,
       };
     },
@@ -216,10 +244,10 @@ export const useGetAgendaWeeks = (coursesPreferences: CoursesPreferences) => {
         bookingsQuery.isSuccess &&
         deadlinesQuery.isSuccess,
       getNextPageParam: lastPage => {
-        return lastPage.since.plus(oneWeek);
+        return lastPage.dateRange.start.plus(oneWeek);
       },
       getPreviousPageParam: firstPage => {
-        return firstPage.since.minus(oneWeek);
+        return firstPage.dateRange.end.minus(oneWeek);
       },
       staleTime: Infinity, // TODO define
     },

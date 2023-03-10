@@ -59,7 +59,7 @@ export const useGetDeadlineWeeks = () => {
   const oneWeek = Duration.fromDurationLike({ week: 1 });
 
   return useInfiniteQuery(
-    [DEADLINES_QUERY_KEY],
+    prefixKey([DEADLINES_QUERY_KEY]),
     ({ pageParam: since = DateTime.now().startOf('week') }) => {
       const until = since.plus(oneWeek);
 

@@ -8,6 +8,7 @@ import { DateTime, Duration } from 'luxon';
 import { useApiContext } from '../../../core/contexts/ApiContext';
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
+import { prefixKey } from '../../../utils/queries';
 
 export const LECTURES_QUERY_KEY = 'lectures';
 
@@ -41,7 +42,7 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
   }, [courses]);
 
   return useInfiniteQuery<Lecture[]>(
-    [LECTURES_QUERY_KEY],
+    prefixKey([LECTURES_QUERY_KEY]),
     async ({ pageParam: since = DateTime.now().startOf('week') }) => {
       const until = since.plus(oneWeek);
 

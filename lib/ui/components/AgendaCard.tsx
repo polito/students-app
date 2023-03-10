@@ -77,7 +77,7 @@ export const AgendaCard = ({
       style={[
         styles.card,
         color && {
-          borderWidth: 1,
+          borderWidth: 2,
           borderColor: color,
         },
       ]}
@@ -109,7 +109,13 @@ export const AgendaCard = ({
   );
 };
 
-const createStyles = ({ colors, fontSizes, fontWeights, spacing }: Theme) =>
+const createStyles = ({
+  colors,
+  fontSizes,
+  fontWeights,
+  spacing,
+  dark,
+}: Theme) =>
   StyleSheet.create({
     card: {
       width: '100%',
@@ -141,8 +147,8 @@ const createStyles = ({ colors, fontSizes, fontWeights, spacing }: Theme) =>
       fontSize: fontSizes.sm,
     },
     type: {
-      color: colors.agendaCardType,
-      fontSize: fontSizes.xs,
+      color: dark ? colors.text[300] : colors.text[400],
+      fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       marginTop: spacing[1.5],
     },

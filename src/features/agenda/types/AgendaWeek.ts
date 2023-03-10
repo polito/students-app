@@ -1,9 +1,9 @@
-import { DateTime } from 'luxon';
+import { Interval } from 'luxon';
 
 import { AgendaDay } from './AgendaDay';
 
 export interface AgendaWeek {
-  since: DateTime;
-  until: DateTime;
+  key: string;
+  dateRange: Interval;
   data: AgendaDay[];
 }

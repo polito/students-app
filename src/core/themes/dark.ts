@@ -1,5 +1,4 @@
 import { Theme } from '@lib/ui/types/theme';
-import { ContributionGraph } from 'react-native-chart-kit';
 
 import { lightTheme } from './light';
 
@@ -21,6 +20,5 @@ export const darkTheme: Theme = {
     divider: 'rgba(255, 255, 255, .15)',
     touchableHighlight: 'rgba(255, 255, 255, .08)',
     agendaLecture: lightTheme.colors.darkBlue[100],
-    agendaCardType: lightTheme.colors.text[300],
   },
 };
