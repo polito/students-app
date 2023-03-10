@@ -122,6 +122,10 @@
     "activeStatus": {
       "true": "Attiva",
       "false": "Non attiva"
+    },
+    "downloadStatus": {
+      "true": "Scaricato",
+      "false": "Non scaricato"
     }
   },
   "contactsScreen": {
