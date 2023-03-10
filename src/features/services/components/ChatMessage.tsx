@@ -11,7 +11,7 @@ import { TextMessage } from './TextMessage';
 import { TimeWidget } from './TimeWidget';
 
 interface ChatMessageProps {
-  received?: boolean;
+  received: boolean;
   message: TicketReply;
   ticketId: number;
 }
@@ -22,7 +22,7 @@ export const ChatMessage = ({
   ticketId,
 }: ChatMessageProps) => {
   const styles = useStylesheet(createStyles);
-  const hasAttachment = message?.attachments?.length > 0;
+  const hasAttachment = message.attachments?.length > 0;
   const { t } = useTranslation();
 
   const Attachments = () => {
@@ -30,11 +30,10 @@ export const ChatMessage = ({
       <>
         {hasAttachment && (
           <View style={styles.attachmentContainer}>
-            A
-            {(message?.attachments ?? []).map(item => {
+            {message.attachments.map((item, index) => {
               return (
                 <AttachmentCard
-                  key={item.id?.toString()}
+                  key={index}
                   attachment={item}
                   ticketId={ticketId}
                   replyId={message.id}
@@ -50,15 +49,15 @@ export const ChatMessage = ({
   if (received) {
     return (
       <View style={styles.containerMessage}>
-        <TimeWidget time={message?.createdAt} />
+        <TimeWidget time={message.createdAt} />
         <View style={styles.leftMessage}>
-          <Attachments />
-          {!!message?.agentId && (
+          {message.isFromAgent && (
             <Text style={styles.agentText}>
               #{t('common.agent')} {message.agentId}
             </Text>
           )}
-          <TextMessage message={message?.message || ''} />
+          <TextMessage message={message.message || ''} />
+          <Attachments />
           <View style={styles.leftArrow} />
           <View style={styles.leftArrowOverlap} />
         </View>
@@ -68,10 +67,10 @@ export const ChatMessage = ({
 
   return (
     <View style={styles.containerMessage}>
-      <TimeWidget time={message?.createdAt} right />
+      <TimeWidget time={message.createdAt} right />
       <View style={styles.rightMessage}>
+        <TextMessage message={message.message || ''} />
         <Attachments />
-        <TextMessage message={message?.message || ''} />
         <View style={styles.rightArrow} />
         <View style={styles.rightArrowOverlap} />
       </View>

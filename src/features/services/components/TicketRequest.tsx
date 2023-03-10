@@ -1,6 +1,5 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { Ticket } from '@polito/api-client/models/Ticket';
@@ -20,18 +19,20 @@ export const TicketRequest = ({ ticket }: TicketRequestProps) => {
     <View style={styles.containerMessage}>
       <TimeWidget time={ticket?.createdAt} right />
       <View style={styles.rightMessage}>
-        <Row noFlex style={styles.attachmentContainer}>
-          {(ticket?.attachments ?? []).map(item => {
-            return (
-              <AttachmentCard
-                key={item.id.toString()}
-                attachment={item}
-                ticketId={ticket?.id}
-              />
-            );
-          })}
-        </Row>
         <TextMessage message={ticket?.message} />
+        {ticket.hasAttachments && (
+          <View>
+            {ticket.attachments.map((item, index) => {
+              return (
+                <AttachmentCard
+                  key={index}
+                  attachment={item}
+                  ticketId={ticket.id}
+                />
+              );
+            })}
+          </View>
+        )}
         <View style={styles.rightArrow} />
         <View style={styles.rightArrowOverlap} />
       </View>
@@ -43,10 +44,6 @@ const createStyles = ({ spacing, shapes, fontSizes, colors }: Theme) =>
   StyleSheet.create({
     containerMessage: {
       marginTop: spacing['1.5'],
-    },
-    attachmentContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
     },
     messageText: {
       fontSize: fontSizes.sm,

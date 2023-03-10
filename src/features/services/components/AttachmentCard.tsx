@@ -84,9 +84,7 @@ export const AttachmentCard = ({
         <Icon icon={faFile} size={25} color={'white'} />
       )}
       <Col noFlex flexStart style={styles.textContainer}>
-        <Text numberOfLines={1} style={styles.name}>
-          {attachment.filename}
-        </Text>
+        <Text style={styles.name}>{attachment.filename}</Text>
         <Text numberOfLines={1} style={styles.size}>
           {formatFileSize(attachment.sizeInKiloBytes, 0)}
         </Text>
@@ -99,6 +97,7 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     attachmentContainer: {
       alignItems: 'center',
+      paddingTop: spacing[3],
     },
     loaderView: {
       width: 25,
@@ -110,6 +109,7 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.semibold,
       color: 'white',
+      paddingRight: spacing[5],
     },
     size: {
       fontSize: fontSizes.xs,
