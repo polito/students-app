@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
@@ -7,19 +7,28 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
+import { FilesCacheContext } from '../contexts/FilesCacheContext';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { CourseRecentFileListItem } from './CourseRecentFileListItem';
 
 export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  const { refresh } = useContext(FilesCacheContext);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const refreshControl = useRefreshControl(recentFilesQuery);
   const bottomBarAwareStyles = useBottomBarAwareStyles();
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, []),
+  );
 
   return (
     <>
@@ -48,6 +57,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       {recentFilesQuery.data?.length > 0 && (
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
+          icon={faFolderOpen}
           action={() => navigation.navigate('CourseDirectory', { courseId })}
         />
       )}

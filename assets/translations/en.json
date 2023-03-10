@@ -113,6 +113,7 @@
   },
   "courseFileListItem": {
     "downloadError": "Something went wrong with the download",
+    "openFileError": "Cannot open the file.",
     "reDownloadFile": "Redownload file"
   },
   "courseFilesTab": {
@@ -160,6 +161,9 @@
     "noticesSubtitle": "Notices sent by the professor",
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda"
+  },
+  "courseScreen": {
+    "fileDownloadFailed": "The download failed. Please try again later."
   },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"

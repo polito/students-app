@@ -1,7 +1,6 @@
-import { useCallback, useContext, useMemo, useRef } from 'react';
+import { useContext, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
-import { open } from 'react-native-file-viewer';
+import { Alert, Platform } from 'react-native';
 import { extension } from 'react-native-mime-types';
 
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
@@ -17,13 +16,14 @@ import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
-import { useFocusEffect } from '@react-navigation/native';
 
 import { useDownload } from '../../../core/hooks/useDownload';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
+import { notNullish } from '../../../utils/predicates';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 export type CourseRecentFile = CourseFileOverview & {
   location?: string;
@@ -59,33 +59,29 @@ export const CourseFileListItem = ({
     [colors, fontSizes, spacing],
   );
   const courseId = useContext(CourseContext);
-  const courseFilesCache = useCourseFilesCache();
+  const courseFilesCache = useCourseFilesCachePath();
+  const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
     if (courseFilesCache) {
-      return [courseFilesCache, `${item.id}.${extension(item.mimeType)}`].join(
-        '/',
-      );
+      let ext = extension(item.mimeType);
+      if (!ext) {
+        ext = item.name.match(/\.(.+)$/)?.[1];
+      }
+      return [
+        courseFilesCache,
+        [item.id, ext].filter(notNullish).join('.'),
+      ].join('/');
     }
   }, [courseFilesCache, item]);
   const {
     isDownloaded,
     downloadProgress,
-    start,
-    stop,
-    refresh,
-    remove,
-    notifyFileSystemChange,
-  } = useDownload(
-    `${BASE_PATH}/courses/${courseId}/files/${item.id}`,
-    cachedFilePath,
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      // Refresh the current item on screen focus
-      notifyFileSystemChange();
-    }, []),
-  );
+    startDownload,
+    stopDownload,
+    refreshDownload,
+    removeDownload,
+    openFile,
+  } = useDownload(fileUrl, cachedFilePath);
 
   const metrics = useMemo(
     () =>
@@ -116,7 +112,7 @@ export const CourseFileListItem = ({
             accessibilityLabel={t('common.stop')}
             adjustSpacing="right"
             onPress={() => {
-              stop();
+              stopDownload();
             }}
             {...iconProps}
           />
@@ -142,10 +138,10 @@ export const CourseFileListItem = ({
               onPressAction={({ nativeEvent }) => {
                 switch (nativeEvent.event) {
                   case 'refresh':
-                    refresh();
+                    refreshDownload();
                     break;
                   case 'delete':
-                    remove();
+                    removeDownload();
                     break;
                   default:
                 }
@@ -164,14 +160,22 @@ export const CourseFileListItem = ({
     [isDownloaded, downloadProgress],
   );
 
+  const openDownloadedFile = () => {
+    openFile().catch(e => {
+      if (e instanceof UnsupportedFileTypeError) {
+        Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
+      }
+    });
+  };
+
   const listItem = (
     <FileListItem
       onPress={async () => {
         if (downloadProgress == null) {
           if (!isDownloaded) {
-            await start();
+            await startDownload();
           }
-          open(cachedFilePath);
+          openDownloadedFile();
         }
       }}
       isDownloaded={isDownloaded}
@@ -196,8 +200,8 @@ export const CourseFileListItem = ({
             backgroundColor={colors.primary[500]}
             onPress={async () => {
               swipeableRef.current?.recenter();
-              await refresh();
-              open(cachedFilePath);
+              await refreshDownload();
+              openDownloadedFile();
             }}
           />,
           <SwipeableAction
@@ -206,7 +210,7 @@ export const CourseFileListItem = ({
             backgroundColor={colors.danger[500]}
             onPress={() => {
               swipeableRef.current?.recenter();
-              remove();
+              removeDownload();
             }}
           />,
         ]}

@@ -30,12 +30,12 @@ import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const courseFilesCache = useCourseFilesCache();
+  const courseFilesCache = useCourseFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(null);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),

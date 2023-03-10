@@ -23,12 +23,12 @@ import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog
 import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCache } from '../../teaching/hooks/useCourseFilesCache';
+import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const filesCache = useCoursesFilesCache();
+  const filesCache = useCoursesFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(null);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
