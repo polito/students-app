@@ -43,8 +43,9 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
 const createStyles = ({ fontSizes, fontWeights, shapes, spacing }: Theme) =>
   StyleSheet.create({
     badge: {
-      borderRadius: shapes.lg,
-      padding: spacing[2],
+      borderRadius: shapes.xl,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
     },
     badgeText: {
       color: 'white',

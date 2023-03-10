@@ -51,6 +51,7 @@
     "delete": "Elimina",
     "done": "Fatto",
     "download": "Scarica",
+    "email": "Email",
     "en": "Inglese",
     "error": "Errore",
     "exam": "Esame",
@@ -71,6 +72,7 @@
     "ok": "Ok",
     "options": "Opzioni",
     "period": "Semestre",
+    "phone": "Telefono",
     "preferences": "Preferenze",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
@@ -258,11 +260,9 @@
   "personScreen": {
     "call": "Chiama",
     "contacts": "Contatti",
-    "courses": "Corsi",
     "department": "Dipartimento",
     "moreInfo": "Maggiori informazioni",
-    "role": "Ruolo",
-    "sentEmail": "Invia e-mail"
+    "role": "Ruolo"
   },
   "placesScreen": {
     "title": "Luoghi"

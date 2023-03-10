@@ -18,6 +18,7 @@ import {
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { Metric } from '@lib/ui/components/Metric';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -29,12 +30,15 @@ import { Theme } from '@lib/ui/types/theme';
 import { Person, PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { SCREEN_WIDTH } from '../../../core/constants';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { notNullish } from '../../../utils/predicates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
+
+const profileImageSize = 120;
 
 export const PersonScreen = ({ route }: Props) => {
   const { id } = route.params;
@@ -42,80 +46,71 @@ export const PersonScreen = ({ route }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
-  const person: Person = personQuery?.data?.data || {};
-  const courses = person.courses;
+  const person: Person = personQuery?.data?.data;
+  const fullName = [person?.firstName, person?.lastName]
+    .filter(notNullish)
+    .join(' ');
+  useScreenTitle(fullName, false);
+  const courses = person?.courses ?? [];
   const source = { uri: person?.picture };
   const phoneNumbers = person?.phoneNumbers;
 
-  const PersonHeader = () => {
-    const onPressProfileUrl = async () => {
-      await Linking.openURL(person?.profileUrl);
-    };
+  const header = (
+    <Col flexStart maxWidth style={styles.header}>
+      <Text weight="bold" variant="title" style={styles.title}>
+        {fullName}
+      </Text>
+      <Row noFlex mv-xl>
+        {person?.picture ? (
+          <Image source={source} style={styles.profileImage} />
+        ) : (
+          <View style={styles.profileImagePlaceholder}>
+            <Icon icon={faUser} size={fontSizes['3xl']} color={colors.title} />
+          </View>
+        )}
+        <Col flexStart style={styles.info}>
+          <Metric
+            title={t('personScreen.role')}
+            value={person?.role}
+            style={styles.spaceBottom}
+          />
 
-    return (
-      <Col flexStart maxWidth style={styles.header}>
-        <Text weight={'bold'} variant={'title'} style={styles.personName}>
-          {person?.firstName} {person?.lastName}
-        </Text>
-        <Row noFlex mv-xl>
-          {person?.picture ? (
-            <Image source={source} style={styles.image} />
-          ) : (
-            <View style={styles.imageIcon}>
+          <Metric
+            title={t('personScreen.department')}
+            value={person?.facilityShortName}
+            style={styles.spaceBottom}
+          />
+
+          {!!person?.profileUrl && (
+            <Row
+              alignCenter
+              onPress={() => Linking.openURL(person?.profileUrl)}
+            >
               <Icon
-                icon={faUser}
-                size={fontSizes['3xl']}
-                color={colors.primary[500]}
+                icon={faLink}
+                size={20}
+                color={colors.link}
+                style={styles.linkIcon}
               />
-            </View>
+              <Text variant="link">{t('personScreen.moreInfo')}</Text>
+            </Row>
           )}
-          <Col flexStart style={styles.info}>
-            <Text style={styles.role}>{t('personScreen.role')}</Text>
-            <Text weight={'semibold'}>{person.role}</Text>
-
-            <Text style={styles.department}>
-              {t('personScreen.department')}
-            </Text>
-            <Text weight={'semibold'}>{person.facilityShortName}</Text>
-
-            {!!person?.profileUrl && (
-              <Row
-                alignCenter
-                onPress={onPressProfileUrl}
-                style={styles.profileUrl}
-              >
-                <View style={styles.icon}>
-                  <Icon icon={faLink} size={20} color={colors.primary[400]} />
-                </View>
-                <Text style={styles.link}>{t('personScreen.moreInfo')}</Text>
-              </Row>
-            )}
-          </Col>
-        </Row>
-      </Col>
-    );
-  };
-
-  const onPressEmail = async () =>
-    await Linking.openURL(`mailto:${person.email}`);
+        </Col>
+      </Row>
+    </Col>
+  );
 
   const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
-    const onPressPhone = async () =>
-      await Linking.openURL(`tel:${phoneNumber.full}`);
-
     return (
       <ListItem
         key={index}
-        titleStyle={styles.titleStyle}
-        leadingItem={
-          <Icon icon={faPhone} color={colors.text[500]} size={fontSizes.xl} />
-        }
-        title={t('personScreen.call')}
-        subtitle={
-          phoneNumber.full +
-          (phoneNumber?.internal ? ` / ${phoneNumber?.internal}` : '')
-        }
-        onPress={onPressPhone}
+        isNavigationAction
+        leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
+        title={t('common.phone')}
+        subtitle={[phoneNumber.full, phoneNumber?.internal]
+          .filter(notNullish)
+          .join(' / ')}
+        onPress={() => Linking.openURL(`tel:${phoneNumber.full}`)}
       />
     );
   };
@@ -128,7 +123,6 @@ export const PersonScreen = ({ route }: Props) => {
     return (
       <ListItem
         key={course.id}
-        titleStyle={styles.courseTitleStyle}
         title={course.name}
         subtitle={`${course.year} - ${course.role}`}
         isAction
@@ -139,92 +133,61 @@ export const PersonScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...useRefreshControl(personQuery)} />}
+      contentInsetAdjustmentBehavior="automatic"
     >
-      <PersonHeader />
+      {header}
       <Section>
         <SectionHeader title={t('personScreen.contacts')} />
         <SectionList>
           {phoneNumbers?.map(renderPhoneNumber)}
           <ListItem
-            titleStyle={styles.titleStyle}
-            leadingItem={
-              <Icon
-                icon={faEnvelope}
-                color={colors.text[500]}
-                size={fontSizes.xl}
-              />
-            }
-            title={t('personScreen.sentEmail')}
+            isNavigationAction
+            leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+            title={t('common.email')}
             subtitle={person?.email}
-            onPress={onPressEmail}
+            onPress={() => Linking.openURL(`mailto:${person?.email}`)}
           />
         </SectionList>
       </Section>
       <Section>
-        <SectionHeader title={t('personScreen.courses')} />
+        <SectionHeader title={t('common.course_plural')} />
         <SectionList>{courses.map(renderCourse)}</SectionList>
       </Section>
     </ScrollView>
   );
 };
 
-const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
-  StyleSheet.create({
-    personName: {
+const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
+  const profileImage = {
+    width: profileImageSize,
+    height: profileImageSize,
+    borderRadius: profileImageSize,
+  };
+  return StyleSheet.create({
+    title: {
       fontSize: fontSizes['2xl'],
-      paddingHorizontal: spacing[2],
-      paddingTop: spacing[3],
-    },
-    titleStyle: {
-      color: colors.primary[400],
-      fontWeight: '600',
-    },
-    courseTitleStyle: {
-      fontWeight: '500',
-      fontSize: fontSizes.md,
-      color: colors.text[500],
-    },
-    link: {
-      color: colors.primary[400],
     },
     header: {
-      paddingHorizontal: spacing[3],
-      marginBottom: spacing[1],
-    },
-    icon: {
-      padding: spacing[1],
-      flex: 0,
-    },
-    department: {
-      marginTop: fontSizes.md,
-      color: colors.text[600],
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
     },
     info: {
-      paddingLeft: spacing[3],
-      paddingTop: spacing[1],
+      paddingLeft: spacing[4],
     },
-    role: {
-      color: colors.text[600],
-    },
-    image: {
-      width: SCREEN_WIDTH / 4,
-      height: SCREEN_WIDTH / 4,
-      borderRadius: SCREEN_WIDTH / 4,
-    },
-    profileUrl: {
-      marginTop: spacing[2],
-    },
-    imageIcon: {
-      width: SCREEN_WIDTH * 0.3,
-      height: SCREEN_WIDTH * 0.3,
-      borderColor: colors.primary[500],
-      borderWidth: 1,
-      backgroundColor: colors.text[200],
-      borderRadius: SCREEN_WIDTH * 0.3,
+    profileImage,
+    profileImagePlaceholder: {
+      ...profileImage,
+      backgroundColor: colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'column',
     },
+    spaceBottom: {
+      marginBottom: spacing[2],
+    },
+    linkIcon: {
+      marginRight: spacing[2],
+    },
   });
+};
