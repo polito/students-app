@@ -74,7 +74,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
         <ScreenTitle title={courseQuery.data?.data.name} />
         <Text variant="caption">{courseQuery.data?.data.shortcode}</Text>
       </Section>
-      <Card style={styles.metricsCard}>
+      <Card style={styles.metricsCard} accessible={true}>
         <Grid>
           <Metric
             title={t('common.period')}
@@ -92,7 +92,6 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
           />
         </Grid>
       </Card>
-
       <Section>
         <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
         <SectionList emptyStateText={t('common.comingSoon')}></SectionList>

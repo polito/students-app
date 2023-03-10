@@ -43,8 +43,14 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           color={colors.primary[400]}
           size={fontSizes.lg}
           accessibilityRole={'button'}
-          adjustSpacing="right"
           accessibilityLabel={t('common.preferences')}
+          hitSlop={{
+            left: +spacing[3],
+            right: +spacing[3],
+          }}
+          style={{
+            right: -12,
+          }}
           onPress={() => {
             navigation.navigate('CoursePreferences', { courseId: id });
           }}
