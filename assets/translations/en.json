@@ -312,7 +312,8 @@
     "trainingOffer": "Training offer"
   },
   "sectionHeader": {
-    "cta": "See all"
+    "cta": "See all",
+    "ctaMoreSuffix": "({{- count}} more)"
   },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",

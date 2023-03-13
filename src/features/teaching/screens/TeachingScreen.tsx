@@ -38,7 +38,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
-  const preferences = useContext(PreferencesContext);
+  const { courses: coursePreferences } = useContext(PreferencesContext);
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -48,13 +48,25 @@ export const TeachingScreen = ({ navigation }: Props) => {
     examsQuery,
     studentQuery,
   );
+
+  const courses = useMemo(() => {
+    if (!coursesQuery.data?.data) return [];
+
+    return coursesQuery.data?.data
+      .filter(c => c.id && !coursePreferences[c.id]?.isHidden)
+      .sort(
+        (a, b) =>
+          coursePreferences[a.id]?.order - coursePreferences[b.id]?.order,
+      );
+  }, [coursesQuery, coursePreferences]);
+
   const exams = useMemo(() => {
     if (!coursesQuery.data?.data || !examsQuery.data) return [];
 
     const hiddenNonModuleCourses: string[] = [];
 
-    Object.keys(preferences.courses).forEach((key: string) => {
-      if (preferences.courses[+key].isHidden) {
+    Object.keys(coursePreferences).forEach((key: string) => {
+      if (coursePreferences[+key].isHidden) {
         const hiddenCourse = coursesQuery.data.data.find(c => c.id === +key);
         if (hiddenCourse && !hiddenCourse.isModule)
           hiddenNonModuleCourses.push(hiddenCourse.shortcode);
@@ -79,31 +91,26 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionHeader
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
+            linkToMoreCount={coursesQuery.data?.data.length - courses.length}
           />
           <SectionList
             loading={coursesQuery.isLoading}
             indented
             emptyStateText={t('coursesScreen.emptyState')}
           >
-            {coursesQuery.data?.data
-              .sort(
-                (a, b) =>
-                  preferences.courses[a.id]?.order -
-                  preferences.courses[b.id]?.order,
-              )
-              .filter(c => c.id && !preferences.courses[c.id]?.isHidden)
-              .map(course => (
-                <CourseListItem
-                  key={course.shortcode + '' + course.id}
-                  course={course}
-                />
-              ))}
+            {courses.map(course => (
+              <CourseListItem
+                key={course.shortcode + '' + course.id}
+                course={course}
+              />
+            ))}
           </SectionList>
         </Section>
         <Section>
           <SectionHeader
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
+            linkToMoreCount={examsQuery.data?.length - exams.length}
           />
           <SectionList
             loading={examsQuery.isLoading}
@@ -116,10 +123,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           </SectionList>
         </Section>
         <Section>
-          <SectionHeader
-            title={t('common.transcript')}
-            linkTo={{ screen: 'Transcript' }}
-          />
+          <SectionHeader title={t('common.transcript')} />
 
           <Card style={styles.sectionContent}>
             {studentQuery.isLoading ? (

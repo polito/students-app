@@ -21,6 +21,7 @@ interface Props {
   titleStyle?: StyleProp<TextStyle>;
   ellipsizeTitle?: boolean;
   linkTo?: To<any>;
+  linkToMoreCount?: number;
   trailingItem?: JSX.Element;
   separator?: boolean;
 }
@@ -34,6 +35,7 @@ export const SectionHeader = ({
   titleStyle,
   ellipsizeTitle = true,
   linkTo,
+  linkToMoreCount,
   separator = true,
   trailingItem,
 }: Props) => {
@@ -64,7 +66,13 @@ export const SectionHeader = ({
           ? trailingItem
           : linkTo && (
               <Link to={linkTo}>
-                <Text variant="link">{t('sectionHeader.cta')}</Text>
+                <Text variant="link">
+                  {t('sectionHeader.cta')}{' '}
+                  {linkToMoreCount &&
+                    t('sectionHeader.ctaMoreSuffix', {
+                      count: linkToMoreCount,
+                    })}
+                </Text>
               </Link>
             )}
       </View>
