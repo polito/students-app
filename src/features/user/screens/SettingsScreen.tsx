@@ -154,7 +154,7 @@ const VisualizationListItem = () => {
         return {
           id: cc.id,
           title: themeLabel(cc.id),
-          image: cc.image,
+          profileImage: cc.profileImage,
           imageColor: cc.color,
           state: cc.id === colorScheme ? 'on' : undefined,
         };

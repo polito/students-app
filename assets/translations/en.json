@@ -51,6 +51,7 @@
     "delete": "Delete",
     "done": "Done",
     "download": "Download",
+    "email": "Email",
     "en": "English",
     "error": "Error",
     "exam": "Exam",
@@ -71,6 +72,7 @@
     "ok": "Ok",
     "options": "Options",
     "period": "Period",
+    "phone": "Phone",
     "preferences": "Preferences",
     "refresh": "Refresh",
     "remove": "Remove",
@@ -253,11 +255,9 @@
   "personScreen": {
     "call": "Call",
     "contacts": "Contacts",
-    "courses": "Courses",
     "department": "Department",
     "moreInfo": "More information",
-    "role": "Role",
-    "sentEmail": "Send e-mail"
+    "role": "Role"
   },
   "placesScreen": {
     "title": "Places"
