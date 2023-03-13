@@ -1,25 +1,20 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  faCalendar,
-  faCalendarCheck,
-} from '@fortawesome/free-regular-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamStatusEnum } from '@polito/api-client';
 
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { Exam } from '../../../core/types/Exam';
 import { formatDate, formatDateTime } from '../../../utils/dates';
+import { CourseIcon } from './CourseIcon';
 
 interface Props {
   exam: Exam;
 }
 
 export const ExamListItem = ({ exam }: Props) => {
-  const { fontSizes } = useTheme();
   const { t } = useTranslation();
+  const { courses: coursesPreferences } = usePreferencesContext();
 
   const subtitle = useMemo(() => {
     let dateTime;
@@ -45,11 +40,10 @@ export const ExamListItem = ({ exam }: Props) => {
       title={exam.courseName}
       subtitle={subtitle}
       leadingItem={
-        exam.status === ExamStatusEnum.Booked ? (
-          <Icon icon={faCalendarCheck} size={fontSizes['2xl']} />
-        ) : (
-          <Icon icon={faCalendar} size={fontSizes['2xl']} />
-        )
+        <CourseIcon
+          icon={coursesPreferences[exam.courseId]?.icon}
+          color={coursesPreferences[exam.courseId]?.color}
+        />
       }
     />
   );

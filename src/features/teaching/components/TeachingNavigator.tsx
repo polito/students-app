@@ -186,7 +186,6 @@ export const TeachingNavigator = () => {
         name="Exams"
         component={ExamsScreen}
         options={{
-          headerLargeTitle: false,
           headerTitle: t('common.examCall_plural'),
         }}
       />

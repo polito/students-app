@@ -30,6 +30,8 @@ export interface ExamItem extends BaseAgendaItem {
   isTimeToBeDefined: boolean;
   teacherId: number;
   classroom: string;
+  color: string;
+  icon: string;
 }
 
 export interface LectureItem extends BaseAgendaItem {
