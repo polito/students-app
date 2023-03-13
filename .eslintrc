@@ -5,11 +5,18 @@
     "prettier"
   ],
   "plugins": [
-    "unused-imports"
+    "unused-imports",
+    "react-native"
   ],
   "parserOptions": {
     "project": "tsconfig.json",
     "sourceType": "module"
+  },
+  "rules": {
+    "react-native/split-platform-components": 2,
+    "react-native/no-color-literals": 1,
+    "react-native/no-raw-text": 2,
+    "react-native/no-single-element-style-arrays": 2
   },
   "overrides": [
     {
@@ -29,7 +36,6 @@
           }
         ],
         "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-use-before-define": "off",
         "no-console": ["error", {

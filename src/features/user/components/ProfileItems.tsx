@@ -14,7 +14,7 @@ export const ProfileNotificationItem = () => {
       title={t('messagesScreen.title')}
       linkTo={'Notifications'}
       leadingItem={
-        <Icon icon={faBell} color={colors.text['500']} size={fontSizes.xl} />
+        <Icon icon={faBell} color={colors.text[500]} size={fontSizes.xl} />
       }
     />
   );
@@ -27,7 +27,7 @@ export const ProfileSettingItem = () => {
     <ListItem
       title={t('profileScreen.settings')}
       leadingItem={
-        <Icon icon={faCog} color={colors.text['500']} size={fontSizes.xl} />
+        <Icon icon={faCog} color={colors.text[500]} size={fontSizes.xl} />
       }
       linkTo={'Settings'}
     />

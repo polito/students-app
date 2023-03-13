@@ -30,7 +30,6 @@ import { Person, PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { SCREEN_WIDTH } from '../../../core/constants';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -41,7 +40,6 @@ export const PersonScreen = ({ route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
   const person: Person = personQuery?.data?.data || {};
@@ -83,7 +81,6 @@ export const PersonScreen = ({ route }: Props) => {
             {!!person?.profileUrl && (
               <Row
                 alignCenter
-                touchableOpacity
                 onPress={onPressProfileUrl}
                 style={styles.profileUrl}
               >
@@ -111,7 +108,7 @@ export const PersonScreen = ({ route }: Props) => {
         key={index}
         titleStyle={styles.titleStyle}
         leadingItem={
-          <Icon icon={faPhone} color={colors.text['500']} size={fontSizes.xl} />
+          <Icon icon={faPhone} color={colors.text[500]} size={fontSizes.xl} />
         }
         title={t('personScreen.call')}
         subtitle={
@@ -134,7 +131,7 @@ export const PersonScreen = ({ route }: Props) => {
         titleStyle={styles.courseTitleStyle}
         title={course.name}
         subtitle={`${course.year} - ${course.role}`}
-        isNavigationAction
+        isAction
         onPress={onPressCourse}
       />
     );
@@ -142,12 +139,8 @@ export const PersonScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
-      contentContainerStyle={{
-        paddingBottom: bottomBarAwareStyles.paddingBottom + 40,
-        marginTop: 10,
-      }}
-      refreshControl={<RefreshControl {...useRefreshControl(personQuery)} />}
       contentInsetAdjustmentBehavior="automatic"
+      refreshControl={<RefreshControl {...useRefreshControl(personQuery)} />}
     >
       <PersonHeader />
       <Section>
@@ -159,7 +152,7 @@ export const PersonScreen = ({ route }: Props) => {
             leadingItem={
               <Icon
                 icon={faEnvelope}
-                color={colors.text['500']}
+                color={colors.text[500]}
                 size={fontSizes.xl}
               />
             }
@@ -191,14 +184,14 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
     courseTitleStyle: {
       fontWeight: '500',
       fontSize: fontSizes.md,
-      color: colors.text['500'],
+      color: colors.text[500],
     },
     link: {
       color: colors.primary[400],
     },
     header: {
-      paddingHorizontal: spacing['3'],
-      marginBottom: spacing['1'],
+      paddingHorizontal: spacing[3],
+      marginBottom: spacing[1],
     },
     icon: {
       padding: spacing[1],
@@ -206,14 +199,14 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
     },
     department: {
       marginTop: fontSizes.md,
-      color: colors.text['600'],
+      color: colors.text[600],
     },
     info: {
-      paddingLeft: spacing['3'],
+      paddingLeft: spacing[3],
       paddingTop: spacing[1],
     },
     role: {
-      color: colors.text['600'],
+      color: colors.text[600],
     },
     image: {
       width: SCREEN_WIDTH / 4,
@@ -221,14 +214,14 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
       borderRadius: SCREEN_WIDTH / 4,
     },
     profileUrl: {
-      marginTop: spacing['2'],
+      marginTop: spacing[2],
     },
     imageIcon: {
       width: SCREEN_WIDTH * 0.3,
       height: SCREEN_WIDTH * 0.3,
       borderColor: colors.primary[500],
       borderWidth: 1,
-      backgroundColor: colors.text['200'],
+      backgroundColor: colors.text[200],
       borderRadius: SCREEN_WIDTH * 0.3,
       justifyContent: 'center',
       alignItems: 'center',

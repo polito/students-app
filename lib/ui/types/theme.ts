@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TextStyle } from 'react-native';
 
 export interface Theme {
@@ -7,6 +8,7 @@ export interface Theme {
     sm: number;
     md: number;
     lg: number;
+    xl: number;
   };
   spacing: {
     px: string | number;

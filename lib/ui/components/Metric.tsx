@@ -2,12 +2,13 @@ import { View } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Props as CardProps } from './Card';
-import { Text } from './Text';
+import { Text, Props as TextProps } from './Text';
 
 interface Props {
   title: string;
   value: string | number | JSX.Element;
   color?: string;
+  valueStyle?: TextProps['style'];
 }
 
 /**
@@ -21,11 +22,14 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
       <Text>{title}</Text>
       {['string', 'number'].includes(typeof value) ? (
         <Text
-          style={{
-            color: color ?? colors.secondary[500],
-            fontSize: fontSizes.lg,
-            fontWeight: fontWeights.semibold,
-          }}
+          style={[
+            {
+              color: color ?? colors.secondary[500],
+              fontSize: fontSizes.lg,
+              fontWeight: fontWeights.semibold,
+            },
+            rest.valueStyle,
+          ]}
         >
           {value}
         </Text>

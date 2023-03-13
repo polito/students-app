@@ -58,7 +58,7 @@ const CleanCourseFilesListItem = () => {
 
   return (
     <ListItem
-      isNavigationAction
+      isAction
       title={t('coursePreferencesScreen.cleanCourseFiles')}
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
@@ -129,13 +129,13 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               >
                 <ListItem
                   title={t('common.color')}
-                  isNavigationAction
+                  isAction
                   leadingItem={<CourseIcon color={coursePrefs?.color} />}
                 />
               </MenuView>
               <ListItem
                 title={t('common.icon')}
-                isNavigationAction
+                isAction
                 onPress={() =>
                   navigation.navigate('CourseIconPicker', { courseId })
                 }
@@ -178,7 +178,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.avvisidoc}
                 leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />
@@ -189,7 +189,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.matdid}
                 leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />
@@ -202,7 +202,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 leadingItem={
                   <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
                 }
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />

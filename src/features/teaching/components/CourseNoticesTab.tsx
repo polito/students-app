@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView } from 'react-native';
-import RenderHTML, { Document } from 'react-native-render-html';
+import { Document } from 'react-native-render-html';
 
 import {
   faChevronDown,
@@ -17,8 +17,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
+import { HtmlView } from '../../../core/components/HtmlView';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
 
@@ -52,19 +54,12 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           publishedAt,
           title,
           content: (
-            <RenderHTML
-              defaultTextProps={{
-                selectable: true,
-                selectionColor: colors.secondary[600],
-              }}
+            <HtmlView
               baseStyle={{
+                paddingTop: 0,
                 paddingHorizontal: spacing[5],
-                color: colors.prose,
-                fontFamily: 'Montserrat',
-                fontSize: fontSizes.sm,
               }}
               source={{ dom }}
-              systemFonts={['Montserrat']}
             />
           ),
           open: false,
@@ -75,7 +70,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={GlobalStyles.grow}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {notices &&

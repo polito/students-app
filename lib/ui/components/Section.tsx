@@ -12,10 +12,11 @@ export const Section = ({
   return (
     <View
       style={[
-        style,
         {
+          flexDirection: 'column',
           marginBottom: spacing[5],
         },
+        style,
       ]}
       accessible={true}
       {...rest}

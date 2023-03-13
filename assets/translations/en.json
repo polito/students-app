@@ -39,9 +39,11 @@
     "cleanCourseFiles": "Remove all course files",
     "color": "Color",
     "comingSoon": "Coming soon",
+    "confirm": "Confirm",
     "contact": "Contacts",
     "course": "Course",
     "course_plural": "Courses",
+    "createdAt": "Created at",
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} ECTS",
     "deadline": "Deadline",
@@ -75,17 +77,18 @@
     "retract": "Retract",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
+    "status": "Status",
     "stop": "Stop",
     "system": "System",
     "teacher": "Teacher",
-    "takePhoto": "Take photo",
-    "takePhotoSubtitle": "Take one or more photos and generate a file",
     "theme": "Theme",
+    "ticket_plural": "Tickets",
     "timeToBeDefined": "Time to be defined",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
     "transcript": "Transcript",
+    "updatedAt": "Updated at",
     "upload": "Carica",
-    "uploadFile": "Upload file",
-    "uploadFileSubtitle": "From your device or from the cloud",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
@@ -188,6 +191,19 @@
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses"
   },
+  "createTicketScreen": {
+    "insert": "Insert ticket",
+    "messageLabel": "Describe your problem and, if you want, attach a file",
+    "sendTicket": "Send ticket",
+    "subject": "Subject",
+    "subjectLabel": "Enter the subject of the ticket",
+    "subtitle": "Enter your request",
+    "subtopic": "Subtopic",
+    "subtopicDescription": "Select the subtopic",
+    "title": "Create ticket",
+    "topic": "Topic",
+    "topicDescription": "Select topic"
+  },
   "examScreen": {
     "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
@@ -223,72 +239,16 @@
   "messagesScreen": {
     "title": "Messages archive"
   },
+  "messagingView": {
+    "pickFile": "Pick file",
+    "pickFileHint": "From your device or from the cloud",
+    "takePhoto": "Take photo",
+    "takePhotoHint": "Take one or more photos and generate a file"
+  },
   "notifications": {
     "events": "Events",
     "important": "Important",
     "reservationPresence": "Reservations"
-  },
-  "servicesScreen": {
-    "title": "Services",
-    "subTitleOne": "Information services",
-    "subTitleTwo": "Operational services"
-  },
-  "ticketsScreen": {
-    "title": "Ticket",
-    "opened": "Open tickets",
-    "closed": "Closed tickets",
-    "openEmptyState": "There are no open tickets",
-    "closedEmptyState": "There are no closed tickets",
-    "addNew": "Add ticket"
-  },
-  "tickets": {
-    "menuAction": "Ticket actions",
-    "close": "Close ticket",
-    "closeTip": "Are you sure you want to close this ticket?"
-  },
-  "ticketFaqsScreen": {
-    "title": "FAQ",
-    "findFAQ": "Search the FAQs",
-    "search": "Search",
-    "emptyState": "No results found",
-    "noResultFound": "Didn't find what you are looking for?",
-    "writeTicket": "Write ticket",
-    "findFAQSubtitle": "Before posting a ticket, look for an answer\nin the FAQs.\nEnter keywords to search for."
-  },
-  "ticketScreen": {
-    "new": "New ticket",
-    "title": "Tickets",
-    "error": "Error",
-    "reply": "Reply",
-    "ticket": "Ticket: ",
-    "createdAt": "Created on: ",
-    "status": "Status:  ",
-    "updatedAt": "Last update: ",
-    "youCanReopenTheTicket": "(You can reopen the ticket at any time by submitting a reply)",
-    "infoStatus-new": "Open",
-    "infoStatus-pending": "Open",
-    "headerBackTitle": "Tickets",
-    "infoStatus-closed": "Closed"
-  },
-  "ticketInsertScreen": {
-    "insert": "Insert ticket",
-    "title": "Ticket",
-    "sendTicket": "Send ticket",
-    "headerBackTitle": "Ticket",
-    "subtitle": "Enter your request",
-    "topicDropdownLabel": "Topic",
-    "topicDropdownPlaceholder": "Select topic",
-    "subtopicDropdownLabel": "Select sub topic",
-    "subtopicDropdownPlaceholder": "Select il sub topic",
-    "subject": "Subject",
-    "subjectLabel": "Enter the subject of the ticket",
-    "messageLabel": "Describe your problem and, if you want, attach a file"
-  },
-  "ticketFaqScreen": {
-    "title": "FAQ",
-    "headerBackTitle": "New",
-    "noResultFound": "Didn't find what you are looking for?",
-    "writeTicket": "Open ticket"
   },
   "personScreen": {
     "call": "Call",
@@ -315,6 +275,11 @@
     "cta": "See all",
     "ctaMoreSuffix": "({{- count}} more)"
   },
+  "servicesScreen": {
+    "subTitleOne": "Information services",
+    "subTitleTwo": "Operational services",
+    "title": "Services"
+  },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "title": "Settings"
@@ -326,6 +291,45 @@
     "dark": "Dark",
     "light": "Light",
     "system": "Sistem"
+  },
+  "ticketFaqScreen": {
+    "headerBackTitle": "New",
+    "noResultFound": "Didn't find what you are looking for?",
+    "title": "FAQ",
+    "writeTicket": "Open ticket"
+  },
+  "ticketFaqsScreen": {
+    "emptyState": "No results found",
+    "findFAQ": "Search the FAQs",
+    "findFAQSubtitle": "Before posting a ticket, look for an answer in the FAQs.",
+    "noResultFound": "Didn't find what you were looking for?",
+    "search": "Search (type at least 3 characters)",
+    "searchMinLengthHint": "Please, insert at least 3 characters.",
+    "title": "FAQs",
+    "writeTicket": "Write ticket"
+  },
+  "ticketScreen": {
+    "headerBackTitle": "Tickets",
+    "new": "New ticket",
+    "reply": "Reply",
+    "sendError": "There was an error while sending the message. Try again.",
+    "ticketNumber": "Ticket number",
+    "title": "Ticket",
+    "unnamedFile": "Unnamed file",
+    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply"
+  },
+  "tickets": {
+    "close": "Close ticket",
+    "closeTip": "Are you sure you want to close this ticket?",
+    "menuAction": "Ticket actions"
+  },
+  "ticketsScreen": {
+    "addNew": "Add ticket",
+    "closed": "Closed tickets",
+    "closedEmptyState": "There are no closed tickets",
+    "openEmptyState": "There are no open tickets",
+    "opened": "Open tickets",
+    "title": "Ticket"
   },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Acquired credits",

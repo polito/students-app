@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Theme } from '@lib/ui/types/theme';
 
 const darkBlue = {
@@ -145,8 +146,8 @@ export const lightTheme: Theme = {
     surfaceDark: '#143959',
     headers: '#edeef0',
     heading: darkBlue[700],
-    title: 'black',
-    headline: 'black',
+    title: darkBlue[700],
+    headline: darkBlue[700],
     prose: text[800],
     secondaryText: text[500],
     caption: text[400],
@@ -190,6 +191,7 @@ export const lightTheme: Theme = {
     sm: 4,
     md: 8,
     lg: 12,
+    xl: 20,
   },
   spacing: {
     px: '1px',

@@ -12,20 +12,14 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-
 export const ServicesScreen = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="always"
-      contentContainerStyle={bottomBarAwareStyles}
-    >
-      <View style={styles.sectionsContainer}>
+    <ScrollView contentInsetAdjustmentBehavior="always">
+      <View style={styles.container}>
         <Section>
           <SectionHeader title={t('servicesScreen.subTitleOne')} />
           <Row spaceBetween wrap style={styles.listContainer}>
@@ -64,7 +58,7 @@ export const ServicesScreen = () => {
               title={t('common.feedbackApp')}
               titleStyle={styles.titleStyle}
               linkTo={{
-                screen: 'TicketInsert',
+                screen: 'CreateTicket',
                 params: {
                   topicId: 1101,
                   subtopicId: 2001,
@@ -100,7 +94,7 @@ const createStyles = ({
       position: 'absolute',
       resizeMode: 'contain',
       top: -spacing[1],
-      left: -spacing['5'],
+      left: -spacing[5],
       width: 90,
       backgroundColor: colors.darkOrange[400],
       transform: [{ rotate: '-42deg' }],
@@ -128,7 +122,7 @@ const createStyles = ({
       textAlign: 'center',
       fontSize: fontSizes.sm,
     },
-    sectionsContainer: {
+    container: {
       // backgroundColor: 'red',
       paddingVertical: spacing[5],
     },

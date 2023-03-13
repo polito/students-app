@@ -1,36 +1,36 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { Section } from '@lib/ui/components/Section';
-import { SectionList } from '@lib/ui/components/SectionList';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketList'>;
 
-export const TicketListScreen = ({ navigation, route }: Props) => {
+export const TicketListScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { statuses } = route.params;
-  const { spacing } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
 
-  const tickets = (ticketsQuery?.data?.data || [])
-    .filter(ticket => statuses.includes(ticket.status))
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+  const tickets = useMemo(
+    () =>
+      ticketsQuery.data?.data
+        ?.filter(ticket => statuses.includes(ticket.status))
+        ?.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) ?? [],
+    [ticketsQuery],
+  );
 
   const labels = useMemo(() => {
-    const closedTicket = statuses.indexOf(TicketStatus.Closed) > -1;
+    const closedTicket = statuses.includes(TicketStatus.Closed);
     return {
       title: closedTicket
         ? t('ticketsScreen.closed')
@@ -41,34 +41,21 @@ export const TicketListScreen = ({ navigation, route }: Props) => {
     };
   }, []);
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: labels.title,
-    });
-  }, [labels.title]);
+  useScreenTitle(labels.title);
+
+  if (!ticketsQuery.isLoading && !tickets.length) {
+    return <EmptyState message={labels.emptyState} />;
+  }
 
   return (
-    <>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={[bottomBarAwareStyles]}
-        refreshControl={<RefreshControl {...refreshControl} />}
-      >
-        <View style={{ paddingVertical: spacing[5] }}>
-          {!ticketsQuery.isLoading &&
-            (tickets.length > 0 ? (
-              <Section>
-                <SectionList>
-                  {tickets?.map(ticket => (
-                    <TicketListItem ticket={ticket} key={ticket.id} />
-                  ))}
-                </SectionList>
-              </Section>
-            ) : (
-              <EmptyState message={labels.emptyState} />
-            ))}
-        </View>
-      </ScrollView>
-    </>
+    <FlatList
+      contentInsetAdjustmentBehavior="automatic"
+      {...refreshControl}
+      data={tickets}
+      renderItem={({ item }) => <TicketListItem ticket={item} key={item.id} />}
+      ItemSeparatorComponent={Platform.select({
+        ios: IndentedDivider,
+      })}
+    />
   );
 };

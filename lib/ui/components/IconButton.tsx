@@ -53,12 +53,12 @@ export const IconButton = ({
   const padding = spacing[3] as number;
   return (
     <TouchableOpacity
-      style={[{ padding }, style]}
       hitSlop={{
         left: adjustSpacing === 'left' ? padding : undefined,
         right: adjustSpacing === 'right' ? padding : undefined,
       }}
       {...otherButtonProps}
+      style={[{ padding }, style]}
     >
       {loading ? (
         <ActivityIndicator />
@@ -68,6 +68,7 @@ export const IconButton = ({
             {
               marginLeft: adjustSpacing === 'left' ? -padding : undefined,
               marginRight: adjustSpacing === 'right' ? -padding : undefined,
+              opacity: otherButtonProps.disabled ? 0.5 : undefined,
             },
             iconStyle,
           ]}

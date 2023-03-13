@@ -70,12 +70,7 @@ export const AttachmentCard = ({
   }, [shouldOpen, replyAttachment]);
 
   return (
-    <Row
-      noFlex
-      style={styles.attachmentContainer}
-      onPress={onPressAttachment}
-      touchableOpacity
-    >
+    <Row noFlex style={styles.attachmentContainer} onPress={onPressAttachment}>
       {isDownloadingReplyAttachment || isDownloadingTicketAttachment ? (
         <View style={styles.loaderView}>
           <ActivityIndicator color={colors.primary[50]} />

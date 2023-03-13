@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { Document } from 'react-native-render-html';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
@@ -11,23 +19,20 @@ import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { SCREEN_WIDTH } from '../../../core/constants';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
@@ -35,102 +40,106 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
 export const TicketFaqsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const scrollViewStyles = useScrollViewStyle();
-  const { colors } = useTheme();
-  const [enabled, setEnabled] = useState(true);
   const [search, setSearch] = useState('');
-  const ticketFaqsQuery = useSearchTicketFaqs(search, enabled);
-  const ticketFAQS =
+  const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
+  const ticketFaqsQuery = useSearchTicketFaqs(search);
+  const ticketFaqs =
     ticketFaqsQuery?.data?.data?.sort((a, b) =>
       a.question > b.question ? 1 : -1,
     ) ?? [];
 
+  const canSearch = search?.length > 2;
+
+  const triggerSearch = () => {
+    if (!canSearch) {
+      Alert.alert(t('common.error'), t('ticketFaqsScreen.searchMinLengthHint'));
+      return;
+    }
+    ticketFaqsQuery.refetch();
+    setHasSearchedOnce(true);
+  };
+
   return (
-    <>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView
-        contentContainerStyle={[
-          bottomBarAwareStyles,
-          scrollViewStyles,
-          { minHeight: '100%' },
-        ]}
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustKeyboardInsets
       >
-        <View style={styles.sectionsContainer}>
-          <Section>
-            <SectionHeader title={t('ticketFaqsScreen.findFAQ')} />
-            <View style={styles.card}>
-              <Text style={styles.text}>
-                {t('ticketFaqsScreen.findFAQSubtitle')}
-              </Text>
-            </View>
-            <SectionList />
-            <Row spaceBetween alignCenter style={styles.rowSearch}>
+        <Section>
+          <View style={styles.heading}>
+            <ScreenTitle
+              title={t('ticketFaqsScreen.findFAQ')}
+              style={styles.title}
+            />
+            <Text variant="secondaryText" style={styles.description}>
+              {t('ticketFaqsScreen.findFAQSubtitle')}
+            </Text>
+          </View>
+          <SectionList>
+            <Row noFlex alignCenter style={styles.searchBar}>
               <TextField
                 label={t('ticketFaqsScreen.search')}
                 value={search}
                 onChangeText={setSearch}
-                onPressIn={() => setEnabled(false)}
+                onSubmitEditing={() => {
+                  Keyboard.dismiss();
+                  triggerSearch();
+                }}
                 editable={!ticketFaqsQuery?.isFetching}
-                returnKeyType="next"
-                style={styles.textField}
-                inputStyle={styles.textFieldInput}
+                returnKeyType="search"
+                style={GlobalStyles.grow}
+                inputStyle={styles.messageInput}
               />
-              <View style={styles.icon}>
-                {ticketFaqsQuery.isFetching ? (
-                  <ActivityIndicator />
-                ) : (
-                  <IconButton
-                    icon={faSearch}
-                    color={colors.text['400']}
-                    size={22}
-                    onPress={() => setEnabled(true)}
-                  />
-                )}
-              </View>
-            </Row>
-            {!!search &&
-              enabled &&
-              !ticketFaqsQuery.isFetching &&
-              ticketFaqsQuery.data?.data?.length === 0 && (
-                <EmptyState
-                  message={t('ticketFaqsScreen.emptyState')}
-                  icon={faQuestionCircle}
+              {ticketFaqsQuery.isFetching ? (
+                <ActivityIndicator />
+              ) : (
+                <IconButton
+                  icon={faSearch}
+                  onPress={() => {
+                    triggerSearch();
+                  }}
+                  disabled={!canSearch}
                 />
               )}
+            </Row>
+          </SectionList>
+          {hasSearchedOnce && (
             <SectionList>
-              {!!search &&
-                enabled &&
-                !ticketFaqsQuery.isFetching &&
-                ticketFAQS?.map(faq => {
-                  const dom = parseDocument(
-                    faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-                  ) as Document;
-                  const title = innerText(dom.children as any[]);
-                  return (
-                    <ListItem
-                      key={faq.id}
-                      leadingItem={<Icon icon={faQuestionCircle} size={28} />}
-                      linkTo={{
-                        screen: 'TicketFaq',
-                        params: { faq },
-                      }}
-                      title={
-                        <Text style={styles.faqTitle} numberOfLines={3}>
-                          {title}
-                        </Text>
-                      }
+              {ticketFaqs.length > 0
+                ? ticketFaqs.map(faq => {
+                    const dom = parseDocument(
+                      faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+                    ) as Document;
+                    const title = innerText(dom.children as any[]);
+                    return (
+                      <ListItem
+                        key={faq.id}
+                        leadingItem={<Icon icon={faQuestionCircle} size={28} />}
+                        linkTo={{
+                          screen: 'TicketFaq',
+                          params: { faq },
+                        }}
+                        title={<Text numberOfLines={3}>{title}</Text>}
+                      />
+                    );
+                  })
+                : !ticketFaqsQuery.isFetching && (
+                    <EmptyState
+                      icon={faQuestionCircle}
+                      message={t('ticketFaqsScreen.emptyState')}
                     />
-                  );
-                })}
+                  )}
             </SectionList>
-          </Section>
-        </View>
-        {enabled && !!search && !ticketFaqsQuery.isFetching && (
+          )}
+        </Section>
+
+        {hasSearchedOnce && !ticketFaqsQuery.isFetching && (
           <CtaButton
+            absolute={false}
             title={t('ticketFaqsScreen.writeTicket')}
-            textExtra={t('ticketFaqsScreen.noResultFound')}
+            hint={t('ticketFaqsScreen.noResultFound')}
             action={() =>
-              navigation.navigate('TicketInsert', {
+              navigation.navigate('CreateTicket', {
                 subtopicId: undefined,
                 topicId: undefined,
               })
@@ -139,64 +148,37 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
           />
         )}
       </ScrollView>
-    </>
+    </TouchableWithoutFeedback>
   );
 };
 
-const createStyles = ({
-  spacing,
-  colors,
-  fontSizes,
-  fontWeights,
-  shapes,
-}: Theme) =>
+const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
   StyleSheet.create({
-    sectionsContainer: {
-      width: SCREEN_WIDTH,
+    heading: {
       paddingTop: spacing[5],
-      paddingBottom: +spacing[8] * 2,
+      paddingHorizontal: spacing[5],
+    },
+    title: {
+      fontSize: fontSizes['3xl'],
+      marginBottom: spacing[1],
+    },
+    spacer: {
+      height: spacing[56],
+    },
+    description: {
+      marginBottom: spacing[4],
     },
     noResultFound: {
       textAlign: 'center',
-      color: colors.text['100'],
-    },
-    card: {
-      marginTop: spacing[2],
-      marginHorizontal: spacing[4],
+      color: colors.text[100],
     },
     emptyState: {
       backgroundColor: colors.primary[700],
     },
-    text: {
-      marginLeft: 2,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
+    searchBar: {
+      paddingRight: spacing[2],
     },
-    rowSearch: {
-      marginTop: spacing[3],
-      marginBottom: spacing[1],
-      marginHorizontal: spacing[4],
-    },
-    faqTitle: {
-      fontSize: fontSizes.sm,
-    },
-    textField: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.sm,
-      paddingVertical: 0,
-      borderWidth: 1,
-      borderColor: colors.divider,
-      width: SCREEN_WIDTH * 0.82,
-    },
-    textFieldInput: {
+    messageInput: {
       borderBottomWidth: 0,
-    },
-    icon: {
-      paddingRight: spacing[1],
-      width: 24,
-      height: 24,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'row',
     },
   });

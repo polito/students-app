@@ -9,7 +9,6 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
@@ -22,7 +21,6 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { refresh } = useContext(FilesCacheContext);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const refreshControl = useRefreshControl(recentFilesQuery);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   useFocusEffect(
     useCallback(() => {
@@ -46,7 +44,6 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
           />
         )}
         {...refreshControl}
-        contentContainerStyle={bottomBarAwareStyles}
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,
         })}

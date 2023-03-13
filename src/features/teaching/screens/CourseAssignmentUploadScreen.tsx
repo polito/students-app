@@ -14,7 +14,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { pdfSizes } from '../constants';
 
@@ -27,7 +26,6 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
   const takePicture = () =>
@@ -49,11 +47,11 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      style={[bottomBarAwareStyles, styles.screen]}
+      style={styles.screen}
     >
       <SectionList indented>
         <ListItem
-          isNavigationAction
+          isAction
           title={t('courseAssignmentUploadScreen.ctaUploadFile')}
           subtitle={t('courseAssignmentUploadScreen.ctaUploadFileSubtitle')}
           leadingItem={<Icon icon={faUpload} size={fontSizes.xl} />}
@@ -71,7 +69,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
           }}
         />
         <ListItem
-          isNavigationAction
+          isAction
           title={t('courseAssignmentUploadScreen.ctaCreatePDF')}
           subtitle={t('courseAssignmentUploadScreen.ctaCreatePDFSubtitle')}
           leadingItem={<Icon icon={faFilePdf} size={fontSizes.xl} />}

@@ -32,6 +32,7 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from '../../../src/core/constants';
+import { GlobalStyles } from '../../../src/core/styles/globalStyles';
 
 interface ActionSheetOption {
   title: string;
@@ -137,12 +138,12 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
       onRequestClose={close}
     >
       <Animated.View style={[styles.background, { opacity }]}>
-        <Pressable onPress={close} style={{ flex: 1 }} />
+        <Pressable onPress={close} style={GlobalStyles.grow} />
       </Animated.View>
       <Animated.View
         style={[
           styles.container,
-          { paddingBottom: bottomBarHeight + 60 },
+          { paddingBottom: 60 },
           { height: translateY, opacity },
         ]}
       >
@@ -151,7 +152,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
             return (
               <Col noFlex key={index}>
                 <TouchableOpacity
-                  style={[styles.option]}
+                  style={styles.option}
                   onPress={() => onPressOption(option)}
                 >
                   <Animated.View
@@ -159,8 +160,8 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
                   >
                     <Icon
                       icon={option.icon}
-                      style={[option.iconStyle]}
-                      color={IS_ANDROID ? colors.surface : colors.text[900]}
+                      style={option.iconStyle}
+                      color={IS_ANDROID ? colors.surface : undefined}
                       size={IS_ANDROID ? 22 : 20}
                     />
                   </Animated.View>
@@ -170,13 +171,12 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
                       style={[
                         IS_IOS && option.titleStyle,
                         IS_ANDROID && option.titleAndroidStyle,
-                        styles.title,
                       ]}
                     >
                       {IS_ANDROID ? option.titleAndroid : option.title}
                     </Text>
                     {IS_IOS && (
-                      <Text numberOfLines={1} style={[styles.subtitle]}>
+                      <Text numberOfLines={1} style={styles.subtitle}>
                         {option.subtitle}
                       </Text>
                     )}
@@ -195,13 +195,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
   );
 });
 
-const createStyles = ({
-  spacing,
-  colors,
-  fontSizes,
-  fontWeights,
-  shapes,
-}: Theme) =>
+const createStyles = ({ spacing, colors, fontSizes, shapes }: Theme) =>
   StyleSheet.create({
     container: {
       position: 'absolute',
@@ -209,9 +203,6 @@ const createStyles = ({
       width: SCREEN_WIDTH,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    icon: {
-      color: 'white',
     },
     iconContainer: {
       width: BUTTON_HEIGHT * 0.7,
@@ -225,17 +216,6 @@ const createStyles = ({
       paddingHorizontal: Platform.select({
         ios: spacing[3],
       }),
-    },
-    title: {
-      color: Platform.select({
-        ios: colors.text['900'],
-        android: colors.text['400'],
-      }),
-      fontSize: Platform.select({
-        ios: fontSizes.sm,
-        android: fontSizes.xs,
-      }),
-      fontWeight: Platform.select({ ios: fontWeights.normal }),
     },
     optionContainer: {
       elevation: 12,
@@ -259,8 +239,7 @@ const createStyles = ({
     },
     subtitle: {
       fontSize: fontSizes.xs,
-      fontWeight: fontWeights.semibold,
-      color: colors.text['400'],
+      color: colors.text[400],
     },
     background: {
       width: SCREEN_WIDTH,

@@ -14,7 +14,7 @@ interface TimeWidgetProps {
   time: Date;
 }
 
-export const TimeWidget = ({ right, time }: TimeWidgetProps) => {
+export const MessageTime = ({ right, time }: TimeWidgetProps) => {
   const createdAt = DateTime.fromJSDate(time);
   const now = DateTime.now();
   const locale = i18n.language;
@@ -39,24 +39,24 @@ export const TimeWidget = ({ right, time }: TimeWidgetProps) => {
   }
 
   return (
-    <Text style={[styles.hour, right && styles.hourRight]}>
+    <Text variant="caption" style={[styles.hour, right && styles.hourRight]}>
       {timeText || ''}
     </Text>
   );
 };
 
-const createStyles = ({ spacing, fontWeights, fontSizes, colors }: Theme) =>
+const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     hour: {
+      flex: 1,
+      width: '70%',
+      paddingVertical: spacing[1],
       marginLeft: spacing[4],
       justifyContent: 'center',
       alignItems: 'center',
-      flex: 1,
       textTransform: 'capitalize',
-      width: '70%',
       textAlign: 'center',
       fontSize: fontSizes['2xs'],
-      color: colors.text['500'],
       fontWeight: fontWeights.normal,
     },
     hourRight: {

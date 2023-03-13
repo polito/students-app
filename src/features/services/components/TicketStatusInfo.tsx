@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet } from 'react-native';
 
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
+import { Icon } from '@lib/ui/components/Icon';
+import { Metric } from '@lib/ui/components/Metric';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -9,6 +13,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate, formatDateTime } from '../../../utils/dates';
 
 interface TicketStatusProps {
@@ -22,91 +27,84 @@ export const TicketStatusInfo = ({
   loading,
   refetching,
 }: TicketStatusProps) => {
-  const { fontSizes, spacing } = useTheme();
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const isClosed = ticket.status === TicketStatus.Closed;
 
   if (loading) {
     return (
-      <Col style={[styles.container, { paddingVertical: spacing[4] }]}>
+      <Col>
         <ActivityIndicator />
       </Col>
     );
   }
 
   return (
-    <Col style={styles.container}>
+    <Card style={styles.card}>
+      <Text variant="title" style={styles.row}>
+        {ticket.subject}
+      </Text>
       <Row style={styles.row}>
-        <Text style={styles.text}>{t('ticketScreen.ticket')}</Text>
-        <Text style={styles.text}>#{ticket.id}</Text>
+        <Metric
+          title={t('ticketScreen.ticketNumber')}
+          value={ticket.id}
+          style={GlobalStyles.grow}
+        />
+        <Metric
+          title={t('common.createdAt')}
+          value={formatDate(ticket.createdAt)}
+          style={GlobalStyles.grow}
+        />
       </Row>
       <Row style={styles.row}>
-        <Text style={styles.text}>{t('ticketScreen.createdAt')}</Text>
-        <Text style={styles.text}>{formatDate(ticket.createdAt)}</Text>
-      </Row>
-      <Row style={styles.row}>
-        <Text style={styles.text}>{t('ticketScreen.updatedAt')}</Text>
-        <Text style={styles.text}>{formatDateTime(ticket.updatedAt)}</Text>
+        <Metric
+          title={t('common.updatedAt')}
+          value={formatDateTime(ticket.updatedAt)}
+          style={GlobalStyles.grow}
+        />
+        <Metric
+          title={t('common.status')}
+          value={ticket.status}
+          style={GlobalStyles.grow}
+          valueStyle={{ textTransform: 'uppercase' }}
+        />
+        {/* TODO colors? */}
       </Row>
       {refetching ? (
         <ActivityIndicator />
       ) : (
         <>
-          <Row style={[styles.row]}>
-            <Text style={[styles.text, isClosed && styles.closed]}>
-              {t('ticketScreen.status')}
-            </Text>
-            <Text
-              style={[
-                styles.text,
-                isClosed && styles.closed,
-                { textTransform: 'uppercase' },
-              ]}
-            >
-              {t(`ticketScreen.infoStatus-${ticket.status}`)}
-            </Text>
-          </Row>
           {isClosed && (
-            <Row style={[styles.row]}>
-              <Text
-                style={[styles.text, styles.closed, { fontSize: fontSizes.xs }]}
-              >
+            <Row>
+              <Icon
+                icon={faInfoCircle}
+                color={colors.secondaryText}
+                style={styles.infoIcon}
+              />
+              <Text variant="secondaryText" style={GlobalStyles.grow}>
                 {t('ticketScreen.youCanReopenTheTicket')}
               </Text>
             </Row>
           )}
         </>
       )}
-    </Col>
+    </Card>
   );
 };
 
-const createStyles = ({
-  colors,
-  shapes,
-  spacing,
-  fontSizes,
-  fontWeights,
-}: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    text: {
-      fontSize: fontSizes.sm,
+    infoIcon: {
+      marginTop: spacing[0.5],
+      marginRight: spacing[2],
     },
-    closed: {
-      color: colors.error[500],
-      fontWeight: fontWeights.semibold,
-      textAlign: 'center',
+    card: {
+      marginHorizontal: Platform.select({ ios: spacing[3] }),
+      marginVertical: Platform.select({ ios: spacing[3] }),
+      padding: spacing[4],
     },
     row: {
-      marginBottom: spacing['0.5'],
-    },
-    container: {
-      marginVertical: spacing[3],
-      marginHorizontal: spacing[4],
-      backgroundColor: colors.surface,
-      padding: spacing[2],
-      paddingHorizontal: spacing[5],
-      borderRadius: shapes.md,
+      marginBottom: spacing[4],
     },
   });

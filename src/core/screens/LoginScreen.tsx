@@ -71,7 +71,7 @@ export const LoginScreen = () => {
               onSubmitEditing={() => {
                 passwordRef.current.focus();
               }}
-              style={styles.textField}
+              style={styles.textFieldInput}
             />
             <Row alignCenter>
               <TextField
@@ -90,7 +90,7 @@ export const LoginScreen = () => {
                   }
                 }}
                 editable={!isLoading}
-                style={styles.textField}
+                style={styles.textFieldInput}
               />
               <IconButton
                 size={fontSizes.xl}
@@ -143,7 +143,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       marginBottom: spacing[3],
       marginHorizontal: spacing[5],
     },
-    textField: {
+    textFieldInput: {
       flex: 1,
       paddingHorizontal: Platform.select({
         android: spacing[4],

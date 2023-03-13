@@ -27,7 +27,7 @@ interface Props extends TouchableHighlightProps {
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
   destructive?: boolean;
-  textExtra?: string;
+  hint?: string;
 }
 
 /**
@@ -47,7 +47,7 @@ export const CtaButton = ({
   action,
   icon,
   rightExtra,
-  textExtra,
+  hint,
   containerStyle,
   ...rest
 }: Props) => {
@@ -76,15 +76,11 @@ export const CtaButton = ({
       style={[
         styles.container,
         absolute && styles.absolute,
-        !!textExtra && { paddingTop: spacing[3] },
+        !!hint && { paddingTop: spacing[3] },
         containerStyle,
       ]}
     >
-      {textExtra && (
-        <View>
-          <Text style={styles.textExtra}>{textExtra}</Text>
-        </View>
-      )}
+      {hint && <Text style={styles.hint}>{hint}</Text>}
       <TouchableHighlight
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
@@ -114,7 +110,7 @@ export const CtaButton = ({
           </View>
           <View style={{ opacity: loading ? 0 : 1, flexDirection: 'row' }}>
             {/* {!loading && ( */}
-            {/*   <View style={{ marginHorizontal: spacing['1'] }}>{icon}</View> */}
+            {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
             {/* )} */}
             {showSuccess ? (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -137,7 +133,7 @@ export const CtaButton = ({
                     icon={icon}
                     size={fontSizes.xl}
                     color={colors.text[100]}
-                    style={{ marginRight: spacing['2'] }}
+                    style={{ marginRight: spacing[2] }}
                   />
                 )}
                 <Text style={styles.textStyle}>{title}</Text>
@@ -151,6 +147,15 @@ export const CtaButton = ({
   );
 };
 
+/**
+ * A spacer to be added at the bottom of the underlying scrolling container
+ * to ensure that the CtaButton won't cover the last elements
+ */
+export const CtaButtonSpacer = () => {
+  const { spacing } = useTheme();
+  return <View style={{ height: spacing[20] }} />;
+};
+
 const createStyles = ({
   colors,
   shapes,
@@ -161,12 +166,6 @@ const createStyles = ({
   StyleSheet.create({
     container: {
       padding: spacing[4],
-    },
-    textExtra: {
-      fontSize: fontSizes.xs,
-      color: colors.text['500'],
-      paddingBottom: spacing[2],
-      textAlign: Platform.select({ ios: 'center' }),
     },
     absolute: {
       position: 'absolute',
@@ -204,5 +203,11 @@ const createStyles = ({
     },
     subtitle: {
       marginTop: spacing[2],
+    },
+    hint: {
+      color: colors.caption,
+      fontSize: fontSizes.xs,
+      textAlign: 'center',
+      paddingBottom: spacing[2],
     },
   });

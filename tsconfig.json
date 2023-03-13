@@ -6,7 +6,7 @@
     "paths": {
       "@lib/*": ["./lib/*"]
     },
-    "types": ["node"],
+    "types": ["node", "@types/jest"],
     "skipLibCheck": true,
     "strictNullChecks": false
   }

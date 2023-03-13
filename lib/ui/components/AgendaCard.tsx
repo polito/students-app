@@ -69,16 +69,18 @@ export const AgendaCard = ({
   onPress,
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
   return (
     <Card
       rounded
-      spaced
+      spaced={false}
       style={[
-        styles.card,
         color && {
           borderWidth: 2,
           borderColor: color,
+        },
+        {
+          marginVertical: spacing[2],
         },
       ]}
     >
@@ -90,7 +92,7 @@ export const AgendaCard = ({
         <View>
           <View style={styles.headingRow}>
             <Text style={styles.time}>{time && time}</Text>
-            <Text uppercase style={styles.type}>
+            <Text uppercase variant="caption">
               {type}
             </Text>
           </View>
@@ -117,9 +119,6 @@ const createStyles = ({
   dark,
 }: Theme) =>
   StyleSheet.create({
-    card: {
-      width: '100%',
-    },
     headingRow: {
       flex: 1,
       flexDirection: 'row',
@@ -144,6 +143,7 @@ const createStyles = ({
       paddingVertical: spacing[3],
     },
     time: {
+      color: colors.secondaryText,
       fontSize: fontSizes.sm,
     },
     type: {
