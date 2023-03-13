@@ -27,6 +27,7 @@ export const PersonListItem = ({
         )
       }
       title={person ? `${person.firstName} ${person.lastName}` : ''}
+      accessibilityLabel={person ? `${subtitle}: ${person.firstName} ${person.lastName}` : undefined}
       linkTo={
         person?.id
           ? {

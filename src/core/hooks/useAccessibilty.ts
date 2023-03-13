@@ -10,7 +10,7 @@ export function useAccessibility() {
         count: index,
         total: total,
       });
-      return `${text} ${extraText ?? ''}`;
+      return `${text}. ${extraText ?? ''}`;
     },
     [t],
   );

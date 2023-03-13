@@ -21,7 +21,7 @@ import {
   useGetExams,
 } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatDate, formatDateTime } from '../../../utils/dates';
+import { formatDate, formatDateTime, formatDateTimeAccessibility } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
@@ -72,9 +72,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   }, [exam.isTimeToBeDefined, exam.examStartsAt]);
 
   const examAccessibilityLabel = useMemo(() => {
-    console.debug(exam.classrooms);
     const title = exam?.courseName;
-    const time = formatDateTime(exam?.examStartsAt);
+    const { date, time } = formatDateTimeAccessibility(exam?.examStartsAt);
     const classrooms =
       exam?.classrooms && exam?.classrooms !== '-'
         ? `${t('examScreen.location')}: ${exam?.classrooms}`
@@ -85,9 +84,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         }`
       : '';
 
-    return `${title}. ${t(
-      'common.dateAndHours',
-    )}: ${time}. ${classrooms} ${teacher}`;
+    return `${title}. ${date}. ${t(
+      'common.time',
+    )} ${time}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
   return (
@@ -107,6 +106,11 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           <ListItem
             leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
             title={exam?.classrooms}
+            accessibilityLabel={`${t('examScreen.location')}: ${
+              exam?.classrooms === '-'
+                ? t('examScreen.noClassroom')
+                : exam?.classrooms
+            }`}
             subtitle={t('examScreen.location')}
           />
           {teacherQuery.data && (
