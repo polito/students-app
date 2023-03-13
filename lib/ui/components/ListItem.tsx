@@ -15,6 +15,7 @@ import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { IS_IOS } from '../../../src/core/constants';
 import { GlobalStyles } from '../../../src/core/styles/globalStyles';
+import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -63,13 +64,7 @@ export const ListItem = ({
       onPress={
         linkTo
           ? () => {
-              navigation.navigate({
-                name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
-                params:
-                  typeof linkTo === 'object' && 'params' in linkTo
-                    ? linkTo.params
-                    : undefined,
-              });
+              navigation.navigate(resolveLinkTo(linkTo));
             }
           : onPress
       }

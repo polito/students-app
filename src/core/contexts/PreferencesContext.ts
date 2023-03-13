@@ -6,12 +6,17 @@ export const editablePreferenceKeys = [
   'courses',
   'language',
   'notifications',
+  'favoriteServices',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
 
 // Specify here complex keys, that require serialization/deserialization
-export const objectPreferenceKeys = ['courses', 'notifications'];
+export const objectPreferenceKeys = [
+  'courses',
+  'notifications',
+  'favoriteServices',
+];
 
 export type CoursesPreferences = {
   [courseId: number]: CoursePreferencesProps;
@@ -28,6 +33,7 @@ export type PreferencesContextProps = {
     presence: boolean;
   };
   updatePreference: (key: PreferenceKey, value: unknown) => void;
+  favoriteServices: string[];
 };
 
 export interface CoursePreferencesProps {
