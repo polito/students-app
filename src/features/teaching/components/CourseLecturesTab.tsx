@@ -109,7 +109,12 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         ios: () => <IndentedDivider />,
       })}
       renderSectionHeader={({ section: { title, isExpanded } }) => (
-        <Pressable onPress={() => toggleSection(title)}>
+        <Pressable
+          onPress={() => toggleSection(title)}
+          accessibilityLabel={`${title}. ${t(
+            `common.openedStatus.${isExpanded}`,
+          )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}
+        >
           <View
             style={{
               paddingVertical: spacing[3],
@@ -140,6 +145,15 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
             subtitle={[
               formatDate(lecture.createdAt),
               lecture.duration,
+              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
+            ]
+              .filter(i => !!i)
+              .join(' - ')}
+            accessibilityLabel={[
+              lecture.title,
+              lecture.duration
+                .replace('m', t('common.minutes'))
+                .replace('h', t('common.hours')),
               teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
             ]
               .filter(i => !!i)

@@ -103,18 +103,24 @@ export const CourseFileListItem = ({
             icon={faCloudArrowDown}
             accessibilityLabel={t('common.download')}
             disabled
-            adjustSpacing="right"
             {...iconProps}
+            hitSlop={{
+              left: +spacing[2],
+              right: +spacing[2],
+            }}
           />
         ) : (
           <IconButton
             icon={faXmark}
             accessibilityLabel={t('common.stop')}
-            adjustSpacing="right"
             onPress={() => {
               stopDownload();
             }}
             {...iconProps}
+            hitSlop={{
+              left: +spacing[2],
+              right: +spacing[2],
+            }}
           />
         )
       ) : (
