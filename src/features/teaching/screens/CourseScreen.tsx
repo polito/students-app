@@ -48,9 +48,6 @@ export const CourseScreen = ({ route, navigation }: Props) => {
             left: +spacing[3],
             right: +spacing[3],
           }}
-          style={{
-            right: -12,
-          }}
           onPress={() => {
             navigation.navigate('CoursePreferences', { courseId: id });
           }}

@@ -73,12 +73,14 @@
     "file_plural": "File",
     "elementCount": "Elemento {{count}} di {{total}}",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
+    "hours": "Ore",
     "icon": "Icona",
     "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "logout": "Logout",
+    "minutes": "Minuti",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
@@ -126,6 +128,14 @@
     "downloadStatus": {
       "true": "Scaricato",
       "false": "Non scaricato"
+    },
+    "openedStatus": {
+      "true": "Aperto",
+      "false": "Chiuso"
+    },
+    "openedStatusAction": {
+      "true": "Doppio click per chiudere",
+      "false": "Doppio click per aprire"
     }
   },
   "contactsScreen": {
