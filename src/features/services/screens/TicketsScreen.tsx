@@ -104,6 +104,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
         <OpenTickets />
         <ClosedTickets />
       </ScrollView>
+
       <CtaButton
         absolute={true}
         title={t('ticketsScreen.addNew')}

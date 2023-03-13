@@ -67,6 +67,9 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
           headerBackTitle: t('ticketScreen.headerBackTitle'),
+          headerLargeStyle: {
+            backgroundColor: 'transparent',
+          },
         }}
       />
       <Stack.Screen
