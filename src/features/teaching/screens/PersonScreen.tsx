@@ -6,6 +6,7 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -82,18 +83,19 @@ export const PersonScreen = ({ route }: Props) => {
           />
 
           {!!person?.profileUrl && (
-            <Row
-              alignCenter
+            <TouchableOpacity
               onPress={() => Linking.openURL(person?.profileUrl)}
             >
-              <Icon
-                icon={faLink}
-                size={20}
-                color={colors.link}
-                style={styles.linkIcon}
-              />
-              <Text variant="link">{t('personScreen.moreInfo')}</Text>
-            </Row>
+              <Row noFlex alignCenter>
+                <Icon
+                  icon={faLink}
+                  size={20}
+                  color={colors.link}
+                  style={styles.linkIcon}
+                />
+                <Text variant="link">{t('personScreen.moreInfo')}</Text>
+              </Row>
+            </TouchableOpacity>
           )}
         </Col>
       </Row>
@@ -104,7 +106,7 @@ export const PersonScreen = ({ route }: Props) => {
     return (
       <ListItem
         key={index}
-        isNavigationAction
+        isAction
         leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
         title={t('common.phone')}
         subtitle={[phoneNumber.full, phoneNumber?.internal]
@@ -142,7 +144,7 @@ export const PersonScreen = ({ route }: Props) => {
         <SectionList>
           {phoneNumbers?.map(renderPhoneNumber)}
           <ListItem
-            isNavigationAction
+            isAction
             leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
             title={t('common.email')}
             subtitle={person?.email}
