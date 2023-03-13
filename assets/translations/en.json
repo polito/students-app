@@ -30,6 +30,7 @@
   "common": {
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "agent": "Agent",
+    "appFeedback": "App feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
@@ -57,7 +58,6 @@
     "exam": "Exam",
     "examCall": "Exam call",
     "examCall_plural": "Exam calls",
-    "feedbackApp": "Feedback App",
     "file": "File",
     "file_plural": "Files",
     "icon": "Icon",

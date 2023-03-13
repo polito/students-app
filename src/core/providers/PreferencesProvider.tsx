@@ -17,6 +17,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       courses: {},
       language: 'system',
       updatePreference: () => {},
+      favoriteServices: [],
     });
 
   const preferencesInitialized = useRef<boolean>(false);

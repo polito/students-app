@@ -1,96 +1,142 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { faComments, faIdCard } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { Row } from '@lib/ui/components/Row';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import {
+  faComments,
+  faIdCard,
+  faMobileScreenButton,
+} from '@fortawesome/free-solid-svg-icons';
+import { Grid, auto } from '@lib/ui/components/Grid';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { split } from '../../../utils/reducers';
+import { ServiceCard } from '../components/ServiceCard';
+
 export const ServicesScreen = () => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { spacing } = useTheme();
+  const { favoriteServices: favoriteServiceIds, updatePreference } =
+    usePreferencesContext();
   const styles = useStylesheet(createStyles);
+  const services = [
+    {
+      id: 'contacts',
+      name: t('contactsScreen.title'),
+      icon: faIdCard,
+      disabled: true,
+    },
+    {
+      id: 'tickets',
+      name: t('ticketScreen.title'),
+      icon: faComments,
+      linkTo: { screen: 'Tickets' },
+    },
+    {
+      id: 'appFeedback',
+      name: t('common.appFeedback'),
+      icon: faMobileScreenButton,
+      linkTo: {
+        screen: 'CreateTicket',
+        params: {
+          topicId: 1101,
+          subtopicId: 2001,
+        },
+      },
+      additionalContent: (
+        <>
+          <View style={styles.betaRibbon}>
+            <Text style={styles.betaText}>BETA</Text>
+          </View>
+        </>
+      ),
+    },
+  ];
+
+  const [favoriteServices, otherServices] = useMemo(
+    () =>
+      services.reduce(
+        split(s => favoriteServiceIds.includes(s.id)),
+        [[], []],
+      ),
+    [favoriteServiceIds],
+  );
+
+  const updateFavorite =
+    (service: typeof services[number]) => (favorite: boolean) => {
+      const newVal = favorite
+        ? [...new Set([...favoriteServiceIds, service.id])]
+        : favoriteServiceIds.filter(fs => fs !== service.id);
+      updatePreference('favoriteServices', newVal);
+    };
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="always">
-      <View style={styles.container}>
-        <Section>
-          <SectionHeader title={t('servicesScreen.subTitleOne')} />
-          <Row spaceBetween wrap style={styles.listContainer}>
-            <ListItem
-              leadingItem={
-                <Icon icon={faIdCard} size={24} color={colors.primary[500]} />
-              }
-              title={t('contactsScreen.title')}
-              titleStyle={styles.titleStyle}
-              style={[styles.card, styles.disabled]}
-              card
-            />
-          </Row>
-        </Section>
-        <Section>
-          <SectionHeader title={t('servicesScreen.subTitleTwo')} />
-          <Row wrap style={styles.listContainer}>
-            <ListItem
-              leadingItem={
-                <Icon icon={faComments} size={30} color={colors.primary[500]} />
-              }
-              title={t('ticketScreen.title')}
-              titleStyle={styles.titleStyle}
-              linkTo={{ screen: 'Tickets' }}
-              style={styles.card}
-              card
-            />
-            <ListItem
-              leadingItem={
-                <Icon
-                  icon={faComments}
-                  size={30}
-                  color={colors.darkOrange[400]}
-                />
-              }
-              title={t('common.feedbackApp')}
-              titleStyle={styles.titleStyle}
-              linkTo={{
-                screen: 'CreateTicket',
-                params: {
-                  topicId: 1101,
-                  subtopicId: 2001,
-                },
-              }}
-              style={[styles.card, { overflow: 'hidden' }]}
-              card
+      {favoriteServices.length > 0 && (
+        <Grid
+          numColumns={auto}
+          minColumnWidth={ServiceCard.minWidth}
+          maxColumnWidth={ServiceCard.maxWidth}
+          gap={+spacing[4]}
+          style={styles.grid}
+        >
+          {favoriteServices.map(service => (
+            <ServiceCard
+              key={service.id}
+              name={service.name}
+              icon={service.icon}
+              disabled={service.disabled}
+              linkTo={service.linkTo}
+              favorite
+              onFavoriteChange={updateFavorite(service)}
             >
-              <View style={styles.beta}>
-                <Text style={styles.betaText}>BETA</Text>
-              </View>
-            </ListItem>
-          </Row>
-        </Section>
-      </View>
+              {service.additionalContent}
+            </ServiceCard>
+          ))}
+        </Grid>
+      )}
+
+      {otherServices.length > 0 && (
+        <Grid
+          numColumns={auto}
+          minColumnWidth={ServiceCard.minWidth}
+          maxColumnWidth={ServiceCard.maxWidth}
+          gap={+spacing[4]}
+          style={styles.grid}
+        >
+          {otherServices.map(service => (
+            <ServiceCard
+              key={service.id}
+              name={service.name}
+              icon={service.icon}
+              disabled={service.disabled}
+              linkTo={service.linkTo}
+              onFavoriteChange={updateFavorite(service)}
+            >
+              {service.additionalContent}
+            </ServiceCard>
+          ))}
+        </Grid>
+      )}
     </ScrollView>
   );
 };
 
-const createStyles = ({
-  spacing,
-  shapes,
-  colors,
-  fontWeights,
-  fontSizes,
-}: Theme) =>
+const createStyles = ({ spacing, colors, fontWeights, fontSizes }: Theme) =>
   StyleSheet.create({
+    grid: {
+      margin: spacing[5],
+    },
     listContainer: {
-      paddingHorizontal: spacing[2],
+      paddingVertical: spacing[5],
+      paddingHorizontal: spacing[2.5],
       flexWrap: 'wrap',
     },
-    beta: {
+    betaRibbon: {
       position: 'absolute',
       resizeMode: 'contain',
       top: -spacing[1],
@@ -102,29 +148,16 @@ const createStyles = ({
     betaText: {
       color: colors.text[50],
       fontWeight: fontWeights.semibold,
-      paddingHorizontal: spacing[5],
+      paddingHorizontal: spacing[3.5],
       fontSize: fontSizes.xs,
     },
     disabled: {
       opacity: 0.8,
     },
-    card: {
-      width: '30%',
-      minHeight: 110,
-      backgroundColor: colors.surface,
-      borderRadius: shapes.lg,
-      justifyContent: 'center',
-      marginVertical: spacing[2],
-      marginHorizontal: spacing[2],
-    },
     titleStyle: {
       fontWeight: fontWeights.semibold,
       textAlign: 'center',
       fontSize: fontSizes.sm,
-    },
-    container: {
-      // backgroundColor: 'red',
-      paddingVertical: spacing[5],
     },
     section: {
       marginBottom: spacing[5],
