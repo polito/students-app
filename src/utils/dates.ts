@@ -10,6 +10,15 @@ export const formatDateTime = (date: Date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };
 
+export const formatDateTimeAccessibility = (
+  date: Date,
+): { date: string; time: string } => {
+  return {
+    date: formatDate(date),
+    time: formatTime(date),
+  };
+};
+
 export const formatDateWithTimeIfNotNull = (date: Date) => {
   if (!date.getHours()) {
     return formatDate(date);

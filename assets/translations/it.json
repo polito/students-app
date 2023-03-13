@@ -77,6 +77,7 @@
     "icon": "Icona",
     "it": "Italiano",
     "language": "Lingua",
+    "time": "ora",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "logout": "Logout",
@@ -253,7 +254,9 @@
     "ctaBookSuccess": "Esame prenotato",
     "ctaCancel": "Annulla prenotazione",
     "ctaCancelSuccess": "Prenotazione annullata",
-    "location": "Luogo"
+    "noClassroom": "Nessun luogo specificato per questo appello",
+    "location": "Luogo",
+    "title": "Appello"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
