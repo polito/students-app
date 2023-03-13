@@ -27,6 +27,7 @@ interface Props {
   trailingItem?: JSX.Element;
   separator?: boolean;
   accessible?: boolean;
+  accessibilityLabel?: string | undefined;
 }
 
 /**
@@ -37,6 +38,7 @@ export const SectionHeader = ({
   title,
   titleStyle,
   ellipsizeTitle = true,
+  accessibilityLabel = undefined,
   linkTo,
   accessible = true,
   linkToMoreCount,
@@ -57,7 +59,8 @@ export const SectionHeader = ({
     <TouchableOpacity
       style={styles.container}
       accessible={accessible}
-      accessibilityRole={linkTo ? 'button' : undefined}
+      accessibilityRole={linkTo ? 'button' : 'header'}
+      accessibilityLabel={accessibilityLabel}
       onPress={() => {
         linkTo &&
           navigation.navigate({
@@ -73,6 +76,7 @@ export const SectionHeader = ({
         <View style={styles.titleContainer}>
           {separator && <Separator />}
           <Text
+            accessible={false}
             variant="heading"
             style={[styles.title, titleStyle]}
             accessibilityRole="header"
