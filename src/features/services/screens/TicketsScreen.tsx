@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, View } from 'react-native';
 
@@ -38,24 +39,12 @@ export const TicketsScreen = ({ navigation }: Props) => {
 
     return (
       <>
-        <SectionHeader
-          title={t('ticketsScreen.opened')}
-          linkTo={
-            openTickets?.length > 0
-              ? {
-                  screen: 'TicketList',
-                  params: {
-                    statuses: [TicketStatus.Pending, TicketStatus.New],
-                  },
-                }
-              : undefined
-          }
-        />
+        <SectionHeader title={t('ticketsScreen.opened')} />
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
             <Section>
               <SectionList>
-                {openTickets?.slice(0, 3)?.map(ticket => (
+                {openTickets?.map(ticket => (
                   <TicketListItem ticket={ticket} key={ticket.id} />
                 ))}
               </SectionList>
@@ -70,28 +59,32 @@ export const TicketsScreen = ({ navigation }: Props) => {
   };
 
   const TicketsClosed = () => {
-    const closedTickets = (ticketsQuery?.data?.data || [])
-      .filter(ticket => ticket.status === TicketStatus.Closed)
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    const closedTickets = useMemo(() => {
+      return (ticketsQuery?.data?.data || [])
+        .filter(ticket => ticket.status === TicketStatus.Closed)
+        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    }, [ticketsQuery]);
+
+    const renderedClosedTickets = useMemo(
+      () => closedTickets.slice(0, 4),
+      [closedTickets],
+    );
 
     return (
       <View style={{ paddingTop: spacing[5] }}>
         <SectionHeader
           title={t('ticketsScreen.closed')}
-          linkTo={
-            closedTickets?.length > 0
-              ? {
-                  screen: 'TicketList',
-                  params: { statuses: [TicketStatus.Closed] },
-                }
-              : undefined
-          }
+          linkTo={{
+            screen: 'TicketList',
+            params: { statuses: [TicketStatus.Closed] },
+          }}
+          linkToMoreCount={closedTickets.length - renderedClosedTickets.length}
         />
         {!ticketsQuery.isLoading &&
-          (closedTickets.length > 0 ? (
+          (renderedClosedTickets.length > 0 ? (
             <Section>
               <SectionList>
-                {closedTickets?.slice(0, 3)?.map(ticket => (
+                {renderedClosedTickets.map(ticket => (
                   <TicketListItem ticket={ticket} key={ticket.id} />
                 ))}
               </SectionList>

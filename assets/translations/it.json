@@ -316,7 +316,8 @@
     "trainingOffer": "Offerta formativa"
   },
   "sectionHeader": {
-    "cta": "Vedi tutto"
+    "cta": "Vedi tutti",
+    "ctaMoreSuffix": "(altri {{- count}})"
   },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",

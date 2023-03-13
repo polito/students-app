@@ -26,10 +26,10 @@ export const ExamsScreen = () => {
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {!examsQuery.isLoading &&
-        (examsQuery.data.data.length > 0 ? (
+        (examsQuery.data?.length > 0 ? (
           <Section>
             <SectionList>
-              {examsQuery.data.data.map(exam => (
+              {examsQuery.data.map(exam => (
                 <ExamListItem key={exam.id} exam={exam} />
               ))}
             </SectionList>

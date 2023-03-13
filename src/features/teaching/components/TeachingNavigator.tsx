@@ -18,6 +18,7 @@ import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamScreen } from '../screens/ExamScreen';
+import { ExamsScreen } from '../screens/ExamsScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
@@ -179,6 +180,14 @@ export const TeachingNavigator = () => {
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Exams"
+        component={ExamsScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.examCall_plural'),
         }}
       />
       <Stack.Screen
