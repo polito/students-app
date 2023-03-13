@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator,
   Alert,
   Keyboard,
   ScrollView,
@@ -90,17 +89,14 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                 style={GlobalStyles.grow}
                 inputStyle={styles.messageInput}
               />
-              {ticketFaqsQuery.isFetching ? (
-                <ActivityIndicator />
-              ) : (
-                <IconButton
-                  icon={faSearch}
-                  onPress={() => {
-                    triggerSearch();
-                  }}
-                  disabled={!canSearch}
-                />
-              )}
+              <IconButton
+                icon={faSearch}
+                loading={ticketFaqsQuery.isFetching}
+                onPress={() => {
+                  triggerSearch();
+                }}
+                disabled={!canSearch}
+              />
             </Row>
           </SectionList>
           {hasSearchedOnce && (

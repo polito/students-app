@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Document } from 'react-native-render-html';
 
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -27,20 +27,17 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
   ) as Document;
 
   return (
-    <>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.container}
-      >
-        <Section>
-          <SectionHeader title={faq.question} ellipsizeTitle={false} />
-          <HtmlView source={{ dom }} />
-        </Section>
-        <CtaButtonSpacer />
-      </ScrollView>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={styles.container}
+    >
+      <Section>
+        <SectionHeader title={faq.question} ellipsizeTitle={false} />
+        <HtmlView source={{ dom }} />
+      </Section>
 
       <CtaButton
-        adjustInsets={true}
+        absolute={false}
         title={t('ticketFaqsScreen.writeTicket')}
         hint={t('ticketFaqsScreen.noResultFound')}
         action={() =>
@@ -51,7 +48,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
         }
         icon={faPencil}
       />
-    </>
+    </ScrollView>
   );
 };
 

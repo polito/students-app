@@ -17,7 +17,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
 interface Props extends TouchableHighlightProps {
-  adjustInsets?: boolean;
   containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
@@ -181,7 +180,7 @@ const createStyles = ({
         android: 60,
       }),
       alignItems: 'center',
-      elevation: 12,
+      elevation: 9,
     },
     disabledButton: {
       backgroundColor: colors.secondaryText,

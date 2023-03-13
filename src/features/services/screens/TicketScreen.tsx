@@ -195,7 +195,7 @@ const createStyles = ({ spacing }: Theme) =>
     },
     requestMessage: {
       marginHorizontal: spacing[5],
-      marginBottom: spacing[3],
+      marginVertical: spacing[3],
     },
     icon: {
       marginRight: -spacing[3],
