@@ -21,6 +21,8 @@ export const ExamCard = ({ item }: Props) => {
       title={item.title}
       type={t('common.examCall')}
       color={colors.agendaExam}
+      iconColor={item.color}
+      icon={item.icon}
       time={
         item.isTimeToBeDefined ? t('common.timeToBeDefined') : item.fromTime
       }

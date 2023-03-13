@@ -36,10 +36,13 @@ const groupItemsByDay = (
 
   agendaItems.push(
     ...exams.map(exam => {
+      const coursePreferences = coursesPreferences[exam.courseId];
       const item: ExamItem = {
         id: exam.id,
         key: 'exam' + exam.id,
         type: 'exam',
+        color: coursePreferences.color,
+        icon: coursePreferences.icon,
         date: formatMachineDate(exam.examStartsAt),
         startTimestamp: exam.examStartsAt.valueOf(),
         fromTime: formatTime(exam.examStartsAt),
