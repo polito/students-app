@@ -6,7 +6,7 @@ import { TranslucentViewProps } from './TranslucentView';
 
 export const TranslucentView = ({
   style = null,
-  opacity = 0.85,
+  fallbackOpacity = 0.85,
 }: TranslucentViewProps) => {
   const { colors } = useTheme();
 
@@ -20,7 +20,7 @@ export const TranslucentView = ({
           left: 0,
           bottom: 0,
           right: 0,
-          opacity,
+          opacity: fallbackOpacity,
         },
         style,
       ]}

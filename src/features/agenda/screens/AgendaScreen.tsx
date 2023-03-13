@@ -63,13 +63,8 @@ export const AgendaScreen = ({ navigation }: Props) => {
       .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
   };
 
-  const {
-    data,
-    fetchNextPage,
-    fetchPreviousPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-  } = useGetAgendaWeeks(coursesPreferences, filters);
+  const { data, fetchNextPage, isFetchingNextPage, isFetchingPreviousPage } =
+    useGetAgendaWeeks(coursesPreferences, filters);
 
   const flatListRef = useRef<FlatList<AgendaWeek>>();
 

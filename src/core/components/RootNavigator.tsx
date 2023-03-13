@@ -10,7 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -20,12 +19,12 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { IS_IOS } from '../constants';
 import { HeaderLogo } from './HeaderLogo';
 
 const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
-  const { colors } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
@@ -36,8 +35,6 @@ export const RootNavigator = () => {
       backBehavior="history"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.tabBar,
-        tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarHideOnKeyboard: true,
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
@@ -102,8 +99,8 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: colors.surfaceDark,
-      borderColor: colors.primary[700],
+      backgroundColor: IS_IOS ? colors.headers : colors.surface,
+      borderTopColor: colors.divider,
     },
     tabBarItemStyle: {
       paddingVertical: 3,

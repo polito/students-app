@@ -176,14 +176,14 @@ export const useGetTicketAttachment = (
   );
 };
 
-export const useSearchTicketFaqs = (search: string, enabled: boolean) => {
+export const useSearchTicketFaqs = (search: string) => {
   const ticketsClient = useTicketsClient();
 
   return useQuery(
     [FAQS_QUERY_KEY],
     () => ticketsClient.searchTicketFAQs({ search }),
     {
-      enabled: enabled,
+      enabled: false,
       keepPreviousData: false,
       staleTime: 0,
     },

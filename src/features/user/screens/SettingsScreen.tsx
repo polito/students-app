@@ -56,7 +56,7 @@ const CleanCacheListItem = () => {
   useEffect(refreshSize, [filesCache]);
   return (
     <ListItem
-      isNavigationAction
+      isAction
       title={t('common.cleanCourseFiles')}
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
@@ -166,7 +166,7 @@ const VisualizationListItem = () => {
     >
       <ListItem
         title={themeLabel(colorScheme)}
-        isNavigationAction
+        isAction
         leadingItem={<ThemeIcon />}
       />
     </MenuView>
@@ -202,7 +202,7 @@ const LanguageListItem = () => {
           .then(() => (Settings.defaultLocale = uiLanguage));
       }}
     >
-      <ListItem isNavigationAction title={languageLabel(language)} />
+      <ListItem isAction title={languageLabel(language)} />
     </MenuView>
   );
 };

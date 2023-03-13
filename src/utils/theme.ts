@@ -36,16 +36,14 @@ const isValidStyleProp = (propStyle: string) => {
 };
 
 const stylePropValue = (propStyle: string): string | number => {
-  const [property, propertyValue] = propStyle.split('-');
-
-  const val = defaultStyleProps[propertyValue]
+  const [, propertyValue] = propStyle.split('-');
+  return defaultStyleProps[propertyValue]
     ? defaultStyleProps[propertyValue]
     : propertyValue;
-  return val;
 };
 
 const stylePropKey = (propStyle: string): string => {
-  const [property, propertyValue] = propStyle.split('-');
+  const [property] = propStyle.split('-');
   return propertyBind[property] ? propertyBind[property] : property;
 };
 
@@ -59,4 +57,5 @@ export const usePropsStyle = (propsStyle: Record<string, any>): any => {
         return acc;
       }, {});
   }, []);
+  // TODO useless memo?
 };

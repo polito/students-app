@@ -76,8 +76,8 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
 
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
-  const { mutate: handleLogout, isLoading } = useLogout();
+  const { colors, fontSizes } = useTheme();
+  const { mutate: handleLogout } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
 
@@ -138,7 +138,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
             leadingItem={
               <Icon
                 icon={faSignOut}
-                color={colors.text['500']}
+                color={colors.text[500]}
                 size={fontSizes.xl}
               />
             }

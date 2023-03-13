@@ -8,10 +8,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
-import { TicketInsertScreen } from '../screens/TicketInsertScreen';
 import { TicketListScreen } from '../screens/TicketListScreen';
 import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
@@ -20,7 +20,7 @@ export type ServiceStackParamList = {
   Home: undefined;
   Tickets: undefined;
   Ticket: { id: number };
-  TicketInsert: {
+  CreateTicket: {
     topicId?: number;
     subtopicId?: number;
   };
@@ -56,23 +56,10 @@ export const ServicesNavigator = () => {
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('servicesScreen.title'),
-          headerLargeTitle: false,
         }}
       />
-      <Stack.Screen
-        name="Tickets"
-        component={TicketsScreen}
-        options={{
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="TicketList"
-        component={TicketListScreen}
-        options={{
-          headerLargeTitle: false,
-        }}
-      />
+      <Stack.Screen name="Tickets" component={TicketsScreen} />
+      <Stack.Screen name="TicketList" component={TicketListScreen} />
       <Stack.Screen
         name="Ticket"
         component={TicketScreen}
@@ -80,15 +67,17 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
           headerBackTitle: t('ticketScreen.headerBackTitle'),
+          headerLargeStyle: {
+            backgroundColor: 'transparent',
+          },
         }}
       />
       <Stack.Screen
-        name="TicketInsert"
-        component={TicketInsertScreen}
+        name="CreateTicket"
+        component={CreateTicketScreen}
         options={{
           headerLargeTitle: false,
-          headerTitle: t('ticketInsertScreen.title'),
-          headerBackTitle: t('ticketInsertScreen.headerBackTitle'),
+          headerTitle: t('createTicketScreen.title'),
         }}
       />
       <Stack.Screen
@@ -105,7 +94,6 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('ticketFaqScreen.title'),
-          headerBackTitle: t('ticketFaqScreen.headerBackTitle'),
         }}
       />
     </Stack.Navigator>

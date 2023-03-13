@@ -8,11 +8,11 @@ import { useTheme as useNavigationTheme } from '@react-navigation/native';
 export interface TranslucentViewProps {
   style?: ViewStyle;
   blurAmount?: number;
-  opacity?: number;
+  fallbackOpacity?: number;
 }
 
 export const TranslucentView = ({
-  style = null,
+  style,
   blurAmount = 15,
 }: TranslucentViewProps) => {
   const { dark } = useNavigationTheme();
@@ -25,11 +25,12 @@ export const TranslucentView = ({
     }),
     [dark],
   );
+
   return (
     <BlurView
-      {...blurViewProps}
       blurAmount={blurAmount}
-      style={{ ...(StyleSheet.absoluteFill as ViewStyle), ...style }}
+      style={[StyleSheet.absoluteFill, style]}
+      {...blurViewProps}
     />
   );
 };

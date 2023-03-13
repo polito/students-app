@@ -12,9 +12,10 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 
+import { IS_IOS } from '../../../src/core/constants';
 import { useTheme } from '../hooks/useTheme';
 
-interface Props extends Omit<TextInputProps, 'placeholder'> {
+export interface Props extends Omit<TextInputProps, 'placeholder'> {
   inputRef?: Ref<TextInput>;
   label: string;
   type?: 'text' | 'password';
@@ -50,14 +51,26 @@ export const TextField = ({
   })();
 
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[
+        styles.container,
+        rest.editable === false && styles.disabled,
+        style,
+      ]}
+    >
       <TextInput
         ref={inputRef}
         autoCapitalize="none"
         selectionColor={colors.link}
         placeholder={label}
         placeholderTextColor={colors.secondaryText}
-        style={[styles.input, inputStyle]}
+        style={[
+          styles.input,
+          {
+            minHeight: IS_IOS ? (rest.numberOfLines ?? 1) * 17 : undefined,
+          },
+          inputStyle,
+        ]}
         {...textInputProps}
         {...rest}
       />
@@ -70,12 +83,15 @@ const createStyles = ({ colors, fontSizes, spacing, fontFamilies }: Theme) =>
     container: {
       paddingVertical: spacing[2],
     },
+    disabled: {
+      opacity: 0.5,
+    },
     input: {
+      textAlignVertical: 'top',
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.md,
       borderBottomWidth: Platform.select({ android: 1 }),
       borderColor: colors.secondaryText,
-      // backgroundColor: colors.surface,
       color: colors.prose,
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[2],

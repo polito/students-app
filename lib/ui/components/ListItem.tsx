@@ -14,6 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { IS_IOS } from '../../../src/core/constants';
+import { GlobalStyles } from '../../../src/core/styles/globalStyles';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -27,7 +28,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
-  isNavigationAction?: boolean;
+  isAction?: boolean;
   card?: boolean;
 }
 
@@ -46,7 +47,7 @@ export const ListItem = ({
   linkTo,
   containerStyle,
   onPress,
-  isNavigationAction,
+  isAction,
   disabled,
   style,
   card,
@@ -74,7 +75,7 @@ export const ListItem = ({
       }
       style={[
         {
-          opacity: disabled ? 0.6 : 1,
+          opacity: disabled ? 0.5 : 1,
         },
         style,
       ]}
@@ -108,7 +109,7 @@ export const ListItem = ({
             {leadingItem}
           </View>
         )}
-        <View style={{ flex: 1 }}>
+        <View style={GlobalStyles.grow}>
           {typeof title === 'string' ? (
             <Text
               variant="title"
@@ -150,7 +151,7 @@ export const ListItem = ({
         </View>
         {!card && (
           <>
-            {!trailingItem && (linkTo || isNavigationAction) && IS_IOS ? (
+            {!trailingItem && (linkTo || isAction) && IS_IOS ? (
               <Icon
                 icon={faChevronRight}
                 color={colors.secondaryText}

@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -18,19 +17,22 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { IS_ANDROID, IS_IOS } from '../../../core/constants';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetTicket,
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { AttachmentCard } from '../components/AttachmentCard';
 import { ChatMessage } from '../components/ChatMessage';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
-import { TicketRequest } from '../components/TicketRequest';
+import { TextMessage } from '../components/TextMessage';
+import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
-import { TicketTextField } from '../components/TicketTextField';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 
@@ -40,7 +42,7 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ServiceStackParamList, 'Ticket'>>();
   const { colors, fontSizes } = theme;
-  const styles = createStyles(theme);
+  const styles = useStylesheet(createStyles);
   const { mutateAsync: markTicketAsClosed, isSuccess } = useMarkTicketAsClosed(
     ticket?.id,
   );
@@ -97,35 +99,21 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
 
 export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
+  const styles = useStylesheet(createStyles);
   const ticketQuery = useGetTicket(id);
+  const refreshControl = useRefreshControl(ticketQuery);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const { spacing } = useTheme();
-  const styles = useStylesheet(createStyles);
   const headerHeight = useHeaderHeight();
-  const bottomBarHeight = useBottomTabBarHeight();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [ticketStatusHeight, setTicketStatusHeight] = useState(0);
-  const ticket = ticketQuery?.data?.data;
+  const [textFieldHeight, setTextFieldHeight] = useState(50);
+  const ticket = ticketQuery.data?.data;
+
+  useScreenTitle(ticket?.subject);
 
   useEffect(() => {
     if (!ticket || ticket.unreadCount === 0) return;
     markAsRead();
   }, [ticket]);
-
-  useEffect(() => {
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () =>
-      setKeyboardVisible(false),
-    );
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-      setTicketStatusHeight(headerHeight);
-    });
-    return () => {
-      hideSubscription.remove();
-      showSubscription.remove();
-    };
-  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -137,50 +125,25 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     });
   }, [ticket]);
 
-  const replies = useMemo(() => {
-    return (
+  const replies = useMemo(
+    () =>
       ticket?.replies.sort(
         (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-      ) || []
-    );
-  }, [ticket]);
-
-  const Header = () => {
-    return (
-      <View
-        style={[
-          styles.header,
-          IS_IOS && { top: headerHeight },
-          { height: keyboardVisible ? 0 : undefined },
-          { opacity: keyboardVisible ? 0 : 1 },
-        ]}
-        onLayout={({ nativeEvent }) => {
-          setTicketStatusHeight(
-            nativeEvent.layout.height + (IS_IOS ? +spacing[3] : -headerHeight),
-          );
-        }}
-      >
-        {!!ticket?.subject && <SectionHeader title={ticket?.subject} />}
-        {/* <TicketStatusInfo ticket={ticket} loading={ticketQuery?.isLoading} /> */}
-      </View>
-    );
-  };
+      ) ?? [],
+    [ticket],
+  );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={GlobalStyles.grow}>
       <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        data={replies}
-        contentContainerStyle={[
-          bottomBarAwareStyles,
-          {
-            paddingBottom: keyboardVisible ? -headerHeight : ticketStatusHeight,
-          },
-          { paddingTop: keyboardVisible || IS_ANDROID ? bottomBarHeight : 0 },
-          { marginTop: keyboardVisible ? -bottomBarHeight : -bottomBarHeight },
-        ]}
-        keyExtractor={item => item.id.toString()}
         inverted
+        contentContainerStyle={{
+          paddingTop: textFieldHeight + +spacing[5],
+          paddingBottom: IS_IOS ? headerHeight : undefined,
+        }}
+        {...refreshControl}
+        data={replies}
+        keyExtractor={item => item.id.toString()}
         ListFooterComponent={
           !ticketQuery?.isLoading &&
           !!ticket && (
@@ -189,7 +152,20 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 ticket={ticket}
                 loading={ticketQuery?.isLoading}
               />
-              <TicketRequest ticket={ticket} />
+              <ChatBubble style={styles.requestMessage}>
+                <TextMessage message={ticket?.message} />
+                {ticket.hasAttachments && (
+                  <View>
+                    {ticket.attachments.map((item, index) => (
+                      <AttachmentCard
+                        key={index}
+                        attachment={item}
+                        ticketId={ticket.id}
+                      />
+                    ))}
+                  </View>
+                )}
+              </ChatBubble>
             </>
           )
         }
@@ -200,63 +176,26 @@ export const TicketScreen = ({ route, navigation }: Props) => {
             received={!!reply?.isFromAgent}
           />
         )}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
-      <Header />
-      <TicketTextField ticketId={id} />
+      <TicketMessagingView
+        ticketId={id}
+        onLayout={e => {
+          setTextFieldHeight(e.nativeEvent.layout.height);
+        }}
+      />
     </View>
   );
 };
 
-const createStyles = ({
-  spacing,
-  colors,
-  fontSizes,
-  fontWeights,
-  shapes,
-}: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    sectionHeader: {
-      width: '100%',
-      position: 'absolute',
-      height: undefined,
-      backgroundColor: colors.background,
-      paddingTop: spacing[2],
+    separator: {
+      height: spacing[3],
     },
-    header: {
-      width: '100%',
-      position: 'absolute',
-      height: undefined,
-      backgroundColor: colors.background,
-      paddingTop: spacing[2],
-      paddingBottom: spacing[1],
-    },
-    container: {
-      flex: 1,
-    },
-    headerText: {
-      color: 'red',
-    },
-    wrapper: {
-      paddingVertical: spacing['2'],
-      paddingHorizontal: spacing['4'],
-    },
-    textField: {
-      borderRadius: shapes.md,
-      borderWidth: 1,
-      backgroundColor: colors.surface,
-      paddingVertical: 0,
-      borderColor: colors.divider,
-      width: '100%',
-    },
-    textFieldDisabled: {
-      opacity: 0.5,
-    },
-    textFieldInput: {
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-    },
-    listItemSubtitle: {
-      fontSize: fontSizes.xs,
+    requestMessage: {
+      marginHorizontal: spacing[5],
+      marginVertical: spacing[3],
     },
     icon: {
       marginRight: -spacing[3],

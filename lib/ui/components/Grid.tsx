@@ -1,6 +1,8 @@
 import { Children, Fragment, PropsWithChildren, ReactNode } from 'react';
 import { View, ViewProps } from 'react-native';
 
+import { GlobalStyles } from '../../../src/core/styles/globalStyles';
+
 interface Props {
   numColumns?: number;
   gap?: number;
@@ -42,7 +44,9 @@ export const Grid = ({
                 r.length < numColumns) && (
                 <>
                   <View style={{ width: gap }} />
-                  {r.length < numColumns ? <View style={{ flex: 1 }} /> : null}
+                  {r.length < numColumns ? (
+                    <View style={GlobalStyles.grow} />
+                  ) : null}
                 </>
               )}
             </Fragment>

@@ -12,6 +12,7 @@ import {
 } from '@react-navigation/native-stack';
 
 import { useTabs } from '../../../core/hooks/useTabs';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
 import { CourseIndicator } from '../components/CourseIndicator';
@@ -110,7 +111,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   return (
     <CourseContext.Provider value={id}>
       <FilesCacheProvider>
-        <View style={{ flex: 1 }}>
+        <View style={GlobalStyles.grow}>
           <Tabs />
           <TabsContent />
         </View>

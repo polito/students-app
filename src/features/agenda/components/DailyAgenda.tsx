@@ -31,7 +31,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
 
   return (
     <Row onLayout={onLayout}>
-      <Col style={[styles.dayColumn]} noFlex>
+      <Col style={styles.dayColumn} noFlex>
         {agendaDay.isToday ? (
           <View style={[styles.dayBox, styles.todayBox]}>
             <Text variant="heading" style={[styles.secondaryDay, styles.today]}>
@@ -93,7 +93,6 @@ const createStyles = ({ colors, fontWeights, shapes, spacing }: Theme) =>
     dayColumn: {
       width: '15%',
       maxWidth: 200,
-      display: 'flex',
       alignItems: 'stretch',
     },
     itemsColumn: {
@@ -107,7 +106,6 @@ const createStyles = ({ colors, fontWeights, shapes, spacing }: Theme) =>
     dayBox: {
       display: 'flex',
       alignItems: 'center',
-      marginTop: spacing[3],
       paddingVertical: spacing[2],
     },
     todayBox: {
@@ -116,6 +114,7 @@ const createStyles = ({ colors, fontWeights, shapes, spacing }: Theme) =>
       borderRadius: shapes.lg,
       marginLeft: spacing[1],
       marginRight: spacing[2],
+      marginTop: spacing[2],
     },
     today: {
       color: colors.surface,

@@ -22,7 +22,7 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { globalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { ExamListItem } from './ExamListItem';
 
@@ -67,7 +67,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={GlobalStyles.grow}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section style={styles.heading}>
@@ -81,14 +81,14 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
             value={`${courseQuery.data?.data.teachingPeriod ?? '--'} - ${
               courseQuery.data?.data.year ?? '--'
             }`}
-            style={globalStyles.grow}
+            style={GlobalStyles.grow}
           />
           <Metric
             title={t('courseInfoTab.creditsLabel')}
             value={t('common.creditsWithUnit', {
               credits: courseQuery.data?.data.cfu,
             })}
-            style={globalStyles.grow}
+            style={GlobalStyles.grow}
           />
         </Grid>
       </Card>

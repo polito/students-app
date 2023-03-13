@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { open } from 'react-native-file-viewer';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
@@ -70,26 +75,23 @@ export const AttachmentCard = ({
   }, [shouldOpen, replyAttachment]);
 
   return (
-    <Row
-      noFlex
-      style={styles.attachmentContainer}
-      onPress={onPressAttachment}
-      touchableOpacity
-    >
-      {isDownloadingReplyAttachment || isDownloadingTicketAttachment ? (
-        <View style={styles.loaderView}>
-          <ActivityIndicator color={colors.primary[50]} />
-        </View>
-      ) : (
-        <Icon icon={faFile} size={25} color={'white'} />
-      )}
-      <Col noFlex flexStart style={styles.textContainer}>
-        <Text style={styles.name}>{attachment.filename}</Text>
-        <Text numberOfLines={1} style={styles.size}>
-          {formatFileSize(attachment.sizeInKiloBytes, 0)}
-        </Text>
-      </Col>
-    </Row>
+    <TouchableOpacity onPress={onPressAttachment}>
+      <Row noFlex style={styles.attachmentContainer}>
+        {isDownloadingReplyAttachment || isDownloadingTicketAttachment ? (
+          <View style={styles.loaderView}>
+            <ActivityIndicator color={colors.primary[50]} />
+          </View>
+        ) : (
+          <Icon icon={faFile} size={25} color={'white'} />
+        )}
+        <Col noFlex flexStart style={styles.textContainer}>
+          <Text style={styles.name}>{attachment.filename}</Text>
+          <Text numberOfLines={1} style={styles.size}>
+            {formatFileSize(attachment.sizeInKiloBytes, 0)}
+          </Text>
+        </Col>
+      </Row>
+    </TouchableOpacity>
   );
 };
 

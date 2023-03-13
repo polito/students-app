@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -9,13 +9,12 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/theme';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
-import { useScrollViewStyle } from '../../../core/hooks/useScrollViewStyle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
@@ -26,39 +25,35 @@ interface Props {
 
 export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const scrollViewStyles = useScrollViewStyle();
+  const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
   const refreshControl = useRefreshControl(ticketsQuery);
 
-  const TicketsOpened = () => {
+  const OpenTickets = () => {
     const openTickets = (ticketsQuery?.data?.data || [])
       .filter(ticket => ticket.status !== TicketStatus.Closed)
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
-      <>
+      <Section>
         <SectionHeader title={t('ticketsScreen.opened')} />
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
-            <Section>
-              <SectionList>
-                {openTickets?.map(ticket => (
-                  <TicketListItem ticket={ticket} key={ticket.id} />
-                ))}
-              </SectionList>
-            </Section>
+            <SectionList>
+              {openTickets?.map(ticket => (
+                <TicketListItem ticket={ticket} key={ticket.id} />
+              ))}
+            </SectionList>
           ) : (
             <SectionList>
               <EmptyState message={t('ticketsScreen.openEmptyState')} />
             </SectionList>
           ))}
-      </>
+      </Section>
     );
   };
 
-  const TicketsClosed = () => {
+  const ClosedTickets = () => {
     const closedTickets = useMemo(() => {
       return (ticketsQuery?.data?.data || [])
         .filter(ticket => ticket.status === TicketStatus.Closed)
@@ -71,7 +66,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
     );
 
     return (
-      <View style={{ paddingTop: spacing[5] }}>
+      <Section>
         <SectionHeader
           title={t('ticketsScreen.closed')}
           linkTo={{
@@ -82,13 +77,11 @@ export const TicketsScreen = ({ navigation }: Props) => {
         />
         {!ticketsQuery.isLoading &&
           (renderedClosedTickets.length > 0 ? (
-            <Section>
-              <SectionList>
-                {renderedClosedTickets.map(ticket => (
-                  <TicketListItem ticket={ticket} key={ticket.id} />
-                ))}
-              </SectionList>
-            </Section>
+            <SectionList>
+              {renderedClosedTickets.map(ticket => (
+                <TicketListItem ticket={ticket} key={ticket.id} />
+              ))}
+            </SectionList>
           ) : (
             <SectionList>
               <EmptyState
@@ -97,21 +90,21 @@ export const TicketsScreen = ({ navigation }: Props) => {
               />
             </SectionList>
           ))}
-      </View>
+      </Section>
     );
   };
 
   return (
     <>
       <ScrollView
-        contentContainerStyle={[bottomBarAwareStyles, scrollViewStyles]}
+        contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl {...refreshControl} />}
+        contentContainerStyle={styles.container}
       >
-        <View style={{ paddingVertical: spacing[5] }}>
-          <TicketsOpened />
-          <TicketsClosed />
-        </View>
+        <OpenTickets />
+        <ClosedTickets />
       </ScrollView>
+
       <CtaButton
         absolute={true}
         title={t('ticketsScreen.addNew')}
@@ -121,3 +114,10 @@ export const TicketsScreen = ({ navigation }: Props) => {
     </>
   );
 };
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    container: {
+      paddingVertical: spacing[5],
+    },
+  });

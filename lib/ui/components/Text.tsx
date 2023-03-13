@@ -1,11 +1,10 @@
-import { PropsWithChildren } from 'react';
 import { Text as RNText, StyleSheet, TextProps } from 'react-native';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/theme';
 
-interface Props {
+export interface Props extends TextProps {
   variant?:
     | 'heading'
     | 'title'
@@ -43,7 +42,7 @@ export const Text = ({
   uppercase,
   children,
   ...rest
-}: PropsWithChildren<TextProps & Props>) => {
+}: Props) => {
   const { colors, fontFamilies, fontWeights } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =

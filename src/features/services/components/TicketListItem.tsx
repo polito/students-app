@@ -89,12 +89,12 @@ export const TicketListItem = ({ ticket }: Props) => {
               <Icon
                 icon={faPaperclip}
                 size={20}
-                color={colors.text['400']}
-                style={[
+                color={colors.text[400]}
+                style={
                   ticket.unreadCount === 0 && {
-                    marginHorizontal: spacing['2'],
-                  },
-                ]}
+                    marginHorizontal: spacing[2],
+                  }
+                }
               />
             )}
             {ticket.unreadCount > 0 && <UnReadCount />}
@@ -149,9 +149,9 @@ const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
     unreadCount: {
       height: 22,
       width: 22,
-      marginHorizontal: spacing['2'],
+      marginHorizontal: spacing[2],
       borderRadius: 22 / 2,
-      backgroundColor: colors.error['500'],
+      backgroundColor: colors.error[500],
     },
     unreadCountText: { color: 'white' },
     listItemSubtitle: {

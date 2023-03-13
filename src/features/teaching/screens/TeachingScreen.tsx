@@ -25,6 +25,7 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -86,7 +87,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <View style={styles.sectionsContainer}>
+      <View style={styles.container}>
         <Section>
           <SectionHeader
             title={t('coursesScreen.title')}
@@ -134,7 +135,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 underlayColor={colors.touchableHighlight}
               >
                 <View style={{ padding: spacing[5], flexDirection: 'row' }}>
-                  <View style={{ flex: 1 }}>
+                  <View style={GlobalStyles.grow}>
                     <Text
                       variant="headline"
                       style={{ marginBottom: spacing[2] }}
@@ -180,11 +181,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    sectionsContainer: {
+    container: {
       paddingVertical: spacing[5],
-    },
-    section: {
-      marginBottom: spacing[5],
     },
     loader: {
       marginVertical: spacing[8],

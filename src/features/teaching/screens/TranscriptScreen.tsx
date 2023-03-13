@@ -20,7 +20,7 @@ import {
   useGetGrades,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
-import { globalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
 import { formatGrade } from '../../../utils/grades';
 import { ProgressChart } from '../components/ProgressChart';
@@ -59,7 +59,7 @@ export const TranscriptScreen = () => {
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />
         <Card style={styles.metricsCard}>
-          <View style={globalStyles.grow}>
+          <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
               value={`${totalAcquiredCredits ?? '--'}/${
@@ -92,7 +92,7 @@ export const TranscriptScreen = () => {
       <Section>
         <SectionHeader title={t('transcriptScreen.thisYear')} />
         <Card style={styles.metricsCard}>
-          <View style={globalStyles.grow}>
+          <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
               value={`${enrollmentAcquiredCredits}/${enrollmentCredits} CFU`}
@@ -125,13 +125,13 @@ export const TranscriptScreen = () => {
             <Metric
               title={t('transcriptScreen.weightedAverageLabel')}
               value={studentQuery.data?.data.averageGrade ?? '--'}
-              style={globalStyles.grow}
+              style={GlobalStyles.grow}
             />
             <Metric
               title={t('transcriptScreen.finalAverageLabel')}
               value={studentQuery.data?.data.averageGradePurged ?? '--'}
               color={colors.primary[400]}
-              style={globalStyles.grow}
+              style={GlobalStyles.grow}
             />
           </Grid>
         </Card>

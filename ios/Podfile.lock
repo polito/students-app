@@ -371,7 +371,7 @@ PODS:
     - React-Core
   - react-native-html-to-pdf (0.12.0):
     - React-Core
-  - react-native-menu (0.5.3):
+  - react-native-menu (0.7.3):
     - React
   - react-native-netinfo (9.3.4):
     - React-Core
@@ -756,7 +756,7 @@ SPEC CHECKSUMS:
   react-native-blur: 50c9feabacbc5f49b61337ebc32192c6be7ec3c3
   react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
-  react-native-menu: 9edb6f68924cad8fc62dbd8f03f658d8499bb968
+  react-native-menu: 9d7d6f819cc7fa14a15cf86888c53f3240d86f1b
   react-native-netinfo: 6ac9bcc7c88dc51717bda3484eb99093acb755e0
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe

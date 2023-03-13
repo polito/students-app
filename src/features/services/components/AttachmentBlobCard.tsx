@@ -1,15 +1,14 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Platform, StyleSheet } from 'react-native';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
-
-import { formatFileSize } from '../../../utils/files';
 
 interface AttachmentCardProps {
   attachment?: Blob;
@@ -20,73 +19,65 @@ export const AttachmentBlobCard = ({
   attachment,
   onPressCancelAttachment,
 }: AttachmentCardProps) => {
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
   if (!attachment) {
-    return <View />;
+    return null;
   }
 
   return (
-    <Row noFlex style={styles.attachmentContainer}>
-      <Icon icon={faFile} size={35} />
-      <Col noFlex flexStart>
-        <Text numberOfLines={1} style={styles.name}>
-          {attachment?._data?.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.size}>
-          {formatFileSize(attachment?._data?.size / 1000, 0)}
-        </Text>
-      </Col>
+    <Row noFlex alignCenter style={styles.attachmentContainer}>
+      <Icon icon={faFile} style={[styles.space, styles.opacity]} />
+      <Text
+        numberOfLines={1}
+        style={[styles.name, styles.opacity, styles.space]}
+      >
+        {(attachment as unknown as { _data?: { name: string } })._data?.name ??
+          t('ticketScreen.unnamedFile')}
+      </Text>
       {!!onPressCancelAttachment && (
-        <TouchableOpacity
-          style={styles.deleteIcon}
+        <IconButton
+          icon={faTimes}
           onPress={onPressCancelAttachment}
-        >
-          <Icon icon={faTimes} size={12} color={'white'} />
-        </TouchableOpacity>
+          style={styles.cancelButton}
+          iconStyle={styles.opacity}
+        />
       )}
     </Row>
   );
 };
 
-const createStyles = ({
-  colors,
-  shapes,
-  spacing,
-  fontSizes,
-  fontWeights,
-}: Theme) =>
-  StyleSheet.create({
+const createStyles = ({ shapes, spacing, fontSizes, fontWeights }: Theme) => {
+  return StyleSheet.create({
     attachmentContainer: {
-      borderRadius: shapes.lg * 1.5,
-      backgroundColor: colors.surface,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingLeft: spacing[2],
-      paddingBottom: spacing[2],
-      paddingTop: spacing[5],
-      paddingRight: spacing[6],
+      overflow: 'hidden',
+      backgroundColor: 'rgba(0, 0, 0, .1)',
+      borderRadius: shapes.xl,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[1.5],
       marginRight: spacing[3],
     },
-    deleteIcon: {
-      position: 'absolute',
-      top: spacing[1],
-      right: spacing[2],
-      backgroundColor: colors.error[500],
-      borderRadius: 50,
-      width: spacing[4],
-      height: spacing[4],
-      padding: spacing[1],
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     name: {
-      fontSize: fontSizes.sm,
+      maxWidth: spacing[32],
+      marginRight: spacing[2],
       fontWeight: fontWeights.semibold,
-      maxWidth: +spacing[10] * 2,
+    },
+    cancelButton: {
+      padding: spacing[1],
+      backgroundColor: 'rgba(0, 0, 0, .1)',
+      borderRadius: shapes.xl,
+      marginRight: -spacing[1.5],
+    },
+    space: {
+      marginRight: spacing[2],
+    },
+    opacity: {
+      opacity: Platform.select({ ios: 0.8 }),
     },
     size: {
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
     },
   });
+};

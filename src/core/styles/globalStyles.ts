@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export const globalStyles = StyleSheet.create({
+export const GlobalStyles = StyleSheet.create({
   grow: {
     flex: 1,
   },
