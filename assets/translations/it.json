@@ -90,6 +90,7 @@
     "period": "Semestre",
     "phone": "Telefono",
     "preferences": "Preferenze",
+    "profilePic": "Immagine di profilo",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
     "retract": "Ritira",
@@ -320,7 +321,9 @@
     "contacts": "Contatti",
     "department": "Dipartimento",
     "moreInfo": "Maggiori informazioni",
-    "role": "Ruolo"
+    "role": "Ruolo",
+    "sentEmail": "Invia e-mail",
+    "coursesLabel": "Lista dei corsi offerti dal docente"
   },
   "placesScreen": {
     "title": "Luoghi"
