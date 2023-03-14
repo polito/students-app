@@ -27,10 +27,10 @@ import {
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
-import { AttachmentCard } from '../components/AttachmentCard';
 import { ChatMessage } from '../components/ChatMessage';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TextMessage } from '../components/TextMessage';
+import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
 
@@ -157,7 +157,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 {ticket.hasAttachments && (
                   <View>
                     {ticket.attachments.map((item, index) => (
-                      <AttachmentCard
+                      <TicketAttachmentChip
                         key={index}
                         attachment={item}
                         ticketId={ticket.id}

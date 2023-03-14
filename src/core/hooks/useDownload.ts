@@ -1,3 +1,5 @@
+// noinspection AllyPlainJsInspection
+//
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
@@ -78,7 +80,7 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         const result = await promise;
         if (result.statusCode !== 200) {
           // noinspection ExceptionCaughtLocallyJS
-          throw new Error(t('courseFileListItem.downloadError'));
+          throw new Error(t('common.downloadError'));
         }
         updateDownload({
           isDownloaded: true,

@@ -5,8 +5,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketReply } from '@polito/api-client/models/TicketReply';
 
-import { AttachmentCard } from './AttachmentCard';
 import { TextMessage } from './TextMessage';
+import { TicketAttachmentChip } from './TicketAttachmentChip';
 
 interface ChatMessageProps {
   received: boolean;
@@ -28,7 +28,7 @@ export const ChatMessage = ({
         <View style={styles.attachmentContainer}>
           {message.attachments.map((item, index) => {
             return (
-              <AttachmentCard
+              <TicketAttachmentChip
                 key={index}
                 attachment={item}
                 ticketId={ticketId}

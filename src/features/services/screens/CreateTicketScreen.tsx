@@ -5,7 +5,6 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { MessagingView } from '@lib/ui/components/MessagingView';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -23,7 +22,9 @@ import {
 } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { darkTheme } from '../../../core/themes/dark';
+import { MessagingView } from '../components/MessagingView';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { Attachment } from '../types/Attachment';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 
@@ -140,8 +141,8 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
               showSendButton={false}
               message={ticketBody.message}
               onMessageChange={updateTicketBodyField('message')}
-              attachment={ticketBody.attachment}
-              onAttachmentChange={updateTicketBodyField('attachment')}
+              attachment={ticketBody.attachment as unknown as Attachment}
+              onAttachmentChange={updateTicketBodyField('attachment') as any}
               disabled={!ticketBody.subtopicId}
               numberOfLines={5}
               style={GlobalStyles.grow}

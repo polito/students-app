@@ -13,17 +13,18 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { MenuView } from '@react-native-menu/menu';
 
-import { TranslucentView } from '../../../src/core/components/TranslucentView';
-import { GlobalStyles } from '../../../src/core/styles/globalStyles';
-import { AttachmentBlobCard } from '../../../src/features/services/components/AttachmentBlobCard';
-import { pdfSizes } from '../../../src/features/teaching/constants';
+import { TranslucentView } from '../../../core/components/TranslucentView';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { pdfSizes } from '../../teaching/constants';
+import { Attachment } from '../types/Attachment';
+import { AttachmentChip } from './AttachmentChip';
 
 interface Props extends ViewProps {
   message?: string;
   onMessageChange?: (message: string) => void;
   onSend?: () => void;
-  attachment?: Blob;
-  onAttachmentChange?: (attachment?: Blob) => void;
+  attachment?: Attachment;
+  onAttachmentChange?: (attachment?: Attachment) => void;
   loading?: boolean;
   disabled?: boolean;
   showSendButton?: boolean;
@@ -50,14 +51,12 @@ export const MessagingView = ({
   const styles = useStylesheet(createStyles);
 
   const pickFile = async () => {
-    const asset = await DocumentPicker.pickSingle({});
-    const blob = await fetch(asset.uri).then(r => r.blob());
-    onAttachmentChange?.(blob);
+    onAttachmentChange?.(await DocumentPicker.pickSingle({}));
   };
 
   const takePicture = async () => {
     try {
-      const res = await openCamera({
+      const picture = await openCamera({
         ...pdfSizes,
         mediaType: 'photo',
         multiple: false,
@@ -65,8 +64,12 @@ export const MessagingView = ({
         freeStyleCropEnabled: true,
         includeBase64: true,
       });
-      const blob = await fetch(res.path).then(r => r.blob());
-      onAttachmentChange?.(blob);
+      onAttachmentChange?.({
+        uri: picture.path,
+        name: picture.filename || t('common.unnamedFile'),
+        size: picture.size,
+        type: picture.mime,
+      });
     } catch (e) {
       console.debug({ errorTakePhoto: e });
     }
@@ -88,9 +91,9 @@ export const MessagingView = ({
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => {
               return (
-                <AttachmentBlobCard
+                <AttachmentChip
                   attachment={item}
-                  onPressCancelAttachment={() => onAttachmentChange(null)}
+                  onClearAttachment={() => onAttachmentChange(null)}
                 />
               );
             }}

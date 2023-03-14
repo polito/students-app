@@ -55,6 +55,7 @@
     "delete": "Delete",
     "done": "Done",
     "download": "Download",
+    "downloadError": "Something went wrong with the download",
     "ects": "ECTS",
     "email": "Email",
     "en": "English",
@@ -93,6 +94,7 @@
     "today": "Today",
     "tomorrow": "Tomorrow",
     "transcript": "Transcript",
+    "unnamedFile": "Unnamed file",
     "updatedAt": "Updated at",
     "upload": "Carica",
     "videoLecture": "Video lecture",
@@ -136,7 +138,6 @@
     "noResult": "No results found"
   },
   "courseFileListItem": {
-    "downloadError": "Something went wrong with the download",
     "openFileError": "Cannot open the file.",
     "reDownloadFile": "Redownload file"
   },
@@ -331,7 +332,6 @@
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",
     "title": "Ticket",
-    "unnamedFile": "Unnamed file",
     "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply"
   },
   "tickets": {

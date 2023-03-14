@@ -89,6 +89,7 @@ export type Colors = Record<string, string | ColorPalette> & {
   agendaDeadline: string;
   agendaExam: string;
   agendaLecture: string;
+  translucentSurface: string;
   text: ColorPalette;
   primary: ColorPalette;
   secondary: ColorPalette;
