@@ -50,7 +50,7 @@ export const AttachmentChip = ({
           !fullWidth && { maxWidth: 200 },
         ]}
       >
-        {attachment?.name ?? t('common.unnamedFile')}
+        {attachment.name ?? t('common.unnamedFile')}
       </Text>
       {!!onClearAttachment && (
         <IconButton
@@ -79,7 +79,6 @@ const createStyles = ({
       paddingVertical: spacing[1.5],
     },
     name: {
-      flex: 1,
       fontWeight: fontWeights.semibold,
     },
     cancelButton: {

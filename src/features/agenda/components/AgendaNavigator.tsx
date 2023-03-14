@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -26,11 +27,16 @@ const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
 
   return (
     <Stack.Navigator
       screenOptions={{
+        headerTransparent: Platform.select({ ios: true }),
+        headerLargeStyle: {
+          backgroundColor: colors.background,
+        },
         ...titlesStyles(theme),
       }}
     >
@@ -44,6 +50,9 @@ export const AgendaNavigator = () => {
           headerTransparent: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headers,
+          },
         }}
       />
       <Stack.Screen

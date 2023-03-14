@@ -73,7 +73,7 @@ export const AgendaTabs = ({ state, toggleState }: Props) => {
 const createStyles = ({ colors, dark }: Theme) =>
   StyleSheet.create({
     tabs: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.headers,
       borderBottomWidth: Platform.select({
         ios: StyleSheet.hairlineWidth,
       }),
