@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faBookBookmark,
@@ -28,6 +29,7 @@ export const ServicesScreen = () => {
   const { favoriteServices: favoriteServiceIds, updatePreference } =
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
+  const { left, right } = useSafeAreaInsets();
   const services = [
     {
       id: 'tickets',
@@ -104,7 +106,10 @@ export const ServicesScreen = () => {
     };
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="always">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ paddingLeft: left, paddingRight: right }}
+    >
       {favoriteServices.length > 0 && (
         <Grid
           numColumns={auto}
