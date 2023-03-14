@@ -127,7 +127,7 @@ const createStyles = ({ spacing, colors, fontWeights, fontSizes }: Theme) =>
     },
     betaBadge: {
       position: 'absolute',
-      top: -spacing[2],
+      top: -spacing[2.5],
       right: -spacing[2],
       paddingHorizontal: spacing[2],
       paddingVertical: spacing[1],
