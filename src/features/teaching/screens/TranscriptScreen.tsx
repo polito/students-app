@@ -22,7 +22,7 @@ import {
 } from '../../../core/queries/studentHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
-import { formatGrade } from '../../../utils/grades';
+import { formatFinalGrade, formatGrade } from '../../../utils/grades';
 import { ProgressChart } from '../components/ProgressChart';
 
 export const TranscriptScreen = () => {
@@ -58,7 +58,7 @@ export const TranscriptScreen = () => {
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />
-        <Card style={styles.metricsCard}>
+        <Card style={styles.chartCard}>
           <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
@@ -91,7 +91,7 @@ export const TranscriptScreen = () => {
 
       <Section>
         <SectionHeader title={t('transcriptScreen.thisYear')} />
-        <Card style={styles.metricsCard}>
+        <Card style={styles.chartCard}>
           <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
@@ -119,7 +119,7 @@ export const TranscriptScreen = () => {
       </Section>
 
       <Section>
-        <SectionHeader title={t('transcriptScreen.averages')} />
+        <SectionHeader title={t('transcriptScreen.averagesAndGrades')} />
         <Card style={styles.metricsCard}>
           <Grid>
             <Metric
@@ -127,13 +127,46 @@ export const TranscriptScreen = () => {
               value={studentQuery.data?.data.averageGrade ?? '--'}
               style={GlobalStyles.grow}
             />
+
             <Metric
-              title={t('transcriptScreen.finalAverageLabel')}
-              value={studentQuery.data?.data.averageGradePurged ?? '--'}
+              title={t('transcriptScreen.estimatedFinalGrade')}
+              value={formatFinalGrade(
+                studentQuery.data?.data.estimatedFinalGrade,
+              )}
               color={colors.primary[400]}
               style={GlobalStyles.grow}
             />
+
+            {studentQuery.data?.data.averageGradePurged != null && (
+              <>
+                <Metric
+                  title={t('transcriptScreen.finalAverageLabel')}
+                  value={studentQuery.data?.data.averageGradePurged ?? '--'}
+                  color={colors.primary[400]}
+                  style={GlobalStyles.grow}
+                />
+
+                <Metric
+                  title={t('transcriptScreen.estimatedFinalGradePurged')}
+                  value={formatFinalGrade(
+                    studentQuery.data?.data.estimatedFinalGradePurged,
+                  )}
+                  color={colors.primary[400]}
+                  style={GlobalStyles.grow}
+                />
+              </>
+            )}
           </Grid>
+
+          {studentQuery.data?.data.mastersAdmissionAverageGrade != null && (
+            <Metric
+              title={t('transcriptScreen.masterAdmissionAverage')}
+              value={
+                studentQuery.data?.data.mastersAdmissionAverageGrade ?? '--'
+              }
+              style={[GlobalStyles.grow, styles.additionalMetric]}
+            />
+          )}
         </Card>
       </Section>
 
@@ -187,7 +220,7 @@ const createStyles = ({ spacing }: Theme) =>
     container: {
       paddingVertical: spacing[5],
     },
-    metricsCard: {
+    chartCard: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
@@ -195,8 +228,14 @@ const createStyles = ({ spacing }: Theme) =>
       marginTop: spacing[2],
       marginBottom: spacing[3],
     },
+    metricsCard: {
+      padding: spacing[4],
+    },
     spaceBottom: {
       marginBottom: spacing[2],
+    },
+    additionalMetric: {
+      marginTop: spacing[4],
     },
     grade: {
       marginLeft: spacing[2],

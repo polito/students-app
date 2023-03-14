@@ -55,6 +55,7 @@
     "delete": "Elimina",
     "done": "Fatto",
     "download": "Scarica",
+    "ects": "CFU",
     "email": "Email",
     "en": "Inglese",
     "error": "Errore",
@@ -222,13 +223,13 @@
     "emptyState": "Non ci sono appelli disponibili",
     "title": "Appelli"
   },
-  "guidesScreen": {
-    "title": "Guide"
-  },
   "grades": {
     "absent": "Ass",
     "fail": "Ins",
     "pass": "Sup"
+  },
+  "guidesScreen": {
+    "title": "Guide"
   },
   "jobOffersScreen": {
     "title": "Offerte di lavoro"
@@ -350,8 +351,12 @@
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
+    "averagesAndGrades": "Medie e voti",
     "emptyState": "Non hai sostenuto nessun esame",
+    "estimatedFinalGrade": "Voto di laurea",
+    "estimatedFinalGradePurged": "Voto di laurea depurato",
     "finalAverageLabel": "Media depurata",
+    "masterAdmissionAverage": "Media di ammissione al secondo livello",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",
     "weightedAverageLabel": "Media ponderata",

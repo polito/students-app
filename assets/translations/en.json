@@ -55,6 +55,7 @@
     "delete": "Delete",
     "done": "Done",
     "download": "Download",
+    "ects": "ECTS",
     "email": "Email",
     "en": "English",
     "error": "Error",
@@ -220,13 +221,13 @@
     "emptyState": "There are no open exam calls",
     "title": "Exams"
   },
-  "guidesScreen": {
-    "title": "Guides"
-  },
   "grades": {
     "absent": "Abs",
     "fail": "Fail",
     "pass": "Pass"
+  },
+  "guidesScreen": {
+    "title": "Guides"
   },
   "jobOffersScreen": {
     "title": "Job offers"
@@ -350,8 +351,12 @@
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
+    "averagesAndGrades": "Averages and grades",
     "emptyState": "You have not taken any exams",
+    "estimatedFinalGrade": "Final grade",
+    "estimatedFinalGradePurged": "Estimated final grade",
     "finalAverageLabel": "Final average",
+    "masterAdmissionAverage": "Master admission average",
     "provisionalGradesSectionTitle": "Provisional grades",
     "thisYear": "This academic year",
     "weightedAverageLabel": "Weighted average",
