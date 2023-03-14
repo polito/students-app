@@ -33,8 +33,12 @@ const handleAcquiredCredits = (response: GetStudent200Response) => {
 export const useGetStudent = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(prefixKey([STUDENT_QUERY_KEY]), () =>
-    studentClient.getStudent().then(s => handleAcquiredCredits(s)),
+  return useQuery(
+    prefixKey([STUDENT_QUERY_KEY]),
+    () => studentClient.getStudent().then(s => handleAcquiredCredits(s)),
+    {
+      staleTime: Infinity,
+    },
   );
 };
 
