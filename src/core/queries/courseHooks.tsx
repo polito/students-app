@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   CourseAllOfVcOtherCourses,
@@ -17,6 +18,7 @@ import {
 } from '@tanstack/react-query';
 
 import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
+import { CourseLectureSection } from '../../features/teaching/types/CourseLectureSections';
 import { notNullish } from '../../utils/predicates';
 import { prefixKey } from '../../utils/queries';
 import { courseColors } from '../constants';
@@ -296,27 +298,25 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  vcPreviousYears: CourseAllOfVcPreviousYears[],
-  vcOtherCourses: CourseAllOfVcOtherCourses[],
+  relatedVCs: (CourseAllOfVcPreviousYears | CourseAllOfVcOtherCourses)[],
 ) => {
   const coursesClient = useCoursesClient();
 
   const queries = useQueries({
-    queries: (vcPreviousYears ?? [])
-      .concat(vcOtherCourses ?? [])
-      .map(relatedVC => {
-        return {
-          queryKey: prefixKey([
-            COURSE_QUERY_KEY,
-            relatedVC.id,
-            'virtual-classrooms',
-          ]),
-          queryFn: () =>
-            coursesClient.getCourseVirtualClassrooms({
-              courseId: relatedVC.id,
-            }),
-        };
-      }),
+    queries: (relatedVCs ?? []).map(relatedVC => {
+      console.debug(relatedVC);
+      return {
+        queryKey: prefixKey([
+          COURSE_QUERY_KEY,
+          relatedVC.id,
+          'virtual-classrooms',
+        ]),
+        queryFn: () =>
+          coursesClient.getCourseVirtualClassrooms({
+            courseId: relatedVC.id,
+          }),
+      };
+    }),
   });
 
   const isLoading = useMemo(() => {
@@ -335,6 +335,68 @@ export const useGetCourseVideolectures = (courseId: number) => {
   );
 };
 
+export const useGetCourseLectures = (courseId: number) => {
+  const courseQuery = useGetCourse(courseId);
+
+  const videoLecturesQuery = useGetCourseVideolectures(courseId);
+  const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
+
+  const relatedVCDefinitions: (
+    | CourseAllOfVcPreviousYears
+    | CourseAllOfVcOtherCourses
+  )[] = (courseQuery.data?.data.vcPreviousYears ?? []).concat(
+    courseQuery.data?.data.vcOtherCourses,
+  );
+
+  const relatedVCQueries =
+    useGetCourseRelatedVirtualClassrooms(relatedVCDefinitions);
+
+  const { t } = useTranslation();
+
+  return useQuery<CourseLectureSection[]>(
+    prefixKey([COURSE_QUERY_KEY, courseId, 'lectures']),
+    () => {
+      const lectureSections: CourseLectureSection[] = [];
+
+      virtualClassroomsQuery.data.data.length &&
+        lectureSections.push({
+          title: t('common.virtualClassroom_plural'),
+          type: 'VirtualClassroom',
+          data: virtualClassroomsQuery.data.data,
+        });
+
+      videoLecturesQuery.data.data.length &&
+        lectureSections.push({
+          title: t('common.videoLecture_plural'),
+          type: 'VideoLecture',
+          data: videoLecturesQuery.data.data,
+        });
+
+      relatedVCDefinitions.forEach((d, index) => {
+        const relatedVCs = relatedVCQueries.queries[index].data?.data;
+        if (!relatedVCs.length) return;
+        lectureSections.push({
+          title:
+            'name' in d
+              ? `${d.name} ${d.year}`
+              : `${t('common.virtualClassroom_plural')} - ${d.year}`,
+          type: 'VirtualClassroom',
+          data: relatedVCs,
+        });
+      });
+
+      return lectureSections;
+    },
+    {
+      enabled: !(
+        courseQuery.isLoading ||
+        videoLecturesQuery.isLoading ||
+        virtualClassroomsQuery.isLoading ||
+        relatedVCQueries.isLoading
+      ),
+    },
+  );
+};
 export const useGetCourseExams = (
   courseId: number,
   courseShortcode: string,
