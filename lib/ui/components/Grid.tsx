@@ -43,11 +43,11 @@ export const Grid = ({
       _numColumns = 1;
     } else {
       const maxNumColumns = Math.floor(
-        (contentWidth - (contentWidth / minColumnWidth - 1) * gap) /
+        (contentWidth - (Math.floor(contentWidth / minColumnWidth) - 1) * gap) /
           minColumnWidth,
       );
-      const minNumColumns = Math.floor(
-        (contentWidth - (contentWidth / maxColumnWidth - 1) * gap) /
+      const minNumColumns = Math.ceil(
+        (contentWidth - (Math.floor(contentWidth / maxColumnWidth) - 1) * gap) /
           maxColumnWidth,
       );
       _numColumns = Math.max(
@@ -102,7 +102,7 @@ export const Grid = ({
                 return (
                   <Fragment key={ci}>
                     {c}
-                    {ci < r.length - 1 && <View style={{ width: gap }} />}
+                    {ci < _numColumns - 1 && <View style={{ width: gap }} />}
                     {missingColumns > 0 ? (
                       <View
                         style={{
