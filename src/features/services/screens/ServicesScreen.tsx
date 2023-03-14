@@ -3,9 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
+  faBookBookmark,
+  faBriefcase,
+  faBullhorn,
   faComments,
   faIdCard,
   faMobileScreenButton,
+  faPersonCirclePlus,
+  faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
@@ -25,12 +30,6 @@ export const ServicesScreen = () => {
   const styles = useStylesheet(createStyles);
   const services = [
     {
-      id: 'contacts',
-      name: t('contactsScreen.title'),
-      icon: faIdCard,
-      disabled: true,
-    },
-    {
       id: 'tickets',
       name: t('ticketScreen.title'),
       icon: faComments,
@@ -48,6 +47,42 @@ export const ServicesScreen = () => {
         },
       },
       additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
+    },
+    {
+      id: 'contacts',
+      name: t('contactsScreen.title'),
+      icon: faIdCard,
+      disabled: true,
+    },
+    {
+      id: 'guides',
+      name: t('guidesScreen.title'),
+      icon: faSignsPost,
+      disabled: true,
+    },
+    {
+      id: 'jobOffers',
+      name: t('jobOffersScreen.title'),
+      icon: faBriefcase,
+      disabled: true,
+    },
+    {
+      id: 'news',
+      name: t('newsScreen.title'),
+      icon: faBullhorn,
+      disabled: true,
+    },
+    {
+      id: 'bookings',
+      name: t('bookingsScreen.title'),
+      icon: faPersonCirclePlus,
+      disabled: true,
+    },
+    {
+      id: 'library',
+      name: t('libraryScreen.title'),
+      icon: faBookBookmark,
+      disabled: true,
     },
   ];
 

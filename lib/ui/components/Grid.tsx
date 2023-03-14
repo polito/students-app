@@ -42,7 +42,7 @@ export const Grid = ({
     if (contentWidth == null || childrenArray.length < 1) {
       _numColumns = 1;
     } else {
-      const maxNumColumns = Math.floor(
+      const maxNumColumns = Math.ceil(
         (contentWidth - (Math.floor(contentWidth / minColumnWidth) - 1) * gap) /
           minColumnWidth,
       );

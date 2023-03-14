@@ -6,6 +6,9 @@
     "refresh": "Aggiorna",
     "title": "Agenda"
   },
+  "bookingsScreen": {
+    "title": "Prenotazioni"
+  },
   "colors": {
     "amber": "Ambra",
     "blue": "Blu",
@@ -219,13 +222,22 @@
     "emptyState": "Non ci sono appelli disponibili",
     "title": "Appelli"
   },
+  "guidesScreen": {
+    "title": "Guide"
+  },
   "grades": {
     "absent": "Ass",
     "fail": "Ins",
     "pass": "Sup"
   },
+  "jobOffersScreen": {
+    "title": "Offerte di lavoro"
+  },
   "lectureScreen": {
     "courseFilesCta": "Vai al materiale del corso"
+  },
+  "libraryScreen": {
+    "title": "Biblioteca"
   },
   "loginScreen": {
     "authnError": "Errore di autenticazione",
@@ -248,6 +260,9 @@
     "pickFileHint": "Dal tuo dispositivio o dal cloud",
     "takePhoto": "Acquisci con la fotocamera",
     "takePhotoHint": "Scatta una o più foto e genera un file"
+  },
+  "newsScreen": {
+    "title": "News & Eventi"
   },
   "notifications": {
     "events": "Eventi e iniziative",
