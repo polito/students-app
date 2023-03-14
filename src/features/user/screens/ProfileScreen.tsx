@@ -116,14 +116,23 @@ export const ProfileScreen = ({ navigation }: Props) => {
           {student?.firstName} {student?.lastName}
         </Text>
       </Section>
-      <Section accessible={true}>
-        <SectionHeader title={t('profileScreen.smartCard')} />
-        <ImageLoader
-          imageStyle={styles.smartCard}
-          source={{ uri: student?.smartCardPicture }}
-          containerStyle={styles.smartCardContainer}
-        />
-      </Section>
+      <View
+        accessible={true}
+        accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
+          'common.username',
+        )} ${student?.username?.substring(1, student?.username?.length)}, ${
+          student?.firstName
+        } ${student?.lastName}`}
+      >
+        <Section accessible={false}>
+          <SectionHeader title={t('profileScreen.smartCard')} />
+          <ImageLoader
+            imageStyle={styles.smartCard}
+            source={{ uri: student?.smartCardPicture }}
+            containerStyle={styles.smartCardContainer}
+          />
+        </Section>
+      </View>
       <Section accessible={false}>
         <SectionHeader
           title={t('profileScreen.course')}

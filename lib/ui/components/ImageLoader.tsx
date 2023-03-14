@@ -17,7 +17,6 @@ interface Props {
 
 export const ImageLoader = ({ source, containerStyle, imageStyle }: Props) => {
   const [loading, setLoading] = useState(true);
-  // Workaround to force image rerender after screen rotation
   const [src, setSrc] = useState(source);
 
   const onLoadEnd = () => setLoading(false);
