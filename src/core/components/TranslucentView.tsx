@@ -3,7 +3,6 @@ import { StyleSheet, ViewStyle } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BlurView, BlurViewProps } from '@react-native-community/blur';
-import { useTheme as useNavigationTheme } from '@react-navigation/native';
 
 export interface TranslucentViewProps {
   style?: ViewStyle;
@@ -15,12 +14,11 @@ export const TranslucentView = ({
   style,
   blurAmount = 15,
 }: TranslucentViewProps) => {
-  const { dark } = useNavigationTheme();
-  const { colors } = useTheme();
+  const { dark, colors } = useTheme();
 
   const blurViewProps: Partial<BlurViewProps> = useMemo(
     () => ({
-      blurType: 'ultraThinMaterial',
+      blurType: dark ? 'ultraThinMaterialDark' : 'ultraThinMaterialLight',
       reducedTransparencyFallbackColor: colors.surface,
     }),
     [dark],

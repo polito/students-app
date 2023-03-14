@@ -61,7 +61,6 @@ export const TeachingNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        headerBlurEffect: 'systemUltraThinMaterial',
         ...titlesStyles(theme),
       }}
     >
