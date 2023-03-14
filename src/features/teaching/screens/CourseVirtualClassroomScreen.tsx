@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

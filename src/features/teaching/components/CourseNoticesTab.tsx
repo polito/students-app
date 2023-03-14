@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
-import { Document } from 'react-native-render-html';
+import { ScrollView } from 'react-native';
+import RenderHTML, { Document } from 'react-native-render-html';
 
 import {
   faChevronDown,
@@ -12,6 +12,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';

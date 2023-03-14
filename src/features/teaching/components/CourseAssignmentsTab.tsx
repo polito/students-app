@@ -33,7 +33,14 @@ export const CourseAssignmentsTab = ({
   return (
     <>
       <ScrollView
-        refreshControl={<RefreshControl {...refreshControl} />}
+        refreshControl={
+          <RefreshControl
+            {...refreshControl}
+            title={'refreshh ahahahah'}
+            accessible={true}
+            accessibilityLabel={'nradlksnakdljsa'}
+          />
+        }
         scrollEnabled={scrollEnabled}
       >
         {assignmentsQuery.data &&
@@ -62,6 +69,7 @@ export const CourseAssignmentsTab = ({
                   >
                     <CourseAssignmentListItem
                       item={assignment}
+                      accessible={true}
                       accessibilityListLabel={accessibilityListLabel(
                         index,
                         assignmentsQuery?.data?.data?.length || 0,

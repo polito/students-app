@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -60,7 +61,7 @@ export const TranscriptScreen = () => {
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />
-        <Card style={styles.chartCard}>
+        <Card style={styles.chartCard} accessible={true}>
           <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
@@ -99,7 +100,7 @@ export const TranscriptScreen = () => {
 
       <Section>
         <SectionHeader title={t('transcriptScreen.thisYear')} />
-        <Card style={styles.chartCard}>
+        <Card style={styles.chartCard} accessible={true}>
           <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
@@ -136,7 +137,7 @@ export const TranscriptScreen = () => {
 
       <Section>
         <SectionHeader title={t('transcriptScreen.averagesAndGrades')} />
-        <Card style={styles.metricsCard}>
+        <Card style={styles.metricsCard} accessible={true}>
           <Grid>
             <Metric
               title={t('transcriptScreen.weightedAverageLabel')}

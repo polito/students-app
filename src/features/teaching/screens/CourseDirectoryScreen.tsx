@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
@@ -87,7 +88,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
                 />
               )
             }
-            {...refreshControl}
+            refreshControl={<RefreshControl {...refreshControl} />}
             ItemSeparatorComponent={Platform.select({
               ios: IndentedDivider,
             })}

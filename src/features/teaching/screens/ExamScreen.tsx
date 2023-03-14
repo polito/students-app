@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';

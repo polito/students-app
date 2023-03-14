@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -37,7 +38,7 @@ export const CoursesScreen = () => {
               return byPeriod;
             }, {} as Record<string, Array<typeof coursesQuery.data.data[0]>>),
           ).map(([period, courses]) => (
-            <Section key={period} accessible={true}>
+            <Section key={period}>
               <SectionHeader
                 title={
                   period !== 'undefined'
@@ -50,12 +51,12 @@ export const CoursesScreen = () => {
                     : t('coursesScreen.otherCoursesSectionTitle')
                 }. ${t('coursesScreen.total', { total: courses.length })}`}
               />
-              <SectionList indented accessible={true}>
+              <SectionList indented>
                 {courses.map((course, index) => (
                   <CourseListItem
                     key={course.shortcode + '' + course.id}
                     course={course}
-                    accessible={false}
+                    accessible={true}
                     accessibilityLabel={accessibilityListLabel(
                       index,
                       courses.length,

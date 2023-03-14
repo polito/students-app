@@ -2,7 +2,6 @@ import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
@@ -12,6 +11,7 @@ import {
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
