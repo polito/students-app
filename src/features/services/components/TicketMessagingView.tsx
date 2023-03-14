@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Keyboard, ViewProps } from 'react-native';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 
-import { MessagingView } from '@lib/ui/components/MessagingView';
-
 import { IS_ANDROID } from '../../../core/constants';
 import { useReplyToTicket } from '../../../core/queries/ticketHooks';
+import { Attachment } from '../types/Attachment';
+import { MessagingView } from './MessagingView';
 
 interface Props {
   disabled?: boolean;
@@ -21,7 +21,7 @@ export const TicketMessagingView = ({
 }: Props) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState<string>('');
-  const [attachment, setAttachment] = useState<Blob>(null);
+  const [attachment, setAttachment] = useState<Attachment>(null);
 
   const {
     mutateAsync: reply,
@@ -32,7 +32,7 @@ export const TicketMessagingView = ({
   const onSend = () => {
     reply({
       ticketId: ticketId,
-      attachment,
+      attachment: attachment as unknown as Blob,
       message: message.trim().replace(/\n/g, '<br>'),
     }).catch(() => {
       Alert.alert(t('common.error'), t('ticketScreen.sendError'));

@@ -1,19 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { open } from 'react-native-file-viewer';
 
-import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { Col } from '@lib/ui/components/Col';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
+import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
 
@@ -21,20 +11,20 @@ import {
   useGetTicketAttachment,
   useGetTicketReplyAttachment,
 } from '../../../core/queries/ticketHooks';
-import { formatFileSize } from '../../../utils/files';
+import { darkTheme } from '../../../core/themes/dark';
+import { AttachmentChip } from './AttachmentChip';
 
-interface AttachmentCardProps {
+interface TicketAttachmentChipProps {
   attachment: TicketAttachment;
   replyId?: number;
   ticketId: number;
 }
 
-export const AttachmentCard = ({
+export const TicketAttachmentChip = ({
   attachment,
   ticketId,
   replyId,
-}: AttachmentCardProps) => {
-  const { colors } = useTheme();
+}: TicketAttachmentChipProps) => {
   const styles = useStylesheet(createStyles);
   const [shouldOpen, setShouldOpen] = useState<boolean>(false);
   const isReply = useMemo(() => replyId !== undefined, [replyId]);
@@ -75,31 +65,34 @@ export const AttachmentCard = ({
   }, [shouldOpen, replyAttachment]);
 
   return (
-    <TouchableOpacity onPress={onPressAttachment}>
-      <Row noFlex style={styles.attachmentContainer}>
-        {isDownloadingReplyAttachment || isDownloadingTicketAttachment ? (
-          <View style={styles.loaderView}>
-            <ActivityIndicator color={colors.primary[50]} />
-          </View>
-        ) : (
-          <Icon icon={faFile} size={25} color={'white'} />
-        )}
-        <Col noFlex flexStart style={styles.textContainer}>
-          <Text style={styles.name}>{attachment.filename}</Text>
-          <Text numberOfLines={1} style={styles.size}>
-            {formatFileSize(attachment.sizeInKiloBytes, 0)}
-          </Text>
-        </Col>
-      </Row>
-    </TouchableOpacity>
+    <ThemeContext.Provider value={darkTheme}>
+      <TouchableOpacity onPress={onPressAttachment}>
+        <AttachmentChip
+          fullWidth
+          attachment={{
+            name: attachment.filename,
+            size: attachment.sizeInKiloBytes,
+            uri: null,
+            type: attachment.mimeType,
+          }}
+          loading={
+            isDownloadingReplyAttachment || isDownloadingTicketAttachment
+          }
+          style={styles.chip}
+        />
+      </TouchableOpacity>
+    </ThemeContext.Provider>
   );
 };
 
-const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
+const createStyles = ({ colors, spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     attachmentContainer: {
       alignItems: 'center',
       paddingTop: spacing[3],
+    },
+    chip: {
+      marginTop: spacing[4],
     },
     loaderView: {
       width: 25,
@@ -110,12 +103,12 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
     name: {
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.semibold,
-      color: 'white',
+      color: colors.title,
       paddingRight: spacing[5],
     },
     size: {
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
-      color: 'white',
+      color: colors.title,
     },
   });

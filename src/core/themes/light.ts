@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+// noinspection AllyPlainJsInspection
+//
 import { Theme } from '@lib/ui/types/theme';
 
 const darkBlue = {
@@ -146,7 +148,7 @@ export const lightTheme: Theme = {
     surfaceDark: '#143959',
     headers: '#edeef0',
     heading: darkBlue[700],
-    title: darkBlue[600],
+    title: darkBlue[700],
     headline: darkBlue[700],
     prose: text[800],
     secondaryText: text[500],
@@ -154,6 +156,7 @@ export const lightTheme: Theme = {
     link: darkBlue[500],
     divider: 'rgba(0, 0, 0, .15)',
     tabBar: darkBlue[200],
+    translucentSurface: 'rgba(0, 0, 0, .1)',
     tabBarInactive: backgroundColor,
     agendaBooking: green[600],
     agendaDeadline: red[700],

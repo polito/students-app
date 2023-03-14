@@ -55,6 +55,7 @@
     "delete": "Elimina",
     "done": "Fatto",
     "download": "Scarica",
+    "downloadError": "Qualcosa è andato storto con durante il download",
     "ects": "CFU",
     "email": "Email",
     "en": "Inglese",
@@ -93,6 +94,7 @@
     "today": "Oggi",
     "tomorrow": "Domani",
     "transcript": "Libretto",
+    "unnamedFile": "File senza nome",
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "videoLecture": "Video lezione",
@@ -136,7 +138,6 @@
     "noResult": "Nessun risultato trovato"
   },
   "courseFileListItem": {
-    "downloadError": "Qualcosa è andato storto con durante il download",
     "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file"
   },
@@ -331,7 +332,6 @@
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
-    "unnamedFile": "File senza nome",
     "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
   },
   "tickets": {
