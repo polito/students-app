@@ -58,7 +58,11 @@ const Menu = ({
   );
 };
 
-export const CourseListItem = ({ course }: Props) => {
+export const CourseListItem = ({
+  course,
+  accessibilityLabel,
+  accessible,
+}: Props) => {
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
   const preferences = useContext(PreferencesContext);
@@ -67,6 +71,7 @@ export const CourseListItem = ({ course }: Props) => {
 
   const listItem = (
     <ListItem
+      accessible={accessible}
       linkTo={
         hasDetails
           ? {
@@ -80,6 +85,9 @@ export const CourseListItem = ({ course }: Props) => {
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
+      accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
+        course.cfu
+      } ${t('common.credits')}`}
       title={course.name}
       subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
       leadingItem={
@@ -121,9 +129,7 @@ export const CourseListItem = ({ course }: Props) => {
       <View
         accessible={true}
         accessibilityRole={'button'}
-        accessibilityLabel={`${course.name},  ${course.cfu} ${t(
-          'common.credits',
-        ).toLowerCase()}`}
+        accessibilityLabel={`${accessibilityLabel} ${course.name},  ${course.cfu}`}
       >
         <Menu course={course} shouldOpenOnLongPress={true}>
           {listItem}

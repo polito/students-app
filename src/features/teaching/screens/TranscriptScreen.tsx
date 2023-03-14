@@ -15,6 +15,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetGrades,
@@ -31,6 +32,7 @@ export const TranscriptScreen = () => {
   const styles = useStylesheet(createStyles);
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
+  const { accessibilityListLabel } = useAccessibility();
   const refreshControl = useRefreshControl(studentQuery, gradesQuery);
   const {
     enrollmentCredits,
@@ -68,11 +70,7 @@ export const TranscriptScreen = () => {
               style={styles.spaceBottom}
               accessibilityLabel={`${t(
                 'transcriptScreen.acquiredCreditsLabel',
-              )}: ${
-                totalAcquiredCredits
-                  ? `${totalAcquiredCredits} ${t('common.of')} ${totalCredits}`
-                  : 'N/A'
-              }`}
+              )}: ${totalAcquiredCredits} ${t('common.of')} ${totalCredits}`}
             />
             <Metric
               title={t('transcriptScreen.attendedCreditsLabel')}
@@ -82,11 +80,7 @@ export const TranscriptScreen = () => {
               color={colors.primary[400]}
               accessibilityLabel={`${t(
                 'transcriptScreen.attendedCreditsLabel',
-              )}: ${
-                totalAttendedCredits
-                  ? `${totalAttendedCredits} ${t('common.of')} ${totalCredits}`
-                  : 'N/A'
-              }`}
+              )}: ${totalAttendedCredits} ${t('common.of')} ${totalCredits}`}
             />
           </View>
           <ProgressChart
@@ -112,27 +106,17 @@ export const TranscriptScreen = () => {
               value={`${enrollmentAcquiredCredits}/${enrollmentCredits} CFU`}
               accessibilityLabel={`${t(
                 'transcriptScreen.acquiredCreditsLabel',
-              )}: ${
-                enrollmentAcquiredCredits
-                  ? `${enrollmentCredits} ${t(
-                      'common.of',
-                    )} ${enrollmentCredits}`
-                  : 'N/A'
-              }`}
+              )}: ${enrollmentAcquiredCredits} ${t(
+                'common.of',
+              )} ${enrollmentCredits}`}
               style={styles.spaceBottom}
             />
             <Metric
               title={t('transcriptScreen.attendedCreditsLabel')}
               value={`${enrollmentAttendedCredits}/${enrollmentCredits} CFU`}
               accessibilityLabel={`${t(
-                'transcriptScreen.acquiredCreditsLabel',
-              )}: ${
-                enrollmentAttendedCredits
-                  ? `${enrollmentCredits} ${t(
-                      'common.of',
-                    )} ${enrollmentCredits}`
-                  : 'N/A'
-              }`}
+                'transcriptScreen.attendedCreditsLabel',
+              )}: ${enrollmentCredits} ${t('common.of')} ${enrollmentCredits}`}
               color={colors.primary[400]}
             />
           </View>
@@ -222,14 +206,28 @@ export const TranscriptScreen = () => {
         </Section>
       )}
       <Section>
-        <SectionHeader title={t('common.transcript')} />
+        <SectionHeader
+          title={t('common.transcript')}
+          accessibilityLabel={`${t('common.transcript')} ${t(
+            'transcriptScreen.total',
+            { total: transcriptGrades?.length || 0 },
+          )}`}
+        />
         <SectionList>
           {transcriptGrades &&
             (transcriptGrades.length ? (
-              transcriptGrades.map(grade => (
+              transcriptGrades.map((grade, index) => (
                 <ListItem
                   key={grade.courseName}
                   title={grade.courseName}
+                  accessibilityLabel={`${t(
+                    accessibilityListLabel(
+                      index,
+                      transcriptGrades?.length || 0,
+                    ),
+                  )}. ${grade.courseName}: ${formatDate(grade.date)} ${t(
+                    'common.grade',
+                  )}: ${grade?.grade}`}
                   subtitle={formatDate(grade.date)}
                   trailingItem={
                     <Text

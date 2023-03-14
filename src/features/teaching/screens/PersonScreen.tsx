@@ -31,6 +31,7 @@ import { Theme } from "@lib/ui/types/theme";
 import { Person, PersonCourse, PhoneNumber } from "@polito/api-client";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+import { useAccessibility } from "../../../core/hooks/useAccessibilty";
 import { useRefreshControl } from "../../../core/hooks/useRefreshControl";
 import { useScreenTitle } from "../../../core/hooks/useScreenTitle";
 import { useGetPerson } from "../../../core/queries/peopleHooks";
@@ -80,7 +81,7 @@ export const PersonScreen = ({ route }: Props) => {
           />
 
           <Metric
-            title={t('personScreen.department')}
+            title={t("personScreen.department")}
             value={person?.facilityShortName}
             style={styles.spaceBottom}
             accessible={true}
@@ -99,10 +100,10 @@ export const PersonScreen = ({ route }: Props) => {
                   color={colors.link}
                   style={styles.linkIcon}
                 />
-                <Text variant="link">{t('personScreen.moreInfo')}</Text>
-            </Row>
+                <Text variant="link">{t("personScreen.moreInfo")}</Text>
+              </Row>
             </TouchableOpacity>
-            )}
+          )}
         </Col>
       </Row>
     </Col>
@@ -124,6 +125,8 @@ export const PersonScreen = ({ route }: Props) => {
   };
 
   const renderCourse = (course: PersonCourse) => {
+    const { accessibilityListLabel } = useAccessibility();
+
     const onPressCourse = () => {
       // TODO
       console.debug("onPressCourse", course);
@@ -134,6 +137,10 @@ export const PersonScreen = ({ route }: Props) => {
         title={course.name}
         subtitle={`${course.year} - ${course.role}`}
         isAction
+        accessibilityLabel={`${accessibilityListLabel(
+          index,
+          courses?.length || 0
+        )}. ${course.name}, ${course.year} - ${course.role}`}
         onPress={onPressCourse}
       />
     );
@@ -147,10 +154,10 @@ export const PersonScreen = ({ route }: Props) => {
       {header}
       <Section>
         <SectionHeader
-          title={t('personScreen.contacts')}
-          accessibilityLabel={`${t('personScreen.contacts')}. ${
-            phoneNumbers?.length > 0 && t('common.phoneContacts')
-          }. ${t('personScreen.sentEmail')}`}
+          title={t("personScreen.contacts")}
+          accessibilityLabel={`${t("personScreen.contacts")}. ${
+            phoneNumbers?.length > 0 && t("common.phoneContacts")
+          }. ${t("personScreen.sentEmail")}`}
         />
         <SectionList>
           {phoneNumbers?.map(renderPhoneNumber)}
@@ -167,7 +174,10 @@ export const PersonScreen = ({ route }: Props) => {
         <SectionHeader
           title={t("common.course_plural")}
           accessible={true}
-          accessibilityLabel={t('personScreen.coursesLabel')}
+          accessibilityLabel={`${t("personScreen.coursesLabel")}. ${t(
+            "personScreen.totalCourses",
+            { total: courses?.length || 0 }
+          )}`}
         />
         <SectionList>{courses.map(renderCourse)}</SectionList>
       </Section>

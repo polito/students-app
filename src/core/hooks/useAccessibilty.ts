@@ -7,7 +7,7 @@ export function useAccessibility() {
   const accessibilityListLabel = useCallback(
     (index: number, total: number, extraText?: string) => {
       const text = t('common.elementCount', {
-        count: index,
+        count: index + 1,
         total: total,
       });
       return `${text}. ${extraText ?? ''}`;

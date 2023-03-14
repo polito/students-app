@@ -8,6 +8,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
@@ -17,6 +18,7 @@ export const CoursesScreen = () => {
   const { spacing } = useTheme();
   const coursesQuery = useGetCourses();
   const refreshControl = useRefreshControl(coursesQuery);
+  const { accessibilityListLabel } = useAccessibility();
 
   return (
     <ScrollView
@@ -35,25 +37,29 @@ export const CoursesScreen = () => {
               return byPeriod;
             }, {} as Record<string, Array<typeof coursesQuery.data.data[0]>>),
           ).map(([period, courses]) => (
-            <Section
-              key={period}
-              accessibilityHint={t('common.elementCount', {
-                count: 1,
-                total: coursesQuery.data.data.length,
-              })}
-            >
+            <Section key={period} accessible={true}>
               <SectionHeader
                 title={
                   period !== 'undefined'
                     ? `${t('common.period')} ${period}`
                     : t('coursesScreen.otherCoursesSectionTitle')
                 }
+                accessibilityLabel={`${
+                  period !== 'undefined'
+                    ? `${t('common.period')} ${period}`
+                    : t('coursesScreen.otherCoursesSectionTitle')
+                }. ${t('coursesScreen.total', { total: courses.length })}`}
               />
-              <SectionList indented>
-                {courses.map(course => (
+              <SectionList indented accessible={true}>
+                {courses.map((course, index) => (
                   <CourseListItem
                     key={course.shortcode + '' + course.id}
                     course={course}
+                    accessible={false}
+                    accessibilityLabel={accessibilityListLabel(
+                      index,
+                      courses.length,
+                    )}
                   />
                 ))}
               </SectionList>
