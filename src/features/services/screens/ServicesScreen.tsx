@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import {
   faComments,
   faIdCard,
   faMobileScreenButton,
 } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -47,13 +47,7 @@ export const ServicesScreen = () => {
           subtopicId: 2001,
         },
       },
-      additionalContent: (
-        <>
-          <View style={styles.betaRibbon}>
-            <Text style={styles.betaText}>BETA</Text>
-          </View>
-        </>
-      ),
+      additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
     },
   ];
 
@@ -131,41 +125,11 @@ const createStyles = ({ spacing, colors, fontWeights, fontSizes }: Theme) =>
     grid: {
       margin: spacing[5],
     },
-    listContainer: {
-      paddingVertical: spacing[5],
-      paddingHorizontal: spacing[2.5],
-      flexWrap: 'wrap',
-    },
-    betaRibbon: {
+    betaBadge: {
       position: 'absolute',
-      resizeMode: 'contain',
-      top: -spacing[1],
-      left: -spacing[5],
-      width: 90,
-      backgroundColor: colors.darkOrange[400],
-      transform: [{ rotate: '-42deg' }],
-    },
-    betaText: {
-      color: colors.text[50],
-      fontWeight: fontWeights.semibold,
-      paddingHorizontal: spacing[3.5],
-      fontSize: fontSizes.xs,
-    },
-    disabled: {
-      opacity: 0.8,
-    },
-    titleStyle: {
-      fontWeight: fontWeights.semibold,
-      textAlign: 'center',
-      fontSize: fontSizes.sm,
-    },
-    section: {
-      marginBottom: spacing[5],
-    },
-    loader: {
-      marginVertical: spacing[8],
-    },
-    sectionContent: {
-      marginVertical: spacing[2],
+      top: -spacing[2],
+      right: -spacing[2],
+      paddingHorizontal: spacing[2],
+      paddingVertical: spacing[1],
     },
   });
