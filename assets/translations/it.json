@@ -353,7 +353,9 @@
   },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
-    "title": "Impostazioni"
+    "title": "Impostazioni",
+    "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
+    "openThemeMenu": "Doppio click per aprire il menu di selezione tema"
   },
   "teachingScreen": {
     "title": "Didattica"
