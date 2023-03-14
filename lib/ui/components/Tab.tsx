@@ -48,8 +48,8 @@ export const Tab = ({
         {
           backgroundColor,
           borderRadius: 10,
-          paddingHorizontal: spacing[3.5],
-          paddingVertical: spacing[2.5],
+          paddingHorizontal: spacing[2.5],
+          paddingVertical: spacing[1.5],
         },
         style,
       ]}
