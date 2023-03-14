@@ -95,6 +95,15 @@ export const CourseFileListItem = ({
     [showSize, showLocation, showCreatedDate],
   );
 
+  const downloadFile = async () => {
+    if (downloadProgress == null) {
+      if (!isDownloaded) {
+        await startDownload();
+      }
+      openDownloadedFile();
+    }
+  };
+
   const trailingItem = useMemo(
     () =>
       !isDownloaded ? (
@@ -102,7 +111,8 @@ export const CourseFileListItem = ({
           <IconButton
             icon={faCloudArrowDown}
             accessibilityLabel={t('common.download')}
-            disabled
+            adjustSpacing="right"
+            onPress={downloadFile}
             {...iconProps}
             hitSlop={{
               left: +spacing[2],
@@ -113,6 +123,7 @@ export const CourseFileListItem = ({
           <IconButton
             icon={faXmark}
             accessibilityLabel={t('common.stop')}
+            adjustSpacing="right"
             onPress={() => {
               stopDownload();
             }}
@@ -176,14 +187,14 @@ export const CourseFileListItem = ({
 
   const listItem = (
     <FileListItem
-      onPress={async () => {
-        if (downloadProgress == null) {
-          if (!isDownloaded) {
-            await startDownload();
-          }
-          openDownloadedFile();
-        }
-      }}
+      accessibilityLabel={
+        !isDownloaded
+          ? downloadProgress == null
+            ? t('common.download')
+            : t('common.stop')
+          : t('common.open')
+      }
+      onPress={downloadFile}
       isDownloaded={isDownloaded}
       downloadProgress={downloadProgress}
       title={item.name}
