@@ -67,11 +67,12 @@ export const SectionHeader = ({
           : linkTo && (
               <Link to={linkTo}>
                 <Text variant="link">
-                  {t('sectionHeader.cta')}{' '}
-                  {linkToMoreCount &&
-                    t('sectionHeader.ctaMoreSuffix', {
-                      count: linkToMoreCount,
-                    })}
+                  {t('sectionHeader.cta')}
+                  {linkToMoreCount > 0 &&
+                    ' ' +
+                      t('sectionHeader.ctaMoreSuffix', {
+                        count: linkToMoreCount,
+                      })}
                 </Text>
               </Link>
             )}
