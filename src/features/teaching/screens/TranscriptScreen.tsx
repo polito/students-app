@@ -155,23 +155,22 @@ export const TranscriptScreen = () => {
             />
 
             {studentQuery.data?.data.averageGradePurged != null && (
-              <>
-                <Metric
-                  title={t('transcriptScreen.finalAverageLabel')}
-                  value={studentQuery.data?.data.averageGradePurged ?? '--'}
-                  color={colors.primary[400]}
-                  style={GlobalStyles.grow}
-                />
+              <Metric
+                title={t('transcriptScreen.finalAverageLabel')}
+                value={studentQuery.data?.data.averageGradePurged ?? '--'}
+                style={GlobalStyles.grow}
+              />
+            )}
 
-                <Metric
-                  title={t('transcriptScreen.estimatedFinalGradePurged')}
-                  value={formatFinalGrade(
-                    studentQuery.data?.data.estimatedFinalGradePurged,
-                  )}
-                  color={colors.primary[400]}
-                  style={GlobalStyles.grow}
-                />
-              </>
+            {studentQuery.data?.data.estimatedFinalGradePurged != null && (
+              <Metric
+                title={t('transcriptScreen.estimatedFinalGradePurged')}
+                value={formatFinalGrade(
+                  studentQuery.data?.data.estimatedFinalGradePurged,
+                )}
+                color={colors.primary[400]}
+                style={GlobalStyles.grow}
+              />
             )}
           </Grid>
 
