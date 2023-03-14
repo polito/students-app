@@ -44,8 +44,8 @@ const createStyles = ({ fontSizes, fontWeights, shapes, spacing }: Theme) =>
   StyleSheet.create({
     badge: {
       borderRadius: shapes.xl,
-      paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[2],
+      paddingVertical: spacing[1],
     },
     badgeText: {
       color: 'white',
