@@ -76,13 +76,14 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             leadingItem={
               <CourseIcon icon={lecture.icon} color={lecture.color} />
             }
-            linkTo={{
-              screen: 'LectureCourseDirectory',
-              params: {
-                lectureId: lecture.id,
-                courseId: lecture.courseId,
-              },
-            }}
+            disabled
+            // linkTo={{
+            //   screen: 'LectureCourseDirectory',
+            //   params: {
+            //     lectureId: lecture.id,
+            //     courseId: lecture.courseId,
+            //   },
+            // }}
           />
         </SectionList>
       </ScrollView>
