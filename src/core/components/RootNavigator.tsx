@@ -12,6 +12,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
@@ -30,12 +31,21 @@ export const RootNavigator = () => {
 
   const tabBarIconSize = 20;
 
+  const instantAnimation = {
+    animation: 'timing',
+    config: { duration: 0 },
+  } as TimingKeyboardAnimationConfig;
+
   return (
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
         headerShown: false,
         tabBarHideOnKeyboard: true,
+        tabBarVisibilityAnimationConfig: {
+          show: instantAnimation,
+          hide: instantAnimation,
+        },
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
       }}
