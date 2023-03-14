@@ -146,7 +146,12 @@ export const PersonScreen = ({ route }: Props) => {
     >
       {header}
       <Section>
-        <SectionHeader title={t("personScreen.contacts")} />
+        <SectionHeader
+          title={t('personScreen.contacts')}
+          accessibilityLabel={`${t('personScreen.contacts')}. ${
+            phoneNumbers?.length > 0 && t('common.phoneContacts')
+          }. ${t('personScreen.sentEmail')}`}
+        />
         <SectionList>
           {phoneNumbers?.map(renderPhoneNumber)}
           <ListItem

@@ -66,6 +66,13 @@ export const TranscriptScreen = () => {
                 totalCredits ?? '--'
               } CFU`}
               style={styles.spaceBottom}
+              accessibilityLabel={`${t(
+                'transcriptScreen.acquiredCreditsLabel',
+              )}: ${
+                totalAcquiredCredits
+                  ? `${totalAcquiredCredits} ${t('common.of')} ${totalCredits}`
+                  : 'N/A'
+              }`}
             />
             <Metric
               title={t('transcriptScreen.attendedCreditsLabel')}
@@ -73,6 +80,13 @@ export const TranscriptScreen = () => {
                 totalCredits ?? '--'
               } CFU`}
               color={colors.primary[400]}
+              accessibilityLabel={`${t(
+                'transcriptScreen.attendedCreditsLabel',
+              )}: ${
+                totalAttendedCredits
+                  ? `${totalAttendedCredits} ${t('common.of')} ${totalCredits}`
+                  : 'N/A'
+              }`}
             />
           </View>
           <ProgressChart
@@ -96,11 +110,29 @@ export const TranscriptScreen = () => {
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
               value={`${enrollmentAcquiredCredits}/${enrollmentCredits} CFU`}
+              accessibilityLabel={`${t(
+                'transcriptScreen.acquiredCreditsLabel',
+              )}: ${
+                enrollmentAcquiredCredits
+                  ? `${enrollmentCredits} ${t(
+                      'common.of',
+                    )} ${enrollmentCredits}`
+                  : 'N/A'
+              }`}
               style={styles.spaceBottom}
             />
             <Metric
               title={t('transcriptScreen.attendedCreditsLabel')}
               value={`${enrollmentAttendedCredits}/${enrollmentCredits} CFU`}
+              accessibilityLabel={`${t(
+                'transcriptScreen.acquiredCreditsLabel',
+              )}: ${
+                enrollmentAttendedCredits
+                  ? `${enrollmentCredits} ${t(
+                      'common.of',
+                    )} ${enrollmentCredits}`
+                  : 'N/A'
+              }`}
               color={colors.primary[400]}
             />
           </View>
@@ -200,7 +232,13 @@ export const TranscriptScreen = () => {
                   title={grade.courseName}
                   subtitle={formatDate(grade.date)}
                   trailingItem={
-                    <Text variant="title" style={styles.grade}>
+                    <Text
+                      variant="title"
+                      style={styles.grade}
+                      accessibilityLabel={`${t('common.grade')}: ${
+                        grade?.grade
+                      }`}
+                    >
                       {t(formatGrade(grade.grade))}
                     </Text>
                   }
