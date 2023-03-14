@@ -1,9 +1,11 @@
 import { Children, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform, ViewProps } from 'react-native';
 
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 
+import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 
@@ -31,7 +33,8 @@ export const SectionList = ({
   ...rest
 }: Props) => {
   const { spacing } = useTheme();
-
+  const { t } = useTranslation();
+  const { isEnabled, announce } = useScreenReader();
   return (
     <Card
       accessible={Platform.select({ android: true, ios: false })}
@@ -44,6 +47,11 @@ export const SectionList = ({
         style,
       ]}
       {...rest}
+      onAccessibilityTap={() => {
+        if (loading && isEnabled) {
+          announce(t('common.loading'));
+        }
+      }}
     >
       {loading ? (
         <ActivityIndicator
