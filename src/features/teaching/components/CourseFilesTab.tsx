@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -48,6 +48,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,
         })}
+        ListFooterComponent={<CtaButtonSpacer />}
         ListEmptyComponent={
           <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
         }

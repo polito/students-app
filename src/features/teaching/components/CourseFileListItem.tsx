@@ -1,22 +1,21 @@
-import { useContext, useMemo, useRef } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import { extension } from 'react-native-mime-types';
 
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import {
   faCloudArrowDown,
   faEllipsisVertical,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { Swipeable } from '@kyupss/native-swipeable';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
+import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 
+import { IS_IOS } from '../../../core/constants';
 import { useDownload } from '../../../core/hooks/useDownload';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
@@ -38,6 +37,52 @@ export interface Props {
   onSwipeEnd?: () => void;
 }
 
+interface MenuProps extends Partial<MenuComponentProps> {
+  onRefreshDownload: () => void;
+  onRemoveDownload: () => void;
+}
+
+const Menu = ({
+  shouldOpenOnLongPress = false,
+  children,
+  onRefreshDownload,
+  onRemoveDownload,
+}: MenuProps) => {
+  const { t } = useTranslation();
+  return (
+    <MenuView
+      shouldOpenOnLongPress={shouldOpenOnLongPress}
+      title={t('common.file')}
+      actions={[
+        {
+          id: 'refresh',
+          title: t('common.refresh'),
+        },
+        {
+          id: 'delete',
+          title: t('common.delete'),
+          attributes: {
+            destructive: true,
+          },
+        },
+      ]}
+      onPressAction={({ nativeEvent }) => {
+        switch (nativeEvent.event) {
+          case 'refresh':
+            onRefreshDownload();
+            break;
+          case 'delete':
+            onRemoveDownload();
+            break;
+          default:
+        }
+      }}
+    >
+      {children}
+    </MenuView>
+  );
+};
+
 export const CourseFileListItem = ({
   item,
   showSize = true,
@@ -49,8 +94,6 @@ export const CourseFileListItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const { colors, fontSizes, spacing } = useTheme();
-  // @ts-expect-error due to Swipeable lib type patch
-  const swipeableRef = useRef<Swipeable>();
   const iconProps = useMemo(
     () => ({
       color: colors.secondaryText,
@@ -137,32 +180,9 @@ export const CourseFileListItem = ({
       ) : (
         Platform.select({
           android: (
-            <MenuView
-              title={t('common.file')}
-              actions={[
-                {
-                  id: 'refresh',
-                  title: t('common.refresh'),
-                },
-                {
-                  id: 'delete',
-                  title: t('common.delete'),
-                  attributes: {
-                    destructive: true,
-                  },
-                },
-              ]}
-              onPressAction={({ nativeEvent }) => {
-                switch (nativeEvent.event) {
-                  case 'refresh':
-                    refreshDownload();
-                    break;
-                  case 'delete':
-                    removeDownload();
-                    break;
-                  default:
-                }
-              }}
+            <Menu
+              onRefreshDownload={refreshDownload}
+              onRemoveDownload={removeDownload}
             >
               <IconButton
                 icon={faEllipsisVertical}
@@ -170,7 +190,7 @@ export const CourseFileListItem = ({
                 adjustSpacing="right"
                 {...iconProps}
               />
-            </MenuView>
+            </Menu>
           ),
         })
       ),
@@ -205,38 +225,17 @@ export const CourseFileListItem = ({
     />
   );
 
-  if (Platform.OS === 'ios' && isDownloaded) {
+  if (IS_IOS) {
     return (
-      <Swipeable
-        onRef={ref => (swipeableRef.current = ref)}
-        rightContainerStyle={{ backgroundColor: colors.danger[500] }}
-        rightButtons={[
-          <SwipeableAction
-            icon={faCloudArrowDown}
-            label={t('common.refresh')}
-            backgroundColor={colors.primary[500]}
-            onPress={async () => {
-              swipeableRef.current?.recenter();
-              await refreshDownload();
-              openDownloadedFile();
-            }}
-          />,
-          <SwipeableAction
-            icon={faTrashCan}
-            label={t('common.remove')}
-            backgroundColor={colors.danger[500]}
-            onPress={() => {
-              swipeableRef.current?.recenter();
-              removeDownload();
-            }}
-          />,
-        ]}
-        onSwipeStart={() => onSwipeStart?.()}
-        onSwipeComplete={() => onSwipeEnd?.()}
+      <Menu
+        shouldOpenOnLongPress
+        onRefreshDownload={refreshDownload}
+        onRemoveDownload={removeDownload}
       >
         {listItem}
-      </Swipeable>
+      </Menu>
     );
   }
+
   return listItem;
 };
