@@ -18,6 +18,7 @@ import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 import { DateTime } from 'luxon';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
@@ -39,6 +40,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const noticesQuery = useGetCourseNotices(courseId);
   const refreshControl = useRefreshControl(noticesQuery);
   const [notices, setNotices] = useState<RenderedNotice[]>();
+  const { accessibilityListLabel } = useAccessibility();
 
   useEffect(() => {
     if (!noticesQuery.data) return;
@@ -82,14 +84,15 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
               const linkCount =
                 notice?.contentString?.toString().split(/<a\b[^>]*>/i).length -
                 1;
-              console.debug(linkCount);
               return (
                 <Fragment key={notice.id}>
                   <ListItem
                     title={notice.title}
-                    accessibilityLabel={`${DateTime.fromJSDate(
-                      notice.publishedAt,
-                    ).toFormat('dd/MM/yyyy')}, ${notice.title}. ${
+                    accessibilityLabel={`${t(
+                      accessibilityListLabel(index, notices?.length || 0),
+                    )}. ${DateTime.fromJSDate(notice.publishedAt).toFormat(
+                      'dd/MM/yyyy',
+                    )}, ${notice.title}. ${
                       linkCount > 0 && !notice.open
                         ? t('common.doubleClickToSeeLinks')
                         : ''
