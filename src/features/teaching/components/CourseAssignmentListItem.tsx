@@ -84,7 +84,10 @@ export const CourseAssignmentListItem = ({
                       icon={faEllipsisVertical}
                       color={colors.secondaryText}
                       size={fontSizes.xl}
-                      adjustSpacing="right"
+                      hitSlop={{
+                        right: +spacing[2],
+                        left: +spacing[2],
+                      }}
                     />
                   </Menu>
                 ),
