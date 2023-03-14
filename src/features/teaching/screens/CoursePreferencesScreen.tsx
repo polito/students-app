@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, RefreshControl, ScrollView, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
@@ -12,6 +12,7 @@ import {
 import { faBroom, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';

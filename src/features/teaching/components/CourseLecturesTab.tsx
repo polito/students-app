@@ -4,7 +4,6 @@ import {
   Animated,
   Platform,
   Pressable,
-  RefreshControl,
   SectionList,
   StyleSheet,
   View,
@@ -20,6 +19,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 

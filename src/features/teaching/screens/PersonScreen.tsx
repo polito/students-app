@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
   Image,
   Linking,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -19,6 +18,7 @@ import {
 import { Col } from "@lib/ui/components/Col";
 import { Icon } from "@lib/ui/components/Icon";
 import { ListItem } from "@lib/ui/components/ListItem";
+import { RefreshControl } from "@lib/ui/components/RefreshControl";
 import { Metric } from "@lib/ui/components/Metric";
 import { Row } from "@lib/ui/components/Row";
 import { Section } from "@lib/ui/components/Section";

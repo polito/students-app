@@ -6,6 +6,7 @@ import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -43,7 +44,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
             onSwipeEnd={() => setScrollEnabled(true)}
           />
         )}
-        {...refreshControl}
+        refreshControl={<RefreshControl {...refreshControl} />}
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,
         })}
