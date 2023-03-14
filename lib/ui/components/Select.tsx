@@ -40,7 +40,7 @@ export const Select = ({
     <MenuView
       style={{ width: '100%' }}
       title={label}
-      actions={options}
+      actions={!disabled ? options : []}
       onPressAction={({ nativeEvent: { event } }) => {
         !disabled && onSelectOption?.(event);
       }}
