@@ -6,6 +6,9 @@
     "refresh": "Refresh",
     "title": "Agenda"
   },
+  "bookingsScreen": {
+    "title": "Bookings"
+  },
   "colors": {
     "amber": "Amber",
     "blue": "Blue",
@@ -217,13 +220,22 @@
     "emptyState": "There are no open exam calls",
     "title": "Exams"
   },
+  "guidesScreen": {
+    "title": "Guides"
+  },
   "grades": {
     "absent": "Abs",
     "fail": "Fail",
     "pass": "Pass"
   },
+  "jobOffersScreen": {
+    "title": "Job offers"
+  },
   "lectureScreen": {
     "courseFilesCta": "Go to course files"
+  },
+  "libraryScreen": {
+    "title": "Library"
   },
   "loginScreen": {
     "authnError": "Authentication error",
@@ -246,6 +258,9 @@
     "pickFileHint": "From your device or from the cloud",
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
+  },
+  "newsScreen": {
+    "title": "News & Events"
   },
   "notifications": {
     "events": "Events",
