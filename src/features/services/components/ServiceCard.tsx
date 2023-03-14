@@ -19,6 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { uniformInsets } from '../../../utils/insets';
 import { resolveLinkTo } from '../../../utils/resolveLinkTo';
 
 interface Props extends PropsWithChildren<TouchableCardProps> {
@@ -55,18 +56,20 @@ export const ServiceCard = ({
       style={[styles.touchable, props.style]}
       cardStyle={[styles.card, props.cardStyle]}
     >
-      <Row spaceBetween>
+      <Row spaceBetween alignStart>
         <Icon
           icon={icon}
           size={28}
           color={iconColor ?? colors.primary[dark ? 400 : 500]}
         />
+
         <IconButton
           icon={favorite ? faStarFilled : faStar}
           color={favorite ? colors.orange[400] : colors.secondaryText}
           onPress={() => onFavoriteChange(!favorite)}
           style={styles.favButton}
           disabled={disabled}
+          hitSlop={uniformInsets(16)}
         />
       </Row>
       <Text variant="title" style={styles.title}>
