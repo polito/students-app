@@ -42,14 +42,20 @@ export const Grid = ({
     if (contentWidth == null || childrenArray.length < 1) {
       _numColumns = 1;
     } else {
-      const maxNumColumns = Math.ceil(
-        (contentWidth - (Math.floor(contentWidth / minColumnWidth) - 1) * gap) /
-          minColumnWidth,
-      );
-      const minNumColumns = Math.ceil(
-        (contentWidth - (Math.floor(contentWidth / maxColumnWidth) - 1) * gap) /
-          maxColumnWidth,
-      );
+      let maxNumColumns = Math.floor(contentWidth / minColumnWidth);
+      while (
+        maxNumColumns * minColumnWidth + (maxNumColumns - 1) * gap >
+        contentWidth
+      ) {
+        maxNumColumns--;
+      }
+      let minNumColumns = Math.floor(contentWidth / maxColumnWidth);
+      while (
+        minNumColumns * maxColumnWidth + (minNumColumns - 1) * gap >
+        contentWidth
+      ) {
+        minNumColumns--;
+      }
       _numColumns = Math.max(
         minNumColumns,
         Math.min(childrenArray.length, maxNumColumns),
