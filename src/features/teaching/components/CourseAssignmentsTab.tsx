@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { faFileLines, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
@@ -8,6 +8,7 @@ import { Badge } from '@lib/ui/components/Badge';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -33,14 +34,7 @@ export const CourseAssignmentsTab = ({
   return (
     <>
       <ScrollView
-        refreshControl={
-          <RefreshControl
-            {...refreshControl}
-            title={'refreshh ahahahah'}
-            accessible={true}
-            accessibilityLabel={'nradlksnakdljsa'}
-          />
-        }
+        refreshControl={<RefreshControl {...refreshControl} />}
         scrollEnabled={scrollEnabled}
       >
         {assignmentsQuery.data &&
