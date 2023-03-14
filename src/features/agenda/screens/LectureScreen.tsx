@@ -35,7 +35,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     if (!lecture.virtualClassrooms.length) return;
 
     // Temporary behaviour until multiple videos in 1 screen are managed
-    const vcId = [...lecture.virtualClassrooms].shift()?.vcId;
+    const vcId = [...lecture.virtualClassrooms].shift()?.id;
     if (!vcId) return;
 
     return virtualClassrooms?.data.find(vcs => vcs.id === vcId);
