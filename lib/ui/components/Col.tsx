@@ -1,9 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import {
-  Pressable,
   StyleProp,
   StyleSheet,
-  TouchableOpacity,
   View,
   ViewProps,
   ViewStyle,
@@ -11,31 +9,32 @@ import {
 
 import { usePropsStyle } from '../../../src/utils/theme';
 
-type ColProps =  PropsWithChildren<
+type ColProps = PropsWithChildren<
   ViewProps & {
-  children?: JSX.Element | JSX.Element[];
-  style?: StyleProp<ViewStyle>;
-  pointerEvents?: string;
-  alignStart?: boolean;
-  alignCenter?: boolean;
-  spaceBetween?: boolean;
-  justifyCenter?: boolean;
-  spaceAround?: boolean;
-  justifyStart?: boolean;
-  alignEnd?: boolean;
-  flexStart?: boolean;
-  flexEnd?: boolean;
-  justifyEnd?: boolean;
-  flex?: number;
-  backgroundColor?: string;
-  onPress?: () => any;
-  maxWidth?: boolean;
-  onLayout?: any;
-  shadow?: boolean;
-  noFlex?: boolean;
-  touchableOpacity?: boolean;
-  width?: number;
-}>;
+    children?: JSX.Element | JSX.Element[];
+    style?: StyleProp<ViewStyle>;
+    pointerEvents?: string;
+    alignStart?: boolean;
+    alignCenter?: boolean;
+    spaceBetween?: boolean;
+    justifyCenter?: boolean;
+    spaceAround?: boolean;
+    justifyStart?: boolean;
+    alignEnd?: boolean;
+    flexStart?: boolean;
+    flexEnd?: boolean;
+    justifyEnd?: boolean;
+    flex?: number;
+    backgroundColor?: string;
+    onPress?: () => any;
+    maxWidth?: boolean;
+    onLayout?: any;
+    shadow?: boolean;
+    noFlex?: boolean;
+    touchableOpacity?: boolean;
+    width?: number;
+  }
+>;
 
 export const Col = ({
   children,
@@ -77,8 +76,6 @@ export const Col = ({
         flex && { flex },
         style,
       ]}
-      pointerEvents={pointerEvents}
-      onPress={onPress}
       {...rest}
     >
       {children}
