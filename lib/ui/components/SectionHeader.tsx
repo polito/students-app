@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   StyleProp,
@@ -55,23 +56,8 @@ export const SectionHeader = ({
       }
     : {};
 
-  return (
-    <TouchableOpacity
-      style={styles.container}
-      accessible={accessible}
-      accessibilityRole={linkTo ? 'button' : 'header'}
-      accessibilityLabel={accessibilityLabel}
-      onPress={() => {
-        linkTo &&
-          navigation.navigate({
-            name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
-            params:
-              typeof linkTo === 'object' && 'params' in linkTo
-                ? linkTo.params
-                : undefined,
-          });
-      }}
-    >
+  const Header = () => {
+    return (
       <View style={styles.innerContainer}>
         <View style={styles.titleContainer}>
           {separator && <Separator />}
@@ -104,6 +90,40 @@ export const SectionHeader = ({
               </Link>
             )}
       </View>
+    );
+  };
+
+  if (!linkTo) {
+    return (
+      <View
+        style={styles.container}
+        accessible={accessible}
+        accessibilityRole={linkTo ? 'button' : 'header'}
+        accessibilityLabel={accessibilityLabel}
+      >
+        <Header />
+      </View>
+    );
+  }
+
+  return (
+    <TouchableOpacity
+      style={styles.container}
+      accessible={accessible}
+      accessibilityRole={linkTo ? 'button' : 'header'}
+      accessibilityLabel={accessibilityLabel}
+      onPress={() => {
+        linkTo &&
+          navigation.navigate({
+            name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
+            params:
+              typeof linkTo === 'object' && 'params' in linkTo
+                ? linkTo.params
+                : undefined,
+          });
+      }}
+    >
+      <Header />
     </TouchableOpacity>
   );
 };

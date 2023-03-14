@@ -88,6 +88,9 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
             value={t('common.creditsWithUnit', {
               credits: courseQuery.data?.data.cfu,
             })}
+            accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
+              courseQuery.data?.data.cfu
+            }`}
             style={GlobalStyles.grow}
           />
         </Grid>

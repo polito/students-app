@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { ProgressChart as RNCKProgressChart } from 'react-native-chart-kit';
 
 import { Col } from '@lib/ui/components/Col';
@@ -9,27 +9,27 @@ import color from 'color';
 
 import { uniformInsets } from '../../../utils/insets';
 
-interface Props {
+type Props = ViewProps & {
   data: number[];
   label?: string;
   colors: string[];
   boxSize?: number;
   thickness?: number;
   radius?: number;
-}
+};
 
 export const ProgressChart = ({
-  data,
-  colors,
-  label,
-  boxSize = 125,
-  thickness = 16,
-  radius = 30,
-}: Props) => {
+                                data,
+                                colors,
+                                label,
+                                boxSize = 125,
+                                thickness = 16,
+                                radius = 30,
+                                ...rest }: Props) => {
   const { dark, colors: themeColors, fontSizes } = useTheme();
 
   return (
-    <View>
+    <View accessible={false} {...rest}>
       <RNCKProgressChart
         data={{
           data: [1],

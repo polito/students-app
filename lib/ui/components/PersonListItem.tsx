@@ -13,7 +13,7 @@ interface Props {
 
 export const PersonListItem = ({
   person,
-  ...rest
+  subtitle
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
 
@@ -36,7 +36,7 @@ export const PersonListItem = ({
             }
           : undefined
       }
-      {...rest}
+      subtitle={subtitle}
     />
   );
 };

@@ -1,10 +1,10 @@
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Props as CardProps } from './Card';
 import { Text, Props as TextProps } from './Text';
 
-interface Props {
+type Props = ViewProps & {
   title: string;
   value: string | number | JSX.Element;
   color?: string;
