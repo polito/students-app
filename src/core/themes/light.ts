@@ -146,7 +146,7 @@ export const lightTheme: Theme = {
     surfaceDark: '#143959',
     headers: '#edeef0',
     heading: darkBlue[700],
-    title: darkBlue[700],
+    title: darkBlue[600],
     headline: darkBlue[700],
     prose: text[800],
     secondaryText: text[500],

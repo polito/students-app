@@ -4,3 +4,6 @@ export const formatGrade = (grade: string) =>
     .replace('Assente', 'grades.absent')
     .replace('Fallito', 'grades.fail')
     .replace('Superato', 'grades.pass');
+
+export const formatFinalGrade = (grade: number) =>
+  [grade ?? '--', 110].join('/');

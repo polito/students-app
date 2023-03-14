@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
+import { Col } from '@lib/ui/components/Col';
+import { Metric } from '@lib/ui/components/Metric';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/theme';
@@ -25,7 +26,7 @@ import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -135,28 +136,44 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 underlayColor={colors.touchableHighlight}
               >
                 <View style={{ padding: spacing[5], flexDirection: 'row' }}>
-                  <View style={GlobalStyles.grow}>
-                    <Text
-                      variant="headline"
-                      style={{ marginBottom: spacing[2] }}
-                    >
-                      {t('transcriptScreen.weightedAverageLabel')}:{' '}
-                      {studentQuery.data?.data.averageGrade}
-                    </Text>
-                    <Text
-                      variant="secondaryText"
-                      style={{ marginBottom: spacing[2] }}
-                    >
-                      {t('transcriptScreen.finalAverageLabel')}:{' '}
-                      {studentQuery.data?.data.averageGradePurged}
-                    </Text>
-                    <Text variant="secondaryText">
-                      {studentQuery.data?.data.totalAcquiredCredits}/
-                      {studentQuery.data?.data.totalCredits}{' '}
-                      {t('common.credits').toLowerCase()}
-                    </Text>
-                  </View>
+                  <Col spaceBetween>
+                    <Metric
+                      title={
+                        studentQuery.data?.data.averageGradePurged != null
+                          ? t('transcriptScreen.finalAverageLabel')
+                          : t('transcriptScreen.weightedAverageLabel')
+                      }
+                      value={
+                        studentQuery.data?.data.averageGradePurged ??
+                        studentQuery.data?.data.averageGrade ??
+                        '--'
+                      }
+                      color={colors.title}
+                    />
+                    <Metric
+                      title={
+                        studentQuery.data?.data.estimatedFinalGradePurged !=
+                        null
+                          ? t('transcriptScreen.estimatedFinalGradePurged')
+                          : t('transcriptScreen.estimatedFinalGrade')
+                      }
+                      value={
+                        studentQuery.data?.data.estimatedFinalGradePurged !=
+                        null
+                          ? formatFinalGrade(
+                              studentQuery.data?.data.estimatedFinalGradePurged,
+                            )
+                          : formatFinalGrade(
+                              studentQuery.data?.data.estimatedFinalGrade,
+                            )
+                      }
+                      color={colors.title}
+                    />
+                  </Col>
                   <ProgressChart
+                    label={`${studentQuery.data?.data.totalAcquiredCredits}/${
+                      studentQuery.data?.data.totalCredits
+                    }\n${t('common.ects')}`}
                     data={
                       studentQuery.data
                         ? [
@@ -167,6 +184,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                           ]
                         : []
                     }
+                    boxSize={140}
+                    radius={40}
+                    thickness={18}
                     colors={[colors.primary[400], colors.secondary[500]]}
                   />
                 </View>

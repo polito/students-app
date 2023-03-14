@@ -33,6 +33,7 @@ export const TextField = ({
   type,
   style,
   inputStyle,
+  numberOfLines = 1,
   ...rest
 }: TextInputProps & Props) => {
   const { colors } = useTheme();
@@ -67,10 +68,12 @@ export const TextField = ({
         style={[
           styles.input,
           {
-            minHeight: IS_IOS ? (rest.numberOfLines ?? 1) * 17 : undefined,
+            textAlignVertical: numberOfLines === 1 ? 'center' : 'top',
+            minHeight: IS_IOS ? (numberOfLines ?? 1) * 17 : undefined,
           },
           inputStyle,
         ]}
+        numberOfLines={numberOfLines}
         {...textInputProps}
         {...rest}
       />
@@ -87,7 +90,6 @@ const createStyles = ({ colors, fontSizes, spacing, fontFamilies }: Theme) =>
       opacity: 0.5,
     },
     input: {
-      textAlignVertical: 'top',
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.md,
       borderBottomWidth: Platform.select({ android: 1 }),
