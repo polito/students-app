@@ -168,7 +168,7 @@ const VisualizationListItem = () => {
       <ListItem
         title={themeLabel(colorScheme)}
         isAction
-        accessibilityLabel={`${t('common.visualization')}: ${themeLabel(
+        accessibilityLabel={`${t('common.theme')}: ${themeLabel(
           colorScheme,
         )}. ${t('settingsScreen.openThemeMenu')}`}
         leadingItem={<ThemeIcon />}
@@ -277,7 +277,7 @@ export const SettingsScreen = () => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
         <Section>
-          <SectionHeader title={t('common.visualization')} />
+          <SectionHeader title={t('common.theme')} />
           <SectionList indented>
             <VisualizationListItem />
           </SectionList>
