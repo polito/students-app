@@ -49,10 +49,10 @@ export const Grid = ({
       ) {
         maxNumColumns--;
       }
-      let minNumColumns = Math.floor(contentWidth / maxColumnWidth);
+      let minNumColumns = Math.round(contentWidth / maxColumnWidth);
       while (
-        minNumColumns * maxColumnWidth + (minNumColumns - 1) * gap >
-        contentWidth
+        (contentWidth - Math.max(minNumColumns - 1, 0) * gap) / minNumColumns <
+        minColumnWidth
       ) {
         minNumColumns--;
       }
