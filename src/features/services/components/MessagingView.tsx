@@ -133,6 +133,7 @@ export const MessagingView = ({
           <TranslucentTextField
             label={t('ticketScreen.reply')}
             value={message}
+            autoCapitalize="sentences"
             onChangeText={onMessageChange}
             multiline
             editable={!disabled}

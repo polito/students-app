@@ -1,4 +1,4 @@
-import { Ref } from 'react';
+import { Ref, useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -34,12 +34,13 @@ export const TextField = ({
   style,
   inputStyle,
   numberOfLines = 1,
+  autoCapitalize = 'none',
   ...rest
 }: TextInputProps & Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
-  const textInputProps = ((): TextInputProps => {
+  const textInputProps: TextInputProps = useMemo(() => {
     switch (type) {
       case 'password':
         return {
@@ -49,7 +50,7 @@ export const TextField = ({
       default:
         return {};
     }
-  })();
+  }, [type]);
 
   return (
     <View
@@ -60,13 +61,13 @@ export const TextField = ({
       ]}
       accessibilityLabel={rest?.accessibilityLabel ?? label}
       accessible={true}
-      importantForAccessibility={'yes'}
+      importantForAccessibility="yes"
     >
       <TextInput
         accessible={true}
         ref={inputRef}
-        importantForAccessibility={'no'}
-        autoCapitalize="none"
+        importantForAccessibility="no"
+        autoCapitalize={autoCapitalize}
         selectionColor={colors.link}
         placeholder={label}
         placeholderTextColor={colors.secondaryText}
