@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -135,16 +135,20 @@ export const PersonScreen = ({ route }: Props) => {
       // TODO
       console.debug('onPressCourse', course);
     };
+
+    const role = useMemo(() => {
+      return course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
+    }, [course.role]);
     return (
       <ListItem
         key={course.id}
         title={course.name}
-        subtitle={`${course.year} - ${course.role}`}
+        subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
         accessibilityLabel={`${accessibilityListLabel(
           index,
           courses?.length || 0,
-        )}. ${course.name}, ${course.year} - ${course.role}`}
+        )}. ${course.name}, ${course.year} -${t('common.' + role)}`}
         onPress={onPressCourse}
       />
     );

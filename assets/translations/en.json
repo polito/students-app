@@ -83,6 +83,8 @@
     "refresh": "Refresh",
     "remove": "Remove",
     "retract": "Retract",
+    "roleCollaborator": "Collaborator",
+    "roleHolder": "Holder",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
     "status": "Status",

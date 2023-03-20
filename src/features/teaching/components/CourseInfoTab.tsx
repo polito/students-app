@@ -27,7 +27,7 @@ import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { ExamListItem } from './ExamListItem';
 
-type StaffMember = Person & { courseRole: string };
+type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
 export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
@@ -52,15 +52,16 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       return;
     }
     const staffData: StaffMember[] = [];
-    courseQuery.data.data.staff.forEach(s =>
-      staffData.push({
-        courseRole: s.role,
-      }),
-    );
 
     staffQueries.forEach((staffQuery, index) => {
       const personData = staffQuery.data.data;
-      staffData[index] = { ...personData, ...staffData[index] };
+      staffData.push({
+        ...personData,
+        courseRole:
+          courseQuery.data.data.staff[index].role === 'Titolare'
+            ? 'roleHolder'
+            : 'roleCollaborator',
+      });
     });
 
     setStaff(staffData);
@@ -117,7 +118,7 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
             <PersonListItem
               key={`${member.id}`}
               person={member}
-              subtitle={member.courseRole}
+              subtitle={t(`common.${member.courseRole}`)}
             />
           ))}
         </SectionList>
