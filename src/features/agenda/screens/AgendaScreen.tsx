@@ -106,14 +106,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
   };
 
   const scrollToToday = (isAnimated = false) => {
-    flatListRef.current.scrollToOffset({
+    flatListRef.current?.scrollToOffset({
       offset: agendaStateRef.current.todayOffsetOverall,
       animated: isAnimated,
     });
   };
 
   const scrollToLastOffset = () => {
-    flatListRef.current.scrollToOffset({
+    flatListRef.current?.scrollToOffset({
       offset: agendaState.currentOffset,
       animated: false,
     });

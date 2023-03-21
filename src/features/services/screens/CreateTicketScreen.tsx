@@ -126,6 +126,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <SectionList style={styles.objectSection}>
           <TextField
+            autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
             inputStyle={styles.textFieldInput}
             editable={!!ticketBody?.subtopicId}

@@ -366,6 +366,11 @@
   "teachingScreen": {
     "title": "Didattica"
   },
+  "theme": {
+    "dark": "Scuro",
+    "light": "Chiaro",
+    "system": "Di sistema"
+  },
   "ticketFaqScreen": {
     "headerBackTitle": "Nuovo",
     "noResultFound": "Non hai trovato quello che cerchi?",

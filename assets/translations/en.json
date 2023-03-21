@@ -308,7 +308,7 @@
   "theme": {
     "dark": "Dark",
     "light": "Light",
-    "system": "Sistem"
+    "system": "System"
   },
   "ticketFaqScreen": {
     "headerBackTitle": "New",
