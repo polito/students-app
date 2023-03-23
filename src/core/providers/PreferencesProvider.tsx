@@ -48,15 +48,15 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       setPreferencesContext(oldP => ({
         ...oldP,
         ...Object.fromEntries(
-          storagePreferences.map(([key, value]) => {
-            try {
-              console.debug(key, value);
-              return [key, JSON.parse(value)];
-            } catch (e) {
-              console.debug(key, 'fallback');
-              return [key, value];
-            }
-          }),
+          storagePreferences
+            .filter(([_, value]) => value !== null)
+            .map(([key, value]) => {
+              try {
+                return [key, JSON.parse(value)];
+              } catch (e) {
+                return [key, value];
+              }
+            }),
         ),
         updatePreference,
       }));
