@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Switch } from '@lib/ui/components/Switch';
 import { Text } from '@lib/ui/components/Text';
@@ -17,9 +19,13 @@ export const SwitchListItem = ({
   ...rest
 }: Props) => {
   const { fontSizes } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityRole="switch"
+      accessibilityLabel={`${title}. ${t(`common.activeStatus.${value}`)}`}
       title={
         <Text
           accessible={false}

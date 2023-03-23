@@ -284,6 +284,12 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
+  const {
+    shouldRecordScreen,
+    shouldReportErrors,
+    updatePreference,
+  } = useContext(PreferencesContext);
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
@@ -305,6 +311,21 @@ export const SettingsScreen = () => {
             trailingItem={<Badge text={t('common.comingSoon')} />}
           />
           <Notifications />
+        </Section>
+        <Section>
+          <SectionHeader title={t('common.privacy')} />
+          <SectionList indented>
+            <SwitchListItem
+              title={t('settingsScreen.shouldRecordScreen')}
+              value={shouldRecordScreen}
+              onChange={value => updatePreference('shouldRecordScreen', value)}
+            />
+            <SwitchListItem
+              title={t('settingsScreen.shouldReportErrors')}
+              value={shouldReportErrors}
+              onChange={value => updatePreference('shouldReportErrors', value)}
+            />
+          </SectionList>
         </Section>
         <Section>
           <SectionHeader title={t('common.cache')} />

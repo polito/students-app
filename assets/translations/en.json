@@ -125,6 +125,7 @@
     "phoneContacts": "Phone contacts",
     "play": "Play",
     "preferences": "Preferences",
+    "privacy": "Privacy",
     "profilePic": "Profile picture",
     "refresh": "Refresh",
     "remove": "Remove",
@@ -379,6 +380,7 @@
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "openLanguageMenu": "Tap twice to open the language selection menu",
     "openThemeMenu": "Tap twice to open the theme selection menu",
+    "shouldReportErrors": "Gather errors",
     "title": "Settings"
   },
   "teachingScreen": {
