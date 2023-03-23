@@ -12,12 +12,13 @@ import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -135,8 +136,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 onPress={() => navigation.navigate('Transcript')}
                 underlayColor={colors.touchableHighlight}
               >
-                <View style={{ padding: spacing[5], flexDirection: 'row' }}>
-                  <Col spaceBetween>
+                <Row p={5} gap={5} align="stretch" justify="space-between">
+                  <Col justify="space-between">
                     <Metric
                       title={
                         studentQuery.data?.data.averageGradePurged != null
@@ -189,7 +190,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     thickness={18}
                     colors={[colors.primary[400], colors.secondary[500]]}
                   />
-                </View>
+                </Row>
               </TouchableHighlight>
             )}
           </Card>

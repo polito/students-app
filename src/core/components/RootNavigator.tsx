@@ -10,7 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 

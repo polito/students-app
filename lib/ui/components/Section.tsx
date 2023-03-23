@@ -1,23 +1,17 @@
 import { PropsWithChildren } from 'react';
-import { Platform, View, ViewProps } from 'react-native';
+import { Platform, ViewProps } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Col } from '@lib/ui/components/Col';
 
 export const Section = ({
   style,
   children,
   ...rest
 }: PropsWithChildren<ViewProps>) => {
-  const { spacing } = useTheme();
   return (
-    <View
-      style={[
-        {
-          flexDirection: 'column',
-          marginBottom: spacing[5],
-        },
-        style,
-      ]}
+    <Col
+      mb={5}
+      style={style}
       accessible={Platform.select({
         android: true,
         ios: false,
@@ -25,6 +19,6 @@ export const Section = ({
       {...rest}
     >
       {children}
-    </View>
+    </Col>
   );
 };

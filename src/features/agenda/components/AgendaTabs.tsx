@@ -5,7 +5,7 @@ import { Platform, StyleSheet } from 'react-native';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import { AgendaItemTypes } from '../types/AgendaItem';

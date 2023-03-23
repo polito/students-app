@@ -14,7 +14,7 @@ import {
 } from '@lib/ui/components/TouchableCard';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -56,7 +56,7 @@ export const ServiceCard = ({
       style={[styles.touchable, props.style]}
       cardStyle={[styles.card, props.cardStyle]}
     >
-      <Row spaceBetween alignStart>
+      <Row justify="space-between" align="flex-start">
         <Icon
           icon={icon}
           size={28}

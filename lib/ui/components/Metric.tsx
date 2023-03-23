@@ -1,7 +1,7 @@
 import { View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
-import { Props as CardProps } from './Card';
+import { CardProps } from './Card';
 import { Text, Props as TextProps } from './Text';
 
 type Props = ViewProps & {
@@ -9,7 +9,7 @@ type Props = ViewProps & {
   value: string | number | JSX.Element;
   color?: string;
   valueStyle?: TextProps['style'];
-}
+};
 
 /**
  * A view used to present a simple textual metric

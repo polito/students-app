@@ -40,7 +40,8 @@
         "@typescript-eslint/no-use-before-define": "off",
         "no-console": ["error", {
           "allow": ["warn", "error", "debug"]
-        }]
+        }],
+        "react-native/no-raw-text": "off"
       }
     }
   ]

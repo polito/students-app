@@ -16,8 +16,7 @@ import {
 import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { split } from '../../../utils/reducers';
@@ -25,7 +24,6 @@ import { ServiceCard } from '../components/ServiceCard';
 
 export const ServicesScreen = () => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
   const { favoriteServices: favoriteServiceIds, updatePreference } =
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
@@ -115,7 +113,7 @@ export const ServicesScreen = () => {
           numColumns={auto}
           minColumnWidth={ServiceCard.minWidth}
           maxColumnWidth={ServiceCard.maxWidth}
-          gap={+spacing[4]}
+          gap={4}
           style={styles.grid}
         >
           {favoriteServices.map(service => (
@@ -139,7 +137,7 @@ export const ServicesScreen = () => {
           numColumns={auto}
           minColumnWidth={ServiceCard.minWidth}
           maxColumnWidth={ServiceCard.maxWidth}
-          gap={+spacing[4]}
+          gap={4}
           style={styles.grid}
         >
           {otherServices.map(service => (
@@ -160,7 +158,7 @@ export const ServicesScreen = () => {
   );
 };
 
-const createStyles = ({ spacing, colors, fontWeights, fontSizes }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     grid: {
       margin: spacing[5],

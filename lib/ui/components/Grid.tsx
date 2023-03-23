@@ -7,13 +7,30 @@ import {
 } from 'react';
 import { LayoutChangeEvent, View, ViewProps } from 'react-native';
 
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
+
 import { GlobalStyles } from '../../../src/core/styles/globalStyles';
 
 interface Props extends PropsWithChildren<ViewProps> {
+  /**
+   * The number of columns
+   *
+   * Use `auto` to automatically determine the number of columns based on min/max column width
+   */
   numColumns?: number;
+  /**
+   * The minimum width of the columns (to be used with `numColumns={auto}")
+   */
   minColumnWidth?: number;
+  /**
+   * The maximum width of the columns (to be used with `numColumns={auto}")
+   */
   maxColumnWidth?: number;
-  gap?: number;
+  /**
+   * Gap between columns and rows in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units
+   */
+  gap?: keyof Theme['spacing'];
 }
 
 export const auto = -1;
@@ -22,15 +39,17 @@ export const Grid = ({
   numColumns = 2,
   minColumnWidth = 100,
   maxColumnWidth = 100,
-  gap = 18,
+  gap = 5,
   style,
   children,
   onLayout,
   ...rest
 }: Props) => {
+  const { spacing } = useTheme();
   const [contentWidth, setContentWidth] = useState<number>(null);
   const childrenArray = Children.toArray(children);
   let _numColumns = numColumns;
+  const _gap = spacing[gap];
   let columnWidth = 0;
   if (_numColumns === auto) {
     if (maxColumnWidth == null) {
@@ -44,14 +63,14 @@ export const Grid = ({
     } else {
       let maxNumColumns = Math.floor(contentWidth / minColumnWidth);
       while (
-        maxNumColumns * minColumnWidth + (maxNumColumns - 1) * gap >
+        maxNumColumns * minColumnWidth + (maxNumColumns - 1) * _gap >
         contentWidth
       ) {
         maxNumColumns--;
       }
       let minNumColumns = Math.round(contentWidth / maxColumnWidth);
       while (
-        (contentWidth - Math.max(minNumColumns - 1, 0) * gap) / minNumColumns <
+        (contentWidth - Math.max(minNumColumns - 1, 0) * _gap) / minNumColumns <
         minColumnWidth
       ) {
         minNumColumns--;
@@ -64,7 +83,7 @@ export const Grid = ({
   }
   columnWidth =
     contentWidth != null
-      ? (contentWidth - Math.max(0, _numColumns - 1) * gap) / _numColumns
+      ? (contentWidth - Math.max(0, _numColumns - 1) * _gap) / _numColumns
       : 0;
 
   const rows = childrenArray.reduce(
@@ -97,7 +116,7 @@ export const Grid = ({
               style={{
                 flexDirection: 'row',
                 marginBottom:
-                  rows.length > 1 && ri < rows.length - 1 ? gap : undefined,
+                  rows.length > 1 && ri < rows.length - 1 ? _gap : undefined,
               }}
             >
               {r.map((c, ci) => {
@@ -108,13 +127,13 @@ export const Grid = ({
                 return (
                   <Fragment key={ci}>
                     {c}
-                    {ci < _numColumns - 1 && <View style={{ width: gap }} />}
+                    {ci < _numColumns - 1 && <View style={{ width: _gap }} />}
                     {missingColumns > 0 ? (
                       <View
                         style={{
                           width:
                             missingColumns * columnWidth +
-                            (missingColumns - 1) * gap,
+                            (missingColumns - 1) * _gap,
                         }}
                       />
                     ) : null}

@@ -12,7 +12,7 @@ import { Select } from '@lib/ui/components/Select';
 import { TextField } from '@lib/ui/components/TextField';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { CreateTicketRequest } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

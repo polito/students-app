@@ -4,7 +4,7 @@ import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import { isCurrentMonth, isCurrentYear } from '../../../utils/dates';
 import { AgendaDay } from '../types/AgendaDay';
@@ -31,7 +31,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
 
   return (
     <Row onLayout={onLayout}>
-      <Col style={styles.dayColumn} noFlex>
+      <Col style={styles.dayColumn} align="stretch">
         {agendaDay.isToday ? (
           <View style={[styles.dayBox, styles.todayBox]}>
             <Text variant="heading" style={[styles.secondaryDay, styles.today]}>
@@ -60,7 +60,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
           </View>
         )}
       </Col>
-      <Col style={styles.itemsColumn}>
+      <Col flex={1}>
         {!agendaDay.items.length ? (
           isEmptyWeek ? (
             <EmptyWeek />
@@ -93,11 +93,6 @@ const createStyles = ({ colors, fontWeights, shapes, spacing }: Theme) =>
     dayColumn: {
       width: '15%',
       maxWidth: 200,
-      alignItems: 'stretch',
-    },
-    itemsColumn: {
-      flexGrow: 1,
-      justifyContent: 'center',
     },
     secondaryDay: {
       textTransform: 'capitalize',

@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import i18n from 'i18next';
 import { DateTime } from 'luxon';

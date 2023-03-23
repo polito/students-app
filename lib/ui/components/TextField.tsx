@@ -10,7 +10,7 @@ import {
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import { IS_IOS } from '../../../src/core/constants';
 import { useTheme } from '../hooks/useTheme';

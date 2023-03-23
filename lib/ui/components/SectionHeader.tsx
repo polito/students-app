@@ -16,7 +16,7 @@ import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { parseText } from '../../../src/utils/html-parse';
 import { useStylesheet } from '../hooks/useStylesheet';
-import { Theme } from '../types/theme';
+import { Theme } from '../types/Theme';
 import { Text } from './Text';
 
 interface Props {
@@ -74,11 +74,7 @@ export const SectionHeader = ({
         {trailingItem
           ? trailingItem
           : linkTo && (
-              <Link
-                to={linkTo}
-                accessible={true}
-                accessibilityRole={'button'}
-              >
+              <Link to={linkTo} accessible={true} accessibilityRole={'button'}>
                 <Text variant="link">
                   {t('sectionHeader.cta')}
                   {linkToMoreCount > 0 &&

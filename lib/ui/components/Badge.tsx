@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextProps, View } from 'react-native';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 interface Props {
   text: string;

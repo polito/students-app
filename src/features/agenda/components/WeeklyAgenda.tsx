@@ -5,7 +5,7 @@ import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import { DateTime } from 'luxon';
 
@@ -44,7 +44,7 @@ export const WeeklyAgenda = ({ agendaWeek, setTodayOffset }: Props) => {
       ))}
       {!agendaWeek.data.length && (
         <Row>
-          <Col noFlex style={styles.dayColumn}></Col>
+          <Col style={styles.dayColumn}></Col>
           <Col style={styles.itemsColumn}>
             <EmptyWeek />
           </Col>
@@ -58,7 +58,6 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     weekHeader: {
       marginLeft: '15%',
-      paddingTop: spacing[4],
       paddingBottom: spacing[2],
     },
     dayColumn: {

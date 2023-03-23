@@ -21,7 +21,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 type IconType = string;
 

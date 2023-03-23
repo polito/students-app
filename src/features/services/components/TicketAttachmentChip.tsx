@@ -4,7 +4,7 @@ import { open } from 'react-native-file-viewer';
 
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
 
 import {

@@ -2,7 +2,7 @@ import { Text as RNText, StyleSheet, TextProps } from 'react-native';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
-import { Theme } from '../types/theme';
+import { Theme } from '../types/Theme';
 
 export interface Props extends TextProps {
   variant?:
