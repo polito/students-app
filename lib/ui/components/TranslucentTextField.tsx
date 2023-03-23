@@ -2,7 +2,7 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { Props, TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 export const TranslucentTextField = (props: Props) => {
   const styles = useStylesheet(createStyles);

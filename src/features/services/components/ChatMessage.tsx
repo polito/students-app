@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { TicketReply } from '@polito/api-client/models/TicketReply';
 
 import { TextMessage } from './TextMessage';

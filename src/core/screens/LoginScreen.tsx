@@ -23,7 +23,7 @@ import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useLogin } from '../queries/authHooks';
@@ -53,29 +53,29 @@ export const LoginScreen = () => {
     });
 
   return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        automaticallyAdjustKeyboardInsets
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <Section style={styles.section}>
-            <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
-            <SectionList style={styles.sectionList} accessible={false}>
-              <TextField
-                accessible={true}
-                textContentType="username"
-                label={t('loginScreen.usernameLabel')}
-                value={username}
-                accessibilityLabel={t('loginScreen.usernameLabelAccessibility')}
-                onChangeText={setUsername}
-                editable={!isLoading}
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  passwordRef.current.focus();
-                }}
-                style={styles.textFieldInput}
-              />
-              <Row alignCenter>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      automaticallyAdjustKeyboardInsets
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <Section style={styles.section}>
+          <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
+          <SectionList style={styles.sectionList} accessible={false}>
+            <TextField
+              accessible={true}
+              textContentType="username"
+              label={t('loginScreen.usernameLabel')}
+              value={username}
+              accessibilityLabel={t('loginScreen.usernameLabelAccessibility')}
+              onChangeText={setUsername}
+              editable={!isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordRef.current.focus();
+              }}
+              style={styles.textFieldInput}
+            />
+            <Row alignCenter>
               <TextField
                 accessible={true}
                 inputRef={passwordRef}

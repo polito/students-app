@@ -1,6 +1,6 @@
 import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 
-import { Theme as UiTheme } from '../../lib/ui/types/theme';
+import { Theme as UiTheme } from '../../lib/ui/types/Theme';
 import { lightTheme } from '../core/themes/light';
 
 export const fromUiTheme = (uiTheme: UiTheme): Theme => {

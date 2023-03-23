@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // noinspection AllyPlainJsInspection
 //
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 const darkBlue = {
   50: '#B7E1FF',
