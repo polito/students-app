@@ -75,7 +75,7 @@ export const LoginScreen = () => {
               }}
               style={styles.textFieldInput}
             />
-            <Row alignCenter>
+            <Row align="center">
               <TextField
                 accessible={true}
                 inputRef={passwordRef}

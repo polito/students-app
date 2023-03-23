@@ -50,7 +50,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             coverUrl={virtualClassroom?.coverUrl}
           />
         )}
-        <Row maxWidth noFlex spaceBetween alignCenter>
+        <Row justify="space-between" align="center">
           <EventDetails
             title={virtualClassroom?.title ?? lecture.title}
             type={t('common.lecture')}

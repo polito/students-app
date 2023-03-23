@@ -40,7 +40,7 @@ const Menu = ({
             ? t('coursePreferencesScreen.showInExtracts')
             : t('coursePreferencesScreen.hideInExtracts'),
           subtitle: t('coursePreferencesScreen.showInExtractsSubtitle'),
-          profileImage: isHidden ? 'eye' : 'eye.slash',
+          image: isHidden ? 'eye' : 'eye.slash',
         },
       ]}
       onPressAction={() => {

@@ -57,7 +57,7 @@ export const TicketListItem = ({ ticket }: Props) => {
 
   const UnReadCount = () => {
     return (
-      <Col justifyCenter alignCenter noFlex style={styles.unreadCount}>
+      <Col justify="center" align="center" style={styles.unreadCount}>
         <Text style={styles.unreadCountText}>{ticket?.unreadCount || 0}</Text>
       </Col>
     );
@@ -84,7 +84,7 @@ export const TicketListItem = ({ ticket }: Props) => {
         subtitleStyle={styles.listItemSubtitle}
         leadingItem={<Icon icon={faComments} size={20} />}
         trailingItem={
-          <Row noFlex alignCenter>
+          <Row align="center">
             {ticket?.hasAttachments && (
               <Icon
                 icon={faPaperclip}

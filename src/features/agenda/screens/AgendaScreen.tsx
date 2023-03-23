@@ -203,6 +203,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           ListFooterComponent={
             isFetchingNextPage && <ActivityIndicator size="small" />
           }
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}
           // onContentSizeChange={(contentWidth, contentHeight) => onContentHeightChange(contentHeight)}
           onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -238,6 +239,9 @@ const createStyles = ({ spacing }: Theme) =>
       right: 0,
       top: 0,
       bottom: 0,
+    },
+    separator: {
+      height: spacing[8],
     },
     container: { flex: 1 },
     listContainer: {

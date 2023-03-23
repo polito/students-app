@@ -45,7 +45,7 @@ export const LectureCard = ({ item }: Props) => {
     >
       {item.virtualClassrooms?.map(vc => {
         return (
-          <Row alignCenter style={styles.vcRow}>
+          <Row align="center" style={styles.vcRow}>
             <Icon icon={faVideo} color={colors.prose} size={fontSizes.sm} />
             <Text variant="secondaryText" style={styles.vcTitle}>
               {vc.title}

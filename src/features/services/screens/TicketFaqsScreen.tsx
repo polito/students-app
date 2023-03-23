@@ -75,7 +75,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
             </Text>
           </View>
           <SectionList>
-            <Row noFlex alignCenter style={styles.searchBar}>
+            <Row align="center" style={styles.searchBar}>
               <TextField
                 label={t('ticketFaqsScreen.search')}
                 value={search}

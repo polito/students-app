@@ -58,11 +58,11 @@ export const PersonScreen = ({ route }: Props) => {
   const phoneNumbers = person?.phoneNumbers;
 
   const header = (
-    <Col flexStart maxWidth style={styles.header}>
+    <Col ph={5} pv={2} gap={5} mb={5}>
       <Text weight="bold" variant="title" style={styles.title}>
         {fullName}
       </Text>
-      <Row noFlex mv-xl>
+      <Row>
         <View accessible={true} accessibilityLabel={t('common.profilePic')}>
           {person?.picture ? (
             <Image source={source} style={styles.profileImage} />
@@ -76,7 +76,7 @@ export const PersonScreen = ({ route }: Props) => {
             </View>
           )}
         </View>
-        <Col flexStart style={styles.info}>
+        <Col style={styles.info}>
           <Metric
             title={t('personScreen.role')}
             value={person?.role}
@@ -97,7 +97,7 @@ export const PersonScreen = ({ route }: Props) => {
               accessible={true}
               accessibilityRole="link"
             >
-              <Row noFlex alignCenter>
+              <Row align="center">
                 <Icon
                   icon={faLink}
                   size={20}
@@ -202,10 +202,6 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
   return StyleSheet.create({
     title: {
       fontSize: fontSizes['2xl'],
-    },
-    header: {
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[2],
     },
     info: {
       paddingLeft: spacing[4],

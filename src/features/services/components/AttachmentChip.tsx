@@ -35,7 +35,7 @@ export const AttachmentChip = ({
   }
 
   return (
-    <Row noFlex alignCenter style={[styles.attachmentContainer, style]}>
+    <Row align="center" style={[styles.attachmentContainer, style]}>
       {!loading ? (
         <Icon icon={faFile} style={styles.space} size={18} />
       ) : (

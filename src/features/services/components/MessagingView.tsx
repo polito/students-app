@@ -99,7 +99,7 @@ export const MessagingView = ({
             }}
           />
         )}
-        <Row alignEnd>
+        <Row align="flex-end">
           <MenuView
             actions={[
               {

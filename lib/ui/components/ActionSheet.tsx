@@ -150,7 +150,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
         <Animated.View style={[styles.optionContainer, { opacity }]}>
           {options.map((option, index) => {
             return (
-              <Col noFlex key={index}>
+              <Col key={index}>
                 <TouchableOpacity
                   style={styles.option}
                   onPress={() => onPressOption(option)}
@@ -165,7 +165,7 @@ export const ActionSheet = forwardRef(({ options }: ActionSheetProps, ref) => {
                       size={IS_ANDROID ? 22 : 20}
                     />
                   </Animated.View>
-                  <Col noFlex flexStart style={styles.optionRow}>
+                  <Col style={styles.optionRow}>
                     <Text
                       numberOfLines={1}
                       style={[

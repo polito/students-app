@@ -56,7 +56,7 @@ export const ServiceCard = ({
       style={[styles.touchable, props.style]}
       cardStyle={[styles.card, props.cardStyle]}
     >
-      <Row spaceBetween alignStart>
+      <Row justify="space-between" align="flex-start">
         <Icon
           icon={icon}
           size={28}

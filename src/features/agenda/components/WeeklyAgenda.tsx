@@ -44,7 +44,7 @@ export const WeeklyAgenda = ({ agendaWeek, setTodayOffset }: Props) => {
       ))}
       {!agendaWeek.data.length && (
         <Row>
-          <Col noFlex style={styles.dayColumn}></Col>
+          <Col style={styles.dayColumn}></Col>
           <Col style={styles.itemsColumn}>
             <EmptyWeek />
           </Col>
@@ -58,7 +58,6 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     weekHeader: {
       marginLeft: '15%',
-      paddingTop: spacing[4],
       paddingBottom: spacing[2],
     },
     dayColumn: {
