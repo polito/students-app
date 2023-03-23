@@ -36,7 +36,7 @@ export const PersonListItem = ({
         person?.id
           ? {
               screen: 'Person',
-              params: { id: person.id },
+              params: { personId: person.id },
             }
           : undefined
       }

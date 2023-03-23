@@ -17,10 +17,10 @@ import { DeadlineItem, LectureItem } from '../types/AgendaItem';
 export type AgendaStackParamList = {
   Agenda: undefined;
   Lecture: { item: LectureItem };
-  Exam: { id: number };
+  Exam: { examId: number };
   Deadline: { item: DeadlineItem };
-  Booking: { id: number };
-  Person: { id: number };
+  Booking: { bookingId: number };
+  Person: { personId: number };
 };
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();

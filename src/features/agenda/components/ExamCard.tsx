@@ -31,7 +31,7 @@ export const ExamCard = ({ item }: Props) => {
         navigate({
           name: 'Exam',
           params: {
-            id: item.id,
+            examId: item.id,
           },
         })
       }

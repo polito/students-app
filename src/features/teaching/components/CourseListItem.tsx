@@ -74,7 +74,7 @@ export const CourseListItem = ({
         hasDetails
           ? {
               screen: 'Course',
-              params: { id: course.id, courseName: course.name },
+              params: { courseId: course.id, courseName: course.name },
             }
           : undefined
       }

@@ -28,7 +28,7 @@ import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 interface Props {
-  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Home'>;
+  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Teaching'>;
 }
 
 export const TeachingScreen = ({ navigation }: Props) => {

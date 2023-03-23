@@ -27,7 +27,9 @@ export const NavigationContainer = ({
     const properties = new Properties();
     if (route.params) {
       Object.entries(route.params).forEach(([key, value]) => {
-        properties.putString(key, `${value}`);
+        if (key.endsWith('Id')) {
+          properties.putString(key, `${value}`);
+        }
       });
     }
 

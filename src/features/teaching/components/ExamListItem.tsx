@@ -54,7 +54,7 @@ export const ExamListItem = ({
     <ListItem
       linkTo={{
         screen: 'Exam',
-        params: { id: exam.id },
+        params: { examId: exam.id },
       }}
       title={exam.courseName}
       accessibilityRole="button"

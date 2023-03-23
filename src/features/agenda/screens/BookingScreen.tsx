@@ -31,7 +31,7 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 
 export const BookingScreen = ({ navigation, route }: Props) => {
-  const { id } = route.params;
+  const { bookingId: id } = route.params;
   const { t } = useTranslation();
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
