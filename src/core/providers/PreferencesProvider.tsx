@@ -7,7 +7,6 @@ import {
   PreferencesContext,
   PreferencesContextProps,
   editablePreferenceKeys,
-  objectPreferenceKeys,
 } from '../contexts/PreferencesContext';
 
 export const PreferencesProvider = ({ children }: PropsWithChildren) => {
@@ -15,9 +14,11 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
     useState<PreferencesContextProps>({
       colorScheme: 'system',
       courses: {},
-      language: 'system',
-      updatePreference: () => {},
       favoriteServices: [],
+      language: 'system',
+      shouldRecordScreen: false,
+      shouldReportErrors: true,
+      updatePreference: () => {},
     });
 
   const preferencesInitialized = useRef<boolean>(false);
@@ -32,15 +33,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
         })),
       );
     } else {
-      let storageValue: string;
-
-      if (objectPreferenceKeys.includes(key)) {
-        storageValue = JSON.stringify(value);
-      } else {
-        storageValue = value as string;
-      }
-
-      AsyncStorage.setItem(stringKey, storageValue).then(() =>
+      AsyncStorage.setItem(stringKey, JSON.stringify(value)).then(() =>
         setPreferencesContext(oldP => ({
           ...oldP,
           [stringKey]: value,
@@ -52,24 +45,21 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   // Initialize preferences from AsyncStorage
   useEffect(() => {
     AsyncStorage.multiGet(editablePreferenceKeys).then(storagePreferences => {
-      const preferences: Partial<PreferencesContextProps> = {
+      setPreferencesContext(oldP => ({
+        ...oldP,
+        ...Object.fromEntries(
+          storagePreferences.map(([key, value]) => {
+            try {
+              console.debug(key, value);
+              return [key, JSON.parse(value)];
+            } catch (e) {
+              console.debug(key, 'fallback');
+              return [key, value];
+            }
+          }),
+        ),
         updatePreference,
-      };
-      storagePreferences.map(([key, value]) => {
-        if (value === null) return;
-
-        const typedKey = key as PreferenceKey;
-
-        if (objectPreferenceKeys.includes(key)) {
-          preferences[typedKey] = JSON.parse(value) ?? {};
-        } else {
-          preferences[typedKey] = value as any;
-        }
-      });
-
-      setPreferencesContext(oldP => {
-        return { ...oldP, ...preferences };
-      });
+      }));
     });
   }, []);
 
