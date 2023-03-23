@@ -24,6 +24,7 @@ export const createApiConfiguration = (token?: string) => {
   const configurationParameters: ConfigurationParameters = {
     basePath,
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Accept-Language': deviceLanguage, // TODO refactor
     },
   };

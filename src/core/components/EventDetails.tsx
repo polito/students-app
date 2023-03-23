@@ -8,7 +8,7 @@ type Props = ViewProps & {
   title: string;
   type: string;
   time: string;
-}
+};
 
 export const EventDetails = ({ title, type, time, ...rest }: Props) => {
   const { spacing, fontSizes } = useTheme();
