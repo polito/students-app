@@ -11,6 +11,7 @@ import {
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
+import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -108,7 +109,7 @@ export const CtaButton = ({
           <View style={styles.stack}>
             {loading && <ActivityIndicator color="white" />}
           </View>
-          <View style={{ opacity: loading ? 0 : 1, flexDirection: 'row' }}>
+          <Row style={{ opacity: loading ? 0 : 1 }}>
             {/* {!loading && ( */}
             {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
             {/* )} */}
@@ -140,7 +141,7 @@ export const CtaButton = ({
                 {rightExtra && rightExtra}
               </View>
             )}
-          </View>
+          </Row>
         </View>
       </TouchableHighlight>
     </View>

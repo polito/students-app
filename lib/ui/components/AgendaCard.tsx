@@ -1,6 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { StyleSheet, TouchableHighlight, View } from 'react-native';
 
+import { Col } from '@lib/ui/components/Col';
+import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -89,23 +91,27 @@ export const AgendaCard = ({
         style={styles.touchable}
         onPress={onPress}
       >
-        <View>
-          <View style={styles.headingRow}>
+        <Col gap={2}>
+          <Row align="flex-end" justify="space-between">
             <Text style={styles.time}>{time && time}</Text>
             <Text uppercase variant="caption">
               {type}
             </Text>
-          </View>
-          <View style={styles.titleView}>
+          </Row>
+          <Row>
             {iconColor && <AgendaIcon icon={icon} color={iconColor} />}
             <Text style={[styles.title, iconColor && styles.titleWithIcon]}>
               {title}
             </Text>
-          </View>
-          <View>{live && <LiveIndicator />}</View>
+          </Row>
+          {live && (
+            <View>
+              <LiveIndicator />
+            </View>
+          )}
           {children}
           {location && <Text style={styles.location}>{location}</Text>}
-        </View>
+        </Col>
       </TouchableHighlight>
     </Card>
   );
@@ -119,24 +125,13 @@ const createStyles = ({
   dark,
 }: Theme) =>
   StyleSheet.create({
-    headingRow: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      marginBottom: spacing[2],
-    },
     title: {
+      flex: 1,
       fontWeight: fontWeights.semibold,
       fontSize: fontSizes.md,
     },
     titleWithIcon: {
       marginLeft: spacing[1.5],
-    },
-    titleView: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
     },
     touchable: {
       paddingHorizontal: spacing[5],

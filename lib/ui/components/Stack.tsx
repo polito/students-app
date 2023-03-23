@@ -9,6 +9,8 @@ import { FlexStyle, StyleProp, View, ViewStyle } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { notNullish } from '../../../src/utils/predicates';
+
 interface SpacingShorthands {
   /** Shorthand for `margin` in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units */
   m: number;
@@ -97,7 +99,7 @@ export const Stack = <
 >({
   component: Component = View,
   direction = 'row',
-  align = 'flex-start',
+  align = 'stretch',
   justify = 'flex-start',
   flex = undefined,
   flexBasis = undefined,
@@ -114,12 +116,12 @@ export const Stack = <
       flexDirection: direction,
       alignItems: align,
       justifyContent: justify,
-      flex,
-      flexBasis,
-      flexGrow,
-      flexShrink,
-      flexWrap,
     },
+    flex !== undefined && { flex },
+    flexBasis !== undefined && { flexBasis },
+    flexGrow !== undefined && { flexGrow },
+    flexShrink !== undefined && { flexShrink },
+    flexWrap !== undefined && { flexWrap },
     Object.fromEntries(
       Object.entries(spacingShorthands).map(([short, long]) => [
         long,
@@ -128,15 +130,15 @@ export const Stack = <
     ),
     props.style,
   ];
-  const childCound = Children.count(children);
+  const childArray = Children.toArray(children);
   return (
     <Component {...props} style={style}>
       {gap == null
         ? children
-        : Children.map(children, (child, index) => (
+        : childArray.filter(notNullish).map((child, index) => (
             <Fragment key={index}>
               {child}
-              {index < childCound - 1 && (
+              {index < childArray.length - 1 && (
                 <View
                   style={{
                     [direction === 'row' ? 'width' : 'height']:

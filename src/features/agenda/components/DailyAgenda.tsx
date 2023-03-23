@@ -60,7 +60,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
           </View>
         )}
       </Col>
-      <Col flexGrow={1} align="stretch">
+      <Col flex={1}>
         {!agendaDay.items.length ? (
           isEmptyWeek ? (
             <EmptyWeek />
