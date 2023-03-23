@@ -22,7 +22,11 @@ import {
   useGetExams,
 } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatDate, formatDateTime, formatDateTimeAccessibility } from '../../../utils/dates';
+import {
+  formatDate,
+  formatDateTime,
+  formatDateTimeAccessibility,
+} from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
@@ -74,7 +78,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
 
   const examAccessibilityLabel = useMemo(() => {
     const title = exam?.courseName;
-    const { date, time } = formatDateTimeAccessibility(exam?.examStartsAt);
+    const { date, time: accessibilityTime } = formatDateTimeAccessibility(
+      exam?.examStartsAt,
+    );
     const classrooms =
       exam?.classrooms && exam?.classrooms !== '-'
         ? `${t('examScreen.location')}: ${exam?.classrooms}`
@@ -87,7 +93,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
 
     return `${title}. ${date}. ${t(
       'common.time',
-    )} ${time}. ${classrooms} ${teacher}`;
+    )} ${accessibilityTime}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
   return (

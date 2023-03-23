@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
-import RenderHTML, { Document } from 'react-native-render-html';
+import { Document } from 'react-native-render-html';
 
 import {
   faChevronDown,
@@ -19,8 +19,8 @@ import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 import { DateTime } from 'luxon';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { HtmlView } from '../../../core/components/HtmlView';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
@@ -33,6 +33,7 @@ interface RenderedNotice {
   title: string;
   content: JSX.Element;
   open: boolean;
+  hasLinks: boolean;
 }
 
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
@@ -57,7 +58,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           id,
           publishedAt,
           title,
-          contentString: content,
+          hasLinks: content.match(/<a\b[^>]*>/i).length > 0,
           content: (
             <HtmlView
               baseStyle={{
@@ -82,9 +83,6 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
         (notices.length ? (
           <List dividers>
             {notices.map((notice, index) => {
-              const linkCount =
-                notice?.contentString?.toString().split(/<a\b[^>]*>/i).length -
-                1;
               return (
                 <Fragment key={notice.id}>
                   <ListItem
@@ -94,7 +92,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                     )}. ${DateTime.fromJSDate(notice.publishedAt).toFormat(
                       'dd/MM/yyyy',
                     )}, ${notice.title}. ${
-                      linkCount > 0 && !notice.open
+                      notice.hasLinks && !notice.open
                         ? t('common.doubleClickToSeeLinks')
                         : ''
                     }`}

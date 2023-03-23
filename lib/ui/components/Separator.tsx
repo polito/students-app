@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 
 /**
