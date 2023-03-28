@@ -172,11 +172,14 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     />
                   </Col>
                   <ProgressChart
-                    label={`${studentQuery.data?.data.totalAcquiredCredits}/${
-                      studentQuery.data?.data.totalCredits
-                    }\n${t('common.ects')}`}
+                    label={
+                      studentQuery.data?.data.totalCredits &&
+                      `${studentQuery.data?.data.totalAcquiredCredits}/${
+                        studentQuery.data?.data.totalCredits
+                      }\n${t('common.ects')}`
+                    }
                     data={
-                      studentQuery.data
+                      studentQuery.data && studentQuery.data?.data.totalCredits
                         ? [
                             studentQuery.data?.data.totalAttendedCredits /
                               studentQuery.data?.data.totalCredits,
