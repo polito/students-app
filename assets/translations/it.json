@@ -32,6 +32,10 @@
   },
   "common": {
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
+    "activeStatus": {
+      "false": "Non attiva",
+      "true": "Attiva"
+    },
     "agent": "Operatore",
     "appFeedback": "App feedback",
     "areYouSure?": "Sei sicuro?",
@@ -40,50 +44,59 @@
     "cache": "Cache",
     "camera": "Fotocamera",
     "cancel": "Annulla",
+    "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
     "contact": "Contatto",
-    "doubleTapToActive": "Doppio tocco per attivare",
-    "doubleTapToDeactivate": "Doppio tocco per disattivare",
-    "dateAndHours": "Data e ora",
-    "classroomsNotSpecified": "Luogo non specificato",
     "course": "Corso",
     "course_plural": "Corsi",
     "createdAt": "Creato il",
     "credits": "Crediti",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
+    "dateAndHours": "Data e ora",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
     "done": "Fatto",
-    "phoneContacts": "Contatto telefonico",
-    "username": "Matricola",
+    "doubleClickToSeeLinks": "Premi due volte per vedere i link",
+    "doubleTapToActive": "Doppio tocco per attivare",
+    "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadStatus": {
+      "false": "Non scaricato",
+      "true": "Scaricato"
+    },
+    "earnedCredits": "Crediti acquisiti",
     "ects": "CFU",
+    "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
-    "earnedCredits": "Crediti acquisiti",
-    "grade": "Voto",
-    "of": "Su",
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",
+    "examStatus": {
+      "available": "Disponibile",
+      "booked": "Prenotato",
+      "requestRejected": "Prenotazione rifiutata",
+      "requestable": "Prenotabile",
+      "requested": "Prenotazione richiesta",
+      "unavailable": "Non prenotabile"
+    },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
     "file": "File",
     "file_plural": "File",
-    "elementCount": "Elemento {{count}} di {{total}}",
-    "doubleClickToSeeLinks": "Premi due volte per vedere i link",
+    "follow": "Segui",
+    "grade": "Voto",
     "hours": "Ore",
     "icon": "Icona",
     "it": "Italiano",
     "language": "Lingua",
-    "time": "ora",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "loading": "Caricamento",
@@ -92,11 +105,21 @@
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
+    "of": "Su",
     "ok": "Ok",
     "open": "Apri",
+    "openedStatus": {
+      "false": "Chiuso",
+      "true": "Aperto"
+    },
+    "openedStatusAction": {
+      "false": "Doppio click per aprire",
+      "true": "Doppio click per chiudere"
+    },
     "options": "Opzioni",
     "period": "Semestre",
     "phone": "Telefono",
+    "phoneContacts": "Contatto telefonico",
     "preferences": "Preferenze",
     "profilePic": "Immagine di profilo",
     "refresh": "Aggiorna",
@@ -109,10 +132,13 @@
     "startRefresh": "Caricamento in corso",
     "status": "Stato",
     "stop": "Stop",
+    "stopFollowing": "Non seguire",
+    "switchCareerLabel": "Premi per affettuare un cambio matricola",
     "system": "Di sistema",
     "teacher": "Docente",
     "theme": "Tema",
     "ticket_plural": "Ticket",
+    "time": "ora",
     "timeToBeDefined": "Orario da definire",
     "today": "Oggi",
     "tomorrow": "Domani",
@@ -120,36 +146,12 @@
     "unnamedFile": "File senza nome",
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
+    "username": "Matricola",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
-    "visualization": "Visualizzazione",
-    "switchCareerLabel": "Premi per affettuare un cambio matricola",
-    "examStatus": {
-      "available": "Disponibile",
-      "booked": "Prenotato",
-      "requestable": "Prenotabile",
-      "requested": "Prenotazione richiesta",
-      "requestRejected": "Prenotazione rifiutata",
-      "unavailable": "Non prenotabile"
-    },
-    "activeStatus": {
-      "true": "Attiva",
-      "false": "Non attiva"
-    },
-    "downloadStatus": {
-      "true": "Scaricato",
-      "false": "Non scaricato"
-    },
-    "openedStatus": {
-      "true": "Aperto",
-      "false": "Chiuso"
-    },
-    "openedStatusAction": {
-      "true": "Doppio click per chiudere",
-      "false": "Doppio click per aprire"
-    }
+    "visualization": "Visualizzazione"
   },
   "contactsScreen": {
     "title": "Contacts"
@@ -267,8 +269,8 @@
     "ctaBookSuccess": "Esame prenotato",
     "ctaCancel": "Annulla prenotazione",
     "ctaCancelSuccess": "Prenotazione annullata",
-    "noClassroom": "Nessun luogo specificato per questo appello",
     "location": "Luogo",
+    "noClassroom": "Nessun luogo specificato per questo appello",
     "title": "Appello"
   },
   "examsScreen": {
@@ -331,12 +333,12 @@
   "personScreen": {
     "call": "Chiama",
     "contacts": "Contatti",
+    "coursesLabel": "Lista dei corsi offerti dal docente",
     "department": "Dipartimento",
     "moreInfo": "Maggiori informazioni",
     "role": "Ruolo",
-    "totalCourses": "Sono presenti {{total}} corsi",
     "sentEmail": "Invia e-mail",
-    "coursesLabel": "Lista dei corsi offerti dal docente"
+    "totalCourses": "Sono presenti {{total}} corsi"
   },
   "placesScreen": {
     "title": "Luoghi"
@@ -361,9 +363,9 @@
   },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
-    "title": "Impostazioni",
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
-    "openThemeMenu": "Doppio click per aprire il menu di selezione tema"
+    "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
+    "title": "Impostazioni"
   },
   "teachingScreen": {
     "title": "Didattica"
@@ -423,9 +425,9 @@
     "masterAdmissionAverage": "Media di ammissione al secondo livello",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",
+    "total": "Sono presenti {{total}} appelli",
     "weightedAverageLabel": "Media ponderata",
-    "yourCareer": "La tua carriera",
-    "total": "Sono presenti {{total}} appelli"
+    "yourCareer": "La tua carriera"
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
