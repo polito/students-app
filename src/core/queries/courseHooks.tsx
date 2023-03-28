@@ -304,7 +304,6 @@ export const useGetCourseRelatedVirtualClassrooms = (
 
   const queries = useQueries({
     queries: (relatedVCs ?? []).map(relatedVC => {
-      console.debug(relatedVC);
       return {
         queryKey: prefixKey([
           COURSE_QUERY_KEY,

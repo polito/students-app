@@ -173,7 +173,11 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
                 section.type === 'VideoLecture'
                   ? 'CourseVideolecture'
                   : 'CourseVirtualClassroom',
-              params: { courseId, lectureId: lecture.id },
+              params: {
+                courseId,
+                lectureId: lecture.id,
+                teacherId: lecture.teacherId,
+              },
             }}
           />
         );
