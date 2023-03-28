@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import {
   faAngleDown,
@@ -9,9 +10,9 @@ import {
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
+import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
-import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
@@ -126,11 +127,13 @@ export const ProfileScreen = ({ navigation }: Props) => {
       >
         <Section accessible={false}>
           <SectionHeader title={t('profileScreen.smartCard')} />
-          <ImageLoader
-            imageStyle={styles.smartCard}
-            source={{ uri: student?.smartCardPicture }}
-            containerStyle={styles.smartCardContainer}
-          />
+          <Col ph={5} pv={2}>
+            <FastImage
+              style={styles.smartCard}
+              source={{ uri: student?.smartCardPicture }}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+          </Col>
         </Section>
       </View>
       <Section accessible={false}>
@@ -175,12 +178,9 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       paddingTop: spacing[IS_ANDROID ? 4 : 1],
     },
     smartCard: {
-      aspectRatio: 1.586,
+      aspectRatio: 1.5817,
       height: null,
-    },
-    smartCardContainer: {
-      marginVertical: spacing[2],
-      marginHorizontal: spacing[5],
       maxWidth: 540, // width of a physical card in dp
+      maxHeight: 341,
     },
   });
