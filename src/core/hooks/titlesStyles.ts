@@ -13,7 +13,7 @@ export const titlesStyles: (
 }) => ({
   headerTitleStyle: {
     fontFamily: fontFamilies.heading,
-    fontSize: Platform.select({ android: 20 }),
+    fontSize: Platform.select({ android: 20, ios: 17 }),
     fontWeight: fontWeights.semibold,
     color: colors.title,
   },
