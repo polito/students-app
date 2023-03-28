@@ -22,7 +22,7 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
-export const LectureScreen = ({ route, navigation }: Props) => {
+export const LectureScreen = ({ route }: Props) => {
   const { item: lecture } = route.params;
 
   const { t } = useTranslation();
@@ -66,10 +66,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             }
             title={lecture.place.name}
           />
-          <PersonListItem
-            person={teacherQuery.data?.data}
-            subtitle={t('common.teacher')}
-          />
+          {teacherQuery.data && (
+            <PersonListItem
+              person={teacherQuery.data?.data}
+              subtitle={t('common.teacher')}
+            />
+          )}
           <ListItem
             title={lecture.title}
             subtitle={t('lectureScreen.courseFilesCta')}
