@@ -47,7 +47,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     useRef<SectionList<CourseLecture, CourseLectureSection>>();
 
   useEffect(() => {
-    if (courseLecturesQuery.isLoading) return;
+    if (!courseLecturesQuery.data) return;
 
     const nextLectures = [...courseLecturesQuery.data];
     setLectures(prev => {
