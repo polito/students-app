@@ -106,7 +106,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: isEnvProduction && 2,
+        retry: isEnvProduction ? 2 : 1,
         refetchOnWindowFocus: isEnvProduction,
         onError(error) {
           if (error instanceof ResponseError) {
@@ -115,6 +115,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         },
       },
       mutations: {
+        retry: 1,
         onError(error) {
           if (error instanceof ResponseError) {
             onError(error, queryClient);
