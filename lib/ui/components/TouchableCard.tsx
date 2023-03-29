@@ -10,7 +10,7 @@ import {
 import { Card } from '@lib/ui/components/Card';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-type Props = PropsWithChildren<
+export type TouchableCardProps = PropsWithChildren<
   ViewProps &
     TouchableHighlightProps & {
       /**
@@ -26,16 +26,24 @@ export const TouchableCard = ({
   style,
   cardStyle,
   rounded = true,
+  disabled,
   ...rest
-}: Props) => {
-  const { shapes } = useTheme();
+}: TouchableCardProps) => {
+  const { colors, shapes } = useTheme();
 
   return (
     <TouchableHighlight
-      style={[{ borderRadius: rounded ? shapes.lg : undefined }, style]}
+      underlayColor={colors.touchableHighlight}
+      style={[rounded && { borderRadius: shapes.lg }, style]}
       {...rest}
     >
-      <Card style={cardStyle}>{children}</Card>
+      <Card
+        style={[disabled && { opacity: 0.5, elevation: 0 }, cardStyle]}
+        spaced={false}
+        rounded
+      >
+        {children}
+      </Card>
     </TouchableHighlight>
   );
 };

@@ -1,6 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+  useColorScheme,
+} from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import { faBroom, faCircleHalfStroke } from '@fortawesome/free-solid-svg-icons';
@@ -13,22 +19,23 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { MenuView } from '@react-native-menu/menu';
 
 import i18next from 'i18next';
+import { Settings } from 'luxon';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCache } from '../../teaching/hooks/useCourseFilesCache';
+import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const filesCache = useCoursesFilesCache();
+  const filesCache = useCoursesFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(null);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -49,11 +56,12 @@ const CleanCacheListItem = () => {
   useEffect(refreshSize, [filesCache]);
   return (
     <ListItem
-      isNavigationAction
+      isAction
       title={t('common.cleanCourseFiles')}
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
+      accessibilityRole={'button'}
       disabled={cacheSize === 0}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
@@ -108,7 +116,7 @@ const VisualizationListItem = () => {
       title: 'theme.dark',
       color: colorSchema.dark,
       state: 'dark' === colorScheme,
-      image: 'circle.fill',
+      image: Platform.select({ ios: 'circle.fill', android: 'circle' }),
     },
     {
       colorSchema: 'light',
@@ -116,7 +124,7 @@ const VisualizationListItem = () => {
       title: 'theme.light',
       color: colorSchema.light,
       state: 'dark' === colorScheme,
-      image: 'circle.fill',
+      image: Platform.select({ ios: 'circle.fill', android: 'circle' }),
     },
     {
       colorSchema: 'light',
@@ -128,7 +136,10 @@ const VisualizationListItem = () => {
           ? 'white'
           : colorSchema.dark,
       state: colorScheme === 'system',
-      image: 'circle.lefthalf.fill',
+      image: Platform.select({
+        ios: 'circle.lefthalf.fill',
+        android: 'circle_half',
+      }),
     },
   ];
 
@@ -156,7 +167,10 @@ const VisualizationListItem = () => {
     >
       <ListItem
         title={themeLabel(colorScheme)}
-        isNavigationAction
+        isAction
+        accessibilityLabel={`${t('common.theme')}: ${themeLabel(
+          colorScheme,
+        )}. ${t('settingsScreen.openThemeMenu')}`}
         leadingItem={<ThemeIcon />}
       />
     </MenuView>
@@ -185,12 +199,20 @@ const LanguageListItem = () => {
       onPressAction={({ nativeEvent: { event } }) => {
         const lang = event as 'it' | 'en' | 'system';
         updatePreference('language', lang);
+
+        const uiLanguage = lang === 'system' ? deviceLanguage : lang;
         i18next
-          .changeLanguage(lang === 'system' ? deviceLanguage : lang)
-          .then(() => console.debug('language changed', lang));
+          .changeLanguage(uiLanguage)
+          .then(() => (Settings.defaultLocale = uiLanguage));
       }}
     >
-      <ListItem isNavigationAction title={languageLabel(language)} />
+      <ListItem
+        isAction
+        title={languageLabel(language)}
+        accessibilityLabel={`${t('common.language')}: ${languageLabel(
+          language,
+        )}. ${t('settingsScreen.openLanguageMenu')}`}
+      />
     </MenuView>
   );
 };
@@ -209,16 +231,31 @@ const NotificationListItem = () => {
   return (
     <>
       <SwitchListItem
+        accessible={true}
+        accessibilityLabel={`${t('notifications.important')}. ${t(
+          `common.activeStatus.${notifications?.important}`,
+        )} `}
+        accessibilityRole={'switch'}
         title={t('notifications.important')}
         value={notifications?.important}
         onChange={onChangeNotification('important')}
       />
       <SwitchListItem
+        accessible={true}
+        accessibilityLabel={`${t('notifications.events')}. ${t(
+          `common.activeStatus.${notifications?.events}`,
+        )} `}
+        accessibilityRole={'switch'}
         title={t('notifications.events')}
         value={notifications?.events}
         onChange={onChangeNotification('events')}
       />
       <SwitchListItem
+        accessible={true}
+        accessibilityLabel={`${t('notifications.presence')}. ${t(
+          `common.activeStatus.${notifications?.presence}`,
+        )} `}
+        accessibilityRole={'switch'}
         title={t('notifications.reservationPresence')}
         value={notifications?.presence}
         onChange={onChangeNotification('presence')}
@@ -235,7 +272,7 @@ export const SettingsScreen = () => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
         <Section>
-          <SectionHeader title={t('common.visualization')} />
+          <SectionHeader title={t('common.theme')} />
           <SectionList indented>
             <VisualizationListItem />
           </SectionList>

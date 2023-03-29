@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -22,18 +24,31 @@ import {
 } from '../components/CourseRecentFileListItem';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { CourseContext } from '../contexts/CourseContext';
+import { FilesCacheContext } from '../contexts/FilesCacheContext';
+import { FilesCacheProvider } from '../providers/FilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
+const FileCacheChecker = () => {
+  const { refresh } = useContext(FilesCacheContext);
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, []),
+  );
+
+  return <></>;
+};
+
 export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { courseId, directoryId, directoryName } = route.params;
+  const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const refreshControl = useRefreshControl(directoryQuery);
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     navigation.setOptions({
@@ -46,35 +61,40 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 
   return (
     <CourseContext.Provider value={courseId}>
-      {searchFilter ? (
-        <CourseFileSearchFlatList
-          courseId={courseId}
-          searchFilter={searchFilter}
-        />
-      ) : (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={directoryQuery.data}
-          scrollEnabled={scrollEnabled}
-          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-          initialNumToRender={15}
-          renderItem={({ item }) =>
-            isDirectory(item) ? (
-              <CourseDirectoryListItem item={item} courseId={courseId} />
-            ) : (
-              <CourseFileListItem
-                item={item}
-                onSwipeStart={() => setScrollEnabled(false)}
-                onSwipeEnd={() => setScrollEnabled(true)}
-              />
-            )
-          }
-          {...refreshControl}
-          ItemSeparatorComponent={Platform.select({
-            ios: IndentedDivider,
-          })}
-        />
-      )}
+      <FilesCacheProvider>
+        <FileCacheChecker />
+        {searchFilter ? (
+          <CourseFileSearchFlatList
+            courseId={courseId}
+            searchFilter={searchFilter}
+          />
+        ) : (
+          <FlatList
+            contentInsetAdjustmentBehavior="automatic"
+            data={directoryQuery.data}
+            scrollEnabled={scrollEnabled}
+            keyExtractor={(item: CourseDirectory | CourseFileOverview) =>
+              item.id
+            }
+            initialNumToRender={15}
+            renderItem={({ item }) =>
+              isDirectory(item) ? (
+                <CourseDirectoryListItem item={item} courseId={courseId} />
+              ) : (
+                <CourseFileListItem
+                  item={item}
+                  onSwipeStart={() => setScrollEnabled(false)}
+                  onSwipeEnd={() => setScrollEnabled(true)}
+                />
+              )
+            }
+            refreshControl={<RefreshControl {...refreshControl} />}
+            ItemSeparatorComponent={Platform.select({
+              ios: IndentedDivider,
+            })}
+          />
+        )}
+      </FilesCacheProvider>
     </CourseContext.Provider>
   );
 };

@@ -8,7 +8,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
 
@@ -17,7 +16,6 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { spacing, fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { courses: coursesPrefs, updatePreference } =
     useContext(PreferencesContext);
   const { courseId } = route.params;
@@ -53,10 +51,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
           </TouchableOpacity>
         )}
         numColumns={5}
-        contentContainerStyle={[
-          { paddingHorizontal: spacing[5] },
-          bottomBarAwareStyles,
-        ]}
+        contentContainerStyle={[{ paddingHorizontal: spacing[5] }]}
       />
       {coursePrefs.icon != null && (
         <CtaButton

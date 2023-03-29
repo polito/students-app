@@ -1,17 +1,17 @@
-// eslint-disable-next-line no-unused-vars
 import { useEffect, useState } from 'react';
 import { Dimensions } from 'react-native';
 
-export const ORIENTATION = {
-  LANDSCAPE: 'landscape',
-  PORTRAIT: 'portrait',
+export enum Orientation {
+  LANDSCAPE = 'landscape',
+  PORTRAIT = 'portrait',
+}
+
+const getWindowOrientation = () => {
+  const { width, height } = Dimensions.get('window');
+  return height >= width ? Orientation.PORTRAIT : Orientation.LANDSCAPE;
 };
 
-function getWindowOrientation() {
-  const { width, height } = Dimensions.get('window');
-  return height >= width ? ORIENTATION.PORTRAIT : ORIENTATION.LANDSCAPE;
-}
-function useDeviceOrientation() {
+export const useDeviceOrientation = () => {
   const [deviceOrientation, setDeviceOrientation] =
     useState(getWindowOrientation);
 
@@ -29,6 +29,4 @@ function useDeviceOrientation() {
   }, [deviceOrientation]);
 
   return deviceOrientation;
-}
-
-export default useDeviceOrientation;
+};

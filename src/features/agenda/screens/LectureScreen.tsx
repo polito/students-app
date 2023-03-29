@@ -1,177 +1,116 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import {
-  faFolderOpen,
-  faLocationDot,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
+import { faLocation } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { LiveIndicator } from '@lib/ui/components/LiveIndicator';
+import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
-import { Lecture } from '@polito/api-client';
+import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import useDeviceOrientation from '../../../core/hooks/useDeviceOrientation';
-import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
-import { useGetLectures } from '../../../core/queries/lectureHooks';
+import { VideoPlayer } from '../../../core/components/VideoPlayer';
+import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { convertMachineDateToFormatDate } from '../../../utils/dates';
+import { CourseIcon } from '../../teaching/components/CourseIcon';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route }: Props) => {
-  const deviceOrientation = useDeviceOrientation();
-  const { id } = route.params;
+  const { item: lecture } = route.params;
+
   const { t } = useTranslation();
-  const lectureQuery = useGetLectures();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
-  const lecture: Lecture = lectureQuery?.data?.data.find(l => l.id === id);
-  const teacherQuery = useGetPerson(lecture?.teacherId);
-  const videoLecturesQuery = useGetCourseVideolectures(lecture?.courseId);
-  const videoLecture = videoLecturesQuery.data?.data.find(l => l.id === id);
-  const [showLecturesInfo, setShowLectureInfo] = useState(true);
-  const live = false;
+  const teacherQuery = useGetPerson(lecture.teacherId);
+  const { data: virtualClassrooms } = useGetCourseVirtualClassrooms(
+    lecture.courseId,
+  );
+  const virtualClassroom = useMemo(() => {
+    if (!lecture.virtualClassrooms.length) return;
 
-  useEffect(() => {
-    if (deviceOrientation === 'landscape') {
-      setShowLectureInfo(() => false);
-    } else {
-      setShowLectureInfo(() => true);
-    }
-  }, [deviceOrientation]);
+    // Temporary behaviour until multiple videos in 1 screen are managed
+    const vcId = [...lecture.virtualClassrooms].shift()?.id;
+    if (!vcId) return;
 
-  const onPressLectureLocation = () => {
-    console.debug('onPressLectureLocation');
-  };
-
-  const onPressTeacherCard = () => {
-    console.debug('onPressTeacherCard');
-  };
-
-  const onPressMaterialCard = () => {
-    // navigation.navigate({
-    //   name: 'LectureCourseDirectory',
-    //   params: {
-    //     lectureId: lecture.id,
-    //     courseId: lecture.courseId,
-    //   },
-    // });
-  };
+    return virtualClassrooms?.data.find(vcs => vcs.id === vcId);
+  }, [virtualClassrooms]);
 
   return (
-    <>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{
-          paddingBottom: showLecturesInfo
-            ? bottomBarAwareStyles.paddingBottom + 40
-            : 0,
-        }}
-        style={styles.wrapper}
-      >
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={GlobalStyles.grow}
+    >
+      {virtualClassroom?.videoUrl && (
         <VideoPlayer
-          videoUrl="https://lucapezzolla.com/20210525.mp4"
-          coverUrl={videoLecture?.coverUrl}
+          source={{ uri: virtualClassroom?.videoUrl }}
+          poster={virtualClassroom?.coverUrl}
         />
-        {showLecturesInfo && (
-          <>
-            <Row maxWidth noFlex spaceBetween alignCenter>
-              <EventDetails
-                title={lecture?.place?.roomId}
-                type={t('Lecture')}
-                time={lecture?.startsAt}
-              />
-              {live && (
-                <Row alignEnd noFlex justifyEnd>
-                  <LiveIndicator showText />
-                </Row>
-              )}
-            </Row>
-            <SectionList>
-              <ListItem
-                leadingItem={
-                  <Icon
-                    icon={faLocationDot}
-                    style={styles.iconStyle}
-                    size={fontSizes['2xl']}
-                  />
-                }
-                title={lecture?.place?.name}
-                subtitle={'Sede Centrale - piano terra'}
-                onPress={onPressLectureLocation}
-              />
-              {teacherQuery.data && (
-                <ListItem
-                  leadingItem={
-                    <Icon
-                      icon={faUser}
-                      style={styles.iconStyle}
-                      size={fontSizes['2xl']}
-                    />
-                  }
-                  title={`${teacherQuery.data?.data?.firstName || ''} ${
-                    teacherQuery.data?.data?.lastName || ''
-                  }`}
-                  subtitle={t('Teacher Lecture')}
-                  onPress={onPressTeacherCard}
-                />
-              )}
-              <ListItem
-                leadingItem={
-                  <Icon
-                    icon={faFolderOpen}
-                    style={styles.iconStyle}
-                    size={fontSizes['2xl']}
-                  />
-                }
-                title={t('Material')}
-                subtitle={t('lectureScreen.goToMaterial')}
-                onPress={onPressMaterialCard}
-              />
-            </SectionList>
-          </>
-        )}
-      </ScrollView>
-    </>
+      )}
+      <Row justify="space-between" align="center">
+        <EventDetails
+          title={virtualClassroom?.title ?? lecture.title}
+          type={t('common.lecture')}
+          time={`${convertMachineDateToFormatDate(lecture.date)} ${
+            lecture.fromTime
+          } - ${lecture.toTime}`}
+        />
+      </Row>
+      <SectionList>
+        <ListItem
+          leadingItem={
+            <Icon icon={faLocation} size={20} style={styles.iconStyle} />
+          }
+          title={lecture.place.name}
+        />
+        <PersonListItem
+          person={teacherQuery.data?.data}
+          subtitle={t('common.teacher')}
+        />
+        <ListItem
+          title={lecture.title}
+          subtitle={t('lectureScreen.courseFilesCta')}
+          leadingItem={<CourseIcon icon={lecture.icon} color={lecture.color} />}
+          disabled
+          // linkTo={{
+          //   screen: 'LectureCourseDirectory',
+          //   params: {
+          //     lectureId: lecture.id,
+          //     courseId: lecture.courseId,
+          //   },
+          // }}
+        />
+      </SectionList>
+    </ScrollView>
   );
 };
 
-const createStyles = ({ spacing, colors, shapes }: Theme) =>
+const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
   StyleSheet.create({
     iconStyle: {
       color: colors.secondaryText,
       marginRight: spacing[2],
     },
     sectionSeparator: {
-      paddingHorizontal: shapes.lg,
-      marginTop: shapes.md / 2,
+      paddingHorizontal: fontSizes.lg,
+      marginTop: fontSizes.xs,
     },
     sectionContainer: {
-      paddingHorizontal: shapes.md,
+      paddingHorizontal: fontSizes.md,
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    wrapper: {
-      // marginTop: size.xs,
-      // padding: size.sm,
-    },
     booking: {
       color: colors.primary[400],
       textTransform: 'uppercase',
-      marginVertical: shapes.sm,
+      marginVertical: fontSizes.sm,
     },
     time: {
       textTransform: 'capitalize',

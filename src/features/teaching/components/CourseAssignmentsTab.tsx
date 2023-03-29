@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { faFileLines, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Swipeable } from '@kyupss/native-swipeable';
@@ -8,9 +8,11 @@ import { Badge } from '@lib/ui/components/Badge';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -27,6 +29,7 @@ export const CourseAssignmentsTab = ({
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const refreshControl = useRefreshControl(assignmentsQuery);
+  const { accessibilityListLabel } = useAccessibility();
 
   return (
     <>
@@ -37,7 +40,7 @@ export const CourseAssignmentsTab = ({
         {assignmentsQuery.data &&
           (assignmentsQuery.data.data.length > 0 ? (
             <List indented>
-              {assignmentsQuery.data?.data.map(assignment =>
+              {assignmentsQuery.data?.data.map((assignment, index) =>
                 assignment.deletedAt == null ? (
                   <Swipeable
                     key={assignment.id}
@@ -53,15 +56,28 @@ export const CourseAssignmentsTab = ({
                         onPress={() => {
                           swipeableRef.current?.recenter();
                         }}
-                      ></SwipeableAction>,
+                      />,
                     ]}
                     onSwipeStart={() => setScrollEnabled(false)}
                     onSwipeComplete={() => setScrollEnabled(true)}
                   >
-                    <CourseAssignmentListItem item={assignment} />
+                    <CourseAssignmentListItem
+                      item={assignment}
+                      accessible={true}
+                      accessibilityListLabel={accessibilityListLabel(
+                        index,
+                        assignmentsQuery?.data?.data?.length || 0,
+                      )}
+                    />
                   </Swipeable>
                 ) : (
-                  <CourseAssignmentListItem item={assignment} />
+                  <CourseAssignmentListItem
+                    item={assignment}
+                    accessibilityListLabel={accessibilityListLabel(
+                      index,
+                      assignmentsQuery?.data?.data?.length || 0,
+                    )}
+                  />
                 ),
               )}
             </List>
@@ -69,7 +85,7 @@ export const CourseAssignmentsTab = ({
             <EmptyState
               message={t('courseAssignmentsTab.emptyState')}
               icon={faFileLines}
-            ></EmptyState>
+            />
           ))}
       </ScrollView>
       <CtaButton

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
@@ -12,6 +12,7 @@ import {
 import { faBroom, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -30,12 +31,12 @@ import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const courseFilesCache = useCourseFilesCache();
+  const courseFilesCache = useCourseFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(null);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -58,7 +59,7 @@ const CleanCourseFilesListItem = () => {
 
   return (
     <ListItem
-      isNavigationAction
+      isAction
       title={t('coursePreferencesScreen.cleanCourseFiles')}
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
@@ -109,7 +110,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   return {
                     id: cc.color,
                     title: t(cc.name),
-                    image: 'circle.fill',
+                    image: Platform.select({
+                      ios: 'circle.fill',
+                      android: 'circle',
+                    }),
                     imageColor: cc.color,
                     state: cc.color === coursePrefs?.color ? 'on' : undefined,
                   };
@@ -126,13 +130,13 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               >
                 <ListItem
                   title={t('common.color')}
-                  isNavigationAction
+                  isAction
                   leadingItem={<CourseIcon color={coursePrefs?.color} />}
                 />
               </MenuView>
               <ListItem
                 title={t('common.icon')}
-                isNavigationAction
+                isAction
                 onPress={() =>
                   navigation.navigate('CourseIconPicker', { courseId })
                 }
@@ -175,7 +179,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.avvisidoc}
                 leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />
@@ -186,7 +190,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 disabled={!courseQuery.data}
                 value={courseQuery.data?.data.notifications.matdid}
                 leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />
@@ -199,7 +203,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 leadingItem={
                   <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
                 }
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />

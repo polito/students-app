@@ -12,6 +12,7 @@ import {
 } from '@react-navigation/native-stack';
 
 import { useTabs } from '../../../core/hooks/useTabs';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
 import { CourseIndicator } from '../components/CourseIndicator';
@@ -20,6 +21,7 @@ import { CourseLecturesTab } from '../components/CourseLecturesTab';
 import { CourseNoticesTab } from '../components/CourseNoticesTab';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { CourseContext } from '../contexts/CourseContext';
+import { FilesCacheProvider } from '../providers/FilesCacheProvider';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
@@ -40,8 +42,12 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           icon={faSliders}
           color={colors.primary[400]}
           size={fontSizes.lg}
-          adjustSpacing="right"
+          accessibilityRole={'button'}
           accessibilityLabel={t('common.preferences')}
+          hitSlop={{
+            left: +spacing[3],
+            right: +spacing[3],
+          }}
           onPress={() => {
             navigation.navigate('CoursePreferences', { courseId: id });
           }}
@@ -108,10 +114,12 @@ export const CourseScreen = ({ route, navigation }: Props) => {
 
   return (
     <CourseContext.Provider value={id}>
-      <View style={{ flex: 1 }}>
-        <Tabs />
-        <TabsContent />
-      </View>
+      <FilesCacheProvider>
+        <View style={GlobalStyles.grow} accessible={false}>
+          <Tabs />
+          <TabsContent />
+        </View>
+      </FilesCacheProvider>
     </CourseContext.Provider>
   );
 };

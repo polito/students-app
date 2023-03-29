@@ -1,11 +1,12 @@
 import { Platform } from 'react-native';
 
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
 export const titlesStyles: (
   theme: Theme,
 ) => Partial<NativeStackNavigationOptions> = ({
+  dark,
   colors,
   fontFamilies,
   fontWeights,
@@ -24,4 +25,7 @@ export const titlesStyles: (
   headerBackTitleStyle: {
     fontFamily: fontFamilies.heading,
   },
+  headerBlurEffect: dark
+    ? 'systemUltraThinMaterialDark'
+    : 'systemUltraThinMaterialLight',
 });

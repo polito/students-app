@@ -10,6 +10,7 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
+  TicketsApi,
 } from '@polito/api-client';
 
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
@@ -22,6 +23,7 @@ export const createApiConfiguration = (token?: string) => {
   const configurationParameters: ConfigurationParameters = {
     basePath,
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Accept-Language': deviceLanguage, // TODO refactor
     },
   };
@@ -50,6 +52,7 @@ export const createApiClients = (token?: string) => {
       people: new PeopleApi(configuration),
       places: new PlacesApi(configuration),
       student: new StudentApi(configuration),
+      tickets: new TicketsApi(configuration),
     };
   }
 

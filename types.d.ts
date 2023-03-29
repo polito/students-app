@@ -7,7 +7,7 @@ declare module 'react-native-path' {
 }
 
 declare module 'react-native-file-viewer' {
-  function open(path: string): void;
+  function open(path: string): Promise<void>;
 }
 
 declare module '@kyupss/native-swipeable' {

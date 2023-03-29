@@ -1,7 +1,13 @@
 {
   "agendaScreen": {
     "backToToday": "Torna a oggi",
+    "emptyDay": "Non hai impegni oggi",
+    "emptyWeek": "Non hai impegni questa settimana",
+    "refresh": "Aggiorna",
     "title": "Agenda"
+  },
+  "bookingsScreen": {
+    "title": "Prenotazioni"
   },
   "colors": {
     "amber": "Ambra",
@@ -26,59 +32,129 @@
   },
   "common": {
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
+    "activeStatus": {
+      "false": "Non attiva",
+      "true": "Attiva"
+    },
+    "agent": "Operatore",
+    "appFeedback": "App feedback",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "cache": "Cache",
+    "camera": "Fotocamera",
     "cancel": "Annulla",
+    "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
     "color": "Colore",
     "comingSoon": "Coming soon",
+    "confirm": "Conferma",
     "contact": "Contatto",
     "course": "Corso",
     "course_plural": "Corsi",
+    "createdAt": "Creato il",
     "credits": "Crediti",
     "creditsWithUnit": "{{credits}} CFU",
+    "creditsWithoutUnit": "{{credits}}",
+    "dateAndHours": "Data e ora",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
     "done": "Fatto",
+    "doubleClickToSeeLinks": "Premi due volte per vedere i link",
+    "doubleTapToActive": "Doppio tocco per attivare",
+    "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
+    "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadStatus": {
+      "false": "Non scaricato",
+      "true": "Scaricato"
+    },
+    "earnedCredits": "Crediti acquisiti",
+    "ects": "CFU",
+    "elementCount": "Elemento {{count}} di {{total}}",
+    "email": "Email",
     "en": "Inglese",
+    "endRefresh": "Caricamento terminato",
     "error": "Errore",
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",
+    "examStatus": {
+      "available": "Disponibile",
+      "booked": "Prenotato",
+      "requestRejected": "Prenotazione rifiutata",
+      "requestable": "Prenotabile",
+      "requested": "Prenotazione richiesta",
+      "unavailable": "Non prenotabile"
+    },
+    "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
     "file": "File",
     "file_plural": "File",
+    "grade": "Voto",
+    "hours": "Ore",
     "icon": "Icona",
     "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
+    "loading": "Caricamento",
     "logout": "Logout",
+    "minutes": "Minuti",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
+    "of": "Su",
     "ok": "Ok",
+    "open": "Apri",
+    "openedStatus": {
+      "false": "Chiuso",
+      "true": "Aperto"
+    },
+    "openedStatusAction": {
+      "false": "Doppio click per aprire",
+      "true": "Doppio click per chiudere"
+    },
     "options": "Opzioni",
+    "pause": "Pausa",
     "period": "Semestre",
+    "phone": "Telefono",
+    "phoneContacts": "Contatto telefonico",
+    "play": "Riproduci",
     "preferences": "Preferenze",
+    "profilePic": "Immagine di profilo",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
     "retract": "Ritira",
+    "roleCollaborator": "Collaboratore",
+    "roleHolder": "Titolare",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
+    "startRefresh": "Caricamento in corso",
+    "status": "Stato",
     "stop": "Stop",
+    "switchCareerLabel": "Premi per affettuare un cambio matricola",
     "system": "Di sistema",
     "teacher": "Docente",
     "theme": "Tema",
+    "ticket_plural": "Ticket",
+    "time": "ora",
+    "timeToBeDefined": "Orario da definire",
+    "today": "Oggi",
+    "tomorrow": "Domani",
     "transcript": "Libretto",
+    "unnamedFile": "File senza nome",
+    "updatedAt": "Aggiornato il",
+    "upload": "Carica",
+    "username": "Matricola",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione"
+  },
+  "contactsScreen": {
+    "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -112,7 +188,7 @@
     "noResult": "Nessun risultato trovato"
   },
   "courseFileListItem": {
-    "downloadError": "Qualcosa è andato storto con durante il download",
+    "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file"
   },
   "courseFilesTab": {
@@ -120,7 +196,7 @@
     "empty": "Nessun file disponibile",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
-    "title": "Materiali"
+    "title": "Materiale"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -161,53 +237,108 @@
     "showInExtracts": "Mostra negli estratti",
     "showInExtractsSubtitle": "In home screen e agenda"
   },
+  "courseScreen": {
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+  },
   "courseVirtualClassroomScreen": {
     "title": "Virtual classroom"
   },
   "coursesScreen": {
     "emptyState": "Non ci sono corsi",
     "otherCoursesSectionTitle": "Altri corsi",
-    "title": "Corsi"
+    "title": "Corsi",
+    "total": "Sono presenti {{total}} corsi"
+  },
+  "createTicketScreen": {
+    "insert": "Inserimento ticket",
+    "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
+    "sendTicket": "Invia ticket",
+    "subject": "Oggetto",
+    "subjectLabel": "Inserisci l'oggetto del ticket",
+    "subtitle": "Inserisci la tua richiesta",
+    "subtopicDescription": "Seleziona il sottoargomento",
+    "subtopicDropdownLabel": "Sottoargomento",
+    "subtopicDropdownPlaceholder": "Seleziona il sottoargomento",
+    "title": "Nuovo ticket",
+    "topicDescription": "Seleziona l'argomento",
+    "topicDropdownLabel": "Argomento",
+    "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
   "examScreen": {
     "ctaBook": "Prenota esame",
     "ctaBookSuccess": "Esame prenotato",
     "ctaCancel": "Annulla prenotazione",
     "ctaCancelSuccess": "Prenotazione annullata",
-    "location": "Luogo"
+    "location": "Luogo",
+    "noClassroom": "Nessun luogo specificato per questo appello",
+    "title": "Appello"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
-    "title": "Appelli"
+    "title": "Appelli",
+    "total": "Sono presenti {{ total }} appelli"
   },
   "grades": {
     "absent": "Ass",
     "fail": "Ins",
     "pass": "Sup"
   },
+  "guidesScreen": {
+    "title": "Guide"
+  },
+  "jobOffersScreen": {
+    "title": "Offerte di lavoro"
+  },
+  "lectureScreen": {
+    "courseFilesCta": "Vai al materiale del corso"
+  },
+  "libraryScreen": {
+    "title": "Biblioteca"
+  },
   "loginScreen": {
+    "authnError": "Errore di autenticazione",
+    "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
     "ctaSuccessMessage": "Accedi",
+    "forgotYourPassword": "Hai dimenticato la password?",
+    "hidePassword": "Nascondi password",
     "passwordLabel": "Password",
+    "passwordLabelAccessibility": "Inserisci qui la tua password",
+    "showPassword": "Mostra password",
     "title": "Accedi con le tue credenziali polito.it",
-    "usernameLabel": "Matricola"
+    "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
+    "usernameLabel": "Matricola",
+    "usernameLabelAccessibility": "Inserisci qui il tuo username"
   },
   "messagesScreen": {
     "title": "Archivio messaggi"
+  },
+  "messagingView": {
+    "pickFile": "Scegli un file",
+    "pickFileHint": "Dal tuo dispositivio o dal cloud",
+    "takePhoto": "Acquisci con la fotocamera",
+    "takePhotoHint": "Scatta una o più foto e genera un file"
+  },
+  "newsScreen": {
+    "title": "News & Eventi"
   },
   "notifications": {
     "events": "Eventi e iniziative",
     "important": "Importanti",
     "reservationPresence": "Prenotazione presenza"
   },
+  "notificationsScreen": {
+    "title": "Archivio notifiche"
+  },
   "personScreen": {
     "call": "Chiama",
     "contacts": "Contatti",
-    "courses": "Corsi",
+    "coursesLabel": "Lista dei corsi offerti dal docente",
     "department": "Dipartimento",
     "moreInfo": "Maggiori informazioni",
     "role": "Ruolo",
-    "sentEmail": "Invia e-mail"
+    "sentEmail": "Invia e-mail",
+    "totalCourses": "Sono presenti {{total}} corsi"
   },
   "placesScreen": {
     "title": "Luoghi"
@@ -222,10 +353,18 @@
     "trainingOffer": "Offerta formativa"
   },
   "sectionHeader": {
-    "cta": "Vedi tutto"
+    "cta": "Vedi tutti",
+    "ctaMoreSuffix": "(altri {{- count}})"
+  },
+  "servicesScreen": {
+    "subTitleOne": "Servizi informativi",
+    "subTitleTwo": "Servizi operativi",
+    "title": "Servizi"
   },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
+    "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
+    "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni"
   },
   "teachingScreen": {
@@ -236,16 +375,66 @@
     "light": "Chiaro",
     "system": "Di sistema"
   },
+  "ticketFaqScreen": {
+    "headerBackTitle": "Nuovo",
+    "noResultFound": "Non hai trovato quello che cerchi?",
+    "title": "FAQ",
+    "writeTicket": "Scrivi ticket"
+  },
+  "ticketFaqsScreen": {
+    "emptyState": "Nessun risutato trovato",
+    "findFAQ": "Cerca tra le FAQ",
+    "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
+    "noResultFound": "Non hai trovato quello che cerchi?",
+    "search": "Cerca (inserisci almeno 3 caratteri)",
+    "searchMinLengthHint": "Per favore, inserisci almeno 3 caratteri.",
+    "title": "FAQs",
+    "writeTicket": "Scrivi ticket"
+  },
+  "ticketScreen": {
+    "headerBackTitle": "Tickets",
+    "new": "Nuovo ticket",
+    "reply": "Rispondi",
+    "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
+    "ticketNumber": "Numero ticket",
+    "title": "Ticket",
+    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
+  },
+  "tickets": {
+    "close": "Close ticket",
+    "closeTip": "Sei sicuro di voler chiudere questo ticket?",
+    "menuAction": "Azioni ticket"
+  },
+  "ticketsScreen": {
+    "addNew": "Nuovo ticket",
+    "closed": "Ticket chiusi",
+    "closedEmptyState": "Non ci sono ticket chiusi",
+    "openEmptyState": "Non ci sono ticket aperti",
+    "opened": "Ticket aperti",
+    "title": "Ticket"
+  },
   "transcriptScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
+    "averagesAndGrades": "Medie e voti",
     "emptyState": "Non hai sostenuto nessun esame",
+    "estimatedFinalGrade": "Voto di laurea",
+    "estimatedFinalGradePurged": "Voto di laurea depurato",
     "finalAverageLabel": "Media depurata",
+    "masterAdmissionAverage": "Media di ammissione al secondo livello",
     "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",
+    "total": "Sono presenti {{total}} appelli",
     "weightedAverageLabel": "Media ponderata",
     "yourCareer": "La tua carriera"
+  },
+  "videoControls": {
+    "changePlaybackRate": "Cambia velocità di riproduzione",
+    "tenSec": "10s",
+    "tenSecForward": "Avanti 10 secondi",
+    "tenSecReverse": "Indietro 10 secondi",
+    "toggleFullscreen": "Entra/esci da schermo intero"
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"

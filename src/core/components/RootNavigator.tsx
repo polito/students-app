@@ -1,44 +1,51 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
-  faCalendarDay,
   faCircleInfo,
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
-import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
-import { ServicesScreen } from '../../features/services/screens/ServicesScreen';
+import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
+import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { IS_IOS } from '../constants';
 import { HeaderLogo } from './HeaderLogo';
 
 const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
-  const { colors } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
   const tabBarIconSize = 20;
+
+  const instantAnimation = {
+    animation: 'timing',
+    config: { duration: 0 },
+  } as TimingKeyboardAnimationConfig;
 
   return (
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.tabBar,
-        tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarHideOnKeyboard: true,
+        tabBarVisibilityAnimationConfig: {
+          show: instantAnimation,
+          hide: instantAnimation,
+        },
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
       }}
@@ -59,13 +66,13 @@ export const RootNavigator = () => {
         options={{
           tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color }) => (
-            <Icon icon={faCalendarDay} color={color} size={tabBarIconSize} />
+            <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
           ),
         }}
       />
       <TabNavigator.Screen
         name="PlacesTab"
-        component={PlacesScreen}
+        component={PlacesNavigator}
         options={{
           tabBarLabel: t('placesScreen.title'),
           tabBarIcon: ({ color }) => (
@@ -75,7 +82,7 @@ export const RootNavigator = () => {
       />
       <TabNavigator.Screen
         name="ServicesTab"
-        component={ServicesScreen}
+        component={ServicesNavigator}
         options={{
           headerLeft: () => <HeaderLogo />,
           tabBarLabel: t('common.services'),
@@ -102,8 +109,8 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: colors.surfaceDark,
-      borderColor: colors.primary[700],
+      backgroundColor: IS_IOS ? colors.headers : colors.surface,
+      borderTopColor: colors.divider,
     },
     tabBarItemStyle: {
       paddingVertical: 3,

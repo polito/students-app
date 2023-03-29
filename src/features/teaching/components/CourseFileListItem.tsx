@@ -1,29 +1,28 @@
-import { useCallback, useContext, useMemo, useRef } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
-import { open } from 'react-native-file-viewer';
+import { Alert, Platform } from 'react-native';
 import { extension } from 'react-native-mime-types';
 
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import {
   faCloudArrowDown,
   faEllipsisVertical,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { Swipeable } from '@kyupss/native-swipeable';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
-import { useFocusEffect } from '@react-navigation/native';
+import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 
+import { IS_IOS } from '../../../core/constants';
 import { useDownload } from '../../../core/hooks/useDownload';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
+import { notNullish } from '../../../utils/predicates';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 export type CourseRecentFile = CourseFileOverview & {
   location?: string;
@@ -38,6 +37,52 @@ export interface Props {
   onSwipeEnd?: () => void;
 }
 
+interface MenuProps extends Partial<MenuComponentProps> {
+  onRefreshDownload: () => void;
+  onRemoveDownload: () => void;
+}
+
+const Menu = ({
+  shouldOpenOnLongPress = false,
+  children,
+  onRefreshDownload,
+  onRemoveDownload,
+}: MenuProps) => {
+  const { t } = useTranslation();
+  return (
+    <MenuView
+      shouldOpenOnLongPress={shouldOpenOnLongPress}
+      title={t('common.file')}
+      actions={[
+        {
+          id: 'refresh',
+          title: t('common.refresh'),
+        },
+        {
+          id: 'delete',
+          title: t('common.delete'),
+          attributes: {
+            destructive: true,
+          },
+        },
+      ]}
+      onPressAction={({ nativeEvent }) => {
+        switch (nativeEvent.event) {
+          case 'refresh':
+            onRefreshDownload();
+            break;
+          case 'delete':
+            onRemoveDownload();
+            break;
+          default:
+        }
+      }}
+    >
+      {children}
+    </MenuView>
+  );
+};
+
 export const CourseFileListItem = ({
   item,
   showSize = true,
@@ -49,8 +94,6 @@ export const CourseFileListItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const { colors, fontSizes, spacing } = useTheme();
-  // @ts-expect-error due to Swipeable lib type patch
-  const swipeableRef = useRef<Swipeable>();
   const iconProps = useMemo(
     () => ({
       color: colors.secondaryText,
@@ -59,33 +102,29 @@ export const CourseFileListItem = ({
     [colors, fontSizes, spacing],
   );
   const courseId = useContext(CourseContext);
-  const courseFilesCache = useCourseFilesCache();
+  const courseFilesCache = useCourseFilesCachePath();
+  const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
     if (courseFilesCache) {
-      return [courseFilesCache, `${item.id}.${extension(item.mimeType)}`].join(
-        '/',
-      );
+      let ext = extension(item.mimeType);
+      if (!ext) {
+        ext = item.name.match(/\.(.+)$/)?.[1];
+      }
+      return [
+        courseFilesCache,
+        [item.id, ext].filter(notNullish).join('.'),
+      ].join('/');
     }
   }, [courseFilesCache, item]);
   const {
     isDownloaded,
     downloadProgress,
-    start,
-    stop,
-    refresh,
-    remove,
-    notifyFileSystemChange,
-  } = useDownload(
-    `${BASE_PATH}/courses/${courseId}/files/${item.id}`,
-    cachedFilePath,
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      // Refresh the current item on screen focus
-      notifyFileSystemChange();
-    }, []),
-  );
+    startDownload,
+    stopDownload,
+    refreshDownload,
+    removeDownload,
+    openFile,
+  } = useDownload(fileUrl, cachedFilePath);
 
   const metrics = useMemo(
     () =>
@@ -99,6 +138,15 @@ export const CourseFileListItem = ({
     [showSize, showLocation, showCreatedDate],
   );
 
+  const downloadFile = async () => {
+    if (downloadProgress == null) {
+      if (!isDownloaded) {
+        await startDownload();
+      }
+      openDownloadedFile();
+    }
+  };
+
   const trailingItem = useMemo(
     () =>
       !isDownloaded ? (
@@ -106,9 +154,13 @@ export const CourseFileListItem = ({
           <IconButton
             icon={faCloudArrowDown}
             accessibilityLabel={t('common.download')}
-            disabled
             adjustSpacing="right"
+            onPress={downloadFile}
             {...iconProps}
+            hitSlop={{
+              left: +spacing[2],
+              right: +spacing[2],
+            }}
           />
         ) : (
           <IconButton
@@ -116,40 +168,21 @@ export const CourseFileListItem = ({
             accessibilityLabel={t('common.stop')}
             adjustSpacing="right"
             onPress={() => {
-              stop();
+              stopDownload();
             }}
             {...iconProps}
+            hitSlop={{
+              left: +spacing[2],
+              right: +spacing[2],
+            }}
           />
         )
       ) : (
         Platform.select({
           android: (
-            <MenuView
-              title={t('common.file')}
-              actions={[
-                {
-                  id: 'refresh',
-                  title: t('common.refresh'),
-                },
-                {
-                  id: 'delete',
-                  title: t('common.delete'),
-                  attributes: {
-                    destructive: true,
-                  },
-                },
-              ]}
-              onPressAction={({ nativeEvent }) => {
-                switch (nativeEvent.event) {
-                  case 'refresh':
-                    refresh();
-                    break;
-                  case 'delete':
-                    remove();
-                    break;
-                  default:
-                }
-              }}
+            <Menu
+              onRefreshDownload={refreshDownload}
+              onRemoveDownload={removeDownload}
             >
               <IconButton
                 icon={faEllipsisVertical}
@@ -157,23 +190,31 @@ export const CourseFileListItem = ({
                 adjustSpacing="right"
                 {...iconProps}
               />
-            </MenuView>
+            </Menu>
           ),
         })
       ),
     [isDownloaded, downloadProgress],
   );
 
+  const openDownloadedFile = () => {
+    openFile().catch(e => {
+      if (e instanceof UnsupportedFileTypeError) {
+        Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
+      }
+    });
+  };
+
   const listItem = (
     <FileListItem
-      onPress={async () => {
-        if (downloadProgress == null) {
-          if (!isDownloaded) {
-            await start();
-          }
-          open(cachedFilePath);
-        }
-      }}
+      accessibilityLabel={
+        !isDownloaded
+          ? downloadProgress == null
+            ? t('common.download')
+            : t('common.stop')
+          : t('common.open')
+      }
+      onPress={downloadFile}
       isDownloaded={isDownloaded}
       downloadProgress={downloadProgress}
       title={item.name}
@@ -184,38 +225,17 @@ export const CourseFileListItem = ({
     />
   );
 
-  if (Platform.OS === 'ios' && isDownloaded) {
+  if (IS_IOS) {
     return (
-      <Swipeable
-        onRef={ref => (swipeableRef.current = ref)}
-        rightContainerStyle={{ backgroundColor: colors.danger[500] }}
-        rightButtons={[
-          <SwipeableAction
-            icon={faCloudArrowDown}
-            label={t('common.refresh')}
-            backgroundColor={colors.primary[500]}
-            onPress={async () => {
-              swipeableRef.current?.recenter();
-              await refresh();
-              open(cachedFilePath);
-            }}
-          />,
-          <SwipeableAction
-            icon={faTrashCan}
-            label={t('common.remove')}
-            backgroundColor={colors.danger[500]}
-            onPress={() => {
-              swipeableRef.current?.recenter();
-              remove();
-            }}
-          />,
-        ]}
-        onSwipeStart={() => onSwipeStart?.()}
-        onSwipeComplete={() => onSwipeEnd?.()}
+      <Menu
+        shouldOpenOnLongPress
+        onRefreshDownload={refreshDownload}
+        onRemoveDownload={removeDownload}
       >
         {listItem}
-      </Swipeable>
+      </Menu>
     );
   }
+
   return listItem;
 };

@@ -1,21 +1,18 @@
-import { PropsWithChildren } from 'react';
 import { Platform, View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 
-export type Props = PropsWithChildren<
-  ViewProps & {
-    /**
-     * Toggles the rounded corners
-     */
-    rounded?: boolean;
+export type CardProps = ViewProps & {
+  /**
+   * Toggles the rounded corners
+   */
+  rounded?: boolean;
 
-    /**
-     * Toggles the outer spacing
-     */
-    spaced?: boolean;
-  }
->;
+  /**
+   * Toggles the outer spacing
+   */
+  spaced?: boolean;
+};
 
 /**
  * Renders an elevated surface on Android and a
@@ -27,7 +24,7 @@ export const Card = ({
   spaced = Platform.select({ ios: true, android: false }),
   rounded = Platform.select({ ios: true, android: false }),
   ...rest
-}: Props) => {
+}: CardProps) => {
   const { colors, shapes, spacing } = useTheme();
 
   return (
@@ -37,7 +34,6 @@ export const Card = ({
           borderRadius: rounded ? shapes.lg : undefined,
           backgroundColor: colors.surface,
           elevation: 2,
-          overflow: rounded ? 'hidden' : undefined,
           marginHorizontal: spaced ? spacing[5] : undefined,
           marginVertical: spaced ? spacing[2] : undefined,
         },

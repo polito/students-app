@@ -1,9 +1,15 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { faAngleDown, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAngleDown,
+  faBell,
+  faCog,
+  faSignOut,
+} from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -14,7 +20,7 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { Student } from '@polito/api-client';
 import {
   MenuAction,
@@ -27,10 +33,6 @@ import { IS_ANDROID } from '../../../core/constants';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import {
-  ProfileNotificationItem,
-  ProfileSettingItem,
-} from '../components/ProfileItems';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
@@ -39,7 +41,8 @@ interface Props {
 
 const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const { mutate } = useSwitchCareer();
-  const { colors } = useTheme();
+  const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
   const canSwitchCareer = allCareerIds.length > 1;
@@ -61,23 +64,32 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   };
 
   return (
-    <MenuView actions={actions} onPressAction={onPressAction}>
-      <Row>
-        <Text variant={'link'} style={{ marginRight: 5 }}>
-          {username}
-        </Text>
-        {canSwitchCareer && (
-          <Icon icon={faAngleDown} color={colors.primary[500]} />
-        )}
-      </Row>
-    </MenuView>
+    <View
+      style={{ padding: spacing[2] }}
+      accessible={true}
+      accessibilityRole={canSwitchCareer ? 'button' : 'text'}
+      accessibilityLabel={`${t('common.username')} ${username} ${
+        canSwitchCareer ? t('common.switchCareerLabel') : ''
+      }`}
+    >
+      <MenuView actions={actions} onPressAction={onPressAction}>
+        <Row>
+          <Text variant={'link'} style={{ marginRight: 5 }}>
+            {username}
+          </Text>
+          {canSwitchCareer && (
+            <Icon icon={faAngleDown} color={colors.primary[500]} />
+          )}
+        </Row>
+      </MenuView>
+    </View>
   );
 };
 
 export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
-  const { mutate: handleLogout, isLoading } = useLogout();
+  const { fontSizes } = useTheme();
+  const { mutate: handleLogout } = useLogout();
   const useGetMeQuery = useGetStudent();
   const student = useGetMeQuery?.data?.data;
 
@@ -100,50 +112,56 @@ export const ProfileScreen = ({ navigation }: Props) => {
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section>
-        <Text weight={'bold'} variant={'title'} style={styles.title}>
+        <Text weight="bold" variant="title" style={styles.title}>
           {student?.firstName} {student?.lastName}
         </Text>
       </Section>
-      <Section>
-        <SectionHeader title={t('profileScreen.smartCard')} />
-        <ImageLoader
-          imageStyle={styles.smartCard}
-          source={{ uri: student?.smartCardPicture }}
-          containerStyle={styles.smartCardContainer}
-        />
-      </Section>
-      <Section>
+      <View
+        accessible={true}
+        accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
+          'common.username',
+        )} ${student?.username?.substring(1, student?.username?.length)}, ${
+          student?.firstName
+        } ${student?.lastName}`}
+      >
+        <Section accessible={false}>
+          <SectionHeader title={t('profileScreen.smartCard')} />
+          <ImageLoader
+            imageStyle={styles.smartCard}
+            source={{ uri: student?.smartCardPicture }}
+            containerStyle={styles.smartCardContainer}
+          />
+        </Section>
+      </View>
+      <Section accessible={false}>
         <SectionHeader
           title={t('profileScreen.course')}
-          /* trailingItem={
-                                                                    <Text variant="link">{t('profileScreen.trainingOffer')}</Text>
-                                                                  }*/
           trailingItem={<Badge text={t('common.comingSoon')} />}
         />
         <SectionList>
           <ListItem
             title={student?.degreeName}
             subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
-            // linkTo={'TODO'}
           />
-        </SectionList>
-        <SectionList>
-          <ProfileSettingItem />
-          <ProfileNotificationItem />
         </SectionList>
         <SectionList>
           <ListItem
-            title={t('common.logout')}
-            onPress={() => handleLogout()}
-            leadingItem={
-              <Icon
-                icon={faSignOut}
-                color={colors.text['500']}
-                size={fontSizes.xl}
-              />
-            }
+            title={t('profileScreen.settings')}
+            leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
+            linkTo={'Settings'}
+          />
+          <ListItem
+            title={t('messagesScreen.title')}
+            leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+            linkTo={'Notifications'}
           />
         </SectionList>
+        <CtaButton
+          absolute={false}
+          title={t('common.logout')}
+          action={handleLogout}
+          icon={faSignOut}
+        />
       </Section>
     </ScrollView>
   );
@@ -152,7 +170,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
 const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     title: {
-      fontSize: fontSizes['3xl'],
+      fontSize: fontSizes['2xl'],
       paddingHorizontal: spacing[5],
       paddingTop: spacing[IS_ANDROID ? 4 : 1],
     },

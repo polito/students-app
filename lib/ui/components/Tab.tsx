@@ -31,7 +31,7 @@ export const Tab = ({
     () =>
       selected
         ? colors.primary[500]
-        : color(colors.primary[dark ? 600 : 50])
+        : color(colors.primary[dark ? 600 : 100])
             .alpha(0.4)
             .toString(),
     [selected, dark, colors],
@@ -40,6 +40,7 @@ export const Tab = ({
   return (
     <TouchableOpacity
       accessibilityRole="tab"
+      accessible={true}
       accessibilityState={{
         selected,
       }}

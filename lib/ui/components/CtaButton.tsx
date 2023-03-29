@@ -1,21 +1,24 @@
 import { useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Platform,
   StyleSheet,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
+import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 interface Props extends TouchableHighlightProps {
+  containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
   title: string;
@@ -24,6 +27,7 @@ interface Props extends TouchableHighlightProps {
   action: () => unknown | Promise<unknown>;
   successMessage?: string;
   destructive?: boolean;
+  hint?: string;
 }
 
 /**
@@ -43,6 +47,8 @@ export const CtaButton = ({
   action,
   icon,
   rightExtra,
+  hint,
+  containerStyle,
   ...rest
 }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
@@ -66,8 +72,17 @@ export const CtaButton = ({
   };
 
   return (
-    <View style={[styles.container, absolute && styles.absolute]}>
+    <View
+      style={[
+        styles.container,
+        absolute && styles.absolute,
+        !!hint && { paddingTop: spacing[3] },
+        containerStyle,
+      ]}
+    >
+      {hint && <Text style={styles.hint}>{hint}</Text>}
       <TouchableHighlight
+        accessibilityRole={'button'}
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
             ? colors.danger[600]
@@ -94,7 +109,10 @@ export const CtaButton = ({
           <View style={styles.stack}>
             {loading && <ActivityIndicator color="white" />}
           </View>
-          <View style={{ opacity: loading ? 0 : 1 }}>
+          <Row style={{ opacity: loading ? 0 : 1 }}>
+            {/* {!loading && ( */}
+            {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
+            {/* )} */}
             {showSuccess ? (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Icon
@@ -116,18 +134,27 @@ export const CtaButton = ({
                     icon={icon}
                     size={fontSizes.xl}
                     color={colors.text[100]}
-                    style={{ marginRight: spacing['2'] }}
+                    style={{ marginRight: spacing[2] }}
                   />
                 )}
                 <Text style={styles.textStyle}>{title}</Text>
                 {rightExtra && rightExtra}
               </View>
             )}
-          </View>
+          </Row>
         </View>
       </TouchableHighlight>
     </View>
   );
+};
+
+/**
+ * A spacer to be added at the bottom of the underlying scrolling container
+ * to ensure that the CtaButton won't cover the last elements
+ */
+export const CtaButtonSpacer = () => {
+  const { spacing } = useTheme();
+  return <View style={{ height: spacing[20] }} />;
 };
 
 const createStyles = ({
@@ -155,7 +182,7 @@ const createStyles = ({
         android: 60,
       }),
       alignItems: 'center',
-      elevation: 12,
+      elevation: 9,
     },
     disabledButton: {
       backgroundColor: colors.secondaryText,
@@ -177,5 +204,11 @@ const createStyles = ({
     },
     subtitle: {
       marginTop: spacing[2],
+    },
+    hint: {
+      color: colors.caption,
+      fontSize: fontSizes.xs,
+      textAlign: 'center',
+      paddingBottom: spacing[2],
     },
   });

@@ -1,19 +1,24 @@
 import { Children, PropsWithChildren } from 'react';
-import { ActivityIndicator, Platform, ViewProps } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Platform, ViewProps } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 
+import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 
-type Props = PropsWithChildren<{
-  style?: ViewProps['style'];
-  dividers?: boolean;
-  loading?: boolean;
-  indented?: boolean;
-  emptyStateText?: string;
-}>;
+type Props = PropsWithChildren<
+  ViewProps & {
+    style?: ViewProps['style'];
+    dividers?: boolean;
+    loading?: boolean;
+    indented?: boolean;
+    emptyStateText?: string;
+  }
+>;
 
 /**
  * Displays a list of items with automatic dividers inside a card.
@@ -26,11 +31,14 @@ export const SectionList = ({
   dividers,
   emptyStateText,
   style,
+  ...rest
 }: Props) => {
   const { spacing } = useTheme();
-
+  const { t } = useTranslation();
+  const { isEnabled, announce } = useScreenReader();
   return (
     <Card
+      accessible={Platform.select({ android: true, ios: false })}
       rounded={Platform.select({ android: false })}
       style={[
         {
@@ -39,6 +47,12 @@ export const SectionList = ({
         },
         style,
       ]}
+      {...rest}
+      onAccessibilityTap={() => {
+        if (loading && isEnabled) {
+          announce(t('common.loading'));
+        }
+      }}
     >
       {loading ? (
         <ActivityIndicator

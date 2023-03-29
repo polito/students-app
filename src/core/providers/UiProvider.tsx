@@ -7,6 +7,7 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { NavigationContainer } from '@react-navigation/native';
 
 import i18n from 'i18next';
+import { Settings } from 'luxon';
 
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
@@ -45,6 +46,8 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
         },
       },
     });
+
+    Settings.defaultLocale = language;
   }, []);
 
   return (

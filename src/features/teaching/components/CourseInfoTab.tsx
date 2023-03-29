@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
 
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -22,11 +23,11 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { globalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { ExamListItem } from './ExamListItem';
 
-type StaffMember = Person & { courseRole: string };
+type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
 export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
@@ -51,15 +52,16 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       return;
     }
     const staffData: StaffMember[] = [];
-    courseQuery.data.data.staff.forEach(s =>
-      staffData.push({
-        courseRole: s.role,
-      }),
-    );
 
     staffQueries.forEach((staffQuery, index) => {
       const personData = staffQuery.data.data;
-      staffData[index] = { ...personData, ...staffData[index] };
+      staffData.push({
+        ...personData,
+        courseRole:
+          courseQuery.data.data.staff[index].role === 'Titolare'
+            ? 'roleHolder'
+            : 'roleCollaborator',
+      });
     });
 
     setStaff(staffData);
@@ -67,46 +69,43 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={GlobalStyles.grow}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section style={styles.heading}>
         <ScreenTitle title={courseQuery.data?.data.name} />
         <Text variant="caption">{courseQuery.data?.data.shortcode}</Text>
       </Section>
-      <Card style={styles.metricsCard}>
+      <Card style={styles.metricsCard} accessible={true}>
         <Grid>
           <Metric
             title={t('common.period')}
             value={`${courseQuery.data?.data.teachingPeriod ?? '--'} - ${
               courseQuery.data?.data.year ?? '--'
             }`}
-            style={globalStyles.grow}
+            style={GlobalStyles.grow}
           />
           <Metric
             title={t('courseInfoTab.creditsLabel')}
             value={t('common.creditsWithUnit', {
               credits: courseQuery.data?.data.cfu,
             })}
-            style={globalStyles.grow}
+            accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
+              courseQuery.data?.data.cfu
+            }`}
+            style={GlobalStyles.grow}
           />
         </Grid>
       </Card>
-
       <Section>
-        <SectionHeader
-          title={t('courseInfoTab.agendaSectionTitle')}
-          linkTo={{ screen: 'AgendaScreen' }}
-        />
-        <SectionList
-          emptyStateText={t('courseInfoTab.agendaSectionEmptyState')}
-        ></SectionList>
+        <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
+        <SectionList emptyStateText={t('common.comingSoon')}></SectionList>
       </Section>
-      {courseExamsQuery.data?.data.length > 0 && (
+      {courseExamsQuery.data?.length > 0 && (
         <Section>
           <SectionHeader title={t('examsScreen.title')} />
           <SectionList loading={courseExamsQuery.isLoading} indented>
-            {courseExamsQuery.data?.data.map(exam => (
+            {courseExamsQuery.data?.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
           </SectionList>
@@ -115,12 +114,11 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       <Section>
         <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
         <SectionList indented>
-          {staff.map((member, index) => (
-            // TODO cleanup key when real API are used
+          {staff.map(member => (
             <PersonListItem
-              key={`${member.id}${index}`}
+              key={`${member.id}`}
               person={member}
-              subtitle={member.courseRole}
+              subtitle={t(`common.${member.courseRole}`)}
             />
           ))}
         </SectionList>

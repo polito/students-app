@@ -14,6 +14,7 @@ import { formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
+  accessibilityListLabel?: string;
 }
 
 const Menu = ({
@@ -50,10 +51,13 @@ const Menu = ({
 
 export const CourseAssignmentListItem = ({
   item,
+  accessibilityListLabel,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const { colors, spacing, fontSizes } = useTheme();
-
+  const subTitle = `${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
+    item.uploadedAt,
+  )}`;
   const listItem = useMemo(
     () => (
       <FileListItem
@@ -65,9 +69,8 @@ export const CourseAssignmentListItem = ({
           textDecorationLine:
             item.deletedAt != null ? 'line-through' : undefined,
         }}
-        subtitle={`${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
-          item.uploadedAt,
-        )}`}
+        subtitle={subTitle}
+        accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
         mimeType={item.mimeType}
         trailingItem={
           item.deletedAt == null
@@ -81,7 +84,10 @@ export const CourseAssignmentListItem = ({
                       icon={faEllipsisVertical}
                       color={colors.secondaryText}
                       size={fontSizes.xl}
-                      adjustSpacing="right"
+                      hitSlop={{
+                        right: +spacing[2],
+                        left: +spacing[2],
+                      }}
                     />
                   </Menu>
                 ),

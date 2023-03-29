@@ -6,7 +6,5 @@ export function useDeviceLanguage() {
       ? NativeModules.SettingsManager.settings.AppleLocale ||
         NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
       : NativeModules.I18nManager.localeIdentifier;
-
-  const language = deviceLocale.startsWith('it') ? 'it' : 'en';
-  return language;
+  return deviceLocale.startsWith('it') ? 'it' : 'en';
 }

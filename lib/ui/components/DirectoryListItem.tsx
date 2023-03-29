@@ -19,7 +19,7 @@ export const DirectoryListItem = (props: TouchableHighlightProps & Props) => {
       leadingItem={
         <Icon icon={faFolder} size={24} color={colors.secondary[500]} />
       }
-      isNavigationAction
+      isAction
       {...props}
     />
   );

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
   Image,
   ImageStyle,
   StyleProp,
@@ -8,6 +7,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 
 interface Props {
   imageStyle?: StyleProp<ImageStyle>;
@@ -17,7 +18,6 @@ interface Props {
 
 export const ImageLoader = ({ source, containerStyle, imageStyle }: Props) => {
   const [loading, setLoading] = useState(true);
-  // Workaround to force image rerender after screen rotation
   const [src, setSrc] = useState(source);
 
   const onLoadEnd = () => setLoading(false);

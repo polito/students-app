@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
-import RenderHTML, { Document } from 'react-native-render-html';
+import { ScrollView } from 'react-native';
+import { Document } from 'react-native-render-html';
 
 import {
   faChevronDown,
@@ -12,13 +12,18 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { List } from '@lib/ui/components/List';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
+import { DateTime } from 'luxon';
 
+import { HtmlView } from '../../../core/components/HtmlView';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
 
@@ -28,6 +33,7 @@ interface RenderedNotice {
   title: string;
   content: JSX.Element;
   open: boolean;
+  hasLinks: boolean;
 }
 
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
@@ -36,6 +42,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const noticesQuery = useGetCourseNotices(courseId);
   const refreshControl = useRefreshControl(noticesQuery);
   const [notices, setNotices] = useState<RenderedNotice[]>();
+  const { accessibilityListLabel } = useAccessibility();
 
   useEffect(() => {
     if (!noticesQuery.data) return;
@@ -51,20 +58,14 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           id,
           publishedAt,
           title,
+          hasLinks: content.match(/<a\b[^>]*>/i).length > 0,
           content: (
-            <RenderHTML
-              defaultTextProps={{
-                selectable: true,
-                selectionColor: colors.secondary[600],
-              }}
+            <HtmlView
               baseStyle={{
+                paddingTop: 0,
                 paddingHorizontal: spacing[5],
-                color: colors.prose,
-                fontFamily: 'Montserrat',
-                fontSize: fontSizes.sm,
               }}
               source={{ dom }}
-              systemFonts={['Montserrat']}
             />
           ),
           open: false,
@@ -75,39 +76,50 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={GlobalStyles.grow}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       {notices &&
         (notices.length ? (
           <List dividers>
-            {notices.map((notice, index) => (
-              <Fragment key={notice.id}>
-                <ListItem
-                  title={notice.title}
-                  subtitle={formatDate(notice.publishedAt)}
-                  onPress={() =>
-                    setNotices(oldNotices =>
-                      oldNotices.map((n, i) =>
-                        i === index ? { ...n, open: !n.open } : n,
-                      ),
-                    )
-                  }
-                  trailingItem={
-                    <Icon
-                      icon={notice.open ? faChevronUp : faChevronDown}
-                      color={colors.secondaryText}
-                      size={fontSizes.lg}
-                      style={{
-                        marginLeft: spacing[2],
-                        marginRight: -spacing[1],
-                      }}
-                    />
-                  }
-                />
-                {notice.open && notice.content}
-              </Fragment>
-            ))}
+            {notices.map((notice, index) => {
+              return (
+                <Fragment key={notice.id}>
+                  <ListItem
+                    title={notice.title}
+                    accessibilityLabel={`${t(
+                      accessibilityListLabel(index, notices?.length || 0),
+                    )}. ${DateTime.fromJSDate(notice.publishedAt).toFormat(
+                      'dd/MM/yyyy',
+                    )}, ${notice.title}. ${
+                      notice.hasLinks && !notice.open
+                        ? t('common.doubleClickToSeeLinks')
+                        : ''
+                    }`}
+                    subtitle={formatDate(notice.publishedAt)}
+                    onPress={() =>
+                      setNotices(oldNotices =>
+                        oldNotices.map((n, i) =>
+                          i === index ? { ...n, open: !n.open } : n,
+                        ),
+                      )
+                    }
+                    trailingItem={
+                      <Icon
+                        icon={notice.open ? faChevronUp : faChevronDown}
+                        color={colors.secondaryText}
+                        size={fontSizes.lg}
+                        style={{
+                          marginLeft: spacing[2],
+                          marginRight: -spacing[1],
+                        }}
+                      />
+                    }
+                  />
+                  {notice.open && notice.content}
+                </Fragment>
+              );
+            })}
           </List>
         ) : (
           <EmptyState

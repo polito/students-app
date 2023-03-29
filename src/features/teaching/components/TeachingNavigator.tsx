@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -55,6 +56,11 @@ export const TeachingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerLargeTitle: true,
+        headerTransparent: Platform.select({ ios: true }),
+        headerLargeStyle: {
+          backgroundColor: colors.background,
+        },
         ...titlesStyles(theme),
       }}
     >
@@ -175,12 +181,11 @@ export const TeachingNavigator = () => {
           headerShadowVisible: false,
         }}
       />
-
       <Stack.Screen
         name="Exams"
         component={ExamsScreen}
         options={{
-          headerTitle: t('examsScreen.title'),
+          headerTitle: t('common.examCall_plural'),
         }}
       />
       <Stack.Screen
@@ -188,6 +193,7 @@ export const TeachingNavigator = () => {
         component={ExamScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
         }}
       />
       <Stack.Screen

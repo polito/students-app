@@ -4,10 +4,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@lib/*": ["./lib/*"]
+      "@lib/*": [
+        "./lib/*"
+      ]
     },
-    "types": ["node"],
+    "types": [
+      "node",
+      "@types/jest"
+    ],
     "skipLibCheck": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
   }
 }

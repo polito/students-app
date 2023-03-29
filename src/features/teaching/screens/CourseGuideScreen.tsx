@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { Platform, RefreshControl, ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';

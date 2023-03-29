@@ -5,22 +5,20 @@ import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
-
-import { globalStyles } from '../../../src/core/styles/globalStyles';
+import { Theme } from '@lib/ui/types/Theme';
 
 interface Props {
   icon?: IconDefinition;
   iconColor?: string;
   message: string;
-  spacing?: keyof Theme['spacing'];
+  spacing?: number;
 }
 
 export const EmptyState = ({
   icon,
   iconColor,
   message,
-  spacing = '12',
+  spacing = 12,
 }: Props) => {
   const { colors, fontSizes, spacing: _spacing } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -28,8 +26,7 @@ export const EmptyState = ({
   return (
     <View
       style={[
-        { padding: _spacing[spacing] },
-        globalStyles.grow,
+        { padding: _spacing[spacing as unknown as keyof Theme['spacing']] },
         styles.container,
       ]}
     >

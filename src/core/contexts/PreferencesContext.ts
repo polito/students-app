@@ -6,26 +6,34 @@ export const editablePreferenceKeys = [
   'courses',
   'language',
   'notifications',
+  'favoriteServices',
 ] as const;
 
-export type EditablePreferenceKeys = (typeof editablePreferenceKeys)[number];
+export type PreferenceKey = typeof editablePreferenceKeys[number];
 
 // Specify here complex keys, that require serialization/deserialization
-export const objectPreferenceKeys = ['courses', 'notifications'];
+export const objectPreferenceKeys = [
+  'courses',
+  'notifications',
+  'favoriteServices',
+];
+
+export type CoursesPreferences = {
+  [courseId: number]: CoursePreferencesProps;
+};
 
 export type PreferencesContextProps = {
   clientId?: string;
   colorScheme?: 'light' | 'dark' | 'system';
-  courses: {
-    [courseId: number]: CoursePreferencesProps;
-  };
+  courses: CoursesPreferences;
   language?: 'it' | 'en' | 'system';
   notifications?: {
     important: boolean;
     events: boolean;
     presence: boolean;
   };
-  updatePreference: (key: EditablePreferenceKeys, value: unknown) => void;
+  updatePreference: (key: PreferenceKey, value: unknown) => void;
+  favoriteServices: string[];
 };
 
 export interface CoursePreferencesProps {

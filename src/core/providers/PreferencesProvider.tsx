@@ -3,7 +3,7 @@ import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-  EditablePreferenceKeys,
+  PreferenceKey,
   PreferencesContext,
   PreferencesContextProps,
   editablePreferenceKeys,
@@ -17,11 +17,12 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       courses: {},
       language: 'system',
       updatePreference: () => {},
+      favoriteServices: [],
     });
 
   const preferencesInitialized = useRef<boolean>(false);
 
-  const updatePreference = (key: EditablePreferenceKeys, value: unknown) => {
+  const updatePreference = (key: PreferenceKey, value: unknown) => {
     const stringKey = key.toString();
     if (value === null) {
       AsyncStorage.removeItem(stringKey).then(() =>
@@ -57,7 +58,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       storagePreferences.map(([key, value]) => {
         if (value === null) return;
 
-        const typedKey = key as EditablePreferenceKeys;
+        const typedKey = key as PreferenceKey;
 
         if (objectPreferenceKeys.includes(key)) {
           preferences[typedKey] = JSON.parse(value) ?? {};

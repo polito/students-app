@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Pie as ProgressIndicator } from 'react-native-progress';
 
@@ -20,7 +21,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 
 type IconType = string;
 
@@ -42,6 +43,7 @@ const mimeTypeIcons: Record<IconType, IconDefinition> = {
   javascript: faFileCode,
   json: faFileCode,
   iso: faFileZipper,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '7z': faFileZipper,
 };
 
@@ -76,9 +78,14 @@ export const FileListItem = ({
 }: ListItemProps & Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createItemStyles);
+  const { t } = useTranslation();
+
+  const downloadLabel = t(`common.downloadStatus.${isDownloaded}`);
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityLabel={`${rest.title} ${subtitle}.${mimeType} ${downloadLabel}`}
       leadingItem={
         <View>
           <Icon icon={getIconFromMimeType(mimeType)} size={fontSizes['2xl']} />
