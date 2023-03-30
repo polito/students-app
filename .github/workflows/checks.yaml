@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        check: ['lint:check', 'format:check', 'types:check']
+        check: [lint, format, types]
     name: "Code linting: ${{ matrix.check }}"
     steps:
     - name: Checkout
@@ -32,4 +32,4 @@ jobs:
     - name: Install npm dependencies
       run: npm install
     - name: Run check
-      run: npm run ${{ matrix.check }}
+      run: npm run ${{ matrix.check }}:check
