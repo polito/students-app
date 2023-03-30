@@ -263,6 +263,8 @@
   "messagingView": {
     "pickFile": "Pick file",
     "pickFileHint": "From your device or from the cloud",
+    "pickPhoto": "Pick image",
+    "pickPhotoHint": "From your library",
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
   },

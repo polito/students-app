@@ -316,6 +316,8 @@
   "messagingView": {
     "pickFile": "Scegli un file",
     "pickFileHint": "Dal tuo dispositivio o dal cloud",
+    "pickPhoto": "Scegli un'immagine",
+    "pickPhotoHint": "Dalla tua galleria",
     "takePhoto": "Acquisci con la fotocamera",
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
