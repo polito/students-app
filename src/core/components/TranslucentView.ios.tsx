@@ -1,14 +1,10 @@
 import { useMemo } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BlurView, BlurViewProps } from '@react-native-community/blur';
 
-export interface TranslucentViewProps {
-  style?: ViewStyle;
-  blurAmount?: number;
-  fallbackOpacity?: number;
-}
+import type { TranslucentViewProps } from './TranslucentView';
 
 export const TranslucentView = ({
   style,

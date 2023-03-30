@@ -1,7 +1,8 @@
 import { Children, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, ViewProps } from 'react-native';
+import { Platform, ViewProps } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 

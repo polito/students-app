@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';

@@ -1,3 +1,6 @@
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+
 import { AppContent } from './core/components/AppContent';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';
@@ -6,6 +9,8 @@ import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
 
 export const App = () => {
+  // Settings.defaultLocale = 'it-IT';
+
   return (
     <SplashProvider>
       <PreferencesProvider>

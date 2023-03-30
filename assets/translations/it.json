@@ -117,9 +117,11 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "pause": "Pausa",
     "period": "Semestre",
     "phone": "Telefono",
     "phoneContacts": "Contatto telefonico",
+    "play": "Riproduci",
     "preferences": "Preferenze",
     "profilePic": "Immagine di profilo",
     "refresh": "Aggiorna",
@@ -430,6 +432,13 @@
     "total": "Sono presenti {{total}} appelli",
     "weightedAverageLabel": "Media ponderata",
     "yourCareer": "La tua carriera"
+  },
+  "videoControls": {
+    "changePlaybackRate": "Cambia velocità di riproduzione",
+    "tenSec": "10s",
+    "tenSecForward": "Avanti 10 secondi",
+    "tenSecReverse": "Indietro 10 secondi",
+    "toggleFullscreen": "Entra/esci da schermo intero"
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"

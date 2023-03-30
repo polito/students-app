@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator,
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -14,6 +13,7 @@ import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
