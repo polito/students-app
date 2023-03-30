@@ -33,7 +33,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Scan documents</string>
+	<string>Scan documents and pick images for assignments and ticket attachments</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
