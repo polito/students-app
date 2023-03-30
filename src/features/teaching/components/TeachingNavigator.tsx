@@ -115,6 +115,7 @@ export const TeachingNavigator = () => {
         options={{
           title: t('courseIconPickerScreen.title'),
           headerLargeTitle: false,
+          headerSearchBarOptions: {},
         }}
       />
       <Stack.Screen
