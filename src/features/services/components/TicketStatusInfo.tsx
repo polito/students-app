@@ -75,6 +75,7 @@ export const TicketStatusInfo = ({
       {refetching ? (
         <ActivityIndicator />
       ) : (
+        // eslint-disable-next-line react/jsx-no-useless-fragment
         <>
           {isClosed && (
             <Row>

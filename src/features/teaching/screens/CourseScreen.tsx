@@ -46,7 +46,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           icon={faSliders}
           color={colors.primary[400]}
           size={fontSizes.lg}
-          accessibilityRole={'button'}
+          accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}
           hitSlop={{
             left: +spacing[3],

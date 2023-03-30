@@ -22,6 +22,7 @@ export const List = ({
   const { spacing } = useTheme();
 
   return (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {dividers
         ? Children.map(children, (c, i) => {

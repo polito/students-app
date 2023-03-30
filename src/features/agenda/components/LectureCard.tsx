@@ -43,16 +43,14 @@ export const LectureCard = ({ item }: Props) => {
         })
       }
     >
-      {item.virtualClassrooms?.map(vc => {
-        return (
-          <Row align="center" style={styles.vcRow}>
-            <Icon icon={faVideo} color={colors.prose} size={fontSizes.sm} />
-            <Text variant="secondaryText" style={styles.vcTitle}>
-              {vc.title}
-            </Text>
-          </Row>
-        );
-      })}
+      {item.virtualClassrooms?.map(vc => (
+        <Row key={vc.id} align="center" style={styles.vcRow}>
+          <Icon icon={faVideo} color={colors.prose} size={fontSizes.sm} />
+          <Text variant="secondaryText" style={styles.vcTitle}>
+            {vc.title}
+          </Text>
+        </Row>
+      ))}
       {item.description && (
         <Text
           variant="secondaryText"

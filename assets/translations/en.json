@@ -186,7 +186,7 @@
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
     "cleanCourseFiles": "Clean course files",
-    "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
+    "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",

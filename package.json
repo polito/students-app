@@ -9,10 +9,12 @@
     "test": "jest",
     "prepare": "husky install",
     "bump": "standard-version",
-    "eslint": "eslint '**/*.{ts,tsx}'",
-    "prettier": "prettier '**/*.{ts,tsx,md}' --check",
-    "typecheck": "tsc --noEmit",
-    "check": "npm run eslint && npm run prettier && npm run typecheck"
+    "lint:check": "eslint '**/*.{ts,tsx}'",
+    "lint": "npm run lint:check -- --fix",
+    "format:check": "prettier --check '**/*.{ts,tsx,md}'",
+    "format": "prettier --write '**/*.{ts,tsx,md}'",
+    "types:check": "tsc --noEmit",
+    "check": "npm run lint:check && npm run format:check && npm run types:check"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",

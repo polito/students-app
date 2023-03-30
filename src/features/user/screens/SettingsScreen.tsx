@@ -9,7 +9,13 @@ import {
 } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import { faBroom, faCircleHalfStroke } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
+import {
+  faBroom,
+  faCalendarDay,
+  faCircleExclamation,
+  faCircleHalfStroke,
+} from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -61,7 +67,7 @@ const CleanCacheListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
-      accessibilityRole={'button'}
+      accessibilityRole="button"
       disabled={cacheSize === 0}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
@@ -75,7 +81,7 @@ const CleanCacheListItem = () => {
 };
 
 const ThemeIcon = () => {
-  const colorSchema: Record<string, string> = {
+  const schemes: Record<string, string> = {
     dark: lightTheme?.colors.darkBlue[900],
     light: lightTheme?.colors.lightBlue[200],
   };
@@ -91,7 +97,7 @@ const ThemeIcon = () => {
         width: 30,
         height: 30,
         borderRadius: 15,
-        backgroundColor: colorSchema[colorScheme],
+        backgroundColor: schemes[colorScheme],
         alignItems: 'center',
         justifyContent: 'center',
       }}
@@ -161,8 +167,7 @@ const VisualizationListItem = () => {
         };
       })}
       onPressAction={({ nativeEvent: { event } }) => {
-        const val = event as 'light' | 'dark' | 'system';
-        updatePreference('colorScheme', val);
+        updatePreference('colorScheme', event);
       }}
     >
       <ListItem
@@ -176,6 +181,7 @@ const VisualizationListItem = () => {
     </MenuView>
   );
 };
+
 const LanguageListItem = () => {
   const { t } = useTranslation();
   const { language, updatePreference } = useContext(PreferencesContext);
@@ -216,8 +222,10 @@ const LanguageListItem = () => {
     </MenuView>
   );
 };
-const NotificationListItem = () => {
+
+const Notifications = () => {
   const { t } = useTranslation();
+  const { fontSizes } = useTheme();
   const { notifications, updatePreference } = useContext(PreferencesContext);
 
   const onChangeNotification =
@@ -229,38 +237,46 @@ const NotificationListItem = () => {
     };
 
   return (
-    <>
+    <SectionList indented>
       <SwitchListItem
+        disabled
         accessible={true}
         accessibilityLabel={`${t('notifications.important')}. ${t(
           `common.activeStatus.${notifications?.important}`,
         )} `}
-        accessibilityRole={'switch'}
+        accessibilityRole="switch"
         title={t('notifications.important')}
         value={notifications?.important}
         onChange={onChangeNotification('important')}
+        leadingItem={
+          <Icon icon={faCircleExclamation} size={fontSizes['2xl']} />
+        }
       />
       <SwitchListItem
+        disabled
         accessible={true}
         accessibilityLabel={`${t('notifications.events')}. ${t(
           `common.activeStatus.${notifications?.events}`,
         )} `}
-        accessibilityRole={'switch'}
+        accessibilityRole="switch"
         title={t('notifications.events')}
         value={notifications?.events}
         onChange={onChangeNotification('events')}
+        leadingItem={<Icon icon={faCalendarDay} size={fontSizes['2xl']} />}
       />
       <SwitchListItem
+        disabled
         accessible={true}
         accessibilityLabel={`${t('notifications.presence')}. ${t(
           `common.activeStatus.${notifications?.presence}`,
         )} `}
-        accessibilityRole={'switch'}
+        accessibilityRole="switch"
         title={t('notifications.reservationPresence')}
         value={notifications?.presence}
         onChange={onChangeNotification('presence')}
+        leadingItem={<Icon icon={faCalendarCheck} size={fontSizes['2xl']} />}
       />
-    </>
+    </SectionList>
   );
 };
 
@@ -288,9 +304,7 @@ export const SettingsScreen = () => {
             title={t('common.notifications')}
             trailingItem={<Badge text={t('common.comingSoon')} />}
           />
-          <SectionList indented>
-            <NotificationListItem />
-          </SectionList>
+          <Notifications />
         </Section>
         <Section>
           <SectionHeader title={t('common.cache')} />

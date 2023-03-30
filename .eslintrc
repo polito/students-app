@@ -1,7 +1,8 @@
 {
   "root": true,
   "extends": [
-    "eslint-config-react-typescript",
+    "eslint-config-react-typescript/lib/react",
+    "plugin:react/jsx-runtime",
     "prettier"
   ],
   "plugins": [
@@ -41,7 +42,14 @@
         "no-console": ["error", {
           "allow": ["warn", "error", "debug"]
         }],
-        "@typescript-eslint/ban-ts-comment": "off"}
+        "react/jsx-curly-brace-presence": "error",
+        "react/jsx-no-useless-fragment": "error"
+      }
     }
-  ]
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }

@@ -36,6 +36,7 @@ export const Card = ({
           elevation: 2,
           marginHorizontal: spaced ? spacing[5] : undefined,
           marginVertical: spaced ? spacing[2] : undefined,
+          overflow: 'hidden',
         },
         style,
       ]}

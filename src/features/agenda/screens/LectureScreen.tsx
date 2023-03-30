@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 
-import { faLocation } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
@@ -25,9 +24,8 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route }: Props) => {
   const { item: lecture } = route.params;
-
   const { t } = useTranslation();
-  const styles = useStylesheet(createStyles);
+  const { fontSizes } = useTheme();
   const teacherQuery = useGetPerson(lecture.teacherId);
   const { data: virtualClassrooms } = useGetCourseVirtualClassrooms(
     lecture.courseId,
@@ -62,11 +60,9 @@ export const LectureScreen = ({ route }: Props) => {
           } - ${lecture.toTime}`}
         />
       </Row>
-      <SectionList>
+      <SectionList indented>
         <ListItem
-          leadingItem={
-            <Icon icon={faLocation} size={20} style={styles.iconStyle} />
-          }
+          leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
           title={lecture.place.name}
         />
         {teacherQuery.data && (
@@ -92,29 +88,3 @@ export const LectureScreen = ({ route }: Props) => {
     </ScrollView>
   );
 };
-
-const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
-  StyleSheet.create({
-    iconStyle: {
-      color: colors.secondaryText,
-      marginRight: spacing[2],
-    },
-    sectionSeparator: {
-      paddingHorizontal: fontSizes.lg,
-      marginTop: fontSizes.xs,
-    },
-    sectionContainer: {
-      paddingHorizontal: fontSizes.md,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    booking: {
-      color: colors.primary[400],
-      textTransform: 'uppercase',
-      marginVertical: fontSizes.sm,
-    },
-    time: {
-      textTransform: 'capitalize',
-    },
-  });

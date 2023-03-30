@@ -80,7 +80,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         )}
         <Section style={styles.sectionSeparator}>
           <Separator />
-          <Text variant={'caption'}>{t('Barcode')}</Text>
+          <Text variant="caption">{t('Barcode')}</Text>
         </Section>
         <Section style={styles.sectionContainer}>
           <Card style={styles.barCodeCard} rounded>
@@ -90,7 +90,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               height={85}
               lineColor={colors.primary[800]}
               singleBarWidth={1.8}
-              backgroundColor={'white'}
+              backgroundColor="white"
             />
           </Card>
         </Section>
@@ -99,7 +99,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
       {/* {bookingMutation.isIdle && (*/}
       {booking.canBeCancelled && (
         <CtaButton
-          icon={'close'}
+          icon="close"
           title={t('Delete Booking')}
           action={onPressDelete}
           destructive={true}
