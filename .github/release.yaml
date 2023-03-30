@@ -1,0 +1,26 @@
+changelog:
+  exclude:
+    labels: [ignore-for-release]
+  categories:
+    - title: Breaking Changes 🛠
+      labels: [cc-breaking]
+    - title: New Features 🎉
+      labels: [cc-feat]
+    - title: Fixes 🔧
+      labels: [cc-fix]
+    - title: Build system 🏗️
+      labels: [cc-build]
+    - title: CI/Pipeline 🛁
+      labels: [cc-ci]
+    - title: Documentation 📖
+      labels: [cc-docs]
+    - title: Performance 📊
+      labels: [cc-perf]
+    - title: Refactor ♻️
+      labels: [cc-refactor]
+    - title: Style 💅
+      labels: [cc-style]
+    - title: Tests 🔬
+      labels: [cc-test]
+    - title: Other Changes
+      labels: ['*']

@@ -13,7 +13,10 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    name: Code linting
+    strategy:
+      matrix:
+        check: [eslint, prettier, typecheck]
+    name: "Code linting: ${{ matrix.check }}"
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -28,4 +31,5 @@ jobs:
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
     - name: Install npm dependencies
       run: npm install
-    - name: 
+    - name: Run check
+      run: npm run ${{ matrix.check }}
