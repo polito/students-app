@@ -4,7 +4,7 @@
 import { Theme } from '@lib/ui/types/Theme';
 
 const darkBlue = {
-  50: '#EFF6FF',
+  50: '#B7E1FF',
   100: '#9BD6FF',
   200: '#62BFFF',
   300: '#2AA8FF',
