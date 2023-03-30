@@ -24,6 +24,7 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -38,6 +39,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
 
 export const TicketFaqsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
+  const { fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [search, setSearch] = useState('');
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
@@ -100,7 +102,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
             </Row>
           </SectionList>
           {hasSearchedOnce && (
-            <SectionList>
+            <SectionList indented>
               {ticketFaqs.length > 0
                 ? ticketFaqs.map(faq => {
                     const dom = parseDocument(
@@ -110,7 +112,12 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                     return (
                       <ListItem
                         key={faq.id}
-                        leadingItem={<Icon icon={faQuestionCircle} size={28} />}
+                        leadingItem={
+                          <Icon
+                            icon={faQuestionCircle}
+                            size={fontSizes['2xl']}
+                          />
+                        }
                         linkTo={{
                           screen: 'TicketFaq',
                           params: { faq },

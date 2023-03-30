@@ -34,8 +34,9 @@ export const VideoPlayer = ({ videoUrl, coverUrl }: VideoPlayerProps) => {
               textStyle={{ textAlign: 'center' }}
               style={styles.speedTab}
               selected={playbackRate === rate}
-              children={rate + 'x'}
-            />
+            >
+              {rate + 'x'}
+            </Tab>
           ))}
         </View>
       </View>

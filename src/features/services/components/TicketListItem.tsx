@@ -126,22 +126,20 @@ export const TicketListItem = ({ ticket }: Props) => {
     );
   };
 
-  return (
-    <>
-      {IS_IOS ? (
-        <MenuView
-          title={t('tickets.menuAction')}
-          actions={actions}
-          onPressAction={onPressCloseTicket}
-          shouldOpenOnLongPress={IS_IOS}
-        >
-          <Item />
-        </MenuView>
-      ) : (
+  if (IS_IOS) {
+    return (
+      <MenuView
+        title={t('tickets.menuAction')}
+        actions={actions}
+        onPressAction={onPressCloseTicket}
+        shouldOpenOnLongPress={IS_IOS}
+      >
         <Item />
-      )}
-    </>
-  );
+      </MenuView>
+    );
+  }
+
+  return <Item />;
 };
 
 const createStyles = ({ spacing, fontSizes, colors }: Theme) =>

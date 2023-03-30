@@ -82,7 +82,7 @@ export const CtaButton = ({
     >
       {hint && <Text style={styles.hint}>{hint}</Text>}
       <TouchableHighlight
-        accessibilityRole={'button'}
+        accessibilityRole="button"
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
             ? colors.danger[600]

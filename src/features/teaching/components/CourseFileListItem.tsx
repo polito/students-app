@@ -88,8 +88,6 @@ export const CourseFileListItem = ({
   showSize = true,
   showLocation = false,
   showCreatedDate = true,
-  onSwipeStart,
-  onSwipeEnd,
   ...rest
 }: Props) => {
   const { t } = useTranslation();

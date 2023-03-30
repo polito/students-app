@@ -49,6 +49,7 @@ export const CourseAssignmentsTab = ({
                       backgroundColor: colors.danger[500],
                     }}
                     rightButtons={[
+                      // eslint-disable-next-line react/jsx-key
                       <SwipeableAction
                         icon={faTrashCan}
                         label={t('common.retract')}

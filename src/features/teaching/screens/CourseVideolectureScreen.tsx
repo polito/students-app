@@ -29,7 +29,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   const lecture = useMemo(() => {
     if (!videolecturesQuery.data) return;
     return videolecturesQuery.data?.data.find(l => l.id === lectureId);
-  }, [videolecturesQuery]);
+  }, [lectureId, videolecturesQuery.data]);
 
   const refreshControl = useRefreshControl(teacherQuery, videolecturesQuery);
 

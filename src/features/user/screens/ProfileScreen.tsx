@@ -57,7 +57,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
         state: careerId === username ? 'on' : undefined,
       };
     });
-  }, [allCareerIds, username]);
+  }, [canSwitchCareer, allCareerIds, username]);
 
   const onPressAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
     mutate({ username: event });
@@ -74,7 +74,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
     >
       <MenuView actions={actions} onPressAction={onPressAction}>
         <Row>
-          <Text variant={'link'} style={{ marginRight: 5 }}>
+          <Text variant="link" style={{ marginRight: 5 }}>
             {username}
           </Text>
           {canSwitchCareer && (
@@ -104,7 +104,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
     navigation.setOptions({
       headerRight: () => <HeaderRightDropdown student={student} />,
     });
-  }, [student]);
+  }, [navigation, student]);
 
   return (
     <ScrollView
@@ -144,16 +144,16 @@ export const ProfileScreen = ({ navigation }: Props) => {
             subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
           />
         </SectionList>
-        <SectionList>
+        <SectionList indented>
           <ListItem
             title={t('profileScreen.settings')}
             leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
-            linkTo={'Settings'}
+            linkTo="Settings"
           />
           <ListItem
             title={t('messagesScreen.title')}
             leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
-            linkTo={'Notifications'}
+            linkTo="Notifications"
           />
         </SectionList>
         <CtaButton

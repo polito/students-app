@@ -229,7 +229,7 @@
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCourseFiles": "Rimuovi file del corso",
-    "cleanCourseFilesSubtitle": "Libera {{size}}",
+    "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
     "filesSubtitle": "Nuovi materiali disponibili",
     "hideInExtracts": "Nascondi negli estratti",
     "lecturesSubtitle": "Nuove lezioni disponibili",

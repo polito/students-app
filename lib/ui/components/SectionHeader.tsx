@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   StyleProp,
@@ -74,7 +73,7 @@ export const SectionHeader = ({
         {trailingItem
           ? trailingItem
           : linkTo && (
-              <Link to={linkTo} accessible={true} accessibilityRole={'button'}>
+              <Link to={linkTo} accessible={true} accessibilityRole="button">
                 <Text variant="link">
                   {t('sectionHeader.cta')}
                   {linkToMoreCount > 0 &&

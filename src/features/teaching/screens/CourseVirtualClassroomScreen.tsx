@@ -29,7 +29,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   const lecture = useMemo(() => {
     if (!virtualClassroomQuery.data) return;
     return virtualClassroomQuery.data?.data.find(l => l.id === lectureId);
-  }, [virtualClassroomQuery]);
+  }, [lectureId, virtualClassroomQuery.data]);
 
   const refreshControl = useRefreshControl(virtualClassroomQuery, teacherQuery);
 

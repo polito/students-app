@@ -57,7 +57,7 @@ export const ExamListItem = ({
         params: { id: exam.id },
       }}
       title={exam.courseName}
-      accessibilityRole={'button'}
+      accessibilityRole="button"
       subtitle={subtitle}
       accessibilityLabel={accessibility}
       leadingItem={

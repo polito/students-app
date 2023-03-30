@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        check: [eslint, prettier, typecheck]
+        check: ['lint:check', 'format:check', 'types:check']
     name: "Code linting: ${{ matrix.check }}"
     steps:
     - name: Checkout

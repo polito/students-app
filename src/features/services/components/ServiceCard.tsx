@@ -95,6 +95,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       flex: 1,
       padding: spacing[3],
       justifyContent: 'space-between',
+      overflow: 'visible',
     },
     title: {
       fontSize: fontSizes.md,

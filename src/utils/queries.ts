@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+// TODO see above
 import { ResponseError } from '@polito/api-client/runtime';
 import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 
