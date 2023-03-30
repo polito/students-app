@@ -38,7 +38,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
-      contentContainerStyle={GlobalStyles.grow}
+      contentContainerStyle={GlobalStyles.fillHeight}
     >
       <VideoPlayer
         source={{ uri: lecture?.videoUrl }}

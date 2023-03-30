@@ -45,7 +45,7 @@ export const LectureScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={GlobalStyles.grow}
+      contentContainerStyle={GlobalStyles.fillHeight}
     >
       {virtualClassroom?.videoUrl && (
         <VideoPlayer

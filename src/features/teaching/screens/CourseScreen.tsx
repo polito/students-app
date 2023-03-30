@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform, View } from 'react-native';
+import { Platform, View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -35,6 +35,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors, fontSizes, spacing } = theme;
+  const { width } = useWindowDimensions();
 
   const { id, courseName } = route.params;
 
@@ -75,7 +76,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
             style={[
               {
                 marginLeft: spacing[2],
-                maxWidth: Dimensions.get('window').width - 180,
+                maxWidth: width - 180,
               },
               titlesStyles(theme).headerTitleStyle,
             ]}

@@ -16,7 +16,6 @@ import { throttle } from 'lodash';
 
 import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
-import { IS_IOS } from '../constants';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
 
@@ -26,9 +25,10 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * Wraps react-native-video with custom controls for Android
  *
  * In order for fullscreen to work correctly, this component's parent should
- * be able to grow (i.e. with flex: 1)
+ * have a minHeight=100% of the available window height
  */
 export const VideoPlayer = (props: VideoProperties) => {
+  const { width, height } = Dimensions.get('screen');
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
   const playerRef = useRef<Video>();
@@ -80,12 +80,28 @@ export const VideoPlayer = (props: VideoProperties) => {
 
   // noinspection JSSuspiciousNameCombination
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        fullscreen && {
+          position: 'absolute',
+          width,
+          height,
+          zIndex: 1,
+        },
+      ]}
+    >
       <Video
         ref={playerRef}
         controls={false}
         paused={paused}
-        style={[styles.player, fullscreen && styles.fullHeight]}
+        style={[
+          {
+            width: '100%',
+            minHeight: (width / 16) * 9,
+          },
+          fullscreen && styles.fullHeight,
+        ]}
         rate={playbackRate}
         resizeMode="contain"
         onLoad={handleLoad}
@@ -102,13 +118,7 @@ export const VideoPlayer = (props: VideoProperties) => {
         {...props}
       />
 
-      {!ready && (
-        <Col align="center" justify="center" style={StyleSheet.absoluteFill}>
-          <ActivityIndicator size="large" />
-        </Col>
-      )}
-
-      {!IS_IOS && (
+      {ready ? (
         <VideoControls
           buffering={buffering}
           fullscreen={fullscreen}
@@ -130,6 +140,10 @@ export const VideoPlayer = (props: VideoProperties) => {
           playbackRate={playbackRate}
           setPlaybackRate={togglePlaybackRate}
         />
+      ) : (
+        <Col align="center" justify="center" style={StyleSheet.absoluteFill}>
+          <ActivityIndicator size="large" />
+        </Col>
       )}
     </SafeAreaView>
   );
@@ -140,10 +154,6 @@ const createStyles = () =>
     // eslint-disable-next-line react-native/no-color-literals
     container: {
       backgroundColor: 'black',
-    },
-    player: {
-      width: '100%',
-      minHeight: (Dimensions.get('window').width / 16) * 9,
     },
     fullHeight: {
       height: '100%',

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import Video, { VideoProperties } from 'react-native-video';
 
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useNavigation } from '@react-navigation/native';
 
 /**
@@ -12,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
  * be able to grow (i.e. with flex: 1)
  */
 export const VideoPlayer = (props: VideoProperties) => {
-  const styles = useStylesheet(createStyles);
+  const { width } = useWindowDimensions();
   const { addListener } = useNavigation();
   const [paused, setPaused] = useState(false);
 
@@ -29,17 +28,12 @@ export const VideoPlayer = (props: VideoProperties) => {
     <Video
       paused={paused}
       controls={true}
-      style={styles.player}
+      style={{
+        width: '100%',
+        minHeight: (width / 16) * 9,
+      }}
       resizeMode="contain"
       {...props}
     />
   );
 };
-
-const createStyles = () =>
-  StyleSheet.create({
-    player: {
-      width: '100%',
-      minHeight: (Dimensions.get('window').width / 16) * 9,
-    },
-  });

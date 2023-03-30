@@ -85,9 +85,10 @@ export const Splash = ({ isAppLoaded }: { isAppLoaded: boolean }) => {
 };
 
 const style = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-color-literals
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#002B49', // must be hardcoded as theme is not initialized yet on Splash appearance
+    backgroundColor: '#002B49', // Must be hardcoded as theme is not initialized yet on Splash appearance
     alignItems: 'center',
     justifyContent: 'center',
   },
