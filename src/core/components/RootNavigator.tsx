@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -21,6 +23,7 @@ import { TeachingNavigator } from '../../features/teaching/components/TeachingNa
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
 import { IS_IOS } from '../constants';
+import { useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
 
 const TabNavigator = createBottomTabNavigator();
@@ -28,6 +31,17 @@ const TabNavigator = createBottomTabNavigator();
 export const RootNavigator = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { data: student } = useGetStudent();
+
+  useEffect(() => {
+    if (student?.data?.smartCardPicture) {
+      FastImage.preload([
+        {
+          uri: student?.data?.smartCardPicture,
+        },
+      ]);
+    }
+  }, [student]);
 
   const tabBarIconSize = 20;
 
