@@ -129,9 +129,9 @@ export const CourseFileListItem = ({
   const metrics = useMemo(
     () =>
       [
+        showCreatedDate && formatDateTime(item.createdAt),
         showSize && formatFileSize(item.sizeInKiloBytes),
         showLocation && item.location,
-        showCreatedDate && formatDateTime(item.createdAt),
       ]
         .filter(i => !!i)
         .join(' - '),
