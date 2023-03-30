@@ -36,9 +36,7 @@ const Menu = ({
       title={`${t('common.course')} ${t('common.preferences').toLowerCase()}`}
       actions={[
         {
-          title: isHidden
-            ? t('coursePreferencesScreen.showInExtracts')
-            : t('coursePreferencesScreen.hideInExtracts'),
+          title: isHidden ? t('common.follow') : t('common.stopFollowing'),
           subtitle: t('coursePreferencesScreen.showInExtractsSubtitle'),
           image: isHidden ? 'eye' : 'eye.slash',
         },
@@ -128,7 +126,7 @@ export const CourseListItem = ({
     return (
       <View
         accessible={true}
-        accessibilityRole={'button'}
+        accessibilityRole="button"
         accessibilityLabel={`${accessibilityLabel} ${course.name},  ${course.cfu}`}
       >
         <Menu course={course} shouldOpenOnLongPress={true}>

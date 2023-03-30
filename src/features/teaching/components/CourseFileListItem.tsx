@@ -88,8 +88,6 @@ export const CourseFileListItem = ({
   showSize = true,
   showLocation = false,
   showCreatedDate = true,
-  onSwipeStart,
-  onSwipeEnd,
   ...rest
 }: Props) => {
   const { t } = useTranslation();
@@ -129,9 +127,9 @@ export const CourseFileListItem = ({
   const metrics = useMemo(
     () =>
       [
+        showCreatedDate && formatDateTime(item.createdAt),
         showSize && formatFileSize(item.sizeInKiloBytes),
         showLocation && item.location,
-        showCreatedDate && formatDateTime(item.createdAt),
       ]
         .filter(i => !!i)
         .join(' - '),

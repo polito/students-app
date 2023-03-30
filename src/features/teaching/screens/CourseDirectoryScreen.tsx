@@ -39,6 +39,7 @@ const FileCacheChecker = () => {
     }, []),
   );
 
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <></>;
 };
 
@@ -57,7 +58,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
         onChangeText: e => setSearchFilter(e.nativeEvent.text),
       },
     });
-  }, []);
+  }, [directoryName]);
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -114,7 +115,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
     setSearchResults(
       recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
     );
-  }, [searchFilter]);
+  }, [recentFilesQuery.data, searchFilter]);
 
   const styles = useStylesheet(createStyles);
 

@@ -6,9 +6,8 @@ interface AccessibilityListLabelProps {
   contentLabel?: string;
 }
 
-export const accessibilityListLabel = ({
+export const useAccessibilityListLabel = ({
   index,
-  contentLabel,
   total,
 }: AccessibilityListLabelProps) => {
   const { t } = useTranslation();

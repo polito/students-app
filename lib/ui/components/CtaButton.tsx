@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Platform,
   StyleSheet,
   TouchableHighlight,
@@ -10,6 +9,7 @@ import {
 } from 'react-native';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
@@ -82,7 +82,7 @@ export const CtaButton = ({
     >
       {hint && <Text style={styles.hint}>{hint}</Text>}
       <TouchableHighlight
-        accessibilityRole={'button'}
+        accessibilityRole="button"
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
             ? colors.danger[600]

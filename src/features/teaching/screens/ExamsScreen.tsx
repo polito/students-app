@@ -35,7 +35,7 @@ export const ExamsScreen = () => {
       {!examsQuery.isLoading &&
         (examsQuery.data?.length > 0 ? (
           <Section>
-            <SectionList>
+            <SectionList indented>
               {examsQuery.data.map((exam, index) => (
                 <ExamListItem
                   key={exam.id}

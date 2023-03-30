@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -167,7 +168,7 @@ export const PersonScreen = ({ route }: Props) => {
             phoneNumbers?.length > 0 && t('common.phoneContacts')
           }. ${t('personScreen.sentEmail')}`}
         />
-        <SectionList>
+        <SectionList indented>
           {phoneNumbers?.map(renderPhoneNumber)}
           <ListItem
             isAction

@@ -184,7 +184,7 @@ const sortRecentFiles = (
 
 export const useGetCourseDirectory = (
   courseId: number,
-  directoryId: string,
+  directoryId?: string,
 ) => {
   const filesQuery = useGetCourseFiles(courseId);
 
@@ -304,7 +304,6 @@ export const useGetCourseRelatedVirtualClassrooms = (
 
   const queries = useQueries({
     queries: (relatedVCs ?? []).map(relatedVC => {
-      console.debug(relatedVC);
       return {
         queryKey: prefixKey([
           COURSE_QUERY_KEY,
@@ -374,7 +373,7 @@ export const useGetCourseLectures = (courseId: number) => {
 
       relatedVCDefinitions.forEach((d, index) => {
         const relatedVCs = relatedVCQueries.queries[index].data?.data;
-        if (!relatedVCs.length) return;
+        if (!relatedVCs?.length) return;
         lectureSections.push({
           title:
             'name' in d

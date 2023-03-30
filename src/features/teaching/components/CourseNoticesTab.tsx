@@ -58,7 +58,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           id,
           publishedAt,
           title,
-          hasLinks: content.match(/<a\b[^>]*>/i).length > 0,
+          hasLinks: content.match(/<a\b[^>]*>/i)?.length > 0,
           content: (
             <HtmlView
               baseStyle={{

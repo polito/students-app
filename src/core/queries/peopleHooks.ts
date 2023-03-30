@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { PeopleApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
+import { ignoreNotFound } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const PEOPLE_QUERY_KEY = 'people';
@@ -28,7 +29,7 @@ export const useGetPerson = (personId: number) => {
 
   return useQuery(
     [PERSON_QUERY_KEY, personId],
-    () => peopleClient.getPerson({ personId }),
+    () => peopleClient.getPerson({ personId }).catch(ignoreNotFound),
     {
       enabled: personId != null,
       staleTime: Infinity,
@@ -42,7 +43,7 @@ export const useGetPersons = (personIds: number[]) => {
   const queries = useQueries({
     queries: (personIds ?? []).map(personId => ({
       queryKey: [PERSON_QUERY_KEY, personId],
-      queryFn: () => peopleClient.getPerson({ personId }),
+      queryFn: () => peopleClient.getPerson({ personId }).catch(ignoreNotFound),
       staleTime: Infinity,
     })),
   });

@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Fastlane
 on:
   push:
     branches:
@@ -89,7 +89,7 @@ jobs:
           fi
           BUILD_PIECE="${{ github.event.inputs.build_piece }}"
         elif [[ "${{ steps.last_release.outputs.release }}" != "" ]]; then
-          # we're supopsed to be on push on main (e.g. pr merge) here
+          # we're supposed to be on push on main (e.g. pr merge) here
           PUSH_TESTFLIGHT=true
           PUSH_PLAYSTORE=beta
           VERSION="${{ steps.last_release.outputs.release }}"

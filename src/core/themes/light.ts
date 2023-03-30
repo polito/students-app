@@ -3,6 +3,8 @@
 //
 import { Theme } from '@lib/ui/types/Theme';
 
+import { IS_ANDROID } from '../constants';
+
 const darkBlue = {
   50: '#B7E1FF',
   100: '#9BD6FF',
@@ -146,7 +148,7 @@ export const lightTheme: Theme = {
     background: backgroundColor,
     surface: '#FFFFFF',
     surfaceDark: '#143959',
-    headers: '#edeef0',
+    headers: IS_ANDROID ? '#FFFFFF' : '#EDEEF0',
     heading: darkBlue[700],
     title: darkBlue[700],
     headline: darkBlue[700],

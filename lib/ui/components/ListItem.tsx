@@ -148,22 +148,19 @@ export const ListItem = ({
             )
           ) : null}
         </View>
-        {!card && (
-          <>
-            {!trailingItem && (linkTo || isAction) && IS_IOS ? (
-              <Icon
-                icon={faChevronRight}
-                color={colors.secondaryText}
-                style={{
-                  marginLeft: spacing[1],
-                  marginRight: -spacing[1],
-                }}
-              />
-            ) : (
-              trailingItem
-            )}
-          </>
-        )}
+        {!card &&
+          (!trailingItem && (linkTo || isAction) && IS_IOS ? (
+            <Icon
+              icon={faChevronRight}
+              color={colors.secondaryText}
+              style={{
+                marginLeft: spacing[1],
+                marginRight: -spacing[1],
+              }}
+            />
+          ) : (
+            trailingItem
+          ))}
       </View>
     </TouchableHighlight>
   );

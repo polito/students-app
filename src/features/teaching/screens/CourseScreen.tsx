@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Platform, View } from 'react-native';
+import { Platform, View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -11,6 +11,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
+import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { useTabs } from '../../../core/hooks/useTabs';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
@@ -32,7 +33,10 @@ export type CourseTabProps = {
 
 export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
+  const theme = useTheme();
+  const { colors, fontSizes, spacing } = theme;
+  const { width } = useWindowDimensions();
+
   const { id, courseName } = route.params;
 
   useLayoutEffect(() => {
@@ -42,7 +46,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           icon={faSliders}
           color={colors.primary[400]}
           size={fontSizes.lg}
-          accessibilityRole={'button'}
+          accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}
           hitSlop={{
             left: +spacing[3],
@@ -69,10 +73,13 @@ export const CourseScreen = ({ route, navigation }: Props) => {
           <CourseIndicator courseId={id} />
           <Text
             variant="title"
-            style={{
-              marginLeft: spacing[2],
-              maxWidth: Dimensions.get('window').width - 180,
-            }}
+            style={[
+              {
+                marginLeft: spacing[2],
+                maxWidth: width - 180,
+              },
+              titlesStyles(theme).headerTitleStyle,
+            ]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >

@@ -65,6 +65,7 @@
     "examCall_plural": "Exam calls",
     "file": "File",
     "file_plural": "Files",
+    "follow": "Follow",
     "icon": "Icon",
     "it": "Italian",
     "language": "Language",
@@ -77,8 +78,10 @@
     "ok": "Ok",
     "open": "Open",
     "options": "Options",
+    "pause": "Pause",
     "period": "Period",
     "phone": "Phone",
+    "play": "Play",
     "preferences": "Preferences",
     "refresh": "Refresh",
     "remove": "Remove",
@@ -89,6 +92,7 @@
     "somethingWentWrong": "Something went wrong, try again later",
     "status": "Status",
     "stop": "Stop",
+    "stopFollowing": "Stop following",
     "system": "System",
     "teacher": "Teacher",
     "theme": "Theme",
@@ -182,7 +186,7 @@
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
     "cleanCourseFiles": "Clean course files",
-    "cleanCourseFilesSubtitle": "This will free {{size}} of memory",
+    "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
@@ -261,6 +265,8 @@
   "messagingView": {
     "pickFile": "Pick file",
     "pickFileHint": "From your device or from the cloud",
+    "pickPhoto": "Pick image",
+    "pickPhotoHint": "From your library",
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
   },
@@ -364,6 +370,13 @@
     "thisYear": "This academic year",
     "weightedAverageLabel": "Weighted average",
     "yourCareer": "Your career"
+  },
+  "videoControls": {
+    "changePlaybackRate": "Change playback rate",
+    "tenSec": "10s",
+    "tenSecForward": "Advance 10 seconds",
+    "tenSecReverse": "Reverse 10 seconds",
+    "toggleFullscreen": "Toggle fullscreen"
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"

@@ -1,13 +1,8 @@
 import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';
@@ -39,7 +34,7 @@ interface Props {
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = useContext(PreferencesContext);
   const coursesQuery = useGetCourses();
@@ -64,7 +59,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   }, [coursesQuery, coursePreferences]);
 
   const exams = useMemo(() => {
-    if (!coursesQuery.data?.data || !examsQuery.data) return [];
+    if (!coursesQuery.data || !examsQuery.data) return [];
 
     const hiddenNonModuleCourses: string[] = [];
 
@@ -82,7 +77,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
         .slice(0, 4) ?? []
     );
-  }, [coursesQuery, examsQuery]);
+  }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
   return (
     <ScrollView
@@ -172,11 +167,14 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     />
                   </Col>
                   <ProgressChart
-                    label={`${studentQuery.data?.data.totalAcquiredCredits}/${
-                      studentQuery.data?.data.totalCredits
-                    }\n${t('common.ects')}`}
+                    label={
+                      studentQuery.data?.data.totalCredits &&
+                      `${studentQuery.data?.data.totalAcquiredCredits}/${
+                        studentQuery.data?.data.totalCredits
+                      }\n${t('common.ects')}`
+                    }
                     data={
-                      studentQuery.data
+                      studentQuery.data && studentQuery.data?.data.totalCredits
                         ? [
                             studentQuery.data?.data.totalAttendedCredits /
                               studentQuery.data?.data.totalCredits,
