@@ -34,7 +34,7 @@ interface Props {
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = useContext(PreferencesContext);
   const coursesQuery = useGetCourses();

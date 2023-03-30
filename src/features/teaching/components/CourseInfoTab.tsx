@@ -54,7 +54,9 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
     const staffData: StaffMember[] = [];
 
     staffQueries.forEach((staffQuery, index) => {
-      const personData = staffQuery.data.data;
+      const personData = staffQuery.data?.data;
+      if (!personData) return;
+
       staffData.push({
         ...personData,
         courseRole:
@@ -111,18 +113,20 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
           </SectionList>
         </Section>
       )}
-      <Section>
-        <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
-        <SectionList indented>
-          {staff.map(member => (
-            <PersonListItem
-              key={`${member.id}`}
-              person={member}
-              subtitle={t(`common.${member.courseRole}`)}
-            />
-          ))}
-        </SectionList>
-      </Section>
+      {staff.length > 0 && (
+        <Section>
+          <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
+          <SectionList indented>
+            {staff.map(member => (
+              <PersonListItem
+                key={`${member.id}`}
+                person={member}
+                subtitle={t(`common.${member.courseRole}`)}
+              />
+            ))}
+          </SectionList>
+        </Section>
+      )}
       <Section>
         <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
         <SectionList>

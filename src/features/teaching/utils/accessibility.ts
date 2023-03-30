@@ -8,7 +8,6 @@ interface AccessibilityListLabelProps {
 
 export const accessibilityListLabel = ({
   index,
-  contentLabel,
   total,
 }: AccessibilityListLabelProps) => {
   const { t } = useTranslation();

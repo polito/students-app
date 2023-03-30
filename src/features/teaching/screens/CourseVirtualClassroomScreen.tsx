@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
@@ -22,13 +22,16 @@ type Props = NativeStackScreenProps<
 >;
 
 export const CourseVirtualClassroomScreen = ({ route }: Props) => {
-  const { courseId, lectureId } = route.params;
+  const { courseId, lectureId, teacherId } = route.params;
   const { t } = useTranslation();
   const virtualClassroomQuery = useGetCourseVirtualClassrooms(courseId);
-  const lecture = virtualClassroomQuery.data?.data.find(
-    l => l.id === lectureId,
-  );
-  const teacherQuery = useGetPerson(lecture.teacherId);
+  const teacherQuery = useGetPerson(teacherId);
+
+  const lecture = useMemo(() => {
+    if (!virtualClassroomQuery.data) return;
+    return virtualClassroomQuery.data?.data.find(l => l.id === lectureId);
+  }, [virtualClassroomQuery]);
+
   const refreshControl = useRefreshControl(virtualClassroomQuery, teacherQuery);
 
   return (
@@ -37,14 +40,20 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
       refreshControl={<RefreshControl {...refreshControl} />}
       contentContainerStyle={GlobalStyles.grow}
     >
-      <VideoPlayer
-        source={{ uri: lecture.videoUrl }}
-        poster={lecture.coverUrl}
-      />
+      {lecture?.videoUrl && (
+        <VideoPlayer
+          source={{ uri: lecture.videoUrl }}
+          poster={lecture?.coverUrl}
+        />
+      )}
       <EventDetails
-        title={lecture.title}
+        title={lecture?.title}
         type={t('courseVirtualClassroomScreen.title')}
-        time={formatDateWithTimeIfNotNull(lecture.createdAt)}
+        time={
+          lecture?.createdAt
+            ? formatDateWithTimeIfNotNull(lecture?.createdAt)
+            : undefined
+        }
       />
       <SectionList loading={teacherQuery.isLoading}>
         {teacherQuery.data && (

@@ -66,9 +66,8 @@ export const TicketAttachmentChip = ({
 
   return (
     <ThemeContext.Provider value={darkTheme}>
-      <TouchableOpacity onPress={onPressAttachment}>
+      <TouchableOpacity onPress={onPressAttachment} style={styles.container}>
         <AttachmentChip
-          fullWidth
           attachment={{
             name: attachment.filename,
             size: attachment.sizeInKiloBytes,
@@ -78,37 +77,16 @@ export const TicketAttachmentChip = ({
           loading={
             isDownloadingReplyAttachment || isDownloadingTicketAttachment
           }
-          style={styles.chip}
         />
       </TouchableOpacity>
     </ThemeContext.Provider>
   );
 };
 
-const createStyles = ({ colors, spacing, fontSizes, fontWeights }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    attachmentContainer: {
-      alignItems: 'center',
-      paddingTop: spacing[3],
-    },
-    chip: {
+    container: {
+      maxWidth: '100%',
       marginTop: spacing[4],
-    },
-    loaderView: {
-      width: 25,
-    },
-    textContainer: {
-      paddingLeft: spacing[1],
-    },
-    name: {
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.semibold,
-      color: colors.title,
-      paddingRight: spacing[5],
-    },
-    size: {
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.normal,
-      color: colors.title,
     },
   });

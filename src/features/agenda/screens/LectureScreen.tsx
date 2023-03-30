@@ -69,10 +69,12 @@ export const LectureScreen = ({ route }: Props) => {
           }
           title={lecture.place.name}
         />
-        <PersonListItem
-          person={teacherQuery.data?.data}
-          subtitle={t('common.teacher')}
-        />
+        {teacherQuery.data && (
+          <PersonListItem
+            person={teacherQuery.data?.data}
+            subtitle={t('common.teacher')}
+          />
+        )}
         <ListItem
           title={lecture.title}
           subtitle={t('lectureScreen.courseFilesCta')}

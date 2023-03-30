@@ -326,9 +326,10 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    // eslint-disable-next-line react-native/no-color-literals
     page: {
       aspectRatio: 1 / A4_ASPECT_RATIO,
-      backgroundColor: '#ffffff',
+      backgroundColor: 'white',
     },
     pageImage: {
       flexGrow: 1,

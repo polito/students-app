@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View, ViewProps } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import { openCamera } from 'react-native-image-crop-picker';
+import { openCamera, openPicker } from 'react-native-image-crop-picker';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
+import { IS_IOS } from '../../../core/constants';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { pdfSizes } from '../../teaching/constants';
 import { Attachment } from '../types/Attachment';
@@ -51,10 +52,27 @@ export const MessagingView = ({
   const styles = useStylesheet(createStyles);
 
   const pickFile = async () => {
-    onAttachmentChange?.(await DocumentPicker.pickSingle({}));
+    onAttachmentChange?.(await DocumentPicker.pickSingle());
   };
 
-  const takePicture = async () => {
+  const pickPhoto = async () => {
+    try {
+      const picture = await openPicker({
+        mediaType: 'photo',
+        multiple: false,
+      });
+      onAttachmentChange?.({
+        uri: picture.path,
+        name: picture.filename || t('common.unnamedFile'),
+        size: picture.size,
+        type: picture.mime,
+      });
+    } catch (e) {
+      console.error('Cannot pick photo', e);
+    }
+  };
+
+  const takePhoto = async () => {
     try {
       const picture = await openCamera({
         ...pdfSizes,
@@ -71,7 +89,7 @@ export const MessagingView = ({
         type: picture.mime,
       });
     } catch (e) {
-      console.debug({ errorTakePhoto: e });
+      console.error('Cannot take photo', e);
     }
   };
 
@@ -108,18 +126,36 @@ export const MessagingView = ({
                 subtitle: t('messagingView.pickFileHint'),
                 image: 'folder',
               },
+              ...(IS_IOS
+                ? [
+                    {
+                      id: 'pickPhoto',
+                      title: t('messagingView.pickPhoto'),
+                      subtitle: t('messagingView.pickPhotoHint'),
+                      image: 'photo',
+                    },
+                  ]
+                : []),
               {
-                id: 'takePicture',
+                id: 'takePhoto',
                 title: t('messagingView.takePhoto'),
                 subtitle: t('messagingView.takePhotoHint'),
                 image: 'camera',
               },
             ]}
             onPressAction={event => {
-              if (event.nativeEvent.event === 'pickFile') {
-                pickFile();
-              } else {
-                takePicture();
+              switch (event.nativeEvent.event) {
+                case 'pickFile':
+                  pickFile();
+                  break;
+                case 'pickPhoto':
+                  pickPhoto();
+                  break;
+                case 'takePhoto':
+                  takePhoto();
+                  break;
+                default:
+                  break;
               }
             }}
           >

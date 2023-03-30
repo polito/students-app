@@ -1,3 +1,4 @@
+import { ResponseError } from '@polito/api-client/runtime';
 import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 
 import { useApiContext } from '../core/contexts/ApiContext';
@@ -49,4 +50,12 @@ export const shiftPage: {
   <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
 } = infiniteQuery => {
   return [...infiniteQuery.data.pages].shift();
+};
+
+/**
+ * Ignore 404 ResponseErrors
+ */
+export const ignoreNotFound = (e: Error): null => {
+  if (e instanceof ResponseError && e.response.status === 404) return null;
+  throw e;
 };

@@ -35,8 +35,16 @@ export type TeachingStackParamList = {
     directoryName?: string;
   };
   CourseGuide: { courseId: number };
-  CourseVideolecture: { courseId: number; lectureId: number };
-  CourseVirtualClassroom: { courseId: number; lectureId: number };
+  CourseVideolecture: {
+    courseId: number;
+    lectureId: number;
+    teacherId: number;
+  };
+  CourseVirtualClassroom: {
+    courseId: number;
+    lectureId: number;
+    teacherId: number;
+  };
   CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
@@ -107,6 +115,7 @@ export const TeachingNavigator = () => {
         options={{
           title: t('courseIconPickerScreen.title'),
           headerLargeTitle: false,
+          headerSearchBarOptions: {},
         }}
       />
       <Stack.Screen

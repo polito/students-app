@@ -47,7 +47,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
     useRef<SectionList<CourseLecture, CourseLectureSection>>();
 
   useEffect(() => {
-    if (courseLecturesQuery.isLoading) return;
+    if (!courseLecturesQuery.data) return;
 
     const nextLectures = [...courseLecturesQuery.data];
     setLectures(prev => {
@@ -173,7 +173,11 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
                 section.type === 'VideoLecture'
                   ? 'CourseVideolecture'
                   : 'CourseVirtualClassroom',
-              params: { courseId, lectureId: lecture.id },
+              params: {
+                courseId,
+                lectureId: lecture.id,
+                teacherId: lecture.teacherId,
+              },
             }}
           />
         );

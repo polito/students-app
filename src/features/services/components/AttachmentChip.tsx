@@ -17,7 +17,6 @@ interface AttachmentChipProps {
   attachment?: Attachment;
   onClearAttachment?: () => void;
   loading?: boolean;
-  fullWidth?: boolean;
   style?: ViewProps['style'];
 }
 
@@ -25,7 +24,6 @@ export const AttachmentChip = ({
   attachment,
   onClearAttachment,
   loading = false,
-  fullWidth = false,
   style,
 }: AttachmentChipProps) => {
   const { t } = useTranslation();
@@ -36,7 +34,12 @@ export const AttachmentChip = ({
   }
 
   return (
-    <Row align="center" style={[styles.attachmentContainer, style]}>
+    <Row
+      align="center"
+      ph={3}
+      pv={1.5}
+      style={[styles.attachmentContainer, style]}
+    >
       {!loading ? (
         <Icon icon={faFile} style={styles.space} size={18} />
       ) : (
@@ -45,11 +48,7 @@ export const AttachmentChip = ({
       <Text
         numberOfLines={1}
         ellipsizeMode="middle"
-        style={[
-          styles.name,
-          !!onClearAttachment && styles.space,
-          !fullWidth && { maxWidth: 200 },
-        ]}
+        style={[styles.name, !!onClearAttachment && styles.space]}
       >
         {attachment.name ?? t('common.unnamedFile')}
       </Text>
@@ -64,22 +63,15 @@ export const AttachmentChip = ({
   );
 };
 
-const createStyles = ({
-  colors,
-  shapes,
-  spacing,
-  fontSizes,
-  fontWeights,
-}: Theme) => {
+const createStyles = ({ colors, shapes, spacing, fontWeights }: Theme) => {
   return StyleSheet.create({
     attachmentContainer: {
-      overflow: 'hidden',
       backgroundColor: colors.translucentSurface,
       borderRadius: shapes.xl,
-      paddingHorizontal: spacing[3],
-      paddingVertical: spacing[1.5],
     },
     name: {
+      flexGrow: 1,
+      flexShrink: 1,
       fontWeight: fontWeights.semibold,
     },
     cancelButton: {
@@ -90,10 +82,6 @@ const createStyles = ({
     },
     space: {
       marginRight: spacing[2],
-    },
-    size: {
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.normal,
     },
   });
 };
