@@ -62,7 +62,7 @@ export const VideoPlayer = (props: VideoProperties) => {
     try {
       const newSeekValue = newProgress * duration;
       if (playerRef && playerRef.current) {
-        playerRef.current.seek(newSeekValue, 2000);
+        playerRef.current.seek(newSeekValue);
       }
       setProgress(newProgress);
     } catch (e) {
