@@ -137,6 +137,7 @@ export const VideoPlayer = (props: VideoProperties) => {
 
 const createStyles = () =>
   StyleSheet.create({
+    // eslint-disable-next-line react-native/no-color-literals
     container: {
       backgroundColor: 'black',
     },
