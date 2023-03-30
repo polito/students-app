@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';

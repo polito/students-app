@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
