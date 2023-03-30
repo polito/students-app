@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  ActivityIndicator,
   Image,
   ImageStyle,
   StyleProp,
@@ -8,6 +7,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 
 interface Props {
   imageStyle?: StyleProp<ImageStyle>;

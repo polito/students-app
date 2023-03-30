@@ -4,4 +4,7 @@ export const GlobalStyles = StyleSheet.create({
   grow: {
     flex: 1,
   },
+  fillHeight: {
+    minHeight: '100%',
+  },
 });

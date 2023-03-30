@@ -1,13 +1,8 @@
 import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';

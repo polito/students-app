@@ -184,7 +184,7 @@ const sortRecentFiles = (
 
 export const useGetCourseDirectory = (
   courseId: number,
-  directoryId: string,
+  directoryId?: string,
 ) => {
   const filesQuery = useGetCourseFiles(courseId);
 
@@ -373,7 +373,7 @@ export const useGetCourseLectures = (courseId: number) => {
 
       relatedVCDefinitions.forEach((d, index) => {
         const relatedVCs = relatedVCQueries.queries[index].data?.data;
-        if (!relatedVCs.length) return;
+        if (!relatedVCs?.length) return;
         lectureSections.push({
           title:
             'name' in d

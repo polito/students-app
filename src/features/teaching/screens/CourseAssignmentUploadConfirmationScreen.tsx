@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Dimensions,
   Image,
   Platform,
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import Pdf from 'react-native-pdf';
 
@@ -41,6 +41,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
   const uploadMutation = useUploadAssignment(courseId);
   const styles = useStylesheet(createStyles);
   const tabBarHeight = useBottomTabBarHeight();
+  const { width } = useWindowDimensions();
   const [description, setDescription] = useState('');
 
   const uploadFile = () => {
@@ -107,8 +108,8 @@ export const CourseAssignmentUploadConfirmationScreen = ({
           style={[
             {
               paddingBottom: tabBarHeight,
+              width,
             },
-            styles.preview,
             GlobalStyles.grow,
           ]}
         />
@@ -147,8 +148,5 @@ const createStyles = ({ colors }: Theme) =>
       }),
       borderBottomColor: colors.divider,
       elevation: 3,
-    },
-    preview: {
-      width: Dimensions.get('window').width,
     },
   });

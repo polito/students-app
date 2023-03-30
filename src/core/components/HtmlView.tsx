@@ -1,14 +1,15 @@
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import RenderHTML, { RenderHTMLProps } from 'react-native-render-html';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const HtmlView = (props: RenderHTMLProps) => {
   const { colors, spacing } = useTheme();
+  const { width } = useWindowDimensions();
 
   return (
     <RenderHTML
-      contentWidth={Dimensions.get('window').width}
+      contentWidth={width}
       defaultTextProps={{
         selectable: true,
         selectionColor: colors.secondary[600],

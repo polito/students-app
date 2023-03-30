@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator,
   Animated,
-  Dimensions,
   FlatList,
   Image,
   StyleSheet,
   TouchableHighlight,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
@@ -21,6 +20,7 @@ import {
   faFileCircleXmark,
   faPrint,
 } from '@fortawesome/free-solid-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Divider } from '@lib/ui/components/Divider';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
@@ -56,7 +56,7 @@ export const CourseAssignmentPdfCreationScreen = ({
   const [pageContainerAspectRatio, setPageContainerAspectRatio] = useState(1);
   const pageSliderRef = useRef<FlatList>();
 
-  const windowDimensions = Dimensions.get('window');
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     const rootNav = navigation.getParent();
@@ -170,9 +170,7 @@ export const CourseAssignmentPdfCreationScreen = ({
             contentOffset: { x },
           },
         }) => {
-          setCurrentPageIndex(
-            Math.max(0, Math.round(x / Dimensions.get('window').width)),
-          );
+          setCurrentPageIndex(Math.max(0, Math.round(x / width)));
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
@@ -180,7 +178,7 @@ export const CourseAssignmentPdfCreationScreen = ({
           <View
             style={[
               {
-                width: windowDimensions.width,
+                width,
               },
               styles.pageContainer,
             ]}

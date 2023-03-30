@@ -7,10 +7,17 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 type Props = ViewProps & {
   title: string;
   type: string;
-  time: string;
+  time?: string;
+  timeLabel?: string;
 };
 
-export const EventDetails = ({ title, type, time, ...rest }: Props) => {
+export const EventDetails = ({
+  title,
+  type,
+  time,
+  timeLabel,
+  ...rest
+}: Props) => {
   const { spacing, fontSizes } = useTheme();
   return (
     <View style={{ padding: spacing[5] }} {...rest}>
@@ -19,6 +26,9 @@ export const EventDetails = ({ title, type, time, ...rest }: Props) => {
         {type}
       </Text>
       {time && <Text style={{ fontSize: fontSizes.md }}>{time}</Text>}
+      {!!timeLabel && (
+        <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
+      )}
     </View>
   );
 };

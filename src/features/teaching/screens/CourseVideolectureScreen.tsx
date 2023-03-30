@@ -5,13 +5,14 @@ import { ScrollView } from 'react-native';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { VideoPlayer } from '@lib/ui/components/VideoPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
+import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
@@ -37,8 +38,12 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
+      contentContainerStyle={GlobalStyles.fillHeight}
     >
-      <VideoPlayer videoUrl={lecture?.videoUrl} coverUrl={lecture?.coverUrl} />
+      <VideoPlayer
+        source={{ uri: lecture?.videoUrl }}
+        poster={lecture?.coverUrl}
+      />
       <EventDetails
         title={lecture?.title}
         type={t('common.videoLecture')}

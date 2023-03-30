@@ -78,8 +78,10 @@
     "ok": "Ok",
     "open": "Open",
     "options": "Options",
+    "pause": "Pause",
     "period": "Period",
     "phone": "Phone",
+    "play": "Play",
     "preferences": "Preferences",
     "refresh": "Refresh",
     "remove": "Remove",
@@ -368,6 +370,13 @@
     "thisYear": "This academic year",
     "weightedAverageLabel": "Weighted average",
     "yourCareer": "Your career"
+  },
+  "videoControls": {
+    "changePlaybackRate": "Change playback rate",
+    "tenSec": "10s",
+    "tenSecForward": "Advance 10 seconds",
+    "tenSecReverse": "Reverse 10 seconds",
+    "toggleFullscreen": "Toggle fullscreen"
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
