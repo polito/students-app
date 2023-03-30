@@ -64,7 +64,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   }, [coursesQuery, coursePreferences]);
 
   const exams = useMemo(() => {
-    if (!coursesQuery.data?.data || !examsQuery.data) return [];
+    if (!coursesQuery.data || !examsQuery.data) return [];
 
     const hiddenNonModuleCourses: string[] = [];
 
@@ -82,7 +82,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
         .slice(0, 4) ?? []
     );
-  }, [coursePreferences, coursesQuery.data.data, examsQuery.data]);
+  }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
   return (
     <ScrollView
