@@ -46,6 +46,7 @@ export const SwitchListItem = ({
           }}
         />
       }
+      disabled={disabled}
       {...rest}
     />
   );

@@ -17,6 +17,7 @@ export const TextMessage = ({ message }: TextMessageProps) => {
 
   return (
     <Text
+      // eslint-disable-next-line react-native/no-color-literals
       style={{
         fontSize: fontSizes.sm,
         color: 'white',

@@ -13,14 +13,12 @@ type Props = ViewProps & {
 export const EventDetails = ({ title, type, time, ...rest }: Props) => {
   const { spacing, fontSizes } = useTheme();
   return (
-    <>
-      <View style={{ padding: spacing[5] }} {...rest}>
-        <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
-        <Text variant="caption" style={{ marginBottom: spacing[2] }}>
-          {type}
-        </Text>
-        {time && <Text style={{ fontSize: fontSizes.md }}>{time}</Text>}
-      </View>
-    </>
+    <View style={{ padding: spacing[5] }} {...rest}>
+      <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
+      <Text variant="caption" style={{ marginBottom: spacing[2] }}>
+        {type}
+      </Text>
+      {time && <Text style={{ fontSize: fontSizes.md }}>{time}</Text>}
+    </View>
   );
 };

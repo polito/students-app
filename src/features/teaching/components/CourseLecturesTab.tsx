@@ -138,6 +138,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         </Pressable>
       )}
       renderItem={({ section, item: lecture }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const { data: teacher } = useGetPerson(lecture.teacherId);
         return (
           <ListItem

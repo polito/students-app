@@ -39,7 +39,7 @@ interface Props {
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = useContext(PreferencesContext);
   const coursesQuery = useGetCourses();
@@ -82,7 +82,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
         .slice(0, 4) ?? []
     );
-  }, [coursesQuery, examsQuery]);
+  }, [coursePreferences, coursesQuery.data.data, examsQuery.data]);
 
   return (
     <ScrollView

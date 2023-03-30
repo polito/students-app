@@ -16,7 +16,7 @@ export const FilesCacheProvider = ({ children }: PropsWithChildren) => {
         .then(cache => {
           setCacheFs(Object.fromEntries(cache?.map(f => [f.path, true]) ?? []));
         })
-        .catch(e => {
+        .catch(() => {
           setCacheFs({});
         })
         .finally(() => {
