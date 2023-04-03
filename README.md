@@ -4,6 +4,8 @@ Politecnico di Torino's official mobile application for students.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen)](https://opensource.org/licenses/MIT)
 
+![Hero image with iOS and Android screenshots](./assets/readme-hero.png)
+
 ## Install
 
 ### From app stores
@@ -11,21 +13,9 @@ Politecnico di Torino's official mobile application for students.
 [Google Play Store](https://play.google.com/store/apps/details?id=it.polito.students)  
 [Apple App Store](https://apps.apple.com/us/app/polito-students/id6443913305)
 
-### From GitHub
+### Start from source
 
-TODO
-
-### Compile from source
-
-To compile the app from source you'll need git and a recent version of Node.js (see [Contributing](./CONTRIBUTING.md))
-for more details.
-
-```shell
-$ git clone https://github.com/polito/students-app.git
-$ cd students-app
-$ npm install
-$ npm run ios/android
-```
+To start the app locally you'll need git and a recent version of Node.js (see [Contributing](./CONTRIBUTING.md#project-setup)) for more details.
 
 ## Bug reports
 
