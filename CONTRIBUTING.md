@@ -109,7 +109,7 @@ We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like br
 - When useful, add a scope to your commits (ie `feat(teaching): implement trascript page`). Don't repeat branch
   prefixes here.
 - Use kebab-case for branch names and scopes (ie `feature/data-fetching`).
-- Use commit footers to reference related issues (ie `Refs #10`, `Closes #10` etc.).
+- Use commit footers to reference related issues (ie `Refs #10`). Be sure to mark resolved issues with `Closes/Fixes #<issue_number>`.
 
 > ⚠️ Respecting these rules is important in order to obtain a clean and coherent changelog. If you have any doubt don't
 > hesitate to ask for help.
