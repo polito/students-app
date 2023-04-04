@@ -2,7 +2,7 @@
 
 Politecnico di Torino's official mobile application for students.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen)](https://opensource.org/licenses/MIT)
+[![License: EUPL--1.2](https://img.shields.io/badge/License-EUPL--1.2-brightgreen.svg)](./LICENSE.md)
 
 ![Hero image with iOS and Android screenshots](./assets/readme-hero.png)
 
@@ -36,4 +36,4 @@ PRs and contributions are welcome! Head to [Contributing](./CONTRIBUTING.md) to 
 
 ## License
 
-TODO
+This project is licensed under the EUPL - European Union Public License, version 1.2. Read the [full license](./LICENSE.md) for details.
