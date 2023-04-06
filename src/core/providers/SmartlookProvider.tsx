@@ -1,4 +1,5 @@
 import { PropsWithChildren, useEffect } from 'react';
+import { View } from 'react-native';
 import Smartlook, {
   SmartlookRenderingMode,
 } from 'react-native-smartlook-analytics';
@@ -30,5 +31,5 @@ export const SmartlookProvider = ({ children }: PropsWithChildren) => {
       }
     });
   }, [shouldRecordScreen]);
-  return children;
+  return <View>{children}</View>;
 };
