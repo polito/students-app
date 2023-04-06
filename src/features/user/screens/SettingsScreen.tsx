@@ -284,11 +284,8 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
-  const {
-    shouldRecordScreen,
-    shouldReportErrors,
-    updatePreference,
-  } = useContext(PreferencesContext);
+  const { shouldRecordScreen, shouldReportErrors, updatePreference } =
+    useContext(PreferencesContext);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
