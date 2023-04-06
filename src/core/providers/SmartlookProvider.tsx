@@ -30,5 +30,5 @@ export const SmartlookProvider = ({ children }: PropsWithChildren) => {
       }
     });
   }, [shouldRecordScreen]);
-  return <>{children}</>;
+  return children;
 };
