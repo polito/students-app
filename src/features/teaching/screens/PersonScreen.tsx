@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -84,13 +83,14 @@ export const PersonScreen = ({ route }: Props) => {
             style={styles.spaceBottom}
             accessible={true}
           />
-
-          <Metric
-            title={t('personScreen.department')}
-            value={person?.facilityShortName}
-            style={styles.spaceBottom}
-            accessible={true}
-          />
+          {person?.facilityShortName && (
+            <Metric
+              title={t('personScreen.department')}
+              value={person?.facilityShortName}
+              style={styles.spaceBottom}
+              accessible={true}
+            />
+          )}
 
           {!!person?.profileUrl && (
             <TouchableOpacity
@@ -129,7 +129,7 @@ export const PersonScreen = ({ route }: Props) => {
     );
   };
 
-  const renderCourse = (course: PersonCourse, index: number) => {
+  const RenderedCourse = (course: PersonCourse, index: number) => {
     const { accessibilityListLabel } = useAccessibility();
 
     const onPressCourse = () => {
@@ -140,6 +140,7 @@ export const PersonScreen = ({ route }: Props) => {
     const role = useMemo(() => {
       return course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
     }, [course.role]);
+
     return (
       <ListItem
         key={course.id}
@@ -179,17 +180,19 @@ export const PersonScreen = ({ route }: Props) => {
           />
         </SectionList>
       </Section>
-      <Section>
-        <SectionHeader
-          title={t('common.course_plural')}
-          accessible={true}
-          accessibilityLabel={`${t('personScreen.coursesLabel')}. ${t(
-            'personScreen.totalCourses',
-            { total: courses?.length || 0 },
-          )}`}
-        />
-        <SectionList>{courses.map(renderCourse)}</SectionList>
-      </Section>
+      {courses.length > 0 && (
+        <Section>
+          <SectionHeader
+            title={t('common.course_plural')}
+            accessible={true}
+            accessibilityLabel={`${t('personScreen.coursesLabel')}. ${t(
+              'personScreen.totalCourses',
+              { total: courses.length },
+            )}`}
+          />
+          <SectionList>{courses.map(RenderedCourse)}</SectionList>
+        </Section>
+      )}
     </ScrollView>
   );
 };
