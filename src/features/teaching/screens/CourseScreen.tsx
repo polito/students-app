@@ -37,7 +37,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
 
-  const { id, courseName } = route.params;
+  const { courseId, courseName } = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -53,7 +53,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
             right: +spacing[3],
           }}
           onPress={() => {
-            navigation.navigate('CoursePreferences', { courseId: id });
+            navigation.navigate('CoursePreferences', { courseId });
           }}
         />
       ),
@@ -70,7 +70,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
             left: Platform.select({ android: -20 }),
           }}
         >
-          <CourseIndicator courseId={id} />
+          <CourseIndicator courseId={courseId} />
           <Text
             variant="title"
             style={[
@@ -93,34 +93,34 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const { Tabs, TabsContent } = useTabs([
     {
       title: t('courseInfoTab.title'),
-      renderContent: () => <CourseInfoTab courseId={id} />,
+      renderContent: () => <CourseInfoTab courseId={courseId} />,
     },
     {
       title: t('courseNoticesTab.title'),
-      renderContent: () => <CourseNoticesTab courseId={id} />,
+      renderContent: () => <CourseNoticesTab courseId={courseId} />,
     },
     {
       title: t('courseFilesTab.title'),
       renderContent: () => (
-        <CourseFilesTab courseId={id} navigation={navigation} />
+        <CourseFilesTab courseId={courseId} navigation={navigation} />
       ),
     },
     {
       title: t('courseLecturesTab.title'),
       renderContent: () => (
-        <CourseLecturesTab courseId={id} navigation={navigation} />
+        <CourseLecturesTab courseId={courseId} navigation={navigation} />
       ),
     },
     {
       title: t('courseAssignmentsTab.title'),
       renderContent: () => (
-        <CourseAssignmentsTab courseId={id} navigation={navigation} />
+        <CourseAssignmentsTab courseId={courseId} navigation={navigation} />
       ),
     },
   ]);
 
   return (
-    <CourseContext.Provider value={id}>
+    <CourseContext.Provider value={courseId}>
       <FilesCacheProvider>
         <View style={GlobalStyles.grow} accessible={false}>
           <Tabs />
