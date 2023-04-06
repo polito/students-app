@@ -48,6 +48,7 @@ export const PersonScreen = ({ route }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
+  const refreshControl = useRefreshControl(personQuery);
   const person = personQuery.data;
   const fullName = [person?.firstName, person?.lastName]
     .filter(notNullish)
@@ -160,7 +161,7 @@ export const PersonScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
-      refreshControl={<RefreshControl {...useRefreshControl(personQuery)} />}
+      refreshControl={<RefreshControl {...refreshControl} />}
       contentInsetAdjustmentBehavior="automatic"
     >
       {header}

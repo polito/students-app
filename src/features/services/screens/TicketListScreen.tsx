@@ -7,7 +7,7 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useLargeHeaderRefreshControl } from '../../../core/hooks/useLargeHeaderRefreshControl';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -19,7 +19,7 @@ export const TicketListScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { statuses } = route.params;
   const ticketsQuery = useGetTickets();
-  const refreshControl = useRefreshControl(ticketsQuery);
+  const refreshControl = useLargeHeaderRefreshControl(ticketsQuery);
 
   const tickets = useMemo(
     () =>

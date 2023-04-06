@@ -58,8 +58,20 @@ export const ServicesNavigator = () => {
           headerTitle: t('servicesScreen.title'),
         }}
       />
-      <Stack.Screen name="Tickets" component={TicketsScreen} />
-      <Stack.Screen name="TicketList" component={TicketListScreen} />
+      <Stack.Screen
+        name="Tickets"
+        component={TicketsScreen}
+        options={{
+          headerTitle: t('ticketsScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="TicketList"
+        component={TicketListScreen}
+        options={{
+          headerTitle: t('ticketsScreen.title'),
+        }}
+      />
       <Stack.Screen
         name="Ticket"
         component={TicketScreen}

@@ -6,7 +6,6 @@ import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -18,7 +17,7 @@ import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useLargeHeaderRefreshControl } from '../../../core/hooks/useLargeHeaderRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -40,8 +39,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
-
-  const refreshControl = useRefreshControl(
+  const refreshControl = useLargeHeaderRefreshControl(
     coursesQuery,
     examsQuery,
     studentQuery,
@@ -81,10 +79,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl {...refreshControl} />}
-    >
+    <ScrollView contentInsetAdjustmentBehavior="automatic" {...refreshControl}>
       <View style={styles.container}>
         <Section>
           <SectionHeader

@@ -33,6 +33,7 @@ export const RootNavigator = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { colors } = useTheme();
   const { data: student } = useGetStudent();
 
   useEffect(() => {
