@@ -38,11 +38,12 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
   const styles = useStylesheet(createStyles);
-  const booking = bookingsQuery.data?.data.find((e: Booking) => e.id === id);
-  const title = booking?.topic?.title;
+  const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
+  const title = booking?.topic?.title ?? '';
   const timeLabel = useMemo(() => {
-    const fromDate = formatDateTime(booking?.startsAt);
-    const toTime = formatTime(booking?.endsAt);
+    if (!booking) return '';
+    const fromDate = formatDateTime(booking.startsAt);
+    const toTime = formatTime(booking.endsAt);
     return `${fromDate} - ${toTime}`;
   }, [booking]);
 
@@ -84,20 +85,22 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         </Section>
         <Section style={styles.sectionContainer}>
           <Card style={styles.barCodeCard} rounded>
-            <Barcode
-              value={studentQuery.data.data.username}
-              format="CODE128"
-              height={85}
-              lineColor={colors.primary[800]}
-              singleBarWidth={1.8}
-              backgroundColor="white"
-            />
+            {studentQuery.data && (
+              <Barcode
+                value={studentQuery.data.username}
+                format="CODE128"
+                height={85}
+                lineColor={colors.primary[800]}
+                singleBarWidth={1.8}
+                backgroundColor="white"
+              />
+            )}
           </Card>
         </Section>
         <CtaButtonSpacer />
       </ScrollView>
       {/* {bookingMutation.isIdle && (*/}
-      {booking.canBeCancelled && (
+      {booking?.canBeCancelled && (
         <CtaButton
           icon="close"
           title={t('Delete Booking')}

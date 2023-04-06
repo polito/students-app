@@ -4,7 +4,7 @@ import { Separator } from './Separator';
 import { Text } from './Text';
 
 interface Props {
-  title: string;
+  title?: string;
   style?: ViewStyle;
   ellipsizeTitle?: boolean;
 }
@@ -28,7 +28,7 @@ export const ScreenTitle = ({
     <View style={style}>
       <Separator />
       <Text variant="title" role="heading" {...ellipsis}>
-        {title}
+        {title ?? ''}
       </Text>
     </View>
   );

@@ -18,12 +18,15 @@ const createOptions = (title: string, autoBackAction: boolean) => {
  * Sets the screen title and automatically hides the back action
  * when there is not enough space
  */
-export const useScreenTitle = (title: string, autoBackAction = true) => {
+export const useScreenTitle = (
+  title: string | undefined,
+  autoBackAction = true,
+) => {
   const { setOptions } = useNavigation();
 
   useEffect(() => {
     if (title) {
       setOptions(createOptions(title, autoBackAction));
     }
-  }, [title]);
+  }, [autoBackAction, setOptions, title]);
 };

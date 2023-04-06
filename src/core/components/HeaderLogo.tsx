@@ -22,9 +22,11 @@ export const HeaderLogo = () => {
 };
 
 const styles = StyleSheet.create({
-  container: Platform.select({
-    android: {
-      marginRight: 10,
-    },
-  }),
+  container: {
+    ...Platform.select({
+      android: {
+        marginRight: 10,
+      },
+    }),
+  },
 });

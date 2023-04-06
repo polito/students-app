@@ -34,10 +34,10 @@ export const RootNavigator = () => {
   const { data: student } = useGetStudent();
 
   useEffect(() => {
-    if (student?.data?.smartCardPicture) {
+    if (student?.smartCardPicture) {
       FastImage.preload([
         {
-          uri: student?.data?.smartCardPicture,
+          uri: student?.smartCardPicture,
         },
       ]);
     }

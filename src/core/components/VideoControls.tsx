@@ -67,8 +67,8 @@ export const VideoControls = ({
   const [sliding, setSliding] = useState(false);
   const [shouldReplay, setShouldReplay] = useState(false);
   const controlsOpacity = useRef(new Animated.Value(0)).current;
-  const opacityAnimation = useRef<CompositeAnimation>(null);
-  const hideTimeout = useRef<NodeJS.Timeout>(null);
+  const opacityAnimation = useRef<CompositeAnimation | null>(null);
+  const hideTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const currentTime = DateTime.fromSeconds(duration * progress);
   const elapsedTime = currentTime.toUTC().toFormat('HH:mm:ss');

@@ -10,7 +10,7 @@ import {
 } from '@polito/api-client/apis/TicketsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { prefixKey, prefixKeys } from '../../utils/queries';
+import { pluckData, prefixKey, prefixKeys } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const TICKETS_QUERY_KEY = 'tickets';
@@ -24,14 +24,14 @@ const useTicketsClient = (): TicketsApi => {
   const {
     clients: { tickets: ticketsClient },
   } = useApiContext();
-  return ticketsClient;
+  return ticketsClient!;
 };
 
 export const useGetTickets = () => {
   const ticketsClient = useTicketsClient();
 
   return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
-    ticketsClient.getTickets(),
+    ticketsClient.getTickets().then(pluckData),
   );
 };
 
@@ -41,7 +41,8 @@ export const useCreateTicket = () => {
   const invalidatesQuery = prefixKey([TICKETS_QUERY_KEY]);
 
   return useMutation(
-    (dto?: CreateTicketRequest) => ticketsClient.createTicket(dto),
+    (dto: CreateTicketRequest) =>
+      ticketsClient.createTicket(dto).then(pluckData),
     {
       onSuccess() {
         return client.invalidateQueries(invalidatesQuery);
@@ -72,7 +73,7 @@ export const useGetTicket = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
 
   return useQuery(prefixKey([TICKET_QUERY_KEY, ticketId]), () =>
-    ticketsClient.getTicket({ ticketId }),
+    ticketsClient.getTicket({ ticketId }).then(pluckData),
   );
 };
 
@@ -106,7 +107,9 @@ export const useMarkTicketAsRead = (ticketId: number) => {
 export const useGetTicketTopics = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TOPICS_QUERY_KEY], () => ticketsClient.getTicketTopics());
+  return useQuery([TOPICS_QUERY_KEY], () =>
+    ticketsClient.getTicketTopics().then(pluckData),
+  );
 };
 
 export const useGetTicketReplyAttachment = (
@@ -181,7 +184,7 @@ export const useSearchTicketFaqs = (search: string) => {
 
   return useQuery(
     [FAQS_QUERY_KEY],
-    () => ticketsClient.searchTicketFAQs({ search }),
+    () => ticketsClient.searchTicketFAQs({ search }).then(pluckData),
     {
       enabled: false,
       keepPreviousData: false,

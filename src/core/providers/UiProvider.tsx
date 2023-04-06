@@ -22,7 +22,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
   const systemColorScheme = useColorScheme();
 
   if (colorScheme === 'system') {
-    colorScheme = systemColorScheme;
+    colorScheme = systemColorScheme ?? 'light';
   }
 
   if (language === 'system') {
@@ -48,7 +48,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
     });
 
     Settings.defaultLocale = language;
-  }, []);
+  }, [language]);
 
   return (
     <ThemeContext.Provider value={uiTheme}>

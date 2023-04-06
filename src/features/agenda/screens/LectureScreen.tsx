@@ -31,14 +31,14 @@ export const LectureScreen = ({ route }: Props) => {
     lecture.courseId,
   );
   const virtualClassroom = useMemo(() => {
-    if (!lecture.virtualClassrooms.length) return;
+    if (lecture.virtualClassrooms.length > 0 || !virtualClassrooms) return;
 
     // Temporary behaviour until multiple videos in 1 screen are managed
-    const vcId = [...lecture.virtualClassrooms].shift()?.id;
+    const vcId = [...lecture.virtualClassrooms].shift()!.id;
     if (!vcId) return;
 
-    return virtualClassrooms?.data.find(vcs => vcs.id === vcId);
-  }, [virtualClassrooms]);
+    return virtualClassrooms.find(vcs => vcs.id === vcId);
+  }, [lecture.virtualClassrooms, virtualClassrooms]);
 
   return (
     <ScrollView
@@ -48,7 +48,7 @@ export const LectureScreen = ({ route }: Props) => {
       {virtualClassroom?.videoUrl && (
         <VideoPlayer
           source={{ uri: virtualClassroom?.videoUrl }}
-          poster={virtualClassroom?.coverUrl}
+          poster={virtualClassroom?.coverUrl ?? undefined}
         />
       )}
       <Row justify="space-between" align="center">
@@ -61,13 +61,15 @@ export const LectureScreen = ({ route }: Props) => {
         />
       </Row>
       <SectionList indented>
-        <ListItem
-          leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-          title={lecture.place.name}
-        />
+        {lecture?.place && (
+          <ListItem
+            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
+            title={lecture.place.name}
+          />
+        )}
         {teacherQuery.data && (
           <PersonListItem
-            person={teacherQuery.data?.data}
+            person={teacherQuery.data}
             subtitle={t('common.teacher')}
           />
         )}

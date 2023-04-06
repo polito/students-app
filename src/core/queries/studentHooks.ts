@@ -1,13 +1,9 @@
-import {
-  GetStudent200Response,
-  GetStudentGrades200Response,
-  StudentApi,
-} from '@polito/api-client';
+import { ExamGrade, Student, StudentApi } from '@polito/api-client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
-import { prefixKey } from '../../utils/queries';
+import { pluckData, prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const DEADLINES_QUERY_KEY = 'deadlines';
@@ -19,15 +15,15 @@ const useStudentClient = (): StudentApi => {
   const {
     clients: { student: studentClient },
   } = useApiContext();
-  return studentClient;
+  return studentClient!;
 };
 
-const handleAcquiredCredits = (response: GetStudent200Response) => {
-  if (response.data.totalCredits < response.data.totalAttendedCredits) {
-    response.data.totalCredits = response.data.totalAttendedCredits;
+const handleAcquiredCredits = (student: Student) => {
+  if (student.totalCredits < student.totalAttendedCredits) {
+    student.totalCredits = student.totalAttendedCredits;
   }
 
-  return response;
+  return student;
 };
 
 export const useGetStudent = () => {
@@ -35,17 +31,16 @@ export const useGetStudent = () => {
 
   return useQuery(
     prefixKey([STUDENT_QUERY_KEY]),
-    () => studentClient.getStudent().then(s => handleAcquiredCredits(s)),
+    () =>
+      studentClient.getStudent().then(pluckData).then(handleAcquiredCredits),
     {
       staleTime: Infinity,
     },
   );
 };
 
-const sortGrades = (response: GetStudentGrades200Response) => {
-  response.data = response.data.sort(
-    (a, b) => b.date.getTime() - a.date.getTime(),
-  );
+const sortGrades = (response: ExamGrade[]) => {
+  response = response.sort((a, b) => b.date.getTime() - a.date.getTime());
   return response;
 };
 
@@ -53,7 +48,7 @@ export const useGetGrades = () => {
   const studentClient = useStudentClient();
 
   return useQuery(prefixKey([GRADES_QUERY_KEY]), () =>
-    studentClient.getStudentGrades().then(sortGrades),
+    studentClient.getStudentGrades().then(pluckData).then(sortGrades),
   );
 };
 
@@ -72,7 +67,7 @@ export const useGetDeadlineWeeks = () => {
           fromDate: since.toJSDate(),
           toDate: until.toJSDate(),
         })
-        .then(r => r.data);
+        .then(pluckData);
     },
     {
       staleTime: Infinity,

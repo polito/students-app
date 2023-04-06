@@ -4,6 +4,7 @@ import { ResponseError } from '@polito/api-client/runtime';
 import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 
 import { useApiContext } from '../core/contexts/ApiContext';
+import { SuccessResponse } from '../core/types/api';
 
 /**
  * Add student username as key prefix to allow identity switch while keeping cache
@@ -29,10 +30,8 @@ export const prefixKeys = (queryKeys: (string | number)[][]) => {
  * Pluck data from API response
  *
  * @param response
- *
- * TODO define API generics to use everywhere
  */
-export const pluckData = (response: { data: unknown[] }) => {
+export const pluckData = <T>(response: SuccessResponse<T>) => {
   return response.data;
 };
 
@@ -42,7 +41,7 @@ export const pluckData = (response: { data: unknown[] }) => {
 export const popPage: {
   <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
 } = infiniteQuery => {
-  return [...infiniteQuery.data.pages].pop();
+  return [...infiniteQuery.data!.pages].pop()!;
 };
 
 /**
@@ -51,7 +50,7 @@ export const popPage: {
 export const shiftPage: {
   <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
 } = infiniteQuery => {
-  return [...infiniteQuery.data.pages].shift();
+  return [...infiniteQuery.data!.pages].shift()!;
 };
 
 /**

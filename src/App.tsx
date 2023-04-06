@@ -9,8 +9,6 @@ import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
 
 export const App = () => {
-  // Settings.defaultLocale = 'it-IT';
-
   return (
     <SplashProvider>
       <PreferencesProvider>

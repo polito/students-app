@@ -21,7 +21,7 @@ export const TicketMessagingView = ({
 }: Props) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState<string>('');
-  const [attachment, setAttachment] = useState<Attachment>(null);
+  const [attachment, setAttachment] = useState<Attachment>();
 
   const {
     mutateAsync: reply,
@@ -42,7 +42,7 @@ export const TicketMessagingView = ({
   useEffect(() => {
     if (isSuccess) {
       setMessage('');
-      setAttachment(null);
+      setAttachment(undefined);
       Keyboard.dismiss();
     }
   }, [isSuccess]);

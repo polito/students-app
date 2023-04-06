@@ -1,9 +1,9 @@
 import { BookExamRequest, ExamsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { prefixKey } from '../../utils/queries';
+import { pluckData, prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
-import { Exam } from '../types/Exam';
+import { Exam } from '../types/api';
 
 export const EXAMS_QUERY_KEY = 'exams';
 
@@ -11,7 +11,7 @@ const useExamsClient = (): ExamsApi => {
   const {
     clients: { exams: examsClient },
   } = useApiContext();
-  return examsClient;
+  return examsClient!;
 };
 
 export const useGetExams = () => {
@@ -20,11 +20,12 @@ export const useGetExams = () => {
   return useQuery<Exam[]>(prefixKey([EXAMS_QUERY_KEY]), () =>
     examsClient
       .getExams()
-      .then(r => r.data)
+      .then(pluckData)
       .then(exams =>
         exams.map(exam => ({
           ...exam,
-          isTimeToBeDefined: exam.examStartsAt.getHours() === 0,
+          isTimeToBeDefined:
+            exam.examStartsAt !== null && exam.examStartsAt.getHours() === 0,
         })),
       ),
   );

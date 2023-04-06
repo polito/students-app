@@ -92,7 +92,7 @@ export const CourseAssignmentListItem = ({
                   </Menu>
                 ),
               })
-            : null
+            : undefined
         }
         {...rest}
       />

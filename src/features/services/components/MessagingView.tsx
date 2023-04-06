@@ -25,7 +25,7 @@ interface Props extends ViewProps {
   onMessageChange?: (message: string) => void;
   onSend?: () => void;
   attachment?: Attachment;
-  onAttachmentChange?: (attachment?: Attachment) => void;
+  onAttachmentChange: (attachment?: Attachment) => void;
   loading?: boolean;
   disabled?: boolean;
   showSendButton?: boolean;
@@ -52,7 +52,16 @@ export const MessagingView = ({
   const styles = useStylesheet(createStyles);
 
   const pickFile = async () => {
-    onAttachmentChange?.(await DocumentPicker.pickSingle());
+    DocumentPicker.pickSingle().then(res => {
+      if (!res.name || !res.size || !res.type) return;
+
+      onAttachmentChange({
+        uri: res.uri,
+        name: res.name,
+        size: res.size,
+        type: res.type,
+      });
+    });
   };
 
   const pickPhoto = async () => {
@@ -111,7 +120,7 @@ export const MessagingView = ({
               return (
                 <AttachmentChip
                   attachment={item}
-                  onClearAttachment={() => onAttachmentChange(null)}
+                  onClearAttachment={() => onAttachmentChange(undefined)}
                 />
               );
             }}

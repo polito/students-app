@@ -19,7 +19,8 @@ export const DeadlineScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
 
-  const onPressDeadlineUrl = () => Linking.openURL(deadline.url);
+  const onPressDeadlineUrl = () =>
+    deadline.url ? Linking.openURL(deadline.url) : null;
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">

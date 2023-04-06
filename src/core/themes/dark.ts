@@ -24,7 +24,7 @@ export const darkTheme: Theme = {
     translucentSurface: Platform.select({
       android: 'rgba(255, 255, 255, .1)',
       ios: 'rgba(0, 0, 0, .1)',
-    }),
+    })!,
     divider: 'rgba(255, 255, 255, .15)',
     touchableHighlight: 'rgba(255, 255, 255, .08)',
     agendaLecture: lightTheme.colors.darkBlue[100],

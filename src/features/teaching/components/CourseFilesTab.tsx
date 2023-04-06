@@ -26,7 +26,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   useFocusEffect(
     useCallback(() => {
       refresh();
-    }, []),
+    }, [refresh]),
   );
 
   return (
@@ -53,11 +53,11 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
           <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
         }
       />
-      {recentFilesQuery.data?.length > 0 && (
+      {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
-          action={() => navigation.navigate('CourseDirectory', { courseId })}
+          action={() => navigation!.navigate('CourseDirectory', { courseId })}
         />
       )}
     </>

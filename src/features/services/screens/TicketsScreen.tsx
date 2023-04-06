@@ -30,7 +30,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
   const refreshControl = useRefreshControl(ticketsQuery);
 
   const OpenTickets = () => {
-    const openTickets = (ticketsQuery?.data?.data || [])
+    const openTickets = (ticketsQuery.data || [])
       .filter(ticket => ticket.status !== TicketStatus.Closed)
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
@@ -54,13 +54,9 @@ export const TicketsScreen = ({ navigation }: Props) => {
   };
 
   const ClosedTickets = () => {
-    const closedTickets = useMemo(
-      () =>
-        (ticketsQuery?.data?.data || [])
-          .filter(ticket => ticket.status === TicketStatus.Closed)
-          .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()),
-      [ticketsQuery],
-    );
+    const closedTickets = (ticketsQuery.data || [])
+      .filter(ticket => ticket.status === TicketStatus.Closed)
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     const renderedClosedTickets = useMemo(
       () => closedTickets.slice(0, 4),

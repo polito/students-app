@@ -24,9 +24,9 @@ export type CoursesPreferences = {
 
 export type PreferencesContextProps = {
   clientId?: string;
-  colorScheme?: 'light' | 'dark' | 'system';
+  colorScheme: 'light' | 'dark' | 'system';
   courses: CoursesPreferences;
-  language?: 'it' | 'en' | 'system';
+  language: 'it' | 'en' | 'system';
   notifications?: {
     important: boolean;
     events: boolean;
@@ -38,7 +38,7 @@ export type PreferencesContextProps = {
 
 export interface CoursePreferencesProps {
   color: string;
-  icon: string;
+  icon?: string;
   isHidden: boolean;
   order?: number;
 }

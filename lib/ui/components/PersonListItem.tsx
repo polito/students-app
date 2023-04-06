@@ -7,7 +7,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Person } from '@polito/api-client/models/Person';
 
 interface Props {
-  person: Person;
+  person: Person | undefined;
   subtitle?: string | JSX.Element;
 }
 

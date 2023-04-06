@@ -32,7 +32,7 @@ export const TicketAttachmentChip = ({
   const { isFetching: isDownloadingReplyAttachment, data: replyAttachment } =
     useGetTicketReplyAttachment(
       {
-        replyId,
+        replyId: replyId ?? 0,
         ticketId,
         attachmentId: attachment.id,
       },

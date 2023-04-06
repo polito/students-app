@@ -36,7 +36,7 @@ export const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const passwordRef = useRef<TextInput>();
+  const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
 
   const handleLogin = () =>
@@ -71,7 +71,7 @@ export const LoginScreen = () => {
               editable={!isLoading}
               returnKeyType="next"
               onSubmitEditing={() => {
-                passwordRef.current.focus();
+                passwordRef.current?.focus();
               }}
               style={styles.textFieldInput}
             />

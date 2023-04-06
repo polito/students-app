@@ -28,8 +28,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
   const teacherQuery = useGetPerson(teacherId);
 
   const lecture = useMemo(() => {
-    if (!videolecturesQuery.data) return;
-    return videolecturesQuery.data?.data.find(l => l.id === lectureId);
+    return videolecturesQuery.data?.find(l => l.id === lectureId);
   }, [lectureId, videolecturesQuery.data]);
 
   const refreshControl = useRefreshControl(teacherQuery, videolecturesQuery);
@@ -45,7 +44,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
         poster={lecture?.coverUrl}
       />
       <EventDetails
-        title={lecture?.title}
+        title={lecture?.title ?? ''}
         type={t('common.videoLecture')}
         time={
           lecture?.createdAt
@@ -56,7 +55,7 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       <SectionList loading={teacherQuery.isLoading}>
         {teacherQuery.data && (
           <PersonListItem
-            person={teacherQuery.data?.data}
+            person={teacherQuery.data}
             subtitle={t('common.teacher')}
           />
         )}

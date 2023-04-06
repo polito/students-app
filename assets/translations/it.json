@@ -57,6 +57,7 @@
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Data e ora",
+    "dateToBeDefined": "Data da definire",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",

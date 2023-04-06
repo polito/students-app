@@ -36,10 +36,10 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   const courseQuery = useGetCourse(courseId);
   const courseExamsQuery = useGetCourseExams(
     courseId,
-    courseQuery.data?.data.shortcode,
+    courseQuery.data?.shortcode,
   );
   const { queries: staffQueries, isLoading: isStaffLoading } = useGetPersons(
-    courseQuery.data?.data.staff.map(s => s.id),
+    courseQuery.data?.staff.map(s => s.id),
   );
   const refreshControl = useRefreshControl(
     courseQuery,
@@ -48,19 +48,18 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   );
 
   useEffect(() => {
-    if (isStaffLoading) {
+    if (!courseQuery.data || isStaffLoading) {
       return;
     }
     const staffData: StaffMember[] = [];
 
     staffQueries.forEach((staffQuery, index) => {
-      const personData = staffQuery.data?.data;
-      if (!personData) return;
+      if (!staffQuery.data) return;
 
       staffData.push({
-        ...personData,
+        ...staffQuery.data,
         courseRole:
-          courseQuery.data.data.staff[index].role === 'Titolare'
+          courseQuery.data.staff[index].role === 'Titolare'
             ? 'roleHolder'
             : 'roleCollaborator',
       });
@@ -75,25 +74,25 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
       refreshControl={<RefreshControl {...refreshControl} />}
     >
       <Section style={styles.heading}>
-        <ScreenTitle title={courseQuery.data?.data.name} />
-        <Text variant="caption">{courseQuery.data?.data.shortcode}</Text>
+        <ScreenTitle title={courseQuery.data?.name} />
+        <Text variant="caption">{courseQuery.data?.shortcode}</Text>
       </Section>
       <Card style={styles.metricsCard} accessible={true}>
         <Grid>
           <Metric
             title={t('common.period')}
-            value={`${courseQuery.data?.data.teachingPeriod ?? '--'} - ${
-              courseQuery.data?.data.year ?? '--'
+            value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
+              courseQuery.data?.year ?? '--'
             }`}
             style={GlobalStyles.grow}
           />
           <Metric
             title={t('courseInfoTab.creditsLabel')}
             value={t('common.creditsWithUnit', {
-              credits: courseQuery.data?.data.cfu,
+              credits: courseQuery.data?.cfu,
             })}
             accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
-              courseQuery.data?.data.cfu
+              courseQuery.data?.cfu
             }`}
             style={GlobalStyles.grow}
           />

@@ -50,7 +50,7 @@ export const Select = ({
         disabled={disabled}
         title={displayedValue || label}
         subtitle={description}
-        trailingItem={IS_ANDROID ? <Icon icon={faChevronDown} /> : null}
+        trailingItem={IS_ANDROID ? <Icon icon={faChevronDown} /> : undefined}
       />
     </MenuView>
   );

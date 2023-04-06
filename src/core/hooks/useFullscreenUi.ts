@@ -10,7 +10,7 @@ export const useFullscreenUi = (fullscreen: boolean) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const navRoot = navigation.getParent();
+    const navRoot = navigation.getParent()!;
     if (IS_ANDROID) {
       if (fullscreen) {
         hideTabBar(navRoot);

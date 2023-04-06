@@ -5,6 +5,7 @@ import Keychain from 'react-native-keychain';
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { STUDENT_QUERY_KEY } from './studentHooks';
@@ -13,7 +14,7 @@ const useAuthClient = (): AuthApi => {
   const {
     clients: { auth: authClient },
   } = useApiContext();
-  return authClient;
+  return authClient!;
 };
 
 export const useLogin = () => {
@@ -39,17 +40,18 @@ export const useLogin = () => {
           };
         })
         .then(() => authClient.login({ loginRequest: dto }))
+        .then(pluckData)
         .then(res => {
-          if (res.data?.type !== 'student') {
+          if (res?.type !== 'student') {
             throw new UnsupportedUserTypeError(
-              `User type ${res.data?.type} not supported by this app`,
+              `User type ${res?.type} not supported by this app`,
             );
           }
           return res;
         });
     },
     onSuccess: async data => {
-      const { token, clientId, username } = data.data;
+      const { token, clientId, username } = data;
       await Keychain.setGenericPassword(clientId, token);
       refreshContext({ username, token });
     },
@@ -80,15 +82,15 @@ export const useSwitchCareer = () => {
 
   return useMutation({
     mutationFn: (dto?: SwitchCareerRequest) =>
-      authClient.switchCareer({ switchCareerRequest: dto }),
+      authClient.switchCareer({ switchCareerRequest: dto }).then(pluckData),
     onSuccess: data => {
       Keychain.resetGenericPassword().then(() => {
         refreshContext({
-          token: data.data.token,
-          username: data.data.username,
+          token: data.token,
+          username: data.username,
         });
-        Keychain.setGenericPassword(data.data.clientId, data.data.token).then(
-          () => queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
+        Keychain.setGenericPassword(data.clientId, data.token).then(() =>
+          queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
         );
       });
     },

@@ -20,7 +20,7 @@ export interface BookingItem extends BaseAgendaItem {
 
 export interface DeadlineItem extends BaseAgendaItem {
   type: 'deadline';
-  url: string;
+  url: string | null;
 }
 
 export interface ExamItem extends BaseAgendaItem {
@@ -31,7 +31,7 @@ export interface ExamItem extends BaseAgendaItem {
   teacherId: number;
   classroom: string;
   color: string;
-  icon: string;
+  icon?: string;
 }
 
 export interface LectureItem extends BaseAgendaItem {
@@ -41,11 +41,11 @@ export interface LectureItem extends BaseAgendaItem {
   fromTime: string;
   toTime: string;
   teacherId: number;
-  description?: string;
-  place: LecturePlace;
+  description: string | null;
+  place: LecturePlace | null;
   virtualClassrooms: RelatedVirtualClassroom[];
   color: string;
-  icon: string;
+  icon?: string;
 }
 
 export type AgendaItem = BookingItem | DeadlineItem | ExamItem | LectureItem;

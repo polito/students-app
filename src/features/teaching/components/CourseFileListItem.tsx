@@ -97,22 +97,19 @@ export const CourseFileListItem = ({
       color: colors.secondaryText,
       size: fontSizes.xl,
     }),
-    [colors, fontSizes, spacing],
+    [colors, fontSizes],
   );
   const courseId = useContext(CourseContext);
   const courseFilesCache = useCourseFilesCachePath();
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
-    if (courseFilesCache) {
-      let ext = extension(item.mimeType);
-      if (!ext) {
-        ext = item.name.match(/\.(.+)$/)?.[1];
-      }
-      return [
-        courseFilesCache,
-        [item.id, ext].filter(notNullish).join('.'),
-      ].join('/');
+    let ext: string | null = extension(item.mimeType);
+    if (!ext) {
+      ext = item.name.match(/\.(.+)$/)?.[1] ?? null;
     }
+    return [courseFilesCache, [item.id, ext].filter(notNullish).join('.')].join(
+      '/',
+    );
   }, [courseFilesCache, item]);
   const {
     isDownloaded,
@@ -133,7 +130,7 @@ export const CourseFileListItem = ({
       ]
         .filter(i => !!i)
         .join(' - '),
-    [showSize, showLocation, showCreatedDate],
+    [showCreatedDate, item, showSize, showLocation],
   );
 
   const downloadFile = async () => {

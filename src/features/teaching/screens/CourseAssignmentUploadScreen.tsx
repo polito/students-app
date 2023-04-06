@@ -60,7 +60,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
               copyTo: 'cachesDirectory',
             })
               .then(response => {
-                handlePickedFile(response.fileCopyUri);
+                handlePickedFile(response.fileCopyUri!);
               })
               .catch(e => {
                 if (DocumentPicker.isCancel(e) || isInProgress(e)) return;

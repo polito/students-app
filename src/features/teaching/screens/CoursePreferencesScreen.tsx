@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
@@ -22,7 +22,7 @@ import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { courseColors } from '../../../core/constants';
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourse } from '../../../core/queries/courseHooks';
@@ -37,7 +37,7 @@ const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
   const courseFilesCache = useCourseFilesCachePath();
-  const [cacheSize, setCacheSize] = useState<number>(null);
+  const [cacheSize, setCacheSize] = useState<number>(0);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
@@ -88,8 +88,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
   const courseQuery = useGetCourse(courseId);
   const refreshControl = useRefreshControl(courseQuery);
-  const { courses: coursesPrefs, updatePreference } =
-    useContext(PreferencesContext);
+  const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
     () => coursesPrefs[courseId],
     [courseId, coursesPrefs],
@@ -177,7 +176,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 title={t('common.notice_plural')}
                 subtitle={t('coursePreferencesScreen.noticesSubtitle')}
                 disabled={!courseQuery.data}
-                value={courseQuery.data?.data.notifications.avvisidoc}
+                value={courseQuery.data?.notifications.avvisidoc}
                 leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
                 onChange={() => {
                   // TODO
@@ -188,7 +187,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 title={t('common.file_plural')}
                 subtitle={t('coursePreferencesScreen.filesSubtitle')}
                 disabled={!courseQuery.data}
-                value={courseQuery.data?.data.notifications.matdid}
+                value={courseQuery.data?.notifications.matdid}
                 leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
                 onChange={() => {
                   // TODO
@@ -199,7 +198,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 title={t('common.lecture_plural')}
                 subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
                 disabled={!courseQuery.data}
-                value={courseQuery.data?.data.notifications.videolezioni}
+                value={courseQuery.data?.notifications.videolezioni}
                 leadingItem={
                   <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
                 }

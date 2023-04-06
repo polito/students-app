@@ -5,7 +5,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 type Props = ViewProps & {
-  title: string;
+  title?: string;
   type: string;
   time?: string;
   timeLabel?: string;
