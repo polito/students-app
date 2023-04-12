@@ -381,6 +381,7 @@
     "title": "Settings"
   },
   "teachingScreen": {
+    "allCoursesHidden": "You've hidden all your courses",
     "title": "Teaching"
   },
   "theme": {
