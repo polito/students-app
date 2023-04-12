@@ -17,7 +17,7 @@ export interface Credentials {
   token: string;
 }
 
-export interface ApiContextProps extends Partial<Credentials> {
+export interface ApiContextProps extends Credentials {
   isLogged: boolean;
   refreshContext: (credentials?: Credentials) => void;
   clients: Partial<ApiContextClientsProps>;

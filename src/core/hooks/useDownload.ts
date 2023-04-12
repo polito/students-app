@@ -21,7 +21,8 @@ export const useDownload = (fromUrl: string, toFile: string) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
   const { downloadsRef, setDownloads } = useDownloadsContext();
-  const { cache } = useContext(FilesCacheContext);
+  const { cache, isRefreshing: isCacheRefreshing } =
+    useContext(FilesCacheContext);
   const key = `${fromUrl}:${toFile}`;
   const download = useMemo(
     () =>
@@ -29,28 +30,27 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         isDownloaded: false,
         downloadProgress: undefined,
       },
-    [downloadsRef.current?.[key]],
+    [downloadsRef.current?.[key], key],
   );
 
   const updateDownload = useCallback(
     (updates: Partial<Download>) => {
-      const newDownload = {
-        ...download,
-        ...updates,
-      };
-      setDownloads(oldDownloads => {
-        oldDownloads[key] = newDownload;
-        return oldDownloads;
-      });
+      setDownloads(oldDownloads => ({
+        ...oldDownloads,
+        [key]: {
+          ...oldDownloads[key],
+          ...updates,
+        },
+      }));
     },
-    [download, key],
+    [key, setDownloads],
   );
 
   useEffect(() => {
-    if (toFile) {
+    if (toFile && !isCacheRefreshing) {
       updateDownload({ isDownloaded: Boolean(cache[toFile]) });
     }
-  }, [cache[toFile]]);
+  }, [cache, isCacheRefreshing, toFile, updateDownload]);
 
   const startDownload = useCallback(async () => {
     if (!download.isDownloaded && download.downloadProgress == null) {

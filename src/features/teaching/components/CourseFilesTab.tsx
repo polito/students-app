@@ -37,13 +37,15 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
         initialNumToRender={15}
-        renderItem={({ item }) => (
-          <CourseRecentFileListItem
-            item={item}
-            onSwipeStart={() => setScrollEnabled(false)}
-            onSwipeEnd={() => setScrollEnabled(true)}
-          />
-        )}
+        renderItem={({ item }) => {
+          return (
+            <CourseRecentFileListItem
+              item={item}
+              onSwipeStart={() => setScrollEnabled(false)}
+              onSwipeEnd={() => setScrollEnabled(true)}
+            />
+          );
+        }}
         refreshControl={<RefreshControl {...refreshControl} />}
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,

@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import { extension } from 'react-native-mime-types';
@@ -20,7 +20,7 @@ import { useDownload } from '../../../core/hooks/useDownload';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
@@ -99,7 +99,7 @@ export const CourseFileListItem = ({
     }),
     [colors, fontSizes],
   );
-  const courseId = useContext(CourseContext);
+  const courseId = useCourseContext();
   const courseFilesCache = useCourseFilesCachePath();
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {

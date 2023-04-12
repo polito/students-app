@@ -1,6 +1,13 @@
 import { createContext } from 'react';
 
-export const FilesCacheContext = createContext<{
+export type FilesCacheContextProps = {
   cache: Record<string, boolean>;
   refresh: () => void;
-}>({ cache: {}, refresh: () => {} });
+  isRefreshing: boolean;
+};
+
+export const FilesCacheContext = createContext<FilesCacheContextProps>({
+  cache: {},
+  refresh: () => {},
+  isRefreshing: false,
+});
