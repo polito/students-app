@@ -33,7 +33,7 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
@@ -90,7 +90,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                 value={studentQuery.data.username}
                 format="CODE128"
                 height={85}
-                lineColor={colors.primary[800]}
+                lineColor={palettes.primary[800]}
                 singleBarWidth={1.8}
                 backgroundColor="white"
               />
@@ -115,7 +115,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
+const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
     barCodeCard: {
       width: '100%',
@@ -141,7 +141,7 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
       // padding: fontSizes.sm,
     },
     booking: {
-      color: colors.primary[400],
+      color: palettes.primary[400],
       textTransform: 'uppercase',
       marginVertical: fontSizes.sm,
     },

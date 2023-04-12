@@ -34,7 +34,7 @@ export type CourseTabProps = {
 export const CourseScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors, fontSizes, spacing } = theme;
+  const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
 
   const { id, courseName } = route.params;
@@ -44,7 +44,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
       headerRight: () => (
         <IconButton
           icon={faSliders}
-          color={colors.primary[400]}
+          color={palettes.primary[400]}
           size={fontSizes.lg}
           accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}

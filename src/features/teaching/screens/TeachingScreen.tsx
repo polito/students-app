@@ -34,7 +34,7 @@ interface Props {
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = usePreferencesContext();
   const coursesQuery = useGetCourses();
@@ -198,7 +198,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     boxSize={140}
                     radius={40}
                     thickness={18}
-                    colors={[colors.primary[400], colors.secondary[500]]}
+                    colors={[palettes.primary[400], palettes.secondary[500]]}
                   />
                 </Row>
               </TouchableHighlight>

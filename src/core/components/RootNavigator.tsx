@@ -123,7 +123,7 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: IS_IOS ? colors.headers : colors.surface,
+      backgroundColor: IS_IOS ? colors.headersBackground : colors.surface,
       borderTopColor: colors.divider,
     },
     tabBarItemStyle: {

@@ -11,14 +11,14 @@ interface Props {
 }
 
 export const CourseIcon = ({ color, icon }: Props) => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
   return (
     <View
       style={{
         width: 30,
         height: 30,
         borderRadius: 15,
-        backgroundColor: color ?? colors.primary[400],
+        backgroundColor: color ?? palettes.primary[400],
         alignItems: 'center',
         justifyContent: 'center',
       }}

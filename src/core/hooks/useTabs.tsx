@@ -21,7 +21,7 @@ export const useTabs = (options: TabOptions[]) => {
           selectedIndexes={[selectedTabIndex]}
           style={{
             backgroundColor: Platform.select({
-              ios: colors.headers,
+              ios: colors.headersBackground,
               android: colors.surface,
             }),
             borderBottomWidth: Platform.select({

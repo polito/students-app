@@ -94,7 +94,7 @@ export const TeachingNavigator = () => {
         component={CourseScreen}
         options={{
           headerLargeStyle: {
-            backgroundColor: colors.headers,
+            backgroundColor: colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,
@@ -193,7 +193,7 @@ export const TeachingNavigator = () => {
           headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
           headerLargeStyle: {
-            backgroundColor: colors.headers,
+            backgroundColor: colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,

@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const LiveIndicator = ({ showText }: Props) => {
-  const { spacing, colors, fontSizes } = useTheme();
+  const { spacing, palettes, fontSizes } = useTheme();
   const anim = useRef(new Animated.Value(1));
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const LiveIndicator = ({ showText }: Props) => {
       <View style={{ position: 'relative', marginEnd: spacing[2] }}>
         <Animated.View
           style={{
-            backgroundColor: colors.error[500],
+            backgroundColor: palettes.error[500],
             width: liveIndicatorSize,
             height: liveIndicatorSize,
             borderRadius: liveIndicatorSize,
@@ -55,7 +55,7 @@ export const LiveIndicator = ({ showText }: Props) => {
         />
         <View
           style={{
-            backgroundColor: colors.error[500],
+            backgroundColor: palettes.error[500],
             width: liveIndicatorSize,
             height: liveIndicatorSize,
             borderRadius: liveIndicatorSize,

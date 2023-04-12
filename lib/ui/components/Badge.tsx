@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const Badge = ({ text, style, variant = 'filled' }: Props) => {
-  const { colors } = useTheme();
+  const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const isOutlined = useMemo(() => variant === 'outlined', [variant]);
@@ -21,18 +21,21 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
       style={[
         styles.badge,
         {
-          backgroundColor: colors.orange[600],
+          backgroundColor: palettes.orange[600],
         },
         isOutlined && {
           backgroundColor: colors.surface,
-          borderColor: colors.orange[600],
+          borderColor: palettes.orange[600],
           borderWidth: 2,
         },
         style,
       ]}
     >
       <Text
-        style={[styles.badgeText, isOutlined && { color: colors.orange[600] }]}
+        style={[
+          styles.badgeText,
+          isOutlined && { color: palettes.orange[600] },
+        ]}
       >
         {text}
       </Text>

@@ -8,11 +8,11 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { IS_ANDROID } from '../../../src/core/constants';
 
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
 
   return (
     <RNActivityIndicator
-      color={IS_ANDROID ? colors.secondary[600] : undefined}
+      color={IS_ANDROID ? palettes.secondary[600] : undefined}
       {...props}
     />
   );

@@ -4,7 +4,7 @@ import RenderHTML, { RenderHTMLProps } from 'react-native-render-html';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const HtmlView = (props: RenderHTMLProps) => {
-  const { colors, spacing } = useTheme();
+  const { colors, palettes, spacing } = useTheme();
   const { width } = useWindowDimensions();
 
   return (
@@ -12,7 +12,7 @@ export const HtmlView = (props: RenderHTMLProps) => {
       contentWidth={width}
       defaultTextProps={{
         selectable: true,
-        selectionColor: colors.secondary[600],
+        selectionColor: palettes.secondary[600],
       }}
       systemFonts={['Montserrat']}
       {...props}

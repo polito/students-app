@@ -140,7 +140,7 @@ const createStyles = ({ colors }: Theme) =>
     toolbar: {
       justifyContent: 'space-between',
       backgroundColor: Platform.select({
-        ios: colors.headers,
+        ios: colors.headersBackground,
         android: colors.surface,
       }),
       borderBottomWidth: Platform.select({

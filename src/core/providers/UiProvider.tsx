@@ -54,7 +54,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
     <ThemeContext.Provider value={uiTheme}>
       <StatusBar
         backgroundColor={Platform.select({
-          android: uiTheme.colors.primary[700],
+          android: uiTheme.palettes.primary[700],
         })}
         barStyle={Platform.select({
           android: 'light-content',

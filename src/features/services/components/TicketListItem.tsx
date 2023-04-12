@@ -31,7 +31,7 @@ interface Props {
 }
 
 export const TicketListItem = ({ ticket }: Props) => {
-  const { fontSizes, colors, spacing } = useTheme();
+  const { fontSizes, colors, palettes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
@@ -89,7 +89,7 @@ export const TicketListItem = ({ ticket }: Props) => {
               <Icon
                 icon={faPaperclip}
                 size={20}
-                color={colors.text[400]}
+                color={palettes.text[400]}
                 style={
                   ticket.unreadCount === 0 && {
                     marginHorizontal: spacing[2],
@@ -142,14 +142,14 @@ export const TicketListItem = ({ ticket }: Props) => {
   return <Item />;
 };
 
-const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
   StyleSheet.create({
     unreadCount: {
       height: 22,
       width: 22,
       marginHorizontal: spacing[2],
       borderRadius: 22 / 2,
-      backgroundColor: colors.error[500],
+      backgroundColor: palettes.error[500],
     },
     unreadCountText: { color: 'white' },
     listItemSubtitle: {

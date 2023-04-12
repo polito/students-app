@@ -27,7 +27,7 @@ export const ProgressChart = ({
   radius = 30,
   ...rest
 }: Props) => {
-  const { dark, colors: themeColors, fontSizes } = useTheme();
+  const { dark, colors: themeColors, palettes, fontSizes } = useTheme();
 
   return (
     <View accessible={false} {...rest}>
@@ -47,7 +47,7 @@ export const ProgressChart = ({
           backgroundGradientFromOpacity: 0,
           backgroundGradientToOpacity: 0,
           color: () =>
-            color(themeColors.primary[500])
+            color(palettes.primary[500])
               .alpha(dark ? 0.3 : 0.08)
               .toString(),
         }}

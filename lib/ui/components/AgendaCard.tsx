@@ -126,6 +126,7 @@ export const AgendaCard = ({
 
 const createStyles = ({
   colors,
+  palettes,
   fontSizes,
   fontWeights,
   spacing,
@@ -149,7 +150,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
     },
     type: {
-      color: dark ? colors.text[300] : colors.text[400],
+      color: dark ? palettes.text[300] : palettes.text[400],
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       marginTop: spacing[1.5],

@@ -8,7 +8,6 @@ export interface Props extends TextProps {
   variant?:
     | 'heading'
     | 'title'
-    | 'headline'
     | 'prose'
     | 'secondaryText'
     | 'caption'

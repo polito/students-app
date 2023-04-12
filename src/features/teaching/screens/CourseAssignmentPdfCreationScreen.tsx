@@ -290,7 +290,7 @@ const Action = ({
   onPress,
 }: ActionProps) => {
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes } = useTheme();
+  const { colors, palettes, fontSizes } = useTheme();
   return (
     <TouchableHighlight
       onPress={onPress}
@@ -306,7 +306,7 @@ const Action = ({
             icon={icon}
             size={fontSizes.xl}
             style={styles.actionIcon}
-            color={colors.secondary[600]}
+            color={palettes.secondary[600]}
           />
         )}
         <Text>{label}</Text>
