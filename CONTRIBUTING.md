@@ -9,6 +9,24 @@ the [gallium](https://nodejs.org/download/release/v16.16.0/) LTS release).
 [Nvm](https://github.com/nvm-sh/nvm) can be used to automatically select the correct version enforced
 by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/nvm#deeper-shell-integration).
 
+### Adding a GitHub personal access token to pull from package repositories
+
+GitHub requires the usage of a personal access token to pull from public repositories.
+
+To work on this project, you'll need to configure it correctly in order to be able to pull `@polito/api-client`.
+
+If you never had to pull packages from a GitHub repository, you'll need to create a personal access token with the `read:packages` scope and add it to your `.npmrc` file.
+
+To generate a personal access token head to [GitHub Tokens settings](https://github.com/settings/tokens) and click on `Generate new token (classic)`.
+Then, select the `read:packages` scope and click on `Generate token`.
+
+Finally, add a .npmrc file in your home directory with the following content:
+
+```
+@polito:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE
+```
+
 ## Project setup
 
 ```shell
