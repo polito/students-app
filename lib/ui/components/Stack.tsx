@@ -90,7 +90,7 @@ export type StackProps<
 /**
  * A flexbox (row or column) layout
  *
- * See {@link import('../Row').Row `Row`} and {@link import('../Col').Col `Col`} for shorthand alternatives
+ * See {@link import('./Row').Row `Row`} and {@link import('./Col').Col `Col`} for shorthand alternatives
  */
 export const Stack = <
   T extends

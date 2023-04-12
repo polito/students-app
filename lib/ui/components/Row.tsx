@@ -6,7 +6,7 @@ import { Stack, StackProps } from '@lib/ui/components/Stack';
 /**
  * Horizontal flexbox
  *
- * Shorthand for {@link import('../Stack').Stack `Stack`} with `direction="row"`
+ * Shorthand for {@link import('./Stack').Stack `Stack`} with `direction="row"`
  */
 export function Row<
   T extends
