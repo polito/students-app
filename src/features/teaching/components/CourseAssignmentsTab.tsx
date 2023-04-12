@@ -73,6 +73,7 @@ export const CourseAssignmentsTab = ({
                   </Swipeable>
                 ) : (
                   <CourseAssignmentListItem
+                    key={assignment.id}
                     item={assignment}
                     accessibilityListLabel={accessibilityListLabel(
                       index,
