@@ -11,7 +11,7 @@ Politecnico di Torino's official mobile application for students.
 ### From app stores
 
 [Google Play Store](https://play.google.com/store/apps/details?id=it.polito.students)  
-[Apple App Store](https://apps.apple.com/us/app/polito-students/id6443913305)
+[Apple App Store](https://testflight.apple.com/join/7e7wafnF)
 
 ### Start from source
 
