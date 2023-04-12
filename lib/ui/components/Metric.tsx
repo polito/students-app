@@ -15,7 +15,7 @@ type Props = ViewProps & {
  * A view used to present a simple textual metric
  */
 export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
-  const { palettes, fontSizes, fontWeights } = useTheme();
+  const { dark, palettes, fontSizes, fontWeights } = useTheme();
 
   return (
     <View {...rest}>
@@ -24,7 +24,7 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
         <Text
           style={[
             {
-              color: color ?? palettes.secondary[500],
+              color: color ?? palettes.secondary[dark ? 500 : 600],
               fontSize: fontSizes.lg,
               fontWeight: fontWeights.semibold,
             },
