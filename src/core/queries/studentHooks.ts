@@ -32,7 +32,14 @@ export const useGetStudent = () => {
   return useQuery(
     prefixKey([STUDENT_QUERY_KEY]),
     () =>
-      studentClient.getStudent().then(pluckData).then(handleAcquiredCredits),
+      studentClient
+        .getStudent()
+        .then(pluckData)
+        .then(handleAcquiredCredits)
+        .then(s => {
+          s.degreeLevel = s.degreeLevel.replace(/ in$/, '');
+          return s;
+        }),
     {
       staleTime: Infinity,
     },
