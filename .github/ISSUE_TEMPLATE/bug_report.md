@@ -31,3 +31,5 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**Are you willing to contribute to this issue?** [Yes/No]
