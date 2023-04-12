@@ -92,13 +92,13 @@ export interface Colors {
 }
 
 export interface Palettes {
-  darkBlue: Palette;
+  navy: Palette;
   orange: Palette;
   rose: Palette;
   red: Palette;
   green: Palette;
   darkOrange: Palette;
-  trueGray: Palette;
+  gray: Palette;
   lightBlue: Palette;
   text: Palette;
   primary: Palette;

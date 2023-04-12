@@ -181,7 +181,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
       ),
     });
   }, [
-    colors.primary,
+    palettes.primary,
     fontSizes.lg,
     navigation,
     screenOptions,

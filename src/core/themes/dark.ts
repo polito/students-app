@@ -24,8 +24,9 @@ export const darkTheme: Theme = {
       android: 'rgba(255, 255, 255, .1)',
       ios: 'rgba(0, 0, 0, .1)',
     })!,
-    divider: 'rgba(255, 255, 255, .15)',
+    divider: lightTheme.palettes.gray[600],
     touchableHighlight: 'rgba(255, 255, 255, .08)',
-    agendaLecture: lightTheme.palettes.darkBlue[100],
+    agendaLecture: lightTheme.palettes.navy[100],
+    tabBarInactive: lightTheme.palettes.gray[400],
   },
 };

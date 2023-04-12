@@ -14,6 +14,7 @@ export const fromUiTheme = (uiTheme: UiTheme): Theme => {
       card: uiTheme.colors.surface,
       text: uiTheme.dark ? 'white' : lightTheme.palettes.text[800],
       notification: uiTheme.palettes.danger[uiTheme.dark ? 400 : 500],
+      border: uiTheme.colors.divider,
     },
   };
 };

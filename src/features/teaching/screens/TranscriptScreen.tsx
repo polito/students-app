@@ -104,7 +104,9 @@ export const TranscriptScreen = () => {
           <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
-              value={`${enrollmentAcquiredCredits}/${enrollmentCredits} CFU`}
+              value={`${enrollmentAcquiredCredits ?? '--'}/${
+                enrollmentCredits ?? '--'
+              } CFU`}
               accessibilityLabel={`${t(
                 'transcriptScreen.acquiredCreditsLabel',
               )}: ${enrollmentAcquiredCredits} ${t(
@@ -114,7 +116,9 @@ export const TranscriptScreen = () => {
             />
             <Metric
               title={t('transcriptScreen.attendedCreditsLabel')}
-              value={`${enrollmentAttendedCredits}/${enrollmentCredits} CFU`}
+              value={`${enrollmentAttendedCredits ?? '--'}/${
+                enrollmentCredits ?? '--'
+              } CFU`}
               accessibilityLabel={`${t(
                 'transcriptScreen.attendedCreditsLabel',
               )}: ${enrollmentCredits} ${t('common.of')} ${enrollmentCredits}`}

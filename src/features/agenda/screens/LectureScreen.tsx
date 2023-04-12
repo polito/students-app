@@ -34,10 +34,10 @@ export const LectureScreen = ({ route }: Props) => {
     if (lecture.virtualClassrooms.length > 0 || !virtualClassrooms) return;
 
     // Temporary behaviour until multiple videos in 1 screen are managed
-    const vcId = [...lecture.virtualClassrooms].shift()!.id;
-    if (!vcId) return;
+    const vc = [...lecture.virtualClassrooms].shift();
+    if (!vc) return;
 
-    return virtualClassrooms.find(vcs => vcs.id === vcId);
+    return virtualClassrooms.find(vcs => vcs.id === vc.id);
   }, [lecture.virtualClassrooms, virtualClassrooms]);
 
   return (
