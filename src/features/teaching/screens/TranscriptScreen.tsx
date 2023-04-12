@@ -196,7 +196,10 @@ export const TranscriptScreen = () => {
               <ListItem
                 key={grade.courseName}
                 title={grade.courseName}
-                subtitle={formatDate(grade.date)}
+                subtitle={`${formatDate(grade.date)} - ${t(
+                  'common.creditsWithUnit',
+                  { credits: grade.credits },
+                )}`}
                 trailingItem={
                   <Text variant="title">{t(formatGrade(grade.grade))}</Text>
                 }
@@ -227,8 +230,13 @@ export const TranscriptScreen = () => {
                     ),
                   )}. ${grade.courseName}: ${formatDate(grade.date)} ${t(
                     'common.grade',
-                  )}: ${grade?.grade}`}
-                  subtitle={formatDate(grade.date)}
+                  )}: ${grade?.grade} - ${t('common.creditsWithUnit', {
+                    credits: grade.credits,
+                  })}`}
+                  subtitle={`${formatDate(grade.date)} - ${t(
+                    'common.creditsWithUnit',
+                    { credits: grade.credits },
+                  )}`}
                   trailingItem={
                     <Text
                       variant="title"
