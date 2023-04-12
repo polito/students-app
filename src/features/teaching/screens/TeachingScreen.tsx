@@ -99,7 +99,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionList
             loading={coursesQuery.isLoading}
             indented
-            emptyStateText={t('coursesScreen.emptyState')}
+            emptyStateText={
+              coursesQuery.data?.length ?? 0 > 0
+                ? t('teachingScreen.allCoursesHidden')
+                : t('coursesScreen.emptyState')
+            }
           >
             {courses.map(course => (
               <CourseListItem
