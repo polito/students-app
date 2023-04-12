@@ -6,7 +6,7 @@ import { Stack, StackProps } from '@lib/ui/components/Stack';
 /**
  * Vertical flexbox
  *
- * Shorthand for {@link import('../Stack').Stack `Stack`} with `direction="column"`
+ * Shorthand for {@link import('./Stack').Stack `Stack`} with `direction="column"`
  */
 export function Col<
   T extends

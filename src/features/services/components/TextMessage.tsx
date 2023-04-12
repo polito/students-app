@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { parseText } from '../../../utils/html-parse';
+import { getHtmlTextContent } from '../../../utils/html';
 
 export interface TextMessageProps {
   message: string;
@@ -12,7 +12,7 @@ export interface TextMessageProps {
 export const TextMessage = ({ message }: TextMessageProps) => {
   const { fontSizes } = useTheme();
   const textMessage = useMemo(() => {
-    return parseText(message);
+    return getHtmlTextContent(message);
   }, [message]);
 
   return (

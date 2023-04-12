@@ -13,7 +13,6 @@ import { Link, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
-import { parseText } from '../../../src/utils/html-parse';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
 import { Text } from './Text';
@@ -31,8 +30,7 @@ interface Props {
 }
 
 /**
- * A section title with an optional link to a related
- * screen
+ * A section title with an optional link to a related screen
  */
 export const SectionHeader = ({
   title,
@@ -67,7 +65,7 @@ export const SectionHeader = ({
             accessibilityRole="header"
             {...ellipsis}
           >
-            {parseText(title)}
+            {title}
           </Text>
         </View>
         {trailingItem

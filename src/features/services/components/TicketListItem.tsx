@@ -24,7 +24,7 @@ import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useMarkTicketAsClosed } from '../../../core/queries/ticketHooks';
 import { formatDateTime } from '../../../utils/dates';
-import { parseText } from '../../../utils/html-parse';
+import { getHtmlTextContent } from '../../../utils/html';
 
 interface Props {
   ticket: TicketOverview;
@@ -77,8 +77,8 @@ export const TicketListItem = ({ ticket }: Props) => {
           screen: 'Ticket',
           params: { id: ticket.id },
         }}
-        title={parseText(ticket?.subject)}
-        subtitle={`${formatDateTime(ticket.updatedAt)} - ${parseText(
+        title={getHtmlTextContent(ticket?.subject)}
+        subtitle={`${formatDateTime(ticket.updatedAt)} - ${getHtmlTextContent(
           ticket?.message,
         )}`}
         subtitleStyle={styles.listItemSubtitle}
