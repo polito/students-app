@@ -1,6 +1,6 @@
 //
 // noinspection AllyPlainJsInspection
-import { useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import { open } from 'react-native-file-viewer';
@@ -23,41 +23,36 @@ export const useDownload = (fromUrl: string, toFile: string) => {
   const { downloadsRef, setDownloads } = useDownloadsContext();
   const { cache } = useContext(FilesCacheContext);
   const key = `${fromUrl}:${toFile}`;
-
-  let download: Download = useMemo(() => {
-    if (downloadsRef.current && key in downloadsRef.current) {
-      return downloadsRef.current[key];
-    } else {
-      download = {
+  const download = useMemo(
+    () =>
+      downloadsRef.current?.[key] ?? {
         isDownloaded: false,
         downloadProgress: undefined,
-      };
-      setDownloads(oldDownloads => ({
-        ...oldDownloads,
-        [key]: download,
-      }));
-
-      return download;
-    }
-  }, [downloadsRef, key, setDownloads]);
-
-  const updateDownload = (updates: Partial<Download>) => {
-    setDownloads(oldDownloads => ({
-      ...oldDownloads,
-      [key]: {
-        ...oldDownloads[key],
-        ...updates,
       },
-    }));
-  };
+    [downloadsRef.current?.[key]],
+  );
+
+  const updateDownload = useCallback(
+    (updates: Partial<Download>) => {
+      const newDownload = {
+        ...download,
+        ...updates,
+      };
+      setDownloads(oldDownloads => {
+        oldDownloads[key] = newDownload;
+        return oldDownloads;
+      });
+    },
+    [download, key],
+  );
 
   useEffect(() => {
     if (toFile) {
-      updateDownload({ isDownloaded: cache[toFile] === true });
+      updateDownload({ isDownloaded: Boolean(cache[toFile]) });
     }
-  }, [toFile, cache]);
+  }, [cache[toFile]]);
 
-  const startDownload = async () => {
+  const startDownload = useCallback(async () => {
     if (!download.isDownloaded && download.downloadProgress == null) {
       updateDownload({ downloadProgress: 0 });
       try {
@@ -97,10 +92,18 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         throw e;
       }
     }
-  };
+  }, [
+    download.downloadProgress,
+    download.isDownloaded,
+    fromUrl,
+    t,
+    toFile,
+    token,
+    updateDownload,
+  ]);
 
-  const stopDownload = () => {
-    const jobId = download?.jobId;
+  const stopDownload = useCallback(() => {
+    const jobId = download.jobId;
     if (jobId) {
       fsStopDownload(jobId);
       updateDownload({
@@ -108,9 +111,9 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         downloadProgress: undefined,
       });
     }
-  };
+  }, [download.jobId, updateDownload]);
 
-  const refreshDownload = async () => {
+  const refreshDownload = useCallback(async () => {
     if (!download.isDownloaded) {
       return startDownload();
     }
@@ -121,27 +124,27 @@ export const useDownload = (fromUrl: string, toFile: string) => {
       downloadProgress: undefined,
     });
     return startDownload();
-  };
+  }, [download.isDownloaded, startDownload, toFile, updateDownload]);
 
-  const removeDownload = async () => {
+  const removeDownload = useCallback(async () => {
     await unlink(toFile);
     updateDownload({
       jobId: undefined,
       isDownloaded: false,
       downloadProgress: undefined,
     });
-  };
+  }, [toFile, updateDownload]);
 
-  const openFile = () => {
+  const openFile = useCallback(() => {
     return open(toFile).catch(async e => {
       if (e.message === 'No app associated with this mime type') {
         throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
       }
     });
-  };
+  }, [fromUrl, toFile]);
 
   return {
-    ...download,
+    ...(download ?? {}),
     startDownload,
     stopDownload,
     refreshDownload,

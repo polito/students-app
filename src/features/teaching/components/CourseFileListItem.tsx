@@ -103,9 +103,9 @@ export const CourseFileListItem = ({
   const courseFilesCache = useCourseFilesCachePath();
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
-    let ext: string | null = extension(item.mimeType);
+    let ext: string | null = extension(item.mimeType!);
     if (!ext) {
-      ext = item.name.match(/\.(.+)$/)?.[1] ?? null;
+      ext = item.name?.match(/\.(.+)$/)?.[1] ?? null;
     }
     return [courseFilesCache, [item.id, ext].filter(notNullish).join('.')].join(
       '/',
@@ -124,8 +124,10 @@ export const CourseFileListItem = ({
   const metrics = useMemo(
     () =>
       [
-        showCreatedDate && formatDateTime(item.createdAt),
-        showSize && formatFileSize(item.sizeInKiloBytes),
+        showCreatedDate && item.createdAt && formatDateTime(item.createdAt),
+        showSize &&
+          item.sizeInKiloBytes &&
+          formatFileSize(item.sizeInKiloBytes),
         showLocation && item.location,
       ]
         .filter(i => !!i)
@@ -212,7 +214,7 @@ export const CourseFileListItem = ({
       onPress={downloadFile}
       isDownloaded={isDownloaded}
       downloadProgress={downloadProgress}
-      title={item.name}
+      title={item.name ?? t('common.unnamedFile')}
       subtitle={metrics}
       trailingItem={trailingItem}
       mimeType={item.mimeType}

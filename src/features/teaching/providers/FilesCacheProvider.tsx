@@ -25,7 +25,9 @@ export const FilesCacheProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  useEffect(refresh, [courseFilesCachePath]);
+  useEffect(() => {
+    refresh();
+  }, [courseFilesCachePath, isReadingFs]);
 
   return (
     <FilesCacheContext.Provider value={{ cache: cacheFs, refresh }}>

@@ -15,6 +15,7 @@ export interface Download {
 export type Downloads = Record<string, Download>;
 
 export const DownloadsContext = createContext<{
+  downloads: Downloads;
   downloadsRef: RefObject<Downloads>;
   setDownloads: Dispatch<SetStateAction<Downloads>>;
 } | null>(null);
