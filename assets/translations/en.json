@@ -349,6 +349,14 @@
     "title": "Places"
   },
   "profileScreen": {
+    "careerStatus": "Career status:",
+    "careerStatusEnum": {
+      "active": "Active",
+      "cancelled": "Cancelled",
+      "career_closed": "Closed",
+      "closed": "Closed",
+      "graduated": "Graduated"
+    },
     "course": "Course",
     "enrollmentYear": "Enrollment year {{- enrollmentYear}}",
     "notifications": "Notifications archive",

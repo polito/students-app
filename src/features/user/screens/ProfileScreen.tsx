@@ -112,9 +112,13 @@ export const ProfileScreen = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      <Section>
+      <Section style={styles.header}>
         <Text weight="bold" variant="title" style={styles.title}>
           {student?.firstName} {student?.lastName}
+        </Text>
+        <Text variant="secondaryText">
+          {t('profileScreen.careerStatus')}{' '}
+          {t(`profileScreen.careerStatusEnum.${student?.status}`).toLowerCase()}
         </Text>
       </Section>
       <View
@@ -138,7 +142,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
       </View>
       <Section accessible={false}>
         <SectionHeader
-          title={t('profileScreen.course')}
+          title={student?.degreeLevel ?? t('profileScreen.course')}
           trailingItem={<Badge text={t('common.comingSoon')} />}
         />
         <SectionList>
@@ -174,6 +178,8 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     title: {
       fontSize: fontSizes['2xl'],
+    },
+    header: {
       paddingHorizontal: spacing[5],
       paddingTop: spacing[IS_ANDROID ? 4 : 1],
     },

@@ -349,6 +349,14 @@
     "title": "Luoghi"
   },
   "profileScreen": {
+    "careerStatus": "Stato carriera:",
+    "careerStatusEnum": {
+      "active": "Attiva",
+      "cancelled": "Cancellata",
+      "career_closed": "Chiusa",
+      "closed": "Chiusa",
+      "graduated": "Laureato"
+    },
     "course": "Corso di laurea",
     "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "notifications": "Archivio notifiche",
