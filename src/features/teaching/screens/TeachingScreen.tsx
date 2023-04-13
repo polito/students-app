@@ -186,9 +186,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     data={
                       studentQuery.data && studentQuery.data.totalCredits
                         ? [
-                            studentQuery.data?.totalAttendedCredits /
+                            (studentQuery.data?.totalAttendedCredits ?? 0) /
                               studentQuery.data?.totalCredits,
-                            studentQuery.data?.totalAcquiredCredits /
+                            (studentQuery.data?.totalAcquiredCredits ?? 0) /
                               studentQuery.data?.totalCredits,
                           ]
                         : []
