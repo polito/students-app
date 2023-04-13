@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import {
@@ -14,6 +14,7 @@ import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -31,7 +32,6 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { IS_ANDROID } from '../../../core/constants';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { UserStackParamList } from '../components/UserNavigator';
@@ -91,11 +91,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
   const { mutate: handleLogout } = useLogout();
-  const useGetMeQuery = useGetStudent();
-  const student = useGetMeQuery.data;
+  const studentQuery = useGetStudent();
+  const student = studentQuery.data;
 
   const styles = useStylesheet(createStyles);
-  const refreshControl = useRefreshControl(useGetMeQuery);
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
     return `${student.firstEnrollmentYear - 1}/${student.firstEnrollmentYear}`;
@@ -110,7 +109,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[studentQuery]} />}
     >
       <Section style={styles.header}>
         <Text weight="bold" variant="title" style={styles.title}>

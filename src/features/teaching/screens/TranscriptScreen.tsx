@@ -17,7 +17,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetGrades,
   useGetStudent,
@@ -34,7 +33,6 @@ export const TranscriptScreen = () => {
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
   const { accessibilityListLabel } = useAccessibility();
-  const refreshControl = useRefreshControl(studentQuery, gradesQuery);
   const {
     enrollmentCredits,
     enrollmentAttendedCredits,
@@ -57,7 +55,9 @@ export const TranscriptScreen = () => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={styles.container}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={
+        <RefreshControl queries={[studentQuery, gradesQuery]} manual />
+      }
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />

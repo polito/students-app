@@ -31,7 +31,7 @@ export const ServicesScreen = () => {
   const services = [
     {
       id: 'tickets',
-      name: t('ticketScreen.title'),
+      name: t('ticketsScreen.title'),
       icon: faComments,
       linkTo: { screen: 'Tickets' },
     },

@@ -11,7 +11,6 @@ import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
@@ -49,7 +48,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
-  const refreshControl = useRefreshControl(directoryQuery);
 
   useEffect(() => {
     navigation.setOptions({
@@ -89,7 +87,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
                 />
               )
             }
-            refreshControl={<RefreshControl {...refreshControl} />}
+            refreshControl={<RefreshControl queries={[directoryQuery]} />}
             ItemSeparatorComponent={Platform.select({
               ios: IndentedDivider,
             })}
@@ -108,7 +106,6 @@ interface SearchProps {
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
-  const refreshControl = useRefreshControl(recentFilesQuery);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
   useEffect(() => {
@@ -135,7 +132,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           onSwipeEnd={() => setScrollEnabled(true)}
         />
       )}
-      {...refreshControl}
+      refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
       ItemSeparatorComponent={Platform.select({
         ios: () => <IndentedDivider />,
       })}

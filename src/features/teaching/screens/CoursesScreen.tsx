@@ -11,7 +11,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseOverview } from '@polito/api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
 
@@ -19,7 +18,6 @@ export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const coursesQuery = useGetCourses();
-  const refreshControl = useRefreshControl(coursesQuery);
   const { accessibilityListLabel } = useAccessibility();
 
   return (
@@ -28,7 +26,7 @@ export const CoursesScreen = () => {
       contentContainerStyle={{
         paddingVertical: spacing[5],
       }}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[coursesQuery]} manual />}
     >
       {coursesQuery.data &&
         (coursesQuery.data.length > 0 ? (

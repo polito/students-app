@@ -9,7 +9,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
@@ -31,12 +30,12 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
     return virtualClassroomQuery.data?.find(l => l.id === lectureId);
   }, [lectureId, virtualClassroomQuery.data]);
 
-  const refreshControl = useRefreshControl(virtualClassroomQuery, teacherQuery);
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={
+        <RefreshControl queries={[virtualClassroomQuery, teacherQuery]} />
+      }
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       {lecture?.videoUrl && (

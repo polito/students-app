@@ -9,7 +9,6 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
 
@@ -18,7 +17,6 @@ export const ExamsScreen = () => {
   const { spacing } = useTheme();
   const examsQuery = useGetExams();
   const { accessibilityListLabel } = useAccessibility();
-  const refreshControl = useRefreshControl(examsQuery);
 
   return (
     <ScrollView
@@ -30,7 +28,7 @@ export const ExamsScreen = () => {
       accessibilityLabel={t('examsScreen.total', {
         total: examsQuery.data?.length ?? 0,
       })}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[examsQuery]} manual />}
     >
       {!examsQuery.isLoading &&
         (examsQuery.data && examsQuery.data.length > 0 ? (

@@ -12,7 +12,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { DateTime } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
@@ -23,7 +22,6 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const noticesQuery = useGetCourseNotices(courseId);
-  const refreshControl = useRefreshControl(noticesQuery);
   const { accessibilityListLabel } = useAccessibility();
   const notices = useMemo(
     () =>
@@ -37,7 +35,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   return (
     <FlatList
       style={GlobalStyles.grow}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[noticesQuery]} />}
       data={notices}
       renderItem={({ item: notice, index }) => (
         <ListItem

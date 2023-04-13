@@ -18,7 +18,6 @@ import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -40,12 +39,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
-
-  const refreshControl = useRefreshControl(
-    coursesQuery,
-    examsQuery,
-    studentQuery,
-  );
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
@@ -83,7 +76,12 @@ export const TeachingScreen = ({ navigation }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={
+        <RefreshControl
+          queries={[coursesQuery, examsQuery, studentQuery]}
+          manual
+        />
+      }
     >
       <View style={styles.container}>
         <Section>

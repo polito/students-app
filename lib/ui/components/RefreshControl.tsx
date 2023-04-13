@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
@@ -6,15 +6,32 @@ import {
   RefreshControlProps,
 } from 'react-native';
 
+import { UseQueryResult } from '@tanstack/react-query';
+
 import { usePrevious } from '../../../src/core/hooks/usePrevious';
 
-export const RefreshControl = ({
-  refreshing,
-  ...rest
-}: RefreshControlProps) => {
+type Props = Omit<RefreshControlProps, 'refreshing'> & {
+  queries: UseQueryResult[];
+  /** Only trigger refresh updates on manual refresh */
+  manual?: boolean;
+};
+
+export const RefreshControl = ({ queries, manual = false, ...rest }: Props) => {
+  const isFetching = queries.some(q => q.isFetching);
+  const [refreshing, setRefreshing] = useState(manual ? false : isFetching);
+  const [firstLoading, setFirstLoading] = useState(true);
   const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
   const previousRefreshing = usePrevious(refreshing);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!manual && firstLoading) {
+      if (isFetching !== refreshing) {
+        setRefreshing(isFetching);
+        setFirstLoading(false);
+      }
+    }
+  }, [manual, isFetching, refreshing, firstLoading]);
 
   useEffect(() => {
     AccessibilityInfo.isScreenReaderEnabled().then(res =>
@@ -33,5 +50,14 @@ export const RefreshControl = ({
     }
   }, [refreshing, screenReaderEnabled]);
 
-  return <RNRefreshControl refreshing={refreshing} {...rest} />;
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    Promise.all(queries.map(q => q.refetch())).finally(() => {
+      setRefreshing(false);
+    });
+  }, [queries]);
+
+  return (
+    <RNRefreshControl refreshing={refreshing} onRefresh={onRefresh} {...rest} />
+  );
 };

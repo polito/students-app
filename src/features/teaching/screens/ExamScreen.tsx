@@ -15,7 +15,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useBookExam,
   useCancelExamBooking,
@@ -32,7 +31,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
   const examsQuery = useGetExams();
-  const refreshControl = useRefreshControl(examsQuery);
   const exam = examsQuery.data?.find(e => e.id === id);
   const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
   const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
@@ -111,7 +109,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   return (
     <>
       <ScrollView
-        refreshControl={<RefreshControl {...refreshControl} />}
+        refreshControl={<RefreshControl queries={[examsQuery]} />}
         contentInsetAdjustmentBehavior="automatic"
       >
         <EventDetails

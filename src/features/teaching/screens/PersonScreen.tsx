@@ -32,7 +32,6 @@ import { PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { notNullish } from '../../../utils/predicates';
@@ -160,7 +159,7 @@ export const PersonScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
-      refreshControl={<RefreshControl {...useRefreshControl(personQuery)} />}
+      refreshControl={<RefreshControl queries={[personQuery]} />}
       contentInsetAdjustmentBehavior="automatic"
     >
       {header}
