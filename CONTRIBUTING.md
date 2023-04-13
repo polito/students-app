@@ -4,6 +4,8 @@ First off, thank you for considering contributing to this project. Here are a fe
 
 ## Prerequisites
 
+You can work on this project on any platform: Windows, macOS or Linux.
+
 In order to work on this project you'll need git and a recent version of Node.js (ideally
 the [gallium](https://nodejs.org/download/release/v16.16.0/) LTS release).  
 [Nvm](https://github.com/nvm-sh/nvm) can be used to automatically select the correct version enforced
@@ -15,12 +17,12 @@ GitHub requires the usage of a personal access token to pull from public reposit
 
 To work on this project, you'll need to configure it correctly in order to be able to pull `@polito/api-client`.
 
-If you never had to pull packages from a GitHub repository, you'll need to create a personal access token with the `read:packages` scope and add it to your `.npmrc` file.
+You'll need to create a personal access token with the `read:packages` scope and add it to your `.npmrc` file.
 
 To generate a personal access token head to [GitHub Tokens settings](https://github.com/settings/tokens) and click on `Generate new token (classic)`.
 Then, select the `read:packages` scope and click on `Generate token`.
 
-Finally, add a .npmrc file in your home directory with the following content:
+Finally, add a .npmrc file in your home directory (`/home/YOUR_USER` on Linux or Windows, `C:\Users\YOUR_USER\` on Windows) with the following content:
 
 ```
 @polito:registry=https://npm.pkg.github.com/
@@ -121,7 +123,6 @@ write good commit messages.
 We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like branching model. In short:
 
 - `main` is the stable trunk.
-- `develop` is the development trunk.
 - Use `feature/...` branches to work on new features.
 - Use `hotfix/...`branches to perform urgent fixes.
 - When useful, add a scope to your commits (ie `feat(teaching): implement trascript page`). Don't repeat branch
@@ -136,14 +137,14 @@ We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like br
 
 We use git hooks to automatically check, lint and format the code and commit messages.
 
-### Internal contribution process
+### Internal contribution process - For Politecnico di Torino employees
 
 - Work on a branch according to the rules described above.
 - Carefully review any linting/formatting errors (ask for help if you don't know how to resolve them).
 - If you can, rebase or pre-merge your branch before submitting the PR.
-- Open a PR against the relevant destination branch.
+- Open a PR against `main`.
 
-### External contribution process
+### External contribution process - For external contributors
 
 - Fork the repo.
 - Work on a branch according to the rules described above.
