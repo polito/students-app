@@ -52,7 +52,7 @@ export const ChatBubble = ({
   );
 };
 
-const createStyles = ({ colors, shapes, spacing }: Theme) =>
+const createStyles = ({ colors, palettes, shapes, spacing }: Theme) =>
   StyleSheet.create({
     bubble: {
       padding: spacing[2.5],
@@ -62,11 +62,11 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     },
     rightBubble: {
       alignSelf: 'flex-end',
-      backgroundColor: colors.primary[600],
+      backgroundColor: palettes.primary[600],
     },
     leftBubble: {
       alignSelf: 'flex-start',
-      backgroundColor: colors.primary[400],
+      backgroundColor: palettes.primary[400],
     },
     arrow: {
       position: 'absolute',
@@ -75,12 +75,12 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
       bottom: 0,
     },
     leftArrow: {
-      backgroundColor: colors.primary[400],
+      backgroundColor: palettes.primary[400],
       borderBottomRightRadius: +spacing[6],
       left: -spacing[2.5],
     },
     rightArrow: {
-      backgroundColor: colors.primary[600],
+      backgroundColor: palettes.primary[600],
       borderBottomLeftRadius: +spacing[6],
       right: -spacing[2.5],
     },

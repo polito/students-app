@@ -40,7 +40,7 @@ import { AgendaWeek } from '../types/AgendaWeek';
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
 
 export const AgendaScreen = ({ navigation }: Props) => {
-  const { colors, fontSizes } = useTheme();
+  const { palettes, fontSizes } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { courses: coursesPreferences } = usePreferencesContext();
@@ -162,7 +162,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
         <>
           <IconButton
             icon={faCalendarDay}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             adjustSpacing="left"
             accessibilityLabel={t('agendaScreen.backToToday')}
@@ -171,7 +171,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           <MenuView actions={screenOptions} onPressAction={onPressOption}>
             <IconButton
               icon={faEllipsisVertical}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
               size={fontSizes.lg}
               adjustSpacing="right"
               accessibilityLabel={t('common.options')}
@@ -181,7 +181,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
       ),
     });
   }, [
-    colors.primary,
+    palettes.primary,
     fontSizes.lg,
     navigation,
     screenOptions,

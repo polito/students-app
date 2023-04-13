@@ -105,7 +105,7 @@ const AssignmentUploadAction = ({
   onPress,
 }: ActionProps) => {
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes } = useTheme();
+  const { colors, palettes, fontSizes } = useTheme();
   return (
     <TouchableHighlight
       style={styles.uploadAction}
@@ -120,7 +120,7 @@ const AssignmentUploadAction = ({
         <Icon
           icon={icon}
           size={fontSizes['3xl']}
-          color={colors.secondary[600]}
+          color={palettes.secondary[600]}
         />
       </View>
     </TouchableHighlight>

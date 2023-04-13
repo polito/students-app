@@ -29,7 +29,7 @@ import { ProgressChart } from '../components/ProgressChart';
 
 export const TranscriptScreen = () => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
@@ -78,7 +78,7 @@ export const TranscriptScreen = () => {
               value={`${totalAttendedCredits ?? '--'}/${
                 totalCredits ?? '--'
               } CFU`}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
               accessibilityLabel={`${t(
                 'transcriptScreen.attendedCreditsLabel',
               )}: ${totalAttendedCredits} ${t('common.of')} ${totalCredits}`}
@@ -93,7 +93,7 @@ export const TranscriptScreen = () => {
                   ]
                 : []
             }
-            colors={[colors.primary[400], colors.secondary[500]]}
+            colors={[palettes.primary[400], palettes.secondary[500]]}
           />
         </Card>
       </Section>
@@ -104,7 +104,9 @@ export const TranscriptScreen = () => {
           <View style={GlobalStyles.grow}>
             <Metric
               title={t('transcriptScreen.acquiredCreditsLabel')}
-              value={`${enrollmentAcquiredCredits}/${enrollmentCredits} CFU`}
+              value={`${enrollmentAcquiredCredits ?? '--'}/${
+                enrollmentCredits ?? '--'
+              } CFU`}
               accessibilityLabel={`${t(
                 'transcriptScreen.acquiredCreditsLabel',
               )}: ${enrollmentAcquiredCredits} ${t(
@@ -114,11 +116,13 @@ export const TranscriptScreen = () => {
             />
             <Metric
               title={t('transcriptScreen.attendedCreditsLabel')}
-              value={`${enrollmentAttendedCredits}/${enrollmentCredits} CFU`}
+              value={`${enrollmentAttendedCredits ?? '--'}/${
+                enrollmentCredits ?? '--'
+              } CFU`}
               accessibilityLabel={`${t(
                 'transcriptScreen.attendedCreditsLabel',
               )}: ${enrollmentCredits} ${t('common.of')} ${enrollmentCredits}`}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
             />
           </View>
           <ProgressChart
@@ -130,7 +134,7 @@ export const TranscriptScreen = () => {
                   ]
                 : []
             }
-            colors={[colors.primary[400], colors.secondary[500]]}
+            colors={[palettes.primary[400], palettes.secondary[500]]}
           />
         </Card>
       </Section>
@@ -148,7 +152,7 @@ export const TranscriptScreen = () => {
             <Metric
               title={t('transcriptScreen.estimatedFinalGrade')}
               value={formatFinalGrade(studentQuery.data?.estimatedFinalGrade)}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
               style={GlobalStyles.grow}
             />
 
@@ -166,7 +170,7 @@ export const TranscriptScreen = () => {
                 value={formatFinalGrade(
                   studentQuery.data.estimatedFinalGradePurged,
                 )}
-                color={colors.primary[400]}
+                color={palettes.primary[400]}
                 style={GlobalStyles.grow}
               />
             )}

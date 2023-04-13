@@ -82,8 +82,8 @@ const CleanCacheListItem = () => {
 
 const ThemeIcon = () => {
   const schemes: Record<string, string> = {
-    dark: lightTheme?.colors.darkBlue[900],
-    light: lightTheme?.colors.lightBlue[200],
+    dark: lightTheme?.palettes.navy[900],
+    light: lightTheme?.palettes.lightBlue[200],
   };
   const { colorScheme } = usePreferencesContext();
 
@@ -111,8 +111,8 @@ const VisualizationListItem = () => {
   const settingsColorScheme = useColorScheme();
 
   const colorSchema = {
-    dark: lightTheme?.colors.darkBlue[900],
-    light: lightTheme?.colors.lightBlue[200],
+    dark: lightTheme?.palettes.navy[900],
+    light: lightTheme?.palettes.lightBlue[200],
   };
 
   const themeColors = [

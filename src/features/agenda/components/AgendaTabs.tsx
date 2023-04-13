@@ -69,10 +69,10 @@ export const AgendaTabs = ({ state, toggleState }: Props) => {
   );
 };
 
-const createStyles = ({ colors, dark }: Theme) =>
+const createStyles = ({ colors, palettes, dark }: Theme) =>
   StyleSheet.create({
     tabs: {
-      backgroundColor: colors.headers,
+      backgroundColor: colors.headersBackground,
       borderBottomWidth: Platform.select({
         ios: StyleSheet.hairlineWidth,
       }),
@@ -87,11 +87,11 @@ const createStyles = ({ colors, dark }: Theme) =>
       color: colors.heading,
     },
     tabTextDisabled: {
-      color: colors.text[dark ? 400 : 500],
+      color: palettes.text[dark ? 400 : 500],
     },
     tabDisabled: {
       backgroundColor: 'transparent',
-      borderColor: colors.text[dark ? 400 : 500],
+      borderColor: palettes.text[dark ? 400 : 500],
     },
     tabBooking: {
       backgroundColor:

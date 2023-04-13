@@ -51,7 +51,7 @@ export const AgendaNavigator = () => {
           headerShadowVisible: false,
           headerBackTitleVisible: false,
           headerLargeStyle: {
-            backgroundColor: colors.headers,
+            backgroundColor: colors.headersBackground,
           },
         }}
       />

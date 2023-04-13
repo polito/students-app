@@ -44,7 +44,7 @@ export const ServiceCard = ({
 }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
-  const { dark, colors } = useTheme();
+  const { dark, colors, palettes } = useTheme();
 
   return (
     <TouchableCard
@@ -60,12 +60,12 @@ export const ServiceCard = ({
         <Icon
           icon={icon}
           size={28}
-          color={iconColor ?? colors.primary[dark ? 400 : 500]}
+          color={iconColor ?? palettes.primary[dark ? 400 : 500]}
         />
 
         <IconButton
           icon={favorite ? faStarFilled : faStar}
-          color={favorite ? colors.orange[400] : colors.secondaryText}
+          color={favorite ? palettes.orange[400] : colors.secondaryText}
           onPress={() => onFavoriteChange(!favorite)}
           style={styles.favButton}
           disabled={disabled}

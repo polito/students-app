@@ -51,7 +51,7 @@ export const CtaButton = ({
   containerStyle,
   ...rest
 }: Props) => {
-  const { colors, fontSizes, spacing } = useTheme();
+  const { palettes, fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const [showSuccess, setShowSuccess] = useState(false);
   const successMessageRef = useRef<string>();
@@ -85,8 +85,8 @@ export const CtaButton = ({
         accessibilityRole="button"
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
-            ? colors.danger[600]
-            : colors.primary[600]
+            ? palettes.danger[600]
+            : palettes.primary[600]
         }
         disabled={disabled || loading || showSuccess}
         style={[
@@ -95,8 +95,8 @@ export const CtaButton = ({
             backgroundColor: (
               showSuccess ? destructiveRef.current : destructive
             )
-              ? colors.danger[500]
-              : colors.primary[500],
+              ? palettes.danger[500]
+              : palettes.primary[500],
           },
           disabled && styles.disabledButton,
           style,
@@ -133,7 +133,7 @@ export const CtaButton = ({
                   <Icon
                     icon={icon}
                     size={fontSizes.xl}
-                    color={colors.text[100]}
+                    color={palettes.text[100]}
                     style={{ marginRight: spacing[2] }}
                   />
                 )}

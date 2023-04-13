@@ -43,7 +43,7 @@ interface Props {
 const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   const { mutate } = useSwitchCareer();
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { palettes, spacing } = useTheme();
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
   const canSwitchCareer = allCareerIds.length > 1;
@@ -79,7 +79,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
             {username}
           </Text>
           {canSwitchCareer && (
-            <Icon icon={faAngleDown} color={colors.primary[500]} />
+            <Icon icon={faAngleDown} color={palettes.primary[500]} />
           )}
         </Row>
       </MenuView>

@@ -4,6 +4,7 @@ import { TextStyle } from 'react-native';
 export interface Theme {
   dark: boolean;
   colors: Colors;
+  palettes: Palettes;
   shapes: {
     sm: number;
     md: number;
@@ -68,14 +69,13 @@ export interface Theme {
   };
 }
 
-export type Colors = Record<string, string | ColorPalette> & {
+export interface Colors {
   background: string;
   surface: string;
   surfaceDark: string;
-  headers: string;
+  headersBackground: string;
   heading: string;
   prose: string;
-  headline: string;
   secondaryText: string;
   caption: string;
   link: string;
@@ -89,18 +89,29 @@ export type Colors = Record<string, string | ColorPalette> & {
   agendaExam: string;
   agendaLecture: string;
   translucentSurface: string;
-  text: ColorPalette;
-  primary: ColorPalette;
-  secondary: ColorPalette;
-  danger: ColorPalette;
-  success: ColorPalette;
-  error: ColorPalette;
-  warning: ColorPalette;
-  muted: ColorPalette;
-  info: ColorPalette;
-};
+}
 
-export interface ColorPalette {
+export interface Palettes {
+  navy: Palette;
+  orange: Palette;
+  rose: Palette;
+  red: Palette;
+  green: Palette;
+  darkOrange: Palette;
+  gray: Palette;
+  lightBlue: Palette;
+  text: Palette;
+  primary: Palette;
+  secondary: Palette;
+  danger: Palette;
+  success: Palette;
+  error: Palette;
+  warning: Palette;
+  muted: Palette;
+  info: Palette;
+}
+
+export interface Palette {
   50: string;
   100: string;
   200: string;

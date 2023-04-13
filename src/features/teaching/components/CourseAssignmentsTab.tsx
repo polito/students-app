@@ -22,7 +22,7 @@ export const CourseAssignmentsTab = ({
   courseId,
   navigation,
 }: CourseTabProps) => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
   const { t } = useTranslation();
   // @ts-expect-error due to Swipeable lib type patch
   const swipeableRef = useRef<Swipeable>();
@@ -46,14 +46,14 @@ export const CourseAssignmentsTab = ({
                     key={assignment.id}
                     onRef={ref => (swipeableRef.current = ref)}
                     rightContainerStyle={{
-                      backgroundColor: colors.danger[500],
+                      backgroundColor: palettes.danger[500],
                     }}
                     rightButtons={[
                       // eslint-disable-next-line react/jsx-key
                       <SwipeableAction
                         icon={faTrashCan}
                         label={t('common.retract')}
-                        backgroundColor={colors.danger[500]}
+                        backgroundColor={palettes.danger[500]}
                         onPress={() => {
                           swipeableRef.current?.recenter();
                         }}

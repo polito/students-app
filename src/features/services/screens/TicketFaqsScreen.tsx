@@ -154,7 +154,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
+const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],
@@ -172,10 +172,10 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) =>
     },
     noResultFound: {
       textAlign: 'center',
-      color: colors.text[100],
+      color: palettes.text[100],
     },
     emptyState: {
-      backgroundColor: colors.primary[700],
+      backgroundColor: palettes.primary[700],
     },
     searchBar: {
       paddingRight: spacing[2],

@@ -76,7 +76,7 @@ export const FileListItem = ({
   mimeType,
   ...rest
 }: ListItemProps & Props) => {
-  const { colors, fontSizes } = useTheme();
+  const { palettes, fontSizes } = useTheme();
   const styles = useStylesheet(createItemStyles);
   const { t } = useTranslation();
 
@@ -94,7 +94,7 @@ export const FileListItem = ({
               <ProgressIndicator
                 progress={downloadProgress}
                 size={12}
-                color={colors.secondary[600]}
+                color={palettes.secondary[600]}
               />
             </View>
           ) : (
@@ -103,7 +103,7 @@ export const FileListItem = ({
                 <Icon
                   icon={faCheckCircle}
                   size={12}
-                  color={colors.secondary[600]}
+                  color={palettes.secondary[600]}
                 />
               </View>
             )

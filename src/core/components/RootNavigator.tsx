@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
@@ -30,6 +31,7 @@ const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
 
@@ -62,6 +64,7 @@ export const RootNavigator = () => {
         },
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
+        tabBarInactiveTintColor: colors.tabBarInactive,
       }}
     >
       <TabNavigator.Screen
@@ -123,7 +126,7 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: IS_IOS ? colors.headers : colors.surface,
+      backgroundColor: IS_IOS ? colors.headersBackground : colors.surface,
       borderTopColor: colors.divider,
     },
     tabBarItemStyle: {

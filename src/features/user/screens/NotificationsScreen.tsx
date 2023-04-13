@@ -5,13 +5,13 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const NotificationsScreen = () => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
   const { t } = useTranslation();
 
   return (
     <EmptyState
       icon={faTriangleExclamation}
-      iconColor={colors.orange[600]}
+      iconColor={palettes.orange[600]}
       message={t('common.comingSoon')}
     />
   );

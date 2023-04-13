@@ -5,7 +5,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { IS_ANDROID } from '../constants';
 
-const darkBlue = {
+const navy = {
   50: '#B7E1FF',
   100: '#9BD6FF',
   200: '#62BFFF',
@@ -31,17 +31,17 @@ const orange = {
   900: '#472400',
 };
 
-const text = {
-  50: '#FAFAFA',
-  100: '#F5F5F5',
-  200: '#E5E5E5',
-  300: '#D4D4D4',
-  400: '#A3A3A3',
-  500: '#737373',
-  600: '#525252',
-  700: '#404040',
-  800: '#262626',
-  900: '#171717',
+const gray = {
+  50: 'hsl(205,20%,98%)',
+  100: 'hsl(205,20%,96%)',
+  200: 'hsl(205,20%,90%)',
+  300: 'hsl(205,20%,83%)',
+  400: 'hsl(205,20%,64%)',
+  500: 'hsl(205,20%,45%)',
+  600: 'hsl(205,20%,32%)',
+  700: 'hsl(205,20%,25%)',
+  800: 'hsl(205,20%,15%)',
+  900: 'hsl(205,20%,9%)',
 };
 
 const rose = {
@@ -96,19 +96,6 @@ const darkOrange = {
   900: '#7c2d12',
 };
 
-const trueGray = {
-  50: '#fafafa',
-  100: '#f5f5f5',
-  200: '#e5e5e5',
-  300: '#d4d4d4',
-  400: '#a3a3a3',
-  500: '#737373',
-  600: '#525252',
-  700: '#404040',
-  800: '#262626',
-  900: '#171717',
-};
-
 const lightBlue = {
   50: '#f0f9ff',
   100: '#e0f2fe',
@@ -127,43 +114,44 @@ const backgroundColor = '#F0F3F5';
 export const lightTheme: Theme = {
   dark: false,
   colors: {
-    darkBlue,
+    touchableHighlight: 'rgba(0, 0, 0, .08)',
+    background: backgroundColor,
+    surface: '#FFFFFF',
+    surfaceDark: '#143959',
+    headersBackground: IS_ANDROID ? '#FFFFFF' : '#EDEEF0',
+    heading: navy[700],
+    title: navy[700],
+    prose: gray[800],
+    secondaryText: gray[500],
+    caption: gray[400],
+    link: navy[500],
+    divider: gray[300],
+    tabBar: navy[200],
+    translucentSurface: 'rgba(0, 0, 0, .1)',
+    tabBarInactive: gray[500],
+    agendaBooking: green[600],
+    agendaDeadline: red[700],
+    agendaExam: orange[600],
+    agendaLecture: navy[500],
+  },
+  palettes: {
+    navy,
     orange,
-    text,
+    gray,
     rose,
     red,
     green,
     darkOrange,
-    trueGray,
     lightBlue,
-    primary: darkBlue,
+    text: gray,
+    primary: navy,
     secondary: orange,
     danger: rose,
     error: red,
     success: green,
     warning: orange,
-    muted: trueGray,
+    muted: gray,
     info: lightBlue,
-    touchableHighlight: 'rgba(0, 0, 0, .08)',
-    background: backgroundColor,
-    surface: '#FFFFFF',
-    surfaceDark: '#143959',
-    headers: IS_ANDROID ? '#FFFFFF' : '#EDEEF0',
-    heading: darkBlue[700],
-    title: darkBlue[700],
-    headline: darkBlue[700],
-    prose: text[800],
-    secondaryText: text[500],
-    caption: text[400],
-    link: darkBlue[500],
-    divider: 'rgba(0, 0, 0, .15)',
-    tabBar: darkBlue[200],
-    translucentSurface: 'rgba(0, 0, 0, .1)',
-    tabBarInactive: backgroundColor,
-    agendaBooking: green[600],
-    agendaDeadline: red[700],
-    agendaExam: orange[600],
-    agendaLecture: darkBlue[500],
   },
   fontFamilies: {
     heading: 'Montserrat',

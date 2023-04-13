@@ -6,14 +6,14 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 export const PlacesScreen = () => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
   const { t } = useTranslation();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <EmptyState
         icon={faTriangleExclamation}
-        iconColor={colors.orange[600]}
+        iconColor={palettes.orange[600]}
         message={t('common.comingSoon')}
       />
     </ScrollView>

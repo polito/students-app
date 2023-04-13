@@ -17,7 +17,7 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Deadline'>;
 export const DeadlineScreen = ({ route }: Props) => {
   const { item: deadline } = route.params;
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { palettes, spacing } = useTheme();
 
   const onPressDeadlineUrl = () =>
     deadline.url ? Linking.openURL(deadline.url) : null;
@@ -37,7 +37,7 @@ export const DeadlineScreen = ({ route }: Props) => {
               <Icon
                 icon={faLink}
                 size={20}
-                color={colors.primary[400]}
+                color={palettes.primary[400]}
                 style={{ marginRight: spacing[2] }}
               />
             }
