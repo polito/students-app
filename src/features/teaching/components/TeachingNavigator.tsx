@@ -106,8 +106,8 @@ export const TeachingNavigator = () => {
         name="Notice"
         component={NoticeScreen}
         options={{
+          headerBackTitle: t('common.course'),
           headerTitle: t('common.notice'),
-          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen

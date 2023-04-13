@@ -28,7 +28,7 @@ export const NoticeScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl queries={[noticesQuery]} />}
+      refreshControl={<RefreshControl queries={[noticesQuery]} manual />}
     >
       <HtmlView
         source={{ html }}

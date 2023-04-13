@@ -16,6 +16,10 @@ type Props = Omit<RefreshControlProps, 'refreshing'> & {
   manual?: boolean;
 };
 
+/**
+ * An accessible RefreshControl extension that connects to one or more TanStack
+ * Query queries
+ */
 export const RefreshControl = ({ queries, manual = false, ...rest }: Props) => {
   const isFetching = queries.some(q => q.isFetching);
   const [refreshing, setRefreshing] = useState(manual ? false : isFetching);
@@ -28,7 +32,9 @@ export const RefreshControl = ({ queries, manual = false, ...rest }: Props) => {
     if (!manual && firstLoading) {
       if (isFetching !== refreshing) {
         setRefreshing(isFetching);
-        setFirstLoading(false);
+        if (!isFetching) {
+          setFirstLoading(false);
+        }
       }
     }
   }, [manual, isFetching, refreshing, firstLoading]);
