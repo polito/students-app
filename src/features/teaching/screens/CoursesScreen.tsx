@@ -8,6 +8,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { CourseOverview } from '@polito/api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
@@ -29,14 +30,14 @@ export const CoursesScreen = () => {
       }}
       refreshControl={<RefreshControl {...refreshControl} />}
     >
-      {!coursesQuery.isLoading &&
-        (coursesQuery.data.data.length > 0 ? (
+      {coursesQuery.data &&
+        (coursesQuery.data.length > 0 ? (
           Object.entries(
-            coursesQuery.data.data.reduce((byPeriod, course) => {
+            coursesQuery.data.reduce((byPeriod, course) => {
               (byPeriod[course.teachingPeriod] =
                 byPeriod[course.teachingPeriod] ?? []).push(course);
               return byPeriod;
-            }, {} as Record<string, Array<typeof coursesQuery.data.data[0]>>),
+            }, {} as Record<string, CourseOverview[]>),
           ).map(([period, courses]) => (
             <Section key={period}>
               <SectionHeader

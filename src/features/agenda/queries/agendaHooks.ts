@@ -7,7 +7,7 @@ import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetDeadlineWeeks } from '../../../core/queries/studentHooks';
-import { Exam } from '../../../core/types/Exam';
+import { Exam } from '../../../core/types/api';
 import { formatMachineDate, formatTime } from '../../../utils/dates';
 import { popPage, prefixKey, shiftPage } from '../../../utils/queries';
 import { AgendaDay } from '../types/AgendaDay';
@@ -43,9 +43,9 @@ const groupItemsByDay = (
         type: 'exam',
         color: coursePreferences.color,
         icon: coursePreferences.icon,
-        date: formatMachineDate(exam.examStartsAt),
-        startTimestamp: exam.examStartsAt.valueOf(),
-        fromTime: formatTime(exam.examStartsAt),
+        date: formatMachineDate(exam.examStartsAt!),
+        startTimestamp: exam.examStartsAt!.valueOf(),
+        fromTime: formatTime(exam.examStartsAt!),
         isTimeToBeDefined: exam.isTimeToBeDefined,
         title: exam.courseName,
         classroom: exam?.classrooms,
@@ -61,10 +61,10 @@ const groupItemsByDay = (
         id: booking.id,
         key: 'booking' + booking.id,
         type: 'booking',
-        date: formatMachineDate(booking.startsAt),
-        startTimestamp: booking.startsAt.valueOf(),
-        fromTime: formatTime(booking.startsAt),
-        toTime: formatTime(booking.endsAt),
+        date: formatMachineDate(booking.startsAt!),
+        startTimestamp: booking.startsAt!.valueOf(),
+        fromTime: formatTime(booking.startsAt!),
+        toTime: formatTime(booking.endsAt!),
         title: booking.topic.title,
       };
       return item;
@@ -89,10 +89,8 @@ const groupItemsByDay = (
         place: lecture.place,
         teacherId: lecture.teacherId,
         virtualClassrooms: lecture.virtualClassrooms,
+        description: lecture.description,
       };
-      if (lecture.description) {
-        item.description = lecture.description;
-      }
       return item;
     }),
   );
@@ -176,14 +174,17 @@ export const useGetAgendaWeeks = (
         bookings: Booking[] = [];
 
       if (filters.exam) {
-        exams = examsQuery.data.filter(
-          e => e.examStartsAt > jsSince && e.examStartsAt < jsUntil,
+        exams = examsQuery.data!.filter(
+          e =>
+            e.examStartsAt &&
+            e.examStartsAt > jsSince &&
+            e.examStartsAt < jsUntil,
         );
       }
 
       if (filters.booking) {
-        bookings = bookingsQuery.data.data.filter(
-          b => b.startsAt > jsSince && b.startsAt < jsUntil,
+        bookings = bookingsQuery.data!.filter(
+          b => b.startsAt && b.startsAt > jsSince && b.startsAt < jsUntil,
         );
       }
 

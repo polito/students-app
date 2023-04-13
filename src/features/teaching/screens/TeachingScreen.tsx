@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
@@ -14,10 +14,10 @@ import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { ExamStatusEnum } from '@polito/api-client';
+import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
@@ -36,7 +36,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { courses: coursePreferences } = useContext(PreferencesContext);
+  const { courses: coursePreferences } = usePreferencesContext();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -48,13 +48,14 @@ export const TeachingScreen = ({ navigation }: Props) => {
   );
 
   const courses = useMemo(() => {
-    if (!coursesQuery.data?.data) return [];
+    if (!coursesQuery.data) return [];
 
-    return coursesQuery.data?.data
+    return coursesQuery.data
       .filter(c => c.id && !coursePreferences[c.id]?.isHidden)
       .sort(
-        (a, b) =>
-          coursePreferences[a.id]?.order - coursePreferences[b.id]?.order,
+        (a: CourseOverview, b) =>
+          (coursePreferences[a.id!]?.order ?? 0) -
+          (coursePreferences[b.id!]?.order ?? 0),
       );
   }, [coursesQuery, coursePreferences]);
 
@@ -65,7 +66,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     Object.keys(coursePreferences).forEach((key: string) => {
       if (coursePreferences[+key].isHidden) {
-        const hiddenCourse = coursesQuery.data.data.find(c => c.id === +key);
+        const hiddenCourse = coursesQuery.data?.find(c => c.id === +key);
         if (hiddenCourse && !hiddenCourse.isModule)
           hiddenNonModuleCourses.push(hiddenCourse.shortcode);
       }
@@ -89,7 +90,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionHeader
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
-            linkToMoreCount={coursesQuery.data?.data.length - courses.length}
+            linkToMoreCount={
+              coursesQuery.data
+                ? coursesQuery.data.length - courses.length
+                : undefined
+            }
           />
           <SectionList
             loading={coursesQuery.isLoading}
@@ -108,7 +113,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionHeader
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
-            linkToMoreCount={examsQuery.data?.length - exams.length}
+            linkToMoreCount={
+              examsQuery.data
+                ? examsQuery.data.length - exams.length
+                : undefined
+            }
           />
           <SectionList
             loading={examsQuery.isLoading}
@@ -135,51 +144,50 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   <Col justify="space-between">
                     <Metric
                       title={
-                        studentQuery.data?.data.averageGradePurged != null
+                        studentQuery.data?.averageGradePurged != null
                           ? t('transcriptScreen.finalAverageLabel')
                           : t('transcriptScreen.weightedAverageLabel')
                       }
                       value={
-                        studentQuery.data?.data.averageGradePurged ??
-                        studentQuery.data?.data.averageGrade ??
+                        studentQuery.data?.averageGradePurged ??
+                        studentQuery.data?.averageGrade ??
                         '--'
                       }
                       color={colors.title}
                     />
-                    <Metric
-                      title={
-                        studentQuery.data?.data.estimatedFinalGradePurged !=
-                        null
-                          ? t('transcriptScreen.estimatedFinalGradePurged')
-                          : t('transcriptScreen.estimatedFinalGrade')
-                      }
-                      value={
-                        studentQuery.data?.data.estimatedFinalGradePurged !=
-                        null
-                          ? formatFinalGrade(
-                              studentQuery.data?.data.estimatedFinalGradePurged,
-                            )
-                          : formatFinalGrade(
-                              studentQuery.data?.data.estimatedFinalGrade,
-                            )
-                      }
-                      color={colors.title}
-                    />
+                    {studentQuery.data?.estimatedFinalGradePurged ? (
+                      <Metric
+                        title={t('transcriptScreen.estimatedFinalGradePurged')}
+                        value={formatFinalGrade(
+                          studentQuery.data?.estimatedFinalGradePurged,
+                        )}
+                        color={colors.title}
+                      />
+                    ) : (
+                      <Metric
+                        title={t('transcriptScreen.estimatedFinalGrade')}
+                        value={formatFinalGrade(
+                          studentQuery.data?.estimatedFinalGrade,
+                        )}
+                        color={colors.title}
+                      />
+                    )}
                   </Col>
                   <ProgressChart
                     label={
-                      studentQuery.data?.data.totalCredits &&
-                      `${studentQuery.data?.data.totalAcquiredCredits}/${
-                        studentQuery.data?.data.totalCredits
-                      }\n${t('common.ects')}`
+                      studentQuery.data?.totalCredits
+                        ? `${studentQuery.data?.totalAcquiredCredits}/${
+                            studentQuery.data?.totalCredits
+                          }\n${t('common.ects')}`
+                        : undefined
                     }
                     data={
-                      studentQuery.data && studentQuery.data?.data.totalCredits
+                      studentQuery.data && studentQuery.data.totalCredits
                         ? [
-                            studentQuery.data?.data.totalAttendedCredits /
-                              studentQuery.data?.data.totalCredits,
-                            studentQuery.data?.data.totalAcquiredCredits /
-                              studentQuery.data?.data.totalCredits,
+                            studentQuery.data?.totalAttendedCredits /
+                              studentQuery.data?.totalCredits,
+                            studentQuery.data?.totalAcquiredCredits /
+                              studentQuery.data?.totalCredits,
                           ]
                         : []
                     }

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -31,7 +31,7 @@ import { MenuView } from '@react-native-menu/menu';
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
 import { lightTheme } from '../../../core/themes/light';
@@ -42,7 +42,7 @@ const CleanCacheListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
   const filesCache = useCoursesFilesCachePath();
-  const [cacheSize, setCacheSize] = useState<number>(null);
+  const [cacheSize, setCacheSize] = useState<number>();
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('settingsScreen.cleanCacheConfirmMessage'),
@@ -85,7 +85,7 @@ const ThemeIcon = () => {
     dark: lightTheme?.colors.darkBlue[900],
     light: lightTheme?.colors.lightBlue[200],
   };
-  const { colorScheme } = useContext(PreferencesContext);
+  const { colorScheme } = usePreferencesContext();
 
   if (colorScheme === 'system') {
     return <Icon icon={faCircleHalfStroke} size={30} />;
@@ -107,7 +107,7 @@ const ThemeIcon = () => {
 
 const VisualizationListItem = () => {
   const { t } = useTranslation();
-  const { colorScheme, updatePreference } = useContext(PreferencesContext);
+  const { colorScheme, updatePreference } = usePreferencesContext();
   const settingsColorScheme = useColorScheme();
 
   const colorSchema = {
@@ -184,7 +184,7 @@ const VisualizationListItem = () => {
 
 const LanguageListItem = () => {
   const { t } = useTranslation();
-  const { language, updatePreference } = useContext(PreferencesContext);
+  const { language, updatePreference } = usePreferencesContext();
   const deviceLanguage = useDeviceLanguage();
 
   const languageLabel = (cc: string) => {
@@ -226,7 +226,7 @@ const LanguageListItem = () => {
 const Notifications = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const { notifications, updatePreference } = useContext(PreferencesContext);
+  const { notifications, updatePreference } = usePreferencesContext();
 
   const onChangeNotification =
     (notificationType: string) => (value: boolean) => {

@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  CourseAllOfPreviousEditions,
   CourseAllOfVcOtherCourses,
-  CourseAllOfVcPreviousYears,
   CourseDirectory,
   CourseDirectoryContentInner,
   CourseFileOverview,
@@ -20,7 +20,7 @@ import {
 import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
 import { CourseLectureSection } from '../../features/teaching/types/CourseLectureSections';
 import { notNullish } from '../../utils/predicates';
-import { prefixKey } from '../../utils/queries';
+import { pluckData, prefixKey } from '../../utils/queries';
 import { courseColors } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -33,7 +33,7 @@ const useCoursesClient = (): CoursesApi => {
   const {
     clients: { courses: coursesClient },
   } = useApiContext();
-  return coursesClient;
+  return coursesClient!;
 };
 
 export const useGetCourses = () => {
@@ -41,45 +41,47 @@ export const useGetCourses = () => {
   const { courses, updatePreference } = usePreferencesContext();
 
   return useQuery(prefixKey([COURSES_QUERY_KEY]), () =>
-    coursesClient.getCourses().then(p => {
-      let hasNewPreferences = false;
-      // Associate each course with a set of preferences, if missing
-      p.data.forEach(c => {
-        // Skip courses without id (such as thesis)
-        if (!c.id) return;
+    coursesClient
+      .getCourses()
+      .then(pluckData)
+      .then(p => {
+        let hasNewPreferences = false;
+        // Associate each course with a set of preferences, if missing
+        p.forEach(c => {
+          // Skip courses without id (such as thesis)
+          if (!c.id) return;
 
-        if (!(c.id in courses)) {
-          const usedColors = Object.values(courses)
-            .map(cp => cp.color)
-            .filter(notNullish);
-          let colorData: typeof courseColors[0];
-          for (const currentColor of courseColors) {
-            if (!usedColors.includes(currentColor.color)) {
-              colorData = currentColor;
-              break;
+          if (!(c.id in courses)) {
+            const usedColors = Object.values(courses)
+              .map(cp => cp.color)
+              .filter(notNullish);
+            let colorData: typeof courseColors[0] | undefined;
+            for (const currentColor of courseColors) {
+              if (!usedColors.includes(currentColor.color)) {
+                colorData = currentColor;
+                break;
+              }
             }
+            if (!colorData) {
+              colorData =
+                courseColors[
+                  Math.round(Math.random() * (courseColors.length - 1))
+                ];
+            }
+            courses[c.id] = {
+              color: colorData.color,
+              isHidden: false,
+            };
+            hasNewPreferences = true;
           }
-          if (!colorData) {
-            colorData =
-              courseColors[
-                Math.round(Math.random() * (courseColors.length - 1))
-              ];
-          }
-          courses[c.id] = {
-            color: colorData.color,
-            icon: null,
-            isHidden: false,
-          };
-          hasNewPreferences = true;
+        });
+
+        if (hasNewPreferences) {
+          updatePreference('courses', courses);
         }
-      });
 
-      if (hasNewPreferences) {
-        updatePreference('courses', courses);
-      }
-
-      return p;
-    }),
+        return p;
+      }),
   );
 };
 
@@ -89,14 +91,17 @@ export const useGetCourse = (courseId: number) => {
   return useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'overview']),
     () => {
-      return coursesClient.getCourse({ courseId: courseId }).then(course => {
-        const { teachingPeriod } = course.data;
-        const period = teachingPeriod.split('-');
-        if (period.length > 1 && period[0] === period[1]) {
-          course.data.teachingPeriod = period[0];
-        }
-        return course;
-      });
+      return coursesClient
+        .getCourse({ courseId: courseId })
+        .then(pluckData)
+        .then(course => {
+          const { teachingPeriod } = course;
+          const period = teachingPeriod.split('-');
+          if (period.length > 1 && period[0] === period[1]) {
+            course.teachingPeriod = period[0];
+          }
+          return course;
+        });
     },
     {
       staleTime: Infinity,
@@ -113,7 +118,9 @@ export const useGetCourseFiles = (courseId: number) => {
   return useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'files']),
     () => {
-      return coursesClient.getCourseFiles({ courseId: courseId });
+      return coursesClient
+        .getCourseFiles({ courseId: courseId })
+        .then(pluckData);
     },
     {
       staleTime: courseFilesStaleTime,
@@ -132,7 +139,7 @@ export const useGetCourseFilesRecent = (courseId: number) => {
 
   const recentFilesQuery = useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'recentFiles']),
-    () => sortRecentFiles(filesQuery.data.data),
+    () => sortRecentFiles(filesQuery.data!),
     {
       enabled: !!filesQuery.data && !filesQuery.isRefetching,
       staleTime: courseFilesStaleTime,
@@ -188,20 +195,25 @@ export const useGetCourseDirectory = (
 ) => {
   const filesQuery = useGetCourseFiles(courseId);
 
-  const rootDirectoryContent = filesQuery.data?.data;
+  const rootDirectoryContent = filesQuery.data;
 
   return useQuery(
-    prefixKey([COURSE_QUERY_KEY, courseId, 'directories', directoryId]),
+    prefixKey([
+      COURSE_QUERY_KEY,
+      courseId,
+      'directories',
+      directoryId ?? 'root',
+    ]),
     () => {
       if (!directoryId) {
         // Root directory
         return new Promise<CourseDirectoryContentInner[]>(resolve => {
-          resolve(rootDirectoryContent);
+          resolve(rootDirectoryContent!);
         });
       }
-      const directory = findDirectory(directoryId, rootDirectoryContent);
+      const directory = findDirectory(directoryId, rootDirectoryContent!);
 
-      return new Promise<CourseDirectoryContentInner[]>(resolve => {
+      return new Promise<CourseDirectoryContentInner[] | null>(resolve => {
         resolve(directory);
       });
     },
@@ -221,7 +233,7 @@ export const useGetCourseDirectory = (
 const findDirectory = (
   searchDirectoryId: string,
   directoryContent: CourseDirectoryContentInner[],
-): CourseDirectoryContentInner[] => {
+): CourseDirectoryContentInner[] | null => {
   let result = null;
   const childDirectories = directoryContent.filter(
     f => f.type === 'directory',
@@ -249,7 +261,7 @@ export const useGetCourseAssignments = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
   return useQuery(prefixKey([COURSE_QUERY_KEY, courseId, 'assignments']), () =>
-    coursesClient.getCourseAssignments({ courseId: courseId }),
+    coursesClient.getCourseAssignments({ courseId: courseId }).then(pluckData),
   );
 };
 
@@ -276,7 +288,7 @@ export const useGetCourseGuide = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
   return useQuery(prefixKey([COURSE_QUERY_KEY, courseId, 'guide']), () =>
-    coursesClient.getCourseGuide({ courseId: courseId }),
+    coursesClient.getCourseGuide({ courseId: courseId }).then(pluckData),
   );
 };
 
@@ -284,7 +296,7 @@ export const useGetCourseNotices = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
   return useQuery(prefixKey([COURSE_QUERY_KEY, courseId, 'notices']), () =>
-    coursesClient.getCourseNotices({ courseId: courseId }),
+    coursesClient.getCourseNotices({ courseId: courseId }).then(pluckData),
   );
 };
 
@@ -293,12 +305,15 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 
   return useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'virtual-classrooms']),
-    () => coursesClient.getCourseVirtualClassrooms({ courseId: courseId }),
+    () =>
+      coursesClient
+        .getCourseVirtualClassrooms({ courseId: courseId })
+        .then(pluckData),
   );
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (CourseAllOfVcPreviousYears | CourseAllOfVcOtherCourses)[],
+  relatedVCs: (CourseAllOfPreviousEditions | CourseAllOfVcOtherCourses)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -311,9 +326,11 @@ export const useGetCourseRelatedVirtualClassrooms = (
           'virtual-classrooms',
         ]),
         queryFn: () =>
-          coursesClient.getCourseVirtualClassrooms({
-            courseId: relatedVC.id,
-          }),
+          coursesClient
+            .getCourseVirtualClassrooms({
+              courseId: relatedVC.id,
+            })
+            .then(pluckData),
       };
     }),
   });
@@ -330,7 +347,10 @@ export const useGetCourseVideolectures = (courseId: number) => {
 
   return useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'videolectures']),
-    () => coursesClient.getCourseVideolectures({ courseId: courseId }),
+    () =>
+      coursesClient
+        .getCourseVideolectures({ courseId: courseId })
+        .then(pluckData),
   );
 };
 
@@ -341,10 +361,10 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseAllOfVcPreviousYears
+    | CourseAllOfPreviousEditions
     | CourseAllOfVcOtherCourses
-  )[] = (courseQuery.data?.data.vcPreviousYears ?? []).concat(
-    courseQuery.data?.data.vcOtherCourses,
+  )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
+    courseQuery.data?.vcOtherCourses ?? [],
   );
 
   const relatedVCQueries =
@@ -357,31 +377,31 @@ export const useGetCourseLectures = (courseId: number) => {
     () => {
       const lectureSections: CourseLectureSection[] = [];
 
-      virtualClassroomsQuery.data.data.length &&
+      virtualClassroomsQuery.data?.length &&
         lectureSections.push({
           title: t('common.virtualClassroom_plural'),
           type: 'VirtualClassroom',
-          data: virtualClassroomsQuery.data.data,
+          data: virtualClassroomsQuery.data,
         });
 
-      videoLecturesQuery.data.data.length &&
+      videoLecturesQuery.data?.length &&
         lectureSections.push({
           title: t('common.videoLecture_plural'),
           type: 'VideoLecture',
-          data: videoLecturesQuery.data.data,
+          data: videoLecturesQuery.data,
         });
 
       relatedVCDefinitions.forEach((d, index) => {
-        const relatedVCs = relatedVCQueries.queries[index].data?.data;
-        if (!relatedVCs?.length) return;
-        lectureSections.push({
-          title:
-            'name' in d
-              ? `${d.name} ${d.year}`
-              : `${t('common.virtualClassroom_plural')} - ${d.year}`,
-          type: 'VirtualClassroom',
-          data: relatedVCs,
-        });
+        const relatedVCs = relatedVCQueries.queries[index].data;
+        relatedVCs?.length &&
+          lectureSections.push({
+            title:
+              'name' in d
+                ? `${d.name} ${d.year}`
+                : `${t('common.virtualClassroom_plural')} - ${d.year}`,
+            type: 'VirtualClassroom',
+            data: relatedVCs,
+          });
       });
 
       return lectureSections;
@@ -398,17 +418,17 @@ export const useGetCourseLectures = (courseId: number) => {
 };
 export const useGetCourseExams = (
   courseId: number,
-  courseShortcode: string,
+  courseShortcode: string | undefined,
 ) => {
   const { data: exams } = useGetExams();
   return useQuery(
     prefixKey([COURSE_QUERY_KEY, courseId, 'exams']),
     () =>
-      exams.filter(exam => {
+      (exams ?? []).filter(exam => {
         return exam.courseShortcode === courseShortcode;
       }),
     {
-      enabled: courseShortcode != null && exams !== undefined,
+      enabled: courseShortcode !== undefined && exams !== undefined,
       initialData: [],
     },
   );

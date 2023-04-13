@@ -42,14 +42,14 @@ export const TranscriptScreen = () => {
     totalAttendedCredits,
     totalAcquiredCredits,
     totalCredits,
-  } = studentQuery.data?.data ?? {};
+  } = studentQuery.data ?? {};
 
   const provisionalGrades = useMemo(
-    () => gradesQuery.data?.data.filter(g => g.isProvisional) ?? [],
+    () => gradesQuery.data?.filter(g => g.isProvisional),
     [gradesQuery],
   );
   const transcriptGrades = useMemo(
-    () => gradesQuery.data?.data.filter(g => !g.isProvisional),
+    () => gradesQuery.data?.filter(g => !g.isProvisional),
     [gradesQuery],
   );
 
@@ -88,8 +88,8 @@ export const TranscriptScreen = () => {
             data={
               totalCredits
                 ? [
-                    totalAttendedCredits / totalCredits,
-                    totalAcquiredCredits / totalCredits,
+                    totalAttendedCredits ?? 0 / totalCredits,
+                    totalAcquiredCredits ?? 0 / totalCredits,
                   ]
                 : []
             }
@@ -125,8 +125,8 @@ export const TranscriptScreen = () => {
             data={
               enrollmentCredits
                 ? [
-                    enrollmentAttendedCredits / enrollmentCredits,
-                    enrollmentAcquiredCredits / enrollmentCredits,
+                    enrollmentAttendedCredits ?? 0 / enrollmentCredits,
+                    enrollmentAcquiredCredits ?? 0 / enrollmentCredits,
                   ]
                 : []
             }
@@ -141,32 +141,30 @@ export const TranscriptScreen = () => {
           <Grid>
             <Metric
               title={t('transcriptScreen.weightedAverageLabel')}
-              value={studentQuery.data?.data.averageGrade ?? '--'}
+              value={studentQuery.data?.averageGrade ?? '--'}
               style={GlobalStyles.grow}
             />
 
             <Metric
               title={t('transcriptScreen.estimatedFinalGrade')}
-              value={formatFinalGrade(
-                studentQuery.data?.data.estimatedFinalGrade,
-              )}
+              value={formatFinalGrade(studentQuery.data?.estimatedFinalGrade)}
               color={colors.primary[400]}
               style={GlobalStyles.grow}
             />
 
-            {studentQuery.data?.data.averageGradePurged != null && (
+            {studentQuery.data?.averageGradePurged && (
               <Metric
                 title={t('transcriptScreen.finalAverageLabel')}
-                value={studentQuery.data?.data.averageGradePurged ?? '--'}
+                value={studentQuery.data.averageGradePurged ?? '--'}
                 style={GlobalStyles.grow}
               />
             )}
 
-            {studentQuery.data?.data.estimatedFinalGradePurged != null && (
+            {studentQuery.data?.estimatedFinalGradePurged && (
               <Metric
                 title={t('transcriptScreen.estimatedFinalGradePurged')}
                 value={formatFinalGrade(
-                  studentQuery.data?.data.estimatedFinalGradePurged,
+                  studentQuery.data.estimatedFinalGradePurged,
                 )}
                 color={colors.primary[400]}
                 style={GlobalStyles.grow}
@@ -174,19 +172,17 @@ export const TranscriptScreen = () => {
             )}
           </Grid>
 
-          {studentQuery.data?.data.mastersAdmissionAverageGrade != null && (
+          {studentQuery.data?.mastersAdmissionAverageGrade && (
             <Metric
               title={t('transcriptScreen.masterAdmissionAverage')}
-              value={
-                studentQuery.data?.data.mastersAdmissionAverageGrade ?? '--'
-              }
+              value={studentQuery.data.mastersAdmissionAverageGrade ?? '--'}
               style={[GlobalStyles.grow, styles.additionalMetric]}
             />
           )}
         </Card>
       </Section>
 
-      {provisionalGrades.length > 0 && (
+      {provisionalGrades && provisionalGrades.length > 0 && (
         <Section>
           <SectionHeader
             title={t('transcriptScreen.provisionalGradesSectionTitle')}

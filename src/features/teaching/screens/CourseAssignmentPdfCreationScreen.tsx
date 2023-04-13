@@ -54,15 +54,15 @@ export const CourseAssignmentPdfCreationScreen = ({
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [isCreatingPDF, setIsCreatingPDF] = useState(false);
   const [pageContainerAspectRatio, setPageContainerAspectRatio] = useState(1);
-  const pageSliderRef = useRef<FlatList>();
+  const pageSliderRef = useRef<FlatList>(null);
 
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    const rootNav = navigation.getParent();
+    const rootNav = navigation.getParent()!;
     hideTabBar(rootNav);
     return () => displayTabBar(rootNav);
-  }, []);
+  }, [navigation]);
 
   const addPage = () => {
     openCamera({
@@ -74,7 +74,7 @@ export const CourseAssignmentPdfCreationScreen = ({
     })
       .then(image => {
         setImageUris(oldUris => [...oldUris, image.path]);
-        setTimeout(() => pageSliderRef.current.scrollToEnd());
+        setTimeout(() => pageSliderRef.current?.scrollToEnd());
       })
       .catch(e => {
         console.error(e);
@@ -95,7 +95,7 @@ export const CourseAssignmentPdfCreationScreen = ({
         });
 
         if (currentPageCount - 1 === currentPageIndex) {
-          pageSliderRef.current.scrollToIndex({
+          pageSliderRef.current?.scrollToIndex({
             animated: true,
             index: currentPageIndex - 1,
           });
@@ -140,7 +140,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       .then(pdf => {
         navigation.navigate('CourseAssignmentUploadConfirmation', {
           courseId,
-          fileUri: pdf.filePath,
+          fileUri: pdf.filePath!,
         });
       })
       .catch(e => {

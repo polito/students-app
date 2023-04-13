@@ -45,9 +45,8 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
   const ticketFaqsQuery = useSearchTicketFaqs(search);
   const ticketFaqs =
-    ticketFaqsQuery?.data?.data?.sort((a, b) =>
-      a.question > b.question ? 1 : -1,
-    ) ?? [];
+    ticketFaqsQuery.data?.sort((a, b) => (a.question > b.question ? 1 : -1)) ??
+    [];
 
   const canSearch = search?.length > 2;
 

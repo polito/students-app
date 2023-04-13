@@ -31,7 +31,7 @@ export const VideoPlayer = (props: VideoProperties) => {
   const { width, height } = Dimensions.get('screen');
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
-  const playerRef = useRef<Video>();
+  const playerRef = useRef<Video>(null);
   const [paused, setPaused] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -46,9 +46,9 @@ export const VideoPlayer = (props: VideoProperties) => {
   };
 
   useEffect(() => {
-    const navRoot = navigation.getParent();
+    const navRoot = navigation.getParent()!;
     return () => displayTabBar(navRoot);
-  }, []);
+  }, [navigation]);
 
   const togglePlaybackRate = () => {
     const actualRateIndex = playbackRates.findIndex(

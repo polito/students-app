@@ -1,4 +1,4 @@
-import { PropsWithChildren, useContext } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 
@@ -9,7 +9,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { CourseIcon } from './CourseIcon';
 
 interface Props {
@@ -27,8 +27,8 @@ const Menu = ({
   shouldOpenOnLongPress?: boolean;
 }>) => {
   const { t } = useTranslation();
-  const preferences = useContext(PreferencesContext);
-  const isHidden = preferences.courses[course.id]?.isHidden ?? false;
+  const preferences = usePreferencesContext();
+  const isHidden = preferences.courses[course.id!]?.isHidden ?? false;
 
   return (
     <MenuView
@@ -44,8 +44,8 @@ const Menu = ({
       onPressAction={() => {
         preferences.updatePreference('courses', {
           ...preferences.courses,
-          [course.id]: {
-            ...preferences.courses[course.id],
+          [course.id!]: {
+            ...preferences.courses[course.id!],
             isHidden: !isHidden,
           },
         });
@@ -63,7 +63,7 @@ export const CourseListItem = ({
 }: Props) => {
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
-  const preferences = useContext(PreferencesContext);
+  const preferences = usePreferencesContext();
 
   const hasDetails = course.id != null;
 
@@ -90,8 +90,8 @@ export const CourseListItem = ({
       subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
       leadingItem={
         <CourseIcon
-          icon={preferences.courses[course.id]?.icon}
-          color={preferences.courses[course.id]?.color}
+          icon={course.id ? preferences.courses[course.id]?.icon : undefined}
+          color={course.id ? preferences.courses[course.id]?.color : undefined}
         />
       }
       trailingItem={

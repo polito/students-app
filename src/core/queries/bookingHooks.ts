@@ -1,7 +1,7 @@
 import { BookingsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { prefixKey } from '../../utils/queries';
+import { pluckData, prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const BOOKINGS_QUERY_KEY = 'bookings';
@@ -10,14 +10,14 @@ const useBookingClient = (): BookingsApi => {
   const {
     clients: { bookings: bookingClient },
   } = useApiContext();
-  return bookingClient;
+  return bookingClient!;
 };
 
 export const useGetBookings = () => {
   const bookingClient = useBookingClient();
 
   return useQuery(prefixKey([BOOKINGS_QUERY_KEY]), () =>
-    bookingClient.getBookings(),
+    bookingClient.getBookings().then(pluckData),
   );
 };
 

@@ -51,7 +51,7 @@ const getIconFromMimeType = (mimeType?: string) => {
   if (!mimeType) return faFile;
   const keywords = new RegExp(Object.keys(mimeTypeIcons).join('|'), 'i');
   const match = mimeType.match(keywords);
-  const type: IconType = match?.[0];
+  const type = match?.[0];
   if (type && type in mimeTypeIcons) {
     return mimeTypeIcons[type];
   }

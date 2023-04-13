@@ -5,7 +5,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import type { TranslucentViewProps } from './TranslucentView';
 
 export const TranslucentView = ({
-  style = null,
+  style = undefined,
   fallbackOpacity = 0.85,
 }: TranslucentViewProps) => {
   const { colors } = useTheme();

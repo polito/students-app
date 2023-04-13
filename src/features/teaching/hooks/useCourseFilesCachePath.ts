@@ -1,19 +1,16 @@
-import { useContext } from 'react';
+import { useMemo } from 'react';
 import { CachesDirectoryPath } from 'react-native-fs';
 
-import { useGetStudent } from '../../../core/queries/studentHooks';
-import { CourseContext } from '../contexts/CourseContext';
+import { useApiContext } from '../../../core/contexts/ApiContext';
+import { useCourseContext } from '../contexts/CourseContext';
 
 export const useCourseFilesCachePath = () => {
-  const { data: student } = useGetStudent();
-  const courseId = useContext(CourseContext);
+  const { username } = useApiContext();
+  const courseId = useCourseContext();
 
-  return [
-    CachesDirectoryPath,
-    student?.data.username,
-    'Courses',
-    courseId,
-  ].join('/');
+  return useMemo(() => {
+    return [CachesDirectoryPath, username, 'Courses', courseId].join('/');
+  }, [courseId]);
 };
 
 export const useCoursesFilesCachePath = () => {

@@ -7,7 +7,7 @@ import { courseIcons } from '../../teaching/constants';
 
 interface Props {
   color: string;
-  icon: string;
+  icon?: string;
 }
 
 export const AgendaIcon = ({ color, icon }: Props) => {

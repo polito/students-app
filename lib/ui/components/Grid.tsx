@@ -46,7 +46,7 @@ export const Grid = ({
   ...rest
 }: Props) => {
   const { spacing } = useTheme();
-  const [contentWidth, setContentWidth] = useState<number>(null);
+  const [contentWidth, setContentWidth] = useState<number>();
   const childrenArray = Children.toArray(children);
   let _numColumns = numColumns;
   const _gap = spacing[gap];

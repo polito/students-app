@@ -1,34 +1,50 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { readDir } from 'react-native-fs';
+import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
+import { ReadDirItem, readDir } from 'react-native-fs';
 
-import { FilesCacheContext } from '../contexts/FilesCacheContext';
+import {
+  FilesCacheContext,
+  FilesCacheContextProps,
+} from '../contexts/FilesCacheContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 export const FilesCacheProvider = ({ children }: PropsWithChildren) => {
   const courseFilesCachePath = useCourseFilesCachePath();
-  const [isReadingFs, setIsReadingFs] = useState(false);
-  const [cacheFs, setCacheFs] = useState<Record<string, boolean>>({});
 
-  const refresh = () => {
-    if (courseFilesCachePath && !isReadingFs) {
-      setIsReadingFs(true);
+  const [filesCacheContext, setFilesCacheContext] =
+    useState<FilesCacheContextProps>({
+      cache: {},
+      refresh: () => {},
+      isRefreshing: false,
+    });
+
+  const refresh = useCallback(() => {
+    setFilesCacheContext(oldP => ({ ...oldP, isRefreshing: true }));
+  }, []);
+
+  useEffect(() => {
+    // Initialize the cache
+    refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    if (filesCacheContext.isRefreshing) {
+      let cache: ReadDirItem[];
       readDir(courseFilesCachePath)
-        .then(cache => {
-          setCacheFs(Object.fromEntries(cache?.map(f => [f.path, true]) ?? []));
-        })
-        .catch(() => {
-          setCacheFs({});
-        })
+        .then(c => (cache = c))
+        .catch(() => (cache = []))
         .finally(() => {
-          setIsReadingFs(false);
+          setFilesCacheContext(oldC => ({
+            ...oldC,
+            refresh,
+            cache: Object.fromEntries(cache?.map(f => [f.path, true]) ?? []),
+            isRefreshing: false,
+          }));
         });
     }
-  };
-
-  useEffect(refresh, [courseFilesCachePath]);
+  }, [courseFilesCachePath, filesCacheContext.isRefreshing, refresh]);
 
   return (
-    <FilesCacheContext.Provider value={{ cache: cacheFs, refresh }}>
+    <FilesCacheContext.Provider value={filesCacheContext}>
       {children}
     </FilesCacheContext.Provider>
   );

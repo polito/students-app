@@ -22,11 +22,7 @@ import {
   useGetExams,
 } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import {
-  formatDate,
-  formatDateTime,
-  formatDateTimeAccessibility,
-} from '../../../utils/dates';
+import { formatDate, formatDateTime, formatTime } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
@@ -38,18 +34,21 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const examsQuery = useGetExams();
   const refreshControl = useRefreshControl(examsQuery);
   const exam = examsQuery.data?.find(e => e.id === id);
-  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(exam?.id);
+  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
   const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
-    useCancelExamBooking(exam?.id);
+    useCancelExamBooking(id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const confirm = useConfirmationDialog();
   const routes = navigation.getState()?.routes;
 
   const mutationsLoading = isBooking || isCancelingBooking;
   const examAvailable = exam?.status === ExamStatusEnum.Available;
-  const showCta = (
-    [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
-  ).includes(exam?.status);
+  const showCta = useMemo(() => {
+    if (!exam) return false;
+    (
+      [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
+    ).includes(exam.status);
+  }, [exam]);
 
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
@@ -57,7 +56,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         headerBackTitle: t('common.course'),
       });
     }
-  }, []);
+  }, [navigation, routes, t]);
 
   const action = async () => {
     if (examAvailable) {
@@ -70,30 +69,43 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   };
 
   const time = useMemo(() => {
-    if (exam.isTimeToBeDefined) {
+    if (!exam) return;
+
+    if (!exam.examStartsAt) {
+      return t('common.dateToBeDefined');
+    } else if (exam.isTimeToBeDefined) {
       return `${formatDate(exam.examStartsAt)}, ${t('common.timeToBeDefined')}`;
     }
     return formatDateTime(exam.examStartsAt);
-  }, [exam.isTimeToBeDefined, exam.examStartsAt]);
+  }, [exam, t]);
 
   const examAccessibilityLabel = useMemo(() => {
-    const title = exam?.courseName;
-    const { date, time: accessibilityTime } = formatDateTimeAccessibility(
-      exam?.examStartsAt,
-    );
+    if (!exam || !teacherQuery.data) return;
+
+    let accessibleDateTime: string;
+    if (!exam.examStartsAt) {
+      accessibleDateTime = t('common.dateToBeDefined');
+    } else {
+      accessibleDateTime = formatDate(exam.examStartsAt);
+
+      if (exam.isTimeToBeDefined) {
+        accessibleDateTime += `, ${t('common.timeToBeDefined')}`;
+      } else {
+        accessibleDateTime += `. ${t('common.time')} ${formatTime(
+          exam.examStartsAt,
+        )}`;
+      }
+    }
+
     const classrooms =
       exam?.classrooms && exam?.classrooms !== '-'
         ? `${t('examScreen.location')}: ${exam?.classrooms}`
         : '';
-    const teacher = teacherQuery.data?.data
-      ? `${t('common.teacher')}: ${teacherQuery.data?.data?.firstName} ${
-          teacherQuery.data?.data?.lastName
-        }`
-      : '';
+    const teacher = `${t('common.teacher')}: ${teacherQuery.data.firstName} ${
+      teacherQuery.data.lastName
+    }`;
 
-    return `${title}. ${date}. ${t(
-      'common.time',
-    )} ${accessibilityTime}. ${classrooms} ${teacher}`;
+    return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
   return (
@@ -112,7 +124,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         <SectionList loading={teacherQuery.isLoading} indented>
           <ListItem
             leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-            title={exam?.classrooms}
+            title={exam?.classrooms ?? '-'}
             accessibilityLabel={`${t('examScreen.location')}: ${
               exam?.classrooms === '-'
                 ? t('examScreen.noClassroom')
@@ -122,7 +134,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           />
           {teacherQuery.data && (
             <PersonListItem
-              person={teacherQuery.data?.data}
+              person={teacherQuery.data}
               subtitle={t('common.teacher')}
             />
           )}

@@ -13,6 +13,6 @@
       "@types/jest"
     ],
     "skipLibCheck": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
   }
 }

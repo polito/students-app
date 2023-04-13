@@ -48,17 +48,19 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
     if (!noticesQuery.data) return;
 
     setNotices(
-      noticesQuery.data.data.map(notice => {
+      noticesQuery.data.map(notice => {
         const { id, content, publishedAt } = notice;
         const dom = parseDocument(
           content.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
         ) as Document;
         const title = innerText(dom.children as any[]);
+        const links = content.match(/<a\b[^>]*>/i);
+
         return {
           id,
           publishedAt,
           title,
-          hasLinks: content.match(/<a\b[^>]*>/i)?.length > 0,
+          hasLinks: links !== null && links.length > 0,
           content: (
             <HtmlView
               baseStyle={{
@@ -99,7 +101,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
                     subtitle={formatDate(notice.publishedAt)}
                     onPress={() =>
                       setNotices(oldNotices =>
-                        oldNotices.map((n, i) =>
+                        oldNotices?.map((n, i) =>
                           i === index ? { ...n, open: !n.open } : n,
                         ),
                       )

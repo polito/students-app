@@ -27,7 +27,7 @@ interface Props extends PropsWithChildren<TouchableCardProps> {
   icon: IconDefinition;
   iconColor?: string;
   favorite?: boolean;
-  onFavoriteChange?: (favorite?: boolean) => void;
+  onFavoriteChange: (favorite: boolean) => void;
   linkTo?: To<any>;
 }
 

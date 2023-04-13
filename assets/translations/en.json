@@ -32,6 +32,10 @@
   },
   "common": {
     "actionPotentiallyNotUndoable": "This action may not be undoable",
+    "activeStatus": {
+      "false": "Non active",
+      "true": "Active"
+    },
     "agent": "Agent",
     "appFeedback": "App feedback",
     "areYouSure?": "Are you sure?",
@@ -40,6 +44,7 @@
     "cache": "Cache",
     "camera": "Camera",
     "cancel": "Cancel",
+    "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
     "color": "Color",
     "comingSoon": "Coming soon",
@@ -50,39 +55,76 @@
     "createdAt": "Created at",
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} ECTS",
+    "creditsWithoutUnit": "{{credits}}",
+    "dateAndHours": "Date and hour",
+    "dateToBeDefined": "Date to be defined",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
     "done": "Done",
+    "doubleClickToSeeLinks": "Tap twice to see links",
+    "doubleTapToActive": "Tap twice to activate",
+    "doubleTapToDeactivate": "Tap twice to deactivate",
     "download": "Download",
     "downloadError": "Something went wrong with the download",
+    "downloadStatus": {
+      "false": "Not downloaded",
+      "true": "Downloaded"
+    },
+    "earnedCredits": "Earned credits",
     "ects": "ECTS",
+    "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
+    "endRefresh": "Refresh completed",
     "error": "Error",
     "exam": "Exam",
     "examCall": "Exam call",
     "examCall_plural": "Exam calls",
+    "examStatus": {
+      "available": "Available",
+      "booked": "Booked",
+      "requestRejected": "Booking request rejected",
+      "requestable": "Booking requestable",
+      "requested": "Booking requested",
+      "unavailable": "Not bookable"
+    },
+    "externalLink": "External link. By pressing the link you will be redirected to an external browser",
     "file": "File",
     "file_plural": "Files",
     "follow": "Follow",
+    "grade": "Grade",
+    "hours": "Hour",
     "icon": "Icon",
     "it": "Italian",
     "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "loading": "Loading",
     "logout": "Logout",
+    "minutes": "Minutes",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
+    "of": "Of",
     "ok": "Ok",
     "open": "Open",
+    "openedStatus": {
+      "false": "Closed",
+      "true": "Open"
+    },
+    "openedStatusAction": {
+      "false": "Double tap to open",
+      "true": "Double tap to close"
+    },
     "options": "Options",
     "pause": "Pause",
     "period": "Period",
     "phone": "Phone",
+    "phoneContacts": "Phone contacts",
     "play": "Play",
     "preferences": "Preferences",
+    "profilePic": "Profile picture",
     "refresh": "Refresh",
     "remove": "Remove",
     "retract": "Retract",
@@ -90,20 +132,24 @@
     "roleHolder": "Holder",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
+    "startRefresh": "Loading",
     "status": "Status",
     "stop": "Stop",
     "stopFollowing": "Stop following",
+    "switchCareerLabel": "Tap to switch career",
     "system": "System",
     "teacher": "Teacher",
     "theme": "Theme",
     "ticket_plural": "Tickets",
+    "time": "Time",
     "timeToBeDefined": "Time to be defined",
     "today": "Today",
     "tomorrow": "Tomorrow",
     "transcript": "Transcript",
     "unnamedFile": "Unnamed file",
     "updatedAt": "Updated at",
-    "upload": "Carica",
+    "upload": "Upload",
+    "username": "Student ID",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
@@ -203,7 +249,8 @@
   "coursesScreen": {
     "emptyState": "No courses available",
     "otherCoursesSectionTitle": "Other courses",
-    "title": "Courses"
+    "title": "Courses",
+    "total": "There are {{total}} courses"
   },
   "createTicketScreen": {
     "insert": "Insert ticket",
@@ -212,22 +259,27 @@
     "subject": "Subject",
     "subjectLabel": "Enter the subject of the ticket",
     "subtitle": "Enter your request",
-    "subtopic": "Subtopic",
     "subtopicDescription": "Select the subtopic",
+    "subtopicDropdownLabel": "Subtopic",
+    "subtopicDropdownPlaceholder": "Pick a subtopic",
     "title": "Create ticket",
-    "topic": "Topic",
-    "topicDescription": "Select topic"
+    "topicDescription": "Select topic",
+    "topicDropdownLabel": "Topic",
+    "topicDropdownPlaceholder": "Pick a topic"
   },
   "examScreen": {
     "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
     "ctaCancelSuccess": "Booking cancelled",
-    "location": "Location"
+    "location": "Location",
+    "noClassroom": "No place specified for this exam call",
+    "title": "Exam call"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
-    "title": "Exams"
+    "title": "Exam calls",
+    "total": "There are {{ total }} exam calls"
   },
   "grades": {
     "absent": "Abs",
@@ -254,10 +306,12 @@
     "forgotYourPassword": "Forgot your password?",
     "hidePassword": "Hide password",
     "passwordLabel": "Password",
+    "passwordLabelAccessibility": "Enter your password here",
     "showPassword": "Show password",
     "title": "Log in with your polito.it credentials",
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
-    "usernameLabel": "Student ID"
+    "usernameLabel": "Student ID",
+    "usernameLabelAccessibility": "Enter your username here"
   },
   "messagesScreen": {
     "title": "Messages archive"
@@ -278,12 +332,18 @@
     "important": "Important",
     "reservationPresence": "Reservations"
   },
+  "notificationsScreen": {
+    "title": "Notifications archive"
+  },
   "personScreen": {
     "call": "Call",
     "contacts": "Contacts",
+    "coursesLabel": "List of courses offered by the teacher",
     "department": "Department",
     "moreInfo": "More information",
-    "role": "Role"
+    "role": "Role",
+    "sentEmail": "Send e-mail",
+    "totalCourses": "There are {{total}} courses"
   },
   "placesScreen": {
     "title": "Places"
@@ -308,6 +368,8 @@
   },
   "settingsScreen": {
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
+    "openLanguageMenu": "Tap twice to open the language selection menu",
+    "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings"
   },
   "teachingScreen": {
@@ -368,6 +430,7 @@
     "masterAdmissionAverage": "Master admission average",
     "provisionalGradesSectionTitle": "Provisional grades",
     "thisYear": "This academic year",
+    "total": "There are {{total}} grades",
     "weightedAverageLabel": "Weighted average",
     "yourCareer": "Your career"
   },

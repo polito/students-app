@@ -38,9 +38,9 @@ export const CourseAssignmentsTab = ({
         scrollEnabled={scrollEnabled}
       >
         {assignmentsQuery.data &&
-          (assignmentsQuery.data.data.length > 0 ? (
+          (assignmentsQuery.data.length > 0 ? (
             <List indented>
-              {assignmentsQuery.data?.data.map((assignment, index) =>
+              {assignmentsQuery.data.map((assignment, index) =>
                 assignment.deletedAt == null ? (
                   <Swipeable
                     key={assignment.id}
@@ -67,16 +67,17 @@ export const CourseAssignmentsTab = ({
                       accessible={true}
                       accessibilityListLabel={accessibilityListLabel(
                         index,
-                        assignmentsQuery?.data?.data?.length || 0,
+                        assignmentsQuery?.data.length,
                       )}
                     />
                   </Swipeable>
                 ) : (
                   <CourseAssignmentListItem
+                    key={assignment.id}
                     item={assignment}
                     accessibilityListLabel={accessibilityListLabel(
                       index,
-                      assignmentsQuery?.data?.data?.length || 0,
+                      assignmentsQuery.data.length,
                     )}
                   />
                 ),
@@ -96,7 +97,7 @@ export const CourseAssignmentsTab = ({
           <Badge text={t('common.comingSoon')} style={{ marginLeft: 10 }} />
         }
         action={() =>
-          navigation.navigate({
+          navigation!.navigate({
             name: 'CourseAssignmentUpload',
             params: { courseId },
           })

@@ -4,12 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { ListItem } from '@lib/ui/components/ListItem';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { Exam } from '../../../core/types/Exam';
-import {
-  formatDate,
-  formatDateTime,
-  formatDateTimeAccessibility,
-} from '../../../utils/dates';
+import { Exam } from '../../../core/types/api';
+import { formatDate, formatTime } from '../../../utils/dates';
 import { CourseIcon } from './CourseIcon';
 
 interface Props {
@@ -25,30 +21,34 @@ export const ExamListItem = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const accessibility = useMemo((): string => {
-    const { date, time } = formatDateTimeAccessibility(exam.examStartsAt);
-    const status = t(`common.examStatus.${exam.status}`);
-    return `${accessibilityLabel} ${exam.courseName || ''} ${date}. ${t(
-      'common.time',
-    )} ${time}. ${status}`;
-  }, [t]);
-
   const { courses: coursesPreferences } = usePreferencesContext();
 
-  const subtitle = useMemo(() => {
-    let dateTime;
-    if (exam.isTimeToBeDefined) {
-      dateTime = `${formatDate(exam.examStartsAt)}, ${t(
-        'common.timeToBeDefined',
-      )}`;
+  const listItemProps = useMemo(() => {
+    let dateTime,
+      accessibleDateTime = '';
+
+    const status = t(`common.examStatus.${exam.status}`);
+
+    if (!exam.examStartsAt) {
+      dateTime = t('common.dateToBeDefined');
     } else {
-      dateTime = formatDateTime(exam.examStartsAt);
+      dateTime = formatDate(exam.examStartsAt);
+
+      if (exam.isTimeToBeDefined) {
+        dateTime += `, ${t('common.timeToBeDefined')}`;
+        accessibleDateTime = `${dateTime}.`;
+      } else {
+        const time = formatTime(exam.examStartsAt);
+        accessibleDateTime += `${dateTime}. ${t('common.time')} ${time}.`;
+        dateTime += `, ${time}`;
+      }
     }
-    if (exam.classrooms !== '-') {
-      return `${dateTime} - ${exam.classrooms}`;
-    }
-    return dateTime;
-  }, [exam]);
+
+    return {
+      subtitle: `${dateTime}`,
+      accessibilityLabel: `${accessibilityLabel} ${exam.courseName} ${accessibleDateTime} ${status}`,
+    };
+  }, [accessibilityLabel, exam, t]);
 
   return (
     <ListItem
@@ -58,14 +58,13 @@ export const ExamListItem = ({
       }}
       title={exam.courseName}
       accessibilityRole="button"
-      subtitle={subtitle}
-      accessibilityLabel={accessibility}
       leadingItem={
         <CourseIcon
           icon={coursesPreferences[exam.courseId]?.icon}
           color={coursesPreferences[exam.courseId]?.color}
         />
       }
+      {...listItemProps}
       {...rest}
     />
   );

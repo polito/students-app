@@ -8,6 +8,7 @@ import { DateTime, Duration } from 'luxon';
 import { useApiContext } from '../../../core/contexts/ApiContext';
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
+import { notNullish } from '../../../utils/predicates';
 import { prefixKey } from '../../../utils/queries';
 
 export const LECTURES_QUERY_KEY = 'lectures';
@@ -16,7 +17,7 @@ const useLectureClient = (): LecturesApi => {
   const {
     clients: { lectures: lectureClient },
   } = useApiContext();
-  return lectureClient;
+  return lectureClient!;
 };
 
 export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
@@ -30,16 +31,16 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
    * and belonging to the study plan of the active career
    */
   const visibleCourseIds = useMemo(() => {
-    if (!courses) return null;
+    if (!courses) return [];
 
-    const courseIds = courses.data.map(c => c.id);
+    const courseIds = courses.filter(notNullish).map(c => c.id!);
 
     const hiddenCourseIds = Object.entries(coursesPreferences)
       .filter(([_, prefs]) => prefs.isHidden)
       .map(([id]) => Number(id));
 
     return courseIds.filter(id => id && !hiddenCourseIds.includes(id));
-  }, [courses]);
+  }, [courses, coursesPreferences]);
 
   return useInfiniteQuery<Lecture[]>(
     prefixKey([LECTURES_QUERY_KEY]),

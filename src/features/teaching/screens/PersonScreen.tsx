@@ -28,7 +28,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { Person, PersonCourse, PhoneNumber } from '@polito/api-client';
+import { PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
@@ -48,13 +48,12 @@ export const PersonScreen = ({ route }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
-  const person: Person = personQuery?.data?.data;
+  const person = personQuery.data;
   const fullName = [person?.firstName, person?.lastName]
     .filter(notNullish)
     .join(' ');
   useScreenTitle(fullName, false);
   const courses = person?.courses ?? [];
-  const source = { uri: person?.picture };
   const phoneNumbers = person?.phoneNumbers;
 
   const header = (
@@ -65,7 +64,10 @@ export const PersonScreen = ({ route }: Props) => {
       <Row>
         <View accessible={true} accessibilityLabel={t('common.profilePic')}>
           {person?.picture ? (
-            <Image source={source} style={styles.profileImage} />
+            <Image
+              source={{ uri: person.picture }}
+              style={styles.profileImage}
+            />
           ) : (
             <View style={styles.profileImagePlaceholder}>
               <Icon
@@ -79,7 +81,7 @@ export const PersonScreen = ({ route }: Props) => {
         <Col style={styles.info}>
           <Metric
             title={t('personScreen.role')}
-            value={person?.role}
+            value={person?.role ?? ''}
             style={styles.spaceBottom}
             accessible={true}
           />
@@ -166,7 +168,7 @@ export const PersonScreen = ({ route }: Props) => {
         <SectionHeader
           title={t('personScreen.contacts')}
           accessibilityLabel={`${t('personScreen.contacts')}. ${
-            phoneNumbers?.length > 0 && t('common.phoneContacts')
+            phoneNumbers?.length && t('common.phoneContacts')
           }. ${t('personScreen.sentEmail')}`}
         />
         <SectionList indented>

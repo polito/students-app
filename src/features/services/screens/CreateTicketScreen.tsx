@@ -33,15 +33,18 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
     route.params;
   const ticketTopicQuery = useGetTicketTopics();
-  const topics = ticketTopicQuery?.data?.data ?? [];
+  const topics = useMemo(() => {
+    if (!ticketTopicQuery.data) return [];
+    return ticketTopicQuery.data;
+  }, [ticketTopicQuery.data]);
   const styles = useStylesheet(createStyles);
 
   const [topicId, setTopicId] = useState(initialTopicId?.toString());
-  const [ticketBody, setTicketBody] = useState<CreateTicketRequest>({
+  const [ticketBody, setTicketBody] = useState<Partial<CreateTicketRequest>>({
     subject: undefined,
     message: undefined,
     subtopicId: initialSubtopicId,
-    attachment: null,
+    attachment: undefined,
   });
   const {
     mutateAsync: handleCreateTicket,
@@ -56,10 +59,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   }, [ticketBody]);
 
   useEffect(() => {
-    if (isSuccess && !!data?.data?.id) {
-      // noinspection AllyPlainJsInspection
+    if (isSuccess && !!data.id) {
       navigation.navigate(initialTopicId ? 'Home' : 'Tickets');
-      navigation.navigate('Ticket', { id: data?.data?.id });
+      navigation.navigate('Ticket', { id: data.id });
     }
   }, [isSuccess, data]);
 
@@ -82,7 +84,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     setTicketBody(prevState => ({
       ...prevState,
       subtopicId: undefined,
-      attachment: null,
+      attachment: undefined,
     }));
   };
 
@@ -157,7 +159,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         absolute={false}
         disabled={!createTopicEnabled}
         title={t('createTicketScreen.sendTicket')}
-        action={() => handleCreateTicket(ticketBody)}
+        action={() => handleCreateTicket(ticketBody as CreateTicketRequest)}
         loading={isLoading}
         icon={faPaperPlane}
       />

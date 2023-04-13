@@ -28,8 +28,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
   const teacherQuery = useGetPerson(teacherId);
 
   const lecture = useMemo(() => {
-    if (!virtualClassroomQuery.data) return;
-    return virtualClassroomQuery.data?.data.find(l => l.id === lectureId);
+    return virtualClassroomQuery.data?.find(l => l.id === lectureId);
   }, [lectureId, virtualClassroomQuery.data]);
 
   const refreshControl = useRefreshControl(virtualClassroomQuery, teacherQuery);
@@ -43,11 +42,11 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
       {lecture?.videoUrl && (
         <VideoPlayer
           source={{ uri: lecture.videoUrl }}
-          poster={lecture?.coverUrl}
+          poster={lecture?.coverUrl ?? undefined}
         />
       )}
       <EventDetails
-        title={lecture?.title}
+        title={lecture?.title ?? ''}
         type={t('courseVirtualClassroomScreen.title')}
         time={
           lecture?.createdAt
@@ -58,7 +57,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
       <SectionList loading={teacherQuery.isLoading}>
         {teacherQuery.data && (
           <PersonListItem
-            person={teacherQuery.data?.data}
+            person={teacherQuery.data}
             subtitle={t('common.teacher')}
           />
         )}

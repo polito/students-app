@@ -44,7 +44,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
 
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =
-    useRef<SectionList<CourseLecture, CourseLectureSection>>();
+    useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
 
   useEffect(() => {
     if (!courseLecturesQuery.data) return;
@@ -146,7 +146,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
             subtitle={[
               formatDate(lecture.createdAt),
               lecture.duration,
-              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
+              teacher && `${teacher.firstName} ${teacher.lastName}`,
             ]
               .filter(i => !!i)
               .join(' - ')}
@@ -155,7 +155,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
               lecture.duration
                 .replace('m', t('common.minutes'))
                 .replace('h', t('common.hours')),
-              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
+              teacher && `${teacher.firstName} ${teacher.lastName}`,
             ]
               .filter(i => !!i)
               .join(' - ')}

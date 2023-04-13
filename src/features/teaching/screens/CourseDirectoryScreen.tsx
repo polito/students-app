@@ -106,12 +106,13 @@ interface SearchProps {
 }
 
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const refreshControl = useRefreshControl(recentFilesQuery);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
   useEffect(() => {
+    if (!recentFilesQuery.data) return;
     setSearchResults(
       recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
     );

@@ -92,14 +92,14 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { fontSizes } = useTheme();
   const { mutate: handleLogout } = useLogout();
   const useGetMeQuery = useGetStudent();
-  const student = useGetMeQuery?.data?.data;
+  const student = useGetMeQuery.data;
 
   const styles = useStylesheet(createStyles);
   const refreshControl = useRefreshControl(useGetMeQuery);
-  const firstEnrollmentYear = student?.firstEnrollmentYear;
-  const enrollmentYear = student
-    ? `${firstEnrollmentYear - 1}/${firstEnrollmentYear}`
-    : '...';
+  const enrollmentYear = useMemo(() => {
+    if (!student) return '...';
+    return `${student.firstEnrollmentYear - 1}/${student.firstEnrollmentYear}`;
+  }, [student]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -143,7 +143,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
         />
         <SectionList>
           <ListItem
-            title={student?.degreeName}
+            title={student?.degreeName ?? ''}
             subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
           />
         </SectionList>
@@ -179,7 +179,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     smartCard: {
       aspectRatio: 1.5817,
-      height: null,
+      height: undefined,
       maxWidth: 540, // width of a physical card in dp
       maxHeight: 341,
     },

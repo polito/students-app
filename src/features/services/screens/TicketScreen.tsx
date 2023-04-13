@@ -51,7 +51,7 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
   });
 
   const actions = useMemo(() => {
-    if (ticket?.status !== TicketStatus.Closed) {
+    if (ticket.status !== TicketStatus.Closed) {
       return [
         {
           title: t('tickets.close'),
@@ -106,14 +106,14 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const [textFieldHeight, setTextFieldHeight] = useState(50);
-  const ticket = ticketQuery.data?.data;
+  const ticket = ticketQuery.data;
 
   useScreenTitle(ticket?.subject);
 
   useEffect(() => {
     if (!ticket || ticket.unreadCount === 0) return;
     markAsRead();
-  }, [ticket]);
+  }, [markAsRead, ticket]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -123,7 +123,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           <HeaderRight ticket={ticket} />
         ),
     });
-  }, [ticket]);
+  }, [navigation, ticket]);
 
   const replies = useMemo(
     () =>
@@ -145,8 +145,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         data={replies}
         keyExtractor={item => item.id.toString()}
         ListFooterComponent={
-          !ticketQuery?.isLoading &&
-          !!ticket && (
+          !ticketQuery?.isLoading && !!ticket ? (
             <>
               <TicketStatusInfo
                 ticket={ticket}
@@ -167,12 +166,12 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 )}
               </ChatBubble>
             </>
-          )
+          ) : undefined
         }
         renderItem={({ item: reply }) => (
           <ChatMessage
             message={reply}
-            ticketId={ticket.id}
+            ticketId={ticket!.id}
             received={!!reply?.isFromAgent}
           />
         )}

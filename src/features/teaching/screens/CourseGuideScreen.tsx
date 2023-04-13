@@ -24,7 +24,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   const guideSections = useMemo(() => {
     const sections: CourseGuideSection[] = [];
 
-    guideQuery.data?.data?.forEach(section => {
+    guideQuery.data?.forEach(section => {
       const content = section.content.replace(/[\f\n]+/g, '\n').trim();
 
       // Remove empty sections

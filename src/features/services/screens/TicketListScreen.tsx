@@ -23,7 +23,7 @@ export const TicketListScreen = ({ route }: Props) => {
 
   const tickets = useMemo(
     () =>
-      ticketsQuery.data?.data
+      ticketsQuery.data
         ?.filter(ticket => statuses.includes(ticket.status))
         ?.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) ?? [],
     [ticketsQuery],

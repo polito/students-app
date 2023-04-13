@@ -77,10 +77,12 @@ export const AgendaCard = ({
       rounded
       spaced={false}
       style={[
-        color && {
-          borderWidth: 2,
-          borderColor: color,
-        },
+        color
+          ? {
+              borderWidth: 2,
+              borderColor: color,
+            }
+          : undefined,
         {
           marginVertical: spacing[2],
         },
@@ -100,7 +102,12 @@ export const AgendaCard = ({
           </Row>
           <Row>
             {iconColor && <AgendaIcon icon={icon} color={iconColor} />}
-            <Text style={[styles.title, iconColor && styles.titleWithIcon]}>
+            <Text
+              style={[
+                styles.title,
+                iconColor ? styles.titleWithIcon : undefined,
+              ]}
+            >
               {title}
             </Text>
           </Row>

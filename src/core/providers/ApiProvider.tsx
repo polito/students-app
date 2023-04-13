@@ -22,9 +22,11 @@ import { useSplashContext } from '../contexts/SplashContext';
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [apiContext, setApiContext] = useState<ApiContextProps>({
-    isLogged: null,
-    refreshContext: null,
     clients: {},
+    isLogged: false,
+    username: '',
+    token: '',
+    refreshContext: () => {},
   });
 
   const splashContext = useSplashContext();
@@ -35,7 +37,8 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       setApiContext(() => {
         return {
           isLogged: !!credentials,
-          ...credentials,
+          username: credentials?.username ?? '',
+          token: credentials?.token ?? '',
           clients: createApiClients(credentials?.token),
           refreshContext,
         };
@@ -44,7 +47,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     // Retrieve existing token from SecureStore, if any
     Keychain.getGenericPassword()
       .then(keychainCredentials => {
-        let credentials = null;
+        let credentials = undefined;
         if (keychainCredentials) {
           credentials = {
             username: keychainCredentials.username,
@@ -82,7 +85,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     if (!splashContext.isAppLoaded) {
       splashContext.setIsAppLoaded(true);
     }
-  }, [apiContext]);
+  }, [apiContext, splashContext]);
 
   const isEnvProduction = process.env.NODE_ENV === 'production';
 
@@ -91,9 +94,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       setApiContext(c => ({
         ...c,
         isLogged: false,
-        token: null,
+        username: '',
+        token: '',
       }));
-      client.invalidateQueries();
+      await client.invalidateQueries();
     }
     const { message } = await error.response.json();
     Alert.alert(t('common.error'), message ?? t('common.somethingWentWrong'));

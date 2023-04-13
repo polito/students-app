@@ -66,7 +66,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const { data, fetchNextPage, isFetchingNextPage, isFetchingPreviousPage } =
     useGetAgendaWeeks(coursesPreferences, filters);
 
-  const flatListRef = useRef<FlatList<AgendaWeek>>();
+  const flatListRef = useRef<FlatList<AgendaWeek>>(null);
 
   const prevPageThreshold = 300;
 
@@ -88,28 +88,29 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   const [agendaState, setAgendaState, agendaStateRef] =
     useStateRef<AgendaState>({
-      contentHeight: null, // the total height of scrollview content
+      contentHeight: 0, // the total height of scrollview content
       currentOffset: 0, // current scrollview offset
       isRefreshing: false, // is refreshing all agenda data
       shouldLoadNext: false, // should retrieve the previous page of data
       shouldLoadPrevious: true, // should retrieve the next page of data
-      todayOffsetInWeek: null, // the offset of today inside its week
-      todayOffsetOverall: null, // the offset of today, based on contentHeight
+      todayOffsetInWeek: 0, // the offset of today inside its week
+      todayOffsetOverall: 0, // the offset of today, based on contentHeight
     });
 
   const setTodayOffset = (offsetY: number) => {
     setAgendaState(prev => ({
       ...prev,
       todayOffsetInWeek: offsetY,
-      todayOffsetOverall: (prev.contentHeight ?? 0) + offsetY,
+      todayOffsetOverall: prev.contentHeight + offsetY,
     }));
   };
 
   const scrollToToday = (isAnimated = false) => {
-    flatListRef.current?.scrollToOffset({
-      offset: agendaStateRef.current.todayOffsetOverall,
-      animated: isAnimated,
-    });
+    agendaStateRef.current.todayOffsetOverall > 0 &&
+      flatListRef.current?.scrollToOffset({
+        offset: agendaStateRef.current.todayOffsetOverall,
+        animated: isAnimated,
+      });
   };
 
   const scrollToLastOffset = () => {
@@ -126,12 +127,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
       todayOffsetOverall:
         prev.todayOffsetOverall + (height - prev.contentHeight),
     }));
-  };
-
-  const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    if (event === 'refresh') {
-      refreshQueries();
-    }
   };
 
   // Handle asynchronous retrieval of previous/next page
@@ -153,9 +148,15 @@ export const AgendaScreen = ({ navigation }: Props) => {
         setAgendaState(prev => ({ ...prev, shouldLoadNext: false })),
       );
     }
-  }, [data, agendaState.shouldLoadPrevious, agendaState.shouldLoadNext]);
+  }, [data, agendaState, fetchNextPage, setAgendaState]);
 
   useLayoutEffect(() => {
+    const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
+      if (event === 'refresh') {
+        refreshQueries();
+      }
+    };
+
     navigation.setOptions({
       headerRight: () => (
         <>
@@ -179,7 +180,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
         </>
       ),
     });
-  }, []);
+  }, [
+    colors.primary,
+    fontSizes.lg,
+    navigation,
+    screenOptions,
+    scrollToToday,
+    t,
+  ]);
 
   return (
     <View style={styles.container}>
@@ -189,7 +197,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
       ) : (
         <FlatList
           ref={flatListRef}
-          data={data?.pages}
+          data={data?.pages ?? []}
           initialNumToRender={1}
           keyExtractor={item => item.key}
           extraData={[isFetchingPreviousPage, isFetchingNextPage]}
@@ -198,10 +206,12 @@ export const AgendaScreen = ({ navigation }: Props) => {
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
           ListHeaderComponent={
-            isFetchingPreviousPage && <ActivityIndicator size="small" />
+            isFetchingPreviousPage ? (
+              <ActivityIndicator size="small" />
+            ) : undefined
           }
           ListFooterComponent={
-            isFetchingNextPage && <ActivityIndicator size="small" />
+            isFetchingNextPage ? <ActivityIndicator size="small" /> : undefined
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}

@@ -6,7 +6,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { courseIcons } from '../constants';
 
 interface Props {
-  color: string;
+  color?: string;
   icon?: string;
 }
 

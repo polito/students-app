@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import { extension } from 'react-native-mime-types';
@@ -20,7 +20,7 @@ import { useDownload } from '../../../core/hooks/useDownload';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
@@ -97,22 +97,19 @@ export const CourseFileListItem = ({
       color: colors.secondaryText,
       size: fontSizes.xl,
     }),
-    [colors, fontSizes, spacing],
+    [colors, fontSizes],
   );
-  const courseId = useContext(CourseContext);
+  const courseId = useCourseContext();
   const courseFilesCache = useCourseFilesCachePath();
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
-    if (courseFilesCache) {
-      let ext = extension(item.mimeType);
-      if (!ext) {
-        ext = item.name.match(/\.(.+)$/)?.[1];
-      }
-      return [
-        courseFilesCache,
-        [item.id, ext].filter(notNullish).join('.'),
-      ].join('/');
+    let ext: string | null = extension(item.mimeType!);
+    if (!ext) {
+      ext = item.name?.match(/\.(.+)$/)?.[1] ?? null;
     }
+    return [courseFilesCache, [item.id, ext].filter(notNullish).join('.')].join(
+      '/',
+    );
   }, [courseFilesCache, item]);
   const {
     isDownloaded,
@@ -127,13 +124,15 @@ export const CourseFileListItem = ({
   const metrics = useMemo(
     () =>
       [
-        showCreatedDate && formatDateTime(item.createdAt),
-        showSize && formatFileSize(item.sizeInKiloBytes),
+        showCreatedDate && item.createdAt && formatDateTime(item.createdAt),
+        showSize &&
+          item.sizeInKiloBytes &&
+          formatFileSize(item.sizeInKiloBytes),
         showLocation && item.location,
       ]
         .filter(i => !!i)
         .join(' - '),
-    [showSize, showLocation, showCreatedDate],
+    [showCreatedDate, item, showSize, showLocation],
   );
 
   const downloadFile = async () => {
@@ -215,7 +214,7 @@ export const CourseFileListItem = ({
       onPress={downloadFile}
       isDownloaded={isDownloaded}
       downloadProgress={downloadProgress}
-      title={item.name}
+      title={item.name ?? t('common.unnamedFile')}
       subtitle={metrics}
       trailingItem={trailingItem}
       mimeType={item.mimeType}
