@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Linking, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
@@ -28,63 +29,73 @@ export const ServicesScreen = () => {
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
-  const services = [
-    {
-      id: 'tickets',
-      name: t('ticketsScreen.title'),
-      icon: faComments,
-      linkTo: { screen: 'Tickets' },
-    },
-    {
-      id: 'appFeedback',
-      name: t('common.appFeedback'),
-      icon: faMobileScreenButton,
-      linkTo: {
-        screen: 'CreateTicket',
-        params: {
-          topicId: 1101,
-          subtopicId: 2001,
-        },
+  const services = useMemo(
+    () => [
+      {
+        id: 'tickets',
+        name: t('ticketsScreen.title'),
+        icon: faComments,
+        linkTo: { screen: 'Tickets' },
       },
-      additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
-    },
-    {
-      id: 'contacts',
-      name: t('contactsScreen.title'),
-      icon: faIdCard,
-      disabled: true,
-    },
-    {
-      id: 'guides',
-      name: t('guidesScreen.title'),
-      icon: faSignsPost,
-      disabled: true,
-    },
-    {
-      id: 'jobOffers',
-      name: t('jobOffersScreen.title'),
-      icon: faBriefcase,
-      disabled: true,
-    },
-    {
-      id: 'news',
-      name: t('newsScreen.title'),
-      icon: faBullhorn,
-      disabled: true,
-    },
-    {
-      id: 'bookings',
-      name: t('bookingsScreen.title'),
-      icon: faPersonCirclePlus,
-      disabled: true,
-    },
-    {
-      id: 'library',
-      name: t('libraryScreen.title'),
-      icon: faBookBookmark,
-      disabled: true,
-    },
-  ];
+      {
+        id: 'appFeedback',
+        name: t('common.appFeedback'),
+        icon: faMobileScreenButton,
+        linkTo: {
+          screen: 'CreateTicket',
+          params: {
+            topicId: 1101,
+            subtopicId: 2001,
+          },
+        },
+        additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
+      },
+      {
+        id: 'github',
+        name: t('common.openSource'),
+        icon: faGithub,
+        onPress: () =>
+          Linking.openURL('https://github.com/polito/students-app'),
+      },
+      {
+        id: 'contacts',
+        name: t('contactsScreen.title'),
+        icon: faIdCard,
+        disabled: true,
+      },
+      {
+        id: 'guides',
+        name: t('guidesScreen.title'),
+        icon: faSignsPost,
+        disabled: true,
+      },
+      {
+        id: 'jobOffers',
+        name: t('jobOffersScreen.title'),
+        icon: faBriefcase,
+        disabled: true,
+      },
+      {
+        id: 'news',
+        name: t('newsScreen.title'),
+        icon: faBullhorn,
+        disabled: true,
+      },
+      {
+        id: 'bookings',
+        name: t('bookingsScreen.title'),
+        icon: faPersonCirclePlus,
+        disabled: true,
+      },
+      {
+        id: 'library',
+        name: t('libraryScreen.title'),
+        icon: faBookBookmark,
+        disabled: true,
+      },
+    ],
+    [styles.betaBadge, t],
+  );
 
   const [favoriteServices, otherServices] = useMemo(
     () =>
@@ -92,7 +103,7 @@ export const ServicesScreen = () => {
         split(s => favoriteServiceIds.includes(s.id)),
         [[], []],
       ),
-    [favoriteServiceIds],
+    [favoriteServiceIds, services],
   );
 
   const updateFavorite =
@@ -123,6 +134,7 @@ export const ServicesScreen = () => {
               icon={service.icon}
               disabled={service.disabled}
               linkTo={service.linkTo}
+              onPress={service.onPress}
               favorite
               onFavoriteChange={updateFavorite(service)}
             >
@@ -147,6 +159,7 @@ export const ServicesScreen = () => {
               icon={service.icon}
               disabled={service.disabled}
               linkTo={service.linkTo}
+              onPress={service.onPress}
               onFavoriteChange={updateFavorite(service)}
             >
               {service.additionalContent}

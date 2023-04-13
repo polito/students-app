@@ -29,6 +29,7 @@ interface Props extends PropsWithChildren<TouchableCardProps> {
   favorite?: boolean;
   onFavoriteChange: (favorite: boolean) => void;
   linkTo?: To<any>;
+  onPress?: () => void;
 }
 
 export const ServiceCard = ({
@@ -39,6 +40,7 @@ export const ServiceCard = ({
   onFavoriteChange,
   disabled,
   linkTo,
+  onPress,
   children,
   ...props
 }: Props) => {
@@ -49,7 +51,7 @@ export const ServiceCard = ({
   return (
     <TouchableCard
       onPress={
-        linkTo ? () => navigation.navigate(resolveLinkTo(linkTo)) : undefined
+        linkTo ? () => navigation.navigate(resolveLinkTo(linkTo)) : onPress
       }
       {...props}
       disabled={disabled}
