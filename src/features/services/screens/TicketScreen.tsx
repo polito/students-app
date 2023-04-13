@@ -135,6 +135,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   return (
     <View style={GlobalStyles.grow}>
       <FlatList
+        keyboardShouldPersistTaps="handled"
         inverted
         contentContainerStyle={{
           paddingTop: textFieldHeight + +spacing[5],

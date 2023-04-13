@@ -56,6 +56,7 @@ export const LoginScreen = () => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       automaticallyAdjustKeyboardInsets
+      keyboardShouldPersistTaps="handled"
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Section style={styles.section}>

@@ -92,6 +92,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
     >
       <Section>
         <SectionHeader title={t('createTicketScreen.subtitle')} />

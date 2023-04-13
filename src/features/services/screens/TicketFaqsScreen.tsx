@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Keyboard,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Document } from 'react-native-render-html';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
@@ -60,97 +53,93 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        automaticallyAdjustKeyboardInsets
-      >
-        <Section>
-          <View style={styles.heading}>
-            <ScreenTitle
-              title={t('ticketFaqsScreen.findFAQ')}
-              style={styles.title}
-            />
-            <Text variant="secondaryText" style={styles.description}>
-              {t('ticketFaqsScreen.findFAQSubtitle')}
-            </Text>
-          </View>
-          <SectionList>
-            <Row align="center" style={styles.searchBar}>
-              <TextField
-                label={t('ticketFaqsScreen.search')}
-                value={search}
-                onChangeText={setSearch}
-                onSubmitEditing={() => {
-                  Keyboard.dismiss();
-                  triggerSearch();
-                }}
-                editable={!ticketFaqsQuery?.isFetching}
-                returnKeyType="search"
-                style={GlobalStyles.grow}
-                inputStyle={styles.messageInput}
-              />
-              <IconButton
-                icon={faSearch}
-                loading={ticketFaqsQuery.isFetching}
-                onPress={() => {
-                  triggerSearch();
-                }}
-                disabled={!canSearch}
-              />
-            </Row>
-          </SectionList>
-          {hasSearchedOnce && (
-            <SectionList indented>
-              {ticketFaqs.length > 0
-                ? ticketFaqs.map(faq => {
-                    const dom = parseDocument(
-                      faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-                    ) as Document;
-                    const title = innerText(dom.children as any[]);
-                    return (
-                      <ListItem
-                        key={faq.id}
-                        leadingItem={
-                          <Icon
-                            icon={faQuestionCircle}
-                            size={fontSizes['2xl']}
-                          />
-                        }
-                        linkTo={{
-                          screen: 'TicketFaq',
-                          params: { faq },
-                        }}
-                        title={<Text numberOfLines={3}>{title}</Text>}
-                      />
-                    );
-                  })
-                : !ticketFaqsQuery.isFetching && (
-                    <EmptyState
-                      icon={faQuestionCircle}
-                      message={t('ticketFaqsScreen.emptyState')}
-                    />
-                  )}
-            </SectionList>
-          )}
-        </Section>
-
-        {hasSearchedOnce && !ticketFaqsQuery.isFetching && (
-          <CtaButton
-            absolute={false}
-            title={t('ticketFaqsScreen.writeTicket')}
-            hint={t('ticketFaqsScreen.noResultFound')}
-            action={() =>
-              navigation.navigate('CreateTicket', {
-                subtopicId: undefined,
-                topicId: undefined,
-              })
-            }
-            icon={faPencil}
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      automaticallyAdjustKeyboardInsets
+      keyboardShouldPersistTaps="handled"
+    >
+      <Section>
+        <View style={styles.heading}>
+          <ScreenTitle
+            title={t('ticketFaqsScreen.findFAQ')}
+            style={styles.title}
           />
+          <Text variant="secondaryText" style={styles.description}>
+            {t('ticketFaqsScreen.findFAQSubtitle')}
+          </Text>
+        </View>
+        <SectionList>
+          <Row align="center" style={styles.searchBar}>
+            <TextField
+              label={t('ticketFaqsScreen.search')}
+              value={search}
+              onChangeText={setSearch}
+              onSubmitEditing={() => {
+                Keyboard.dismiss();
+                triggerSearch();
+              }}
+              editable={!ticketFaqsQuery?.isFetching}
+              returnKeyType="search"
+              style={GlobalStyles.grow}
+              inputStyle={styles.messageInput}
+            />
+            <IconButton
+              icon={faSearch}
+              loading={ticketFaqsQuery.isFetching}
+              onPress={() => {
+                triggerSearch();
+              }}
+              disabled={!canSearch}
+            />
+          </Row>
+        </SectionList>
+        {hasSearchedOnce && (
+          <SectionList indented>
+            {ticketFaqs.length > 0
+              ? ticketFaqs.map(faq => {
+                  const dom = parseDocument(
+                    faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+                  ) as Document;
+                  const title = innerText(dom.children as any[]);
+                  return (
+                    <ListItem
+                      key={faq.id}
+                      leadingItem={
+                        <Icon icon={faQuestionCircle} size={fontSizes['2xl']} />
+                      }
+                      linkTo={{
+                        screen: 'TicketFaq',
+                        params: { faq },
+                      }}
+                      title={<Text numberOfLines={3}>{title}</Text>}
+                    />
+                  );
+                })
+              : !ticketFaqsQuery.isFetching && (
+                  <EmptyState
+                    icon={faQuestionCircle}
+                    message={t('ticketFaqsScreen.emptyState')}
+                  />
+                )}
+          </SectionList>
         )}
-      </ScrollView>
-    </TouchableWithoutFeedback>
+      </Section>
+
+      {hasSearchedOnce && !ticketFaqsQuery.isFetching && (
+        <CtaButton
+          absolute={false}
+          title={t('ticketFaqsScreen.writeTicket')}
+          hint={t('ticketFaqsScreen.noResultFound')}
+          action={() =>
+            navigation.navigate('CreateTicket', {
+              subtopicId: undefined,
+              topicId: undefined,
+            })
+          }
+          icon={faPencil}
+        />
+      )}
+    </ScrollView>
   );
 };
 
