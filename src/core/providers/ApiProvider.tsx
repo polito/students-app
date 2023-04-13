@@ -24,6 +24,8 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   const [apiContext, setApiContext] = useState<ApiContextProps>({
     clients: {},
     isLogged: false,
+    username: '',
+    token: '',
     refreshContext: () => {},
   });
 
@@ -35,7 +37,8 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       setApiContext(() => {
         return {
           isLogged: !!credentials,
-          ...credentials,
+          username: credentials?.username ?? '',
+          token: credentials?.token ?? '',
           clients: createApiClients(credentials?.token),
           refreshContext,
         };
@@ -91,7 +94,8 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       setApiContext(c => ({
         ...c,
         isLogged: false,
-        token: undefined,
+        username: '',
+        token: '',
       }));
       await client.invalidateQueries();
     }

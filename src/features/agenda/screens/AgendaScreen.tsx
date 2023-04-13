@@ -197,7 +197,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
       ) : (
         <FlatList
           ref={flatListRef}
-          data={data?.pages}
+          data={data?.pages ?? []}
           initialNumToRender={1}
           keyExtractor={item => item.key}
           extraData={[isFetchingPreviousPage, isFetchingNextPage]}
