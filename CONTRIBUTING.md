@@ -13,7 +13,7 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 
 ### Adding a GitHub personal access token to pull from package repositories
 
-GitHub requires the usage of a personal access token to pull from public repositories.
+GitHub requires the usage of a personal access token to pull from public registries.
 
 To work on this project, you'll need to configure it correctly in order to be able to pull `@polito/api-client`.
 
@@ -22,7 +22,7 @@ You'll need to create a personal access token with the `read:packages` scope and
 To generate a personal access token head to [GitHub Tokens settings](https://github.com/settings/tokens) and click on `Generate new token (classic)`.
 Then, select the `read:packages` scope and click on `Generate token`.
 
-Finally, add a .npmrc file in your home directory (`/home/YOUR_USER` on Linux or Windows, `C:\Users\YOUR_USER\` on Windows) with the following content:
+Finally, add a .npmrc file in your home directory (`/home/YOUR_USER/` on Linux or macOS, `C:\Users\YOUR_USER\` on Windows) with the following content:
 
 ```
 @polito:registry=https://npm.pkg.github.com/

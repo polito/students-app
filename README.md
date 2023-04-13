@@ -9,7 +9,6 @@ Politecnico di Torino's official mobile application for students.
 ## Install
 
 ⚠️ Disclaimer: The application is in public beta: some features may not work as expected. Please report any issue you find.
-before using the data.
 
 ### From app stores
 
