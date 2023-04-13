@@ -5,6 +5,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -19,7 +20,6 @@ import {
 
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetTicket,
@@ -101,7 +101,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const styles = useStylesheet(createStyles);
   const ticketQuery = useGetTicket(id);
-  const refreshControl = useRefreshControl(ticketQuery);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
@@ -141,7 +140,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           paddingTop: textFieldHeight + +spacing[5],
           paddingBottom: IS_IOS ? headerHeight : undefined,
         }}
-        {...refreshControl}
+        refreshControl={<RefreshControl queries={[ticketQuery]} />}
         data={replies}
         keyExtractor={item => item.id.toString()}
         ListFooterComponent={

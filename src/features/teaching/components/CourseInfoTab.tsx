@@ -17,7 +17,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
 
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useGetCourse,
   useGetCourseExams,
@@ -40,11 +39,6 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   );
   const { queries: staffQueries, isLoading: isStaffLoading } = useGetPersons(
     courseQuery.data?.staff.map(s => s.id),
-  );
-  const refreshControl = useRefreshControl(
-    courseQuery,
-    courseExamsQuery,
-    ...staffQueries,
   );
 
   useEffect(() => {
@@ -71,7 +65,11 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
   return (
     <ScrollView
       style={GlobalStyles.grow}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={
+        <RefreshControl
+          queries={[courseQuery, courseExamsQuery, ...staffQueries]}
+        />
+      }
     >
       <Section style={styles.heading}>
         <ScreenTitle title={courseQuery.data?.name} />

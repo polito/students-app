@@ -10,7 +10,6 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -21,7 +20,6 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { refresh } = useContext(FilesCacheContext);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
-  const refreshControl = useRefreshControl(recentFilesQuery);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,7 +44,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
             />
           );
         }}
-        refreshControl={<RefreshControl {...refreshControl} />}
+        refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,
         })}

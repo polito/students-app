@@ -24,7 +24,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { CourseIcon } from '../components/CourseIcon';
@@ -87,7 +86,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { spacing, fontSizes } = useTheme();
   const { courseId } = route.params;
   const courseQuery = useGetCourse(courseId);
-  const refreshControl = useRefreshControl(courseQuery);
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
     () => coursesPrefs[courseId],
@@ -98,7 +96,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     <CourseContext.Provider value={courseId}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl {...refreshControl} />}
+        refreshControl={<RefreshControl queries={[courseQuery]} />}
       >
         <View style={{ paddingVertical: spacing[5] }}>
           <Section>

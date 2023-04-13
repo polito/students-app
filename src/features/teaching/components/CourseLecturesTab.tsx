@@ -24,7 +24,6 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { formatDate } from '../../../utils/dates';
@@ -39,9 +38,6 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { spacing, colors, fontSizes } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
-
-  const refreshControl = useRefreshControl(courseLecturesQuery);
-
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =
     useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
@@ -93,7 +89,7 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       ref={sectionListRef}
       contentInsetAdjustmentBehavior="automatic"
       sections={lectures}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[courseLecturesQuery]} />}
       stickySectionHeadersEnabled={true}
       ListEmptyComponent={
         <EmptyState

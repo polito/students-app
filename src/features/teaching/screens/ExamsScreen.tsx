@@ -3,12 +3,12 @@ import { ScrollView } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useLargeHeaderRefreshControl } from '../../../core/hooks/useLargeHeaderRefreshControl';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
 
@@ -17,23 +17,18 @@ export const ExamsScreen = () => {
   const { spacing } = useTheme();
   const examsQuery = useGetExams();
   const { accessibilityListLabel } = useAccessibility();
-  const { refreshControl, contentContainerStyle } =
-    useLargeHeaderRefreshControl(examsQuery);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={[
-        {
-          paddingVertical: spacing[5],
-        },
-        contentContainerStyle,
-      ]}
+      contentContainerStyle={{
+        paddingVertical: spacing[5],
+      }}
       accessibilityRole="list"
       accessibilityLabel={t('examsScreen.total', {
         total: examsQuery.data?.length ?? 0,
       })}
-      refreshControl={refreshControl}
+      refreshControl={<RefreshControl queries={[examsQuery]} manual />}
     >
       {!examsQuery.isLoading &&
         (examsQuery.data && examsQuery.data.length > 0 ? (

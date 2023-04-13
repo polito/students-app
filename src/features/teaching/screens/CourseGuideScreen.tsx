@@ -10,7 +10,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
@@ -20,7 +19,6 @@ export const CourseGuideScreen = ({ route }: Props) => {
   const { courseId } = route.params;
   const { spacing } = useTheme();
   const guideQuery = useGetCourseGuide(courseId);
-  const refreshControl = useRefreshControl(guideQuery);
   const guideSections = useMemo(() => {
     const sections: CourseGuideSection[] = [];
 
@@ -38,7 +36,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{ paddingTop: spacing[6] }}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[guideQuery]} />}
     >
       {guideSections.map((section, i) => (
         <Section key={i}>

@@ -3,6 +3,7 @@ import { ScrollView } from 'react-native';
 
 import { faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -10,7 +11,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseOverview } from '@polito/api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useLargeHeaderRefreshControl } from '../../../core/hooks/useLargeHeaderRefreshControl';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseListItem } from '../components/CourseListItem';
 
@@ -18,20 +18,15 @@ export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const coursesQuery = useGetCourses();
-  const { refreshControl, contentContainerStyle } =
-    useLargeHeaderRefreshControl(coursesQuery);
   const { accessibilityListLabel } = useAccessibility();
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={[
-        {
-          paddingVertical: spacing[5],
-        },
-        contentContainerStyle,
-      ]}
-      refreshControl={refreshControl}
+      contentContainerStyle={{
+        paddingVertical: spacing[5],
+      }}
+      refreshControl={<RefreshControl queries={[coursesQuery]} manual />}
     >
       {coursesQuery.data &&
         (coursesQuery.data.length > 0 ? (

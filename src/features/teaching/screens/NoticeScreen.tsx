@@ -6,7 +6,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { HtmlView } from '../../../core/components/HtmlView';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { sanitizeHtml } from '../../../utils/html';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -17,7 +16,6 @@ export const NoticeScreen = ({ route }: Props) => {
   const { noticeId, courseId } = route.params;
   const { spacing } = useTheme();
   const noticesQuery = useGetCourseNotices(courseId);
-  const refreshControl = useRefreshControl(noticesQuery);
   const html = useMemo(
     () =>
       sanitizeHtml(
@@ -27,14 +25,10 @@ export const NoticeScreen = ({ route }: Props) => {
     [noticesQuery, noticeId],
   );
 
-  if (!noticeId) {
-    return null;
-  }
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={<RefreshControl queries={[noticesQuery]} />}
     >
       <HtmlView
         source={{ html }}

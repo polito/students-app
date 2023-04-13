@@ -8,6 +8,7 @@ import { Card } from '@lib/ui/components/Card';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Separator } from '@lib/ui/components/Separator';
@@ -19,7 +20,6 @@ import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -59,7 +59,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={styles.wrapper}
-        {...useRefreshControl(bookingsQuery)}
+        refreshControl={<RefreshControl queries={[bookingsQuery]} />}
       >
         <EventDetails title={title} type={t('Booking')} time={timeLabel} />
         {booking?.location?.name && (

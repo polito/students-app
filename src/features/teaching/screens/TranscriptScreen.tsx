@@ -7,6 +7,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -16,7 +17,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useLargeHeaderRefreshControl } from '../../../core/hooks/useLargeHeaderRefreshControl';
 import {
   useGetGrades,
   useGetStudent,
@@ -33,8 +33,6 @@ export const TranscriptScreen = () => {
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
   const { accessibilityListLabel } = useAccessibility();
-  const { refreshControl, contentContainerStyle } =
-    useLargeHeaderRefreshControl(studentQuery, gradesQuery);
   const {
     enrollmentCredits,
     enrollmentAttendedCredits,
@@ -56,8 +54,10 @@ export const TranscriptScreen = () => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={[styles.container, contentContainerStyle]}
-      refreshControl={refreshControl}
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl queries={[studentQuery, gradesQuery]} manual />
+      }
     >
       <Section>
         <SectionHeader title={t('transcriptScreen.yourCareer')} />

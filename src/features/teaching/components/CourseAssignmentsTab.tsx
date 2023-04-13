@@ -13,7 +13,6 @@ import { SwipeableAction } from '@lib/ui/components/SwipeableAction';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { CourseAssignmentListItem } from './CourseAssignmentListItem';
@@ -28,13 +27,12 @@ export const CourseAssignmentsTab = ({
   const swipeableRef = useRef<Swipeable>();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const assignmentsQuery = useGetCourseAssignments(courseId);
-  const refreshControl = useRefreshControl(assignmentsQuery);
   const { accessibilityListLabel } = useAccessibility();
 
   return (
     <>
       <ScrollView
-        refreshControl={<RefreshControl {...refreshControl} />}
+        refreshControl={<RefreshControl queries={[assignmentsQuery]} />}
         scrollEnabled={scrollEnabled}
       >
         {assignmentsQuery.data &&

@@ -6,6 +6,7 @@ import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -14,7 +15,6 @@ import { Theme } from '@lib/ui/types/Theme';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useLargeHeaderRefreshControl } from '../../../core/hooks/useLargeHeaderRefreshControl';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
@@ -27,8 +27,6 @@ export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
-  const { contentContainerStyle, refreshControl } =
-    useLargeHeaderRefreshControl(ticketsQuery);
 
   const OpenTickets = () => {
     const openTickets = (ticketsQuery.data || [])
@@ -97,8 +95,8 @@ export const TicketsScreen = ({ navigation }: Props) => {
     <>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={refreshControl}
-        contentContainerStyle={[styles.container, contentContainerStyle]}
+        refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
+        contentContainerStyle={styles.container}
       >
         <OpenTickets />
         <ClosedTickets />
