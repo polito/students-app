@@ -88,8 +88,8 @@ export const TranscriptScreen = () => {
             data={
               totalCredits
                 ? [
-                    totalAttendedCredits ?? 0 / totalCredits,
-                    totalAcquiredCredits ?? 0 / totalCredits,
+                    (totalAttendedCredits ?? 0) / totalCredits,
+                    (totalAcquiredCredits ?? 0) / totalCredits,
                   ]
                 : []
             }
@@ -129,8 +129,8 @@ export const TranscriptScreen = () => {
             data={
               enrollmentCredits
                 ? [
-                    enrollmentAttendedCredits ?? 0 / enrollmentCredits,
-                    enrollmentAcquiredCredits ?? 0 / enrollmentCredits,
+                    (enrollmentAttendedCredits ?? 0) / enrollmentCredits,
+                    (enrollmentAcquiredCredits ?? 0) / enrollmentCredits,
                   ]
                 : []
             }
