@@ -416,7 +416,7 @@
     "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
   },
   "tickets": {
-    "close": "Close ticket",
+    "close": "Chiudi ticket",
     "closeTip": "Sei sicuro di voler chiudere questo ticket?",
     "menuAction": "Azioni ticket",
     "status": {

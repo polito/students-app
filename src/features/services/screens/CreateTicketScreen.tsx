@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -89,17 +90,12 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScreenContainer>
       <Section>
         <SectionHeader title={t('createTicketScreen.subtitle')} />
-
         <SectionList>
           <Select
-            label={t('createTicketScreen.topic')}
+            label={t('createTicketScreen.topicDropdownLabel')}
             description={t('createTicketScreen.topicDescription')}
             options={topics.map(topic => ({
               id: topic.id.toString(),
@@ -122,7 +118,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
             value={ticketBody?.subtopicId?.toString()}
-            label={t('createTicketScreen.subtopic')}
+            label={t('createTicketScreen.subtopicDropdownLabel')}
             description={t('createTicketScreen.subtopicDescription')}
           />
         </SectionList>
@@ -164,7 +160,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         loading={isLoading}
         icon={faPaperPlane}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -177,9 +173,6 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     },
     bubbleContainer: {
       marginHorizontal: spacing[5],
-    },
-    container: {
-      paddingVertical: spacing[5],
     },
     objectSection: {
       height: 60,
