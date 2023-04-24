@@ -26,9 +26,9 @@ export const WeeklyAgenda = ({ agendaWeek, setTodayOffset }: Props) => {
   return (
     <View>
       <Text variant="secondaryText" style={styles.weekHeader} capitalize>
-        {agendaWeek.dateRange.start.toFormat('d MMM')}
+        {agendaWeek.dateRange.start!.toFormat('d MMM')}
         {' - '}
-        {agendaWeek.dateRange.end.minus(1).toFormat('d MMM')}
+        {agendaWeek.dateRange.end!.minus(1).toFormat('d MMM')}
       </Text>
       {agendaWeek.data.map(day => (
         <DailyAgenda

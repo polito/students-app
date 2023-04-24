@@ -43,6 +43,10 @@ target 'students' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  target 'students dev' do
+    inherit! :complete
+  end
+
   target 'studentsTests' do
     inherit! :complete
     # Pods for testing
