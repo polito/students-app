@@ -15,6 +15,7 @@ import { UiProvider } from './core/providers/UiProvider';
 const appsignal = new Appsignal({
   key: APPSIGNAL_API_KEY,
   revision: `${version}-${Platform.OS}`,
+  namespace: 'it.polito.students',
 });
 
 export const App = () => {
