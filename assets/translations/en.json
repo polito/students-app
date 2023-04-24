@@ -418,7 +418,12 @@
   "tickets": {
     "close": "Close ticket",
     "closeTip": "Are you sure you want to close this ticket?",
-    "menuAction": "Ticket actions"
+    "menuAction": "Ticket actions",
+    "status": {
+      "closed": "Closed",
+      "new": "Open",
+      "pending": "Pending"
+    }
   },
   "ticketsScreen": {
     "addNew": "Add ticket",

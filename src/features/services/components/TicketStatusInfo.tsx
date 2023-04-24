@@ -66,7 +66,7 @@ export const TicketStatusInfo = ({
         />
         <Metric
           title={t('common.status')}
-          value={ticket.status}
+          value={t(`tickets.status.${ticket.status}`)}
           style={GlobalStyles.grow}
           valueStyle={{ textTransform: 'uppercase' }}
         />

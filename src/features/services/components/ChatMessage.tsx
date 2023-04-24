@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketReply } from '@polito/api-client/models/TicketReply';
@@ -20,6 +22,7 @@ export const ChatMessage = ({
   ticketId,
 }: ChatMessageProps) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   const hasAttachment = message.attachments?.length > 0;
 
   const Attachments = () => {
@@ -48,19 +51,29 @@ export const ChatMessage = ({
       time={message.createdAt}
       style={styles.bubbleContainer}
     >
+      {message.agentId && (
+        <Text style={styles.agentText}>
+          {t('common.agent')} {message.agentId}
+        </Text>
+      )}
       <TextMessage message={message.message?.trim() ?? ''} />
       <Attachments />
     </ChatBubble>
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ fontWeights, spacing }: Theme) =>
   StyleSheet.create({
-    bubbleContainer: {
-      marginHorizontal: spacing[5],
+    agentText: {
+      color: 'white',
+      fontWeight: fontWeights.semibold,
+      marginBottom: spacing[2],
     },
     attachmentContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
+    },
+    bubbleContainer: {
+      marginHorizontal: spacing[5],
     },
   });
