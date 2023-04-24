@@ -284,8 +284,7 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
-  const { shouldRecordScreen, shouldReportErrors, updatePreference } =
-    useContext(PreferencesContext);
+  const { shouldReportErrors, updatePreference } = usePreferencesContext();
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -312,11 +311,6 @@ export const SettingsScreen = () => {
         <Section>
           <SectionHeader title={t('common.privacy')} />
           <SectionList indented>
-            <SwitchListItem
-              title={t('settingsScreen.shouldRecordScreen')}
-              value={shouldRecordScreen}
-              onChange={value => updatePreference('shouldRecordScreen', value)}
-            />
             <SwitchListItem
               title={t('settingsScreen.shouldReportErrors')}
               value={shouldReportErrors}
