@@ -1,6 +1,7 @@
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { initReactI18next } from 'react-i18next';
 import { Platform, StatusBar, useColorScheme } from 'react-native';
+import overrideColorScheme from 'react-native-override-color-scheme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
@@ -23,6 +24,8 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
 
   if (colorScheme === 'system') {
     colorScheme = systemColorScheme ?? 'light';
+  } else if (colorScheme !== systemColorScheme) {
+    overrideColorScheme.setScheme(colorScheme);
   }
 
   if (language === 'system') {
