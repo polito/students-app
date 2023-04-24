@@ -383,6 +383,8 @@ PODS:
     - React
   - react-native-netinfo (9.3.9):
     - React-Core
+  - react-native-override-color-scheme (1.0.3):
+    - React-Core
   - react-native-pdf (6.6.2):
     - React-Core
   - react-native-render-html (6.3.4):
@@ -577,6 +579,7 @@ DEPENDENCIES:
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-override-color-scheme (from `../node_modules/react-native-override-color-scheme`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -683,6 +686,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-menu/menu"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-override-color-scheme:
+    :path: "../node_modules/react-native-override-color-scheme"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
   react-native-render-html:
@@ -783,6 +788,7 @@ SPEC CHECKSUMS:
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-menu: 9d7d6f819cc7fa14a15cf86888c53f3240d86f1b
   react-native-netinfo: 22c082970cbd99071a4e5aa7a612ac20d66b08f0
+  react-native-override-color-scheme: 3badbbee9a4ea2a9c3e5b4a5d9fd9eaba8761870
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: f5549f36508b1b7497434baa0cd97d7e470920d4
