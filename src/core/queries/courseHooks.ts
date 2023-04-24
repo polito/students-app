@@ -55,7 +55,7 @@ export const useGetCourses = () => {
             const usedColors = Object.values(courses)
               .map(cp => cp.color)
               .filter(notNullish);
-            let colorData: typeof courseColors[0] | undefined;
+            let colorData: (typeof courseColors)[0] | undefined;
             for (const currentColor of courseColors) {
               if (!usedColors.includes(currentColor.color)) {
                 colorData = currentColor;

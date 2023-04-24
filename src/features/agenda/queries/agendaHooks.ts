@@ -233,7 +233,7 @@ export const useGetAgendaWeeks = (
         pageParam === thisMonday,
       );
 
-      const key = pageParam.toSQLDate();
+      const key = pageParam.toSQLDate()!;
 
       return {
         key,
@@ -248,10 +248,10 @@ export const useGetAgendaWeeks = (
         bookingsQuery.isSuccess &&
         deadlinesQuery.isSuccess,
       getNextPageParam: lastPage => {
-        return lastPage.dateRange.start.plus(oneWeek);
+        return lastPage.dateRange.start!.plus(oneWeek);
       },
       getPreviousPageParam: firstPage => {
-        return firstPage.dateRange.end.minus(oneWeek);
+        return firstPage.dateRange.end!.minus(oneWeek);
       },
       staleTime: Infinity, // TODO define
     },
