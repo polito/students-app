@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Dimensions,
   Image,
   Platform,
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { TextButton } from '@lib/ui/components/TextButton';
-import { TextField } from '@lib/ui/components/TextField';
+import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
-import { globalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -41,6 +41,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
   const uploadMutation = useUploadAssignment(courseId);
   const styles = useStylesheet(createStyles);
   const tabBarHeight = useBottomTabBarHeight();
+  const { width } = useWindowDimensions();
   const [description, setDescription] = useState('');
 
   const uploadFile = () => {
@@ -93,10 +94,8 @@ export const CourseAssignmentUploadConfirmationScreen = ({
           styles.toolbar,
         ]}
       >
-        <TextField
+        <TranslucentTextField
           label={t('courseAssignmentUploadConfirmationScreen.descriptionLabel')}
-          style={styles.textField}
-          inputStyle={styles.input}
           autoCorrect={false}
           value={description}
           onChangeText={value => setDescription(value)}
@@ -109,16 +108,16 @@ export const CourseAssignmentUploadConfirmationScreen = ({
           style={[
             {
               paddingBottom: tabBarHeight,
+              width,
             },
-            styles.preview,
-            globalStyles.grow,
+            GlobalStyles.grow,
           ]}
         />
       )}
       {/\.jpe?g|gif|png|heic$/i.test(fileUri) && (
         <ScrollView
           contentContainerStyle={[
-            globalStyles.grow,
+            GlobalStyles.grow,
             {
               paddingBottom: tabBarHeight,
             },
@@ -128,7 +127,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         >
           <Image
             source={{ uri: fileUri }}
-            style={globalStyles.grow}
+            style={GlobalStyles.grow}
             resizeMode="contain"
           />
         </ScrollView>
@@ -136,12 +135,12 @@ export const CourseAssignmentUploadConfirmationScreen = ({
     </>
   );
 };
-const createStyles = ({ colors, spacing, shapes }: Theme) =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     toolbar: {
       justifyContent: 'space-between',
       backgroundColor: Platform.select({
-        ios: colors.headers,
+        ios: colors.headersBackground,
         android: colors.surface,
       }),
       borderBottomWidth: Platform.select({
@@ -149,19 +148,5 @@ const createStyles = ({ colors, spacing, shapes }: Theme) =>
       }),
       borderBottomColor: colors.divider,
       elevation: 3,
-    },
-    preview: {
-      width: Dimensions.get('window').width,
-    },
-    input: {
-      margin: 0,
-      borderBottomWidth: 0,
-      paddingVertical: spacing[Platform.OS === 'ios' ? 2 : 1],
-    },
-    textField: {
-      backgroundColor: 'rgba(0, 0, 0, .1)',
-      borderRadius: shapes.md,
-      paddingVertical: 0,
-      marginHorizontal: spacing[2],
     },
   });

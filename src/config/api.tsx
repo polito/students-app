@@ -1,4 +1,3 @@
-import { API_BASE_PATH } from '@env';
 import {
   AuthApi,
   BASE_PATH,
@@ -11,20 +10,21 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
+  TicketsApi,
 } from '@polito/api-client';
 
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
-import { language } from '../i18n';
+import { deviceLanguage } from '../utils/device';
 
 export const createApiConfiguration = (token?: string) => {
-  const basePath = API_BASE_PATH ?? BASE_PATH;
-
+  const basePath = BASE_PATH;
   console.debug(`Expecting a running API at ${basePath}`);
 
   const configurationParameters: ConfigurationParameters = {
     basePath,
     headers: {
-      'Accept-Language': language,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Accept-Language': deviceLanguage, // TODO refactor
     },
   };
 
@@ -52,6 +52,7 @@ export const createApiClients = (token?: string) => {
       people: new PeopleApi(configuration),
       places: new PlacesApi(configuration),
       student: new StudentApi(configuration),
+      tickets: new TicketsApi(configuration),
     };
   }
 

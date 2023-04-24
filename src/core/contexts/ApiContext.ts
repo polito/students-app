@@ -9,12 +9,17 @@ import {
   PeopleApi,
   PlacesApi,
   StudentApi,
+  TicketsApi,
 } from '@polito/api-client';
 
-export interface ApiContextProps {
-  isLogged: boolean;
+export interface Credentials {
+  username: string;
   token: string;
-  refreshContext: (token?: string) => void;
+}
+
+export interface ApiContextProps extends Credentials {
+  isLogged: boolean;
+  refreshContext: (credentials?: Credentials) => void;
   clients: Partial<ApiContextClientsProps>;
 }
 
@@ -27,6 +32,7 @@ export interface ApiContextClientsProps {
   people: PeopleApi;
   places: PlacesApi;
   student: StudentApi;
+  tickets: TicketsApi;
 }
 
 export const ApiContext = createContext<ApiContextProps | undefined>(undefined);

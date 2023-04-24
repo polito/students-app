@@ -1,24 +1,46 @@
 import { PropsWithChildren } from 'react';
-import { TouchableHighlight, View } from 'react-native';
+import { StyleSheet, TouchableHighlight, View } from 'react-native';
 
-import { useTheme } from '../hooks/useTheme';
-import { Card, Props as CardProps } from './Card';
+import { Col } from '@lib/ui/components/Col';
+import { Row } from '@lib/ui/components/Row';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
+
+import { AgendaIcon } from '../../../src/features/agenda/components/AgendaIcon';
+import { Card } from './Card';
 import { LiveIndicator } from './LiveIndicator';
 import { Text } from './Text';
 
-interface Props {
+export interface AgendaCardProps {
   /**
    * The event title
    */
-  title: string | JSX.Element;
+  title: string;
   /**
-   * The color of the event
+   * The color of the event type
    */
-  color?: string;
+  color: string;
+  /**
+   * Extra information on this event
+   */
+  description?: string;
+  /**
+   * The icon of the event
+   */
+  icon?: string;
+  /**
+   * The color of the event icon
+   */
+  iconColor?: string;
   /**
    * Shows a live indicator
    */
   live?: boolean;
+  /**
+   * The room in which this event takes place
+   */
+  location?: string;
   /**
    * Event time information
    */
@@ -26,7 +48,11 @@ interface Props {
   /**
    * A subtitle (ie event type)
    */
-  subtitle?: string;
+  type: string;
+  /**
+   * On card pressed handler
+   */
+  onPress?: () => void;
 }
 
 /**
@@ -34,77 +60,102 @@ interface Props {
  */
 export const AgendaCard = ({
   title,
-  style,
-  color,
-  live = true,
-  time = '--:--',
-  subtitle,
   children,
-  ...rest
-}: PropsWithChildren<CardProps & Props>) => {
-  const { colors, spacing, fontSizes } = useTheme();
-  const borderColor = color ?? colors.primary[500];
-
+  color,
+  icon,
+  iconColor,
+  live = false,
+  time,
+  type,
+  location,
+  onPress,
+}: PropsWithChildren<AgendaCardProps>) => {
+  const styles = useStylesheet(createStyles);
+  const { colors, spacing } = useTheme();
   return (
     <Card
       rounded
+      spaced={false}
       style={[
+        color
+          ? {
+              borderWidth: 2,
+              borderColor: color,
+            }
+          : undefined,
         {
-          flex: 1,
-          borderWidth: 2,
-          borderColor,
+          marginVertical: spacing[2],
         },
-        style,
       ]}
-      {...rest}
     >
       <TouchableHighlight
-        style={{
-          padding: spacing[5],
-        }}
+        underlayColor={colors.touchableHighlight}
+        style={styles.touchable}
+        onPress={onPress}
       >
-        <View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            {typeof title === 'string' ? (
-              <Text
-                variant="title"
-                style={{
-                  flex: 1,
-                }}
-              >
-                {title}
-              </Text>
-            ) : (
-              title
-            )}
-            {live && <LiveIndicator />}
-            <Text variant="secondaryText" style={{ fontSize: fontSizes.xs }}>
-              {time}
+        <Col gap={2}>
+          <Row align="flex-end" justify="space-between">
+            <Text style={styles.time}>{time && time}</Text>
+            <Text uppercase variant="caption">
+              {type}
             </Text>
-          </View>
-          {subtitle && (
+          </Row>
+          <Row>
+            {iconColor && <AgendaIcon icon={icon} color={iconColor} />}
             <Text
-              variant="caption"
-              style={{
-                marginTop: spacing[1.5],
-              }}
+              style={[
+                styles.title,
+                iconColor ? styles.titleWithIcon : undefined,
+              ]}
             >
-              {subtitle}
+              {title}
             </Text>
+          </Row>
+          {live && (
+            <View>
+              <LiveIndicator />
+            </View>
           )}
-          {typeof children === 'string' ? (
-            <Text style={{ marginTop: spacing[2.5] }}>{children}</Text>
-          ) : (
-            children
-          )}
-        </View>
+          {children}
+          {location && <Text style={styles.location}>{location}</Text>}
+        </Col>
       </TouchableHighlight>
     </Card>
   );
 };
+
+const createStyles = ({
+  colors,
+  palettes,
+  fontSizes,
+  fontWeights,
+  spacing,
+  dark,
+}: Theme) =>
+  StyleSheet.create({
+    title: {
+      flex: 1,
+      fontWeight: fontWeights.semibold,
+      fontSize: fontSizes.md,
+    },
+    titleWithIcon: {
+      marginLeft: spacing[1.5],
+    },
+    touchable: {
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[3],
+    },
+    time: {
+      color: colors.secondaryText,
+      fontSize: fontSizes.sm,
+    },
+    type: {
+      color: dark ? palettes.text[300] : palettes.text[400],
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      marginTop: spacing[1.5],
+    },
+    location: {
+      marginTop: spacing[1.5],
+    },
+  });

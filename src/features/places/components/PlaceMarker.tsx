@@ -9,7 +9,7 @@ interface Props {
 export const PlaceMarker = ({ placeId }: Props) => {
   const { data: place, isLoading } = useGetPlace(placeId);
 
-  if (isLoading || place == null) {
+  if (isLoading || !place?.data) {
     return null;
   }
   return (

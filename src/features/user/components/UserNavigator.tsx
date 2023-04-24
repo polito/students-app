@@ -1,27 +1,45 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HomeScreen } from '../screens/HomeScreen';
-import { MessagesScreen } from '../screens/MessagesScreen';
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
-const Stack = createNativeStackNavigator();
+export type UserStackParamList = {
+  Profile: undefined;
+  Settings: undefined;
+  Notifications: undefined;
+};
+const Stack = createNativeStackNavigator<UserStackParamList>();
 
 export const UserNavigator = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const { colors } = theme;
 
   return (
     <Stack.Navigator
       screenOptions={{
-        orientation: 'portrait',
+        headerLargeTitle: false,
+        headerTransparent: Platform.select({ ios: true }),
+        headerLargeStyle: {
+          backgroundColor: colors.background,
+        },
+        headerBlurEffect: 'systemUltraThinMaterial',
+        ...titlesStyles(theme),
       }}
     >
       <Stack.Screen
         name="Profile"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
-          headerShown: false,
+          headerLeft: () => <HeaderLogo />,
+          headerTitle: t('profileScreen.title'),
         }}
       />
       <Stack.Screen
@@ -32,8 +50,8 @@ export const UserNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Messages"
-        component={MessagesScreen}
+        name="Notifications"
+        component={NotificationsScreen}
         options={{
           headerTitle: t('messagesScreen.title'),
         }}

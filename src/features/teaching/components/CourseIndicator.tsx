@@ -8,12 +8,12 @@ interface Props {
 }
 
 export const CourseIndicator = ({ courseId }: Props) => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
   const prefs = usePreferencesContext();
   const coursePrefs = prefs.courses[courseId];
 
   if (!coursePrefs) {
-    return <CourseIcon color={colors.primary[500]} />;
+    return <CourseIcon color={palettes.primary[500]} />;
   }
   return <CourseIcon color={coursePrefs.color} icon={coursePrefs.icon} />;
 };

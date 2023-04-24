@@ -1,29 +1,45 @@
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { ProgressChart as RNCKProgressChart } from 'react-native-chart-kit';
 
+import { Col } from '@lib/ui/components/Col';
+import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import color from 'color';
 
-interface Props {
-  data: number[];
-  colors: string[];
-}
+import { uniformInsets } from '../../../utils/insets';
 
-export const ProgressChart = ({ data, colors }: Props) => {
-  const { dark, colors: themeColors } = useTheme();
+type Props = ViewProps & {
+  data: number[];
+  label?: string;
+  colors: string[];
+  boxSize?: number;
+  thickness?: number;
+  radius?: number;
+};
+
+export const ProgressChart = ({
+  data,
+  colors,
+  label,
+  boxSize = 125,
+  thickness = 16,
+  radius = 30,
+  ...rest
+}: Props) => {
+  const { dark, colors: themeColors, palettes, fontSizes } = useTheme();
 
   return (
-    <View>
+    <View accessible={false} {...rest}>
       <RNCKProgressChart
         data={{
           data: [1],
         }}
-        width={125}
-        height={125}
+        width={boxSize}
+        height={boxSize}
         hideLegend={true}
-        strokeWidth={16}
-        radius={30}
+        strokeWidth={thickness}
+        radius={radius}
         style={{
           margin: -20,
         }}
@@ -31,7 +47,7 @@ export const ProgressChart = ({ data, colors }: Props) => {
           backgroundGradientFromOpacity: 0,
           backgroundGradientToOpacity: 0,
           color: () =>
-            color(themeColors.primary[500])
+            color(palettes.primary[500])
               .alpha(dark ? 0.3 : 0.08)
               .toString(),
         }}
@@ -42,11 +58,11 @@ export const ProgressChart = ({ data, colors }: Props) => {
           data={{
             data: [i],
           }}
-          width={125}
-          height={125}
+          width={boxSize}
+          height={boxSize}
           hideLegend={true}
-          strokeWidth={16}
-          radius={30}
+          strokeWidth={thickness}
+          radius={radius}
           style={{
             margin: -20,
             position: 'absolute',
@@ -59,6 +75,26 @@ export const ProgressChart = ({ data, colors }: Props) => {
           }}
         />
       ))}
+      {label && (
+        <Col
+          align="center"
+          justify="center"
+          style={{
+            position: 'absolute',
+            ...uniformInsets(0),
+          }}
+        >
+          <Text
+            style={{
+              fontSize: fontSizes.xs,
+              color: themeColors.secondaryText,
+              textAlign: 'center',
+            }}
+          >
+            {label}
+          </Text>
+        </Col>
+      )}
     </View>
   );
 };

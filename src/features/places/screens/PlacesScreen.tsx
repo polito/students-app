@@ -13,7 +13,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
-import { globalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CampusSelector } from '../components/CampusSelector';
 import { PlaceMarker } from '../components/PlaceMarker';
 import { PlacePanel } from '../components/PlacePanel';
@@ -24,7 +24,7 @@ import { PlacesStackParamList } from '../components/PlacesNavigator';
 type Props = NativeStackScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
-  const { colors, fontSizes, shapes } = useTheme();
+  const { colors, palettes, fontSizes, shapes } = useTheme();
   const [searching, setSearching] = useState(false);
   const headerHeight = useHeaderHeight();
   const bottomTabBarHeight = useBottomTabBarHeight();
@@ -34,7 +34,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       headerRight: () => (
         <IconButton
           icon={faSearch}
-          color={colors.primary[400]}
+          color={palettes.primary[400]}
           size={fontSizes.lg}
           adjustSpacing="right"
           onPress={() => setSearching(true)}
@@ -122,7 +122,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           </Tabs>
         </View>
 
-        <View style={globalStyles.grow} pointerEvents="box-none">
+        <View style={GlobalStyles.grow} pointerEvents="box-none">
           <BottomSheet
             index={placeType != null || placeId != null ? 0 : -1}
             snapPoints={[placeId ? '50%' : '25%', '100%']}
@@ -140,8 +140,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onClose={() => {
               if (placeId != null || placeType != null) {
                 navigation.navigate('Places', {
-                  placeType: null,
-                  placeId: null,
+                  placeType: undefined,
+                  placeId: undefined,
                 });
               }
             }}

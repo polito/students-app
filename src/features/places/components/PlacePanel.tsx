@@ -4,7 +4,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 interface Props {
-  placeId: number;
+  placeId: string;
 }
 
 export const PlacePanel = ({ placeId }: Props) => {

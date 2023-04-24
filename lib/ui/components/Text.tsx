@@ -1,25 +1,25 @@
-import { PropsWithChildren } from 'react';
 import { Text as RNText, StyleSheet, TextProps } from 'react-native';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
-import { Theme } from '../types/theme';
+import { Theme } from '../types/Theme';
 
-interface Props {
+export interface Props extends TextProps {
   variant?:
     | 'heading'
     | 'title'
-    | 'headline'
     | 'prose'
     | 'secondaryText'
     | 'caption'
     | 'link';
   weight?: keyof Theme['fontWeights'];
   italic?: boolean;
+  capitalize?: boolean;
+  uppercase?: boolean;
 }
 
 const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
-  heading: 'extrabold',
+  heading: 'semibold',
   title: 'semibold',
   headline: 'normal',
   caption: 'bold',
@@ -37,9 +37,11 @@ export const Text = ({
   weight,
   italic = false,
   style,
+  capitalize,
+  uppercase,
   children,
   ...rest
-}: PropsWithChildren<TextProps & Props>) => {
+}: Props) => {
   const { colors, fontFamilies, fontWeights } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
@@ -58,6 +60,8 @@ export const Text = ({
           fontStyle: 'italic',
         },
         styles[variant],
+        capitalize && { textTransform: 'capitalize' },
+        uppercase && { textTransform: 'uppercase' },
         style,
       ]}
       {...rest}
@@ -70,10 +74,10 @@ export const Text = ({
 const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
-      fontSize: fontSizes.xl,
+      fontSize: fontSizes.md,
     },
     title: {
-      fontSize: fontSizes.lg,
+      fontSize: fontSizes.xl,
     },
     headline: {
       fontSize: fontSizes.md,

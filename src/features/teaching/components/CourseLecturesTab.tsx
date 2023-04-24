@@ -19,193 +19,84 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { VideoLecture } from '@polito/api-client';
-import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
-import {
-  useGetCourse,
-  useGetCourseRelatedVirtualClassrooms,
-  useGetCourseVideolectures,
-  useGetCourseVirtualClassrooms,
-} from '../../../core/queries/courseHooks';
+import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatDateTime } from '../../../utils/dates';
+import { formatDate } from '../../../utils/dates';
 import { CourseTabProps } from '../screens/CourseScreen';
-
-type SectionLectures =
-  | GetCourseVirtualClassrooms200ResponseDataInner[]
-  | VideoLecture[];
-
-interface Section {
-  index: number;
-  title: string;
-  data: SectionLectures;
-  type: 'VirtualClassroom' | 'VideoLecture';
-  isExpanded: boolean;
-}
+import {
+  CourseLecture,
+  CourseLectureSection,
+} from '../types/CourseLectureSections';
 
 export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();
   const { spacing, colors, fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const scrollPosition = useRef(new Animated.Value(0));
-  const courseQuery = useGetCourse(courseId);
-  const videolecturesQuery = useGetCourseVideolectures(courseId);
-  const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
-
-  const vcPreviousYears = courseQuery.data?.data.vcPreviousYears ?? [];
-  const vcOtherCourses = courseQuery.data?.data.vcOtherCourses ?? [];
-
-  const { queries: relatedVCQueries, isLoading: areRelatedLoading } =
-    useGetCourseRelatedVirtualClassrooms(vcPreviousYears, vcOtherCourses);
-
-  const refreshControl = useRefreshControl(
-    courseQuery,
-    videolecturesQuery,
-    virtualClassroomsQuery,
-    ...relatedVCQueries,
-  );
-
-  const [sections, setSections] = useState<Section[]>([]);
-  const [lectures, setLectures] = useState<SectionLectures[]>([]);
-
-  const [loadedLectureQueriesCount, setLoadedLectureQueriesCount] = useState(0);
-  const onLectureQueryLoaded = () => setLoadedLectureQueriesCount(c => ++c);
-
-  const setSectionLectures = (
-    sectionIndex: number,
-    sectionLectures: SectionLectures,
-  ) =>
-    setLectures(oldL =>
-      Object.assign([], oldL, { [sectionIndex]: sectionLectures }),
-    );
-
-  const sectionListRef = useRef(null);
+  const courseLecturesQuery = useGetCourseLectures(courseId);
+  const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
+  const sectionListRef =
+    useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
 
   useEffect(() => {
-    if (virtualClassroomsQuery.isLoading) return;
+    if (!courseLecturesQuery.data) return;
 
-    if (virtualClassroomsQuery.data.data) {
-      setSectionLectures(0, virtualClassroomsQuery.data.data);
-    }
-    onLectureQueryLoaded();
-  }, [virtualClassroomsQuery.isLoading]);
+    const nextLectures = [...courseLecturesQuery.data];
+    setLectures(prev => {
+      const isFirstRender = !prev.length;
+      return nextLectures.map((section, index) => {
+        if (isFirstRender) {
+          if (index === 0) {
+            return { ...section, isExpanded: true };
+          }
+        } else if (prev?.[index]?.isExpanded) {
+          return { ...section, isExpanded: true };
+        }
 
-  useEffect(() => {
-    if (videolecturesQuery.isLoading) return;
-
-    if (videolecturesQuery.data.data) {
-      setSectionLectures(1, videolecturesQuery.data.data);
-    }
-    onLectureQueryLoaded();
-  }, [videolecturesQuery.isLoading]);
-
-  useEffect(() => {
-    if (courseQuery.isLoading || areRelatedLoading) return;
-
-    relatedVCQueries.forEach((relatedQuery, index) => {
-      if (relatedQuery.data.data) {
-        setSectionLectures(2 + index, relatedQuery.data.data);
-      }
-    });
-
-    onLectureQueryLoaded();
-  }, [courseQuery.isLoading, areRelatedLoading]);
-
-  // After all lectures have been retrieved, only render sections containing lectures (the first one should be open)
-  useEffect(() => {
-    if (loadedLectureQueriesCount < 3) return;
-
-    const availableSections: Section[] = [
-      {
-        index: 0,
-        title: t('common.virtualClassroom_plural'),
-        data: [],
-        type: 'VirtualClassroom',
-        isExpanded: false,
-      },
-      {
-        index: 1,
-        title: t('common.videoLecture_plural'),
-        data: [],
-        type: 'VideoLecture',
-        isExpanded: false,
-      },
-    ];
-
-    const sectionTitles =
-      vcPreviousYears
-        ?.map(py => `${t('common.virtualClassroom_plural')} - ${py.year}`)
-        .concat(vcOtherCourses?.map(oc => `${oc.name} ${oc.year}`)) ?? [];
-
-    sectionTitles.forEach((title, index) => {
-      availableSections[2 + index] = {
-        index: 2 + index,
-        title,
-        data: [],
-        type: 'VirtualClassroom',
-        isExpanded: false,
-      };
-    });
-
-    const renderedSections: Section[] = [];
-    let shouldExpand = true;
-    availableSections.forEach(section => {
-      if (section.index in lectures) {
-        renderedSections.push({
-          ...section,
-          isExpanded: shouldExpand,
-          data: shouldExpand ? lectures[section.index] : [],
-        });
-
-        if (shouldExpand) shouldExpand = false;
-      }
-    });
-
-    setSections(renderedSections);
-  }, [loadedLectureQueriesCount]);
-
-  const toggleSection = (index: number) => {
-    setSections(oldS => {
-      const wasSectionCollapsed = !oldS[index].isExpanded;
-
-      oldS = oldS.map(s => {
-        s.data = [];
-        s.isExpanded = false;
-        return s;
+        return { ...section, isExpanded: false, data: [] };
       });
-      if (wasSectionCollapsed) {
-        oldS[index].data = lectures[index];
-        oldS[index].isExpanded = true;
-        sectionListRef.current.scrollToLocation({
-          itemIndex: 0,
-        });
-      }
-      return [...oldS];
+    });
+  }, [courseLecturesQuery.isLoading, courseLecturesQuery.data]);
+
+  const toggleSection = (sectionTitle: string) => {
+    setLectures(oldS => {
+      return oldS.map((section, index) => {
+        let isExpanded = false;
+        let data: unknown = [];
+        if (section.title === sectionTitle) {
+          isExpanded = !section.isExpanded;
+        }
+
+        if (isExpanded && !section.data.length) {
+          data = courseLecturesQuery.data?.[index].data ?? [];
+        }
+
+        return {
+          ...section,
+          isExpanded,
+          data,
+        } as CourseLectureSection;
+      });
     });
   };
-
-  if (!lectures.flat().length) {
-    return (
-      <EmptyState
-        message={t('courseLecturesTab.emptyState')}
-        icon={faChalkboardTeacher}
-      />
-    );
-  }
 
   return (
     <SectionList
       ref={sectionListRef}
-      contentContainerStyle={bottomBarAwareStyles}
-      sections={sections}
-      {...refreshControl}
+      contentInsetAdjustmentBehavior="automatic"
+      sections={lectures}
+      refreshControl={<RefreshControl queries={[courseLecturesQuery]} />}
       stickySectionHeadersEnabled={true}
+      ListEmptyComponent={
+        <EmptyState
+          message={t('courseLecturesTab.emptyState')}
+          icon={faChalkboardTeacher}
+        />
+      }
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
@@ -213,18 +104,19 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       ItemSeparatorComponent={Platform.select({
         ios: () => <IndentedDivider />,
       })}
-      renderSectionHeader={({ section: { title, index, isExpanded } }) => (
-        <Pressable onPress={() => toggleSection(index)}>
+      renderSectionHeader={({ section: { title, isExpanded } }) => (
+        <Pressable
+          onPress={() => toggleSection(title)}
+          accessibilityLabel={`${title}. ${t(
+            `common.openedStatus.${isExpanded}`,
+          )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}
+        >
           <View
             style={{
               paddingVertical: spacing[3],
               borderBottomWidth: StyleSheet.hairlineWidth,
               borderColor: colors.divider,
-              ...(index > 0 && sections[index - 1]?.isExpanded
-                ? {
-                    borderTopWidth: StyleSheet.hairlineWidth,
-                  }
-                : {}),
+              borderTopWidth: StyleSheet.hairlineWidth,
             }}
           >
             <TranslucentView />
@@ -242,14 +134,24 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         </Pressable>
       )}
       renderItem={({ section, item: lecture }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const { data: teacher } = useGetPerson(lecture.teacherId);
         return (
           <ListItem
             title={lecture.title}
             subtitle={[
-              teacher && `${teacher.data.firstName} ${teacher.data.lastName}`,
-              lecture.createdAt && formatDateTime(lecture.createdAt),
+              formatDate(lecture.createdAt),
               lecture.duration,
+              teacher && `${teacher.firstName} ${teacher.lastName}`,
+            ]
+              .filter(i => !!i)
+              .join(' - ')}
+            accessibilityLabel={[
+              lecture.title,
+              lecture.duration
+                .replace('m', t('common.minutes'))
+                .replace('h', t('common.hours')),
+              teacher && `${teacher.firstName} ${teacher.lastName}`,
             ]
               .filter(i => !!i)
               .join(' - ')}
@@ -268,7 +170,11 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
                 section.type === 'VideoLecture'
                   ? 'CourseVideolecture'
                   : 'CourseVirtualClassroom',
-              params: { courseId, lectureId: lecture.id },
+              params: {
+                courseId,
+                lectureId: lecture.id,
+                teacherId: lecture.teacherId,
+              },
             }}
           />
         );

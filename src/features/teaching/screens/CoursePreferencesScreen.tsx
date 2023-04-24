@@ -1,6 +1,6 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
@@ -12,6 +12,7 @@ import {
 import { faBroom, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
@@ -21,23 +22,21 @@ import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { courseColors } from '../../../core/constants';
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { CourseIcon } from '../components/CourseIcon';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCache } from '../hooks/useCourseFilesCache';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const courseFilesCache = useCourseFilesCache();
-  const [cacheSize, setCacheSize] = useState<number>(null);
+  const courseFilesCache = useCourseFilesCachePath();
+  const [cacheSize, setCacheSize] = useState<number>(0);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
@@ -59,7 +58,7 @@ const CleanCourseFilesListItem = () => {
 
   return (
     <ListItem
-      isNavigationAction
+      isAction
       title={t('coursePreferencesScreen.cleanCourseFiles')}
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
@@ -84,13 +83,10 @@ type Props = NativeStackScreenProps<
 
 export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
-  const { spacing, colors, fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { spacing, fontSizes } = useTheme();
   const { courseId } = route.params;
   const courseQuery = useGetCourse(courseId);
-  const refreshControl = useRefreshControl(courseQuery);
-  const { courses: coursesPrefs, updatePreference } =
-    useContext(PreferencesContext);
+  const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
     () => coursesPrefs[courseId],
     [courseId, coursesPrefs],
@@ -100,8 +96,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     <CourseContext.Provider value={courseId}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        refreshControl={<RefreshControl {...refreshControl} />}
-        contentContainerStyle={bottomBarAwareStyles}
+        refreshControl={<RefreshControl queries={[courseQuery]} />}
       >
         <View style={{ paddingVertical: spacing[5] }}>
           <Section>
@@ -112,7 +107,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   return {
                     id: cc.color,
                     title: t(cc.name),
-                    image: 'circle.fill',
+                    image: Platform.select({
+                      ios: 'circle.fill',
+                      android: 'circle',
+                    }),
                     imageColor: cc.color,
                     state: cc.color === coursePrefs?.color ? 'on' : undefined,
                   };
@@ -129,13 +127,13 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               >
                 <ListItem
                   title={t('common.color')}
-                  isNavigationAction
+                  isAction
                   leadingItem={<CourseIcon color={coursePrefs?.color} />}
                 />
               </MenuView>
               <ListItem
                 title={t('common.icon')}
-                isNavigationAction
+                isAction
                 onPress={() =>
                   navigation.navigate('CourseIconPicker', { courseId })
                 }
@@ -176,9 +174,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 title={t('common.notice_plural')}
                 subtitle={t('coursePreferencesScreen.noticesSubtitle')}
                 disabled={!courseQuery.data}
-                value={courseQuery.data?.data.notifications.avvisidoc}
+                value={courseQuery.data?.notifications.avvisidoc}
                 leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />
@@ -187,9 +185,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 title={t('common.file_plural')}
                 subtitle={t('coursePreferencesScreen.filesSubtitle')}
                 disabled={!courseQuery.data}
-                value={courseQuery.data?.data.notifications.matdid}
+                value={courseQuery.data?.notifications.matdid}
                 leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />
@@ -198,11 +196,11 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 title={t('common.lecture_plural')}
                 subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
                 disabled={!courseQuery.data}
-                value={courseQuery.data?.data.notifications.videolezioni}
+                value={courseQuery.data?.notifications.videolezioni}
                 leadingItem={
                   <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
                 }
-                onChange={value => {
+                onChange={() => {
                   // TODO
                 }}
               />

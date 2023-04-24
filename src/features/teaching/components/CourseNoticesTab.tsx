@@ -1,102 +1,66 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView } from 'react-native';
-import RenderHTML, { Document } from 'react-native-render-html';
+import { FlatList } from 'react-native';
 
-import {
-  faChevronDown,
-  faChevronRight,
-  faInbox,
-} from '@fortawesome/free-solid-svg-icons';
+import { faInbox } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { Icon } from '@lib/ui/components/Icon';
-import { List } from '@lib/ui/components/List';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { innerText } from 'domutils';
-import { parseDocument } from 'htmlparser2';
+import { DateTime } from 'luxon';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDate } from '../../../utils/dates';
+import { getHtmlTextContent } from '../../../utils/html';
 import { CourseTabProps } from '../screens/CourseScreen';
 
 export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
-  const { fontSizes, colors, spacing } = useTheme();
   const { t } = useTranslation();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { spacing } = useTheme();
   const noticesQuery = useGetCourseNotices(courseId);
-  const refreshControl = useRefreshControl(noticesQuery);
-  const [notices, setNotices] = useState([]);
-
-  useEffect(() => {
-    setNotices(
-      noticesQuery.data?.data.map(notice => {
-        const { id, content, publishedAt } = notice;
-        const dom = parseDocument(
-          content.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-        ) as Document;
-        const title = innerText(dom.children as any[]);
-        return {
-          id,
-          publishedAt,
-          title,
-          content: (
-            <RenderHTML
-              baseStyle={{
-                paddingHorizontal: spacing[5],
-                color: colors.prose,
-                fontFamily: 'Montserrat',
-                fontSize: fontSizes.sm,
-              }}
-              source={{ dom }}
-              systemFonts={['Montserrat']}
-            />
-          ),
-          open: false,
-        };
-      }) ?? [],
-    );
-  }, [noticesQuery.data]);
+  const { accessibilityListLabel } = useAccessibility();
+  const notices = useMemo(
+    () =>
+      noticesQuery.data?.map(notice => ({
+        ...notice,
+        title: getHtmlTextContent(notice.content),
+      })) ?? [],
+    [noticesQuery],
+  );
 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={<RefreshControl {...refreshControl} />}
-    >
-      {notices.length > 0 ? (
-        <List dividers>
-          {notices.map((notice, index) => (
-            <Fragment key={notice.id}>
-              <ListItem
-                title={notice.title}
-                subtitle={formatDate(notice.publishedAt)}
-                onPress={() =>
-                  setNotices(oldNotices =>
-                    oldNotices.map((n, i) =>
-                      i === index ? { ...n, open: !n.open } : n,
-                    ),
-                  )
-                }
-                trailingItem={
-                  <Icon
-                    icon={notice.open ? faChevronDown : faChevronRight}
-                    color={colors.secondaryText}
-                    size={fontSizes.lg}
-                    style={{ marginRight: -spacing[1] }}
-                  />
-                }
-              />
-              {notice.open && notice.content}
-            </Fragment>
-          ))}
-        </List>
-      ) : (
-        <EmptyState icon={faInbox} message={t('courseNoticesTab.emptyState')} />
+    <FlatList
+      style={GlobalStyles.grow}
+      refreshControl={<RefreshControl queries={[noticesQuery]} />}
+      data={notices}
+      renderItem={({ item: notice, index }) => (
+        <ListItem
+          title={notice.title}
+          accessibilityLabel={`${t(
+            accessibilityListLabel(index, notices?.length || 0),
+          )}. ${DateTime.fromJSDate(notice.publishedAt).toFormat(
+            'dd/MM/yyyy',
+          )}, ${notice.title}`}
+          subtitle={formatDate(notice.publishedAt)}
+          linkTo={{
+            screen: 'Notice',
+            params: { noticeId: notice.id, courseId },
+          }}
+        />
       )}
-    </ScrollView>
+      ListHeaderComponent={
+        !noticesQuery.isLoading && !noticesQuery.data?.length ? (
+          <EmptyState
+            icon={faInbox}
+            message={t('courseNoticesTab.emptyState')}
+          />
+        ) : null
+      }
+      ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
+    />
   );
 };

@@ -26,20 +26,21 @@ export const Tab = ({
   textStyle,
   ...rest
 }: PropsWithChildren<TouchableHighlightProps & Props>) => {
-  const { dark, colors, spacing, fontWeights } = useTheme();
+  const { dark, palettes, spacing, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>
       selected
-        ? colors.primary[500]
-        : color(colors.primary[dark ? 600 : 50])
+        ? palettes.primary[500]
+        : color(palettes.primary[dark ? 600 : 50])
             .alpha(0.4)
             .toString(),
-    [selected, dark, colors],
+    [selected, dark, palettes],
   );
 
   return (
     <TouchableOpacity
       accessibilityRole="tab"
+      accessible={true}
       accessibilityState={{
         selected,
       }}
@@ -58,10 +59,10 @@ export const Tab = ({
         style={[
           {
             color: selected
-              ? colors.text[50]
+              ? palettes.text[50]
               : dark
-              ? colors.primary[400]
-              : colors.primary[500],
+              ? palettes.primary[400]
+              : palettes.primary[500],
             fontWeight: fontWeights.medium,
           },
           textStyle,

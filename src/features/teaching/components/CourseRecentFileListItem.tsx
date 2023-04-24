@@ -11,10 +11,6 @@ export type CourseRecentFile = CourseFileOverview & {
 
 export const CourseRecentFileListItem = (props: CourseFileListItemProps) => {
   return (
-    <CourseFileListItem
-      showLocation={true}
-      showCreatedDate={false}
-      {...props}
-    />
+    <CourseFileListItem showLocation={true} showCreatedDate={true} {...props} />
   );
 };

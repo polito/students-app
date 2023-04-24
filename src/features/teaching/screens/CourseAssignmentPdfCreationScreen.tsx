@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator,
   Animated,
-  Dimensions,
   FlatList,
   Image,
   StyleSheet,
   TouchableHighlight,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
@@ -21,12 +20,13 @@ import {
   faFileCircleXmark,
   faPrint,
 } from '@fortawesome/free-solid-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Divider } from '@lib/ui/components/Divider';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { displayTabBar, hideTabBar } from '../../../utils/tab-bar';
@@ -54,15 +54,15 @@ export const CourseAssignmentPdfCreationScreen = ({
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [isCreatingPDF, setIsCreatingPDF] = useState(false);
   const [pageContainerAspectRatio, setPageContainerAspectRatio] = useState(1);
-  const pageSliderRef = useRef<FlatList>();
+  const pageSliderRef = useRef<FlatList>(null);
 
-  const windowDimensions = Dimensions.get('window');
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
-    const rootNav = navigation.getParent();
+    const rootNav = navigation.getParent()!;
     hideTabBar(rootNav);
     return () => displayTabBar(rootNav);
-  }, []);
+  }, [navigation]);
 
   const addPage = () => {
     openCamera({
@@ -74,7 +74,7 @@ export const CourseAssignmentPdfCreationScreen = ({
     })
       .then(image => {
         setImageUris(oldUris => [...oldUris, image.path]);
-        setTimeout(() => pageSliderRef.current.scrollToEnd());
+        setTimeout(() => pageSliderRef.current?.scrollToEnd());
       })
       .catch(e => {
         console.error(e);
@@ -95,7 +95,7 @@ export const CourseAssignmentPdfCreationScreen = ({
         });
 
         if (currentPageCount - 1 === currentPageIndex) {
-          pageSliderRef.current.scrollToIndex({
+          pageSliderRef.current?.scrollToIndex({
             animated: true,
             index: currentPageIndex - 1,
           });
@@ -140,7 +140,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       .then(pdf => {
         navigation.navigate('CourseAssignmentUploadConfirmation', {
           courseId,
-          fileUri: pdf.filePath,
+          fileUri: pdf.filePath!,
         });
       })
       .catch(e => {
@@ -170,9 +170,7 @@ export const CourseAssignmentPdfCreationScreen = ({
             contentOffset: { x },
           },
         }) => {
-          setCurrentPageIndex(
-            Math.max(0, Math.round(x / Dimensions.get('window').width)),
-          );
+          setCurrentPageIndex(Math.max(0, Math.round(x / width)));
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
@@ -180,7 +178,7 @@ export const CourseAssignmentPdfCreationScreen = ({
           <View
             style={[
               {
-                width: windowDimensions.width,
+                width,
               },
               styles.pageContainer,
             ]}
@@ -292,7 +290,7 @@ const Action = ({
   onPress,
 }: ActionProps) => {
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes } = useTheme();
+  const { colors, palettes, fontSizes } = useTheme();
   return (
     <TouchableHighlight
       onPress={onPress}
@@ -308,7 +306,7 @@ const Action = ({
             icon={icon}
             size={fontSizes.xl}
             style={styles.actionIcon}
-            color={colors.secondary[600]}
+            color={palettes.secondary[600]}
           />
         )}
         <Text>{label}</Text>
@@ -326,9 +324,10 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    // eslint-disable-next-line react-native/no-color-literals
     page: {
       aspectRatio: 1 / A4_ASPECT_RATIO,
-      backgroundColor: '#ffffff',
+      backgroundColor: 'white',
     },
     pageImage: {
       flexGrow: 1,

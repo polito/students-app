@@ -1,76 +1,65 @@
-import { useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { List } from '@lib/ui/components/List';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
+import { FilesCacheContext } from '../contexts/FilesCacheContext';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { CourseRecentFileListItem } from './CourseRecentFileListItem';
 
 export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  const { refresh } = useContext(FilesCacheContext);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
-  const refreshControl = useRefreshControl(recentFilesQuery);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const styles = useStylesheet(createStyles);
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   return (
     <>
-      <ScrollView
-        contentContainerStyle={bottomBarAwareStyles}
-        refreshControl={<RefreshControl {...refreshControl} />}
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={recentFilesQuery.data}
         scrollEnabled={scrollEnabled}
-      >
-        {recentFilesQuery.data?.length > 0 ? (
-          <View style={styles.sectionContainer}>
-            <SectionHeader
-              title={t('courseFilesTab.recentSectionTitle')}
-              separator={false}
+        keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+        initialNumToRender={15}
+        renderItem={({ item }) => {
+          return (
+            <CourseRecentFileListItem
+              item={item}
+              onSwipeStart={() => setScrollEnabled(false)}
+              onSwipeEnd={() => setScrollEnabled(true)}
             />
-            <List indented>
-              {recentFilesQuery.data?.slice(0, 5).map(file => (
-                <CourseRecentFileListItem
-                  key={file.id}
-                  item={file}
-                  onSwipeStart={() => setScrollEnabled(false)}
-                  onSwipeEnd={() => setScrollEnabled(true)}
-                />
-              ))}
-            </List>
-          </View>
-        ) : (
+          );
+        }}
+        refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
+        ItemSeparatorComponent={Platform.select({
+          ios: IndentedDivider,
+        })}
+        ListFooterComponent={<CtaButtonSpacer />}
+        ListEmptyComponent={
           <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
-        )}
-      </ScrollView>
-      {recentFilesQuery.data?.length > 0 && (
+        }
+      />
+      {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (
         <CtaButton
-          title={t('courseFilesTab.browseFiles')}
-          onPress={() => navigation.navigate('CourseDirectory', { courseId })}
+          title={t('courseFilesTab.navigateFolders')}
+          icon={faFolderOpen}
+          action={() => navigation!.navigate('CourseDirectory', { courseId })}
         />
       )}
     </>
   );
 };
-
-const createStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    sectionContainer: {
-      paddingVertical: spacing[5],
-    },
-    buttonContainer: {
-      paddingHorizontal: spacing[4],
-    },
-    noResultText: {
-      padding: spacing[4],
-    },
-  });

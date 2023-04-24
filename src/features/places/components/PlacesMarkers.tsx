@@ -31,7 +31,6 @@ export const PlacesMarkers = ({
   console.log('Places', places?.data);
   return (
     <>
-      Ciao
       {/* {places.data.map(place => {*/}
       {/*  return (*/}
       {/*    <MapMarker*/}

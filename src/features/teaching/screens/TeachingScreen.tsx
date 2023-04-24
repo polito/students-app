@@ -1,31 +1,27 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
+import { Col } from '@lib/ui/components/Col';
+import { Metric } from '@lib/ui/components/Metric';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
-import { ExamStatusEnum } from '@polito/api-client';
+import { Theme } from '@lib/ui/types/Theme';
+import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { PreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
-import { useRefreshControl } from '../../../core/hooks/useRefreshControl';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
@@ -37,60 +33,98 @@ interface Props {
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const preferences = useContext(PreferencesContext);
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { courses: coursePreferences } = usePreferencesContext();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
-  const refreshControl = useRefreshControl(
-    coursesQuery,
-    examsQuery,
-    studentQuery,
-  );
-  const exams = useMemo(
-    () =>
-      examsQuery.data?.data
-        .sort(a => (a.status === ExamStatusEnum.Booked ? -1 : 1))
-        .slice(0, 4) ?? [],
-    [examsQuery],
-  );
+
+  const courses = useMemo(() => {
+    if (!coursesQuery.data) return [];
+
+    return coursesQuery.data
+      .filter(c => c.id && !coursePreferences[c.id]?.isHidden)
+      .sort(
+        (a: CourseOverview, b) =>
+          (coursePreferences[a.id!]?.order ?? 0) -
+          (coursePreferences[b.id!]?.order ?? 0),
+      );
+  }, [coursesQuery, coursePreferences]);
+
+  const exams = useMemo(() => {
+    if (!coursesQuery.data || !examsQuery.data) return [];
+
+    const hiddenNonModuleCourses: string[] = [];
+
+    Object.keys(coursePreferences).forEach((key: string) => {
+      if (coursePreferences[+key].isHidden) {
+        const hiddenCourse = coursesQuery.data?.find(c => c.id === +key);
+        if (hiddenCourse && !hiddenCourse.isModule)
+          hiddenNonModuleCourses.push(hiddenCourse.shortcode);
+      }
+    });
+
+    return (
+      examsQuery.data
+        .filter(e => !hiddenNonModuleCourses.includes(e.courseShortcode))
+        .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
+        .slice(0, 4) ?? []
+    );
+  }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={bottomBarAwareStyles}
-      refreshControl={<RefreshControl {...refreshControl} />}
+      refreshControl={
+        <RefreshControl
+          queries={[coursesQuery, examsQuery, studentQuery]}
+          manual
+        />
+      }
     >
-      <View style={styles.sectionsContainer}>
+      <View style={styles.container}>
         <Section>
           <SectionHeader
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
+            linkToMoreCount={
+              coursesQuery.data
+                ? coursesQuery.data.length - courses.length
+                : undefined
+            }
           />
-          <SectionList loading={coursesQuery.isLoading} indented>
-            {coursesQuery.data?.data
-              .sort(
-                (a, b) =>
-                  preferences.courses[a.id]?.order -
-                  preferences.courses[b.id]?.order,
-              )
-              .filter(c => !preferences.courses[c.id]?.isHidden)
-              .map(course => (
-                <CourseListItem key={course.shortcode} course={course} />
-              ))}
+          <SectionList
+            loading={coursesQuery.isLoading}
+            indented
+            emptyStateText={
+              coursesQuery.data?.length ?? 0 > 0
+                ? t('teachingScreen.allCoursesHidden')
+                : t('coursesScreen.emptyState')
+            }
+          >
+            {courses.map(course => (
+              <CourseListItem
+                key={course.shortcode + '' + course.id}
+                course={course}
+              />
+            ))}
           </SectionList>
         </Section>
         <Section>
           <SectionHeader
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
+            linkToMoreCount={
+              examsQuery.data
+                ? examsQuery.data.length - exams.length
+                : undefined
+            }
           />
           <SectionList
             loading={examsQuery.isLoading}
             indented
-            emptyStateText={t('teachingScreen.examsEmptyState')}
+            emptyStateText={t('examsScreen.emptyState')}
           >
             {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
@@ -98,10 +132,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           </SectionList>
         </Section>
         <Section>
-          <SectionHeader
-            title={t('common.transcript')}
-            linkTo={{ screen: 'Transcript' }}
-          />
+          <SectionHeader title={t('common.transcript')} />
 
           <Card style={styles.sectionContent}>
             {studentQuery.isLoading ? (
@@ -111,42 +142,63 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 onPress={() => navigation.navigate('Transcript')}
                 underlayColor={colors.touchableHighlight}
               >
-                <View style={{ padding: spacing[5], flexDirection: 'row' }}>
-                  <View style={{ flex: 1 }}>
-                    <Text
-                      variant="headline"
-                      style={{ marginBottom: spacing[2] }}
-                    >
-                      {t('transcriptScreen.weightedAverageLabel')}:{' '}
-                      {studentQuery.data?.data.averageGrade}
-                    </Text>
-                    <Text
-                      variant="secondaryText"
-                      style={{ marginBottom: spacing[2] }}
-                    >
-                      {t('transcriptScreen.finalAverageLabel')}:{' '}
-                      {studentQuery.data?.data.averageGradePurged}
-                    </Text>
-                    <Text variant="secondaryText">
-                      {studentQuery.data?.data.totalAcquiredCredits}/
-                      {studentQuery.data?.data.totalCredits}{' '}
-                      {t('common.credits').toLowerCase()}
-                    </Text>
-                  </View>
+                <Row p={5} gap={5} align="stretch" justify="space-between">
+                  <Col justify="space-between">
+                    <Metric
+                      title={
+                        studentQuery.data?.averageGradePurged != null
+                          ? t('transcriptScreen.finalAverageLabel')
+                          : t('transcriptScreen.weightedAverageLabel')
+                      }
+                      value={
+                        studentQuery.data?.averageGradePurged ??
+                        studentQuery.data?.averageGrade ??
+                        '--'
+                      }
+                      color={colors.title}
+                    />
+                    {studentQuery.data?.estimatedFinalGradePurged ? (
+                      <Metric
+                        title={t('transcriptScreen.estimatedFinalGradePurged')}
+                        value={formatFinalGrade(
+                          studentQuery.data?.estimatedFinalGradePurged,
+                        )}
+                        color={colors.title}
+                      />
+                    ) : (
+                      <Metric
+                        title={t('transcriptScreen.estimatedFinalGrade')}
+                        value={formatFinalGrade(
+                          studentQuery.data?.estimatedFinalGrade,
+                        )}
+                        color={colors.title}
+                      />
+                    )}
+                  </Col>
                   <ProgressChart
+                    label={
+                      studentQuery.data?.totalCredits
+                        ? `${studentQuery.data?.totalAcquiredCredits}/${
+                            studentQuery.data?.totalCredits
+                          }\n${t('common.ects')}`
+                        : undefined
+                    }
                     data={
-                      studentQuery.data
+                      studentQuery.data && studentQuery.data.totalCredits
                         ? [
-                            studentQuery.data?.data.totalAttendedCredits /
-                              studentQuery.data?.data.totalCredits,
-                            studentQuery.data?.data.totalAcquiredCredits /
-                              studentQuery.data?.data.totalCredits,
+                            studentQuery.data?.totalAttendedCredits /
+                              studentQuery.data?.totalCredits,
+                            studentQuery.data?.totalAcquiredCredits /
+                              studentQuery.data?.totalCredits,
                           ]
                         : []
                     }
-                    colors={[colors.primary[400], colors.secondary[500]]}
+                    boxSize={140}
+                    radius={40}
+                    thickness={18}
+                    colors={[palettes.primary[400], palettes.secondary[500]]}
                   />
-                </View>
+                </Row>
               </TouchableHighlight>
             )}
           </Card>
@@ -158,11 +210,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    sectionsContainer: {
+    container: {
       paddingVertical: spacing[5],
-    },
-    section: {
-      marginBottom: spacing[5],
     },
     loader: {
       marginVertical: spacing[8],

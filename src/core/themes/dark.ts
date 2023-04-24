@@ -1,4 +1,8 @@
-import { Theme } from '@lib/ui/types/theme';
+// noinspection AllyPlainJsInspection
+//
+import { Platform } from 'react-native';
+
+import { Theme } from '@lib/ui/types/Theme';
 
 import { lightTheme } from './light';
 
@@ -7,17 +11,22 @@ export const darkTheme: Theme = {
   dark: true,
   colors: {
     ...lightTheme.colors,
-    background: lightTheme.colors.primary[700],
-    surface: '#143959',
-    headers: '#1e3444',
-    heading: lightTheme.colors.text[50],
+    background: lightTheme.palettes.primary[700],
+    surface: lightTheme.colors.surfaceDark,
+    headersBackground: '#1e3444',
+    heading: lightTheme.palettes.text[50],
     title: 'white',
-    headline: 'white',
-    prose: lightTheme.colors.text[50],
-    secondaryText: lightTheme.colors.text[400],
-    caption: lightTheme.colors.text[500],
-    link: lightTheme.colors.primary[400],
-    divider: 'rgba(255, 255, 255, .15)',
+    prose: lightTheme.palettes.text[50],
+    secondaryText: lightTheme.palettes.text[400],
+    caption: lightTheme.palettes.text[500],
+    link: lightTheme.palettes.primary[400],
+    translucentSurface: Platform.select({
+      android: 'rgba(255, 255, 255, .1)',
+      ios: 'rgba(0, 0, 0, .1)',
+    })!,
+    divider: lightTheme.palettes.gray[600],
     touchableHighlight: 'rgba(255, 255, 255, .08)',
+    agendaLecture: lightTheme.palettes.navy[100],
+    tabBarInactive: lightTheme.palettes.gray[400],
   },
 };

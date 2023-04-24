@@ -12,14 +12,14 @@ interface Props {
 }
 
 export const DirectoryListItem = (props: TouchableHighlightProps & Props) => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
 
   return (
     <ListItem
       leadingItem={
-        <Icon icon={faFolder} size={24} color={colors.secondary[500]} />
+        <Icon icon={faFolder} size={24} color={palettes.secondary[500]} />
       }
-      isNavigationAction
+      isAction
       {...props}
     />
   );

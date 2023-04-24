@@ -1,28 +1,47 @@
 import { createContext, useContext } from 'react';
 
-export interface PreferencesContextProps {
-  colorScheme?: 'light' | 'dark';
-  courses: {
-    [courseId: number]: CoursePreferencesProps;
+export const editablePreferenceKeys = [
+  'clientId',
+  'colorScheme',
+  'courses',
+  'language',
+  'notifications',
+  'favoriteServices',
+] as const;
+
+export type PreferenceKey = (typeof editablePreferenceKeys)[number];
+
+// Specify here complex keys, that require serialization/deserialization
+export const objectPreferenceKeys = [
+  'courses',
+  'notifications',
+  'favoriteServices',
+];
+
+export type CoursesPreferences = {
+  [courseId: number]: CoursePreferencesProps;
+};
+
+export type PreferencesContextProps = {
+  clientId?: string;
+  colorScheme: 'light' | 'dark' | 'system';
+  courses: CoursesPreferences;
+  language: 'it' | 'en' | 'system';
+  notifications?: {
+    important: boolean;
+    events: boolean;
+    presence: boolean;
   };
-  language?: 'it' | 'en';
-  updatePreference: <K extends keyof PreferencesContextProps>(
-    key: K,
-    value: PreferencesContextProps[K],
-  ) => void;
-}
+  updatePreference: (key: PreferenceKey, value: unknown) => void;
+  favoriteServices: string[];
+};
 
 export interface CoursePreferencesProps {
   color: string;
-  icon: string;
+  icon?: string;
   isHidden: boolean;
   order?: number;
 }
-
-export const storageKeys = ['colorScheme', 'courses', 'language'];
-
-// Require serialization/deserialization
-export const storageObjectKeys = ['courses'];
 
 export const PreferencesContext = createContext<
   PreferencesContextProps | undefined

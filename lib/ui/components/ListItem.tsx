@@ -1,6 +1,6 @@
 import {
-  Platform,
   StyleProp,
+  TextProps,
   TextStyle,
   TouchableHighlight,
   TouchableHighlightProps,
@@ -14,6 +14,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { IS_IOS } from '../../../src/core/constants';
+import { GlobalStyles } from '../../../src/core/styles/GlobalStyles';
+import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
@@ -23,10 +26,13 @@ export interface ListItemProps extends TouchableHighlightProps {
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
+  children?: any;
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   subtitleStyle?: StyleProp<TextStyle>;
-  isNavigationAction?: boolean;
+  isAction?: boolean;
+  card?: boolean;
+  titleProps?: TextProps;
 }
 
 /**
@@ -44,9 +50,12 @@ export const ListItem = ({
   linkTo,
   containerStyle,
   onPress,
-  isNavigationAction,
+  isAction,
   disabled,
   style,
+  card,
+  children,
+  titleProps,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
@@ -58,19 +67,13 @@ export const ListItem = ({
       onPress={
         linkTo
           ? () => {
-              navigation.navigate({
-                name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
-                params:
-                  typeof linkTo === 'object' && 'params' in linkTo
-                    ? linkTo.params
-                    : undefined,
-              });
+              navigation.navigate(resolveLinkTo(linkTo));
             }
           : onPress
       }
       style={[
         {
-          opacity: disabled ? 0.6 : 1,
+          opacity: disabled ? 0.5 : 1,
         },
         style,
       ]}
@@ -81,7 +84,7 @@ export const ListItem = ({
         style={[
           {
             minHeight: 60,
-            flexDirection: 'row',
+            flexDirection: card ? 'column' : 'row',
             alignItems: 'center',
             paddingHorizontal: spacing[5],
             paddingVertical: spacing[2],
@@ -89,6 +92,7 @@ export const ListItem = ({
           containerStyle,
         ]}
       >
+        {children}
         {leadingItem && (
           <View
             style={{
@@ -96,14 +100,14 @@ export const ListItem = ({
               height: 38,
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: -7,
-              marginRight: spacing[2],
+              marginLeft: card ? undefined : -7,
+              marginRight: card ? undefined : spacing[2],
             }}
           >
             {leadingItem}
           </View>
         )}
-        <View style={{ flex: 1 }}>
+        <View style={GlobalStyles.grow}>
           {typeof title === 'string' ? (
             <Text
               variant="title"
@@ -114,8 +118,9 @@ export const ListItem = ({
                 titleStyle,
               ]}
               weight="normal"
-              numberOfLines={1}
+              numberOfLines={card ? 2 : 1}
               ellipsizeMode="tail"
+              {...titleProps}
             >
               {title}
             </Text>
@@ -143,20 +148,19 @@ export const ListItem = ({
             )
           ) : null}
         </View>
-        {!trailingItem &&
-        (linkTo || isNavigationAction) &&
-        Platform.OS === 'ios' ? (
-          <Icon
-            icon={faChevronRight}
-            color={colors.secondaryText}
-            style={{
-              marginLeft: spacing[1],
-              marginRight: -spacing[1],
-            }}
-          />
-        ) : (
-          trailingItem
-        )}
+        {!card &&
+          (!trailingItem && (linkTo || isAction) && IS_IOS ? (
+            <Icon
+              icon={faChevronRight}
+              color={colors.secondaryText}
+              style={{
+                marginLeft: spacing[1],
+                marginRight: -spacing[1],
+              }}
+            />
+          ) : (
+            trailingItem
+          ))}
       </View>
     </TouchableHighlight>
   );

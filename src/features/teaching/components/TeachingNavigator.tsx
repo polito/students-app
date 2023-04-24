@@ -19,6 +19,8 @@ import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomS
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
+import { NoticeScreen } from '../screens/NoticeScreen';
+import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
 
@@ -26,6 +28,8 @@ export type TeachingStackParamList = {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
+  Notice: { noticeId: number; courseId: number };
+  Person: { id: number };
   CoursePreferences: { courseId: number };
   CourseDirectory: {
     courseId: number;
@@ -33,8 +37,16 @@ export type TeachingStackParamList = {
     directoryName?: string;
   };
   CourseGuide: { courseId: number };
-  CourseVideolecture: { courseId: number; lectureId: number };
-  CourseVirtualClassroom: { courseId: number; lectureId: number };
+  CourseVideolecture: {
+    courseId: number;
+    lectureId: number;
+    teacherId: number;
+  };
+  CourseVirtualClassroom: {
+    courseId: number;
+    lectureId: number;
+    teacherId: number;
+  };
   CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
@@ -54,13 +66,11 @@ export const TeachingNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        orientation: 'portrait',
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        headerBlurEffect: 'systemUltraThinMaterial',
         ...titlesStyles(theme),
       }}
     >
@@ -84,12 +94,20 @@ export const TeachingNavigator = () => {
         component={CourseScreen}
         options={{
           headerLargeStyle: {
-            backgroundColor: colors.headers,
+            backgroundColor: colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Notice"
+        component={NoticeScreen}
+        options={{
+          headerBackTitle: t('common.course'),
+          headerTitle: t('common.notice'),
         }}
       />
       <Stack.Screen
@@ -107,6 +125,7 @@ export const TeachingNavigator = () => {
         options={{
           title: t('courseIconPickerScreen.title'),
           headerLargeTitle: false,
+          headerSearchBarOptions: {},
         }}
       />
       <Stack.Screen
@@ -174,19 +193,18 @@ export const TeachingNavigator = () => {
           headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
           headerLargeStyle: {
-            backgroundColor: colors.headers,
+            backgroundColor: colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
         }}
       />
-
       <Stack.Screen
         name="Exams"
         component={ExamsScreen}
         options={{
-          headerTitle: t('examsScreen.title'),
+          headerTitle: t('common.examCall_plural'),
         }}
       />
       <Stack.Screen
@@ -194,9 +212,18 @@ export const TeachingNavigator = () => {
         component={ExamScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
         }}
       />
-
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
       <Stack.Screen
         name="Transcript"
         component={TranscriptScreen}

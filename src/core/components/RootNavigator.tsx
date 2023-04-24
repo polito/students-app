@@ -1,45 +1,70 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
-  faBook,
-  faCalendar,
-  faEllipsis,
-  faLocationDot,
+  faBookOpen,
+  faCircleInfo,
+  faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/theme';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
-import { PlacesScreen } from '../../features/places/screens/PlacesScreen';
+import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { IS_IOS } from '../constants';
+import { useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
-import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { data: student } = useGetStudent();
+
+  useEffect(() => {
+    if (student?.smartCardPicture) {
+      FastImage.preload([
+        {
+          uri: student?.smartCardPicture,
+        },
+      ]);
+    }
+  }, [student]);
+
+  const tabBarIconSize = 20;
+
+  const instantAnimation = {
+    animation: 'timing',
+    config: { duration: 0 },
+  } as TimingKeyboardAnimationConfig;
 
   return (
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
+        headerShown: false,
         tabBarHideOnKeyboard: true,
+        tabBarVisibilityAnimationConfig: {
+          show: instantAnimation,
+          hide: instantAnimation,
+        },
         tabBarStyle: styles.tabBarStyle,
         tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: styles.tabBarLabelStyle,
-        tabBarBackground: Platform.select({
-          ios: () => <TranslucentView />,
-        }),
-        headerShown: false,
+        tabBarInactiveTintColor: colors.tabBarInactive,
       }}
     >
       <TabNavigator.Screen
@@ -47,8 +72,8 @@ export const RootNavigator = () => {
         component={TeachingNavigator}
         options={{
           tabBarLabel: t('teachingScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faBook} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -57,8 +82,8 @@ export const RootNavigator = () => {
         component={AgendaNavigator}
         options={{
           tabBarLabel: t('agendaScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faCalendar} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -67,8 +92,19 @@ export const RootNavigator = () => {
         component={PlacesNavigator}
         options={{
           tabBarLabel: t('placesScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faLocationDot} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCompass} color={color} size={tabBarIconSize} />
+          ),
+        }}
+      />
+      <TabNavigator.Screen
+        name="ServicesTab"
+        component={ServicesNavigator}
+        options={{
+          headerLeft: () => <HeaderLogo />,
+          tabBarLabel: t('common.services'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -77,19 +113,8 @@ export const RootNavigator = () => {
         component={UserNavigator}
         options={{
           tabBarLabel: t('profileScreen.title'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faUser} color={color} size={size} />
-          ),
-        }}
-      />
-      <TabNavigator.Screen
-        name="ServicesTab"
-        component={PlacesScreen}
-        options={{
-          headerLeft: () => <HeaderLogo />,
-          tabBarLabel: t('common.services'),
-          tabBarIcon: ({ color, size }) => (
-            <Icon icon={faEllipsis} color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
         }}
       />
@@ -97,14 +122,14 @@ export const RootNavigator = () => {
   );
 };
 
-const createStyles = ({ spacing, fontWeights }: Theme) =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
-    tabBarStyle,
-    tabBarItemStyle: {
-      paddingVertical: Platform.OS === 'android' ? spacing[1] : undefined,
+    tabBarStyle: {
+      ...tabBarStyle,
+      backgroundColor: IS_IOS ? colors.headersBackground : colors.surface,
+      borderTopColor: colors.divider,
     },
-    tabBarLabelStyle: {
-      fontFamily: 'Montserrat',
-      fontWeight: fontWeights.medium,
+    tabBarItemStyle: {
+      paddingVertical: 3,
     },
   });

@@ -4,21 +4,16 @@ import DocumentPicker, { isInProgress } from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import {
-  faCamera,
-  faFilePdf,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '../../../core/hooks/useBottomBarAwareStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { pdfSizes } from '../constants';
 
@@ -31,7 +26,6 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
 
   const takePicture = () =>
@@ -53,11 +47,11 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      style={[bottomBarAwareStyles, styles.screen]}
+      style={styles.screen}
     >
       <SectionList indented>
         <ListItem
-          isNavigationAction
+          isAction
           title={t('courseAssignmentUploadScreen.ctaUploadFile')}
           subtitle={t('courseAssignmentUploadScreen.ctaUploadFileSubtitle')}
           leadingItem={<Icon icon={faUpload} size={fontSizes.xl} />}
@@ -66,7 +60,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
               copyTo: 'cachesDirectory',
             })
               .then(response => {
-                handlePickedFile(response.fileCopyUri);
+                handlePickedFile(response.fileCopyUri!);
               })
               .catch(e => {
                 if (DocumentPicker.isCancel(e) || isInProgress(e)) return;
@@ -75,22 +69,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
           }}
         />
         <ListItem
-          isNavigationAction
-          title={t('courseAssignmentUploadScreen.ctaTakePicture')}
-          subtitle={t('courseAssignmentUploadScreen.ctaTakePictureSubtitle')}
-          leadingItem={<Icon icon={faCamera} size={fontSizes.xl} />}
-          onPress={() => {
-            takePicture()
-              .then(image => {
-                handlePickedFile(image.path);
-              })
-              .catch(e => {
-                console.error(e);
-              });
-          }}
-        />
-        <ListItem
-          isNavigationAction
+          isAction
           title={t('courseAssignmentUploadScreen.ctaCreatePDF')}
           subtitle={t('courseAssignmentUploadScreen.ctaCreatePDFSubtitle')}
           leadingItem={<Icon icon={faFilePdf} size={fontSizes.xl} />}
@@ -126,7 +105,7 @@ const AssignmentUploadAction = ({
   onPress,
 }: ActionProps) => {
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes } = useTheme();
+  const { colors, palettes, fontSizes } = useTheme();
   return (
     <TouchableHighlight
       style={styles.uploadAction}
@@ -141,7 +120,7 @@ const AssignmentUploadAction = ({
         <Icon
           icon={icon}
           size={fontSizes['3xl']}
-          color={colors.secondary[600]}
+          color={palettes.secondary[600]}
         />
       </View>
     </TouchableHighlight>

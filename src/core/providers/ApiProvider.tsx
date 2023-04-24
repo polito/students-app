@@ -1,7 +1,9 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-import { FetchError } from '@polito/api-client/runtime';
+import { ResponseError } from '@polito/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
 import {
   QueryClient,
@@ -10,43 +12,53 @@ import {
 } from '@tanstack/react-query';
 
 import { createApiClients } from '../../config/api';
-import { ApiContext, ApiContextProps } from '../contexts/ApiContext';
+import {
+  ApiContext,
+  ApiContextProps,
+  Credentials,
+} from '../contexts/ApiContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
+  const { t } = useTranslation();
   const [apiContext, setApiContext] = useState<ApiContextProps>({
-    isLogged: null,
-    token: null,
-    refreshContext: null,
     clients: {},
+    isLogged: false,
+    username: '',
+    token: '',
+    refreshContext: () => {},
   });
 
   const splashContext = useSplashContext();
 
   useEffect(() => {
     // update ApiContext based on the provided token
-    const refreshContext = (token?: string) =>
+    const refreshContext = (credentials?: Credentials) =>
       setApiContext(() => {
         return {
-          isLogged: !!token,
-          token: token,
-          clients: createApiClients(token),
+          isLogged: !!credentials,
+          username: credentials?.username ?? '',
+          token: credentials?.token ?? '',
+          clients: createApiClients(credentials?.token),
           refreshContext,
         };
       });
 
     // Retrieve existing token from SecureStore, if any
     Keychain.getGenericPassword()
-      .then(credentials => {
-        let token = null;
-        if (credentials) {
-          token = credentials.password;
+      .then(keychainCredentials => {
+        let credentials = undefined;
+        if (keychainCredentials) {
+          credentials = {
+            username: keychainCredentials.username,
+            token: keychainCredentials.password,
+          };
         }
-        refreshContext(token);
+        refreshContext(credentials);
       })
       .catch(e => {
         console.warn("Keychain couldn't be accessed!", e);
-        refreshContext(null);
+        refreshContext();
       });
 
     // Handle login status
@@ -73,23 +85,45 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     if (!splashContext.isAppLoaded) {
       splashContext.setIsAppLoaded(true);
     }
-  }, [apiContext]);
+  }, [apiContext, splashContext]);
 
   const isEnvProduction = process.env.NODE_ENV === 'production';
+
+  const onError = async (error: ResponseError, client: QueryClient) => {
+    if (error.response.status === -401) {
+      setApiContext(c => ({
+        ...c,
+        isLogged: false,
+        username: '',
+        token: '',
+      }));
+      await client.invalidateQueries();
+    }
+    const { message } = await error.response.json();
+    Alert.alert(t('common.error'), message ?? t('common.somethingWentWrong'));
+    if (!isEnvProduction) {
+      console.error(message);
+      console.error(JSON.stringify(error));
+    }
+  };
 
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: isEnvProduction,
+        retry: isEnvProduction ? 2 : 1,
         refetchOnWindowFocus: isEnvProduction,
         onError(error) {
-          // TODO notify query error
-          if (!isEnvProduction && error instanceof FetchError) {
-            console.error(error?.cause?.message ?? error.message);
-            console.error(JSON.stringify(error));
+          if (error instanceof ResponseError) {
+            onError(error, queryClient);
           }
-
-          // TODO handle logout on 401
+        },
+      },
+      mutations: {
+        retry: 1,
+        onError(error) {
+          if (error instanceof ResponseError) {
+            onError(error, queryClient);
+          }
         },
       },
     },
