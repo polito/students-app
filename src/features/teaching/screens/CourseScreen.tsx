@@ -37,7 +37,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
 
-  const { courseId, courseName } = route.params;
+  const { id: courseId, courseName } = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({

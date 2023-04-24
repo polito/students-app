@@ -16,7 +16,6 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       courses: {},
       favoriteServices: [],
       language: 'system',
-      shouldRecordScreen: false,
       shouldReportErrors: true,
       updatePreference: () => {},
     });
@@ -52,7 +51,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
             .filter(([_, value]) => value !== null)
             .map(([key, value]) => {
               try {
-                return [key, JSON.parse(value)];
+                return [key, JSON.parse(value!)];
               } catch (e) {
                 return [key, value];
               }

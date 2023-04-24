@@ -44,6 +44,14 @@ platform :android do
       task: "bundleRelease",
       properties: buildProps,
     )
+
+    # Upload the source map to AppSignal
+    curl -k -X POST -H 'Content-Type: multipart/form-data' \
+                             -F 'name[]=https://test.local/application.js' \
+                             -F 'revision=ENV['APP_VERSION']' \
+                             -F 'file=@/~project/application.js.map' \
+                             'https://appsignal.com/api/sourcemaps?push_api_key=5de780d5-b7ae-428b-9203-fad9016f9ab5&app_name=PoliTO Students App&environment=public beta'
+
     upload_to_play_store(
       track: ENV['STORE_TRACK'],
       release_status: "draft",
