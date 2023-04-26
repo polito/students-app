@@ -130,8 +130,18 @@ android {
         }
     }
 
+    // Required for react-native-pdf
+    packagingOptions {
+        jniLibs {
+            pickFirsts += ['lib/x86/libc++_shared.so', 'lib/x86_64/libjsc.so', 'lib/arm64-v8a/libjsc.so', 'lib/arm64-v8a/libc++_shared.so', 'lib/x86_64/libc++_shared.so', 'lib/armeabi-v7a/libc++_shared.so']
+        }
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
+        if (variant.name.contains("debug")) {
+            variant.mergedFlavor.applicationId = "it.polito.students.dev"
+        }
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
@@ -144,16 +154,6 @@ android {
             }
 
         }
-    }
-
-     // Required for react-native-pdf
-    packagingOptions {
-        pickFirst 'lib/x86/libc++_shared.so'
-        pickFirst 'lib/x86_64/libjsc.so'
-        pickFirst 'lib/arm64-v8a/libjsc.so'
-        pickFirst 'lib/arm64-v8a/libc++_shared.so'
-        pickFirst 'lib/x86_64/libc++_shared.so'
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
 }
 

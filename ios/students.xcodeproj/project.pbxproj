@@ -9,21 +9,37 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* studentsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* studentsTests.m */; };
 		0F504FB5C27644DFA9529D4D /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9E8580F8012441B99E798A2B /* OFL.txt */; };
-		0FDF14708BF290135BA97019 /* libPods-students.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CA801320902D1F3A2E781B8 /* libPods-students.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		164E4F6B7134BCAA56819EA9 /* libPods-students-students dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7425E82BA44CD4FE5CB077 /* libPods-students-students dev.a */; };
+		254D790148A6EA8D1B33C576 /* libPods-students-studentsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE0B7BB1802901AB376D433 /* libPods-students-studentsTests.a */; };
 		2BA0016F9B0543F5BBDA41F8 /* Montserrat-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */; };
 		41C88311FAB6499EBDE63ED5 /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B813406DDE44447AB8717E6E /* Montserrat-SemiBold.ttf */; };
 		421B0ABE59B5422AA80527B9 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		944531432DCE469C9F10AB4F /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */; };
 		97547E738A1E444EB344D4D0 /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */; };
+		B44D6C0A29F17BF2001BA0DC /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		B44D6C0B29F17BF2001BA0DC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		B44D6C0F29F17BF2001BA0DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B44D6C1029F17BF2001BA0DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		B44D6C1129F17BF2001BA0DC /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */; };
+		B44D6C1229F17BF2001BA0DC /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */; };
+		B44D6C1329F17BF2001BA0DC /* Montserrat-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0B4891BE01447A7B4765D31 /* Montserrat-Italic.ttf */; };
+		B44D6C1429F17BF2001BA0DC /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */; };
+		B44D6C1529F17BF2001BA0DC /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B813406DDE44447AB8717E6E /* Montserrat-SemiBold.ttf */; };
+		B44D6C1629F17BF2001BA0DC /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 096DED1866D040D8BC255CC7 /* Montserrat-SemiBoldItalic.ttf */; };
+		B44D6C1729F17BF2001BA0DC /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1FD970118329471A91194CCE /* Montserrat-Medium.ttf */; };
+		B44D6C1829F17BF2001BA0DC /* Montserrat-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A28D4947060492C8F2FDEB8 /* Montserrat-MediumItalic.ttf */; };
+		B44D6C1929F17BF2001BA0DC /* Montserrat-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */; };
+		B44D6C1A29F17BF2001BA0DC /* Montserrat-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DEB745DF9E648D188F2F671 /* Montserrat-ExtraBoldItalic.ttf */; };
+		B44D6C1B29F17BF2001BA0DC /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9E8580F8012441B99E798A2B /* OFL.txt */; };
 		C7D2778AE095445F9F198F64 /* Montserrat-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0B4891BE01447A7B4765D31 /* Montserrat-Italic.ttf */; };
 		CE167CA0612F4CC8AF617FC2 /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 096DED1866D040D8BC255CC7 /* Montserrat-SemiBoldItalic.ttf */; };
-		DE2341068DB7E907A0B06343 /* libPods-students-studentsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4713370F25CFC6E3EA2200F7 /* libPods-students-studentsTests.a */; };
 		E27CCBDF2F19415492F841F8 /* Montserrat-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DEB745DF9E648D188F2F671 /* Montserrat-ExtraBoldItalic.ttf */; };
 		F280CD371DF248D588A81ED1 /* Montserrat-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A28D4947060492C8F2FDEB8 /* Montserrat-MediumItalic.ttf */; };
+		F7ED45EBAB7B23B1C2B18B97 /* libPods-students.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0834EB4AE7B1D6D1BFCD1A5 /* libPods-students.a */; };
 		FC383687308B444795D458C6 /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1FD970118329471A91194CCE /* Montserrat-Medium.ttf */; };
 /* End PBXBuildFile section */
 
@@ -51,22 +67,27 @@
 		1DEB745DF9E648D188F2F671 /* Montserrat-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBoldItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		1FD970118329471A91194CCE /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
 		2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
-		3CA801320902D1F3A2E781B8 /* libPods-students.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		328A33991259AECE21240B49 /* Pods-students-studentsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-studentsTests.release.xcconfig"; path = "Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests.release.xcconfig"; sourceTree = "<group>"; };
+		3CE0B7BB1802901AB376D433 /* libPods-students-studentsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students-studentsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBold.ttf"; path = "../assets/fonts/Montserrat/Montserrat-ExtraBold.ttf"; sourceTree = "<group>"; };
-		4713370F25CFC6E3EA2200F7 /* libPods-students-studentsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students-studentsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-BoldItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-BoldItalic.ttf"; sourceTree = "<group>"; };
+		4F7425E82BA44CD4FE5CB077 /* libPods-students-students dev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students-students dev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55241F502937B71E0009DF9A /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		5A28D4947060492C8F2FDEB8 /* Montserrat-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-MediumItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-MediumItalic.ttf"; sourceTree = "<group>"; };
-		78032BB05A1905306D14B658 /* Pods-students-studentsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-studentsTests.release.xcconfig"; path = "Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests.release.xcconfig"; sourceTree = "<group>"; };
+		6219E179D49486FC66715974 /* Pods-students-students dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-students dev.debug.xcconfig"; path = "Target Support Files/Pods-students-students dev/Pods-students-students dev.debug.xcconfig"; sourceTree = "<group>"; };
+		6C0F9020055217618C0B5B3C /* Pods-students-students dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-students dev.release.xcconfig"; path = "Target Support Files/Pods-students-students dev/Pods-students-students dev.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = students/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		831E6D122069DC5EEEFC162D /* Pods-students-studentsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-studentsTests.debug.xcconfig"; path = "Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests.debug.xcconfig"; sourceTree = "<group>"; };
-		9BA526EDF35E8E5B3FA10149 /* Pods-students.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students.debug.xcconfig"; path = "Target Support Files/Pods-students/Pods-students.debug.xcconfig"; sourceTree = "<group>"; };
 		9E8580F8012441B99E798A2B /* OFL.txt */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = OFL.txt; path = ../assets/fonts/Montserrat/OFL.txt; sourceTree = "<group>"; };
+		A55A06A8948E3015D3CCCEF9 /* Pods-students.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students.release.xcconfig"; path = "Target Support Files/Pods-students/Pods-students.release.xcconfig"; sourceTree = "<group>"; };
+		AA320F75C87E2E36B61132B4 /* Pods-students-studentsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-studentsTests.debug.xcconfig"; path = "Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests.debug.xcconfig"; sourceTree = "<group>"; };
+		AEDB3F77B6C82290CF8B5321 /* Pods-students.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students.debug.xcconfig"; path = "Target Support Files/Pods-students/Pods-students.debug.xcconfig"; sourceTree = "<group>"; };
+		B0834EB4AE7B1D6D1BFCD1A5 /* libPods-students.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B44D6C2229F17BF2001BA0DC /* students dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "students dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B44D6C2329F17BF2001BA0DC /* DevInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = students/DevInfo.plist; sourceTree = "<group>"; };
 		B813406DDE44447AB8717E6E /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBold.ttf"; path = "../assets/fonts/Montserrat/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
 		D0B4891BE01447A7B4765D31 /* Montserrat-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Italic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Italic.ttf"; sourceTree = "<group>"; };
 		DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Bold.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EE1A7609089B6DDE71FA44E8 /* Pods-students.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students.release.xcconfig"; path = "Target Support Files/Pods-students/Pods-students.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE2341068DB7E907A0B06343 /* libPods-students-studentsTests.a in Frameworks */,
+				254D790148A6EA8D1B33C576 /* libPods-students-studentsTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +103,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0FDF14708BF290135BA97019 /* libPods-students.a in Frameworks */,
+				F7ED45EBAB7B23B1C2B18B97 /* libPods-students.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B44D6C0C29F17BF2001BA0DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				164E4F6B7134BCAA56819EA9 /* libPods-students-students dev.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +138,7 @@
 		13B07FAE1A68108700A75B9A /* students */ = {
 			isa = PBXGroup;
 			children = (
+				B44D6C2329F17BF2001BA0DC /* DevInfo.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -124,8 +154,9 @@
 			children = (
 				55241F502937B71E0009DF9A /* hermes.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				3CA801320902D1F3A2E781B8 /* libPods-students.a */,
-				4713370F25CFC6E3EA2200F7 /* libPods-students-studentsTests.a */,
+				B0834EB4AE7B1D6D1BFCD1A5 /* libPods-students.a */,
+				3CE0B7BB1802901AB376D433 /* libPods-students-studentsTests.a */,
+				4F7425E82BA44CD4FE5CB077 /* libPods-students-students dev.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -158,6 +189,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* students.app */,
 				00E356EE1AD99517003FC87E /* studentsTests.xctest */,
+				B44D6C2229F17BF2001BA0DC /* students dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,10 +215,12 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				9BA526EDF35E8E5B3FA10149 /* Pods-students.debug.xcconfig */,
-				EE1A7609089B6DDE71FA44E8 /* Pods-students.release.xcconfig */,
-				831E6D122069DC5EEEFC162D /* Pods-students-studentsTests.debug.xcconfig */,
-				78032BB05A1905306D14B658 /* Pods-students-studentsTests.release.xcconfig */,
+				AEDB3F77B6C82290CF8B5321 /* Pods-students.debug.xcconfig */,
+				A55A06A8948E3015D3CCCEF9 /* Pods-students.release.xcconfig */,
+				AA320F75C87E2E36B61132B4 /* Pods-students-studentsTests.debug.xcconfig */,
+				328A33991259AECE21240B49 /* Pods-students-studentsTests.release.xcconfig */,
+				6219E179D49486FC66715974 /* Pods-students-students dev.debug.xcconfig */,
+				6C0F9020055217618C0B5B3C /* Pods-students-students dev.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -198,12 +232,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "studentsTests" */;
 			buildPhases = (
-				6D69EA1AA0636DCA73362834 /* [CP] Check Pods Manifest.lock */,
+				89DD49115E821990E43BD996 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				BAD61376A5693DF6AAFBD67A /* [CP] Embed Pods Frameworks */,
-				9338365A7BCA4AC1B3BF9CBD /* [CP] Copy Pods Resources */,
+				481BA291ECE70E308DF97D8C /* [CP] Embed Pods Frameworks */,
+				2CA0ABA56DD6B35236EDC3ED /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -219,14 +253,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "students" */;
 			buildPhases = (
-				F4E07E5D88600C654A0708CE /* [CP] Check Pods Manifest.lock */,
+				4D9DED5CE1C12E008051671F /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				8DA47E4FDB583BF16916FE44 /* [CP] Embed Pods Frameworks */,
-				5115C44429D8A0E676164C1E /* [CP] Copy Pods Resources */,
+				41E07ABCA62A3D857362837C /* [CP] Embed Pods Frameworks */,
+				B2A9C9EB90F659FC2D5B8441 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -235,6 +269,28 @@
 			name = students;
 			productName = students;
 			productReference = 13B07F961A680F5B00A75B9A /* students.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B44D6C0629F17BF2001BA0DC /* students dev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B44D6C1F29F17BF2001BA0DC /* Build configuration list for PBXNativeTarget "students dev" */;
+			buildPhases = (
+				403CFA01CE021FE706BCE30C /* [CP] Check Pods Manifest.lock */,
+				B44D6C0829F17BF2001BA0DC /* Start Packager */,
+				B44D6C0929F17BF2001BA0DC /* Sources */,
+				B44D6C0C29F17BF2001BA0DC /* Frameworks */,
+				B44D6C0E29F17BF2001BA0DC /* Resources */,
+				B44D6C1C29F17BF2001BA0DC /* Bundle React Native code and images */,
+				756801C7C68DD9E433A15DE1 /* [CP] Embed Pods Frameworks */,
+				CF6CD22F0EC6D155BD106BD4 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "students dev";
+			productName = students;
+			productReference = B44D6C2229F17BF2001BA0DC /* students dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -267,6 +323,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				B44D6C0629F17BF2001BA0DC /* students dev */,
 				13B07F861A680F5B00A75B9A /* students */,
 				00E356ED1AD99517003FC87E /* studentsTests */,
 			);
@@ -301,6 +358,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B44D6C0E29F17BF2001BA0DC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B44D6C0F29F17BF2001BA0DC /* LaunchScreen.storyboard in Resources */,
+				B44D6C1029F17BF2001BA0DC /* Images.xcassets in Resources */,
+				B44D6C1129F17BF2001BA0DC /* Montserrat-Bold.ttf in Resources */,
+				B44D6C1229F17BF2001BA0DC /* Montserrat-BoldItalic.ttf in Resources */,
+				B44D6C1329F17BF2001BA0DC /* Montserrat-Italic.ttf in Resources */,
+				B44D6C1429F17BF2001BA0DC /* Montserrat-Regular.ttf in Resources */,
+				B44D6C1529F17BF2001BA0DC /* Montserrat-SemiBold.ttf in Resources */,
+				B44D6C1629F17BF2001BA0DC /* Montserrat-SemiBoldItalic.ttf in Resources */,
+				B44D6C1729F17BF2001BA0DC /* Montserrat-Medium.ttf in Resources */,
+				B44D6C1829F17BF2001BA0DC /* Montserrat-MediumItalic.ttf in Resources */,
+				B44D6C1929F17BF2001BA0DC /* Montserrat-ExtraBold.ttf in Resources */,
+				B44D6C1A29F17BF2001BA0DC /* Montserrat-ExtraBoldItalic.ttf in Resources */,
+				B44D6C1B29F17BF2001BA0DC /* OFL.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -320,24 +397,119 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		5115C44429D8A0E676164C1E /* [CP] Copy Pods Resources */ = {
+		2CA0ABA56DD6B35236EDC3ED /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6D69EA1AA0636DCA73362834 /* [CP] Check Pods Manifest.lock */ = {
+		403CFA01CE021FE706BCE30C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-students-students dev-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		41E07ABCA62A3D857362837C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		481BA291ECE70E308DF97D8C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4D9DED5CE1C12E008051671F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-students-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		756801C7C68DD9E433A15DE1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		89DD49115E821990E43BD996 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -359,58 +531,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8DA47E4FDB583BF16916FE44 /* [CP] Embed Pods Frameworks */ = {
+		B2A9C9EB90F659FC2D5B8441 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9338365A7BCA4AC1B3BF9CBD /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students/Pods-students-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BAD61376A5693DF6AAFBD67A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F4E07E5D88600C654A0708CE /* [CP] Check Pods Manifest.lock */ = {
+		B44D6C0829F17BF2001BA0DC /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -418,18 +556,48 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "Start Packager";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-students-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B44D6C1C29F17BF2001BA0DC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		CF6CD22F0EC6D155BD106BD4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -471,6 +639,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B44D6C0929F17BF2001BA0DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B44D6C0A29F17BF2001BA0DC /* AppDelegate.mm in Sources */,
+				B44D6C0B29F17BF2001BA0DC /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -484,7 +661,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 831E6D122069DC5EEEFC162D /* Pods-students-studentsTests.debug.xcconfig */;
+			baseConfigurationReference = AA320F75C87E2E36B61132B4 /* Pods-students-studentsTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -512,7 +689,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 78032BB05A1905306D14B658 /* Pods-students-studentsTests.release.xcconfig */;
+			baseConfigurationReference = 328A33991259AECE21240B49 /* Pods-students-studentsTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -537,14 +714,16 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BA526EDF35E8E5B3FA10149 /* Pods-students.debug.xcconfig */;
+			baseConfigurationReference = AEDB3F77B6C82290CF8B5321 /* Pods-students.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RS2Y9A4G25;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RS2Y9A4G25;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = students/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "PoliTO Students";
@@ -573,10 +752,11 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EE1A7609089B6DDE71FA44E8 /* Pods-students.release.xcconfig */;
+			baseConfigurationReference = A55A06A8948E3015D3CCCEF9 /* Pods-students.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -675,6 +855,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
+				PRODUCT_NAME = "PoliTO Students";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
@@ -738,9 +919,81 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
+				PRODUCT_NAME = "PoliTO Students";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B44D6C2029F17BF2001BA0DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6219E179D49486FC66715974 /* Pods-students-students dev.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = students/DevInfo.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "PoliTO Students dev";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		B44D6C2129F17BF2001BA0DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C0F9020055217618C0B5B3C /* Pods-students-students dev.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = students/DevInfo.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "PoliTO Students dev";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -770,6 +1023,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B44D6C1F29F17BF2001BA0DC /* Build configuration list for PBXNativeTarget "students dev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B44D6C2029F17BF2001BA0DC /* Debug */,
+				B44D6C2129F17BF2001BA0DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

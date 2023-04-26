@@ -254,7 +254,7 @@ jobs:
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
     - name: Install pod dependencies
       working-directory: ./ios
-      run: bundle exec pod install
+      run: bundle exec pod install --repo-update
     - name: Prepare fastlane
       working-directory: ./ios
       run: |
