@@ -32,7 +32,7 @@ platform :android do
   lane :verify do
     gradle(
       task: "bundleRelease",
-      properties: buildProps
+      properties: buildProps,
     )
   end
 
@@ -42,11 +42,19 @@ platform :android do
     android_set_version_code(version_code: ENV['BUILD_NO'])
     gradle(
       task: "bundleRelease",
-      properties: buildProps
+      properties: buildProps,
     )
     upload_to_play_store(
       track: ENV['STORE_TRACK'],
       release_status: "draft",
+    )
+  end
+
+  desc "Assemble signed Android APK"
+  lane :apk do
+    gradle(
+      task: "assembleRelease",
+      properties: buildProps,
     )
   end
 end

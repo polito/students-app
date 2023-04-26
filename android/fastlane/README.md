@@ -1,4 +1,5 @@
-## fastlane documentation
+fastlane documentation
+----
 
 # Installation
 
@@ -30,7 +31,15 @@ Build and sign bundle
 
 Build and sign bundle, then push it to the Google Play beta track
 
----
+### android apk
+
+```sh
+[bundle exec] fastlane android apk
+```
+
+Assemble signed Android APK
+
+----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
