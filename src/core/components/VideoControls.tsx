@@ -14,6 +14,10 @@ import {
   faPause,
   faPlay,
 } from '@fortawesome/free-solid-svg-icons';
+import { Slider } from '@miblanchard/react-native-slider';
+
+import { DateTime } from 'luxon';
+
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
@@ -22,11 +26,9 @@ import { Text } from '@lib/ui/components/Text';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { Slider } from '@miblanchard/react-native-slider';
 
-import { DateTime } from 'luxon';
+import { negate } from '@utils/predicates';
 
-import { negate } from '../../utils/predicates';
 import { GlobalStyles } from '../styles/globalStyles';
 import { darkTheme } from '../themes/dark';
 import { GradientBackdrop } from './GradientBackdrop';

@@ -2,15 +2,17 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetTickets } from '../../../core/queries/ticketHooks';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { useScreenTitle } from '@core/hooks/useScreenTitle';
+import { ServiceStackParamList } from '@core/navigators/ServicesNavigator';
+import { useGetTickets } from '@core/queries/tickets';
+
+import { EmptyState } from '@lib/ui/components/EmptyState';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
+
 import { TicketListItem } from '../components/TicketListItem';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketList'>;

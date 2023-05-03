@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { usePreferencesContext } from '@core/contexts/PreferencesContext';
+import { Exam } from '@core/types/api';
+
 import { ListItem } from '@lib/ui/components/ListItem';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { Exam } from '../../../core/types/api';
-import { formatDate, formatTime } from '../../../utils/dates';
-import { CourseIcon } from './CourseIcon';
+import { formatDate, formatTime } from '@utils/dates';
+
+import { CourseIcon } from '../../courses/components/CourseIcon';
 
 interface Props {
   exam: Exam;

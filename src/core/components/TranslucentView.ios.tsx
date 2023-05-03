@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BlurView, BlurViewProps } from '@react-native-community/blur';
+
+import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import type { TranslucentViewProps } from './TranslucentView';
 

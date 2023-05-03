@@ -5,17 +5,19 @@ import { openCamera, openPicker } from 'react-native-image-crop-picker';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { MenuView } from '@react-native-menu/menu';
+
+import { TranslucentView } from '@core/components/TranslucentView';
+import { IS_IOS } from '@core/constants';
+import { GlobalStyles } from '@core/styles/globalStyles';
+
 import { Col } from '@lib/ui/components/Col';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView } from '@react-native-menu/menu';
 
-import { TranslucentView } from '../../../core/components/TranslucentView';
-import { IS_IOS } from '../../../core/constants';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { pdfSizes } from '../../teaching/constants';
 import { Attachment } from '../types/Attachment';
 import { AttachmentChip } from './AttachmentChip';

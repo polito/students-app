@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';

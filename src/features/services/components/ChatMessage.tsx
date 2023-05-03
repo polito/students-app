@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
+import { TicketReply } from '@polito/api-client/models/TicketReply';
+
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketReply } from '@polito/api-client/models/TicketReply';
 
 import { TextMessage } from './TextMessage';
 import { TicketAttachmentChip } from './TicketAttachmentChip';

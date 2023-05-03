@@ -6,7 +6,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { isCurrentMonth, isCurrentYear } from '../../../utils/dates';
+import { isCurrentMonth, isCurrentYear } from '@utils/dates';
+
 import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';

@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { MenuView } from '@react-native-menu/menu';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { MenuView } from '@react-native-menu/menu';
 
 import { IS_ANDROID } from '../../../src/core/constants';
 

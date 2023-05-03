@@ -1,6 +1,6 @@
 import { useApiContext } from '../contexts/ApiContext';
-import { GuestNavigator } from './GuestNavigator';
-import { RootNavigator } from './RootNavigator';
+import { GuestNavigator } from '../navigators/GuestNavigator';
+import { RootNavigator } from '../navigators/RootNavigator';
 
 export const AppContent = () => {
   const { isLogged } = useApiContext();

@@ -1,0 +1,67 @@
+import { useCallback, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, Platform } from 'react-native';
+
+import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
+
+import { useGetCourseFilesRecent } from '@core/queries/courses';
+
+import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { EmptyState } from '@lib/ui/components/EmptyState';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
+
+import { FilesCacheContext } from '../contexts/FilesCacheContext';
+import { CourseTabProps } from '../screens/Course';
+import { CourseRecentFileListItem } from './CourseRecentFileListItem';
+
+export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
+  const { t } = useTranslation();
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+  const { refresh } = useContext(FilesCacheContext);
+  const recentFilesQuery = useGetCourseFilesRecent(courseId);
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
+
+  return (
+    <>
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        data={recentFilesQuery.data}
+        scrollEnabled={scrollEnabled}
+        keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+        initialNumToRender={15}
+        renderItem={({ item }) => {
+          return (
+            <CourseRecentFileListItem
+              item={item}
+              onSwipeStart={() => setScrollEnabled(false)}
+              onSwipeEnd={() => setScrollEnabled(true)}
+            />
+          );
+        }}
+        refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
+        ItemSeparatorComponent={Platform.select({
+          ios: IndentedDivider,
+        })}
+        ListFooterComponent={<CtaButtonSpacer />}
+        ListEmptyComponent={
+          <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
+        }
+      />
+      {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (
+        <CtaButton
+          title={t('courseFilesTab.navigateFolders')}
+          icon={faFolderOpen}
+          action={() => navigation!.navigate('CourseDirectory', { courseId })}
+        />
+      )}
+    </>
+  );
+};

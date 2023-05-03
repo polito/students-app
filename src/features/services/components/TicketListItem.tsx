@@ -8,6 +8,13 @@ import {
   faEllipsisVertical,
   faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
+import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { MenuView } from '@react-native-menu/menu';
+
+import { IS_IOS } from '@core/constants';
+import { useConfirmationDialog } from '@core/hooks/useConfirmationDialog';
+import { useMarkTicketAsClosed } from '@core/queries/tickets';
+
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -17,14 +24,9 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
-import { MenuView } from '@react-native-menu/menu';
 
-import { IS_IOS } from '../../../core/constants';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useMarkTicketAsClosed } from '../../../core/queries/ticketHooks';
-import { formatDateTime } from '../../../utils/dates';
-import { getHtmlTextContent } from '../../../utils/html';
+import { formatDateTime } from '@utils/dates';
+import { getHtmlTextContent } from '@utils/html';
 
 interface Props {
   ticket: TicketOverview;

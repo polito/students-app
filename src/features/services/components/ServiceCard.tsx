@@ -4,6 +4,10 @@ import { StyleSheet } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarFilled } from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
@@ -15,12 +19,9 @@ import {
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
-import { uniformInsets } from '../../../utils/insets';
-import { resolveLinkTo } from '../../../utils/resolveLinkTo';
+import { uniformInsets } from '@utils/insets';
+import { resolveLinkTo } from '@utils/resolveLinkTo';
 
 interface Props extends PropsWithChildren<TouchableCardProps> {
   name: string;

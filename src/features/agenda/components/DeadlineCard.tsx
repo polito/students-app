@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
-import { AgendaCard } from '@lib/ui/components/AgendaCard';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { AgendaCard } from '@lib/ui/components/AgendaCard';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { DeadlineItem } from '../types/AgendaItem';
 

@@ -2,15 +2,18 @@ import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView } from 'react-native';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { EventDetails } from '@core/components/EventDetails';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { EventDetails } from '../../../core/components/EventDetails';
-import { convertMachineDateToFormatDate } from '../../../utils/dates';
-import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { convertMachineDateToFormatDate } from '@utils/dates';
+
+import { AgendaStackParamList } from '../../../core/navigators/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Deadline'>;
 

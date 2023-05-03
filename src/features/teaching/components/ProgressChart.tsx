@@ -1,13 +1,13 @@
 import { View, ViewProps } from 'react-native';
 import { ProgressChart as RNCKProgressChart } from 'react-native-chart-kit';
 
+import color from 'color';
+
 import { Col } from '@lib/ui/components/Col';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import color from 'color';
-
-import { uniformInsets } from '../../../utils/insets';
+import { uniformInsets } from '@utils/insets';
 
 type Props = ViewProps & {
   data: number[];

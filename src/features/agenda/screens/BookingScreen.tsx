@@ -4,6 +4,13 @@ import { Platform, ScrollView, StyleSheet } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
 import { faLocation } from '@fortawesome/free-solid-svg-icons';
+import { Booking } from '@polito/api-client';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { EventDetails } from '@core/components/EventDetails';
+import { useDeleteBooking, useGetBookings } from '@core/queries/bookings';
+import { useGetStudent } from '@core/queries/student';
+
 import { Card } from '@lib/ui/components/Card';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
@@ -16,17 +23,10 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { Booking } from '@polito/api-client';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { EventDetails } from '../../../core/components/EventDetails';
-import {
-  useDeleteBooking,
-  useGetBookings,
-} from '../../../core/queries/bookingHooks';
-import { useGetStudent } from '../../../core/queries/studentHooks';
-import { formatDateTime, formatTime } from '../../../utils/dates';
-import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { formatDateTime, formatTime } from '@utils/dates';
+
+import { AgendaStackParamList } from './createAgendaScreens';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 

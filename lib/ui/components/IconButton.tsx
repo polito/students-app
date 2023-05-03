@@ -1,6 +1,7 @@
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
+
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';

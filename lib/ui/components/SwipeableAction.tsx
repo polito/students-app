@@ -1,6 +1,7 @@
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';

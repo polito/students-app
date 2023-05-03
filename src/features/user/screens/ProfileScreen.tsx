@@ -9,6 +9,19 @@ import {
   faCog,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
+import { Student } from '@polito/api-client';
+import {
+  MenuAction,
+  MenuView,
+  NativeActionEvent,
+} from '@react-native-menu/menu';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { IS_ANDROID } from '@core/constants';
+import { UserStackParamList } from '@core/navigators/UserNavigator';
+import { useLogout, useSwitchCareer } from '@core/queries/auth';
+import { useGetStudent } from '@core/queries/student';
+
 import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -23,18 +36,6 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { Student } from '@polito/api-client';
-import {
-  MenuAction,
-  MenuView,
-  NativeActionEvent,
-} from '@react-native-menu/menu';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { IS_ANDROID } from '../../../core/constants';
-import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
-import { useGetStudent } from '../../../core/queries/studentHooks';
-import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
   navigation: NativeStackNavigationProp<UserStackParamList, 'Profile'>;

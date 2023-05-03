@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 

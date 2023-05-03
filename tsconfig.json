@@ -6,6 +6,15 @@
     "paths": {
       "@lib/*": [
         "./lib/*"
+      ],
+      "@features/*": [
+        "/src/features/*"
+      ],
+      "@core/*": [
+        "./src/core/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
       ]
     },
     "types": [
@@ -13,6 +22,6 @@
       "@types/jest"
     ],
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": true
   }
 }

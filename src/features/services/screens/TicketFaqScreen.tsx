@@ -3,17 +3,18 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Document } from 'react-native-render-html';
 
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { parseDocument } from 'htmlparser2';
+
+import { HtmlView } from '@core/components/HtmlView';
+import { ServiceStackParamList } from '@core/navigators/ServicesNavigator';
+
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { parseDocument } from 'htmlparser2';
-
-import { HtmlView } from '../../../core/components/HtmlView';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaq'>;
 

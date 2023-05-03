@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Keyboard, ViewProps } from 'react-native';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 
-import { IS_ANDROID } from '../../../core/constants';
-import { useReplyToTicket } from '../../../core/queries/ticketHooks';
+import { IS_ANDROID } from '@core/constants';
+import { useReplyToTicket } from '@core/queries/tickets';
+
 import { Attachment } from '../types/Attachment';
 import { MessagingView } from './MessagingView';
 

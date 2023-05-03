@@ -1,10 +1,11 @@
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { Person } from '@polito/api-client/models/Person';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Person } from '@polito/api-client/models/Person';
 
 interface Props {
   person: Person | undefined;

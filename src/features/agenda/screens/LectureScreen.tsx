@@ -3,22 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { EventDetails } from '@core/components/EventDetails';
+import { VideoPlayer } from '@core/components/VideoPlayer';
+import { useGetCourseVirtualClassrooms } from '@core/queries/courses';
+import { useGetPerson } from '@core/queries/people';
+import { GlobalStyles } from '@core/styles/globalStyles';
+
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { EventDetails } from '../../../core/components/EventDetails';
-import { VideoPlayer } from '../../../core/components/VideoPlayer';
-import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
-import { convertMachineDateToFormatDate } from '../../../utils/dates';
-import { CourseIcon } from '../../teaching/components/CourseIcon';
-import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { convertMachineDateToFormatDate } from '@utils/dates';
+
+import { CourseIcon } from '../../courses/components/CourseIcon';
+import { AgendaStackParamList } from './createAgendaScreens';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 

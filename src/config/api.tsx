@@ -13,8 +13,9 @@ import {
   TicketsApi,
 } from '@polito/api-client';
 
-import { ApiContextClientsProps } from '../core/contexts/ApiContext';
-import { deviceLanguage } from '../utils/device';
+import { ApiContextClientsProps } from '@core/contexts/ApiContext';
+
+import { deviceLanguage } from '@utils/device';
 
 export const createApiConfiguration = (token?: string) => {
   const basePath = BASE_PATH;

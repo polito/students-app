@@ -3,8 +3,8 @@
 import { ResponseError } from '@polito/api-client/runtime';
 import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 
-import { useApiContext } from '../core/contexts/ApiContext';
-import { SuccessResponse } from '../core/types/api';
+import { useApiContext } from '@core/contexts/ApiContext';
+import { SuccessResponse } from '@core/types/api';
 
 /**
  * Add student username as key prefix to allow identity switch while keeping cache

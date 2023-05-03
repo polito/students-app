@@ -3,13 +3,15 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration, Interval } from 'luxon';
 
-import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
-import { useGetBookings } from '../../../core/queries/bookingHooks';
-import { useGetExams } from '../../../core/queries/examHooks';
-import { useGetDeadlineWeeks } from '../../../core/queries/studentHooks';
-import { Exam } from '../../../core/types/api';
-import { formatMachineDate, formatTime } from '../../../utils/dates';
-import { popPage, prefixKey, shiftPage } from '../../../utils/queries';
+import { CoursesPreferences } from '@core/contexts/PreferencesContext';
+import { useGetBookings } from '@core/queries/bookings';
+import { useGetExams } from '@core/queries/exams';
+import { useGetDeadlineWeeks } from '@core/queries/student';
+import { Exam } from '@core/types/api';
+
+import { formatMachineDate, formatTime } from '@utils/dates';
+import { popPage, prefixKey, shiftPage } from '@utils/queries';
+
 import { AgendaDay } from '../types/AgendaDay';
 import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import {

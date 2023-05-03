@@ -5,11 +5,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
-import { useApiContext } from '../../../core/contexts/ApiContext';
-import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
-import { useGetCourses } from '../../../core/queries/courseHooks';
-import { notNullish } from '../../../utils/predicates';
-import { prefixKey } from '../../../utils/queries';
+import { useApiContext } from '@core/contexts/ApiContext';
+import { CoursesPreferences } from '@core/contexts/PreferencesContext';
+import { useGetCourses } from '@core/queries/courses';
+
+import { notNullish } from '@utils/predicates';
+import { prefixKey } from '@utils/queries';
 
 export const LECTURES_QUERY_KEY = 'lectures';
 

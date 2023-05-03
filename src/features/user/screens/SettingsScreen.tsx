@@ -16,6 +16,16 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
 } from '@fortawesome/free-solid-svg-icons';
+import { MenuView } from '@react-native-menu/menu';
+
+import i18next from 'i18next';
+import { Settings } from 'luxon';
+
+import { usePreferencesContext } from '@core/contexts/PreferencesContext';
+import { useConfirmationDialog } from '@core/hooks/useConfirmationDialog';
+import { useDeviceLanguage } from '@core/hooks/useDeviceLanguage';
+import { lightTheme } from '@core/themes/light';
+
 import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -26,17 +36,10 @@ import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView } from '@react-native-menu/menu';
 
-import i18next from 'i18next';
-import { Settings } from 'luxon';
+import { formatFileSize } from '@utils/files';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
-import { lightTheme } from '../../../core/themes/light';
-import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
+import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();

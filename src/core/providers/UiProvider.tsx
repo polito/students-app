@@ -4,16 +4,18 @@ import { Platform, StatusBar, useColorScheme } from 'react-native';
 import overrideColorScheme from 'react-native-override-color-scheme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { NavigationContainer } from '@react-navigation/native';
 
 import i18n from 'i18next';
 import { Settings } from 'luxon';
 
+import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
+
+import { deviceLanguage } from '@utils/device';
+import { fromUiTheme } from '@utils/navigation-theme';
+
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
-import { deviceLanguage } from '../../utils/device';
-import { fromUiTheme } from '../../utils/navigation-theme';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';

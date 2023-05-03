@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
+
+import { Icon } from '@lib/ui/components/Icon';
 
 import { IS_IOS } from '../../../src/core/constants';
 import { GlobalStyles } from '../../../src/core/styles/globalStyles';

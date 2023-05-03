@@ -2,16 +2,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { open } from 'react-native-file-viewer';
 
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
 
 import {
   useGetTicketAttachment,
   useGetTicketReplyAttachment,
-} from '../../../core/queries/ticketHooks';
-import { darkTheme } from '../../../core/themes/dark';
+} from '@core/queries/tickets';
+import { darkTheme } from '@core/themes/dark';
+
+import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme';
+
 import { AttachmentChip } from './AttachmentChip';
 
 interface TicketAttachmentChipProps {

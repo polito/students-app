@@ -7,15 +7,17 @@ import Video, {
   VideoProperties,
 } from 'react-native-video';
 
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Col } from '@lib/ui/components/Col';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useNavigation } from '@react-navigation/native';
 
 import { throttle } from 'lodash';
 
-import { negate } from '../../utils/predicates';
-import { displayTabBar } from '../../utils/tab-bar';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { Col } from '@lib/ui/components/Col';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+
+import { negate } from '@utils/predicates';
+import { displayTabBar } from '@utils/tab-bar';
+
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
 

@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { HeaderLogo } from '@core/components/HeaderLogo';
+import { titlesStyles } from '@core/hooks/titlesStyles';
+
+import { useTheme } from '@lib/ui/hooks/useTheme';
+
 import { PlacesScreen } from '../screens/PlacesScreen';
 
 export type ServiceStackParamList = {

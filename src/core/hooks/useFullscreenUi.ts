@@ -3,7 +3,8 @@ import { StatusBar } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { displayTabBar, hideTabBar } from '../../utils/tab-bar';
+import { displayTabBar, hideTabBar } from '@utils/tab-bar';
+
 import { IS_ANDROID } from '../constants';
 
 export const useFullscreenUi = (fullscreen: boolean) => {

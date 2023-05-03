@@ -4,6 +4,12 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { TicketStatus } from '@polito/api-client';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { ServiceStackParamList } from '@core/navigators/ServicesNavigator';
+import { useGetTickets } from '@core/queries/tickets';
+
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -12,11 +18,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketStatus } from '@polito/api-client';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useGetTickets } from '../../../core/queries/ticketHooks';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
 interface Props {

@@ -2,6 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet } from 'react-native';
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { TicketOverview, TicketStatus } from '@polito/api-client';
+
+import { GlobalStyles } from '@core/styles/globalStyles';
+
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
@@ -12,10 +16,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
 
-import { GlobalStyles } from '../../../core/styles/globalStyles';
-import { formatDate, formatDateTime } from '../../../utils/dates';
+import { formatDate, formatDateTime } from '@utils/dates';
 
 interface TicketStatusProps {
   ticket: TicketOverview;

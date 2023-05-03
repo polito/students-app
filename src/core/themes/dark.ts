@@ -1,5 +1,5 @@
-// noinspection AllyPlainJsInspection
 //
+// noinspection AllyPlainJsInspection
 import { Platform } from 'react-native';
 
 import { Theme } from '@lib/ui/types/Theme';

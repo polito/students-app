@@ -3,12 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { ChatBubble } from '@lib/ui/components/ChatBubble';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -18,17 +12,25 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { IS_IOS } from '../../../core/constants';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
+import { IS_IOS } from '@core/constants';
+import { useConfirmationDialog } from '@core/hooks/useConfirmationDialog';
+import { useScreenTitle } from '@core/hooks/useScreenTitle';
+import { ServiceStackParamList } from '@core/navigators/ServicesNavigator';
 import {
   useGetTicket,
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
-} from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+} from '@core/queries/tickets';
+import { GlobalStyles } from '@core/styles/globalStyles';
+
+import { ChatBubble } from '@lib/ui/components/ChatBubble';
+import { IconButton } from '@lib/ui/components/IconButton';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
+
 import { ChatMessage } from '../components/ChatMessage';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TextMessage } from '../components/TextMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';

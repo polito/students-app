@@ -3,6 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { CreateTicketRequest } from '@polito/api-client';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { ServiceStackParamList } from '@core/navigators/ServicesNavigator';
+import { useCreateTicket, useGetTicketTopics } from '@core/queries/tickets';
+import { GlobalStyles } from '@core/styles/globalStyles';
+import { darkTheme } from '@core/themes/dark';
+
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
@@ -14,17 +22,8 @@ import { TextField } from '@lib/ui/components/TextField';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { CreateTicketRequest } from '@polito/api-client';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  useCreateTicket,
-  useGetTicketTopics,
-} from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
-import { darkTheme } from '../../../core/themes/dark';
 import { MessagingView } from '../components/MessagingView';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { Attachment } from '../types/Attachment';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;

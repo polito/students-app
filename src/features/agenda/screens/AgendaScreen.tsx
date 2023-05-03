@@ -13,21 +13,23 @@ import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
+import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
+
+import { usePreferencesContext } from '@core/contexts/PreferencesContext';
+import { BOOKINGS_QUERY_KEY } from '@core/queries/bookings';
+import { EXAMS_QUERY_KEY } from '@core/queries/exams';
+import { DEADLINES_QUERY_KEY } from '@core/queries/student';
+
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
-import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
-import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
-import { prefixKey, prefixKeys } from '../../../utils/queries';
-import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { prefixKey, prefixKeys } from '@utils/queries';
+
 import { AgendaTabs } from '../components/AgendaTabs';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
 import { AGENDA_QUERY_KEY, useGetAgendaWeeks } from '../queries/agendaHooks';
@@ -36,6 +38,7 @@ import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import { AgendaItemTypes } from '../types/AgendaItem';
 import { AgendaState } from '../types/AgendaState';
 import { AgendaWeek } from '../types/AgendaWeek';
+import { AgendaStackParamList } from './createAgendaScreens';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
 

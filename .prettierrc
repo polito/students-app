@@ -5,7 +5,16 @@
   "bracketSpacing": true,
   "endOfLine": "auto",
   "semi": true,
-  "importOrder": ["^react", "^@(?!ui/)(.*)$", "^\\w", "^@ui/(.*)$", "^[./]"],
+  "importOrder": [
+    "^react",
+    "^@(?!(?:core|lib|features|utils)/)(.*)$",
+    "^\\w",
+    "^@core/(.*)$",
+    "^@lib/(.*)$",
+    "^@features/(.*)$",
+    "^@utils/(.*)$",
+    "^[./]"
+  ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

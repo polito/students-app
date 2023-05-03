@@ -14,13 +14,16 @@ import {
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
+
+import { usePreferencesContext } from '@core/contexts/PreferencesContext';
+
 import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { split } from '../../../utils/reducers';
+import { split } from '@utils/reducers';
+
 import { ServiceCard } from '../components/ServiceCard';
 
 export const ServicesScreen = () => {
