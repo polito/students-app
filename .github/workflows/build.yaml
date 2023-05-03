@@ -196,6 +196,7 @@ jobs:
         github.event_name == 'push' &&
         github.ref_type == 'tag'
       run: bundle exec fastlane apk
+      working-directory: ./android
     - name: Upload Artifacts
       if: |
         github.event_name == 'push' &&
