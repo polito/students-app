@@ -21,7 +21,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { convertMachineDateToFormatDate } from '@utils/dates';
 
 import { CourseIcon } from '../../courses/components/CourseIcon';
-import { AgendaStackParamList } from './createAgendaScreens';
+import { AgendaStackParamList } from '../navigation';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 

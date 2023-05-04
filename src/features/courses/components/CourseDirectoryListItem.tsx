@@ -30,7 +30,7 @@ export const CourseDirectoryListItem = ({
         count: item.files.length,
       })}
       onPress={() =>
-        navigation.navigate('CourseDirectory', {
+        navigation.navigate('Directory', {
           courseId,
           directoryId: item.id,
           directoryName: item.name,

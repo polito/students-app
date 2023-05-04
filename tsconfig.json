@@ -8,7 +8,7 @@
         "./lib/*"
       ],
       "@features/*": [
-        "/src/features/*"
+        "./src/features/*"
       ],
       "@core/*": [
         "./src/core/*"

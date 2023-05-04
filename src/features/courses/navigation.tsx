@@ -1,31 +1,22 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
+import { ScreenGroupType } from '@core/types/navigation';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { titlesStyles } from '@core/hooks/titlesStyles';
-
-import { useTheme } from '@lib/ui/hooks/useTheme';
-
-import { AssignmentPdfCreation } from './AssignmentPdfCreation';
-import { AssignmentUpload } from './AssignmentUpload';
-import { AssignmentUploadConfirmation } from './AssignmentUploadConfirmation';
-import { Course } from './Course';
-import { Courses } from './Courses';
-import { Directory } from './Directory';
-import { Guide } from './Guide';
-import { IconPicker } from './IconPicker';
-import { Notice } from './Notice';
-import { Preferences } from './Preferences';
-import { Videolecture } from './Videolecture';
-import { VirtualClassroom } from './VirtualClassroom';
+import { AssignmentPdfCreation } from './screens/AssignmentPdfCreation';
+import { AssignmentUpload } from './screens/AssignmentUpload';
+import { AssignmentUploadConfirmation } from './screens/AssignmentUploadConfirmation';
+import { Course } from './screens/Course';
+import { Courses } from './screens/Courses';
+import { Directory } from './screens/Directory';
+import { Guide } from './screens/Guide';
+import { IconPicker } from './screens/IconPicker';
+import { Notice } from './screens/Notice';
+import { Preferences } from './screens/Preferences';
+import { Videolecture } from './screens/Videolecture';
+import { VirtualClassroom } from './screens/VirtualClassroom';
 
 export type CoursesStackParamList = {
   Courses: undefined;
   Course: { id: number; courseName: string };
   Notice: { noticeId: number; courseId: number };
-  // Person: { id: number };
   Preferences: { courseId: number };
   Directory: {
     courseId: number;
@@ -49,24 +40,13 @@ export type CoursesStackParamList = {
   IconPicker: { courseId: number };
 };
 
-export const createCoursesScreens = <T extends CoursesStackParamList>(
-  Stack: ReturnType<typeof createNativeStackNavigator<T>>,
-) => {
-  const theme = useTheme();
-  const { colors } = theme;
-  const { t } = useTranslation();
-
+export const createCoursesGroup = <T extends CoursesStackParamList>({
+  Stack,
+  theme,
+  t,
+}: ScreenGroupType<T>) => {
   return (
-    <Stack.Group
-      screenOptions={{
-        headerLargeTitle: true,
-        headerTransparent: Platform.select({ ios: true }),
-        headerLargeStyle: {
-          backgroundColor: colors.background,
-        },
-        ...titlesStyles(theme),
-      }}
-    >
+    <Stack.Group>
       <Stack.Screen
         name="Courses"
         component={Courses}
@@ -79,7 +59,7 @@ export const createCoursesScreens = <T extends CoursesStackParamList>(
         component={Course}
         options={{
           headerLargeStyle: {
-            backgroundColor: colors.headersBackground,
+            backgroundColor: theme.colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,
@@ -178,7 +158,7 @@ export const createCoursesScreens = <T extends CoursesStackParamList>(
           headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
           headerLargeStyle: {
-            backgroundColor: colors.headersBackground,
+            backgroundColor: theme.colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,

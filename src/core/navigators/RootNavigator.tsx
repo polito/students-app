@@ -13,15 +13,16 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 
+import { HeaderLogo } from '@lib/ui/components/HeaderLogo';
 import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { PlacesNavigator } from '@features/places/components/PlacesNavigator';
+
 import { tabBarStyle } from '@utils/tab-bar';
 
-import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
-import { HeaderLogo } from '../components/HeaderLogo';
 import { IS_IOS } from '../constants';
 import { useGetStudent } from '../queries/student';
 import { AgendaNavigator } from './AgendaNavigator';

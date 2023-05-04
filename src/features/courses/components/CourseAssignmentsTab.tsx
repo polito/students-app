@@ -98,7 +98,7 @@ export const CourseAssignmentsTab = ({
         }
         action={() =>
           navigation!.navigate({
-            name: 'CourseAssignmentUpload',
+            name: 'AssignmentUpload',
             params: { courseId },
           })
         }

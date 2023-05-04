@@ -1,28 +1,34 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderLogo } from '@lib/ui/components/HeaderLogo';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import {
   CoursesStackParamList,
-  createCoursesScreens,
-} from '../../features/courses/screens/createCoursesScreens';
+  createCoursesGroup,
+} from '@features/courses/navigation';
 import {
   ExamsStackParamList,
-  createExamsScreens,
-} from '../../features/exams/screens/createExamsScreens';
+  createExamsGroup,
+} from '@features/exams/navigation';
+import { PersonScreen } from '@features/people/screens/PersonScreen';
 import {
   TranscriptStackParamList,
-  createTranscriptScreens,
-} from '../../features/transcript/screens/createTranscriptScreens';
-import { HeaderLogo } from '../components/HeaderLogo';
-import { titlesStyles } from '../hooks/titlesStyles';
+  createTranscriptGroup,
+} from '@features/transcript/navigation';
+
+import { getDefaultScreenOptions } from '@utils/navigation';
+
 import { Teaching } from '../screens/Teaching';
 
 export type TeachingStackParamList = {
   Teaching: undefined;
+  Person: {
+    id: number;
+  };
 } & CoursesStackParamList &
   ExamsStackParamList &
   TranscriptStackParamList;
@@ -32,23 +38,22 @@ const Stack = createNativeStackNavigator<TeachingStackParamList>();
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
 
-  const coursesScreens = createCoursesScreens(Stack);
-  const examsScreens = createExamsScreens({ Stack });
-  const transcriptScreens = createTranscriptScreens({ Stack });
+  const coursesGroup = useMemo(
+    () => createCoursesGroup({ Stack, theme, t }),
+    [t, theme],
+  );
+  const examsGroup = useMemo(
+    () => createExamsGroup({ Stack, theme, t }),
+    [t, theme],
+  );
+  const transcriptScreens = useMemo(
+    () => createTranscriptGroup({ Stack, theme, t }),
+    [t, theme],
+  );
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerLargeTitle: true,
-        headerTransparent: Platform.select({ ios: true }),
-        headerLargeStyle: {
-          backgroundColor: colors.background,
-        },
-        ...titlesStyles(theme),
-      }}
-    >
+    <Stack.Navigator screenOptions={getDefaultScreenOptions(theme)}>
       <Stack.Screen
         name="Teaching"
         component={Teaching}
@@ -57,19 +62,18 @@ export const TeachingNavigator = () => {
           headerTitle: t('teachingScreen.title'),
         }}
       />
-      {coursesScreens}
-      {examsScreens}
+      {coursesGroup}
+      {examsGroup}
       {transcriptScreens}
-
-      {/* <Stack.Screen*/}
-      {/*  name="Person"*/}
-      {/*  component={PersonScreen}*/}
-      {/*  options={{*/}
-      {/*    headerLargeTitle: false,*/}
-      {/*    headerTitle: t('common.contact'),*/}
-      {/*    headerBackTitleVisible: false,*/}
-      {/*  }}*/}
-      {/*/ >*/}
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };

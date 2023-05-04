@@ -59,7 +59,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
-          action={() => navigation!.navigate('CourseDirectory', { courseId })}
+          action={() => navigation!.navigate('Directory', { courseId })}
         />
       )}
     </>

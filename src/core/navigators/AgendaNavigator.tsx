@@ -2,12 +2,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
   AgendaStackParamList,
-  createAgendaScreens,
-} from '../../features/agenda/screens/createAgendaScreens';
+  createAgendaStackGroup,
+} from '@features/agenda/navigation';
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
-  const group = createAgendaScreens({ Stack });
+  const group = createAgendaStackGroup(Stack);
   return <Stack.Navigator>{group}</Stack.Navigator>;
 };

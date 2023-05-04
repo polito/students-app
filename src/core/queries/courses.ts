@@ -17,11 +17,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
+import { CourseRecentFile } from '@features/courses/components/CourseRecentFileListItem';
+import { CourseLectureSection } from '@features/courses/types/CourseLectureSections';
+
 import { notNullish } from '@utils/predicates';
 import { pluckData, prefixKey } from '@utils/queries';
 
-import { CourseRecentFile } from '../../features/courses/components/CourseRecentFileListItem';
-import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { courseColors } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';

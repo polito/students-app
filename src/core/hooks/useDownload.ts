@@ -12,8 +12,9 @@ import {
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
-import { FilesCacheContext } from '../../features/courses/contexts/FilesCacheContext';
-import { UnsupportedFileTypeError } from '../../features/courses/errors/UnsupportedFileTypeError';
+import { FilesCacheContext } from '@features/courses/contexts/FilesCacheContext';
+import { UnsupportedFileTypeError } from '@features/courses/errors/UnsupportedFileTypeError';
+
 import { useApiContext } from '../contexts/ApiContext';
 import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
 

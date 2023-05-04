@@ -2,9 +2,9 @@ import { Platform } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderLogo } from '@lib/ui/components/HeaderLogo';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { HeaderLogo } from '../components/HeaderLogo';
 import { Login } from '../screens/Login';
 
 export const GuestNavigator = () => {

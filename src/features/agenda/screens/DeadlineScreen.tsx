@@ -13,7 +13,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { convertMachineDateToFormatDate } from '@utils/dates';
 
-import { AgendaStackParamList } from '../../../core/navigators/AgendaNavigator';
+import { AgendaStackParamList } from '../navigation';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Deadline'>;
 

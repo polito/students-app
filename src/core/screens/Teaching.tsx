@@ -18,11 +18,12 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { CourseListItem } from '@features/courses/components/CourseListItem';
+import { ExamListItem } from '@features/teaching/components/ExamListItem';
+import { ProgressChart } from '@features/teaching/components/ProgressChart';
+
 import { formatFinalGrade } from '@utils/grades';
 
-import { CourseListItem } from '../../features/courses/components/CourseListItem';
-import { ExamListItem } from '../../features/teaching/components/ExamListItem';
-import { ProgressChart } from '../../features/teaching/components/ProgressChart';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { TeachingStackParamList } from '../navigators/TeachingNavigator';
 import { useGetCourses } from '../queries/courses';

@@ -20,6 +20,7 @@ import { DateTime } from 'luxon';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
+import { GradientBackdrop } from '@lib/ui/components/GradientBackdrop';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
@@ -31,7 +32,6 @@ import { negate } from '@utils/predicates';
 
 import { GlobalStyles } from '../styles/globalStyles';
 import { darkTheme } from '../themes/dark';
-import { GradientBackdrop } from './GradientBackdrop';
 
 import CompositeAnimation = Animated.CompositeAnimation;
 

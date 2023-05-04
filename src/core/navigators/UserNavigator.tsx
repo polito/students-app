@@ -3,12 +3,13 @@ import { Platform } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderLogo } from '@lib/ui/components/HeaderLogo';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { NotificationsScreen } from '../../features/user/screens/NotificationsScreen';
-import { ProfileScreen } from '../../features/user/screens/ProfileScreen';
-import { SettingsScreen } from '../../features/user/screens/SettingsScreen';
-import { HeaderLogo } from '../components/HeaderLogo';
+import { NotificationsScreen } from '@features/user/screens/NotificationsScreen';
+import { ProfileScreen } from '@features/user/screens/ProfileScreen';
+import { SettingsScreen } from '@features/user/screens/SettingsScreen';
+
 import { titlesStyles } from '../hooks/titlesStyles';
 
 export type UserStackParamList = {

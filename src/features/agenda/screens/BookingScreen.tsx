@@ -26,7 +26,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { formatDateTime, formatTime } from '@utils/dates';
 
-import { AgendaStackParamList } from './createAgendaScreens';
+import { AgendaStackParamList } from '../navigation';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 

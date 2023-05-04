@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable */
+
 module.exports = function (api) {
   api.cache(true);
   return {

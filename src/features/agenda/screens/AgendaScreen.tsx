@@ -32,13 +32,13 @@ import { prefixKey, prefixKeys } from '@utils/queries';
 
 import { AgendaTabs } from '../components/AgendaTabs';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
+import { AgendaStackParamList } from '../createAgendaScreenGroup';
 import { AGENDA_QUERY_KEY, useGetAgendaWeeks } from '../queries/agendaHooks';
 import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
 import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import { AgendaItemTypes } from '../types/AgendaItem';
 import { AgendaState } from '../types/AgendaState';
 import { AgendaWeek } from '../types/AgendaWeek';
-import { AgendaStackParamList } from './createAgendaScreens';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
 

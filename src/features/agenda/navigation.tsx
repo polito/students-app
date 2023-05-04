@@ -1,21 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackType } from '@core/types/navigation';
 
-import { HeaderLogo } from '@core/components/HeaderLogo';
-import { titlesStyles } from '@core/hooks/titlesStyles';
-
+import { HeaderLogo } from '@lib/ui/components/HeaderLogo';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { ExamScreen } from '../../exams/screens/ExamScreen';
-import { PersonScreen } from '../../people/screens/PersonScreen';
-import { DeadlineItem, LectureItem } from '../types/AgendaItem';
-import { AgendaScreen } from './AgendaScreen';
-import { BookingScreen } from './BookingScreen';
-import { DeadlineScreen } from './DeadlineScreen';
-import { LectureScreen } from './LectureScreen';
+import { ExamScreen } from '../exams/screens/ExamScreen';
+import { PersonScreen } from '../people/screens/PersonScreen';
+import { AgendaScreen } from './screens/AgendaScreen';
+import { BookingScreen } from './screens/BookingScreen';
+import { DeadlineScreen } from './screens/DeadlineScreen';
+import { LectureScreen } from './screens/LectureScreen';
+import { DeadlineItem, LectureItem } from './types/AgendaItem';
 
 export type AgendaStackParamList = {
   Agenda: undefined;
@@ -26,25 +23,15 @@ export type AgendaStackParamList = {
   Person: { id: number };
 };
 
-interface Props {
-  Stack: ReturnType<typeof createNativeStackNavigator<AgendaStackParamList>>;
-}
-
-export const createAgendaScreens = ({ Stack }: Props) => {
+export const createAgendaStackGroup = (
+  Stack: NativeStackType<AgendaStackParamList>,
+) => {
   const theme = useTheme();
   const { colors } = theme;
   const { t } = useTranslation();
 
   return (
-    <Stack.Group
-      screenOptions={{
-        headerTransparent: Platform.select({ ios: true }),
-        headerLargeStyle: {
-          backgroundColor: colors.background,
-        },
-        ...titlesStyles(theme),
-      }}
-    >
+    <Stack.Group>
       <Stack.Screen
         name="Agenda"
         component={AgendaScreen}

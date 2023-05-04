@@ -11,7 +11,7 @@ export const useCourseFilesCachePath = () => {
 
   return useMemo(() => {
     return [CachesDirectoryPath, username, 'Courses', courseId].join('/');
-  }, [courseId]);
+  }, [username, courseId]);
 };
 
 export const useCoursesFilesCachePath = () => {

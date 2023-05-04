@@ -31,10 +31,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { formatDate } from '@utils/dates';
 
 import { CourseTabProps } from '../screens/Course';
-import {
-  CourseLecture,
-  CourseLectureSection,
-} from '../types/CourseLectureSections';
+import { CourseLecture, CourseLectureSection } from '../types/lectures';
 
 export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
   const { t } = useTranslation();

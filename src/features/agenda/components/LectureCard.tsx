@@ -13,7 +13,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { AgendaStackParamList as AgendaStack } from '../../../core/navigators/AgendaNavigator';
+import { AgendaStackParamList } from '../createAgendaScreenGroup';
 import { LectureItem } from '../types/AgendaItem';
 
 interface Props {
@@ -21,7 +21,8 @@ interface Props {
 }
 
 export const LectureCard = ({ item }: Props) => {
-  const { navigate } = useNavigation<NavigationProp<AgendaStack, 'Lecture'>>();
+  const { navigate } =
+    useNavigation<NavigationProp<AgendaStackParamList, 'Lecture'>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { colors, fontSizes } = useTheme();

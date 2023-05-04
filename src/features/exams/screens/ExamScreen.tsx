@@ -31,7 +31,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { formatDate, formatDateTime, formatTime } from '@utils/dates';
 
-import { ExamsStackParamList } from './createExamsScreens';
+import { ExamsStackParamList } from '../navigation';
 
 export const ExamScreen = () => {
   const navigation =

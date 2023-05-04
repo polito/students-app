@@ -5,16 +5,17 @@ import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderLogo } from '@lib/ui/components/HeaderLogo';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { CreateTicketScreen } from '../../features/services/screens/CreateTicketScreen';
-import { ServicesScreen } from '../../features/services/screens/ServicesScreen';
-import { TicketFaqScreen } from '../../features/services/screens/TicketFaqScreen';
-import { TicketFaqsScreen } from '../../features/services/screens/TicketFaqsScreen';
-import { TicketListScreen } from '../../features/services/screens/TicketListScreen';
-import { TicketScreen } from '../../features/services/screens/TicketScreen';
-import { TicketsScreen } from '../../features/services/screens/TicketsScreen';
-import { HeaderLogo } from '../components/HeaderLogo';
+import { CreateTicketScreen } from '@features/services/screens/CreateTicketScreen';
+import { ServicesScreen } from '@features/services/screens/ServicesScreen';
+import { TicketFaqScreen } from '@features/services/screens/TicketFaqScreen';
+import { TicketFaqsScreen } from '@features/services/screens/TicketFaqsScreen';
+import { TicketListScreen } from '@features/services/screens/TicketListScreen';
+import { TicketScreen } from '@features/services/screens/TicketScreen';
+import { TicketsScreen } from '@features/services/screens/TicketsScreen';
+
 import { titlesStyles } from '../hooks/titlesStyles';
 
 export type ServiceStackParamList = {
