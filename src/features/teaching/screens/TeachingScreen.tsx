@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
@@ -39,6 +39,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+
+  useEffect(() => {
+    throw new Error('My first Sentry error!');
+  }, []);
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
