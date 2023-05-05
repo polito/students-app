@@ -23,12 +23,10 @@ export const PlacesMarkers = ({
     siteId,
   });
 
-  console.log('Places');
   if (isLoading || !places?.data.length) {
     return null;
   }
 
-  console.log('Places', places?.data);
   return (
     <>
       {/* {places.data.map(place => {*/}

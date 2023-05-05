@@ -1,161 +1,130 @@
 import { useLayoutEffect, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import MapView from 'react-native-maps';
+import { View } from 'react-native';
 
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import BottomSheet from '@gorhom/bottom-sheet';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Tab } from '@lib/ui/components/Tab';
+import { faEllipsis, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import { BottomSheet } from '@lib/ui/components/BottomSheet';
+import { Icon } from '@lib/ui/components/Icon';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { ListItem } from '@lib/ui/components/ListItem';
+import { PillButton } from '@lib/ui/components/Pill';
+import { Row } from '@lib/ui/components/Row';
 import { Tabs } from '@lib/ui/components/Tabs';
+import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { TranslucentView } from '../../../core/components/TranslucentView';
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { CampusSelector } from '../components/CampusSelector';
-import { PlaceMarker } from '../components/PlaceMarker';
-import { PlacePanel } from '../components/PlacePanel';
-import { PlaceTypePanel } from '../components/PlaceTypePanel';
+import { BuildingParamsSelector } from '../components/BuildingParamsSelector';
+import { MapScreenProps } from '../components/MapNavigator';
 import { PlacesMarkers } from '../components/PlacesMarkers';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { SearchHeaderCta } from '../components/SearchHeaderCta';
 
-type Props = NativeStackScreenProps<PlacesStackParamList, 'Places'>;
+type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
-export const PlacesScreen = ({ navigation, route }: Props) => {
-  const { colors, palettes, fontSizes, shapes } = useTheme();
-  const [searching, setSearching] = useState(false);
-  const headerHeight = useHeaderHeight();
-  const bottomTabBarHeight = useBottomTabBarHeight();
+export const PlacesScreen = ({ navigation }: Props) => {
+  const { fontSizes } = useTheme();
+  const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <IconButton
-          icon={faSearch}
-          color={palettes.primary[400]}
-          size={fontSizes.lg}
-          adjustSpacing="right"
-          onPress={() => setSearching(true)}
-        />
-      ),
+      headerLeft: () => <HeaderLogo ml={5} />,
+      headerRight: () => <SearchHeaderCta />,
+      mapContent: <PlacesMarkers />,
     });
-  }, [navigation, searching]);
-
-  const { placeType, placeId } = route.params ?? {};
+  }, [navigation]);
 
   return (
-    <>
-      <MapView
-        style={{ flex: 1 }}
-        initialRegion={{
-          latitude: 45.06255980528532,
-          longitude: 7.662322058238708,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-      >
-        {placeId != null ? (
-          <PlaceMarker placeId={placeId} />
-        ) : placeType != null ? (
-          <PlacesMarkers placeType={placeType} />
-        ) : null}
-      </MapView>
-
-      <View
+    <View style={GlobalStyles.grow} pointerEvents="box-none">
+      <Tabs
         style={{
-          position: 'absolute',
-          top: Platform.select({ ios: headerHeight, android: 0 }),
-          bottom: bottomTabBarHeight - 1,
+          minWidth: '100%',
+          elevation: 3,
         }}
-        pointerEvents="box-none"
       >
-        <View>
-          <TranslucentView />
-          <Tabs
-            style={{
-              minWidth: '100%',
-              borderTopWidth: Platform.select({
-                ios: StyleSheet.hairlineWidth,
-              }),
-              borderBottomWidth: Platform.select({
-                ios: StyleSheet.hairlineWidth,
-              }),
-              borderColor: colors.divider,
-              elevation: 3,
-              zIndex: 1,
-            }}
-          >
-            <Tab
-              selected={route.params?.placeType === 'classrooms'}
-              onPress={() =>
-                navigation.navigate('Places', { placeType: 'classrooms' })
-              }
-            >
-              Classrooms
-            </Tab>
-            <Tab
-              selected={route.params?.placeType === 'libraries'}
-              onPress={() =>
-                navigation.navigate('Places', { placeType: 'libraries' })
-              }
-            >
-              Libraries
-            </Tab>
-            <Tab
-              selected={route.params?.placeType === 'study-rooms'}
-              onPress={() =>
-                navigation.navigate('Places', { placeType: 'study-rooms' })
-              }
-            >
-              Study rooms
-            </Tab>
-            <Tab
-              selected={route.params?.placeType === 'student'}
-              onPress={() =>
-                navigation.navigate('Places', { placeType: 'student' })
-              }
-            >
-              Student services
-            </Tab>
-          </Tabs>
-        </View>
+        <PillButton
+          onPress={() =>
+            navigation.navigate('PlaceCategory', { categoryId: 'classrooms' })
+          }
+        >
+          Classrooms
+        </PillButton>
+        <PillButton
+          onPress={() =>
+            navigation.navigate('PlaceCategory', { categoryId: 'libraries' })
+          }
+        >
+          Libraries
+        </PillButton>
+        <PillButton
+          onPress={() =>
+            navigation.navigate('PlaceCategory', {
+              categoryId: 'study-rooms',
+            })
+          }
+        >
+          Study rooms
+        </PillButton>
+        <PillButton
+          onPress={() =>
+            navigation.navigate('PlaceCategory', { categoryId: 'student' })
+          }
+        >
+          Student services
+        </PillButton>
+        <PillButton onPress={() => setCategoriesPanelOpen(true)}>
+          <Row align="center" gap={2}>
+            <Icon icon={faEllipsis} />
+            <Text>More</Text>
+          </Row>
+        </PillButton>
+      </Tabs>
 
-        <View style={GlobalStyles.grow} pointerEvents="box-none">
-          <BottomSheet
-            index={placeType != null || placeId != null ? 0 : -1}
-            snapPoints={[placeId ? '50%' : '25%', '100%']}
-            overDragResistanceFactor={0.9}
-            enablePanDownToClose
-            style={{
-              borderTopLeftRadius: shapes.lg,
-              borderTopRightRadius: shapes.lg,
-              overflow: 'hidden',
-            }}
-            handleIndicatorStyle={{
-              backgroundColor: colors.divider,
-            }}
-            backgroundComponent={() => <TranslucentView />}
-            onClose={() => {
-              if (placeId != null || placeType != null) {
-                navigation.navigate('Places', {
-                  placeType: undefined,
-                  placeId: undefined,
-                });
-              }
-            }}
-          >
-            {placeId != null ? (
-              <PlacePanel placeId={placeId} />
-            ) : placeType != null ? (
-              <PlaceTypePanel placeType={placeType} />
-            ) : null}
-          </BottomSheet>
+      <BuildingParamsSelector />
 
-          {placeType == null && placeId == null && <CampusSelector />}
-        </View>
-      </View>
-    </>
+      <BottomSheet
+        index={categoriesPanelOpen ? 0 : -1}
+        snapPoints={['100%']}
+        enablePanDownToClose
+        onClose={() => setCategoriesPanelOpen(false)}
+      >
+        <BottomSheetFlatList
+          data={[
+            {
+              title: 'Classrooms',
+            },
+            {
+              title: 'Study rooms',
+            },
+            {
+              title: 'Student services',
+            },
+            {
+              title: 'Bathrooms',
+            },
+            {
+              title: 'Caffetterias',
+            },
+            {
+              title: 'Restaurants',
+            },
+          ]}
+          renderItem={({ item }) => (
+            <ListItem
+              title={item.title}
+              leadingItem={
+                <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+              }
+              linkTo={{
+                screen: 'PlaceCategory',
+                params: { categoryId: 1 },
+              }}
+            />
+          )}
+          ItemSeparatorComponent={IndentedDivider}
+        />
+      </BottomSheet>
+    </View>
   );
 };

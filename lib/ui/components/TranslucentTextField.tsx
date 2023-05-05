@@ -15,11 +15,11 @@ export const TranslucentTextField = (props: Props) => {
   );
 };
 
-const createStyles = ({ colors, shapes, spacing }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     textFieldInput: {
       backgroundColor: colors.translucentSurface,
-      borderRadius: shapes.xl,
+      borderRadius: 12,
       paddingVertical: 0,
       marginHorizontal: spacing[2],
     },

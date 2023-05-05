@@ -1,9 +1,9 @@
-import { ViewStyle } from 'react-native';
+import { ViewProps } from 'react-native';
 
 import { TranslucentViewProps } from './TranslucentView';
 
 declare interface TranslucentViewProps {
-  style?: ViewStyle;
+  style?: ViewProps['style'];
   blurAmount?: number;
   fallbackOpacity?: number;
 }

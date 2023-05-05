@@ -43,6 +43,7 @@
     "booking_plural": "Prenotazioni",
     "cache": "Cache",
     "camera": "Fotocamera",
+    "campus": "Sede",
     "cancel": "Annulla",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
@@ -92,6 +93,7 @@
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
     "file": "File",
     "file_plural": "File",
+    "floor": "Piano",
     "follow": "Segui",
     "grade": "Voto",
     "hours": "Ore",
@@ -131,6 +133,7 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "search": "Cerca",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
@@ -346,8 +349,20 @@
     "sentEmail": "Invia e-mail",
     "totalCourses": "Sono presenti {{total}} corsi"
   },
+  "placeCategoriesScreen": {
+    "title": "Categorie"
+  },
+  "placeCategoryScreen": {
+    "title": "Categoria luoghi"
+  },
+  "placeScreen": {
+    "title": "Luogo"
+  },
   "placesScreen": {
     "title": "Luoghi"
+  },
+  "placesSearchScreen": {
+    "searchPlaceholder": "Prova con \"Aula 1\""
   },
   "profileScreen": {
     "careerStatus": "Stato carriera:",

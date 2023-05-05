@@ -5,7 +5,7 @@ import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-type Props = Omit<FAProps, 'style'> &
+export type IconButtonProps = Omit<FAProps, 'style'> &
   TouchableOpacityProps & {
     iconStyle?: FAProps['style'];
     adjustSpacing?: 'left' | 'right';
@@ -17,7 +17,7 @@ export const IconButton = ({
   loading,
   adjustSpacing,
   ...rest
-}: Props) => {
+}: IconButtonProps) => {
   const { spacing } = useTheme();
   const {
     icon,

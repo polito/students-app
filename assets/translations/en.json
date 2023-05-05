@@ -43,6 +43,7 @@
     "booking_plural": "Bookings",
     "cache": "Cache",
     "camera": "Camera",
+    "campus": "Campus",
     "cancel": "Cancel",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
@@ -92,6 +93,7 @@
     "externalLink": "External link. By pressing the link you will be redirected to an external browser",
     "file": "File",
     "file_plural": "Files",
+    "floor": "Floor",
     "follow": "Follow",
     "grade": "Grade",
     "hours": "Hour",
@@ -131,6 +133,7 @@
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
+    "search": "Search",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
@@ -346,8 +349,20 @@
     "sentEmail": "Send e-mail",
     "totalCourses": "There are {{total}} courses"
   },
+  "placeCategoriesScreen": {
+    "title": "Categories"
+  },
+  "placeCategoryScreen": {
+    "title": "Place category"
+  },
+  "placeScreen": {
+    "title": "Place"
+  },
   "placesScreen": {
     "title": "Places"
+  },
+  "placesSearchScreen": {
+    "searchPlaceholder": "Try with \"Room 1\""
   },
   "profileScreen": {
     "careerStatus": "Career status:",

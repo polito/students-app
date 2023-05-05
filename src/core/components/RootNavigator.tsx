@@ -23,9 +23,9 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { IS_IOS } from '../constants';
 import { useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
+import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
 
@@ -63,6 +63,7 @@ export const RootNavigator = () => {
           hide: instantAnimation,
         },
         tabBarStyle: styles.tabBarStyle,
+        tabBarBackground: () => <TranslucentView />,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarInactiveTintColor: colors.tabBarInactive,
       }}
@@ -126,7 +127,7 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: IS_IOS ? colors.headersBackground : colors.surface,
+      position: 'absolute',
       borderTopColor: colors.divider,
     },
     tabBarItemStyle: {

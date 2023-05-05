@@ -1,19 +1,14 @@
-import { PropsWithChildren, useMemo } from 'react';
-import {
-  StyleProp,
-  TextStyle,
-  TouchableHighlightProps,
-  TouchableOpacity,
-} from 'react-native';
+import { useMemo } from 'react';
+import { TextProps } from 'react-native';
 
-import color from 'color';
+import { PillButton, PillButtonProps } from '@lib/ui/components/Pill';
 
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
-export interface Props {
+export interface Props extends PillButtonProps {
   selected?: boolean;
-  textStyle?: StyleProp<TextStyle>;
+  textStyle?: TextProps['style'];
 }
 
 /**
@@ -25,20 +20,16 @@ export const Tab = ({
   selected = false,
   textStyle,
   ...rest
-}: PropsWithChildren<TouchableHighlightProps & Props>) => {
+}: Props) => {
   const { dark, palettes, spacing, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>
-      selected
-        ? palettes.primary[500]
-        : color(palettes.primary[dark ? 600 : 50])
-            .alpha(0.4)
-            .toString(),
+      selected ? palettes.primary[500] : palettes.primary[dark ? 600 : 50],
     [selected, dark, palettes],
   );
 
   return (
-    <TouchableOpacity
+    <PillButton
       accessibilityRole="tab"
       accessible={true}
       accessibilityState={{
@@ -47,9 +38,6 @@ export const Tab = ({
       style={[
         {
           backgroundColor,
-          borderRadius: 10,
-          paddingHorizontal: spacing[2.5],
-          paddingVertical: spacing[1.5],
         },
         style,
       ]}
@@ -70,6 +58,6 @@ export const Tab = ({
       >
         {children}
       </Text>
-    </TouchableOpacity>
+    </PillButton>
   );
 };
