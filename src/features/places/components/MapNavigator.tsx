@@ -1,6 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import MapView, { MapViewProps } from 'react-native-maps';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -48,6 +49,8 @@ export const MapNavigator = ({
       screenOptions,
       initialRouteName,
     });
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const safeAreaInsets = useSafeAreaInsets();
   const currentRoute = descriptors[state.routes[state.index].key];
   const mapOptions = currentRoute.options?.mapOptions ?? {};
   const previousKey = state.routes[state.index - 1]?.key;
@@ -164,26 +167,40 @@ export const MapNavigator = ({
         }
       >
         <HeaderBackContext.Provider value={headerBack}>
-          <MapView style={GlobalStyles.grow} {...mapOptions}>
+          <MapView
+            style={GlobalStyles.grow}
+            mapPadding={{
+              top: headerHeight,
+              bottom: tabBarHeight,
+              left: safeAreaInsets.left,
+              right: safeAreaInsets.right,
+            }}
+            {...mapOptions}
+          >
             {currentRoute.options?.mapDefaultContent}
             {currentRoute.options?.mapContent}
           </MapView>
 
           <HeaderHeightContext.Consumer>
-            {headerHeight => (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: headerHeight,
-                  bottom: tabBarHeight,
-                  left: 0,
-                  right: 0,
-                }}
-                pointerEvents="box-none"
-              >
-                {currentRoute.render()}
-              </View>
-            )}
+            {height => {
+              if (height != null) {
+                setHeaderHeight(height);
+              }
+              return (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: height,
+                    bottom: tabBarHeight,
+                    left: 0,
+                    right: 0,
+                  }}
+                  pointerEvents="box-none"
+                >
+                  {currentRoute.render()}
+                </View>
+              );
+            }}
           </HeaderHeightContext.Consumer>
         </HeaderBackContext.Provider>
       </Screen>
@@ -201,7 +218,7 @@ const styles = StyleSheet.create({
 });
 
 export type MapNavigationOptions = NativeStackNavigationOptions & {
-  mapOptions?: Partial<MapViewProps>;
+  mapOptions?: Partial<Omit<MapViewProps, 'children'>>;
   mapContent?: JSX.Element;
   mapDefaultContent?: JSX.Element;
 };
