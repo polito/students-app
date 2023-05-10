@@ -160,6 +160,9 @@
   "contactsScreen": {
     "title": "Contatti"
   },
+  "josOffersScreen": {
+    "title": "Offerte di lavoro"
+  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
