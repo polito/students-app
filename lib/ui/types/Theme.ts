@@ -75,6 +75,7 @@ export interface Colors {
   surfaceDark: string;
   headersBackground: string;
   heading: string;
+  subHeading: string;
   prose: string;
   secondaryText: string;
   caption: string;

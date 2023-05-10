@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { Platform, ScrollView } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
+import { Col } from '@lib/ui/components/Col';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
@@ -38,21 +38,29 @@ export const CourseGuideScreen = ({ route }: Props) => {
       contentContainerStyle={{ paddingTop: spacing[6] }}
       refreshControl={<RefreshControl queries={[guideQuery]} />}
     >
-      {guideSections.map((section, i) => (
-        <Section key={i}>
-          <SectionHeader title={section.title} />
-          <Card
-            style={{
-              marginVertical: spacing[2],
-              marginHorizontal: Platform.select({ ios: spacing[4] }),
-              paddingHorizontal: spacing[5],
-              paddingVertical: spacing[5],
-            }}
-          >
-            <Text>{section.content}</Text>
-          </Card>
-        </Section>
-      ))}
+      <Section>
+        <Card
+          style={{
+            marginVertical: spacing[2],
+            marginHorizontal: Platform.select({ ios: spacing[4] }),
+            paddingHorizontal: spacing[5],
+            paddingBottom: spacing[4],
+          }}
+        >
+          {guideSections.map((section, i) => (
+            <Col key={`section.title_${i}`}>
+              <Text
+                accessible={false}
+                variant="subHeading"
+                accessibilityRole="header"
+              >
+                {section.title}
+              </Text>
+              <Text>{section.content}</Text>
+            </Col>
+          ))}
+        </Card>
+      </Section>
     </ScrollView>
   );
 };

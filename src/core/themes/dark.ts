@@ -15,6 +15,7 @@ export const darkTheme: Theme = {
     surface: lightTheme.colors.surfaceDark,
     headersBackground: '#1e3444',
     heading: lightTheme.palettes.text[50],
+    subHeading: lightTheme.palettes.orange[400],
     title: 'white',
     prose: lightTheme.palettes.text[50],
     secondaryText: lightTheme.palettes.text[400],
