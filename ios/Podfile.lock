@@ -512,7 +512,7 @@ PODS:
   - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
-  - RNSVG (13.9.0):
+  - RNSVG (13.4.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -815,7 +815,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 648356d68fbf9911a1016b3e3723885d28373eda
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
-  RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
+  RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
@@ -825,4 +825,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5cfa3f05dea392d8de2f5dfadb73a01ae9785fc2
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

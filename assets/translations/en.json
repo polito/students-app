@@ -160,6 +160,9 @@
   "contactsScreen": {
     "title": "Contacts"
   },
+  "josOffersScreen": {
+    "title": "Offers screen"
+  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
     "ctaConfirm": "Create PDF",
