@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --active-arch-only",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --scheme='students dev'",
     "start": "react-native start --reset-cache",
     "test": "jest",
     "prepare": "husky install",
