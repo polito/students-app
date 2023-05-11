@@ -294,7 +294,9 @@
     "title": "Guide"
   },
   "jobOffersScreen": {
-    "title": "Offerte di lavoro"
+    "title": "Offerte di lavoro",
+    "location": "Sede di {{location}}",
+    "endsAtDate": "Scadenza: "
   },
   "lectureScreen": {
     "courseFilesCta": "Vai al materiale del corso"

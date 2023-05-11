@@ -73,7 +73,8 @@ export const ServicesScreen = () => {
         id: 'jobOffers',
         name: t('jobOffersScreen.title'),
         icon: faBriefcase,
-        disabled: true,
+        disabled: false,
+        linkTo: { screen: 'JobOffers' },
       },
       {
         id: 'news',

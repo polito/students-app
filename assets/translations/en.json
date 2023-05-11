@@ -294,7 +294,9 @@
     "title": "Guides"
   },
   "jobOffersScreen": {
-    "title": "Job offers"
+    "title": "Job offers",
+    "location": "location of {{location}}",
+    "endsAtDate": "expiration: "
   },
   "lectureScreen": {
     "courseFilesCta": "Go to course files"
