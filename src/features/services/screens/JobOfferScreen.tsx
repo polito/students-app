@@ -61,28 +61,28 @@ export const JobOfferScreen = ({ route }: Props) => {
         </Text>
       </Card>
       <Card style={styles.card}>
-        {contractType && (
+        {!!contractType && (
           <Text style={styles.textInfo}>
             {t('jobOfferScreen.contractType', { contractType })}
           </Text>
         )}
-        {companyLocation && (
+        {!!companyLocation && (
           <Text style={styles.textInfo}>
             {t('jobOfferScreen.companyLocation', { companyLocation })}
           </Text>
         )}
-        {endsAtDate && (
+        {!!endsAtDate && (
           <Text style={styles.textInfo}>
             {t('jobOfferScreen.endsAtDate')}
             {formatDate(endsAtDate)}
           </Text>
         )}
-        {freePositions && (
+        {!!freePositions && (
           <Text style={styles.textInfo}>
             {t('jobOfferScreen.freePositions', { freePositions })}
           </Text>
         )}
-        {url && (
+        {!!url && (
           <Text variant="link" style={styles.textInfo} numberOfLines={1}>
             {t('jobOfferScreen.url')}
             <Text onPress={onPressUrl} style={styles.textLink}>
@@ -90,7 +90,7 @@ export const JobOfferScreen = ({ route }: Props) => {
             </Text>
           </Text>
         )}
-        {email && (
+        {!!email && (
           <Text style={styles.textInfo}>
             {t('jobOfferScreen.email', { email })}
           </Text>
