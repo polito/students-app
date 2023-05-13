@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
+import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
@@ -31,6 +32,9 @@ export type ServiceStackParamList = {
     statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
   };
   JobOffers: undefined;
+  JobOffer: {
+    id: number;
+  };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -114,7 +118,15 @@ export const ServicesNavigator = () => {
         name="JobOffers"
         component={JobOffersScreen}
         options={{
-          headerTitle: t('josOffersScreen.title'),
+          headerTitle: t('jobOffersScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="JobOffer"
+        component={JobOfferScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('jobOfferScreen.title'),
         }}
       />
     </Stack.Navigator>

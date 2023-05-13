@@ -35,6 +35,12 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
       title={getHtmlTextContent(jobOffer?.title)}
       titleStyle={styles.title}
       accessibilityLabel={accessibilityLabel}
+      linkTo={{
+        screen: 'JobOffer',
+        params: {
+          id: jobOffer?.id,
+        },
+      }}
       subtitle={
         <Col>
           <Text

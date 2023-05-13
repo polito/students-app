@@ -160,9 +160,6 @@
   "contactsScreen": {
     "title": "Contatti"
   },
-  "josOffersScreen": {
-    "title": "Offerte di lavoro"
-  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
@@ -297,6 +294,19 @@
     "title": "Offerte di lavoro",
     "location": "Sede di {{location}}",
     "endsAtDate": "Scadenza: "
+  },
+  "jobOfferScreen": {
+    "title": "Offerte di lavoro",
+    "contractType": "Tipo di contratto: {{contractType}}",
+    "companyLocation": "Sede di lavoro: {{companyLocation}}",
+    "contactInformation": "Informazioni: {{contactInformation}}",
+    "endsAtDate": "Scadenza: ",
+    "freePositions": "Posti disponibili: {{freePositions}}",
+    "url": "Sito web: ",
+    "email": "E-mail: {{email}}",
+    "description": "Compiti",
+    "requirements": "Requisiti",
+    "companyMission": "Mission"
   },
   "lectureScreen": {
     "courseFilesCta": "Vai al materiale del corso"
