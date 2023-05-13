@@ -45,12 +45,12 @@ export const JobOfferScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl queries={[useGetJobOfferQuery]} />}
+      refreshControl={<RefreshControl queries={[useGetJobOfferQuery]} manual />}
     >
       <Section>
         <ScreenTitle title={title ?? ''} style={styles.heading} />
       </Section>
-      <Card style={styles.card}>
+      <Card style={styles.card} accessible>
         <Text
           variant="heading"
           style={styles.location}
@@ -60,7 +60,7 @@ export const JobOfferScreen = ({ route }: Props) => {
           {companyName}
         </Text>
       </Card>
-      <Card style={styles.card}>
+      <Card accessible style={styles.card}>
         {!!contractType && (
           <Text style={styles.textInfo}>
             {t('jobOfferScreen.contractType', { contractType })}
@@ -83,7 +83,12 @@ export const JobOfferScreen = ({ route }: Props) => {
           </Text>
         )}
         {!!url && (
-          <Text variant="link" style={styles.textInfo} numberOfLines={1}>
+          <Text
+            variant="link"
+            style={styles.textInfo}
+            numberOfLines={1}
+            accessibilityRole="link"
+          >
             {t('jobOfferScreen.url')}
             <Text onPress={onPressUrl} style={styles.textLink}>
               {url}
@@ -96,7 +101,7 @@ export const JobOfferScreen = ({ route }: Props) => {
           </Text>
         )}
       </Card>
-      <Card style={styles.card}>
+      <Card style={styles.card} accessible>
         <Text
           variant="subHeading"
           style={[styles.subHeading, { marginTop: spacing[2] }]}

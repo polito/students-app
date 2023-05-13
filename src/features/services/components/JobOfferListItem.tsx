@@ -27,20 +27,31 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
   const { t } = useTranslation();
   const { accessibilityListLabel } = useAccessibility();
 
-  const accessibilityLabel = accessibilityListLabel(totalData, index);
-  // TODO: test android
+  const accessibilityLabel = accessibilityListLabel(index, totalData);
+  const location = t('jobOffersScreen.location', {
+    location: jobOffer?.location,
+  });
+  const title = getHtmlTextContent(jobOffer?.title);
+  const companyInfos = `${jobOffer?.companyName} - ${t(
+    'jobOffersScreen.endsAtDate',
+  )}${formatDate(jobOffer?.endsAtDate)}`;
 
   return (
     <ListItem
-      title={getHtmlTextContent(jobOffer?.title)}
+      title={title}
       titleStyle={styles.title}
-      accessibilityLabel={accessibilityLabel}
       linkTo={{
         screen: 'JobOffer',
         params: {
           id: jobOffer?.id,
         },
       }}
+      accessibilityLabel={[
+        accessibilityLabel,
+        title,
+        location,
+        companyInfos,
+      ].join(', ')}
       subtitle={
         <Col>
           <Text
@@ -49,15 +60,14 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {t('jobOffersScreen.location', { location: jobOffer?.location })}
+            {location}
           </Text>
           <Text
             style={styles.companyInfos}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {jobOffer?.companyName} - {t('jobOffersScreen.endsAtDate')}
-            {formatDate(jobOffer?.endsAtDate)}
+            {companyInfos}
           </Text>
         </Col>
       }
