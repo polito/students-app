@@ -291,8 +291,9 @@
     "title": "Guides"
   },
   "jobOfferScreen": {
-    "companyMission": "Mission",
-    "contactInformation": "Informations: {{contactInformation}}",
+    "application": "Application",
+     "companyMission": "Mission",
+    "contactInformation": "For information contact",
     "contractType": "Contract type: {{contractType}}",
     "description": "Description",
     "email": "E-mail: ",
@@ -300,8 +301,9 @@
     "freePositions": "Free positions: {{freePositions}}",
     "location": "Company location: {{location}}",
     "requirements": "Requirements",
+    "salary": "Salary: {{salary}}",
     "title": "Job offers",
-    "url": "Web site: "
+    "url": "Website: "
   },
   "jobOffersScreen": {
     "endsAtDate": "expiration: ",

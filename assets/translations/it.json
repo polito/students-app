@@ -291,8 +291,9 @@
     "title": "Guide"
   },
   "jobOfferScreen": {
+    "application": "Candidatura",
     "companyMission": "Mission",
-    "contactInformation": "Informazioni: {{contactInformation}}",
+    "contactInformation": "Per informazioni contattare",
     "contractType": "Tipo di contratto: {{contractType}}",
     "description": "Compiti",
     "email": "E-mail: ",
@@ -300,6 +301,7 @@
     "freePositions": "Posti disponibili: {{freePositions}}",
     "location": "Sede di lavoro: {{location}}",
     "requirements": "Requisiti",
+    "salary": "Retribuzione: {{salary}}",
     "title": "Offerte di lavoro",
     "url": "Sito web: "
   },
