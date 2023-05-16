@@ -16,7 +16,7 @@ export const JobOffersScreen = () => {
       refreshControl={<RefreshControl queries={[jobOffersQuery]} manual />}
     >
       <Section>
-        <SectionList>
+        <SectionList loading={jobOffersQuery.isLoading}>
           {jobOffersQuery?.data?.map((jobOffer, index) => (
             <JobOfferListItem
               jobOffer={jobOffer}
