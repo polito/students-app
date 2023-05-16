@@ -66,33 +66,22 @@ export const JobOfferScreen = ({ route }: Props) => {
       </Card>
       <Card accessible style={styles.card}>
         {!!contractType && (
-          <Text style={styles.textInfo}>
-            {t('jobOfferScreen.contractType', { contractType })}
-          </Text>
+          <Text>{t('jobOfferScreen.contractType', { contractType })}</Text>
         )}
         {!!location && (
-          <Text style={styles.textInfo}>
-            {t('jobOfferScreen.location', { location })}
-          </Text>
+          <Text>{t('jobOfferScreen.location', { location })}</Text>
         )}
         {!!endsAtDate && (
-          <Text style={styles.textInfo}>
+          <Text>
             {t('jobOfferScreen.endsAtDate')}
             {formatDate(endsAtDate)}
           </Text>
         )}
         {!!freePositions && (
-          <Text style={styles.textInfo}>
-            {t('jobOfferScreen.freePositions', { freePositions })}
-          </Text>
+          <Text>{t('jobOfferScreen.freePositions', { freePositions })}</Text>
         )}
         {!!url && (
-          <Text
-            variant="link"
-            style={styles.textInfo}
-            numberOfLines={1}
-            accessibilityRole="link"
-          >
+          <Text numberOfLines={1} accessibilityRole="link">
             {t('jobOfferScreen.url')}
             <Text onPress={onPressUrl} style={styles.textLink}>
               {url}
@@ -100,7 +89,7 @@ export const JobOfferScreen = ({ route }: Props) => {
           </Text>
         )}
         {!!email && (
-          <Text style={styles.textInfo}>
+          <Text>
             {t('jobOfferScreen.email')}
             <Text onPress={onPressEmail} style={styles.textLink}>
               {email}
@@ -109,36 +98,19 @@ export const JobOfferScreen = ({ route }: Props) => {
         )}
       </Card>
       <Card style={styles.card} accessible>
-        <Text
-          variant="subHeading"
-          style={[styles.subHeading, { marginTop: spacing[2] }]}
-        >
-          {t('jobOfferScreen.description')}
-        </Text>
+        <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
         <Text>{companyMission ?? ' - '}</Text>
-        <Text variant="subHeading" style={styles.subHeading}>
-          {t('jobOfferScreen.requirements')}
-        </Text>
+        <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
         <Text>{requirements ? sanitizeHtml(requirements) : ' - '}</Text>
       </Card>
     </ScrollView>
   );
 };
 
-const createStyles = ({ spacing, palettes, fontWeights }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     location: {
-      color: palettes.text[900],
       marginTop: 0,
-    },
-    subHeading: {
-      color: palettes.secondary[600],
-      fontWeight: fontWeights.bold,
-    },
-    textInfo: {
-      color: palettes.text[800],
-      fontWeight: fontWeights.normal,
-      marginBottom: spacing[2],
     },
     textLink: {
       textDecorationLine: 'underline',
@@ -150,5 +122,8 @@ const createStyles = ({ spacing, palettes, fontWeights }: Theme) =>
     card: {
       paddingHorizontal: spacing[2.5],
       paddingVertical: spacing[2],
+      display: 'flex',
+      flexDirection: 'column',
+      gap: spacing[2],
     },
   });
