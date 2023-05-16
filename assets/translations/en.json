@@ -290,23 +290,22 @@
   "guidesScreen": {
     "title": "Guides"
   },
-  "jobOffersScreen": {
-    "title": "Job offers",
-    "location": "location of {{location}}",
-    "endsAtDate": "expiration: "
-  },
   "jobOfferScreen": {
-    "title": "Job offers",
-    "contractType": "Contract type: {{contractType}}",
-    "companyLocation": "Company location: {{companyLocation}}",
+    "companyMission": "Mission",
     "contactInformation": "Informations: {{contactInformation}}",
+    "contractType": "Contract type: {{contractType}}",
+    "description": "Description",
+    "email": "E-mail: ",
     "endsAtDate": "Expiration: ",
     "freePositions": "Free positions: {{freePositions}}",
-    "url": "Web site: ",
-    "email": "E-mail: {{email}}",
-    "description": "Description",
+    "location": "Company location: {{location}}",
     "requirements": "Requirements",
-    "companyMission": "Mission"
+    "title": "Job offers",
+    "url": "Web site: "
+  },
+  "jobOffersScreen": {
+    "endsAtDate": "expiration: ",
+    "title": "Job offers"
   },
   "lectureScreen": {
     "courseFilesCta": "Go to course files"

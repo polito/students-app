@@ -28,9 +28,7 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
   const { accessibilityListLabel } = useAccessibility();
 
   const accessibilityLabel = accessibilityListLabel(index, totalData);
-  const location = t('jobOffersScreen.location', {
-    location: jobOffer?.location,
-  });
+  const location = jobOffer?.location;
   const title = getHtmlTextContent(jobOffer?.title);
   const companyInfos = `${jobOffer?.companyName} - ${t(
     'jobOffersScreen.endsAtDate',

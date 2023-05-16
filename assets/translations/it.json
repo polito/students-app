@@ -290,23 +290,22 @@
   "guidesScreen": {
     "title": "Guide"
   },
-  "jobOffersScreen": {
-    "title": "Offerte di lavoro",
-    "location": "Sede di {{location}}",
-    "endsAtDate": "Scadenza: "
-  },
   "jobOfferScreen": {
-    "title": "Offerte di lavoro",
-    "contractType": "Tipo di contratto: {{contractType}}",
-    "companyLocation": "Sede di lavoro: {{companyLocation}}",
+    "companyMission": "Mission",
     "contactInformation": "Informazioni: {{contactInformation}}",
+    "contractType": "Tipo di contratto: {{contractType}}",
+    "description": "Compiti",
+    "email": "E-mail: ",
     "endsAtDate": "Scadenza: ",
     "freePositions": "Posti disponibili: {{freePositions}}",
-    "url": "Sito web: ",
-    "email": "E-mail: {{email}}",
-    "description": "Compiti",
+    "location": "Sede di lavoro: {{location}}",
     "requirements": "Requisiti",
-    "companyMission": "Mission"
+    "title": "Offerte di lavoro",
+    "url": "Sito web: "
+  },
+  "jobOffersScreen": {
+    "endsAtDate": "Scadenza: ",
+    "title": "Offerte di lavoro"
   },
   "lectureScreen": {
     "courseFilesCta": "Vai al materiale del corso"

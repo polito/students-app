@@ -27,7 +27,7 @@ export const JobOfferScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const {
     title,
-    companyLocation,
+    location,
     companyName,
     contractType,
     endsAtDate,
@@ -40,6 +40,10 @@ export const JobOfferScreen = ({ route }: Props) => {
 
   const onPressUrl = () => {
     !!url && Linking.openURL(url);
+  };
+
+  const onPressEmail = () => {
+    !!email && Linking.openURL(`mailto:${email}`);
   };
 
   return (
@@ -66,9 +70,9 @@ export const JobOfferScreen = ({ route }: Props) => {
             {t('jobOfferScreen.contractType', { contractType })}
           </Text>
         )}
-        {!!companyLocation && (
+        {!!location && (
           <Text style={styles.textInfo}>
-            {t('jobOfferScreen.companyLocation', { companyLocation })}
+            {t('jobOfferScreen.location', { location })}
           </Text>
         )}
         {!!endsAtDate && (
@@ -97,7 +101,10 @@ export const JobOfferScreen = ({ route }: Props) => {
         )}
         {!!email && (
           <Text style={styles.textInfo}>
-            {t('jobOfferScreen.email', { email })}
+            {t('jobOfferScreen.email')}
+            <Text onPress={onPressEmail} style={styles.textLink}>
+              {email}
+            </Text>
           </Text>
         )}
       </Card>
