@@ -7,20 +7,17 @@ import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetJobOffer } from '../../../core/queries/jobOfferHooks';
 import { formatDate } from '../../../utils/dates';
-import { sanitizeHtml } from '../../../utils/html';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'JobOffer'>;
 
 export const JobOfferScreen = ({ route }: Props) => {
   const { id } = route?.params || {};
-  const { spacing } = useTheme();
   const { t } = useTranslation();
   const useGetJobOfferQuery = useGetJobOffer(id);
   const { data: jobOffer } = useGetJobOfferQuery;
@@ -54,17 +51,12 @@ export const JobOfferScreen = ({ route }: Props) => {
       <Section>
         <ScreenTitle title={title ?? ''} style={styles.heading} />
       </Section>
-      <Card style={styles.card} accessible>
-        <Text
-          variant="heading"
-          style={styles.location}
-          weight="bold"
-          numberOfLines={1}
-        >
+      <Card accessible padded>
+        <Text variant="heading" weight="bold" numberOfLines={1}>
           {companyName}
         </Text>
       </Card>
-      <Card accessible style={styles.card}>
+      <Card accessible padded gapped>
         {!!contractType && (
           <Text>{t('jobOfferScreen.contractType', { contractType })}</Text>
         )}
@@ -83,7 +75,7 @@ export const JobOfferScreen = ({ route }: Props) => {
         {!!url && (
           <Text numberOfLines={1} accessibilityRole="link">
             {t('jobOfferScreen.url')}
-            <Text onPress={onPressUrl} style={styles.textLink}>
+            <Text variant="link" onPress={onPressUrl}>
               {url}
             </Text>
           </Text>
@@ -91,17 +83,21 @@ export const JobOfferScreen = ({ route }: Props) => {
         {!!email && (
           <Text>
             {t('jobOfferScreen.email')}
-            <Text onPress={onPressEmail} style={styles.textLink}>
+            <Text variant="link" onPress={onPressEmail}>
               {email}
             </Text>
           </Text>
         )}
       </Card>
-      <Card style={styles.card} accessible>
-        <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
-        <Text>{companyMission ?? ' - '}</Text>
-        <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
-        <Text>{requirements ? sanitizeHtml(requirements) : ' - '}</Text>
+      <Card accessible padded gapped>
+        <>
+          <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
+          <Text>{companyMission ?? ' - '}</Text>
+        </>
+        <>
+          <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
+          <Text>{requirements ? requirements : ' - '}</Text>
+        </>
       </Card>
     </ScrollView>
   );
@@ -109,21 +105,8 @@ export const JobOfferScreen = ({ route }: Props) => {
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    location: {
-      marginTop: 0,
-    },
-    textLink: {
-      textDecorationLine: 'underline',
-    },
     heading: {
       paddingHorizontal: spacing[5],
       paddingTop: spacing[3],
-    },
-    card: {
-      paddingHorizontal: spacing[2.5],
-      paddingVertical: spacing[2],
-      display: 'flex',
-      flexDirection: 'column',
-      gap: spacing[2],
     },
   });
