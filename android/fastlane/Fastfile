@@ -40,13 +40,28 @@ platform :android do
   lane :release do
     android_set_version_name(version_name: ENV['APP_VERSION'])
     android_set_version_code(version_code: ENV['BUILD_NO'])
+
+    sentry_create_release(
+      app_identifier: ENV['APP_VERSION'],
+      build: ENV['BUILD_NO'],
+      finalize: true
+    )
+
     gradle(
       task: "bundleRelease",
       properties: buildProps,
     )
-    upload_to_play_store(
-      track: ENV['STORE_TRACK'],
-      release_status: "draft",
+
+     upload_to_play_store(
+       track: ENV['STORE_TRACK'],
+       release_status: "draft",
+     )
+
+    sentry_upload_sourcemap(
+      app_identifier: ENV['APP_VERSION'],
+      build: ENV['BUILD_NO'],
+      sourcemap: 'main.jsbundle.map',
+      rewrite: true
     )
   end
 

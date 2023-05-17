@@ -24,6 +24,13 @@ platform :ios do
   lane :release do
     increment_build_number(xcodeproj: "students.xcodeproj", build_number: ENV['BUILD_NO'])
     increment_version_number(xcodeproj: "students.xcodeproj", version_number: ENV['APP_VERSION'])
+
+    sentry_create_release(
+      app_identifier: ENV['APP_VERSION'],
+      build: ENV['BUILD_NO'],
+      finalize: true
+    )
+
     build_app(
       scheme: "students",
       export_method: "app-store",
@@ -37,6 +44,14 @@ platform :ios do
       submit_beta_review: false,
       apple_id: "6443913305",
     )
+
+    sentry_upload_sourcemap(
+      app_identifier: ENV['APP_VERSION'],
+      build: ENV['BUILD_NO'],
+      sourcemap: 'main.jsbundle.map',
+      rewrite: true
+    )
+
   end
 
   lane :verify do

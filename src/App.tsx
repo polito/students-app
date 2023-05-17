@@ -1,5 +1,4 @@
-import 'intl';
-import 'intl/locale-data/jsonp/en';
+import * as Sentry from '@sentry/react-native';
 
 import { AppContent } from './core/components/AppContent';
 import { ApiProvider } from './core/providers/ApiProvider';
@@ -7,19 +6,24 @@ import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { PreferencesProvider } from './core/providers/PreferencesProvider';
 import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
+import { initSentry } from './utils/sentry';
+
+initSentry();
 
 export const App = () => {
   return (
-    <SplashProvider>
-      <PreferencesProvider>
-        <UiProvider>
-          <ApiProvider>
-            <DownloadsProvider>
-              <AppContent />
-            </DownloadsProvider>
-          </ApiProvider>
-        </UiProvider>
-      </PreferencesProvider>
-    </SplashProvider>
+    <Sentry.TouchEventBoundary>
+      <SplashProvider>
+        <PreferencesProvider>
+          <UiProvider>
+            <ApiProvider>
+              <DownloadsProvider>
+                <AppContent />
+              </DownloadsProvider>
+            </ApiProvider>
+          </UiProvider>
+        </PreferencesProvider>
+      </SplashProvider>
+    </Sentry.TouchEventBoundary>
   );
 };
