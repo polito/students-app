@@ -32,6 +32,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   subtitleStyle?: StyleProp<TextStyle>;
   isAction?: boolean;
   card?: boolean;
+  inverted?: boolean;
   titleProps?: TextProps;
 }
 
@@ -55,11 +56,54 @@ export const ListItem = ({
   style,
   card,
   children,
+  inverted = false,
   titleProps,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  const titleElement =
+    typeof title === 'string' ? (
+      <Text
+        variant="title"
+        style={[
+          {
+            fontSize: fontSizes.md,
+          },
+          titleStyle,
+        ]}
+        weight="normal"
+        numberOfLines={card ? 2 : 1}
+        ellipsizeMode="tail"
+        {...titleProps}
+      >
+        {title}
+      </Text>
+    ) : (
+      title
+    );
+
+  const subtitleElement = subtitle ? (
+    typeof subtitle === 'string' ? (
+      <Text
+        variant="secondaryText"
+        style={[
+          {
+            fontSize: fontSizes.sm,
+            marginTop: spacing[0.5],
+          },
+          subtitleStyle,
+        ]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {subtitle}
+      </Text>
+    ) : (
+      subtitle
+    )
+  ) : null;
 
   return (
     <TouchableHighlight
@@ -108,45 +152,17 @@ export const ListItem = ({
           </View>
         )}
         <View style={GlobalStyles.grow}>
-          {typeof title === 'string' ? (
-            <Text
-              variant="title"
-              style={[
-                {
-                  fontSize: fontSizes.md,
-                },
-                titleStyle,
-              ]}
-              weight="normal"
-              numberOfLines={card ? 2 : 1}
-              ellipsizeMode="tail"
-              {...titleProps}
-            >
-              {title}
-            </Text>
+          {!inverted ? (
+            <>
+              {titleElement}
+              {subtitleElement}
+            </>
           ) : (
-            title
+            <>
+              {subtitleElement}
+              {titleElement}
+            </>
           )}
-          {subtitle ? (
-            typeof subtitle === 'string' ? (
-              <Text
-                variant="secondaryText"
-                style={[
-                  {
-                    fontSize: fontSizes.sm,
-                    marginTop: spacing[0.5],
-                  },
-                  subtitleStyle,
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {subtitle}
-              </Text>
-            ) : (
-              subtitle
-            )
-          ) : null}
         </View>
         {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (

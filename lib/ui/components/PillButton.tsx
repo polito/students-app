@@ -37,6 +37,7 @@ const createStyles = ({ palettes, spacing, fontWeights }: Theme) =>
       paddingVertical: spacing[1.5],
     },
     text: {
+      color: 'white',
       fontWeight: fontWeights.medium,
     },
   });

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { TextProps } from 'react-native';
 
-import { PillButton, PillButtonProps } from '@lib/ui/components/Pill';
+import { PillButton, PillButtonProps } from '@lib/ui/components/PillButton';
 
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';

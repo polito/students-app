@@ -1,6 +1,6 @@
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
-import { PillButton, PillButtonProps } from '@lib/ui/components/Pill';
+import { PillButton, PillButtonProps } from '@lib/ui/components/PillButton';
 import { Row } from '@lib/ui/components/Row';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 

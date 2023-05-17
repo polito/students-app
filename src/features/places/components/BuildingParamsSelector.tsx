@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 import {
   faArrowsUpDown,
   faChevronDown,
-  faSchool,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
@@ -25,20 +24,20 @@ export const BuildingParamsSelector = () => {
 
   return (
     <Row gap={3} style={styles.container}>
-      <MenuView
-        actions={
-          sites?.data.map(site => ({
-            title: site.name,
-            subtitle: site.city,
-          })) ?? []
-        }
-      >
-        <TranslucentButton gap={2}>
-          <Icon icon={faSchool} />
-          <Text>{t('common.campus')}</Text>
-          <Icon icon={faChevronDown} size={fontSizes.xs} />
-        </TranslucentButton>
-      </MenuView>
+      {/* <MenuView*/}
+      {/*  actions={*/}
+      {/*    sites?.data.map(site => ({*/}
+      {/*      title: site.name,*/}
+      {/*      subtitle: site.city,*/}
+      {/*    })) ?? []*/}
+      {/*  }*/}
+      {/* >*/}
+      {/*  <TranslucentButton gap={2}>*/}
+      {/*    <Icon icon={faSchool} />*/}
+      {/*    <Text>{t('common.campus')}</Text>*/}
+      {/*    <Icon icon={faChevronDown} size={fontSizes.xs} />*/}
+      {/*  </TranslucentButton>*/}
+      {/* </MenuView>*/}
       <MenuView
         actions={[
           {
@@ -62,11 +61,11 @@ export const BuildingParamsSelector = () => {
   );
 };
 
-const createStyles = ({ spacing, shapes }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
       position: 'absolute',
-      bottom: spacing[5],
+      bottom: 86,
       right: spacing[5],
     },
   });

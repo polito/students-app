@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
+import { UrlTile } from 'react-native-maps';
 
 import { Divider } from '@lib/ui/components/Divider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -9,7 +10,6 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { PlaceCategoryScreen } from '../screens/PlaceCategoryScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
-import { PlacesSearchScreen } from '../screens/PlacesSearchScreen';
 import { createMapNavigator } from './MapNavigator';
 
 export type PlacesStackParamList = {
@@ -20,12 +20,6 @@ export type PlacesStackParamList = {
   Place: {
     placeId: string;
   };
-  PlacesSearch: {
-    categoryId?: string;
-    siteId?: string;
-    floorId?: string;
-    buildingId?: string;
-  };
   PlaceCategories: undefined;
 };
 
@@ -34,6 +28,7 @@ const Map = createMapNavigator<PlacesStackParamList>();
 export const PlacesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const colorScheme = useColorScheme();
 
   return (
     <Map.Navigator
@@ -58,36 +53,39 @@ export const PlacesNavigator = () => {
             longitudeDelta: 0.01,
           },
           onRegionChangeComplete(region, details) {
-            console.debug(
-              'Zoom level',
-              Math.round(
-                Math.log2(
-                  360 *
-                    (Dimensions.get('screen').width /
-                      256 /
-                      region.longitudeDelta),
-                ) + 1,
-              ),
-            );
+            // console.debug(
+            //   'Zoom level',
+            //   Math.round(
+            //     Math.log2(
+            //       360 *
+            //         (Dimensions.get('screen').width /
+            //           256 /
+            //           region.longitudeDelta),
+            //     ) + 1,
+            //   ),
+            // );
           },
+          maxZoomLevel: 24,
+          showsUserLocation: true,
         },
-        // mapDefaultContent: (
-        //   <>
-        //      <UrlTile
-        //       urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        //       shouldReplaceMapContent={true}
-        //       maximumZ={20}
-        //       tileCachePath={[TemporaryDirectoryPath, 'map-tiles'].join('/')}
-        //     / >
-        //     <UrlTile
-        //       urlTemplate="http://192.168.1.141:3000/{z}/{x}/{y}.png"
-        //       tileCachePath={[TemporaryDirectoryPath, 'interior-tiles'].join(
-        //         '/',
-        //       )}
-        //       minimumZ={16}
-        //     />
-        //   </>
-        // ),
+        mapDefaultContent: (
+          <>
+            {/* <UrlTile*/}
+            {/*  urlTemplate="https://tiles.openstreetmap.com/{z}/{x}/{y}.png"*/}
+            {/*  shouldReplaceMapContent={true}*/}
+            {/*  maximumNativeZ={20}*/}
+            {/*  // tileCachePath={[TemporaryDirectoryPath, 'map-tiles'].join('/')}*/}
+            {/*/ >*/}
+            <UrlTile
+              urlTemplate={`http://192.168.8.104:3000/${colorScheme}/{z}/{x}/{y}.png`}
+              // tileCachePath={[TemporaryDirectoryPath, 'interior-tiles3'].join(
+              //   '/',
+              // )}
+              maximumNativeZ={21}
+              minimumZ={17}
+            />
+          </>
+        ),
         ...titlesStyles(theme),
       }}
     >
@@ -100,22 +98,14 @@ export const PlacesNavigator = () => {
         name="PlaceCategory"
         component={PlaceCategoryScreen}
         options={{
-          title: t('placeCategoryScreen.title'),
+          title: 'Classrooms', // t('placeCategoryScreen.title'),
         }}
       />
       <Map.Screen
         name="Place"
         component={PlaceScreen}
         options={{
-          title: t('placeScreen.title'),
-        }}
-      />
-      <Map.Screen
-        name="PlacesSearch"
-        component={PlacesSearchScreen}
-        options={{
-          title: t('common.search'),
-          headerBackTitleVisible: false,
+          title: 'Aula 1', // t('placeScreen.title'),
         }}
       />
     </Map.Navigator>

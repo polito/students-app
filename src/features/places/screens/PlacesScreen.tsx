@@ -1,39 +1,38 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { View } from 'react-native';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
-import { faEllipsis, faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { BottomSheet } from '@lib/ui/components/BottomSheet';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { PillButton } from '@lib/ui/components/Pill';
+import { PillButton } from '@lib/ui/components/PillButton';
 import { Row } from '@lib/ui/components/Row';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { BuildingParamsSelector } from '../components/BuildingParamsSelector';
+import { CampusSelector } from '../components/CampusSelector';
 import { MapScreenProps } from '../components/MapNavigator';
-import { PlacesMarkers } from '../components/PlacesMarkers';
+import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { SearchHeaderCta } from '../components/SearchHeaderCta';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation }: Props) => {
-  const { fontSizes } = useTheme();
   const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => <HeaderLogo ml={5} />,
-      headerRight: () => <SearchHeaderCta />,
-      mapContent: <PlacesMarkers />,
+      headerRight: () => <CampusSelector />,
+      // mapContent: <PlacesMarkers />,
     });
   }, [navigation]);
+
+  useEffect(() => {
+    request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+  }, []);
 
   return (
     <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -83,14 +82,16 @@ export const PlacesScreen = ({ navigation }: Props) => {
 
       <BuildingParamsSelector />
 
-      <BottomSheet
-        index={categoriesPanelOpen ? 0 : -1}
+      <PlacesBottomSheet index={0} listProps={{ data: [{ title: 'Test' }] }} />
+
+      <PlacesBottomSheet
+        enablePanDownToClose={true}
         snapPoints={['100%']}
-        enablePanDownToClose
+        index={categoriesPanelOpen ? 0 : -1}
         onClose={() => setCategoriesPanelOpen(false)}
-      >
-        <BottomSheetFlatList
-          data={[
+        textFieldProps={{ label: 'Search categories' }}
+        listProps={{
+          data: [
             {
               title: 'Classrooms',
             },
@@ -109,22 +110,9 @@ export const PlacesScreen = ({ navigation }: Props) => {
             {
               title: 'Restaurants',
             },
-          ]}
-          renderItem={({ item }) => (
-            <ListItem
-              title={item.title}
-              leadingItem={
-                <Icon icon={faLocationDot} size={fontSizes['2xl']} />
-              }
-              linkTo={{
-                screen: 'PlaceCategory',
-                params: { categoryId: 1 },
-              }}
-            />
-          )}
-          ItemSeparatorComponent={IndentedDivider}
-        />
-      </BottomSheet>
+          ],
+        }}
+      />
     </View>
   );
 };

@@ -1,5 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 
@@ -19,7 +21,9 @@ export const App = () => {
           <UiProvider>
             <ApiProvider>
               <DownloadsProvider>
-                <AppContent />
+                <BottomSheetModalProvider>
+                  <AppContent />
+                </BottomSheetModalProvider>
               </DownloadsProvider>
             </ApiProvider>
           </UiProvider>

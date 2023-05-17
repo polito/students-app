@@ -1,5 +1,6 @@
 import { Platform, View, ViewProps } from 'react-native';
 
+import { IS_IOS } from '../../../src/core/constants';
 import { useTheme } from '../hooks/useTheme';
 
 export type CardProps = ViewProps & {
@@ -12,6 +13,12 @@ export type CardProps = ViewProps & {
    * Toggles the outer spacing
    */
   spaced?: boolean;
+
+  /**
+   * If true, uses a semi-transparent background
+   * for use on translucent surfaces
+   */
+  translucent?: boolean;
 };
 
 /**
@@ -21,6 +28,7 @@ export type CardProps = ViewProps & {
 export const Card = ({
   children,
   style,
+  translucent = false,
   spaced = Platform.select({ ios: true, android: false }),
   rounded = Platform.select({ ios: true, android: false }),
   ...rest
@@ -32,7 +40,8 @@ export const Card = ({
       style={[
         {
           borderRadius: rounded ? shapes.lg : undefined,
-          backgroundColor: colors.surface,
+          backgroundColor:
+            IS_IOS && translucent ? colors.translucentSurface : colors.surface,
           elevation: 2,
           marginHorizontal: spaced ? spacing[5] : undefined,
           marginVertical: spaced ? spacing[2] : undefined,
