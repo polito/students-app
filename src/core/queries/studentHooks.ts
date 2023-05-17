@@ -1,4 +1,5 @@
 import { ExamGrade, Student, StudentApi } from '@polito/api-client';
+import * as Sentry from '@sentry/react-native';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
@@ -41,6 +42,14 @@ export const useGetStudent = () => {
           return s;
         }),
     {
+      onSuccess: async data => {
+        Sentry.setTag('student_degree_code', data.degreeCode);
+        Sentry.setTag('student_status', data.status);
+        Sentry.setTag(
+          'student_is_currently_enrolled',
+          data.isCurrentlyEnrolled,
+        );
+      },
       staleTime: Infinity,
     },
   );
