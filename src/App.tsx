@@ -1,5 +1,3 @@
-import DeviceInfo from 'react-native-device-info';
-
 import * as Sentry from '@sentry/react-native';
 
 import { AppContent } from './core/components/AppContent';
@@ -11,13 +9,6 @@ import { UiProvider } from './core/providers/UiProvider';
 import { initSentry } from './utils/sentry';
 
 initSentry();
-
-Sentry.init({
-  // dsn: 'https://6b860b219cbe49daa89a10a5d20f4d79@sentry.k8s.polito.it/2',
-  enabled: process.env.NODE_ENV === 'production',
-  dist: DeviceInfo.getBuildNumber(),
-  release: DeviceInfo.getVersion(),
-});
 
 export const App = () => {
   return (
