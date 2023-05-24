@@ -154,8 +154,6 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
-    fastlane-plugin-properties (1.1.2)
-      java-properties
     fastlane-plugin-sentry (1.15.0)
       os (~> 1.1, >= 1.1.4)
     ffi (1.15.5)
@@ -206,7 +204,6 @@ GEM
     httpclient (2.8.3)
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
-    java-properties (0.3.0)
     jmespath (1.6.2)
     json (2.6.3)
     jwt (2.7.0)
@@ -282,7 +279,6 @@ PLATFORMS
 DEPENDENCIES
   cocoapods (~> 1.11, >= 1.11.2)
   fastlane
-  fastlane-plugin-properties
   fastlane-plugin-sentry
 
 RUBY VERSION
