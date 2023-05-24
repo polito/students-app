@@ -41,9 +41,9 @@ platform :android do
     android_set_version_name(version_name: ENV['APP_VERSION'])
     android_set_version_code(version_code: ENV['BUILD_NO'])
 
-    app_identifier = get_info_plist_value(path: "./Info.plist", key: "CFBundleIdentifier")
+    app_identifier = ENV['SUPPLY_PACKAGE_NAME'];
 
-    sentry_properties = parse_properties_file(path: "../sentry.properties")
+    sentry_properties = parse_properties_file(path: "./sentry.properties")
 
     sentry_create_release(
       auth_token: sentry_properties["auth.token"],
@@ -66,7 +66,11 @@ platform :android do
      )
 
     sentry_upload_sourcemap(
-      app_identifier: ENV['APP_VERSION'],
+      auth_token: sentry_properties["auth.token"],
+      org_slug: sentry_properties["defaults.org"],
+      project_slug: sentry_properties["defaults.project"],
+      app_identifier: app_identifier,
+      version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
       sourcemap: 'main.jsbundle.map',
       rewrite: true
