@@ -51,15 +51,6 @@ platform :android do
        release_status: "draft",
      )
 
-    sentry_upload_sourcemap(
-      auth_token: ENV['SENTRY_AUTH_TOKEN'],
-      org_slug: ENV['SENTRY_ORG'],
-      project_slug: ENV['SENTRY_PROJECT'],
-      version: ENV['APP_VERSION'],
-      build: ENV['BUILD_NO'],
-      sourcemap: 'main.jsbundle.map',
-      rewrite: true
-    )
   end
 
   desc "Assemble signed Android APK"
