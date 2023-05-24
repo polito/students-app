@@ -41,18 +41,6 @@ platform :android do
     android_set_version_name(version_name: ENV['APP_VERSION'])
     android_set_version_code(version_code: ENV['BUILD_NO'])
 
-    app_identifier = ENV['SUPPLY_PACKAGE_NAME'];
-
-    sentry_create_release(
-      auth_token: ENV['SENTRY_AUTH_TOKEN'],
-      org_slug: ENV['SENTRY_ORG'],
-      project_slug: ENV['SENTRY_PROJECT'],
-      app_identifier: app_identifier,
-      version: ENV['APP_VERSION'],
-      build: ENV['BUILD_NO'],
-      finalize: true
-    )
-
     gradle(
       task: "bundleRelease",
       properties: buildProps,
@@ -67,7 +55,6 @@ platform :android do
       auth_token: ENV['SENTRY_AUTH_TOKEN'],
       org_slug: ENV['SENTRY_ORG'],
       project_slug: ENV['SENTRY_PROJECT'],
-      app_identifier: app_identifier,
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
       sourcemap: 'main.jsbundle.map',
