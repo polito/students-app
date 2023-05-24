@@ -26,9 +26,9 @@ platform :ios do
     increment_version_number(xcodeproj: "students.xcodeproj", version_number: ENV['APP_VERSION'])
 
     sentry_create_release(
-      app_identifier: ENV['APP_VERSION'],
-      build: ENV['BUILD_NO'],
-      finalize: true
+          version: ENV['APP_VERSION'],
+          build: ENV['BUILD_NO'],
+          finalize: true
     )
 
     build_app(

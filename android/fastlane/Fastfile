@@ -42,7 +42,7 @@ platform :android do
     android_set_version_code(version_code: ENV['BUILD_NO'])
 
     sentry_create_release(
-      app_identifier: ENV['APP_VERSION'],
+      version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
       finalize: true
     )
