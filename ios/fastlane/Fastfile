@@ -25,18 +25,6 @@ platform :ios do
     increment_build_number(xcodeproj: "students.xcodeproj", build_number: ENV['BUILD_NO'])
     increment_version_number(xcodeproj: "students.xcodeproj", version_number: ENV['APP_VERSION'])
 
-    app_identifier = get_info_plist_value(path: "./students/Info.plist", key: "CFBundleIdentifier")
-
-    sentry_create_release(
-      auth_token: ENV['SENTRY_AUTH_TOKEN'],
-      org_slug: ENV['SENTRY_ORG'],
-      project_slug: ENV['SENTRY_PROJECT'],
-      app_identifier: app_identifier,
-      version: ENV['APP_VERSION'],
-      build: ENV['BUILD_NO'],
-      finalize: true
-    )
-
     build_app(
       scheme: "students",
       export_method: "app-store",
@@ -56,7 +44,6 @@ platform :ios do
       auth_token: ENV['SENTRY_AUTH_TOKEN'],
       org_slug: ENV['SENTRY_ORG'],
       project_slug: ENV['SENTRY_PROJECT'],
-      app_identifier: app_identifier,
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
       sourcemap: 'main.jsbundle.map',
