@@ -1,6 +1,7 @@
 [defaults]
 url = https://sentry.k8s.polito.it
 project = 2
+org = polito
 
 [auth]
 token=2522cbe3acb743d1835971ccb0cb46937de08504af00421ea7ce042c48e25beb
