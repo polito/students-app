@@ -140,8 +140,6 @@ jobs:
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
-      SENTRY_DIST: ${{ needs.configure.outputs.build_no }}
-      SENTRY_RELEASE: ${{ needs.configure.outputs.version }}
       SUPPLY_GOOGLE_JSON_PATH: './pc-api-secret.json'
       KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PW }}
       KEYSTORE_PATH: './keystore.jks'
@@ -221,8 +219,6 @@ jobs:
       FASTLANE_USERNAME: ${{ secrets.FASTLANE_POLI_MOBILE_USER }}
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
-      SENTRY_DIST: ${{ needs.configure.outputs.build_no }}
-      SENTRY_RELEASE: ${{ needs.configure.outputs.version }}
     needs: configure
     runs-on: [self-hosted, macos-12]
     steps:

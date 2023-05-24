@@ -25,10 +25,18 @@ platform :ios do
     increment_build_number(xcodeproj: "students.xcodeproj", build_number: ENV['BUILD_NO'])
     increment_version_number(xcodeproj: "students.xcodeproj", version_number: ENV['APP_VERSION'])
 
+    app_identifier = ENV['SUPPLY_PACKAGE_NAME']
+
+    sentry_properties = parse_properties_file(path: "../sentry.properties")
+
     sentry_create_release(
-          version: ENV['APP_VERSION'],
-          build: ENV['BUILD_NO'],
-          finalize: true
+      auth_token: sentry_properties["auth.token"],
+      org_slug: sentry_properties["defaults.org"],
+      project_slug: sentry_properties["defaults.project"],
+      app_identifier: app_identifier,
+      version: ENV['APP_VERSION'],
+      build: ENV['BUILD_NO'],
+      finalize: true
     )
 
     build_app(
@@ -38,6 +46,7 @@ platform :ios do
       output_directory: "./build",
       silent: true,
     )
+
     upload_to_testflight(
       skip_submission: true,
       skip_waiting_for_build_processing: true,
@@ -46,7 +55,11 @@ platform :ios do
     )
 
     sentry_upload_sourcemap(
-      app_identifier: ENV['APP_VERSION'],
+      auth_token: sentry_properties["auth.token"],
+      org_slug: sentry_properties["defaults.org"],
+      project_slug: sentry_properties["defaults.project"],
+      app_identifier: app_identifier,
+      version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
       sourcemap: 'main.jsbundle.map',
       rewrite: true
