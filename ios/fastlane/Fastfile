@@ -27,12 +27,10 @@ platform :ios do
 
     app_identifier = get_info_plist_value(path: "./students/Info.plist", key: "CFBundleIdentifier")
 
-    sentry_properties = parse_properties_file(path: "./sentry.properties")
-
     sentry_create_release(
-      auth_token: sentry_properties["auth.token"],
-      org_slug: sentry_properties["defaults.org"],
-      project_slug: sentry_properties["defaults.project"],
+      auth_token: ENV['SENTRY_AUTH_TOKEN'],
+      org_slug: ENV['SENTRY_ORG'],
+      project_slug: ENV['SENTRY_PROJECT'],
       app_identifier: app_identifier,
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
@@ -55,9 +53,9 @@ platform :ios do
     )
 
     sentry_upload_sourcemap(
-      auth_token: sentry_properties["auth.token"],
-      org_slug: sentry_properties["defaults.org"],
-      project_slug: sentry_properties["defaults.project"],
+      auth_token: ENV['SENTRY_AUTH_TOKEN'],
+      org_slug: ENV['SENTRY_ORG'],
+      project_slug: ENV['SENTRY_PROJECT'],
       app_identifier: app_identifier,
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],

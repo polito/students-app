@@ -1,6 +1,6 @@
 [defaults]
 url = https://sentry.k8s.polito.it
-project = 2
+project = students-app
 org = polito
 
 [auth]
