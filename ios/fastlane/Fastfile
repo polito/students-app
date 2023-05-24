@@ -25,9 +25,9 @@ platform :ios do
     increment_build_number(xcodeproj: "students.xcodeproj", build_number: ENV['BUILD_NO'])
     increment_version_number(xcodeproj: "students.xcodeproj", version_number: ENV['APP_VERSION'])
 
-    app_identifier = ENV['SUPPLY_PACKAGE_NAME']
+    app_identifier = get_info_plist_value(path: "./students/Info.plist", key: "CFBundleIdentifier")
 
-    sentry_properties = parse_properties_file(path: "../sentry.properties")
+    sentry_properties = parse_properties_file(path: "./sentry.properties")
 
     sentry_create_release(
       auth_token: sentry_properties["auth.token"],
