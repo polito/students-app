@@ -346,8 +346,10 @@
   },
   "newsScreen": {
     "title": "Avvisi & News",
-    "createdAt": "Pubblicto il ",
-    "information": "Informazioni"
+    "createdAt": "Pubblicato il ",
+    "information": "Informazioni",
+    "eventStartTime": "Inicio evento",
+    "logo": "Logo"
   },
   "notifications": {
     "events": "Eventi e iniziative",

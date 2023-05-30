@@ -345,7 +345,11 @@
     "takePhotoHint": "Take one or more photos and generate a file"
   },
   "newsScreen": {
-    "title": "News & Events"
+    "title": "News & Events",
+    "createdAt": "Published on ",
+    "information": "Information",
+    "eventStartTime": "Starts on ",
+    "logo": "Logo"
   },
   "notifications": {
     "events": "Events",
