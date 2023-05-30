@@ -345,7 +345,9 @@
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "newsScreen": {
-    "title": "News & Eventi"
+    "title": "Avvisi & News",
+    "createdAt": "Pubblicto il ",
+    "information": "Informazioni"
   },
   "notifications": {
     "events": "Eventi e iniziative",
