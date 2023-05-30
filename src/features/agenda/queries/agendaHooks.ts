@@ -11,14 +11,15 @@ import { Exam } from '../../../core/types/api';
 import { formatMachineDate, formatTime } from '../../../utils/dates';
 import { popPage, prefixKey, shiftPage } from '../../../utils/queries';
 import { AgendaDay } from '../types/AgendaDay';
-import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import {
+  ALL_AGENDA_TYPES,
   AgendaItem,
   BookingItem,
   DeadlineItem,
   ExamItem,
   LectureItem,
 } from '../types/AgendaItem';
+import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { useGetLectureWeeks } from './lectureHooks';
 
@@ -151,7 +152,7 @@ const groupItemsByDay = (
 
 export const useGetAgendaWeeks = (
   coursesPreferences: CoursesPreferences,
-  filters: AgendaFiltersState,
+  filters: AgendaTypesFilterState,
 ) => {
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
@@ -162,8 +163,18 @@ export const useGetAgendaWeeks = (
 
   const thisMonday = DateTime.now().startOf('week');
 
+  const filtersCount = Object.values(filters).filter(f => f).length;
+
+  const queryFilters = Object.create(filters);
+
+  if (!filtersCount) {
+    ALL_AGENDA_TYPES.forEach(f => {
+      queryFilters[f] = true;
+    });
+  }
+
   return useInfiniteQuery<AgendaWeek>(
-    prefixKey([AGENDA_QUERY_KEY, JSON.stringify(filters)]),
+    prefixKey([AGENDA_QUERY_KEY, JSON.stringify(queryFilters)]),
     async ({ pageParam = thisMonday }: { pageParam?: DateTime }) => {
       const until = pageParam.plus(oneWeek);
 
@@ -173,7 +184,7 @@ export const useGetAgendaWeeks = (
       let exams: Exam[] = [],
         bookings: Booking[] = [];
 
-      if (filters.exam) {
+      if (queryFilters.exam) {
         exams = examsQuery.data!.filter(
           e =>
             e.examStartsAt &&
@@ -182,7 +193,7 @@ export const useGetAgendaWeeks = (
         );
       }
 
-      if (filters.booking) {
+      if (queryFilters.booking) {
         bookings = bookingsQuery.data!.filter(
           b => b.startsAt && b.startsAt > jsSince && b.startsAt < jsUntil,
         );
@@ -195,10 +206,10 @@ export const useGetAgendaWeeks = (
         // Retrieve a week back in time.
         // May cause an API call if data are not cached
         [lectures, deadlines] = await Promise.all([
-          filters.lecture
+          queryFilters.lecture
             ? lecturesQuery.fetchPreviousPage({ pageParam }).then(shiftPage)
             : [],
-          filters.deadline
+          queryFilters.deadline
             ? deadlinesQuery.fetchPreviousPage({ pageParam }).then(shiftPage)
             : [],
         ]);
@@ -206,20 +217,20 @@ export const useGetAgendaWeeks = (
         // Retrieve a week forward in time.
         // May cause an API call if data are not cached
         [lectures, deadlines] = await Promise.all([
-          filters.lecture
+          queryFilters.lecture
             ? lecturesQuery.fetchNextPage({ pageParam }).then(popPage)
             : [],
-          filters.deadline
+          queryFilters.deadline
             ? deadlinesQuery.fetchNextPage({ pageParam }).then(popPage)
             : [],
         ]);
       } else {
         // First page is already fetched, EZ
-        if (filters.lecture) {
+        if (queryFilters.lecture) {
           lectures = shiftPage(lecturesQuery);
         }
 
-        if (filters.deadline) {
+        if (queryFilters.deadline) {
           deadlines = shiftPage(deadlinesQuery);
         }
       }

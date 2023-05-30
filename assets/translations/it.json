@@ -37,6 +37,7 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
@@ -78,6 +79,8 @@
     "en": "Inglese",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
+    "event": "Evento",
+    "event_plural": "Eventi",
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",

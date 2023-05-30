@@ -27,14 +27,14 @@ import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
 import { prefixKey, prefixKeys } from '../../../utils/queries';
+import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
-import { AgendaTabs } from '../components/AgendaTabs';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
 import { AGENDA_QUERY_KEY, useGetAgendaWeeks } from '../queries/agendaHooks';
 import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
-import { AgendaFiltersState } from '../types/AgendaFiltersState';
-import { AgendaItemTypes } from '../types/AgendaItem';
+import { AgendaItemType } from '../types/AgendaItem';
 import { AgendaState } from '../types/AgendaState';
+import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
@@ -46,14 +46,16 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const { courses: coursesPreferences } = usePreferencesContext();
   const client = useQueryClient();
 
-  const [filters, setFilters] = useState<AgendaFiltersState>({
-    booking: true,
-    deadline: true,
-    exam: true,
-    lecture: true,
+  const [filters, setFilters] = useState<AgendaTypesFilterState>({
+    booking: false,
+    deadline: false,
+    exam: false,
+    lecture: false,
   });
 
-  const toggleFilter = (type: AgendaItemTypes) =>
+  useEffect(() => {}, [filters]);
+
+  const toggleFilter = (type: AgendaItemType) =>
     setFilters(prev => ({ ...prev, [type]: !prev[type] }));
 
   const refreshQueries = () => {
@@ -74,6 +76,10 @@ export const AgendaScreen = ({ navigation }: Props) => {
     {
       id: 'refresh',
       title: t('agendaScreen.refresh'),
+    },
+    {
+      id: 'weekly',
+      title: t('agendaScreen.weekly'),
     },
   ];
 
@@ -152,8 +158,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   useLayoutEffect(() => {
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      if (event === 'refresh') {
-        refreshQueries();
+      // eslint-disable-next-line default-case
+      switch (event) {
+        case 'weekly':
+          navigation.navigate('AgendaWeek');
+          break;
+        case 'refresh':
+          refreshQueries();
+          break;
       }
     };
 
@@ -191,7 +203,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   return (
     <View style={styles.container}>
-      <AgendaTabs state={filters} toggleState={toggleFilter} />
+      <AgendaFilters state={filters} toggleState={toggleFilter} />
       {!data || agendaState.isRefreshing ? (
         <ActivityIndicator style={styles.activityIndicator} size="large" />
       ) : (
