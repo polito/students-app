@@ -62,7 +62,6 @@ const createStyles = ({ spacing, fontSizes, fontWeights, palettes }: Theme) =>
     subtitle: {
       color: palettes.text['500'],
       fontWeight: fontWeights.normal,
-      textTransform: 'capitalize',
       fontSize: fontSizes.sm,
       marginTop: spacing[0.5],
     },
