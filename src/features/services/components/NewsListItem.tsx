@@ -9,7 +9,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { NewsItemOverview } from '@polito/api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { formatDateFromString } from '../../../utils/dates';
+import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 
 interface Props {
@@ -26,10 +26,8 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(newsItem?.title);
   const shortDescription = getHtmlTextContent(newsItem?.shortDescription);
-  const eventStartTime = formatDateFromString(newsItem?.eventStartTime);
-  const subTitle = `${
-    eventStartTime ? eventStartTime + ' - ' : ''
-  }${shortDescription}`;
+  const createdAt = formatDate(newsItem.createdAt);
+  const subTitle = `${createdAt} - ${shortDescription}`;
 
   return (
     <ListItem
