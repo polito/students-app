@@ -123,29 +123,27 @@ export const NewsItemScreen = ({ route }: Props) => {
                   </Text>
                 </Row>
               )}
-              <Col style={{ marginTop: spacing[1] }}>
-                {links?.map((link, index) => (
-                  <TouchableHighlight
-                    underlayColor={colors.touchableHighlight}
-                    onPress={() => Linking.openURL(link.url)}
-                    key={index}
-                    accessible
-                    accessibilityRole="link"
-                    style={styles.infoRow}
-                  >
-                    <Row align="center">
-                      <Icon
-                        icon={link.type === 'link' ? faInfoCircle : faFileAlt}
-                        style={styles.iconCalendar}
-                        color={palettes.secondary[600]}
-                      />
-                      <Text weight="normal" variant="link" style={styles.link}>
-                        {link.description}
-                      </Text>
-                    </Row>
-                  </TouchableHighlight>
-                ))}
-              </Col>
+              {links?.map((link, index) => (
+                <TouchableHighlight
+                  underlayColor={colors.touchableHighlight}
+                  onPress={() => Linking.openURL(link.url)}
+                  key={index}
+                  accessible
+                  accessibilityRole="link"
+                  style={styles.infoRow}
+                >
+                  <Row align="center">
+                    <Icon
+                      icon={link.type === 'link' ? faInfoCircle : faFileAlt}
+                      style={styles.iconCalendar}
+                      color={palettes.secondary[600]}
+                    />
+                    <Text weight="normal" variant="link" style={styles.link}>
+                      {link.description}
+                    </Text>
+                  </Row>
+                </TouchableHighlight>
+              ))}
             </Col>
           </Card>
         </>
