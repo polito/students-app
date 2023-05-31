@@ -1,5 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, ScrollView, StyleSheet } from 'react-native';
+import {
+  Linking,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { Document } from 'react-native-render-html';
 
@@ -34,7 +39,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'NewsItem'>;
 
 export const NewsItemScreen = ({ route }: Props) => {
   const { id } = route?.params || {};
-  const { palettes, spacing } = useTheme();
+  const { palettes, spacing, colors } = useTheme();
   const { t } = useTranslation();
   const useNewsItemQuery = useGetNewsItem(id);
   const { data: newsItem, isLoading } = useNewsItemQuery;
@@ -118,30 +123,29 @@ export const NewsItemScreen = ({ route }: Props) => {
                   </Text>
                 </Row>
               )}
-              {links?.map((link, index) => (
-                <Pressable
-                  onPress={() => Linking.openURL(link.url)}
-                  key={index}
-                  accessible
-                  accessibilityRole="link"
-                >
-                  <Row style={styles.infoRow}>
-                    <Icon
-                      icon={link.type === 'link' ? faInfoCircle : faFileAlt}
-                      style={styles.iconCalendar}
-                      color={palettes.secondary[600]}
-                    />
-                    <Text
-                      numberOfLines={1}
-                      weight="normal"
-                      variant="link"
-                      style={styles.link}
-                    >
-                      {link.description}
-                    </Text>
-                  </Row>
-                </Pressable>
-              ))}
+              <Col style={{ marginTop: spacing[1] }}>
+                {links?.map((link, index) => (
+                  <TouchableHighlight
+                    underlayColor={colors.touchableHighlight}
+                    onPress={() => Linking.openURL(link.url)}
+                    key={index}
+                    accessible
+                    accessibilityRole="link"
+                    style={styles.infoRow}
+                  >
+                    <Row align="center">
+                      <Icon
+                        icon={link.type === 'link' ? faInfoCircle : faFileAlt}
+                        style={styles.iconCalendar}
+                        color={palettes.secondary[600]}
+                      />
+                      <Text weight="normal" variant="link" style={styles.link}>
+                        {link.description}
+                      </Text>
+                    </Row>
+                  </TouchableHighlight>
+                ))}
+              </Col>
             </Col>
           </Card>
         </>
@@ -158,7 +162,7 @@ const createStyles = ({ spacing }: Theme) =>
     },
     infoRow: {
       marginVertical: spacing[1],
-      paddingVertical: spacing[1],
+      paddingVertical: spacing[2],
     },
     iconCalendar: {
       marginRight: spacing[2],
