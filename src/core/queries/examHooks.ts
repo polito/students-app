@@ -27,6 +27,11 @@ export const useGetExams = () => {
           isTimeToBeDefined:
             exam.examStartsAt !== null && exam.examStartsAt.getHours() === 0,
         })),
+      )
+      .then(exams =>
+        exams.sort(
+          (a, b) => a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf(),
+        ),
       ),
   );
 };
