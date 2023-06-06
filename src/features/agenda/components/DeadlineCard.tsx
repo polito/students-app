@@ -9,9 +9,10 @@ import { DeadlineItem } from '../types/AgendaItem';
 
 interface Props {
   item: DeadlineItem;
+  compact?: boolean;
 }
 
-export const DeadlineCard = ({ item }: Props) => {
+export const DeadlineCard = ({ item, compact = false }: Props) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<any>>();
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export const DeadlineCard = ({ item }: Props) => {
       title={item.title}
       type={t('common.deadline')}
       color={colors.agendaDeadline}
+      compact={compact}
       onPress={() =>
         navigate({
           name: 'Deadline',

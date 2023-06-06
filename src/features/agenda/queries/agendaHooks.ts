@@ -45,6 +45,8 @@ const groupItemsByDay = (
         color: coursePreferences.color,
         icon: coursePreferences.icon,
         date: formatMachineDate(exam.examStartsAt!),
+        start: exam.examStartsAt!,
+        end: exam.examStartsAt!, // TODO refactor
         startTimestamp: exam.examStartsAt!.valueOf(),
         fromTime: formatTime(exam.examStartsAt!),
         isTimeToBeDefined: exam.isTimeToBeDefined,
@@ -66,6 +68,8 @@ const groupItemsByDay = (
         startTimestamp: booking.startsAt!.valueOf(),
         fromTime: formatTime(booking.startsAt!),
         toTime: formatTime(booking.endsAt!),
+        start: booking.startsAt!,
+        end: booking.endsAt!,
         title: booking.topic.title,
       };
       return item;
@@ -79,6 +83,8 @@ const groupItemsByDay = (
         id: lecture.id,
         key: 'lecture' + lecture.id,
         type: 'lecture',
+        start: lecture.startsAt,
+        end: lecture.endsAt,
         date: formatMachineDate(lecture.startsAt),
         startTimestamp: lecture.startsAt.valueOf(),
         fromTime: formatTime(lecture.startsAt),
@@ -98,8 +104,13 @@ const groupItemsByDay = (
 
   agendaItems.push(
     ...deadlines.map(deadline => {
+      const startDate = deadline.date;
+      startDate.setHours(0, 0, 0);
+
       const item: DeadlineItem = {
         key: 'deadline' + deadline.date.valueOf(),
+        start: startDate,
+        end: startDate,
         startTimestamp: deadline.date.valueOf(),
         date: formatMachineDate(deadline.date),
         title: deadline.name,
@@ -153,6 +164,7 @@ const groupItemsByDay = (
 export const useGetAgendaWeeks = (
   coursesPreferences: CoursesPreferences,
   filters: AgendaTypesFilterState,
+  startDate?: Date,
 ) => {
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
@@ -161,7 +173,14 @@ export const useGetAgendaWeeks = (
 
   const oneWeek = Duration.fromDurationLike({ week: 1 });
 
+  let startDay: DateTime;
   const thisMonday = DateTime.now().startOf('week');
+
+  if (startDate) {
+    startDay = DateTime.fromJSDate(startDate);
+  } else {
+    startDay = thisMonday;
+  }
 
   const filtersCount = Object.values(filters).filter(f => f).length;
 
@@ -175,7 +194,7 @@ export const useGetAgendaWeeks = (
 
   return useInfiniteQuery<AgendaWeek>(
     prefixKey([AGENDA_QUERY_KEY, JSON.stringify(queryFilters)]),
-    async ({ pageParam = thisMonday }: { pageParam?: DateTime }) => {
+    async ({ pageParam = startDay }: { pageParam?: DateTime }) => {
       const until = pageParam.plus(oneWeek);
 
       const jsSince = pageParam.toJSDate();

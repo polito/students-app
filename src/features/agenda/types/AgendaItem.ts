@@ -18,6 +18,8 @@ interface BaseAgendaItem {
   title: string;
   startTimestamp: number;
   date: string;
+  start: Date;
+  end: Date;
 }
 
 export interface BookingItem extends BaseAgendaItem {

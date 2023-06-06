@@ -9,9 +9,10 @@ import { ExamItem } from '../types/AgendaItem';
 
 interface Props {
   item: ExamItem;
+  compact?: boolean;
 }
 
-export const ExamCard = ({ item }: Props) => {
+export const ExamCard = ({ item, compact = false }: Props) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<any>>();
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export const ExamCard = ({ item }: Props) => {
       title={item.title}
       type={t('common.examCall')}
       color={colors.agendaExam}
+      compact={compact}
       iconColor={item.color}
       icon={item.icon}
       time={

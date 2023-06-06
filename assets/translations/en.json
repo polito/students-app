@@ -4,7 +4,9 @@
     "emptyDay": "You have no events today",
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
-    "title": "Agenda"
+    "title": "Agenda",
+    "weeklyLayout": "Layout settimanale"
+    
   },
   "bookingsScreen": {
     "title": "Bookings"

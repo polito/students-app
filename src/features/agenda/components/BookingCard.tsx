@@ -9,9 +9,10 @@ import { BookingItem } from '../types/AgendaItem';
 
 interface Props {
   item: BookingItem;
+  compact?: boolean;
 }
 
-export const BookingCard = ({ item }: Props) => {
+export const BookingCard = ({ item, compact = false }: Props) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<any>>();
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export const BookingCard = ({ item }: Props) => {
       title={item.title}
       type={t('common.booking')}
       color={colors.agendaBooking}
+      compact={compact}
       time={`${item.fromTime} - ${item.toTime}`}
       onPress={() =>
         navigate({

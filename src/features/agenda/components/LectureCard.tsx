@@ -17,9 +17,10 @@ import { AgendaStackParamList as AgendaStack } from './AgendaNavigator';
 
 interface Props {
   item: LectureItem;
+  compact?: boolean;
 }
 
-export const LectureCard = ({ item }: Props) => {
+export const LectureCard = ({ item, compact = false }: Props) => {
   const { navigate } = useNavigation<NavigationProp<AgendaStack, 'Lecture'>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -33,6 +34,7 @@ export const LectureCard = ({ item }: Props) => {
       location={item.place?.name ?? '-'}
       iconColor={item.color}
       color={colors.agendaLecture}
+      compact={compact}
       icon={item.icon}
       onPress={() =>
         navigate({

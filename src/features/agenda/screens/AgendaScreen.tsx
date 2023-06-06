@@ -53,8 +53,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
     lecture: false,
   });
 
-  useEffect(() => {}, [filters]);
-
   const toggleFilter = (type: AgendaItemType) =>
     setFilters(prev => ({ ...prev, [type]: !prev[type] }));
 
@@ -79,7 +77,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
     },
     {
       id: 'weekly',
-      title: t('agendaScreen.weekly'),
+      title: t('agendaScreen.weeklyLayout'),
     },
   ];
 

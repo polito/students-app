@@ -53,6 +53,11 @@ export interface AgendaCardProps {
    * On card pressed handler
    */
   onPress?: () => void;
+
+  /**
+   * If true, the card will be compact
+   */
+  compact?: boolean;
 }
 
 /**
@@ -62,6 +67,7 @@ export const AgendaCard = ({
   title,
   children,
   color,
+  compact = false,
   icon,
   iconColor,
   live = false,
@@ -86,6 +92,7 @@ export const AgendaCard = ({
         {
           marginVertical: spacing[2],
         },
+        compact ? styles.compact : undefined,
       ]}
     >
       <TouchableHighlight
@@ -95,7 +102,7 @@ export const AgendaCard = ({
       >
         <Col gap={2}>
           <Row align="flex-end" justify="space-between">
-            <Text style={styles.time}>{time && time}</Text>
+            <Text style={styles.time}>{time && !compact && time}</Text>
             <Text uppercase variant="caption">
               {type}
             </Text>
@@ -157,5 +164,8 @@ const createStyles = ({
     },
     location: {
       marginTop: spacing[1.5],
+    },
+    compact: {
+      overflow: 'hidden',
     },
   });
