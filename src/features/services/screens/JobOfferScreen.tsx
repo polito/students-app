@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet } from 'react-native';
+import replace from 'react-string-replace';
 
 import { Card } from '@lib/ui/components/Card';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -37,13 +39,37 @@ export const JobOfferScreen = ({ route }: Props) => {
     salary,
   } = jobOffer || {};
 
-  const onPressUrl = () => {
-    !!url && Linking.openURL(url);
+  const onPressUrl = (uri: string) => {
+    !!uri && Linking.openURL(uri);
   };
 
-  const onPressEmail = () => {
-    !!email && Linking.openURL(`mailto:${email}`);
+  const onPressEmail = (mail: string) => {
+    !!mail && Linking.openURL(`mailto:${mail}`);
   };
+
+  const contactInfo = useMemo(() => {
+    return replace(
+      replace(
+        contactInformation ?? '',
+        /([a-zA-Z0-9+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi,
+        match => (
+          <Text variant="link" onPress={() => onPressEmail(match)} key={match}>
+            {match}
+          </Text>
+        ),
+      ),
+      /([0-9]{10})/,
+      match => (
+        <Text
+          variant="link"
+          onPress={() => Linking.openURL(`tel:${match}`)}
+          key={match}
+        >
+          {match}
+        </Text>
+      ),
+    );
+  }, [contactInformation]);
 
   return (
     <ScrollView
@@ -90,16 +116,16 @@ export const JobOfferScreen = ({ route }: Props) => {
           {!!url && (
             <Text numberOfLines={1} accessibilityRole="link">
               {t('jobOfferScreen.url')}
-              <Text variant="link" onPress={onPressUrl}>
+              <Text variant="link" onPress={() => onPressUrl(url)}>
                 {url}
               </Text>
             </Text>
           )}
-          {!!contactInformation && <Text>{contactInformation}</Text>}
+          {!!contactInfo && <Text>{contactInfo}</Text>}
           {!!email && (
             <Text>
               {t('jobOfferScreen.email')}
-              <Text variant="link" onPress={onPressEmail}>
+              <Text variant="link" onPress={() => onPressEmail(email)}>
                 {email}
               </Text>
             </Text>
