@@ -86,20 +86,34 @@ export const JobOfferScreen = ({ route }: Props) => {
       </Card>
       <Card accessible padded gapped>
         {!!contractType && (
-          <Text>{t('jobOfferScreen.contractType', { contractType })}</Text>
+          <Text weight="semibold">
+            {t('jobOfferScreen.contractType')}
+            <Text>{contractType}</Text>
+          </Text>
         )}
-        {!!salary && <Text>{t('jobOfferScreen.salary', { salary })}</Text>}
+        {!!salary && (
+          <Text weight="semibold">
+            {t('jobOfferScreen.salary')}
+            <Text>{salary}</Text>
+          </Text>
+        )}
         {!!location && (
-          <Text>{t('jobOfferScreen.location', { location })}</Text>
+          <Text weight="semibold">
+            {t('jobOfferScreen.location')}
+            <Text>{location}</Text>
+          </Text>
         )}
         {!!endsAtDate && (
-          <Text>
+          <Text weight="semibold">
             {t('jobOfferScreen.endsAtDate')}
-            {formatDate(endsAtDate)}
+            <Text>{formatDate(endsAtDate)}</Text>
           </Text>
         )}
         {!!freePositions && (
-          <Text>{t('jobOfferScreen.freePositions', { freePositions })}</Text>
+          <Text weight="semibold">
+            {t('jobOfferScreen.freePositions')}
+            <Text>{freePositions}</Text>
+          </Text>
         )}
       </Card>
       <Card accessible padded gapped>
@@ -114,7 +128,7 @@ export const JobOfferScreen = ({ route }: Props) => {
         <>
           <Text variant="subHeading">{t('jobOfferScreen.application')}</Text>
           {!!url && (
-            <Text numberOfLines={1} accessibilityRole="link">
+            <Text numberOfLines={1} accessibilityRole="link" weight="semibold">
               {t('jobOfferScreen.url')}
               <Text variant="link" onPress={() => onPressUrl(url)}>
                 {url}
@@ -123,7 +137,7 @@ export const JobOfferScreen = ({ route }: Props) => {
           )}
           {!!contactInfo && <Text>{contactInfo}</Text>}
           {!!email && (
-            <Text>
+            <Text weight="semibold">
               {t('jobOfferScreen.email')}
               <Text variant="link" onPress={() => onPressEmail(email)}>
                 {email}

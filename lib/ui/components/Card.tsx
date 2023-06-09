@@ -60,7 +60,7 @@ export const Card = ({
           ? {
               display: 'flex',
               flexDirection: 'column',
-              gap: spacing[1],
+              gap: spacing[2],
             }
           : {},
         style,
