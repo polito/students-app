@@ -160,6 +160,9 @@
   "contactsScreen": {
     "title": "Contacts"
   },
+  "josOffersScreen": {
+    "title": "Offers screen"
+  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
     "ctaConfirm": "Create PDF",
@@ -290,7 +293,23 @@
   "guidesScreen": {
     "title": "Guides"
   },
+  "jobOfferScreen": {
+    "application": "Application",
+     "companyMission": "Mission",
+    "contactInformation": "For information contact",
+    "contractType": "Contract type: ",
+    "description": "Description",
+    "email": "E-mail: ",
+    "endsAtDate": "Expiration: ",
+    "freePositions": "Free positions: ",
+    "location": "Company location: ",
+    "requirements": "Requirements",
+    "salary": "Salary: ",
+    "title": "Job offers",
+    "url": "Website: "
+  },
   "jobOffersScreen": {
+    "endsAtDate": "expiration: ",
     "title": "Job offers"
   },
   "lectureScreen": {

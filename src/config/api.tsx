@@ -6,6 +6,7 @@ import {
   ConfigurationParameters,
   CoursesApi,
   ExamsApi,
+  JobOffersApi,
   LecturesApi,
   PeopleApi,
   PlacesApi,
@@ -53,6 +54,7 @@ export const createApiClients = (token?: string) => {
       places: new PlacesApi(configuration),
       student: new StudentApi(configuration),
       tickets: new TicketsApi(configuration),
+      jobOffers: new JobOffersApi(configuration),
     };
   }
 

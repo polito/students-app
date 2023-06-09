@@ -58,6 +58,13 @@ export const ServicesScreen = () => {
           Linking.openURL('https://github.com/polito/students-app'),
       },
       {
+        id: 'jobOffers',
+        name: t('jobOffersScreen.title'),
+        icon: faBriefcase,
+        disabled: false,
+        linkTo: { screen: 'JobOffers' },
+      },
+      {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,
@@ -67,12 +74,6 @@ export const ServicesScreen = () => {
         id: 'guides',
         name: t('guidesScreen.title'),
         icon: faSignsPost,
-        disabled: true,
-      },
-      {
-        id: 'jobOffers',
-        name: t('jobOffersScreen.title'),
-        icon: faBriefcase,
         disabled: true,
       },
       {

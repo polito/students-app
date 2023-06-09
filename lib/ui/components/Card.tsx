@@ -9,9 +9,19 @@ export type CardProps = ViewProps & {
   rounded?: boolean;
 
   /**
+   * Toggles the inner spacing
+   */
+  padded?: boolean;
+
+  /**
    * Toggles the outer spacing
    */
   spaced?: boolean;
+
+  /**
+   * Toggles the inner spacing
+   */
+  gapped?: boolean;
 };
 
 /**
@@ -23,6 +33,8 @@ export const Card = ({
   style,
   spaced = Platform.select({ ios: true, android: false }),
   rounded = Platform.select({ ios: true, android: false }),
+  gapped = false,
+  padded = false,
   ...rest
 }: CardProps) => {
   const { colors, shapes, spacing } = useTheme();
@@ -38,6 +50,19 @@ export const Card = ({
           marginVertical: spaced ? spacing[2] : undefined,
           overflow: 'hidden',
         },
+        padded
+          ? {
+              paddingHorizontal: padded ? spacing[5] : undefined,
+              paddingVertical: padded ? spacing[2.5] : undefined,
+            }
+          : {},
+        gapped
+          ? {
+              display: 'flex',
+              flexDirection: 'column',
+              gap: spacing[2],
+            }
+          : {},
         style,
       ]}
       {...rest}

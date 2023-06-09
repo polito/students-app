@@ -81,8 +81,7 @@ const createStyles = ({ fontSizes, spacing }: Theme) =>
     subHeading: {
       fontSize: fontSizes.sm,
       textTransform: 'uppercase',
-      marginTop: spacing[5],
-      marginBottom: spacing[1],
+      marginTop: spacing[1.5],
     },
     title: {
       fontSize: fontSizes.xl,
