@@ -45,8 +45,8 @@ const groupItemsByDay = (
         color: coursePreferences.color,
         icon: coursePreferences.icon,
         date: formatMachineDate(exam.examStartsAt!),
-        start: exam.examStartsAt!,
-        end: exam.examStartsAt!, // TODO refactor
+        start: DateTime.fromJSDate(exam.examStartsAt!),
+        end: DateTime.fromJSDate(exam.examStartsAt!), // TODO refactor
         startTimestamp: exam.examStartsAt!.valueOf(),
         fromTime: formatTime(exam.examStartsAt!),
         isTimeToBeDefined: exam.isTimeToBeDefined,
@@ -68,8 +68,8 @@ const groupItemsByDay = (
         startTimestamp: booking.startsAt!.valueOf(),
         fromTime: formatTime(booking.startsAt!),
         toTime: formatTime(booking.endsAt!),
-        start: booking.startsAt!,
-        end: booking.endsAt!,
+        start: DateTime.fromJSDate(booking.startsAt!),
+        end: DateTime.fromJSDate(booking.endsAt!),
         title: booking.topic.title,
       };
       return item;
@@ -83,8 +83,8 @@ const groupItemsByDay = (
         id: lecture.id,
         key: 'lecture' + lecture.id,
         type: 'lecture',
-        start: lecture.startsAt,
-        end: lecture.endsAt,
+        start: DateTime.fromJSDate(lecture.startsAt),
+        end: DateTime.fromJSDate(lecture.endsAt),
         date: formatMachineDate(lecture.startsAt),
         startTimestamp: lecture.startsAt.valueOf(),
         fromTime: formatTime(lecture.startsAt),
@@ -109,8 +109,8 @@ const groupItemsByDay = (
 
       const item: DeadlineItem = {
         key: 'deadline' + deadline.date.valueOf(),
-        start: startDate,
-        end: startDate,
+        start: DateTime.fromJSDate(startDate),
+        end: DateTime.fromJSDate(startDate),
         startTimestamp: deadline.date.valueOf(),
         date: formatMachineDate(deadline.date),
         title: deadline.name,
@@ -161,10 +161,12 @@ const groupItemsByDay = (
   });
 };
 
+const thisMonday = DateTime.now().startOf('week');
+
 export const useGetAgendaWeeks = (
   coursesPreferences: CoursesPreferences,
   filters: AgendaTypesFilterState,
-  startDate?: Date,
+  startDate: DateTime = thisMonday,
 ) => {
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
@@ -172,15 +174,6 @@ export const useGetAgendaWeeks = (
   const deadlinesQuery = useGetDeadlineWeeks();
 
   const oneWeek = Duration.fromDurationLike({ week: 1 });
-
-  let startDay: DateTime;
-  const thisMonday = DateTime.now().startOf('week');
-
-  if (startDate) {
-    startDay = DateTime.fromJSDate(startDate);
-  } else {
-    startDay = thisMonday;
-  }
 
   const filtersCount = Object.values(filters).filter(f => f).length;
 
@@ -194,7 +187,7 @@ export const useGetAgendaWeeks = (
 
   return useInfiniteQuery<AgendaWeek>(
     prefixKey([AGENDA_QUERY_KEY, JSON.stringify(queryFilters)]),
-    async ({ pageParam = startDay }: { pageParam?: DateTime }) => {
+    async ({ pageParam = startDate }: { pageParam?: DateTime }) => {
       const until = pageParam.plus(oneWeek);
 
       const jsSince = pageParam.toJSDate();
@@ -278,10 +271,10 @@ export const useGetAgendaWeeks = (
         bookingsQuery.isSuccess &&
         deadlinesQuery.isSuccess,
       getNextPageParam: lastPage => {
-        return lastPage.dateRange.start!.plus(oneWeek);
+        return lastPage.dateRange.start!.plus(oneWeek) || thisMonday;
       },
       getPreviousPageParam: firstPage => {
-        return firstPage.dateRange.end!.minus(oneWeek);
+        return firstPage.dateRange.start!.minus(oneWeek);
       },
       staleTime: Infinity, // TODO define
     },

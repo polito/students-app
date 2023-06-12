@@ -63,14 +63,13 @@ export const AgendaNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerLeft: () => <HeaderLogo />,
-          headerTitle: '',
+          headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
-          orientation: 'landscape',
         }}
       />
       <Stack.Screen

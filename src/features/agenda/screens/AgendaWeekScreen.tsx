@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-} from 'react-native';
-import { Calendar } from 'react-native-big-calendar';
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Row } from '@lib/ui/components/Row';
+import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -41,22 +38,42 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
 
   const { language } = usePreferencesContext();
 
-  const [currentWeek, setCurrentWeek] = useState<DateTime>(DateTime.now());
+  const { colors } = useTheme();
 
-  const { data } = useGetAgendaWeeks(
-    coursesPreferences,
-    filters,
-    currentWeek.toJSDate(),
+  const [currentWeekStart, setCurrentWeekStart] = useState<DateTime>(
+    DateTime.now().startOf('week'),
   );
 
-  const nextWeek = useCallback(
-    () => setCurrentWeek(p => p.plus({ days: 7 })),
-    [setCurrentWeek],
-  );
-  const prevWeek = useCallback(
-    () => setCurrentWeek(p => p.minus({ days: 7 })),
-    [setCurrentWeek],
-  );
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(0);
+
+  const { data, isFetching, fetchPreviousPage, fetchNextPage } =
+    useGetAgendaWeeks(coursesPreferences, filters);
+
+  const nextWeek = useCallback(() => {
+    const updatedWeek = currentWeekStart.plus({ days: 7 });
+    setCurrentWeekStart(updatedWeek);
+
+    if (data?.pages[currentPageNumber + 1] !== undefined) {
+      setCurrentPageNumber(currentPageNumber + 1);
+    } else {
+      fetchNextPage({ cancelRefetch: false }).then(() => {
+        setCurrentPageNumber(currentPageNumber + 1);
+      });
+    }
+  }, [currentPageNumber, currentWeekStart, data?.pages, fetchNextPage]);
+
+  const prevWeek = useCallback(() => {
+    const updatedWeek = currentWeekStart.minus({ days: 7 });
+    setCurrentWeekStart(updatedWeek);
+
+    if (currentPageNumber > 0) {
+      setCurrentPageNumber(currentPageNumber - 1);
+    } else {
+      fetchPreviousPage({ cancelRefetch: false }).then(() => {
+        setCurrentPageNumber(currentPageNumber);
+      });
+    }
+  }, [currentWeekStart, currentPageNumber, fetchPreviousPage]);
 
   const toggleFilter = (type: AgendaItemType) =>
     setFilters(prev => ({ ...prev, [type]: !prev[type] }));
@@ -64,64 +81,75 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
   const [weeklyEvents, setWeeklyEvents] = useState<AgendaItem[]>([]);
 
   useEffect(() => {
-    const agendaWeek = data?.pages[0];
-
+    const agendaWeek = data?.pages[currentPageNumber];
     setWeeklyEvents(
       agendaWeek?.data.flatMap(day => {
         return day.items;
       }) ?? [],
     );
-  }, [data?.pages]);
+  }, [data?.pages, currentPageNumber]);
 
-  const { height } = useWindowDimensions();
+  const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
+    undefined,
+  );
 
   return (
     <SafeAreaView>
       <Row justify="space-between">
         <AgendaFilters state={filters} toggleState={toggleFilter} />
         <WeekFilter
-          current={currentWeek}
+          current={currentWeekStart}
           getNext={nextWeek}
           getPrev={prevWeek}
         ></WeekFilter>
       </Row>
-      <Calendar<AgendaItem>
-        events={weeklyEvents}
-        headerContainerStyle={styles.headerContainer}
-        mode="custom"
-        height={height - 50}
-        locale={language}
-        swipeEnabled={false}
-        headerComponent={null}
-        // renderHeader={() => (
-        //   <View>
-        //     <Text>A</Text>
-        //   </View>
-        // )}
-        renderEvent={(item: AgendaItem, touchableOpacityProps) => {
-          return (
-            <TouchableOpacity
-              {...touchableOpacityProps}
-              style={[touchableOpacityProps.style, styles.event]}
-            >
-              {item.type === 'booking' && (
-                <BookingCard key={item.key} item={item} compact={true} />
-              )}
-              {item.type === 'deadline' && (
-                <DeadlineCard key={item.key} item={item} compact={true} />
-              )}
-              {item.type === 'exam' && (
-                <ExamCard key={item.key} item={item} compact={true} />
-              )}
-              {item.type === 'lecture' && (
-                <LectureCard key={item.key} item={item} compact={true} />
-              )}
-            </TouchableOpacity>
-          );
+      <View
+        style={styles.calendarContainer}
+        onLayout={e => {
+          const { height } = e.nativeEvent.layout;
+          setCalendarHeight(height);
         }}
-        weekStartsOn={1}
-        weekEndsOn={5}
-      />
+      >
+        {!calendarHeight || isFetching ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <Calendar<AgendaItem>
+            events={weeklyEvents}
+            headerContentStyle={styles.dayHeader}
+            weekDayHeaderHighlightColor={colors.background}
+            date={currentWeekStart}
+            mode="custom"
+            height={calendarHeight}
+            locale={language}
+            swipeEnabled={false}
+            renderEvent={(item: AgendaItem, touchableOpacityProps) => {
+              return (
+                <TouchableOpacity
+                  {...touchableOpacityProps}
+                  style={[touchableOpacityProps.style, styles.event]}
+                >
+                  {item.type === 'booking' && (
+                    <BookingCard key={item.key} item={item} compact={true} />
+                  )}
+                  {item.type === 'deadline' && (
+                    <DeadlineCard key={item.key} item={item} compact={true} />
+                  )}
+                  {item.type === 'exam' && (
+                    <ExamCard key={item.key} item={item} compact={true} />
+                  )}
+                  {item.type === 'lecture' && (
+                    <LectureCard key={item.key} item={item} compact={true} />
+                  )}
+                </TouchableOpacity>
+              );
+            }}
+            weekStartsOn={1}
+            weekEndsOn={5}
+            isEventOrderingEnabled={false}
+            overlapOffset={10000}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -137,18 +165,28 @@ const createStyles = ({ spacing }: Theme) =>
       flexDirection: 'row',
       gap: spacing[2],
     },
+    calendarContainer: {
+      height: '100%',
+      width: '100%',
+    },
     column: {
       display: 'flex',
       flexDirection: 'column',
       flex: 1,
       backgroundColor: 'red',
     },
+    dayHeader: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     event: {
       backgroundColor: undefined,
-      padding: 0,
       shadowColor: undefined,
       shadowOffset: undefined,
       shadowOpacity: undefined,
       shadowRadius: undefined,
+      elevation: undefined,
     },
   });

@@ -1,6 +1,8 @@
 import { LecturePlace } from '@polito/api-client/models/LecturePlace';
 import { RelatedVirtualClassroom } from '@polito/api-client/models/RelatedVirtualClassroom';
 
+import { DateTime } from 'luxon';
+
 export const ALL_AGENDA_TYPES = [
   'booking',
   'deadline',
@@ -18,8 +20,8 @@ interface BaseAgendaItem {
   title: string;
   startTimestamp: number;
   date: string;
-  start: Date;
-  end: Date;
+  start: DateTime;
+  end: DateTime;
 }
 
 export interface BookingItem extends BaseAgendaItem {

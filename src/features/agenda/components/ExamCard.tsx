@@ -22,7 +22,7 @@ export const ExamCard = ({ item, compact = false }: Props) => {
       title={item.title}
       type={t('common.examCall')}
       color={colors.agendaExam}
-      compact={compact}
+      isCompact={compact}
       iconColor={item.color}
       icon={item.icon}
       time={

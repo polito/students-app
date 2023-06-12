@@ -22,7 +22,7 @@ export const DeadlineCard = ({ item, compact = false }: Props) => {
       title={item.title}
       type={t('common.deadline')}
       color={colors.agendaDeadline}
-      compact={compact}
+      isCompact={compact}
       onPress={() =>
         navigate({
           name: 'Deadline',

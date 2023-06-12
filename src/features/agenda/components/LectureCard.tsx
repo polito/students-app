@@ -34,7 +34,7 @@ export const LectureCard = ({ item, compact = false }: Props) => {
       location={item.place?.name ?? '-'}
       iconColor={item.color}
       color={colors.agendaLecture}
-      compact={compact}
+      isCompact={compact}
       icon={item.icon}
       onPress={() =>
         navigate({
