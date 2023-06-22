@@ -1,3 +1,5 @@
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import * as Sentry from '@sentry/react-native';
 
 import { AppContent } from './core/components/AppContent';
@@ -13,17 +15,19 @@ initSentry();
 export const App = () => {
   return (
     <Sentry.TouchEventBoundary>
-      <SplashProvider>
-        <PreferencesProvider>
-          <UiProvider>
-            <ApiProvider>
-              <DownloadsProvider>
-                <AppContent />
-              </DownloadsProvider>
-            </ApiProvider>
-          </UiProvider>
-        </PreferencesProvider>
-      </SplashProvider>
+      <SafeAreaProvider>
+        <SplashProvider>
+          <PreferencesProvider>
+            <UiProvider>
+              <ApiProvider>
+                <DownloadsProvider>
+                  <AppContent />
+                </DownloadsProvider>
+              </ApiProvider>
+            </UiProvider>
+          </PreferencesProvider>
+        </SplashProvider>
+      </SafeAreaProvider>
     </Sentry.TouchEventBoundary>
   );
 };

@@ -3,15 +3,21 @@ import { View } from 'react-native';
 
 import { Stack, StackProps } from '@lib/ui/components/Stack';
 
+export type ColProps<
+  T extends
+    | keyof JSX.IntrinsicElements
+    | JSXElementConstructor<any> = typeof View,
+> = StackProps<T> & { readonly direction?: 'column' };
+
 /**
  * Vertical flexbox
  *
- * Shorthand for {@link import('./Stack').Stack `Stack`} with `direction="column"`
+ * Shorthand for `Stack` with `direction="column"`
  */
 export function Col<
   T extends
     | keyof JSX.IntrinsicElements
     | JSXElementConstructor<any> = typeof View,
->(props: StackProps<T> & { readonly direction?: 'column' }) {
+>(props: ColProps<T>) {
   return <Stack direction="column" {...props} />;
 }

@@ -5,7 +5,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { PlacesScreen } from '../screens/PlacesScreen';
 
 export type ServiceStackParamList = {
@@ -27,7 +27,7 @@ export const PlacesNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        ...titlesStyles(theme),
+        ...useTitlesStyles(theme),
       }}
     >
       <Stack.Screen

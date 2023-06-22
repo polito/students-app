@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
-export const titlesStyles: (
+export const useTitlesStyles: (
   theme: Theme,
 ) => Partial<NativeStackNavigationOptions> = ({
   dark,

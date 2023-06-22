@@ -160,9 +160,6 @@
   "contactsScreen": {
     "title": "Contacts"
   },
-  "josOffersScreen": {
-    "title": "Offers screen"
-  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
     "ctaConfirm": "Create PDF",
@@ -184,7 +181,7 @@
     "title": "Upload assignment"
   },
   "courseAssignmentsTab": {
-    "emptyState": "There are no assignments",
+    "emptyState": "There are no assignments here",
     "title": "Assignments"
   },
   "courseDirectoryListItem": {
@@ -200,7 +197,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "No files available",
+    "empty": "There are no files here",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
@@ -222,7 +219,7 @@
     "yearLabel": "Year"
   },
   "courseLecturesTab": {
-    "emptyState": "There are no lectures",
+    "emptyState": "There are no lectures here",
     "title": "Lectures",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
@@ -230,7 +227,7 @@
     "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
   },
   "courseNoticesTab": {
-    "emptyState": "There are no notices",
+    "emptyState": "There are no notices here",
     "title": "Notices"
   },
   "coursePreferencesScreen": {
@@ -295,7 +292,7 @@
   },
   "jobOfferScreen": {
     "application": "Application",
-     "companyMission": "Mission",
+    "companyMission": "Mission",
     "contactInformation": "For information contact",
     "contractType": "Contract type: ",
     "description": "Description",
@@ -311,6 +308,9 @@
   "jobOffersScreen": {
     "endsAtDate": "expiration: ",
     "title": "Job offers"
+  },
+  "josOffersScreen": {
+    "title": "Offers screen"
   },
   "lectureScreen": {
     "courseFilesCta": "Go to course files"

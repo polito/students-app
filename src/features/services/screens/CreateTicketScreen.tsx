@@ -5,10 +5,10 @@ import { StyleSheet } from 'react-native';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { Select } from '@lib/ui/components/Select';
 import { TextField } from '@lib/ui/components/TextField';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
@@ -93,7 +93,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     <ScreenContainer>
       <Section>
         <SectionHeader title={t('createTicketScreen.subtitle')} />
-        <SectionList>
+        <OverviewList>
           <Select
             label={t('createTicketScreen.topicDropdownLabel')}
             description={t('createTicketScreen.topicDescription')}
@@ -105,9 +105,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             disabled={!!initialTopicId}
             value={topicId}
           />
-        </SectionList>
+        </OverviewList>
 
-        <SectionList>
+        <OverviewList>
           <Select
             options={subTopics.map(subTopic => {
               return {
@@ -121,9 +121,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             label={t('createTicketScreen.subtopicDropdownLabel')}
             description={t('createTicketScreen.subtopicDescription')}
           />
-        </SectionList>
+        </OverviewList>
 
-        <SectionList style={styles.objectSection}>
+        <OverviewList style={styles.objectSection}>
           <TextField
             autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
@@ -132,7 +132,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             value={ticketBody.subject}
             onChangeText={updateTicketBodyField('subject')}
           />
-        </SectionList>
+        </OverviewList>
 
         <ChatBubble style={styles.bubbleContainer} bubbleStyle={styles.bubble}>
           <ThemeContext.Provider value={darkTheme}>

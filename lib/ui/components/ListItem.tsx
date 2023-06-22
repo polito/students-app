@@ -8,8 +8,6 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -18,6 +16,7 @@ import { IS_IOS } from '../../../src/core/constants';
 import { GlobalStyles } from '../../../src/core/styles/globalStyles';
 import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
+import { DisclosureIndicator } from './DisclosureIndicator';
 import { Text } from './Text';
 
 export interface ListItemProps extends TouchableHighlightProps {
@@ -150,14 +149,7 @@ export const ListItem = ({
         </View>
         {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (
-            <Icon
-              icon={faChevronRight}
-              color={colors.secondaryText}
-              style={{
-                marginLeft: spacing[1],
-                marginRight: -spacing[1],
-              }}
-            />
+            <DisclosureIndicator />
           ) : (
             trailingItem
           ))}

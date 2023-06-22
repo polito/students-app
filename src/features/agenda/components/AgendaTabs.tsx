@@ -6,6 +6,7 @@ import { Tabs } from '@lib/ui/components/Tabs';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { AgendaFiltersState } from '../types/AgendaFiltersState';
 import { AgendaItemTypes } from '../types/AgendaItem';
 
@@ -19,11 +20,11 @@ interface Props {
 
 export const AgendaTabs = ({ state, toggleState }: Props) => {
   const { t } = useTranslation();
-
   const styles = useStylesheet(createStyles);
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   return (
-    <Tabs style={styles.tabs}>
+    <Tabs style={[styles.tabs, paddingHorizontal]}>
       <Tab
         selected={state.lecture}
         onPress={() => toggleState('lecture')}

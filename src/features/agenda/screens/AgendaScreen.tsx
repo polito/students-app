@@ -22,7 +22,9 @@ import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
@@ -45,6 +47,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { courses: coursesPreferences } = usePreferencesContext();
   const client = useQueryClient();
+  const { marginHorizontal } = useSafeAreaSpacing();
 
   const [filters, setFilters] = useState<AgendaFiltersState>({
     booking: true,
@@ -201,7 +204,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           initialNumToRender={1}
           keyExtractor={item => item.key}
           extraData={[isFetchingPreviousPage, isFetchingNextPage]}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={[styles.listContainer, marginHorizontal]}
           renderItem={({ item }) => (
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
@@ -211,7 +214,12 @@ export const AgendaScreen = ({ navigation }: Props) => {
             ) : undefined
           }
           ListFooterComponent={
-            isFetchingNextPage ? <ActivityIndicator size="small" /> : undefined
+            <>
+              {isFetchingNextPage ? (
+                <ActivityIndicator size="small" />
+              ) : undefined}
+              <BottomBarSpacer />
+            </>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}

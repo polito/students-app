@@ -67,6 +67,12 @@ export interface Theme {
     bold: TextStyle['fontWeight'];
     extrabold?: TextStyle['fontWeight'];
   };
+  safeAreaInsets: {
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+  };
 }
 
 export interface Colors {

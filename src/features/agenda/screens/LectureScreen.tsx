@@ -1,16 +1,17 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
@@ -45,48 +46,55 @@ export const LectureScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={GlobalStyles.fillHeight}
     >
-      {virtualClassroom?.videoUrl && (
-        <VideoPlayer
-          source={{ uri: virtualClassroom?.videoUrl }}
-          poster={virtualClassroom?.coverUrl ?? undefined}
-        />
-      )}
-      <Row justify="space-between" align="center">
-        <EventDetails
-          title={virtualClassroom?.title ?? lecture.title}
-          type={t('common.lecture')}
-          time={`${convertMachineDateToFormatDate(lecture.date)} ${
-            lecture.fromTime
-          } - ${lecture.toTime}`}
-        />
-      </Row>
-      <SectionList indented>
-        {lecture?.place && (
+      <SafeAreaView>
+        {virtualClassroom?.videoUrl && (
+          <VideoPlayer
+            source={{ uri: virtualClassroom?.videoUrl }}
+            poster={virtualClassroom?.coverUrl ?? undefined}
+          />
+        )}
+        <Row justify="space-between" align="center">
+          <EventDetails
+            title={virtualClassroom?.title ?? lecture.title}
+            type={t('common.lecture')}
+            time={`${convertMachineDateToFormatDate(lecture.date)} ${
+              lecture.fromTime
+            } - ${lecture.toTime}`}
+          />
+        </Row>
+        <OverviewList indented>
+          {lecture?.place && (
+            <ListItem
+              leadingItem={
+                <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+              }
+              title={lecture.place.name}
+            />
+          )}
+          {teacherQuery.data && (
+            <PersonListItem
+              person={teacherQuery.data}
+              subtitle={t('common.teacher')}
+            />
+          )}
           <ListItem
-            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-            title={lecture.place.name}
+            title={lecture.title}
+            subtitle={t('lectureScreen.courseFilesCta')}
+            leadingItem={
+              <CourseIcon icon={lecture.icon} color={lecture.color} />
+            }
+            disabled
+            // linkTo={{
+            //   screen: 'LectureCourseDirectory',
+            //   params: {
+            //     lectureId: lecture.id,
+            //     courseId: lecture.courseId,
+            //   },
+            // }}
           />
-        )}
-        {teacherQuery.data && (
-          <PersonListItem
-            person={teacherQuery.data}
-            subtitle={t('common.teacher')}
-          />
-        )}
-        <ListItem
-          title={lecture.title}
-          subtitle={t('lectureScreen.courseFilesCta')}
-          leadingItem={<CourseIcon icon={lecture.icon} color={lecture.color} />}
-          disabled
-          // linkTo={{
-          //   screen: 'LectureCourseDirectory',
-          //   params: {
-          //     lectureId: lecture.id,
-          //     courseId: lecture.courseId,
-          //   },
-          // }}
-        />
-      </SectionList>
+        </OverviewList>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

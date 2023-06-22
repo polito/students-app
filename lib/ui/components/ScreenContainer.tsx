@@ -6,6 +6,8 @@ import {
   ScrollView,
 } from 'react-native';
 
+import { BottomBarSpacer } from '../../../src/core/components/BottomBarSpacer';
+
 export const ScreenContainer = ({ children }: PropsWithChildren) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -18,6 +20,7 @@ export const ScreenContainer = ({ children }: PropsWithChildren) => {
           keyboardShouldPersistTaps="handled"
         >
           {children}
+          <BottomBarSpacer />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

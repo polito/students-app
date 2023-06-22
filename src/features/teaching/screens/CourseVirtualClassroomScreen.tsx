@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
@@ -41,29 +42,32 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
       }
       contentContainerStyle={GlobalStyles.fillHeight}
     >
-      {lecture?.videoUrl && (
-        <VideoPlayer
-          source={{ uri: lecture.videoUrl }}
-          poster={lecture?.coverUrl ?? undefined}
-        />
-      )}
-      <EventDetails
-        title={lecture?.title ?? ''}
-        type={t('courseVirtualClassroomScreen.title')}
-        time={
-          lecture?.createdAt
-            ? formatDateWithTimeIfNotNull(lecture?.createdAt)
-            : undefined
-        }
-      />
-      <SectionList loading={teacherQuery.isLoading}>
-        {teacherQuery.data && (
-          <PersonListItem
-            person={teacherQuery.data}
-            subtitle={t('common.teacher')}
+      <SafeAreaView>
+        {lecture?.videoUrl && (
+          <VideoPlayer
+            source={{ uri: lecture.videoUrl }}
+            poster={lecture?.coverUrl ?? undefined}
           />
         )}
-      </SectionList>
+        <EventDetails
+          title={lecture?.title ?? ''}
+          type={t('courseVirtualClassroomScreen.title')}
+          time={
+            lecture?.createdAt
+              ? formatDateWithTimeIfNotNull(lecture?.createdAt)
+              : undefined
+          }
+        />
+        <OverviewList loading={teacherQuery.isLoading}>
+          {teacherQuery.data && (
+            <PersonListItem
+              person={teacherQuery.data}
+              subtitle={t('common.teacher')}
+            />
+          )}
+        </OverviewList>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

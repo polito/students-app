@@ -7,4 +7,7 @@ export const GlobalStyles = StyleSheet.create({
   fillHeight: {
     minHeight: '100%',
   },
+  relative: {
+    position: 'relative',
+  },
 });

@@ -11,8 +11,8 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { useTabs } from '../../../core/hooks/useTabs';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
@@ -36,6 +36,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
+  const titleStyles = useTitlesStyles(theme);
 
   const { id, courseName } = route.params;
 
@@ -78,7 +79,7 @@ export const CourseScreen = ({ route, navigation }: Props) => {
                 marginLeft: spacing[2],
                 maxWidth: width - 180,
               },
-              titlesStyles(theme).headerTitleStyle,
+              titleStyles.headerTitleStyle,
             ]}
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -88,7 +89,14 @@ export const CourseScreen = ({ route, navigation }: Props) => {
         </View>
       ),
     });
-  }, [courseName]);
+  }, [
+    courseName,
+    width,
+    id,
+    navigation,
+    spacing,
+    titleStyles.headerTitleStyle,
+  ]);
 
   const { Tabs, TabsContent } = useTabs([
     {

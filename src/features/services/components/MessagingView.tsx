@@ -201,10 +201,12 @@ export const MessagingView = ({
   );
 };
 
-const createStyles = ({ spacing, colors }: Theme) =>
+const createStyles = ({ spacing, colors, safeAreaInsets }: Theme) =>
   StyleSheet.create({
     wrapper: {
-      padding: spacing[2],
+      paddingVertical: spacing[2],
+      paddingLeft: Math.max(safeAreaInsets.left, spacing[2]),
+      paddingRight: Math.max(safeAreaInsets.right, spacing[2]),
     },
     translucent: {
       position: 'absolute',

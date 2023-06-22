@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -19,6 +18,7 @@ import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
@@ -28,7 +28,6 @@ export const ServicesScreen = () => {
   const { favoriteServices: favoriteServiceIds, updatePreference } =
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
-  const { left, right } = useSafeAreaInsets();
   const services = useMemo(
     () => [
       {
@@ -116,58 +115,58 @@ export const ServicesScreen = () => {
     };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingLeft: left, paddingRight: right }}
-    >
-      {favoriteServices.length > 0 && (
-        <Grid
-          numColumns={auto}
-          minColumnWidth={ServiceCard.minWidth}
-          maxColumnWidth={ServiceCard.maxWidth}
-          gap={4}
-          style={styles.grid}
-        >
-          {favoriteServices.map(service => (
-            <ServiceCard
-              key={service.id}
-              name={service.name}
-              icon={service.icon}
-              disabled={service.disabled}
-              linkTo={service.linkTo}
-              onPress={service.onPress}
-              favorite
-              onFavoriteChange={updateFavorite(service)}
-            >
-              {service.additionalContent}
-            </ServiceCard>
-          ))}
-        </Grid>
-      )}
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <SafeAreaView>
+        {favoriteServices.length > 0 && (
+          <Grid
+            numColumns={auto}
+            minColumnWidth={ServiceCard.minWidth}
+            maxColumnWidth={ServiceCard.maxWidth}
+            gap={4}
+            style={styles.grid}
+          >
+            {favoriteServices.map(service => (
+              <ServiceCard
+                key={service.id}
+                name={service.name}
+                icon={service.icon}
+                disabled={service.disabled}
+                linkTo={service.linkTo}
+                onPress={service.onPress}
+                favorite
+                onFavoriteChange={updateFavorite(service)}
+              >
+                {service.additionalContent}
+              </ServiceCard>
+            ))}
+          </Grid>
+        )}
 
-      {otherServices.length > 0 && (
-        <Grid
-          numColumns={auto}
-          minColumnWidth={ServiceCard.minWidth}
-          maxColumnWidth={ServiceCard.maxWidth}
-          gap={4}
-          style={styles.grid}
-        >
-          {otherServices.map(service => (
-            <ServiceCard
-              key={service.id}
-              name={service.name}
-              icon={service.icon}
-              disabled={service.disabled}
-              linkTo={service.linkTo}
-              onPress={service.onPress}
-              onFavoriteChange={updateFavorite(service)}
-            >
-              {service.additionalContent}
-            </ServiceCard>
-          ))}
-        </Grid>
-      )}
+        {otherServices.length > 0 && (
+          <Grid
+            numColumns={auto}
+            minColumnWidth={ServiceCard.minWidth}
+            maxColumnWidth={ServiceCard.maxWidth}
+            gap={4}
+            style={styles.grid}
+          >
+            {otherServices.map(service => (
+              <ServiceCard
+                key={service.id}
+                name={service.name}
+                icon={service.icon}
+                disabled={service.disabled}
+                linkTo={service.linkTo}
+                onPress={service.onPress}
+                onFavoriteChange={updateFavorite(service)}
+              >
+                {service.additionalContent}
+              </ServiceCard>
+            ))}
+          </Grid>
+        )}
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

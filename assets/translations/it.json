@@ -160,9 +160,6 @@
   "contactsScreen": {
     "title": "Contatti"
   },
-  "josOffersScreen": {
-    "title": "Offerte di lavoro"
-  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
@@ -200,7 +197,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
-    "empty": "Nessun file disponibile",
+    "empty": "Non ci sono file qui",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale"
@@ -310,6 +307,9 @@
   },
   "jobOffersScreen": {
     "endsAtDate": "Scadenza: ",
+    "title": "Offerte di lavoro"
+  },
+  "josOffersScreen": {
     "title": "Offerte di lavoro"
   },
   "lectureScreen": {
