@@ -97,7 +97,15 @@ export const CourseAssignmentListItem = ({
         {...rest}
       />
     ),
-    [item, spacing, colors, rest],
+    [
+      item,
+      subTitle,
+      accessibilityListLabel,
+      spacing,
+      colors.secondaryText,
+      fontSizes.xl,
+      rest,
+    ],
   );
 
   if (Platform.OS === 'ios') {
