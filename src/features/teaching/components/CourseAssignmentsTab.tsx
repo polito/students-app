@@ -28,7 +28,8 @@ export const CourseAssignmentsTab = ({
         refreshControl={<RefreshControl queries={[assignmentsQuery]} />}
       >
         <SafeAreaView>
-          {assignmentsQuery.data &&
+          {!assignmentsQuery.isLoading &&
+            assignmentsQuery.data &&
             (assignmentsQuery.data.length > 0 ? (
               <List indented>
                 {assignmentsQuery.data.map((assignment, index) => (

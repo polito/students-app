@@ -10,6 +10,8 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
 import { CourseTabProps } from '../screens/CourseScreen';
@@ -20,6 +22,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { refresh } = useContext(FilesCacheContext);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   useFocusEffect(
     useCallback(() => {
@@ -32,6 +35,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={recentFilesQuery.data}
+        contentContainerStyle={paddingHorizontal}
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
         initialNumToRender={15}
@@ -48,9 +52,19 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,
         })}
-        ListFooterComponent={<CtaButtonSpacer />}
+        ListFooterComponent={
+          <>
+            <CtaButtonSpacer />
+            <BottomBarSpacer />
+          </>
+        }
         ListEmptyComponent={
-          <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
+          !recentFilesQuery.isLoading ? (
+            <EmptyState
+              message={t('courseFilesTab.empty')}
+              icon={faFolderOpen}
+            />
+          ) : null
         }
       />
       {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (

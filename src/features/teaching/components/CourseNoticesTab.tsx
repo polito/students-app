@@ -11,7 +11,9 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { DateTime } from 'luxon';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
@@ -23,6 +25,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   const { spacing } = useTheme();
   const noticesQuery = useGetCourseNotices(courseId);
   const { accessibilityListLabel } = useAccessibility();
+  const { paddingHorizontal } = useSafeAreaSpacing();
   const notices = useMemo(
     () =>
       noticesQuery.data?.map(notice => ({
@@ -35,6 +38,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   return (
     <FlatList
       style={GlobalStyles.grow}
+      contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[noticesQuery]} />}
       data={notices}
       renderItem={({ item: notice, index }) => (
@@ -52,15 +56,16 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           }}
         />
       )}
-      ListHeaderComponent={
-        !noticesQuery.isLoading && !noticesQuery.data?.length ? (
+      ListFooterComponent={<BottomBarSpacer />}
+      ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
+      ListEmptyComponent={
+        !noticesQuery.isLoading ? (
           <EmptyState
             icon={faInbox}
             message={t('courseNoticesTab.emptyState')}
           />
         ) : null
       }
-      ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
     />
   );
 };
