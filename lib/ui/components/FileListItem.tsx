@@ -126,8 +126,8 @@ const createItemStyles = ({ spacing, colors }: Theme) =>
       borderRadius: 16,
       backgroundColor: colors.background,
       position: 'absolute',
-      bottom: -5,
-      right: -2,
+      top: -5,
+      left: -8,
     },
     subtitle: {
       flexShrink: 1,
