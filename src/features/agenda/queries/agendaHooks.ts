@@ -1,4 +1,4 @@
-import { Booking, Deadline, Lecture } from '@polito/api-client';
+import { Booking, Deadline, ExamStatusEnum, Lecture } from '@polito/api-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration, Interval } from 'luxon';
@@ -36,26 +36,28 @@ const groupItemsByDay = (
   const agendaItems: AgendaItem[] = [];
 
   agendaItems.push(
-    ...exams.map(exam => {
-      const coursePreferences = coursesPreferences[exam.courseId];
-      const item: ExamItem = {
-        id: exam.id,
-        key: 'exam' + exam.id,
-        type: 'exam',
-        color: coursePreferences.color,
-        icon: coursePreferences.icon,
-        date: formatMachineDate(exam.examStartsAt!),
-        start: DateTime.fromJSDate(exam.examStartsAt!),
-        end: DateTime.fromJSDate(exam.examEndsAt!),
-        startTimestamp: exam.examStartsAt!.valueOf(),
-        fromTime: formatTime(exam.examStartsAt!),
-        isTimeToBeDefined: exam.isTimeToBeDefined,
-        title: exam.courseName,
-        classroom: exam?.classrooms,
-        teacherId: exam.teacherId,
-      };
-      return item;
-    }),
+    ...exams
+      .filter(exam => exam.status === ExamStatusEnum.Booked)
+      .map(exam => {
+        const coursePreferences = coursesPreferences[exam.courseId];
+        const item: ExamItem = {
+          id: exam.id,
+          key: 'exam' + exam.id,
+          type: 'exam',
+          color: coursePreferences.color,
+          icon: coursePreferences.icon,
+          date: formatMachineDate(exam.examStartsAt!),
+          start: DateTime.fromJSDate(exam.examStartsAt!),
+          end: DateTime.fromJSDate(exam.examEndsAt!),
+          startTimestamp: exam.examStartsAt!.valueOf(),
+          fromTime: formatTime(exam.examStartsAt!),
+          isTimeToBeDefined: exam.isTimeToBeDefined,
+          title: exam.courseName,
+          classroom: exam?.classrooms,
+          teacherId: exam.teacherId,
+        };
+        return item;
+      }),
   );
 
   agendaItems.push(
