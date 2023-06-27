@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
@@ -30,15 +30,16 @@ import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { formatDate } from '../../../utils/dates';
-import { CourseTabProps } from '../screens/CourseScreen';
+import { CourseContext } from '../contexts/CourseContext';
 import {
   CourseLecture,
   CourseLectureSection,
 } from '../types/CourseLectureSections';
 
-export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
+export const CourseLecturesScreen = () => {
   const { t } = useTranslation();
   const safeAreaInsets = useSafeAreaInsets();
+  const courseId = useContext(CourseContext)!;
   const { spacing, colors, fontSizes } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);

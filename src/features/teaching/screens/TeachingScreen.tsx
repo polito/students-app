@@ -22,7 +22,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -36,9 +36,7 @@ import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
-interface Props {
-  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Home'>;
-}
+type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();

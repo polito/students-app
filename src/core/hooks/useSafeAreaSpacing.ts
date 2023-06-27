@@ -3,10 +3,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SpacingType = 'padding' | 'margin';
 type HorizontalStyles<T extends SpacingType> = {
-  [key in `${T}Top` | `${T}Bottom`]: number;
+  [key in `${T}Left` | `${T}Right`]: number;
 };
 type VerticalStyles<T extends SpacingType> = {
-  [key in `${T}Left` | `${T}Right`]: number;
+  [key in `${T}Top` | `${T}Bottom`]: number;
 };
 
 /**

@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
@@ -7,18 +8,23 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
-import { CourseTabProps } from '../screens/CourseScreen';
-import { CourseAssignmentListItem } from './CourseAssignmentListItem';
+import { CourseAssignmentListItem } from '../components/CourseAssignmentListItem';
+import { CourseTabsParamList } from '../components/CourseNavigator';
+import { CourseContext } from '../contexts/CourseContext';
 
-export const CourseAssignmentsTab = ({
-  courseId,
-  navigation,
-}: CourseTabProps) => {
+type Props = MaterialTopTabScreenProps<
+  CourseTabsParamList,
+  'CourseAssignmentsScreen'
+>;
+
+export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
+  const courseId = useContext(CourseContext)!;
   const assignmentsQuery = useGetCourseAssignments(courseId);
   const { accessibilityListLabel } = useAccessibility();
 

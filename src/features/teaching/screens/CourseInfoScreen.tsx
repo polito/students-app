@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -24,13 +24,14 @@ import {
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
-import { CourseTabProps } from '../screens/CourseScreen';
-import { ExamListItem } from './ExamListItem';
+import { ExamListItem } from '../components/ExamListItem';
+import { CourseContext } from '../contexts/CourseContext';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
-export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
+export const CourseInfoScreen = () => {
   const { t } = useTranslation();
+  const courseId = useContext(CourseContext)!;
   const styles = useStylesheet(createStyles);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const courseQuery = useGetCourse(courseId);
@@ -144,8 +145,8 @@ export const CourseInfoTab = ({ courseId }: CourseTabProps) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     heading: {
-      padding: spacing[5],
-      paddingBottom: 0,
+      paddingTop: spacing[5],
+      paddingHorizontal: spacing[4],
     },
     metricsCard: {
       flexDirection: 'row',

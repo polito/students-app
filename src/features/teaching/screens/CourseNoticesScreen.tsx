@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
@@ -18,11 +18,12 @@ import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
-import { CourseTabProps } from '../screens/CourseScreen';
+import { CourseContext } from '../contexts/CourseContext';
 
-export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
+export const CourseNoticesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
+  const courseId = useContext(CourseContext)!;
   const noticesQuery = useGetCourseNotices(courseId);
   const { accessibilityListLabel } = useAccessibility();
   const { paddingHorizontal } = useSafeAreaSpacing();
