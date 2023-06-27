@@ -43,9 +43,12 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const examAvailable = exam?.status === ExamStatusEnum.Available;
   const showCta = useMemo(() => {
     if (!exam) return false;
-    (
-      [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
-    ).includes(exam.status);
+    return (
+      exam.question?.statement === undefined &&
+      (
+        [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
+      ).includes(exam.status)
+    );
   }, [exam]);
 
   useEffect(() => {
