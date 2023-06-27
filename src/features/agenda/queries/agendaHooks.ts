@@ -46,7 +46,7 @@ const groupItemsByDay = (
         icon: coursePreferences.icon,
         date: formatMachineDate(exam.examStartsAt!),
         start: DateTime.fromJSDate(exam.examStartsAt!),
-        end: DateTime.fromJSDate(exam.examStartsAt!), // TODO refactor
+        end: DateTime.fromJSDate(exam.examEndsAt!),
         startTimestamp: exam.examStartsAt!.valueOf(),
         fromTime: formatTime(exam.examStartsAt!),
         isTimeToBeDefined: exam.isTimeToBeDefined,
@@ -110,7 +110,7 @@ const groupItemsByDay = (
       const item: DeadlineItem = {
         key: 'deadline' + deadline.date.valueOf(),
         start: DateTime.fromJSDate(startDate),
-        end: DateTime.fromJSDate(startDate),
+        end: DateTime.fromJSDate(startDate).plus({ hour: 1 }),
         startTimestamp: deadline.date.valueOf(),
         date: formatMachineDate(deadline.date),
         title: deadline.name,
@@ -271,7 +271,7 @@ export const useGetAgendaWeeks = (
         bookingsQuery.isSuccess &&
         deadlinesQuery.isSuccess,
       getNextPageParam: lastPage => {
-        return lastPage.dateRange.start!.plus(oneWeek) || thisMonday;
+        return lastPage.dateRange.start!.plus(oneWeek);
       },
       getPreviousPageParam: firstPage => {
         return firstPage.dateRange.start!.minus(oneWeek);

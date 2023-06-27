@@ -1,7 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { TextStyle, ViewStyle } from 'react-native';
-
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ViewStyle } from 'react-native';
 
 import { DateTime } from 'luxon';
 
@@ -19,7 +17,6 @@ import {
   WeekNum,
 } from '../../types/Calendar';
 import {
-  MIN_HEIGHT,
   getDatesInMonth,
   getDatesInNextCustomDays,
   getDatesInNextOneDay,
@@ -43,11 +40,6 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   height: number;
 
   /**
-   * The height of each hour row.
-   */
-  hourRowHeight?: number;
-
-  /**
    * Adjusts the indentation of events that occur during the same time period. Defaults to 20 on web and 8 on mobile.
    */
   overlapOffset?: number;
@@ -68,7 +60,7 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
 
   // Custom renderer
   renderEvent?: EventRenderer<T>;
-  renderHeader?: HeaderRenderer<T>;
+  renderHeader?: HeaderRenderer;
   renderHeaderForMonthView?: MonthHeaderRenderer;
 
   ampm?: boolean;
@@ -79,7 +71,6 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   mode?: Mode;
   scrollOffsetMinutes?: number;
   showTime?: boolean;
-
   swipeEnabled?: boolean;
   weekStartsOn?: WeekNum;
   onChangeDate?: DateRangeHandler;
@@ -92,7 +83,6 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   activeDate?: DateTime;
   headerComponent?: React.ReactElement | null;
   headerComponentStyle?: ViewStyle;
-  hourStyle?: TextStyle;
   showAllDayEventCell?: boolean;
   sortedMonthView?: boolean;
   moreLabel?: string;
@@ -102,12 +92,10 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
 export const Calendar = <T extends ICalendarEventBase>({
   events,
   height,
-  hourRowHeight,
   ampm = false,
   date,
   eventCellStyle,
   calendarCellStyle,
-  calendarCellTextStyle,
   hideNowIndicator = false,
   mode = 'week',
   overlapOffset,
@@ -129,12 +117,9 @@ export const Calendar = <T extends ICalendarEventBase>({
   renderHeader: HeaderComponent = CalendarHeader,
   renderHeaderForMonthView, // TODO RESTORE : HeaderComponentForMonthView =  CalendarHeaderForMonthView,
   weekEndsOn = 6,
-  maxVisibleEventCount = 3,
-  eventMinHeightForMonthView = 22,
   activeDate,
   headerComponent = null,
   headerComponentStyle = {},
-  hourStyle = {},
   showAllDayEventCell = true,
   moreLabel = '{moreCount} More',
   showAdjacentMonths = true,
@@ -181,12 +166,9 @@ export const Calendar = <T extends ICalendarEventBase>({
     [mode, weekEndsOn, weekStartsOn],
   );
 
-  const cellHeight = useMemo(
-    () => hourRowHeight || Math.max(height - 30, MIN_HEIGHT) / 24,
-    [height, hourRowHeight],
-  );
-
-  const theme = useTheme();
+  const cellHeight = useMemo(() => {
+    return Math.max(50, height / 14);
+  }, [height]);
 
   const onSwipeHorizontal = useCallback(
     (direction: HorizontalDirection) => {
@@ -270,14 +252,12 @@ export const Calendar = <T extends ICalendarEventBase>({
   const headerProps = {
     ...commonProps,
     style: headerContainerStyle,
-    allDayEvents: allDayEvents,
     onPressDateHeader: onPressDateHeader,
     activeDate,
     headerContentStyle: headerContentStyle,
     dayHeaderStyle: dayHeaderStyle,
     dayHeaderHighlightColor: dayHeaderHighlightColor,
     weekDayHeaderHighlightColor: weekDayHeaderHighlightColor,
-    showAllDayEventCell: showAllDayEventCell,
   };
 
   return (
@@ -285,8 +265,11 @@ export const Calendar = <T extends ICalendarEventBase>({
       <HeaderComponent {...headerProps} />
       <CalendarBody
         {...commonProps}
-        style={bodyContainerStyle}
-        containerHeight={height}
+        style={{
+          paddingTop: 20,
+        }}
+        allDayEvents={allDayEvents}
+        showAllDayEventCell={showAllDayEventCell}
         events={daytimeEvents}
         eventCellStyle={eventCellStyle}
         calendarCellStyle={calendarCellStyle}
@@ -301,7 +284,6 @@ export const Calendar = <T extends ICalendarEventBase>({
         renderEvent={renderEvent}
         headerComponent={headerComponent}
         headerComponentStyle={headerComponentStyle}
-        hourStyle={hourStyle}
         isEventOrderingEnabled={isEventOrderingEnabled}
       />
     </Fragment>

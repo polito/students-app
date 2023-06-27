@@ -1,14 +1,16 @@
-import * as React from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 import {
   Platform,
   ScrollView,
   StyleSheet,
-  TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
 
-import { DateTime } from 'luxon';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme';
+
+import { DateTime, Interval } from 'luxon';
 
 import { useNow } from '../../hooks/calendar/useNow';
 import { usePanResponder } from '../../hooks/calendar/usePanResponder';
@@ -20,8 +22,7 @@ import {
   ICalendarEventBase,
 } from '../../types/Calendar';
 import {
-  getCountOfEventsAtEvent,
-  getOrderOfEvent,
+  getMaxOverlappingEventsCount,
   getRelativeTopInDay,
   hours,
   isToday,
@@ -30,41 +31,32 @@ import { CalendarEvent } from './CalendarEvent';
 import { HourGuideCell } from './HourGuideCell';
 import { HourGuideColumn } from './HourGuideColumn';
 
-const styles = StyleSheet.create({
-  nowIndicator: {
-    position: 'absolute',
-    zIndex: 10000,
-    height: 2,
-    width: '100%',
-  },
-});
-
 interface CalendarBodyProps<T extends ICalendarEventBase> {
-  cellHeight: number;
-  containerHeight: number;
-  dateRange: DateTime[];
-  events: T[];
-  scrollOffsetMinutes: number;
+  allDayEvents: T[];
   ampm: boolean;
-  showTime: boolean;
-  style: ViewStyle;
-  eventCellStyle?: EventCellStyle<T>;
   calendarCellStyle?: CalendarCellStyle;
+  cellHeight: number;
+  dateRange: DateTime[];
+  eventCellStyle?: EventCellStyle<T>;
+  events: T[];
+  headerComponent?: React.ReactElement | null;
+  headerComponentStyle?: ViewStyle;
+  hideHours?: boolean;
   hideNowIndicator?: boolean;
-  overlapOffset?: number;
+  isEventOrderingEnabled?: boolean;
   onPressCell?: (date: DateTime) => void;
   onPressEvent?: (event: T) => void;
   onSwipeHorizontal?: (d: HorizontalDirection) => void;
+  overlapOffset?: number;
   renderEvent?: EventRenderer<T>;
-  headerComponent?: React.ReactElement | null;
-  headerComponentStyle?: ViewStyle;
-  hourStyle?: TextStyle;
-  hideHours?: boolean;
-  isEventOrderingEnabled?: boolean;
+  scrollOffsetMinutes: number;
+  showAllDayEventCell: boolean;
+  showTime: boolean;
+  style: ViewStyle;
 }
 
 export const CalendarBody = <T extends ICalendarEventBase>({
-  containerHeight,
+  allDayEvents,
   cellHeight,
   dateRange,
   style,
@@ -74,6 +66,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   eventCellStyle,
   calendarCellStyle,
   ampm,
+  showAllDayEventCell,
   showTime,
   scrollOffsetMinutes,
   onSwipeHorizontal,
@@ -82,14 +75,15 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   renderEvent,
   headerComponent = null,
   headerComponentStyle = {},
-  hourStyle = {},
   hideHours = false,
   isEventOrderingEnabled = true,
 }: CalendarBodyProps<T>) => {
-  const scrollView = React.useRef<ScrollView>(null);
+  const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
 
-  React.useEffect(() => {
+  const styles = useStylesheet(createStyles);
+
+  useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (scrollView.current && scrollOffsetMinutes && Platform.OS !== 'ios') {
       // We add delay here to work correct on React Native
@@ -114,15 +108,26 @@ export const CalendarBody = <T extends ICalendarEventBase>({
     onSwipeHorizontal,
   });
 
-  const _onPressCell = React.useCallback(
+  const _onPressCell = useCallback(
     (date: DateTime) => {
       onPressCell && onPressCell(date);
     },
     [onPressCell],
   );
 
-  const _renderMappedEvent = React.useCallback(
-    (event: T, index: number) => {
+  const _renderMappedEvent = useCallback(
+    (event: T, index: number, dailyEvents: T[]) => {
+      const eventTime = Interval.fromDateTimes(event.start, event.end);
+      const overlappingEvents = dailyEvents.filter(e =>
+        eventTime.overlaps(Interval.fromDateTimes(e.start, e.end)),
+      );
+      const overlappingEventsCount = getMaxOverlappingEventsCount(
+        event,
+        overlappingEvents,
+      );
+      let eventIndex = overlappingEvents.indexOf(event);
+      if (eventIndex === -1) eventIndex = 0;
+
       return (
         <CalendarEvent
           key={`${index}${event.start}${event.title}${event.end}`}
@@ -130,75 +135,71 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           onPressEvent={onPressEvent}
           eventCellStyle={eventCellStyle}
           showTime={showTime}
-          eventCount={
-            isEventOrderingEnabled
-              ? getCountOfEventsAtEvent(event, events)
-              : undefined
-          }
-          eventOrder={
-            isEventOrderingEnabled ? getOrderOfEvent(event, events) : undefined
-          }
+          eventCount={overlappingEventsCount}
+          eventOrder={eventIndex}
           overlapOffset={overlapOffset}
           renderEvent={renderEvent}
           ampm={ampm}
+          showAllDayEventCell={showAllDayEventCell}
         />
       );
     },
     [
       ampm,
       eventCellStyle,
-      events,
-      isEventOrderingEnabled,
       onPressEvent,
       overlapOffset,
       renderEvent,
+      showAllDayEventCell,
       showTime,
     ],
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       {headerComponent != null ? (
         <View style={headerComponentStyle}>{headerComponent}</View>
       ) : null}
       <ScrollView
-        style={[
-          {
-            height: containerHeight - cellHeight * 3,
-          },
-          style,
-        ]}
+        style={style}
         ref={scrollView}
         scrollEventThrottle={32}
         {...panResponder.panHandlers}
         showsVerticalScrollIndicator={false}
-        nestedScrollEnabled
         contentOffset={
           Platform.OS === 'ios'
             ? { x: 0, y: scrollOffsetMinutes }
             : { x: 0, y: 0 }
         }
+        contentContainerStyle={{ paddingBottom: 150 }}
       >
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
-            // [
-            //   u['flex-1'],
-            //   theme.isRTL ? u['flex-row-reverse'] : u['flex-row'],
-            // ]
+            paddingTop: 8,
           }}
         >
           {!hideHours && (
-            <View style={{}}>
-              {/* TODO fix style [u['z-20'], u['w-50']] */}
+            <View
+              style={{
+                width: 35,
+              }}
+            >
+              {showAllDayEventCell && (
+                <HourGuideColumn
+                  key="all-day"
+                  cellHeight={cellHeight}
+                  hour="all day"
+                  ampm={ampm}
+                />
+              )}
               {hours.map(hour => (
                 <HourGuideColumn
                   key={hour}
                   cellHeight={cellHeight}
                   hour={hour}
                   ampm={ampm}
-                  hourStyle={hourStyle}
                 />
               ))}
             </View>
@@ -212,6 +213,13 @@ export const CalendarBody = <T extends ICalendarEventBase>({
               }}
               key={date.toString()}
             >
+              {showAllDayEventCell ? (
+                <View style={[styles.allDayEventCell, { height: cellHeight }]}>
+                  {allDayEvents
+                    .filter(({ end }) => end.hasSame(date, 'day'))
+                    .map(_renderMappedEvent)}
+                </View>
+              ) : null}
               {hours.map((hour, index) => (
                 <HourGuideCell
                   key={hour}
@@ -225,18 +233,16 @@ export const CalendarBody = <T extends ICalendarEventBase>({
               ))}
 
               {events
-                .filter(
-                  ({ start, end }) =>
-                    start.hasSame(date, 'day') && end.hour !== 23,
-                )
+                .filter(({ end }) => end.hasSame(date, 'day'))
                 .map(_renderMappedEvent)}
 
               {isToday(date) && !hideNowIndicator && (
                 <View
                   style={[
                     styles.nowIndicator,
-                    { backgroundColor: 'red' }, // todo attach to palette
-                    { top: `${getRelativeTopInDay(now)}%` },
+                    {
+                      top: `${getRelativeTopInDay(now, showAllDayEventCell)}%`,
+                    },
                   ]}
                 />
               )}
@@ -244,6 +250,20 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           ))}
         </View>
       </ScrollView>
-    </React.Fragment>
+    </Fragment>
   );
 };
+
+const createStyles = ({ dark, palettes }: Theme) =>
+  StyleSheet.create({
+    nowIndicator: {
+      position: 'absolute',
+      zIndex: 10000,
+      height: 2,
+      width: '100%',
+      backgroundColor: dark ? palettes.red['500'] : palettes.red['600'],
+    },
+    allDayEventCell: {
+      borderColor: palettes.gray['200'],
+    },
+  });

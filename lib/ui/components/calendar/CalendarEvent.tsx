@@ -1,4 +1,4 @@
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useCallback } from 'react';
 
 import { DateTime } from 'luxon';
 
@@ -10,20 +10,10 @@ import {
 } from '../../types/Calendar';
 import {
   DAY_MINUTES,
-  OVERLAP_OFFSET,
   getRelativeTopInDay,
   getStyleForOverlappingEvent,
 } from '../../utils/calendar';
 import { DefaultCalendarEventRenderer } from './DefaultCalendarEventRenderer';
-
-const getEventCellPositionStyle = (start: DateTime, end: DateTime) => {
-  const relativeHeight = 100 * (1 / DAY_MINUTES) * end.diff(start).minutes;
-  const relativeTop = getRelativeTopInDay(start);
-  return {
-    height: `${relativeHeight}%`,
-    top: `${relativeTop}%`,
-  };
-};
 
 interface CalendarEventProps<T extends ICalendarEventBase> {
   event: T;
@@ -35,6 +25,7 @@ interface CalendarEventProps<T extends ICalendarEventBase> {
   overlapOffset?: number;
   renderEvent?: EventRenderer<T>;
   ampm: boolean;
+  showAllDayEventCell?: boolean;
 }
 
 export const CalendarEvent = <T extends ICalendarEventBase>({
@@ -44,11 +35,31 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
   showTime,
   eventCount = 1,
   eventOrder = 0,
-  overlapOffset = OVERLAP_OFFSET,
   renderEvent,
   ampm,
+  showAllDayEventCell = false,
 }: CalendarEventProps<T>) => {
-  const { spacing } = useTheme();
+  const getEventCellPositionStyle = useCallback(
+    (start: DateTime, end: DateTime) => {
+      const minutesInDay = showAllDayEventCell ? DAY_MINUTES + 60 : DAY_MINUTES;
+      if (showAllDayEventCell && event.start.hour === 0) {
+        return {
+          height: '100%',
+          top: '0%',
+        };
+      }
+
+      const relativeHeight =
+        100 * (1 / minutesInDay) * end.diff(start).as('minutes');
+
+      const relativeTop = getRelativeTopInDay(start, showAllDayEventCell);
+      return {
+        height: `${relativeHeight}%`,
+        top: `${relativeTop}%`,
+      };
+    },
+    [showAllDayEventCell],
+  );
 
   const touchableOpacityProps = useCalendarTouchableOpacityProps({
     event,
@@ -56,11 +67,10 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
     onPressEvent,
     injectedStyles: [
       getEventCellPositionStyle(event.start, event.end),
-      getStyleForOverlappingEvent(eventOrder, overlapOffset),
+      getStyleForOverlappingEvent(eventOrder, eventCount),
       {
         position: 'absolute',
-        marginTop: spacing[2],
-        marginHorizontal: spacing[3],
+        width: `${98 / eventCount}%`,
       },
     ],
   });

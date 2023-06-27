@@ -1,45 +1,43 @@
-import * as React from 'react';
-import { Text, TextStyle, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme';
+
+import { isNumber } from 'lodash';
 
 import { formatHour } from '../../utils/calendar';
-import { objHasContent } from '../../utils/object';
 
 interface HourGuideColumnProps {
   cellHeight: number;
-  hour: number;
+  hour?: string | number;
   ampm: boolean;
-  hourStyle: TextStyle;
 }
 
-const _HourGuideColumn = ({
+export const HourGuideColumn = ({
   cellHeight,
   hour,
   ampm,
-  hourStyle = {},
 }: HourGuideColumnProps) => {
-  const theme = useTheme();
-  const textStyle = React.useMemo(
-    () => ({
-      color: theme.palettes.gray[500],
-      fontSize: theme.fontSizes.xs,
-    }),
-    [theme],
-  );
+  const styles = useStylesheet(createStyles);
 
   return (
-    <View style={{ height: cellHeight }}>
-      <Text
-        style={[
-          objHasContent(hourStyle) ? hourStyle : textStyle,
-          { textAlign: 'center' },
-        ]}
-      >
-        {formatHour(hour, ampm)}
+    <View style={{ height: cellHeight, width: 35 }}>
+      <Text style={styles.hourLabel}>
+        {isNumber(hour) ? formatHour(hour, ampm) : hour}
       </Text>
     </View>
   );
 };
 
-export const HourGuideColumn = React.memo(_HourGuideColumn, () => true);
+const createStyles = ({ palettes, fontSizes }: Theme) =>
+  StyleSheet.create({
+    hourLabel: {
+      textAlign: 'center',
+      position: 'absolute',
+      top: -8,
+      width: '100%',
+      color: palettes.gray[500],
+      fontSize: fontSizes.xs,
+    },
+  });

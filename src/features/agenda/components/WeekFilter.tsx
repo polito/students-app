@@ -19,8 +19,9 @@ interface Props {
   current: DateTime;
   getNext: () => void;
   getPrev: () => void;
+  enabled: boolean;
 }
-export const WeekFilter = ({ current, getNext, getPrev }: Props) => {
+export const WeekFilter = ({ current, getNext, getPrev, enabled }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -35,6 +36,7 @@ export const WeekFilter = ({ current, getNext, getPrev }: Props) => {
         icon={faChevronLeft}
         accessibilityLabel={t('loginScreen.showPassword')}
         color={colors.secondaryText}
+        disabled={!enabled}
         onPress={() => getPrev()}
       />
 
@@ -45,6 +47,7 @@ export const WeekFilter = ({ current, getNext, getPrev }: Props) => {
         icon={faChevronRight}
         accessibilityLabel={t('loginScreen.showPassword')}
         color={colors.secondaryText}
+        disabled={!enabled}
         onPress={() => getNext()}
       />
     </Row>

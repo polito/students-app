@@ -1,6 +1,7 @@
 {
   "agendaScreen": {
     "backToToday": "Torna a oggi",
+    "dailyLayout": "Layout giornaliero",
     "emptyDay": "Non hai impegni oggi",
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -40,10 +40,11 @@ export const HourGuideCell = ({
     >
       <View
         style={[
-          // TODO FIX STYLE
-          // u['border-l'],
-          // u['border-b'],
-          { borderColor: theme.palettes.gray['200'] },
+          {
+            borderColor: theme.palettes.gray['400'],
+            borderRightWidth: StyleSheet.hairlineWidth,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+          },
           { height: cellHeight },
           { ...getCalendarCellStyle(date, index) },
         ]}

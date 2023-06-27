@@ -1,12 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import {
+  faCalendarDay,
+  faEllipsisVertical,
+} from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
 import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -37,6 +44,9 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
   });
 
   const { language } = usePreferencesContext();
+
+  const { t } = useTranslation();
+  const { palettes, fontSizes } = useTheme();
 
   const { colors } = useTheme();
 
@@ -93,6 +103,62 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
     undefined,
   );
 
+  const screenOptions = [
+    {
+      id: 'refresh',
+      title: t('agendaScreen.refresh'),
+    },
+    {
+      id: 'daily',
+      title: t('agendaScreen.dailyLayout'),
+    },
+  ];
+
+  useLayoutEffect(() => {
+    const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
+      // eslint-disable-next-line default-case
+      switch (event) {
+        case 'daily':
+          navigation.navigate('Agenda');
+          break;
+        case 'refresh':
+          // TODO refreshQueries();
+          break;
+      }
+    };
+
+    navigation.setOptions({
+      headerRight: () => (
+        <>
+          <IconButton
+            icon={faCalendarDay}
+            color={palettes.primary[400]}
+            size={fontSizes.lg}
+            adjustSpacing="left"
+            accessibilityLabel={t('agendaScreen.backToToday')}
+            onPress={() => {
+              if (data) {
+                const updatedWeek = DateTime.now().startOf('day');
+
+                setCurrentWeekStart(updatedWeek);
+                setCurrentPageNumber(data.pageParams.indexOf(undefined));
+              }
+            }}
+          />
+          <MenuView actions={screenOptions} onPressAction={onPressOption}>
+            <IconButton
+              icon={faEllipsisVertical}
+              color={palettes.primary[400]}
+              size={fontSizes.lg}
+              adjustSpacing="right"
+              accessibilityLabel={t('common.options')}
+            />
+          </MenuView>
+        </>
+      ),
+    });
+  }, [palettes.primary, fontSizes.lg, navigation, screenOptions, t]);
+
   return (
     <SafeAreaView>
       <Row justify="space-between">
@@ -101,6 +167,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           current={currentWeekStart}
           getNext={nextWeek}
           getPrev={prevWeek}
+          enabled={!isFetching}
         ></WeekFilter>
       </Row>
       <View
@@ -110,9 +177,11 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           setCalendarHeight(height);
         }}
       >
-        {!calendarHeight || isFetching ? (
-          <ActivityIndicator size="large" />
-        ) : (
+        {!calendarHeight ||
+          (isFetching && (
+            <ActivityIndicator size="large" style={styles.loader} />
+          ))}
+        {calendarHeight && (
           <Calendar<AgendaItem>
             events={weeklyEvents}
             headerContentStyle={styles.dayHeader}
@@ -169,12 +238,6 @@ const createStyles = ({ spacing }: Theme) =>
       height: '100%',
       width: '100%',
     },
-    column: {
-      display: 'flex',
-      flexDirection: 'column',
-      flex: 1,
-      backgroundColor: 'red',
-    },
     dayHeader: {
       display: 'flex',
       flexDirection: 'row',
@@ -188,5 +251,12 @@ const createStyles = ({ spacing }: Theme) =>
       shadowOpacity: undefined,
       shadowRadius: undefined,
       elevation: undefined,
+    },
+    loader: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
     },
   });
