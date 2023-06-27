@@ -203,6 +203,9 @@ jobs:
       working-directory: ./android
       env:
         STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: bundle exec fastlane release
     - name: Fastlane APK lane
       if: |
@@ -281,6 +284,10 @@ jobs:
     - name: Fastlane RELEASE lane
       if: needs.configure.outputs.push_to_testflight == 'true'
       working-directory: ./ios
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: |
         bundle exec fastlane release
 
