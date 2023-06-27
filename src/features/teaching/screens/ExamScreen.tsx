@@ -121,7 +121,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           accessibilityLabel={examAccessibilityLabel}
           type={t('common.examCall')}
           time={time}
-          endTime={exam?.examEndsAt ? exam.examEndsAt : undefined}
+          endTime={exam?.examEndsAt || undefined}
         />
         <SectionList loading={teacherQuery.isLoading} indented>
           <ListItem

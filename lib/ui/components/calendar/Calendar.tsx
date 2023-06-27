@@ -13,7 +13,6 @@ import {
   HorizontalDirection,
   ICalendarEventBase,
   Mode,
-  MonthHeaderRenderer,
   WeekNum,
 } from '../../types/Calendar';
 import {
@@ -61,7 +60,7 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   // Custom renderer
   renderEvent?: EventRenderer<T>;
   renderHeader?: HeaderRenderer;
-  renderHeaderForMonthView?: MonthHeaderRenderer;
+  // renderHeaderForMonthView?: MonthHeaderRenderer;
 
   ampm?: boolean;
   date?: DateTime;
@@ -115,7 +114,7 @@ export const Calendar = <T extends ICalendarEventBase>({
   onPressEvent,
   renderEvent,
   renderHeader: HeaderComponent = CalendarHeader,
-  renderHeaderForMonthView, // TODO RESTORE : HeaderComponentForMonthView =  CalendarHeaderForMonthView,
+  // renderHeaderForMonthView : HeaderComponentForMonthView =  CalendarHeaderForMonthView,
   weekEndsOn = 6,
   activeDate,
   headerComponent = null,

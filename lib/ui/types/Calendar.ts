@@ -4,7 +4,6 @@ import { RecursiveArray, TextStyle, ViewStyle } from 'react-native';
 import { DateTime } from 'luxon';
 
 import { CalendarHeaderProps } from '../components/calendar/CalendarHeader';
-import { CalendarHeaderForMonthViewProps } from '../components/calendar/CalendarHeaderForMonthView';
 
 export interface ICalendarEventBase {
   start: DateTime;
@@ -53,5 +52,3 @@ export type EventRenderer<T extends ICalendarEventBase = ICalendarEventBase> = (
 export type HeaderRenderer = ComponentType<
   CalendarHeaderProps & { mode: Mode }
 >;
-export type MonthHeaderRenderer =
-  ComponentType<CalendarHeaderForMonthViewProps>;
