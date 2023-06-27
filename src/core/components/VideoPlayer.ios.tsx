@@ -26,6 +26,7 @@ export const VideoPlayer = (props: VideoProperties) => {
 
   return (
     <Video
+      ignoreSilentSwitch="ignore"
       paused={paused}
       controls={true}
       style={{
