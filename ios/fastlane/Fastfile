@@ -46,7 +46,7 @@ platform :ios do
       project_slug: ENV['SENTRY_PROJECT'],
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
-      sourcemap: 'main.jsbundle.map',
+      sourcemap: './ios/main.jsbundle.map',
       rewrite: true
     )
 
