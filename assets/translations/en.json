@@ -6,8 +6,7 @@
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
-    
+    "weeklyLayout": "Weekly layout"
   },
   "bookingsScreen": {
     "title": "Bookings"
