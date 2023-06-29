@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
@@ -30,6 +31,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { parseDocument } from 'htmlparser2';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetNewsItem } from '../../../core/queries/newsHooks';
 import { formatDate, formatDateFromString } from '../../../utils/dates';
@@ -57,97 +59,104 @@ export const NewsItemScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[useNewsItemQuery]} manual />}
     >
-      <Section>
-        <ScreenTitle title={title ?? ''} style={styles.heading} />
-        {isLoading && (
-          <ActivityIndicator
-            style={{
-              marginVertical: spacing[6],
-            }}
-          />
-        )}
-      </Section>
-      {!isLoading && (
-        <>
-          {createdAt && (
-            <Card accessible padded>
-              <Text variant="heading" weight="semibold" numberOfLines={1}>
-                {t('newsScreen.createdAt')}
-                {formatDate(createdAt)}
+      <SafeAreaView>
+        <Section>
+          <ScreenTitle title={title ?? ''} style={styles.heading} />
+          {isLoading && (
+            <ActivityIndicator
+              style={{
+                marginVertical: spacing[6],
+              }}
+            />
+          )}
+        </Section>
+        {!isLoading && (
+          <>
+            {createdAt && (
+              <Card accessible padded>
+                <Text variant="heading" weight="semibold" numberOfLines={1}>
+                  {t('newsScreen.createdAt')}
+                  {formatDate(createdAt)}
+                </Text>
+              </Card>
+            )}
+            {!!logo && (
+              <Card
+                accessible
+                accessibilityLabel={t('newsScreen.logo')}
+                accessibilityRole="image"
+              >
+                <ImageLoader
+                  source={{ uri: logo.url }}
+                  imageStyle={{ height: 200 }}
+                  containerStyle={{ height: 200, margin: spacing[3] }}
+                  resizeMode={FastImage.resizeMode.cover}
+                />
+              </Card>
+            )}
+            {htmlContent && (
+              <Card accessible>
+                <HtmlView source={{ dom }} />
+              </Card>
+            )}
+            <Card padded>
+              <Text
+                variant="subHeading"
+                weight="semibold"
+                style={{ marginBottom: spacing[1] }}
+              >
+                {t('newsScreen.information')}
               </Text>
-            </Card>
-          )}
-          {!!logo && (
-            <Card
-              accessible
-              accessibilityLabel={t('newsScreen.logo')}
-              accessibilityRole="image"
-            >
-              <ImageLoader
-                source={{ uri: logo.url }}
-                imageStyle={{ height: 200 }}
-                containerStyle={{ height: 200, margin: spacing[3] }}
-                resizeMode={FastImage.resizeMode.cover}
-              />
-            </Card>
-          )}
-          {htmlContent && (
-            <Card accessible>
-              <HtmlView source={{ dom }} />
-            </Card>
-          )}
-          <Card padded>
-            <Text
-              variant="subHeading"
-              weight="semibold"
-              style={{ marginBottom: spacing[1] }}
-            >
-              {t('newsScreen.information')}
-            </Text>
-            <Col>
-              {eventStartTime && (
-                <Row style={styles.infoRow} accessible accessibilityRole="text">
-                  <Icon
-                    icon={faCalendarAlt}
-                    style={styles.iconCalendar}
-                    color={palettes.secondary[600]}
-                  />
-                  <Text
-                    weight="normal"
-                    accessibilityLabel={[
-                      t('newsScreen.eventStartTime'),
-                      formatDateFromString(eventStartTime),
-                    ].join(' ')}
+              <Col>
+                {eventStartTime && (
+                  <Row
+                    style={styles.infoRow}
+                    accessible
+                    accessibilityRole="text"
                   >
-                    {formatDateFromString(eventStartTime)}
-                  </Text>
-                </Row>
-              )}
-              {links?.map((link, index) => (
-                <TouchableHighlight
-                  underlayColor={colors.touchableHighlight}
-                  onPress={() => Linking.openURL(link.url)}
-                  key={index}
-                  accessible
-                  accessibilityRole="link"
-                  style={styles.infoRow}
-                >
-                  <Row align="center">
                     <Icon
-                      icon={link.type === 'link' ? faInfoCircle : faFileAlt}
+                      icon={faCalendarAlt}
                       style={styles.iconCalendar}
                       color={palettes.secondary[600]}
                     />
-                    <Text weight="normal" variant="link" style={styles.link}>
-                      {link.description}
+                    <Text
+                      weight="normal"
+                      accessibilityLabel={[
+                        t('newsScreen.eventStartTime'),
+                        formatDateFromString(eventStartTime),
+                      ].join(' ')}
+                    >
+                      {formatDateFromString(eventStartTime)}
                     </Text>
                   </Row>
-                </TouchableHighlight>
-              ))}
-            </Col>
-          </Card>
-        </>
-      )}
+                )}
+                {links?.map((link, index) => (
+                  <TouchableHighlight
+                    underlayColor={colors.touchableHighlight}
+                    onPress={() => Linking.openURL(link.url)}
+                    key={index}
+                    accessible
+                    accessibilityRole="link"
+                    style={styles.infoRow}
+                  >
+                    <Row align="center">
+                      <Icon
+                        icon={link.type === 'link' ? faInfoCircle : faFileAlt}
+                        style={styles.iconCalendar}
+                        color={palettes.secondary[600]}
+                      />
+                      <Text weight="normal" variant="link" style={styles.link}>
+                        {link.description}
+                      </Text>
+                    </Row>
+                  </TouchableHighlight>
+                ))}
+              </Col>
+            </Card>
+          </>
+        )}
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

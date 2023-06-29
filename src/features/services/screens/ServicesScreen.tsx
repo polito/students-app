@@ -84,18 +84,6 @@ export const ServicesScreen = () => {
         disabled: true,
       },
       {
-        id: 'jobOffers',
-        name: t('jobOffersScreen.title'),
-        icon: faBriefcase,
-        disabled: true,
-      },
-      {
-        id: 'news',
-        name: t('newsScreen.title'),
-        icon: faBullhorn,
-        disabled: true,
-      },
-      {
         id: 'bookings',
         name: t('bookingsScreen.title'),
         icon: faPersonCirclePlus,

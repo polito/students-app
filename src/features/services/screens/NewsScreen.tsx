@@ -1,9 +1,10 @@
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetNews } from '../../../core/queries/newsHooks';
 import { NewsListItem } from '../components/NewsListItem';
 
@@ -15,18 +16,21 @@ export const NewsScreen = () => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[newsQuery]} manual />}
     >
-      <Section>
-        <OverviewList loading={newsQuery.isLoading}>
-          {newsQuery?.data?.map((newsItem, index) => (
-            <NewsListItem
-              newsItem={newsItem}
-              key={newsItem.id}
-              index={index}
-              totalData={newsQuery?.data?.length || 0}
-            />
-          ))}
-        </OverviewList>
-      </Section>
+      <SafeAreaView>
+        <Section>
+          <OverviewList loading={newsQuery.isLoading}>
+            {newsQuery?.data?.map((newsItem, index) => (
+              <NewsListItem
+                newsItem={newsItem}
+                key={newsItem.id}
+                index={index}
+                totalData={newsQuery?.data?.length || 0}
+              />
+            ))}
+          </OverviewList>
+        </Section>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };
