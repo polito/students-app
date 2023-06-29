@@ -40,15 +40,20 @@ platform :ios do
       apple_id: "6443913305",
     )
 
+    source_map_path = 'dist/main.jsbundle.map'
+    bundle_path = 'dist/main.jsbundle'
+
     sentry_upload_sourcemap(
       auth_token: ENV['SENTRY_AUTH_TOKEN'],
       org_slug: ENV['SENTRY_ORG'],
       project_slug: ENV['SENTRY_PROJECT'],
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
-      sourcemap: './ios/main.jsbundle.map',
+      sourcemap: [bundle_path, source_map_path],
       rewrite: true
     )
+
+
 
   end
 

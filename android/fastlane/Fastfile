@@ -51,13 +51,16 @@ platform :android do
        release_status: "draft",
      )
 
+    source_map_path = 'android/app/src/main/assets/index.android.bundle.map'
+    bundle_path = 'android/app/src/main/assets/index.android.bundle'
+
     sentry_upload_sourcemap(
       auth_token: ENV['SENTRY_AUTH_TOKEN'],
       org_slug: ENV['SENTRY_ORG'],
       project_slug: ENV['SENTRY_PROJECT'],
       version: ENV['APP_VERSION'],
       build: ENV['BUILD_NO'],
-      sourcemap: 'main.jsbundle.map',
+      sourcemap: [bundle_path, source_map_path],
       rewrite: true
     )
   end
