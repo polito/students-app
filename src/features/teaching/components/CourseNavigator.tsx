@@ -15,7 +15,6 @@ import {
 } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { CourseContext } from '../contexts/CourseContext';
 import { FilesCacheProvider } from '../providers/FilesCacheProvider';
@@ -40,9 +39,6 @@ export interface CourseTabsParamList extends TeachingStackParamList {
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
 const TabBar = ({ state, descriptors, navigation }: MaterialTopTabBarProps) => {
-  const { colors } = useTheme();
-  const { paddingHorizontal } = useSafeAreaSpacing();
-
   return (
     <HeaderAccessory>
       <Tabs>

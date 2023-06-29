@@ -26,7 +26,10 @@ export const HeaderAccessory = ({
 const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.headersBackground,
+      backgroundColor: Platform.select({
+        ios: colors.headersBackground,
+        android: colors.surface,
+      }),
       borderBottomWidth: Platform.select({
         ios: StyleSheet.hairlineWidth,
       }),
