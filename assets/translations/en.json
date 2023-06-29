@@ -1,10 +1,12 @@
 {
   "agendaScreen": {
     "backToToday": "Back to today",
+    "dailyLayout": "Daily layout",
     "emptyDay": "You have no events today",
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
-    "title": "Agenda"
+    "title": "Agenda",
+    "weeklyLayout": "Weekly layout"
   },
   "bookingsScreen": {
     "title": "Bookings"
@@ -37,6 +39,7 @@
       "true": "Active"
     },
     "agent": "Agent",
+    "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
@@ -78,6 +81,8 @@
     "en": "English",
     "endRefresh": "Refresh completed",
     "error": "Error",
+    "event": "Event",
+    "event_plural": "Events",
     "exam": "Exam",
     "examCall": "Exam call",
     "examCall_plural": "Exam calls",
@@ -345,7 +350,11 @@
     "takePhotoHint": "Take one or more photos and generate a file"
   },
   "newsScreen": {
-    "title": "News & Events"
+    "title": "News & Events",
+    "createdAt": "Published on ",
+    "information": "Information",
+    "eventStartTime": "Starts on ",
+    "logo": "Logo"
   },
   "notifications": {
     "events": "Events",

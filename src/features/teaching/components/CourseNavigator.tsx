@@ -1,8 +1,9 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Platform, View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
+import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
@@ -43,69 +44,58 @@ const TabBar = ({ state, descriptors, navigation }: MaterialTopTabBarProps) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
 
   return (
-    <Tabs
-      style={[
-        {
-          position: 'relative',
-          backgroundColor: Platform.select({
-            ios: colors.headersBackground,
-            android: colors.surface,
-          }),
-          borderBottomWidth: Platform.select({
-            ios: StyleSheet.hairlineWidth,
-          }),
-          borderBottomColor: colors.divider,
-          elevation: 3,
-          zIndex: 1,
-        },
-        paddingHorizontal,
-      ]}
-    >
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
+    <HeaderAccessory>
+      <Tabs>
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const label =
+            options.tabBarLabel !== undefined
+              ? options.tabBarLabel
+              : options.title !== undefined
+              ? options.title
+              : route.name;
 
-        const isFocused = state.index === index;
+          const isFocused = state.index === index;
 
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
 
-          if (!isFocused && !event.defaultPrevented) {
-            // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({ name: route.name, merge: true, params: {} });
-          }
-        };
+            if (!isFocused && !event.defaultPrevented) {
+              // The `merge: true` option makes sure that the params inside the tab screen are preserved
+              navigation.navigate({
+                name: route.name,
+                merge: true,
+                params: {},
+              });
+            }
+          };
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
 
-        return (
-          <Tab
-            key={route.key}
-            selected={isFocused}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-          >
-            {label as string}
-          </Tab>
-        );
-      })}
-    </Tabs>
+          return (
+            <Tab
+              key={route.key}
+              selected={isFocused}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+              testID={options.tabBarTestID}
+              onPress={onPress}
+              onLongPress={onLongPress}
+            >
+              {label as string}
+            </Tab>
+          );
+        })}
+      </Tabs>
+    </HeaderAccessory>
   );
 };
 

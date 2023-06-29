@@ -11,6 +11,8 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
+import { NewsItemScreen } from '../screens/NewsItemScreen';
+import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
@@ -29,12 +31,14 @@ export type ServiceStackParamList = {
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
   TicketList: {
-    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
+    statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
   };
   JobOffers: undefined;
   JobOffer: {
     id: number;
   };
+  News: undefined;
+  NewsItem: { id: number };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -127,6 +131,21 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('jobOfferScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="News"
+        component={NewsScreen}
+        options={{
+          headerTitle: t('newsScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="NewsItem"
+        component={NewsItemScreen}
+        options={{
+          headerTitle: t('newsScreen.title'),
+          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>

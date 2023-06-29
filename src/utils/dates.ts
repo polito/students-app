@@ -6,6 +6,11 @@ export const formatDate = (date: Date) => {
   return DateTime.fromJSDate(date).toFormat('dd/MM/yyyy');
 };
 
+export const formatDateFromString = (date: string | null) => {
+  if (!date) return '';
+  return DateTime.fromISO(date).toFormat('dd/MM/yyyy');
+};
+
 export const formatDateTime = (date: Date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };

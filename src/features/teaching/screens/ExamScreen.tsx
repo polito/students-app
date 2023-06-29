@@ -44,9 +44,12 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const examAvailable = exam?.status === ExamStatusEnum.Available;
   const showCta = useMemo(() => {
     if (!exam) return false;
-    (
-      [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
-    ).includes(exam.status);
+    return (
+      exam.question?.statement === undefined &&
+      (
+        [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
+      ).includes(exam.status)
+    );
   }, [exam]);
 
   useEffect(() => {
@@ -120,6 +123,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             accessibilityLabel={examAccessibilityLabel}
             type={t('common.examCall')}
             time={time}
+            endTime={exam?.examEndsAt || undefined}
           />
           <OverviewList loading={teacherQuery.isLoading} indented>
             <ListItem

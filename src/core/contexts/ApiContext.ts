@@ -7,6 +7,7 @@ import {
   ExamsApi,
   JobOffersApi,
   LecturesApi,
+  NewsApi,
   PeopleApi,
   PlacesApi,
   StudentApi,
@@ -34,6 +35,7 @@ export interface ApiContextClientsProps {
   places: PlacesApi;
   student: StudentApi;
   tickets: TicketsApi;
+  news: NewsApi;
   jobOffers: JobOffersApi;
 }
 

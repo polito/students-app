@@ -14,6 +14,7 @@ import {
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -29,14 +30,14 @@ import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
 import { prefixKey, prefixKeys } from '../../../utils/queries';
+import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
-import { AgendaTabs } from '../components/AgendaTabs';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
 import { AGENDA_QUERY_KEY, useGetAgendaWeeks } from '../queries/agendaHooks';
 import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
-import { AgendaFiltersState } from '../types/AgendaFiltersState';
-import { AgendaItemTypes } from '../types/AgendaItem';
+import { AgendaItemType } from '../types/AgendaItem';
 import { AgendaState } from '../types/AgendaState';
+import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
@@ -49,14 +50,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
 
-  const [filters, setFilters] = useState<AgendaFiltersState>({
-    booking: true,
-    deadline: true,
-    exam: true,
-    lecture: true,
+  const [filters, setFilters] = useState<AgendaTypesFilterState>({
+    booking: false,
+    deadline: false,
+    exam: false,
+    lecture: false,
   });
 
-  const toggleFilter = (type: AgendaItemTypes) =>
+  const toggleFilter = (type: AgendaItemType) =>
     setFilters(prev => ({ ...prev, [type]: !prev[type] }));
 
   const refreshQueries = () => {
@@ -77,6 +78,10 @@ export const AgendaScreen = ({ navigation }: Props) => {
     {
       id: 'refresh',
       title: t('agendaScreen.refresh'),
+    },
+    {
+      id: 'weekly',
+      title: t('agendaScreen.weeklyLayout'),
     },
   ];
 
@@ -155,8 +160,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   useLayoutEffect(() => {
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      if (event === 'refresh') {
-        refreshQueries();
+      // eslint-disable-next-line default-case
+      switch (event) {
+        case 'weekly':
+          navigation.navigate('AgendaWeek');
+          break;
+        case 'refresh':
+          refreshQueries();
+          break;
       }
     };
 
@@ -194,7 +205,9 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   return (
     <View style={styles.container}>
-      <AgendaTabs state={filters} toggleState={toggleFilter} />
+      <HeaderAccessory>
+        <AgendaFilters state={filters} toggleState={toggleFilter} />
+      </HeaderAccessory>
       {!data || agendaState.isRefreshing ? (
         <ActivityIndicator style={styles.activityIndicator} size="large" />
       ) : (
