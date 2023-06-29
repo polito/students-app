@@ -130,18 +130,6 @@ jobs:
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
     - name: Install npm dependencies
       run: npm install
-    - name: Sentry Release
-      uses: getsentry/action-release@v1.4.1
-      if: steps.configure.outputs.build_no != ''
-      env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-      with:
-        environment: 'production'
-        ignore_missing: true
-        dist: ${{ steps.configure.outputs.build_no }}
-        version: ${{ steps.configure.outputs.version }}
 
 
   build-android:
