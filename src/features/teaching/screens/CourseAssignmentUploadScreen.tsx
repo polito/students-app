@@ -7,7 +7,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { SectionList } from '@lib/ui/components/SectionList';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -49,7 +49,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       style={styles.screen}
     >
-      <SectionList indented>
+      <OverviewList indented>
         <ListItem
           isAction
           title={t('courseAssignmentUploadScreen.ctaUploadFile')}
@@ -86,7 +86,7 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
               });
           }}
         />
-      </SectionList>
+      </OverviewList>
     </ScrollView>
   );
 };

@@ -1,15 +1,8 @@
-import {
-  Children,
-  ComponentProps,
-  Fragment,
-  JSXElementConstructor,
-} from 'react';
+import { ComponentProps, JSXElementConstructor } from 'react';
 import { FlexStyle, StyleProp, View, ViewStyle } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-
-import { notNullish } from '../../../src/utils/predicates';
 
 interface SpacingShorthands {
   /** Shorthand for `margin` in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units */
@@ -81,16 +74,15 @@ export type StackProps<
    * Gap between items in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units
    */
   gap?: keyof Theme['spacing'];
-} & Partial<SpacingShorthands> &
-  Partial<{
-    [key in keyof typeof spacingShorthands]: keyof Theme['spacing'];
-  }> &
+} & Partial<{
+  [key in keyof typeof spacingShorthands]: keyof Theme['spacing'];
+}> &
   ComponentProps<T>;
 
 /**
  * A flexbox (row or column) layout
  *
- * See {@link import('./Row').Row `Row`} and {@link import('./Col').Col `Col`} for shorthand alternatives
+ * See `Row` and `Col` for shorthand alternatives
  */
 export const Stack = <
   T extends
@@ -122,6 +114,7 @@ export const Stack = <
     flexGrow !== undefined && { flexGrow },
     flexShrink !== undefined && { flexShrink },
     flexWrap !== undefined && { flexWrap },
+    gap !== undefined && { gap: spacing[gap as keyof Theme['spacing']] },
     Object.fromEntries(
       Object.entries(spacingShorthands).map(([short, long]) => [
         long,
@@ -130,24 +123,9 @@ export const Stack = <
     ),
     props.style,
   ];
-  const childArray = Children.toArray(children);
   return (
     <Component {...props} style={style}>
-      {gap == null
-        ? children
-        : childArray.filter(notNullish).map((child, index) => (
-            <Fragment key={index}>
-              {child}
-              {index < childArray.length - 1 && (
-                <View
-                  style={{
-                    [direction === 'row' ? 'width' : 'height']:
-                      spacing[gap as keyof Theme['spacing']],
-                  }}
-                />
-              )}
-            </Fragment>
-          ))}
+      {children}
     </Component>
   );
 };

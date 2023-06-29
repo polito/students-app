@@ -11,6 +11,8 @@ import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
@@ -48,6 +50,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   useEffect(() => {
     navigation.setOptions({
@@ -72,6 +75,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             contentInsetAdjustmentBehavior="automatic"
             data={directoryQuery.data}
             scrollEnabled={scrollEnabled}
+            contentContainerStyle={paddingHorizontal}
             keyExtractor={(item: CourseDirectory | CourseFileOverview) =>
               item.id
             }
@@ -91,6 +95,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             ItemSeparatorComponent={Platform.select({
               ios: IndentedDivider,
             })}
+            ListFooterComponent={<BottomBarSpacer />}
           />
         )}
       </FilesCacheProvider>
@@ -104,9 +109,12 @@ interface SearchProps {
 }
 
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
+  const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   useEffect(() => {
     if (!recentFilesQuery.data) return;
@@ -115,15 +123,12 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
     );
   }, [recentFilesQuery.data, searchFilter]);
 
-  const styles = useStylesheet(createStyles);
-
-  const { t } = useTranslation();
-
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       scrollEnabled={scrollEnabled}
+      contentContainerStyle={paddingHorizontal}
       keyExtractor={(item: CourseRecentFile) => item.id}
       renderItem={({ item }) => (
         <CourseRecentFileListItem

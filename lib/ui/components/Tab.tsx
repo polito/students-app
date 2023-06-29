@@ -4,7 +4,10 @@ import {
   TextStyle,
   TouchableHighlightProps,
   TouchableOpacity,
+  View,
 } from 'react-native';
+
+import { Badge } from '@lib/ui/components/Badge';
 
 import color from 'color';
 
@@ -14,6 +17,7 @@ import { Text } from './Text';
 export interface Props {
   selected?: boolean;
   textStyle?: StyleProp<TextStyle>;
+  badge?: number | string;
 }
 
 /**
@@ -24,6 +28,7 @@ export const Tab = ({
   style,
   selected = false,
   textStyle,
+  badge,
   ...rest
 }: PropsWithChildren<TouchableHighlightProps & Props>) => {
   const { dark, palettes, spacing, fontWeights } = useTheme();
@@ -55,21 +60,33 @@ export const Tab = ({
       ]}
       {...rest}
     >
-      <Text
-        style={[
-          {
-            color: selected
-              ? palettes.text[50]
-              : dark
-              ? palettes.primary[400]
-              : palettes.primary[500],
-            fontWeight: fontWeights.medium,
-          },
-          textStyle,
-        ]}
-      >
-        {children}
-      </Text>
+      <View style={{ position: 'relative' }}>
+        <Text
+          style={[
+            {
+              color: selected
+                ? palettes.text[50]
+                : dark
+                ? palettes.primary[400]
+                : palettes.primary[500],
+              fontWeight: fontWeights.medium,
+            },
+            textStyle,
+          ]}
+        >
+          {children}
+        </Text>
+        {badge && (
+          <Badge
+            text={badge}
+            style={{
+              position: 'absolute',
+              right: -15,
+              top: -12,
+            }}
+          />
+        )}
+      </View>
     </TouchableOpacity>
   );
 };

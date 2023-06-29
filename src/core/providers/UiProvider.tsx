@@ -2,7 +2,7 @@ import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { initReactI18next } from 'react-i18next';
 import { Platform, StatusBar, useColorScheme } from 'react-native';
 import overrideColorScheme from 'react-native-override-color-scheme';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 
@@ -18,9 +18,23 @@ import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';
 
+i18n.use(initReactI18next).init({
+  compatibilityJSON: 'v3',
+  fallbackLng: 'en',
+  resources: {
+    en: {
+      translation: en,
+    },
+    it: {
+      translation: it,
+    },
+  },
+});
+
 export const UiProvider = ({ children }: PropsWithChildren) => {
   let { colorScheme, language } = usePreferencesContext();
   const systemColorScheme = useColorScheme();
+  const safeAreaInsets = useSafeAreaInsets();
 
   if (colorScheme === 'system') {
     colorScheme = systemColorScheme ?? 'light';
@@ -32,24 +46,17 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
     language = deviceLanguage;
   }
 
-  const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
+  const uiTheme = useMemo(
+    () => ({
+      ...(colorScheme === 'light' ? lightTheme : darkTheme),
+      safeAreaInsets,
+    }),
+    [colorScheme, safeAreaInsets],
+  );
   const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 
   useEffect(() => {
-    i18n.use(initReactI18next).init({
-      compatibilityJSON: 'v3',
-      lng: language,
-      fallbackLng: 'en',
-      resources: {
-        en: {
-          translation: en,
-        },
-        it: {
-          translation: it,
-        },
-      },
-    });
-
+    i18n.changeLanguage(language);
     Settings.defaultLocale = language;
   }, [language]);
 
@@ -64,11 +71,9 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
           ios: colorScheme === 'dark' ? 'light-content' : 'dark-content',
         })}
       />
-      <SafeAreaProvider>
-        <NavigationContainer theme={navigationTheme}>
-          {children}
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <NavigationContainer theme={navigationTheme}>
+        {children}
+      </NavigationContainer>
     </ThemeContext.Provider>
   );
 };

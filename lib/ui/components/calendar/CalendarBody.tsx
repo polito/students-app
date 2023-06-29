@@ -1,6 +1,7 @@
-import { Fragment, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
@@ -52,7 +53,7 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   scrollOffsetMinutes: number;
   showAllDayEventCell: boolean;
   showTime: boolean;
-  style: ViewStyle;
+  style?: ViewStyle;
 }
 
 export const CalendarBody = <T extends ICalendarEventBase>({
@@ -156,7 +157,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   );
 
   return (
-    <Fragment>
+    <>
       {headerComponent != null ? (
         <View style={headerComponentStyle}>{headerComponent}</View>
       ) : null}
@@ -173,11 +174,10 @@ export const CalendarBody = <T extends ICalendarEventBase>({
         }
         contentContainerStyle={{ paddingBottom: 150 }}
       >
-        <View
+        <SafeAreaView
           style={{
             display: 'flex',
             flexDirection: 'row',
-            paddingTop: 8,
           }}
         >
           {!hideHours && (
@@ -190,8 +190,9 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                 <HourGuideColumn
                   key="all-day"
                   cellHeight={cellHeight}
-                  hour="all day"
+                  hour="All day"
                   ampm={ampm}
+                  centerVertically={false}
                 />
               )}
               {hours.map(hour => (
@@ -205,65 +206,92 @@ export const CalendarBody = <T extends ICalendarEventBase>({
             </View>
           )}
 
-          {dateRange.map(date => (
-            <View
-              style={{
-                flex: 1,
-                overflow: 'hidden',
-              }}
-              key={date.toString()}
-            >
-              {showAllDayEventCell ? (
-                <View style={[styles.allDayEventCell, { height: cellHeight }]}>
-                  {allDayEvents
-                    .filter(({ end }) => end.hasSame(date, 'day'))
-                    .map(_renderMappedEvent)}
-                </View>
-              ) : null}
-              {hours.map((hour, index) => (
-                <HourGuideCell
-                  key={hour}
-                  cellHeight={cellHeight}
-                  date={date}
-                  hour={hour}
-                  onPress={_onPressCell}
-                  index={index}
-                  calendarCellStyle={calendarCellStyle}
-                />
-              ))}
+          {dateRange.map((date, i) => {
+            const isLastDate = i === dateRange.length - 1;
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  overflow: 'hidden',
+                }}
+                key={date.toString()}
+              >
+                {showAllDayEventCell ? (
+                  <View
+                    style={[
+                      styles.allDayEventCell,
+                      { height: cellHeight },
+                      isLastDate && { borderRightWidth: 0 },
+                    ]}
+                  >
+                    {allDayEvents
+                      .filter(({ end }) => end.hasSame(date, 'day'))
+                      .map(_renderMappedEvent)}
+                  </View>
+                ) : null}
+                {hours.map((hour, index) => (
+                  <HourGuideCell
+                    key={hour}
+                    cellHeight={cellHeight}
+                    date={date}
+                    hour={hour}
+                    onPress={_onPressCell}
+                    index={index}
+                    calendarCellStyle={calendarCellStyle}
+                    showBorderRight={!isLastDate}
+                    showBorderBottom={index < hours.length - 1}
+                  />
+                ))}
 
-              {events
-                .filter(({ end }) => end.hasSame(date, 'day'))
-                .map(_renderMappedEvent)}
+                {events
+                  .filter(({ end }) => end.hasSame(date, 'day'))
+                  .map(_renderMappedEvent)}
 
-              {isToday(date) && !hideNowIndicator && (
-                <View
-                  style={[
-                    styles.nowIndicator,
-                    {
-                      top: `${getRelativeTopInDay(now, showAllDayEventCell)}%`,
-                    },
-                  ]}
-                />
-              )}
-            </View>
-          ))}
-        </View>
+                {isToday(date) && !hideNowIndicator && (
+                  <View
+                    style={[
+                      styles.nowIndicator,
+                      {
+                        top: `${getRelativeTopInDay(
+                          now,
+                          showAllDayEventCell,
+                        )}%`,
+                      },
+                    ]}
+                  >
+                    <View style={styles.nowIndicatorDot} />
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </SafeAreaView>
       </ScrollView>
-    </Fragment>
+    </>
   );
 };
 
-const createStyles = ({ dark, palettes }: Theme) =>
-  StyleSheet.create({
+const createStyles = ({ dark, palettes, colors }: Theme) => {
+  const indicatorColor = palettes.red[dark ? 500 : 600];
+  return StyleSheet.create({
     nowIndicator: {
       position: 'absolute',
       zIndex: 10000,
       height: 2,
       width: '100%',
-      backgroundColor: dark ? palettes.red['500'] : palettes.red['600'],
+      backgroundColor: indicatorColor,
+    },
+    nowIndicatorDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      marginTop: -4,
+      backgroundColor: indicatorColor,
     },
     allDayEventCell: {
-      borderColor: palettes.gray['200'],
+      borderColor: colors.divider,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderRightWidth: StyleSheet.hairlineWidth,
     },
   });
+};

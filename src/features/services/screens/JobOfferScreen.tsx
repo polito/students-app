@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, ScrollView, StyleSheet } from 'react-native';
+import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import replace from 'react-string-replace';
 
 import { Card } from '@lib/ui/components/Card';
@@ -12,6 +12,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetJobOffer } from '../../../core/queries/jobOfferHooks';
 import { formatDate } from '../../../utils/dates';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -76,76 +77,83 @@ export const JobOfferScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[useGetJobOfferQuery]} manual />}
     >
-      <Section>
-        <ScreenTitle title={title ?? ''} style={styles.heading} />
-      </Section>
-      <Card accessible padded>
-        <Text variant="heading" weight="bold" numberOfLines={1}>
-          {companyName}
-        </Text>
-      </Card>
-      <Card accessible padded gapped>
-        {!!contractType && (
-          <Text weight="semibold">
-            {t('jobOfferScreen.contractType')}
-            <Text>{contractType}</Text>
+      <SafeAreaView>
+        <Section>
+          <ScreenTitle title={title ?? ''} style={styles.heading} />
+        </Section>
+        <Card accessible padded>
+          <Text variant="heading" weight="bold" numberOfLines={1}>
+            {companyName}
           </Text>
-        )}
-        {!!salary && (
-          <Text weight="semibold">
-            {t('jobOfferScreen.salary')}
-            <Text>{salary}</Text>
-          </Text>
-        )}
-        {!!location && (
-          <Text weight="semibold">
-            {t('jobOfferScreen.location')}
-            <Text>{location}</Text>
-          </Text>
-        )}
-        {!!endsAtDate && (
-          <Text weight="semibold">
-            {t('jobOfferScreen.endsAtDate')}
-            <Text>{formatDate(endsAtDate)}</Text>
-          </Text>
-        )}
-        {!!freePositions && (
-          <Text weight="semibold">
-            {t('jobOfferScreen.freePositions')}
-            <Text>{freePositions}</Text>
-          </Text>
-        )}
-      </Card>
-      <Card accessible padded gapped>
-        <>
-          <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
-          <Text>{companyMission ?? ' - '}</Text>
-        </>
-        <>
-          <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
-          <Text>{requirements ? requirements : ' - '}</Text>
-        </>
-        <>
-          <Text variant="subHeading">{t('jobOfferScreen.application')}</Text>
-          {!!url && (
-            <Text numberOfLines={1} accessibilityRole="link" weight="semibold">
-              {t('jobOfferScreen.url')}
-              <Text variant="link" onPress={() => onPressUrl(url)}>
-                {url}
-              </Text>
-            </Text>
-          )}
-          {!!contactInfo && <Text>{contactInfo}</Text>}
-          {!!email && (
+        </Card>
+        <Card accessible padded gapped>
+          {!!contractType && (
             <Text weight="semibold">
-              {t('jobOfferScreen.email')}
-              <Text variant="link" onPress={() => onPressEmail(email)}>
-                {email}
-              </Text>
+              {t('jobOfferScreen.contractType')}
+              <Text>{contractType}</Text>
             </Text>
           )}
-        </>
-      </Card>
+          {!!salary && (
+            <Text weight="semibold">
+              {t('jobOfferScreen.salary')}
+              <Text>{salary}</Text>
+            </Text>
+          )}
+          {!!location && (
+            <Text weight="semibold">
+              {t('jobOfferScreen.location')}
+              <Text>{location}</Text>
+            </Text>
+          )}
+          {!!endsAtDate && (
+            <Text weight="semibold">
+              {t('jobOfferScreen.endsAtDate')}
+              <Text>{formatDate(endsAtDate)}</Text>
+            </Text>
+          )}
+          {!!freePositions && (
+            <Text weight="semibold">
+              {t('jobOfferScreen.freePositions')}
+              <Text>{freePositions}</Text>
+            </Text>
+          )}
+        </Card>
+        <Card accessible padded gapped>
+          <>
+            <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
+            <Text>{companyMission ?? ' - '}</Text>
+          </>
+          <>
+            <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
+            <Text>{requirements ? requirements : ' - '}</Text>
+          </>
+          <>
+            <Text variant="subHeading">{t('jobOfferScreen.application')}</Text>
+            {!!url && (
+              <Text
+                numberOfLines={1}
+                accessibilityRole="link"
+                weight="semibold"
+              >
+                {t('jobOfferScreen.url')}
+                <Text variant="link" onPress={() => onPressUrl(url)}>
+                  {url}
+                </Text>
+              </Text>
+            )}
+            {!!contactInfo && <Text>{contactInfo}</Text>}
+            {!!email && (
+              <Text weight="semibold">
+                {t('jobOfferScreen.email')}
+                <Text variant="link" onPress={() => onPressEmail(email)}>
+                  {email}
+                </Text>
+              </Text>
+            )}
+          </>
+        </Card>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

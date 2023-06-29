@@ -60,7 +60,7 @@ export function formatHour(hour: number, ampm = false) {
     }
     return `${hour} AM`;
   }
-  return `${hour}`;
+  return `${String(hour).padStart(2, '0')}:00`;
 }
 
 export function isToday(date: DateTime) {

@@ -7,6 +7,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -16,6 +17,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+
+import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
 interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;
@@ -53,6 +56,8 @@ export const CtaButton = ({
 }: Props) => {
   const { palettes, fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { left, right } = useSafeAreaInsets();
+  const bottomBarHeight = useSafeBottomBarHeight();
   const [showSuccess, setShowSuccess] = useState(false);
   const successMessageRef = useRef<string>();
   const destructiveRef = useRef<boolean>();
@@ -75,7 +80,14 @@ export const CtaButton = ({
     <View
       style={[
         styles.container,
-        absolute && styles.absolute,
+        absolute && [
+          {
+            position: 'absolute',
+            left: Platform.select({ ios: left }),
+            right,
+            bottom: bottomBarHeight,
+          },
+        ],
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
       ]}
@@ -167,12 +179,6 @@ const createStyles = ({
   StyleSheet.create({
     container: {
       padding: spacing[4],
-    },
-    absolute: {
-      position: 'absolute',
-      bottom: 0,
-      left: Platform.select({ ios: 0 }),
-      right: 0,
     },
     button: {
       paddingHorizontal: spacing[5],

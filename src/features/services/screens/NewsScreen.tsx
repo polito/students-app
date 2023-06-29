@@ -1,8 +1,8 @@
 import { ScrollView } from 'react-native';
 
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
-import { SectionList } from '@lib/ui/components/SectionList';
 
 import { useGetNews } from '../../../core/queries/newsHooks';
 import { NewsListItem } from '../components/NewsListItem';
@@ -16,7 +16,7 @@ export const NewsScreen = () => {
       refreshControl={<RefreshControl queries={[newsQuery]} manual />}
     >
       <Section>
-        <SectionList loading={newsQuery.isLoading}>
+        <OverviewList loading={newsQuery.isLoading}>
           {newsQuery?.data?.map((newsItem, index) => (
             <NewsListItem
               newsItem={newsItem}
@@ -25,7 +25,7 @@ export const NewsScreen = () => {
               totalData={newsQuery?.data?.length || 0}
             />
           ))}
-        </SectionList>
+        </OverviewList>
       </Section>
     </ScrollView>
   );

@@ -14,6 +14,8 @@ interface HourGuideCellProps {
   hour: number;
   index: number;
   calendarCellStyle?: CalendarCellStyle;
+  showBorderRight?: boolean;
+  showBorderBottom?: boolean;
 }
 
 export const HourGuideCell = ({
@@ -23,6 +25,8 @@ export const HourGuideCell = ({
   hour,
   index,
   calendarCellStyle,
+  showBorderRight = false,
+  showBorderBottom = false,
 }: HourGuideCellProps) => {
   const theme = useTheme();
 
@@ -41,9 +45,9 @@ export const HourGuideCell = ({
       <View
         style={[
           {
-            borderColor: theme.palettes.gray['400'],
-            borderRightWidth: StyleSheet.hairlineWidth,
-            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderColor: theme.colors.divider,
+            borderRightWidth: showBorderRight ? StyleSheet.hairlineWidth : 0,
+            borderBottomWidth: showBorderBottom ? StyleSheet.hairlineWidth : 0,
           },
           { height: cellHeight },
           { ...getCalendarCellStyle(date, index) },

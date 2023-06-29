@@ -5,7 +5,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
@@ -39,7 +39,7 @@ export const AgendaNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        ...titlesStyles(theme),
+        ...useTitlesStyles(theme),
       }}
     >
       <Stack.Screen

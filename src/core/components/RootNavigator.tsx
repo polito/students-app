@@ -23,9 +23,9 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { IS_IOS } from '../constants';
 import { useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
+import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator();
 
@@ -37,7 +37,7 @@ export const RootNavigator = () => {
 
   useEffect(() => {
     if (student?.smartCardPicture) {
-      FastImage?.preload([
+      FastImage.preload([
         {
           uri: student?.smartCardPicture,
         },
@@ -63,8 +63,10 @@ export const RootNavigator = () => {
           hide: instantAnimation,
         },
         tabBarStyle: styles.tabBarStyle,
+        tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarInactiveTintColor: colors.tabBarInactive,
+        tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}
     >
       <TabNavigator.Screen
@@ -122,14 +124,28 @@ export const RootNavigator = () => {
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({
+  colors,
+  palettes,
+  fontFamilies,
+  fontWeights,
+  fontSizes,
+}: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
-      backgroundColor: IS_IOS ? colors.headersBackground : colors.surface,
+      position: 'absolute',
       borderTopColor: colors.divider,
     },
     tabBarItemStyle: {
       paddingVertical: 3,
+    },
+    tabBarBadgeStyle: {
+      backgroundColor: palettes.secondary[600],
+      color: 'white',
+      top: -2,
+      fontFamily: fontFamilies.body,
+      fontWeight: fontWeights.semibold,
+      fontSize: fontSizes.sm,
     },
   });

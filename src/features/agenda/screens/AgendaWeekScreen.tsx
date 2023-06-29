@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { Row } from '@lib/ui/components/Row';
 import { Calendar } from '@lib/ui/components/calendar/Calendar';
+import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -160,8 +161,8 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
   }, [palettes.primary, fontSizes.lg, navigation, screenOptions, t]);
 
   return (
-    <SafeAreaView>
-      <Row justify="space-between">
+    <>
+      <HeaderAccessory justify="space-between">
         <AgendaFilters state={filters} toggleState={toggleFilter} />
         <WeekFilter
           current={currentWeekStart}
@@ -169,7 +170,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           getPrev={prevWeek}
           enabled={!isFetching}
         ></WeekFilter>
-      </Row>
+      </HeaderAccessory>
       <View
         style={styles.calendarContainer}
         onLayout={e => {
@@ -191,6 +192,9 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
             height={calendarHeight}
             locale={language}
             swipeEnabled={false}
+            renderHeader={props => (
+              <CalendarHeader {...props} cellHeight={-1} />
+            )}
             renderEvent={(item: AgendaItem, touchableOpacityProps) => {
               return (
                 <TouchableOpacity
@@ -219,7 +223,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           />
         )}
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

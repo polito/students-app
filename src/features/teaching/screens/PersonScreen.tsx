@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Image,
   Linking,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -19,11 +20,11 @@ import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -31,6 +32,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { PersonCourse, PhoneNumber } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -162,38 +164,41 @@ export const PersonScreen = ({ route }: Props) => {
       refreshControl={<RefreshControl queries={[personQuery]} />}
       contentInsetAdjustmentBehavior="automatic"
     >
-      {header}
-      <Section>
-        <SectionHeader
-          title={t('personScreen.contacts')}
-          accessibilityLabel={`${t('personScreen.contacts')}. ${
-            phoneNumbers?.length && t('common.phoneContacts')
-          }. ${t('personScreen.sentEmail')}`}
-        />
-        <SectionList indented>
-          {phoneNumbers?.map(renderPhoneNumber)}
-          <ListItem
-            isAction
-            leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-            title={t('common.email')}
-            subtitle={person?.email}
-            onPress={() => Linking.openURL(`mailto:${person?.email}`)}
-          />
-        </SectionList>
-      </Section>
-      {courses.length > 0 && (
+      <SafeAreaView>
+        {header}
         <Section>
           <SectionHeader
-            title={t('common.course_plural')}
-            accessible={true}
-            accessibilityLabel={`${t('personScreen.coursesLabel')}. ${t(
-              'personScreen.totalCourses',
-              { total: courses.length },
-            )}`}
+            title={t('personScreen.contacts')}
+            accessibilityLabel={`${t('personScreen.contacts')}. ${
+              phoneNumbers?.length && t('common.phoneContacts')
+            }. ${t('personScreen.sentEmail')}`}
           />
-          <SectionList>{courses.map(RenderedCourse)}</SectionList>
+          <OverviewList indented>
+            {phoneNumbers?.map(renderPhoneNumber)}
+            <ListItem
+              isAction
+              leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+              title={t('common.email')}
+              subtitle={person?.email}
+              onPress={() => Linking.openURL(`mailto:${person?.email}`)}
+            />
+          </OverviewList>
         </Section>
-      )}
+        {courses.length > 0 && (
+          <Section>
+            <SectionHeader
+              title={t('common.course_plural')}
+              accessible={true}
+              accessibilityLabel={`${t('personScreen.coursesLabel')}. ${t(
+                'personScreen.totalCourses',
+                { total: courses.length },
+              )}`}
+            />
+            <OverviewList>{courses.map(RenderedCourse)}</OverviewList>
+          </Section>
+        )}
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

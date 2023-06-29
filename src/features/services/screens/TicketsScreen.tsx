@@ -1,20 +1,21 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
@@ -38,15 +39,15 @@ export const TicketsScreen = ({ navigation }: Props) => {
         <SectionHeader title={t('ticketsScreen.opened')} />
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
-            <SectionList indented>
+            <OverviewList indented>
               {openTickets?.map(ticket => (
                 <TicketListItem ticket={ticket} key={ticket.id} />
               ))}
-            </SectionList>
+            </OverviewList>
           ) : (
-            <SectionList>
+            <OverviewList>
               <EmptyState message={t('ticketsScreen.openEmptyState')} />
-            </SectionList>
+            </OverviewList>
           ))}
       </Section>
     );
@@ -74,18 +75,18 @@ export const TicketsScreen = ({ navigation }: Props) => {
         />
         {!ticketsQuery.isLoading &&
           (renderedClosedTickets.length > 0 ? (
-            <SectionList indented>
+            <OverviewList indented>
               {renderedClosedTickets.map(ticket => (
                 <TicketListItem ticket={ticket} key={ticket.id} />
               ))}
-            </SectionList>
+            </OverviewList>
           ) : (
-            <SectionList>
+            <OverviewList>
               <EmptyState
                 message={t('ticketsScreen.closedEmptyState')}
                 icon={faComments}
               />
-            </SectionList>
+            </OverviewList>
           ))}
       </Section>
     );
@@ -98,8 +99,11 @@ export const TicketsScreen = ({ navigation }: Props) => {
         refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
         contentContainerStyle={styles.container}
       >
-        <OpenTickets />
-        <ClosedTickets />
+        <SafeAreaView>
+          <OpenTickets />
+          <ClosedTickets />
+          <BottomBarSpacer />
+        </SafeAreaView>
       </ScrollView>
 
       <CtaButton

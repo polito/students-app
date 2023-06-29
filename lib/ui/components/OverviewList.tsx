@@ -24,7 +24,7 @@ type Props = PropsWithChildren<
  * Displays a list of items with automatic dividers inside a card.
  * (Only suitable for short non virtual-scrolled lists)
  */
-export const SectionList = ({
+export const OverviewList = ({
   children,
   loading = false,
   indented = false,

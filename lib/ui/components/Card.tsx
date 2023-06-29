@@ -46,7 +46,7 @@ export const Card = ({
           borderRadius: rounded ? shapes.lg : undefined,
           backgroundColor: colors.surface,
           elevation: 2,
-          marginHorizontal: spaced ? spacing[5] : undefined,
+          marginHorizontal: spaced ? spacing[4] : undefined,
           marginVertical: spaced ? spacing[2] : undefined,
           overflow: 'hidden',
         },

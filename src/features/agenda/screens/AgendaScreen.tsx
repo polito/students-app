@@ -14,6 +14,7 @@ import {
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -22,7 +23,9 @@ import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
@@ -45,6 +48,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { courses: coursesPreferences } = usePreferencesContext();
   const client = useQueryClient();
+  const { marginHorizontal } = useSafeAreaSpacing();
 
   const [filters, setFilters] = useState<AgendaTypesFilterState>({
     booking: false,
@@ -201,7 +205,9 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   return (
     <View style={styles.container}>
-      <AgendaFilters state={filters} toggleState={toggleFilter} />
+      <HeaderAccessory>
+        <AgendaFilters state={filters} toggleState={toggleFilter} />
+      </HeaderAccessory>
       {!data || agendaState.isRefreshing ? (
         <ActivityIndicator style={styles.activityIndicator} size="large" />
       ) : (
@@ -211,7 +217,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           initialNumToRender={1}
           keyExtractor={item => item.key}
           extraData={[isFetchingPreviousPage, isFetchingNextPage]}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={[styles.listContainer, marginHorizontal]}
           renderItem={({ item }) => (
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
@@ -221,7 +227,12 @@ export const AgendaScreen = ({ navigation }: Props) => {
             ) : undefined
           }
           ListFooterComponent={
-            isFetchingNextPage ? <ActivityIndicator size="small" /> : undefined
+            <>
+              {isFetchingNextPage ? (
+                <ActivityIndicator size="small" />
+              ) : undefined}
+              <BottomBarSpacer />
+            </>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}

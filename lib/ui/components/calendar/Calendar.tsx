@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ViewStyle } from 'react-native';
 
 import { DateTime } from 'luxon';
@@ -260,13 +260,10 @@ export const Calendar = <T extends ICalendarEventBase>({
   };
 
   return (
-    <Fragment>
+    <>
       <HeaderComponent {...headerProps} />
-      <CalendarBody
+      <CalendarBody<T>
         {...commonProps}
-        style={{
-          paddingTop: 20,
-        }}
         allDayEvents={allDayEvents}
         showAllDayEventCell={showAllDayEventCell}
         events={daytimeEvents}
@@ -285,6 +282,6 @@ export const Calendar = <T extends ICalendarEventBase>({
         headerComponentStyle={headerComponentStyle}
         isEventOrderingEnabled={isEventOrderingEnabled}
       />
-    </Fragment>
+    </>
   );
 };

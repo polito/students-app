@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
 import { faLocation } from '@fortawesome/free-solid-svg-icons';
@@ -8,9 +8,9 @@ import { Card } from '@lib/ui/components/Card';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { Separator } from '@lib/ui/components/Separator';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -19,6 +19,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import {
   useDeleteBooking,
@@ -61,43 +62,46 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         style={styles.wrapper}
         refreshControl={<RefreshControl queries={[bookingsQuery]} />}
       >
-        <EventDetails title={title} type={t('Booking')} time={timeLabel} />
-        {booking?.location?.name && (
-          <SectionList>
-            <ListItem
-              leadingItem={
-                <Icon
-                  icon={faLocation}
-                  size={20}
-                  color={colors.secondaryText}
-                  style={{ marginRight: spacing[2] }}
-                />
-              }
-              title={booking.location.name}
-              subtitle={booking.location?.type}
-              onPress={onPressLocation}
-            />
-          </SectionList>
-        )}
-        <Section style={styles.sectionSeparator}>
-          <Separator />
-          <Text variant="caption">{t('Barcode')}</Text>
-        </Section>
-        <Section style={styles.sectionContainer}>
-          <Card style={styles.barCodeCard} rounded>
-            {studentQuery.data && (
-              <Barcode
-                value={studentQuery.data.username}
-                format="CODE128"
-                height={85}
-                lineColor={palettes.primary[800]}
-                singleBarWidth={1.8}
-                backgroundColor="white"
+        <SafeAreaView>
+          <EventDetails title={title} type={t('Booking')} time={timeLabel} />
+          {booking?.location?.name && (
+            <OverviewList>
+              <ListItem
+                leadingItem={
+                  <Icon
+                    icon={faLocation}
+                    size={20}
+                    color={colors.secondaryText}
+                    style={{ marginRight: spacing[2] }}
+                  />
+                }
+                title={booking.location.name}
+                subtitle={booking.location?.type}
+                onPress={onPressLocation}
               />
-            )}
-          </Card>
-        </Section>
-        <CtaButtonSpacer />
+            </OverviewList>
+          )}
+          <Section style={styles.sectionSeparator}>
+            <Separator />
+            <Text variant="caption">{t('Barcode')}</Text>
+          </Section>
+          <Section style={styles.sectionContainer}>
+            <Card style={styles.barCodeCard} rounded>
+              {studentQuery.data && (
+                <Barcode
+                  value={studentQuery.data.username}
+                  format="CODE128"
+                  height={85}
+                  lineColor={palettes.primary[800]}
+                  singleBarWidth={1.8}
+                  backgroundColor="white"
+                />
+              )}
+            </Card>
+          </Section>
+          <CtaButtonSpacer />
+          <BottomBarSpacer />
+        </SafeAreaView>
       </ScrollView>
       {/* {bookingMutation.isIdle && (*/}
       {booking?.canBeCancelled && (

@@ -5,7 +5,7 @@ import {
   cloneElement,
   isValidElement,
 } from 'react';
-import { Platform, ScrollView, ScrollViewProps, View } from 'react-native';
+import { Platform, ScrollView, ScrollViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Props as TabProps } from './Tab';
@@ -37,6 +37,7 @@ export const Tabs = ({
       contentContainerStyle={{
         paddingHorizontal: spacing[4],
         paddingVertical: spacing[2],
+        gap: spacing[2],
       }}
       style={[{ flexGrow: 0, flexShrink: 0 }, style]}
       {...rest}
@@ -47,18 +48,7 @@ export const Tabs = ({
             selected: selectedIndexes.includes(i),
           });
         }
-        return (
-          <>
-            {c}
-            {i < Children.count(children) - 1 && (
-              <View
-                style={{
-                  width: spacing[2],
-                }}
-              />
-            )}
-          </>
-        );
+        return c;
       })}
     </ScrollView>
   );

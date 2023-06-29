@@ -12,7 +12,7 @@ export const ALL_AGENDA_TYPES = [
 
 export type AgendaItemTypes = typeof ALL_AGENDA_TYPES;
 
-export type AgendaItemType = (typeof ALL_AGENDA_TYPES)[number];
+export type AgendaItemType = typeof ALL_AGENDA_TYPES[number];
 
 interface BaseAgendaItem {
   key: string;

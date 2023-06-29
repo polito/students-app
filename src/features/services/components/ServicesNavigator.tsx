@@ -7,7 +7,7 @@ import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -31,7 +31,7 @@ export type ServiceStackParamList = {
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
   TicketList: {
-    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
+    statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
   };
   JobOffers: undefined;
   JobOffer: {
@@ -57,7 +57,7 @@ export const ServicesNavigator = () => {
           backgroundColor: colors.background,
         },
         headerBlurEffect: 'systemUltraThinMaterial',
-        ...titlesStyles(theme),
+        ...useTitlesStyles(theme),
       }}
     >
       <Stack.Screen

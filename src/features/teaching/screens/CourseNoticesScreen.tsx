@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
@@ -11,18 +11,22 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { DateTime } from 'luxon';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
-import { CourseTabProps } from '../screens/CourseScreen';
+import { CourseContext } from '../contexts/CourseContext';
 
-export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
+export const CourseNoticesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
+  const courseId = useContext(CourseContext)!;
   const noticesQuery = useGetCourseNotices(courseId);
   const { accessibilityListLabel } = useAccessibility();
+  const { paddingHorizontal } = useSafeAreaSpacing();
   const notices = useMemo(
     () =>
       noticesQuery.data?.map(notice => ({
@@ -35,6 +39,7 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
   return (
     <FlatList
       style={GlobalStyles.grow}
+      contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[noticesQuery]} />}
       data={notices}
       renderItem={({ item: notice, index }) => (
@@ -52,15 +57,16 @@ export const CourseNoticesTab = ({ courseId }: CourseTabProps) => {
           }}
         />
       )}
-      ListHeaderComponent={
-        !noticesQuery.isLoading && !noticesQuery.data?.length ? (
+      ListFooterComponent={<BottomBarSpacer />}
+      ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
+      ListEmptyComponent={
+        !noticesQuery.isLoading ? (
           <EmptyState
             icon={faInbox}
             message={t('courseNoticesTab.emptyState')}
           />
         ) : null
       }
-      ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
     />
   );
 };

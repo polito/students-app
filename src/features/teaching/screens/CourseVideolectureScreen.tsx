@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
@@ -38,27 +39,30 @@ export const CourseVideolectureScreen = ({ route }: Props) => {
       }
       contentContainerStyle={GlobalStyles.fillHeight}
     >
-      <VideoPlayer
-        source={{ uri: lecture?.videoUrl }}
-        poster={lecture?.coverUrl}
-      />
-      <EventDetails
-        title={lecture?.title ?? ''}
-        type={t('common.videoLecture')}
-        time={
-          lecture?.createdAt
-            ? formatDateWithTimeIfNotNull(lecture?.createdAt)
-            : undefined
-        }
-      />
-      <SectionList loading={teacherQuery.isLoading}>
-        {teacherQuery.data && (
-          <PersonListItem
-            person={teacherQuery.data}
-            subtitle={t('common.teacher')}
-          />
-        )}
-      </SectionList>
+      <SafeAreaView>
+        <VideoPlayer
+          source={{ uri: lecture?.videoUrl }}
+          poster={lecture?.coverUrl}
+        />
+        <EventDetails
+          title={lecture?.title ?? ''}
+          type={t('common.videoLecture')}
+          time={
+            lecture?.createdAt
+              ? formatDateWithTimeIfNotNull(lecture?.createdAt)
+              : undefined
+          }
+        />
+        <OverviewList loading={teacherQuery.isLoading}>
+          {teacherQuery.data && (
+            <PersonListItem
+              person={teacherQuery.data}
+              subtitle={t('common.teacher')}
+            />
+          )}
+        </OverviewList>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

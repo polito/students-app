@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { sanitizeHtml } from '../../../utils/html';
@@ -30,13 +31,16 @@ export const NoticeScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[noticesQuery]} manual />}
     >
-      <HtmlView
-        source={{ html }}
-        baseStyle={{
-          paddingTop: 0,
-          paddingHorizontal: spacing[5],
-        }}
-      />
+      <SafeAreaView>
+        <HtmlView
+          source={{ html }}
+          baseStyle={{
+            paddingTop: 0,
+            paddingHorizontal: spacing[5],
+          }}
+        />
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

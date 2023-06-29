@@ -1,5 +1,11 @@
 import { useCallback } from 'react';
-import { TouchableOpacity, View, ViewStyle } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -35,10 +41,19 @@ export const CalendarHeader = ({
   const theme = useTheme();
 
   const borderColor = { borderColor: theme.palettes.gray['200'] };
-  const primaryBg = { backgroundColor: theme.colors.heading };
 
   return (
-    <View style={[{ display: 'flex', flexDirection: 'row' }, style]}>
+    <SafeAreaView
+      style={[
+        {
+          display: 'flex',
+          flexDirection: 'row',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.colors.divider,
+        },
+        style,
+      ]}
+    >
       {!hideHours && (
         <View
           style={[
@@ -49,7 +64,7 @@ export const CalendarHeader = ({
           ]}
         />
       )}
-      {dateRange.map(date => {
+      {dateRange.map((date, i) => {
         const shouldHighlight = activeDate
           ? date.hasSame(activeDate, 'day')
           : isToday(date);
@@ -58,7 +73,12 @@ export const CalendarHeader = ({
           <TouchableOpacity
             style={{
               flex: 1,
-              paddingTop: theme.spacing[2],
+              display: 'flex',
+              alignItems: 'center',
+              paddingVertical: theme.spacing[1],
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderColor:
+                i < dateRange.length - 1 ? theme.colors.divider : 'transparent',
             }}
             onPress={() => _onPressHeader(date)}
             disabled={onPressDateHeader === undefined}
@@ -68,11 +88,13 @@ export const CalendarHeader = ({
               style={[
                 {
                   height: cellHeight,
-                  borderRadius: theme.shapes.lg,
-                  display: 'flex',
-                  justifyContent: 'center',
+                  borderRadius: theme.shapes.md,
+                  paddingHorizontal: theme.spacing[1.5],
+                  paddingVertical: theme.spacing[1],
                 },
-                shouldHighlight ? primaryBg : {},
+                shouldHighlight && {
+                  backgroundColor: theme.colors.heading,
+                },
               ]}
             >
               <Text
@@ -81,11 +103,9 @@ export const CalendarHeader = ({
                   {
                     textAlign: 'center',
                   },
-                  shouldHighlight
-                    ? {
-                        color: theme.colors.surface,
-                      }
-                    : {},
+                  shouldHighlight && {
+                    color: theme.colors.surface,
+                  },
                 ]}
               >
                 {date.toLocaleString({ weekday: 'short', day: 'numeric' })}
@@ -94,6 +114,6 @@ export const CalendarHeader = ({
           </TouchableOpacity>
         );
       })}
-    </View>
+    </SafeAreaView>
   );
 };

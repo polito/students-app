@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
-import { StyleSheet, Text, TextProps, View } from 'react-native';
+import { StyleSheet, TextProps } from 'react-native';
 
+import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { Text } from './Text';
+
 interface Props {
-  text: string;
+  text: string | number;
   style?: TextProps['style'];
   variant?: 'outlined' | 'filled';
 }
@@ -17,7 +20,11 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
 
   const isOutlined = useMemo(() => variant === 'outlined', [variant]);
   return (
-    <View
+    <Row
+      ph={1}
+      align="center"
+      justify="center"
+      flexShrink={0}
       style={[
         styles.badge,
         {
@@ -39,7 +46,7 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
       >
         {text}
       </Text>
-    </View>
+    </Row>
   );
 };
 
@@ -47,13 +54,13 @@ const createStyles = ({ fontSizes, fontWeights, shapes, spacing }: Theme) =>
   StyleSheet.create({
     badge: {
       borderRadius: shapes.xl,
-      paddingHorizontal: spacing[2],
-      paddingVertical: spacing[1],
+      minWidth: 19,
+      minHeight: 19,
     },
     badgeText: {
       color: 'white',
-      fontSize: fontSizes['2xs'],
-      fontWeight: fontWeights.bold,
+      fontWeight: fontWeights.semibold,
+      fontSize: fontSizes.sm,
       textTransform: 'uppercase',
     },
   });
