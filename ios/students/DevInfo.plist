@@ -36,7 +36,6 @@
 	<string>Scan documents and pick images for assignments and ticket attachments</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Ionicons.ttf</string>
 		<string>Montserrat-Bold.ttf</string>
 		<string>Montserrat-BoldItalic.ttf</string>
 		<string>Montserrat-Italic.ttf</string>

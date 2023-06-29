@@ -1,0 +1,62 @@
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet } from 'react-native';
+
+import {
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
+import { IconButton } from '@lib/ui/components/IconButton';
+import { Row } from '@lib/ui/components/Row';
+import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
+
+import { DateTime } from 'luxon';
+
+interface Props {
+  current: DateTime;
+  getNext: () => void;
+  getPrev: () => void;
+  enabled: boolean;
+}
+export const WeekFilter = ({ current, getNext, getPrev, enabled }: Props) => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+
+  const styles = useStylesheet(createStyles);
+
+  const endOfWeek = useMemo(() => {
+    return current.plus({ days: 6 });
+  }, [current]);
+  return (
+    <Row align="center">
+      <IconButton
+        icon={faChevronLeft}
+        accessibilityLabel={t('loginScreen.showPassword')}
+        color={colors.secondaryText}
+        disabled={!enabled}
+        onPress={() => getPrev()}
+      />
+
+      <Text style={styles.item}>
+        {current.toFormat('d MMM')} - {endOfWeek.toFormat('d MMM')}
+      </Text>
+      <IconButton
+        icon={faChevronRight}
+        accessibilityLabel={t('loginScreen.showPassword')}
+        color={colors.secondaryText}
+        disabled={!enabled}
+        onPress={() => getNext()}
+      />
+    </Row>
+  );
+};
+
+const createStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    item: {
+      fontWeight: '500',
+    },
+  });

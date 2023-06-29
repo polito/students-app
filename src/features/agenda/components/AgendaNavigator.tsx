@@ -9,6 +9,7 @@ import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
+import { AgendaWeekScreen } from '../screens/AgendaWeekScreen';
 import { BookingScreen } from '../screens/BookingScreen';
 import { DeadlineScreen } from '../screens/DeadlineScreen';
 import { LectureScreen } from '../screens/LectureScreen';
@@ -16,6 +17,7 @@ import { DeadlineItem, LectureItem } from '../types/AgendaItem';
 
 export type AgendaStackParamList = {
   Agenda: undefined;
+  AgendaWeek: undefined;
   Lecture: { item: LectureItem };
   Exam: { id: number };
   Deadline: { item: DeadlineItem };
@@ -43,6 +45,21 @@ export const AgendaNavigator = () => {
       <Stack.Screen
         name="Agenda"
         component={AgendaScreen}
+        options={{
+          headerLargeTitle: false,
+          headerLeft: () => <HeaderLogo />,
+          headerTitle: t('agendaScreen.title'),
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="AgendaWeek"
+        component={AgendaWeekScreen}
         options={{
           headerLargeTitle: false,
           headerLeft: () => <HeaderLogo />,

@@ -53,6 +53,11 @@ export interface AgendaCardProps {
    * On card pressed handler
    */
   onPress?: () => void;
+
+  /**
+   * If true, the card will be compact
+   */
+  isCompact?: boolean;
 }
 
 /**
@@ -62,6 +67,7 @@ export const AgendaCard = ({
   title,
   children,
   color,
+  isCompact = false,
   icon,
   iconColor,
   live = false,
@@ -84,22 +90,27 @@ export const AgendaCard = ({
             }
           : undefined,
         {
-          marginVertical: spacing[2],
+          marginVertical: isCompact ? undefined : spacing[2],
         },
       ]}
     >
       <TouchableHighlight
         underlayColor={colors.touchableHighlight}
-        style={styles.touchable}
+        style={[
+          styles.touchable,
+          isCompact ? styles.compactTouchable : undefined,
+        ]}
         onPress={onPress}
       >
-        <Col gap={2}>
-          <Row align="flex-end" justify="space-between">
-            <Text style={styles.time}>{time && time}</Text>
-            <Text uppercase variant="caption">
-              {type}
-            </Text>
-          </Row>
+        <Col gap={isCompact ? 0.5 : 2}>
+          {!isCompact && (
+            <Row align="flex-end" justify="space-between">
+              <Text style={styles.time}>{time && time}</Text>
+              <Text uppercase variant="caption">
+                {type}
+              </Text>
+            </Row>
+          )}
           <Row>
             {iconColor && <AgendaIcon icon={icon} color={iconColor} />}
             <Text
@@ -107,6 +118,7 @@ export const AgendaCard = ({
                 styles.title,
                 iconColor ? styles.titleWithIcon : undefined,
               ]}
+              numberOfLines={isCompact ? 1 : undefined}
             >
               {title}
             </Text>
@@ -116,8 +128,12 @@ export const AgendaCard = ({
               <LiveIndicator />
             </View>
           )}
-          {children}
-          {location && <Text style={styles.location}>{location}</Text>}
+          {!isCompact && children}
+          {location && (
+            <Text style={!isCompact ? styles.location : undefined}>
+              {location}
+            </Text>
+          )}
         </Col>
       </TouchableHighlight>
     </Card>
@@ -144,6 +160,11 @@ const createStyles = ({
     touchable: {
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[3],
+    },
+    compactTouchable: {
+      paddingHorizontal: spacing[2],
+      paddingVertical: spacing[2],
+      height: '100%',
     },
     time: {
       color: colors.secondaryText,

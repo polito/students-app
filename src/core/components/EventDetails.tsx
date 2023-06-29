@@ -4,14 +4,18 @@ import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { formatTime } from '../../utils/dates';
+
 type Props = ViewProps & {
   title?: string;
   type: string;
   time?: string;
+  endTime?: Date;
   timeLabel?: string;
 };
 
 export const EventDetails = ({
+  endTime,
   title,
   type,
   time,
@@ -25,7 +29,12 @@ export const EventDetails = ({
       <Text variant="caption" style={{ marginBottom: spacing[2] }}>
         {type}
       </Text>
-      {time && <Text style={{ fontSize: fontSizes.md }}>{time}</Text>}
+      {time && (
+        <Text style={{ fontSize: fontSizes.md }}>
+          {time}
+          {endTime && ` - ${formatTime(endTime)}`}
+        </Text>
+      )}
       {!!timeLabel && (
         <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
       )}

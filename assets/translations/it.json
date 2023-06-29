@@ -1,10 +1,12 @@
 {
   "agendaScreen": {
     "backToToday": "Torna a oggi",
+    "dailyLayout": "Layout giornaliero",
     "emptyDay": "Non hai impegni oggi",
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
-    "title": "Agenda"
+    "title": "Agenda",
+    "weeklyLayout": "Layout settimanale"
   },
   "bookingsScreen": {
     "title": "Prenotazioni"
@@ -37,6 +39,7 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
@@ -78,6 +81,8 @@
     "en": "Inglese",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
+    "event": "Evento",
+    "event_plural": "Eventi",
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",
