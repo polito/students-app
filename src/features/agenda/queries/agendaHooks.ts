@@ -40,12 +40,13 @@ const groupItemsByDay = (
       .filter(exam => exam.status === ExamStatusEnum.Booked)
       .map(exam => {
         const coursePreferences = coursesPreferences[exam.courseId];
+
         const item: ExamItem = {
           id: exam.id,
           key: 'exam' + exam.id,
           type: 'exam',
-          color: coursePreferences.color,
-          icon: coursePreferences.icon,
+          color: coursePreferences?.color,
+          icon: coursePreferences?.icon,
           date: formatMachineDate(exam.examStartsAt!),
           start: DateTime.fromJSDate(exam.examStartsAt!),
           end: DateTime.fromJSDate(exam.examEndsAt!),
@@ -93,8 +94,8 @@ const groupItemsByDay = (
         toTime: formatTime(lecture.endsAt),
         title: lecture.courseName,
         courseId: lecture.courseId,
-        color: coursePreferences.color,
-        icon: coursePreferences.icon,
+        color: coursePreferences?.color,
+        icon: coursePreferences?.icon,
         place: lecture.place,
         teacherId: lecture.teacherId,
         virtualClassrooms: lecture.virtualClassrooms,
