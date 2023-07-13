@@ -8,6 +8,9 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import { Badge } from '@lib/ui/components/Badge';
+import { Col } from '@lib/ui/components/Col';
+import { Row } from '@lib/ui/components/Row';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -32,6 +35,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   isAction?: boolean;
   card?: boolean;
   titleProps?: TextProps;
+  unread?: boolean;
 }
 
 /**
@@ -55,9 +59,10 @@ export const ListItem = ({
   card,
   children,
   titleProps,
+  unread = false,
   ...rest
 }: ListItemProps) => {
-  const { fontSizes, colors, spacing } = useTheme();
+  const { fontSizes, fontWeights, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   return (
@@ -106,23 +111,30 @@ export const ListItem = ({
             {leadingItem}
           </View>
         )}
-        <View style={GlobalStyles.grow}>
+        <Col flex={1}>
           {typeof title === 'string' ? (
-            <Text
-              variant="title"
-              style={[
-                {
-                  fontSize: fontSizes.md,
-                },
-                titleStyle,
-              ]}
-              weight="normal"
-              numberOfLines={card ? 2 : 1}
-              ellipsizeMode="tail"
-              {...titleProps}
-            >
-              {title}
-            </Text>
+            <Row align="center" gap={2}>
+              {unread && <Badge />}
+              <Text
+                variant="title"
+                style={[
+                  GlobalStyles.grow,
+                  {
+                    fontSize: fontSizes.md,
+                  },
+                  unread && {
+                    fontWeight: fontWeights.semibold,
+                  },
+                  titleStyle,
+                ]}
+                weight="normal"
+                numberOfLines={card ? 2 : 1}
+                ellipsizeMode="tail"
+                {...titleProps}
+              >
+                {title}
+              </Text>
+            </Row>
           ) : (
             title
           )}
@@ -146,7 +158,7 @@ export const ListItem = ({
               subtitle
             )
           ) : null}
-        </View>
+        </Col>
         {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (
             <DisclosureIndicator />

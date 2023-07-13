@@ -108,6 +108,8 @@
     "loading": "Loading",
     "logout": "Logout",
     "minutes": "Minutes",
+    "newItems": "New item",
+    "newItems_plural": "New items",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
@@ -350,11 +352,11 @@
     "takePhotoHint": "Take one or more photos and generate a file"
   },
   "newsScreen": {
-    "title": "News & Events",
     "createdAt": "Published on ",
-    "information": "Information",
     "eventStartTime": "Starts on ",
-    "logo": "Logo"
+    "information": "Information",
+    "logo": "Logo",
+    "title": "News & Events"
   },
   "notifications": {
     "events": "Events",

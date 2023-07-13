@@ -108,6 +108,8 @@
     "loading": "Caricamento",
     "logout": "Logout",
     "minutes": "Minuti",
+    "newItems": "Nuovo elemento",
+    "newItems_plural": "Nuovi elementi",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
@@ -350,11 +352,11 @@
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "newsScreen": {
-    "title": "Avvisi & News",
     "createdAt": "Pubblicato il ",
-    "information": "Informazioni",
     "eventStartTime": "Inicio evento",
-    "logo": "Logo"
+    "information": "Informazioni",
+    "logo": "Logo",
+    "title": "Avvisi & News"
   },
   "notifications": {
     "events": "Eventi e iniziative",
