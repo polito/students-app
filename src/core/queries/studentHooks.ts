@@ -11,6 +11,7 @@ export const DEADLINES_QUERY_KEY = 'deadlines';
 
 export const STUDENT_QUERY_KEY = 'student';
 export const GRADES_QUERY_KEY = 'grades';
+export const MESSAGES_QUERY_KEY = 'messages';
 
 const useStudentClient = (): StudentApi => {
   const {
@@ -88,5 +89,13 @@ export const useGetDeadlineWeeks = () => {
     {
       staleTime: Infinity,
     },
+  );
+};
+
+export const useGetMessages = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery(prefixKey([MESSAGES_QUERY_KEY]), () =>
+    studentClient.getMessages().then(pluckData),
   );
 };

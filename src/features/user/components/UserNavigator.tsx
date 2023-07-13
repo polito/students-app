@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
-import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
@@ -51,7 +51,7 @@ export const UserNavigator = () => {
       />
       <Stack.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={MessagesScreen}
         options={{
           headerTitle: t('messagesScreen.title'),
         }}
