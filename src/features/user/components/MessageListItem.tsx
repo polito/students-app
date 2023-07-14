@@ -7,10 +7,14 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useMarkMessageAsRead } from '../../../core/queries/studentHooks';
 import { formatDateTime } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
+import { UserStackParamList } from './UserNavigator';
 
 interface Props {
   messageItem: Message;
@@ -21,23 +25,30 @@ interface Props {
 export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { mutate: markAsRead } = useMarkMessageAsRead(messageItem.id);
   const { accessibilityListLabel } = useAccessibility();
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(messageItem?.title);
   const sentAt = formatDateTime(messageItem.sentAt);
 
+  const onPressItem = () => {
+    // TODO: uncomment when check unread message feature is implemented
+    // if (!messageItem.isRead) {
+    //   markAsRead();
+    // }
+    navigation.navigate('Message', {
+      id: messageItem.id,
+    });
+  };
+
   return (
     <ListItem
-      unread={messageItem.isRead}
+      unread={!messageItem.isRead}
       title={title}
       titleStyle={styles.title}
-      // linkTo={{
-      //   screen: 'NewsItem',
-      //   params: {
-      //     id: newsItem?.id,
-      //   },
-      // }}
+      onPress={onPressItem}
       accessibilityLabel={[accessibilityLabel, title, sentAt].join(', ')}
       subtitle={sentAt}
       subtitleStyle={styles.subtitle}

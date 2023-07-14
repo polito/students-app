@@ -163,7 +163,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
             <ListItem
               title={t('messagesScreen.title')}
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
-              linkTo="Notifications"
+              linkTo="Messages"
             />
           </OverviewList>
           <CtaButton

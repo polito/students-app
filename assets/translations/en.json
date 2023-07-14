@@ -343,6 +343,11 @@
   "messagesScreen": {
     "title": "Messages archive"
   },
+  "messageScreen": {
+    "title": "Message",
+    "backTitle": "Archive",
+    "sender": "Sender"
+  },
   "messagingView": {
     "pickFile": "Pick file",
     "pickFileHint": "From your device or from the cloud",

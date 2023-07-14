@@ -1,6 +1,11 @@
 import { ExamGrade, Student, StudentApi } from '@polito/api-client';
 import * as Sentry from '@sentry/react-native';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
@@ -98,4 +103,16 @@ export const useGetMessages = () => {
   return useQuery(prefixKey([MESSAGES_QUERY_KEY]), () =>
     studentClient.getMessages().then(pluckData),
   );
+};
+
+export const useMarkMessageAsRead = (messageId: number) => {
+  const studentClient = useStudentClient();
+  const client = useQueryClient();
+  const invalidatesQuery = prefixKey([MESSAGES_QUERY_KEY]);
+
+  return useMutation(() => studentClient.markMessageAsRead({ messageId }), {
+    onSuccess() {
+      return client.invalidateQueries(invalidatesQuery);
+    },
+  });
 };
