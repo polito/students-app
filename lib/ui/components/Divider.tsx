@@ -2,18 +2,26 @@ import { StyleSheet, View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 
+export interface DividerProps extends ViewProps {
+  size?: number;
+}
+
 /**
  * A divider element to separate list items
  */
-export const Divider = ({ style, ...props }: ViewProps) => {
+export const Divider = ({
+  size = StyleSheet.hairlineWidth,
+  style,
+  ...props
+}: DividerProps) => {
   const { colors } = useTheme();
   return (
     <View
       {...props}
       style={[
         {
-          minWidth: StyleSheet.hairlineWidth,
-          minHeight: StyleSheet.hairlineWidth,
+          minWidth: size,
+          minHeight: size,
           backgroundColor: colors.divider,
         },
         style,

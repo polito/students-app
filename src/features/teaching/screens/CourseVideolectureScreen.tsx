@@ -11,7 +11,7 @@ import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVideolectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 

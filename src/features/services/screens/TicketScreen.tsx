@@ -11,6 +11,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -26,7 +27,7 @@ import {
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { ChatMessage } from '../components/ChatMessage';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TextMessage } from '../components/TextMessage';
@@ -104,6 +105,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
+  const tabBarHeight = useBottomTabBarHeight();
   const [textFieldHeight, setTextFieldHeight] = useState(50);
   const ticket = ticketQuery.data;
 

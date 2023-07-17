@@ -1,7 +1,5 @@
-import { useContext, useState } from 'react';
+import { ComponentProps, useContext, useRef, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import MapView, { MapViewProps } from 'react-native-maps';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -28,9 +26,19 @@ import {
   NativeStackNavigationEventMap,
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
+import { Camera, MapView } from '@rnmapbox/maps';
+import { CameraProps } from '@rnmapbox/maps/lib/typescript/components/Camera';
 
 import { IS_IOS } from '../../../core/constants';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
+
+interface Insets {
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+}
 
 export const MapNavigator = ({
   initialRouteName,
@@ -50,8 +58,10 @@ export const MapNavigator = ({
       initialRouteName,
     });
   const [headerHeight, setHeaderHeight] = useState(0);
-  const safeAreaInsets = useSafeAreaInsets();
+  const mapRef = useRef<MapView>(null);
+  const cameraRef = useRef<Camera>(null);
   const currentRoute = descriptors[state.routes[state.index].key];
+  const mapDefaultOptions = currentRoute.options?.mapDefaultOptions ?? {};
   const mapOptions = currentRoute.options?.mapOptions ?? {};
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
@@ -168,40 +178,45 @@ export const MapNavigator = ({
       >
         <HeaderBackContext.Provider value={headerBack}>
           <MapView
+            ref={mapRef}
             style={GlobalStyles.grow}
-            mapPadding={{
-              top: headerHeight,
-              bottom: tabBarHeight,
-              left: safeAreaInsets.left,
-              right: safeAreaInsets.right,
-            }}
+            {...mapDefaultOptions}
             {...mapOptions}
           >
+            <Camera
+              ref={cameraRef}
+              {...(mapDefaultOptions?.camera ?? {})}
+              {...(mapOptions?.camera ?? {})}
+            />
             {currentRoute.options?.mapDefaultContent}
             {currentRoute.options?.mapContent}
           </MapView>
 
-          <HeaderHeightContext.Consumer>
-            {height => {
-              if (height != null) {
-                setHeaderHeight(height);
-              }
-              return (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: height,
-                    bottom: tabBarHeight,
-                    left: 0,
-                    right: 0,
-                  }}
-                  pointerEvents="box-none"
-                >
-                  {currentRoute.render()}
-                </View>
-              );
-            }}
-          </HeaderHeightContext.Consumer>
+          <MapNavigatorContext.Provider value={{ mapRef, cameraRef }}>
+            <HeaderHeightContext.Consumer>
+              {height => {
+                if (height != null) {
+                  setTimeout(() => {
+                    setHeaderHeight(height);
+                  });
+                }
+                return (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: height,
+                      bottom: tabBarHeight,
+                      left: 0,
+                      right: 0,
+                    }}
+                    pointerEvents="box-none"
+                  >
+                    {currentRoute.render()}
+                  </View>
+                );
+              }}
+            </HeaderHeightContext.Consumer>
+          </MapNavigatorContext.Provider>
         </HeaderBackContext.Provider>
       </Screen>
     </NavigationContent>
@@ -217,8 +232,18 @@ const styles = StyleSheet.create({
   },
 });
 
+type MapViewProps = ComponentProps<typeof MapView>;
+
+type MapOptions = Partial<
+  Omit<MapViewProps, 'children'> & {
+    camera: Partial<CameraProps>;
+    insets?: Insets;
+  }
+>;
+
 export type MapNavigationOptions = NativeStackNavigationOptions & {
-  mapOptions?: Partial<Omit<MapViewProps, 'children'>>;
+  mapOptions?: MapOptions;
+  mapDefaultOptions?: MapOptions;
   mapContent?: JSX.Element;
   mapDefaultContent?: JSX.Element;
 };

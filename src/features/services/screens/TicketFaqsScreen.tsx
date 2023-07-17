@@ -25,7 +25,7 @@ import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;

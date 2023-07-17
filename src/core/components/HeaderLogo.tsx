@@ -9,7 +9,7 @@ export const HeaderLogo = (props: RowProps) => {
   const { palettes, dark } = useTheme();
 
   return (
-    <Row mr={IS_ANDROID ? 10 : undefined} {...props}>
+    <Row mr={IS_ANDROID ? 1 : undefined} {...props}>
       <Svg width={67} height={18} fill="none" viewBox="0 0 215 60">
         <Path
           fill={dark ? palettes.text[50] : palettes.primary[700]}

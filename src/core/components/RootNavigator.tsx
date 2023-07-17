@@ -63,7 +63,7 @@ export const RootNavigator = () => {
           hide: instantAnimation,
         },
         tabBarStyle: styles.tabBarStyle,
-        tabBarBackground: () => <TranslucentView />,
+        tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarInactiveTintColor: colors.tabBarInactive,
       }}

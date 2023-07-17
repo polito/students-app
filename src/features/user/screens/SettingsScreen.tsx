@@ -31,7 +31,10 @@ import { MenuView } from '@react-native-menu/menu';
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  PreferencesContextBase,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
 import { lightTheme } from '../../../core/themes/light';
@@ -167,7 +170,10 @@ const VisualizationListItem = () => {
         };
       })}
       onPressAction={({ nativeEvent: { event } }) => {
-        updatePreference('colorScheme', event);
+        updatePreference(
+          'colorScheme',
+          event as PreferencesContextBase['colorScheme'],
+        );
       }}
     >
       <ListItem
@@ -233,7 +239,7 @@ const Notifications = () => {
       updatePreference('notifications', {
         ...notifications,
         [notificationType]: value,
-      });
+      } as PreferencesContextBase['notifications']);
     };
 
   return (

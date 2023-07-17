@@ -13,7 +13,7 @@ import {
 
 import { titlesStyles } from '../../../core/hooks/titlesStyles';
 import { useTabs } from '../../../core/hooks/useTabs';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseAssignmentsTab } from '../components/CourseAssignmentsTab';
 import { CourseFilesTab } from '../components/CourseFilesTab';
 import { CourseIndicator } from '../components/CourseIndicator';

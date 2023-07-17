@@ -13,7 +13,7 @@ import { DateTime } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 import { CourseTabProps } from '../screens/CourseScreen';

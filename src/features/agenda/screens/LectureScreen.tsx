@@ -15,7 +15,7 @@ import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { convertMachineDateToFormatDate } from '../../../utils/dates';
 import { CourseIcon } from '../../teaching/components/CourseIcon';
 import { AgendaStackParamList } from '../components/AgendaNavigator';

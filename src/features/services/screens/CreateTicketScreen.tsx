@@ -20,7 +20,7 @@ import {
   useCreateTicket,
   useGetTicketTopics,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { darkTheme } from '../../../core/themes/dark';
 import { MessagingView } from '../components/MessagingView';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -131,7 +131,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
           <TextField
             autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
-            inputStyle={styles.textFieldInput}
+            inputStyle={styles.textField}
             editable={!!ticketBody?.subtopicId}
             value={ticketBody.subject}
             onChangeText={updateTicketBodyField('subject')}
@@ -188,8 +188,6 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     textField: {
       borderRadius: shapes.md,
       marginRight: 0,
-    },
-    textFieldInput: {
       borderBottomWidth: 0,
     },
   });

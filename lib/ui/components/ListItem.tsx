@@ -15,7 +15,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { IS_IOS } from '../../../src/core/constants';
-import { GlobalStyles } from '../../../src/core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../src/core/styles/globalStyles';
 import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
@@ -34,6 +34,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   card?: boolean;
   inverted?: boolean;
   titleProps?: TextProps;
+  multilineTitle?: boolean;
 }
 
 /**
@@ -57,6 +58,7 @@ export const ListItem = ({
   card,
   children,
   inverted = false,
+  multilineTitle = false,
   titleProps,
   ...rest
 }: ListItemProps) => {
@@ -74,8 +76,8 @@ export const ListItem = ({
           titleStyle,
         ]}
         weight="normal"
-        numberOfLines={card ? 2 : 1}
-        ellipsizeMode="tail"
+        numberOfLines={multilineTitle ? undefined : card ? 2 : 1}
+        ellipsizeMode={multilineTitle ? undefined : 'tail'}
         {...titleProps}
       >
         {title}

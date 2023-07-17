@@ -80,7 +80,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
               ...coursesPrefs,
               [courseId]: {
                 ...coursePrefs,
-                icon: null,
+                icon: undefined,
               },
             });
             navigation.goBack();

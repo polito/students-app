@@ -41,10 +41,12 @@
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
+    "building": "Building",
     "cache": "Cache",
     "camera": "Camera",
     "campus": "Campus",
     "cancel": "Cancel",
+    "capacity": "Capacity",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
     "color": "Color",
@@ -91,6 +93,7 @@
       "unavailable": "Not bookable"
     },
     "externalLink": "External link. By pressing the link you will be redirected to an external browser",
+    "facilities": "Facilities",
     "file": "File",
     "file_plural": "Files",
     "floor": "Floor",
@@ -98,6 +101,7 @@
     "grade": "Grade",
     "hours": "Hour",
     "icon": "Icon",
+    "inYourAgenda": "in your agenda",
     "it": "Italian",
     "language": "Language",
     "lecture": "Lecture",
@@ -105,6 +109,7 @@
     "loading": "Loading",
     "logout": "Logout",
     "minutes": "Minutes",
+    "navigate": "Navigate",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
@@ -140,6 +145,7 @@
     "status": "Status",
     "stop": "Stop",
     "stopFollowing": "Stop following",
+    "structure": "Structure",
     "switchCareerLabel": "Tap to switch career",
     "system": "System",
     "teacher": "Teacher",
@@ -151,6 +157,7 @@
     "tomorrow": "Tomorrow",
     "transcript": "Transcript",
     "unnamedFile": "Unnamed file",
+    "untitled": "Untitled",
     "updatedAt": "Updated at",
     "upload": "Upload",
     "username": "Student ID",
@@ -352,14 +359,18 @@
   "placeCategoriesScreen": {
     "title": "Categories"
   },
-  "placeCategoryScreen": {
-    "title": "Place category"
-  },
   "placeScreen": {
+    "capacity": "{{count}} seat",
+    "capacity_plural": "{{count}} seats",
     "title": "Place"
   },
   "placesScreen": {
-    "title": "Places"
+    "changeFloor": "Change floor",
+    "goToMyPosition": "Go to my position",
+    "multipleFloors": "Results are on multiple floors",
+    "noPlacesFound": "No places found",
+    "title": "Places",
+    "viewWholeCampus": "View the whole campus"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Try with \"Room 1\""

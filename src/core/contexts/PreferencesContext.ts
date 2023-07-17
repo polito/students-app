@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 
 export const editablePreferenceKeys = [
   'clientId',
+  'campusId',
   'colorScheme',
   'courses',
   'language',
@@ -9,7 +10,7 @@ export const editablePreferenceKeys = [
   'favoriteServices',
 ] as const;
 
-export type PreferenceKey = (typeof editablePreferenceKeys)[number];
+export type PreferenceKey = typeof editablePreferenceKeys[number];
 
 // Specify here complex keys, that require serialization/deserialization
 export const objectPreferenceKeys = [
@@ -22,8 +23,9 @@ export type CoursesPreferences = {
   [courseId: number]: CoursePreferencesProps;
 };
 
-export type PreferencesContextProps = {
+export interface PreferencesContextBase {
   clientId?: string;
+  campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';
   courses: CoursesPreferences;
   language: 'it' | 'en' | 'system';
@@ -32,9 +34,15 @@ export type PreferencesContextProps = {
     events: boolean;
     presence: boolean;
   };
-  updatePreference: (key: PreferenceKey, value: unknown) => void;
   favoriteServices: string[];
-};
+}
+
+export interface PreferencesContextProps extends PreferencesContextBase {
+  updatePreference: <T extends PreferenceKey>(
+    key: T,
+    value: PreferencesContextBase[T],
+  ) => void;
+}
 
 export interface CoursePreferencesProps {
   color: string;

@@ -1,4 +1,4 @@
-import { MapMarker } from 'react-native-maps';
+import { MarkerView } from '@rnmapbox/maps';
 
 import { useGetPlace } from '../../../core/queries/placesHooks';
 
@@ -13,13 +13,10 @@ export const PlaceMarker = ({ placeId }: Props) => {
     return null;
   }
   return (
-    <MapMarker
-      coordinate={{
-        latitude: +place.data.latitude,
-        longitude: +place.data.longitude,
-      }}
-      title={place.data.name}
-      description={place.data.type}
+    <MarkerView
+      coordinate={[+place.data.latitude, +place.data.longitude]}
+      // title={place.data.name}
+      // description={place.data.type}
     />
   );
 };

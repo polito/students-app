@@ -41,10 +41,12 @@
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
+    "building": "Edificio",
     "cache": "Cache",
     "camera": "Fotocamera",
     "campus": "Sede",
     "cancel": "Annulla",
+    "capacity": "Capacità",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
     "color": "Colore",
@@ -91,6 +93,7 @@
       "unavailable": "Non prenotabile"
     },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
+    "facilities": "Dotazioni",
     "file": "File",
     "file_plural": "File",
     "floor": "Piano",
@@ -98,6 +101,7 @@
     "grade": "Voto",
     "hours": "Ore",
     "icon": "Icona",
+    "inYourAgenda": "nella tua agenda",
     "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
@@ -105,6 +109,7 @@
     "loading": "Caricamento",
     "logout": "Logout",
     "minutes": "Minuti",
+    "navigate": "Naviga",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
@@ -140,6 +145,7 @@
     "status": "Stato",
     "stop": "Stop",
     "stopFollowing": "Non seguire",
+    "structure": "Struttura",
     "switchCareerLabel": "Premi per affettuare un cambio matricola",
     "system": "Di sistema",
     "teacher": "Docente",
@@ -151,6 +157,7 @@
     "tomorrow": "Domani",
     "transcript": "Libretto",
     "unnamedFile": "File senza nome",
+    "untitled": "Senza titolo",
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",
@@ -352,14 +359,18 @@
   "placeCategoriesScreen": {
     "title": "Categorie"
   },
-  "placeCategoryScreen": {
-    "title": "Categoria luoghi"
-  },
   "placeScreen": {
+    "capacity": "{{count}} posto",
+    "capacity_plural": "{{count}} posti",
     "title": "Luogo"
   },
   "placesScreen": {
-    "title": "Luoghi"
+    "changeFloor": "Cambia piano",
+    "goToMyPosition": "Vai alla mia posizione",
+    "multipleFloors": "I risultati sono su più piani",
+    "noPlacesFound": "Nessun posto trovato",
+    "title": "Luoghi",
+    "viewWholeCampus": "Vedi tutta la sede"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Prova con \"Aula 1\""

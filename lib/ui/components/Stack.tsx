@@ -1,15 +1,8 @@
-import {
-  Children,
-  ComponentProps,
-  Fragment,
-  JSXElementConstructor,
-} from 'react';
+import { ComponentProps, JSXElementConstructor } from 'react';
 import { FlexStyle, StyleProp, View, ViewStyle } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-
-import { notNullish } from '../../../src/utils/predicates';
 
 interface SpacingShorthands {
   /** Shorthand for `margin` in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units */
@@ -122,6 +115,7 @@ export const Stack = <
     flexGrow !== undefined && { flexGrow },
     flexShrink !== undefined && { flexShrink },
     flexWrap !== undefined && { flexWrap },
+    gap !== undefined && { gap: spacing[gap as keyof Theme['spacing']] },
     Object.fromEntries(
       Object.entries(spacingShorthands).map(([short, long]) => [
         long,
@@ -130,24 +124,9 @@ export const Stack = <
     ),
     props.style,
   ];
-  const childArray = Children.toArray(children);
   return (
     <Component {...props} style={style}>
-      {gap == null
-        ? children
-        : childArray.filter(notNullish).map((child, index) => (
-            <Fragment key={index}>
-              {child}
-              {index < childArray.length - 1 && (
-                <View
-                  style={{
-                    [direction === 'row' ? 'width' : 'height']:
-                      spacing[gap as keyof Theme['spacing']],
-                  }}
-                />
-              )}
-            </Fragment>
-          ))}
+      {children}
     </Component>
   );
 };

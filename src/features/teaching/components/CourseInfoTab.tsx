@@ -22,7 +22,7 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { CourseTabProps } from '../screens/CourseScreen';
 import { ExamListItem } from './ExamListItem';
 
