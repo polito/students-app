@@ -1,85 +1,21 @@
-import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
-import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { Section } from '@lib/ui/components/Section';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useGetMessages } from '../../../core/queries/studentHooks';
-import { getHtmlTextContent } from '../../../utils/html';
+import { MessageItem } from '../components/MessageItem';
 import { UserStackParamList } from '../components/UserNavigator';
 
 type Props = NativeStackScreenProps<UserStackParamList, 'Message'>;
 
 export const MessageScreen = ({ route }: Props) => {
-  const styles = useStylesheet(createStyles);
   const { id } = route?.params || {};
-  const { t } = useTranslation();
-  const messagesQuery = useGetMessages();
+  const messagesQuery = useGetMessages(true);
   const message = messagesQuery.data?.find(m => m.id === id);
-  const hasSender = !!message?.senderId;
-  const title = message?.title;
-  const text = message?.message;
-  const personQuery = useGetPerson(message?.senderId || undefined);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <SafeAreaView>
-        <Section>
-          <Text variant="title" role="heading" style={styles.heading}>
-            {title ?? ''}
-          </Text>
-          {!!text && (
-            <View style={styles.textMessage}>
-              <Text weight="normal">{getHtmlTextContent(text)}</Text>
-            </View>
-          )}
-        </Section>
-        {!!personQuery.data && hasSender && (
-          <>
-            <View style={styles.container}>
-              <Text variant="subHeading" weight="semibold">
-                {t('messageScreen.sender')}
-              </Text>
-            </View>
-            <PersonListItem
-              person={personQuery.data}
-              subtitle={t('common.teacher')}
-            />
-          </>
-        )}
-      </SafeAreaView>
+      {message && <MessageItem message={message} />}
     </ScrollView>
   );
 };
-
-const createStyles = ({ spacing, fontWeights }: Theme) =>
-  StyleSheet.create({
-    heading: {
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[3],
-      fontWeight: fontWeights.bold,
-    },
-    textMessage: {
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[3],
-    },
-    container: {
-      paddingHorizontal: spacing[5],
-    },
-    infoRow: {
-      marginVertical: spacing[1],
-      paddingVertical: spacing[2],
-    },
-    iconCalendar: {
-      marginRight: spacing[2],
-    },
-    link: {
-      textDecorationLine: 'underline',
-      maxWidth: '90%',
-    },
-  });

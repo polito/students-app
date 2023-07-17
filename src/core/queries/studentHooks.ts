@@ -97,22 +97,29 @@ export const useGetDeadlineWeeks = () => {
   );
 };
 
-export const useGetMessages = () => {
+export const useGetMessages = (enabled: boolean) => {
   const studentClient = useStudentClient();
 
-  return useQuery(prefixKey([MESSAGES_QUERY_KEY]), () =>
-    studentClient.getMessages().then(pluckData),
+  return useQuery(
+    prefixKey([MESSAGES_QUERY_KEY]),
+    () => studentClient.getMessages().then(pluckData),
+    {
+      enabled,
+    },
   );
 };
 
-export const useMarkMessageAsRead = (messageId: number) => {
+export const useMarkMessageAsRead = () => {
   const studentClient = useStudentClient();
   const client = useQueryClient();
   const invalidatesQuery = prefixKey([MESSAGES_QUERY_KEY]);
 
-  return useMutation(() => studentClient.markMessageAsRead({ messageId }), {
-    onSuccess() {
-      return client.invalidateQueries(invalidatesQuery);
+  return useMutation(
+    (messageId: number) => studentClient.markMessageAsRead({ messageId }),
+    {
+      onSuccess() {
+        return client.invalidateQueries(invalidatesQuery);
+      },
     },
-  });
+  );
 };

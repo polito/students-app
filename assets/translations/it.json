@@ -39,6 +39,7 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "close": "Chiudi",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -341,7 +342,12 @@
     "usernameLabelAccessibility": "Inserisci qui il tuo username"
   },
   "messagesScreen": {
-    "title": "Archivio messaggi"
+    "title": "Archivio messaggi",
+    "unreadMessages": "Messaggio ({{read}} di {{total}})",
+    "readNext": "Leggi il prossimo",
+    "end": "Fine",
+    "sentAt": "Inviato il",
+    "youHaveunreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messageScreen": {
     "title": "Messaggio",

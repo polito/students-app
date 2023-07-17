@@ -16,14 +16,17 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
+import { hasUnreadMessages } from '../../utils/messages';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { useGetStudent } from '../queries/studentHooks';
+import { useGetMessages, useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
@@ -34,6 +37,8 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { refetch: getMessages } = useGetMessages(false);
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -44,6 +49,14 @@ export const RootNavigator = () => {
       ]);
     }
   }, [student]);
+
+  useEffect(() => {
+    getMessages().then(({ data }) => {
+      if (hasUnreadMessages(data || [])) {
+        navigation.navigate('ProfileTab');
+      }
+    });
+  }, []);
 
   const tabBarIconSize = 20;
 

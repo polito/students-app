@@ -11,7 +11,7 @@ import { MessageListItem } from '../components/MessageListItem';
 
 export const MessagesScreen = () => {
   const { spacing } = useTheme();
-  const messagesQuery = useGetMessages();
+  const messagesQuery = useGetMessages(true);
 
   const { isLoading, data: messages } = messagesQuery;
 

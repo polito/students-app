@@ -14,5 +14,6 @@ export const useScreenReader = () => {
   return {
     isEnabled: enabled,
     announce,
+    isScreenReaderEnabled: AccessibilityInfo.isScreenReaderEnabled,
   };
 };

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -24,8 +25,9 @@ interface Props {
 
 export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { mutate: markAsRead } = useMarkMessageAsRead(messageItem.id);
+  const { mutate: markAsRead } = useMarkMessageAsRead();
   const { accessibilityListLabel } = useAccessibility();
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
@@ -34,10 +36,9 @@ export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
   const sentAt = formatDateTime(messageItem.sentAt);
 
   const onPressItem = () => {
-    // TODO: uncomment when check unread message feature is implemented
-    // if (!messageItem.isRead) {
-    //   markAsRead();
-    // }
+    if (!messageItem.isRead) {
+      markAsRead(messageItem.id);
+    }
     navigation.navigate('Message', {
       id: messageItem.id,
     });
@@ -49,7 +50,12 @@ export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
       title={title}
       titleStyle={styles.title}
       onPress={onPressItem}
-      accessibilityLabel={[accessibilityLabel, title, sentAt].join(', ')}
+      accessibilityLabel={[
+        accessibilityLabel,
+        title,
+        t('messagesScreen.sentAt'),
+        sentAt,
+      ].join(', ')}
       subtitle={sentAt}
       subtitleStyle={styles.subtitle}
       trailingItem={
