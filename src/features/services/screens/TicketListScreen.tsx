@@ -8,6 +8,8 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -19,6 +21,7 @@ export const TicketListScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { statuses } = route.params;
   const ticketsQuery = useGetTickets();
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   const tickets = useMemo(
     () =>
@@ -49,12 +52,14 @@ export const TicketListScreen = ({ route }: Props) => {
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
       data={tickets}
       renderItem={({ item }) => <TicketListItem ticket={item} key={item.id} />}
       ItemSeparatorComponent={Platform.select({
         ios: IndentedDivider,
       })}
+      ListFooterComponent={<BottomBarSpacer />}
     />
   );
 };

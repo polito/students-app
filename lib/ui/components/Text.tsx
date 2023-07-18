@@ -7,6 +7,7 @@ import { Theme } from '../types/Theme';
 export interface Props extends TextProps {
   variant?:
     | 'heading'
+    | 'subHeading'
     | 'title'
     | 'prose'
     | 'secondaryText'
@@ -20,6 +21,7 @@ export interface Props extends TextProps {
 
 const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   heading: 'semibold',
+  subHeading: 'semibold',
   title: 'semibold',
   headline: 'normal',
   caption: 'bold',
@@ -71,10 +73,15 @@ export const Text = ({
   );
 };
 
-const createStyles = ({ fontSizes }: Theme) =>
+const createStyles = ({ fontSizes, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       fontSize: fontSizes.md,
+    },
+    subHeading: {
+      fontSize: fontSizes.sm,
+      textTransform: 'uppercase',
+      marginTop: spacing[1.5],
     },
     title: {
       fontSize: fontSizes.xl,

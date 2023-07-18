@@ -5,6 +5,7 @@ import * as Keychain from 'react-native-keychain';
 
 import { ResponseError } from '@polito/api-client/runtime';
 import NetInfo from '@react-native-community/netinfo';
+import * as Sentry from '@sentry/react-native';
 import {
   QueryClient,
   QueryClientProvider,
@@ -33,7 +34,13 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     // update ApiContext based on the provided token
-    const refreshContext = (credentials?: Credentials) =>
+    const refreshContext = (credentials?: Credentials) => {
+      if (credentials) {
+        Sentry.setUser({ username: credentials.username });
+      } else {
+        Sentry.setUser(null);
+      }
+
       setApiContext(() => {
         return {
           isLogged: !!credentials,
@@ -43,7 +50,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
           refreshContext,
         };
       });
-
+    };
     // Retrieve existing token from SecureStore, if any
     Keychain.getGenericPassword()
       .then(keychainCredentials => {

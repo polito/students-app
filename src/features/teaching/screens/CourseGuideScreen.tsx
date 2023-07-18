@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
-import { Platform, ScrollView } from 'react-native';
+import { Platform, SafeAreaView, ScrollView } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
+import { Col } from '@lib/ui/components/Col';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
@@ -35,24 +36,35 @@ export const CourseGuideScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingTop: spacing[6] }}
+      contentContainerStyle={{ paddingVertical: spacing[5] }}
       refreshControl={<RefreshControl queries={[guideQuery]} />}
     >
-      {guideSections.map((section, i) => (
-        <Section key={i}>
-          <SectionHeader title={section.title} />
+      <SafeAreaView>
+        <Section>
           <Card
             style={{
               marginVertical: spacing[2],
               marginHorizontal: Platform.select({ ios: spacing[4] }),
               paddingHorizontal: spacing[5],
-              paddingVertical: spacing[5],
+              paddingBottom: spacing[4],
             }}
           >
-            <Text>{section.content}</Text>
+            {guideSections.map((section, i) => (
+              <Col key={`section.title_${i}`}>
+                <Text
+                  accessible={false}
+                  variant="subHeading"
+                  accessibilityRole="header"
+                >
+                  {section.title}
+                </Text>
+                <Text>{section.content}</Text>
+              </Col>
+            ))}
           </Card>
         </Section>
-      ))}
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

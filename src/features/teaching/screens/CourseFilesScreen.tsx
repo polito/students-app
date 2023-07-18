@@ -8,18 +8,29 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
+import { CourseTabsParamList } from '../components/CourseNavigator';
+import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
+import { CourseContext } from '../contexts/CourseContext';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
-import { CourseTabProps } from '../screens/CourseScreen';
-import { CourseRecentFileListItem } from './CourseRecentFileListItem';
 
-export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
+type Props = MaterialTopTabScreenProps<
+  CourseTabsParamList,
+  'CourseFilesScreen'
+>;
+
+export const CourseFilesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { refresh } = useContext(FilesCacheContext);
+  const courseId = useContext(CourseContext)!;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   useFocusEffect(
     useCallback(() => {
@@ -32,6 +43,7 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={recentFilesQuery.data}
+        contentContainerStyle={paddingHorizontal}
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
         initialNumToRender={15}
@@ -48,9 +60,19 @@ export const CourseFilesTab = ({ courseId, navigation }: CourseTabProps) => {
         ItemSeparatorComponent={Platform.select({
           ios: IndentedDivider,
         })}
-        ListFooterComponent={<CtaButtonSpacer />}
+        ListFooterComponent={
+          <>
+            <CtaButtonSpacer />
+            <BottomBarSpacer />
+          </>
+        }
         ListEmptyComponent={
-          <EmptyState message={t('courseFilesTab.empty')} icon={faFolderOpen} />
+          !recentFilesQuery.isLoading ? (
+            <EmptyState
+              message={t('courseFilesTab.empty')}
+              icon={faFolderOpen}
+            />
+          ) : null
         }
       />
       {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (

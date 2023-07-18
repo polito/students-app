@@ -7,14 +7,14 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { AgendaFiltersState } from '../types/AgendaFiltersState';
-import { AgendaItemTypes } from '../types/AgendaItem';
+import { AgendaItemType } from '../types/AgendaItem';
 
 const activeTransparancyLight = '11';
 const activeTransparancyDark = '33';
 
 interface Props {
   state: AgendaFiltersState;
-  toggleState: (type: AgendaItemTypes) => void;
+  toggleState: (type: AgendaItemType) => void;
 }
 
 export const AgendaTabs = ({ state, toggleState }: Props) => {

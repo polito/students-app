@@ -8,16 +8,18 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
+import { Badge } from '@lib/ui/components/Badge';
+import { Col } from '@lib/ui/components/Col';
+import { Row } from '@lib/ui/components/Row';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { IS_IOS } from '../../../src/core/constants';
-import { GlobalStyles } from '../../../src/core/styles/globalStyles';
+import { GlobalStyles } from '../../../src/core/styles/GlobalStyles';
 import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
+import { DisclosureIndicator } from './DisclosureIndicator';
 import { Text } from './Text';
 
 export interface ListItemProps extends TouchableHighlightProps {
@@ -35,6 +37,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   inverted?: boolean;
   titleProps?: TextProps;
   multilineTitle?: boolean;
+  unread?: boolean;
 }
 
 /**
@@ -60,28 +63,36 @@ export const ListItem = ({
   inverted = false,
   multilineTitle = false,
   titleProps,
+  unread = false,
   ...rest
 }: ListItemProps) => {
-  const { fontSizes, colors, spacing } = useTheme();
+  const { fontSizes, fontWeights, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const titleElement =
     typeof title === 'string' ? (
-      <Text
-        variant="title"
-        style={[
-          {
-            fontSize: fontSizes.md,
-          },
-          titleStyle,
-        ]}
-        weight="normal"
-        numberOfLines={multilineTitle ? undefined : card ? 2 : 1}
-        ellipsizeMode={multilineTitle ? undefined : 'tail'}
-        {...titleProps}
-      >
-        {title}
-      </Text>
+      <Row align="center" gap={2}>
+        {unread && <Badge />}
+        <Text
+          variant="title"
+          style={[
+            GlobalStyles.grow,
+            {
+              fontSize: fontSizes.md,
+            },
+            unread && {
+              fontWeight: fontWeights.semibold,
+            },
+            titleStyle,
+          ]}
+          weight="normal"
+          numberOfLines={card ? 2 : 1}
+          ellipsizeMode="tail"
+          {...titleProps}
+        >
+          {title}
+        </Text>
+      </Row>
     ) : (
       title
     );
@@ -153,7 +164,7 @@ export const ListItem = ({
             {leadingItem}
           </View>
         )}
-        <View style={GlobalStyles.grow}>
+        <Col flex={1}>
           {!inverted ? (
             <>
               {titleElement}
@@ -165,17 +176,10 @@ export const ListItem = ({
               {titleElement}
             </>
           )}
-        </View>
+        </Col>
         {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (
-            <Icon
-              icon={faChevronRight}
-              color={colors.secondaryText}
-              style={{
-                marginLeft: spacing[1],
-                marginRight: -spacing[1],
-              }}
-            />
+            <DisclosureIndicator />
           ) : (
             trailingItem
           ))}

@@ -1,3 +1,3 @@
-import { AgendaItemTypes } from './AgendaItem';
+import { AgendaItemType } from './AgendaItem';
 
-export type AgendaFiltersState = Record<AgendaItemTypes, boolean>;
+export type AgendaFiltersState = Record<AgendaItemType, boolean>;

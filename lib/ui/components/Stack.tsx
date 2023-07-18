@@ -74,16 +74,15 @@ export type StackProps<
    * Gap between items in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units
    */
   gap?: keyof Theme['spacing'];
-} & Partial<SpacingShorthands> &
-  Partial<{
-    [key in keyof typeof spacingShorthands]: keyof Theme['spacing'];
-  }> &
+} & Partial<{
+  [key in keyof typeof spacingShorthands]: keyof Theme['spacing'];
+}> &
   ComponentProps<T>;
 
 /**
  * A flexbox (row or column) layout
  *
- * See {@link import('./Row').Row `Row`} and {@link import('./Col').Col `Col`} for shorthand alternatives
+ * See `Row` and `Col` for shorthand alternatives
  */
 export const Stack = <
   T extends

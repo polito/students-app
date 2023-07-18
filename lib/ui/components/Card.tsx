@@ -10,9 +10,19 @@ export type CardProps = ViewProps & {
   rounded?: boolean;
 
   /**
+   * Toggles the inner spacing
+   */
+  padded?: boolean;
+
+  /**
    * Toggles the outer spacing
    */
   spaced?: boolean;
+
+  /**
+   * Toggles the inner spacing
+   */
+  gapped?: boolean;
 
   /**
    * If true, uses a semi-transparent background
@@ -31,6 +41,8 @@ export const Card = ({
   translucent = false,
   spaced = Platform.select({ ios: true, android: false }),
   rounded = Platform.select({ ios: true, android: false }),
+  gapped = false,
+  padded = false,
   ...rest
 }: CardProps) => {
   const { colors, shapes, spacing } = useTheme();
@@ -43,10 +55,23 @@ export const Card = ({
           backgroundColor:
             IS_IOS && translucent ? colors.translucentSurface : colors.surface,
           elevation: 2,
-          marginHorizontal: spaced ? spacing[5] : undefined,
+          marginHorizontal: spaced ? spacing[4] : undefined,
           marginVertical: spaced ? spacing[2] : undefined,
           overflow: 'hidden',
         },
+        padded
+          ? {
+              paddingHorizontal: padded ? spacing[5] : undefined,
+              paddingVertical: padded ? spacing[2.5] : undefined,
+            }
+          : {},
+        gapped
+          ? {
+              display: 'flex',
+              flexDirection: 'column',
+              gap: spacing[2],
+            }
+          : {},
         style,
       ]}
       {...rest}

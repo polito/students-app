@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faChalkboardTeacher,
@@ -23,24 +24,29 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { TranslucentView } from '../../../core/components/TranslucentView';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { formatDate } from '../../../utils/dates';
-import { CourseTabProps } from '../screens/CourseScreen';
+import { CourseContext } from '../contexts/CourseContext';
 import {
   CourseLecture,
   CourseLectureSection,
 } from '../types/CourseLectureSections';
 
-export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
+export const CourseLecturesScreen = () => {
   const { t } = useTranslation();
+  const safeAreaInsets = useSafeAreaInsets();
+  const courseId = useContext(CourseContext)!;
   const { spacing, colors, fontSizes } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =
     useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
+  const { marginHorizontal } = useSafeAreaSpacing();
 
   useEffect(() => {
     if (!courseLecturesQuery.data) return;
@@ -92,17 +98,24 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
       refreshControl={<RefreshControl queries={[courseLecturesQuery]} />}
       stickySectionHeadersEnabled={true}
       ListEmptyComponent={
-        <EmptyState
-          message={t('courseLecturesTab.emptyState')}
-          icon={faChalkboardTeacher}
-        />
+        !courseLecturesQuery.isLoading ? (
+          <EmptyState
+            message={t('courseLecturesTab.emptyState')}
+            icon={faChalkboardTeacher}
+          />
+        ) : null
       }
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
       )}
       ItemSeparatorComponent={Platform.select({
-        ios: () => <IndentedDivider />,
+        ios: () => (
+          <IndentedDivider
+            indent={safeAreaInsets.left + 56}
+            style={{ marginRight: safeAreaInsets.right }}
+          />
+        ),
       })}
       renderSectionHeader={({ section: { title, isExpanded } }) => (
         <Pressable
@@ -113,6 +126,8 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
         >
           <View
             style={{
+              paddingLeft: safeAreaInsets.left,
+              paddingRight: safeAreaInsets.right,
               paddingVertical: spacing[3],
               borderBottomWidth: StyleSheet.hairlineWidth,
               borderColor: colors.divider,
@@ -176,9 +191,11 @@ export const CourseLecturesTab = ({ courseId }: CourseTabProps) => {
                 teacherId: lecture.teacherId,
               },
             }}
+            containerStyle={marginHorizontal}
           />
         );
       }}
+      ListFooterComponent={<BottomBarSpacer />}
     />
   );
 };

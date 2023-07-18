@@ -1,10 +1,12 @@
 {
   "agendaScreen": {
     "backToToday": "Torna a oggi",
+    "dailyLayout": "Layout giornaliero",
     "emptyDay": "Non hai impegni oggi",
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
-    "title": "Agenda"
+    "title": "Agenda",
+    "weeklyLayout": "Layout settimanale"
   },
   "bookingsScreen": {
     "title": "Prenotazioni"
@@ -37,6 +39,7 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
@@ -81,6 +84,8 @@
     "en": "Inglese",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
+    "event": "Evento",
+    "event_plural": "Eventi",
     "exam": "Esame",
     "examCall": "Appello",
     "examCall_plural": "Appelli",
@@ -101,14 +106,16 @@
     "grade": "Voto",
     "hours": "Ore",
     "icon": "Icona",
-    "inYourAgenda": "nella tua agenda",
     "it": "Italiano",
+    "inYourAgenda": "nella tua agenda",
     "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "loading": "Caricamento",
     "logout": "Logout",
     "minutes": "Minuti",
+    "newItems": "Nuovo elemento",
+    "newItems_plural": "Nuovi elementi",
     "navigate": "Naviga",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
@@ -146,7 +153,7 @@
     "stop": "Stop",
     "stopFollowing": "Non seguire",
     "structure": "Struttura",
-    "switchCareerLabel": "Premi per affettuare un cambio matricola",
+    "switchCareerLabel": "Premi per effettuare un cambio matricola",
     "system": "Di sistema",
     "teacher": "Docente",
     "theme": "Tema",
@@ -207,7 +214,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
-    "empty": "Nessun file disponibile",
+    "empty": "Non ci sono file qui",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale"
@@ -300,7 +307,26 @@
   "guidesScreen": {
     "title": "Guide"
   },
+  "jobOfferScreen": {
+    "application": "Candidatura",
+    "companyMission": "Mission",
+    "contactInformation": "Per informazioni contattare",
+    "contractType": "Tipo di contratto: ",
+    "description": "Compiti",
+    "email": "E-mail: ",
+    "endsAtDate": "Scadenza: ",
+    "freePositions": "Posti disponibili: ",
+    "location": "Sede di lavoro: ",
+    "requirements": "Requisiti",
+    "salary": "Retribuzione: ",
+    "title": "Offerte di lavoro",
+    "url": "Sito web: "
+  },
   "jobOffersScreen": {
+    "endsAtDate": "Scadenza: ",
+    "title": "Offerte di lavoro"
+  },
+  "josOffersScreen": {
     "title": "Offerte di lavoro"
   },
   "lectureScreen": {
@@ -336,7 +362,11 @@
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "newsScreen": {
-    "title": "News & Eventi"
+    "createdAt": "Pubblicato il ",
+    "eventStartTime": "Inizio evento",
+    "information": "Informazioni",
+    "logo": "Logo",
+    "title": "Avvisi & News"
   },
   "notifications": {
     "events": "Eventi e iniziative",
@@ -355,9 +385,6 @@
     "role": "Ruolo",
     "sentEmail": "Invia e-mail",
     "totalCourses": "Sono presenti {{total}} corsi"
-  },
-  "placeCategoriesScreen": {
-    "title": "Categorie"
   },
   "placeScreen": {
     "capacity": "{{count}} posto",
@@ -442,9 +469,14 @@
     "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
   },
   "tickets": {
-    "close": "Close ticket",
+    "close": "Chiudi ticket",
     "closeTip": "Sei sicuro di voler chiudere questo ticket?",
-    "menuAction": "Azioni ticket"
+    "menuAction": "Azioni ticket",
+    "status": {
+      "closed": "Chiuso",
+      "new": "Nuovo",
+      "pending": "In lavorazione"
+    }
   },
   "ticketsScreen": {
     "addNew": "Nuovo ticket",

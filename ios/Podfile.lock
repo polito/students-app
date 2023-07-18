@@ -392,6 +392,10 @@ PODS:
     - React
   - react-native-netinfo (9.3.4):
     - React-Core
+  - react-native-override-color-scheme (1.0.3):
+    - React-Core
+  - react-native-pager-view (6.2.0):
+    - React-Core
   - react-native-pdf (6.6.2):
     - React-Core
   - react-native-render-html (6.3.4):
@@ -516,18 +520,18 @@ PODS:
     - TOCropViewController
   - RNKeychain (8.1.1):
     - React-Core
-  - rnmapbox-maps (10.0.9):
+  - rnmapbox-maps (10.0.10):
     - MapboxMaps (~> 10.14.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.0.9)
+    - rnmapbox-maps/DynamicLibrary (= 10.0.10)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.0.9):
+  - rnmapbox-maps/DynamicLibrary (10.0.10):
     - MapboxMaps (~> 10.14.0)
     - React
     - React-Core
     - Turf
-  - RNPermissions (3.8.0):
+  - RNPermissions (3.8.4):
     - React-Core
   - RNReanimated (2.17.0):
     - DoubleConversion
@@ -556,9 +560,12 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.22.1):
+  - RNScreens (3.22.0):
     - React-Core
     - React-RCTImage
+  - RNSentry (5.6.0):
+    - React-Core
+    - Sentry/HybridSDK (= 8.7.3)
   - RNSVG (13.4.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -567,6 +574,9 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
+  - Sentry/HybridSDK (8.7.3):
+    - SentryPrivate (= 8.7.3)
+  - SentryPrivate (8.7.3)
   - SocketRocket (0.6.0)
   - TOCropViewController (2.6.1)
   - Turf (2.6.1)
@@ -627,6 +637,8 @@ DEPENDENCIES:
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-override-color-scheme (from `../node_modules/react-native-override-color-scheme`)
+  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -656,6 +668,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -683,6 +696,8 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
+    - Sentry
+    - SentryPrivate
     - SocketRocket
     - TOCropViewController
     - Turf
@@ -741,6 +756,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-menu/menu"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-override-color-scheme:
+    :path: "../node_modules/react-native-override-color-scheme"
+  react-native-pager-view:
+    :path: "../node_modules/react-native-pager-view"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
   react-native-render-html:
@@ -799,6 +818,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -851,6 +872,8 @@ SPEC CHECKSUMS:
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-menu: 5b9b82dabcc779cebde15d292ccbcba4469ff311
   react-native-netinfo: 6ac9bcc7c88dc51717bda3484eb99093acb755e0
+  react-native-override-color-scheme: 3badbbee9a4ea2a9c3e5b4a5d9fd9eaba8761870
+  react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
@@ -876,13 +899,16 @@ SPEC CHECKSUMS:
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNImageCropPicker: ffbba608264885c241cbf3a8f78eb7aeeb978241
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
-  rnmapbox-maps: 0d5ef518a237cb01d8e5b78324661a1eaf31f70c
-  RNPermissions: 6df6924d210f0ef6c31eb31fb568f1153065a391
+  rnmapbox-maps: de67407973410cb0159c8cee4544c6ba59f6154a
+  RNPermissions: 8d1bdae7b50b7e97f2bc7bc49b8502c19d39dd2e
   RNReanimated: f186e85d9f28c9383d05ca39e11dd194f59093ec
-  RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
+  RNScreens: 68fd1060f57dd1023880bf4c05d74784b5392789
+  RNSentry: 9f0447b3ce13806f544903748de423259ead8552
   RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
+  Sentry: c7a86f43510a7d5678d4de28d78c28ab351d295b
+  SentryPrivate: 2eaabf598a46d4b9b8822aef766df2a84caf2e6f
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4

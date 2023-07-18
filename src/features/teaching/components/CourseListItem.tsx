@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
+import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -16,6 +18,7 @@ interface Props {
   course: CourseOverview;
   accessible?: boolean;
   accessibilityLabel?: string;
+  badge?: number;
 }
 
 const Menu = ({
@@ -60,6 +63,7 @@ export const CourseListItem = ({
   course,
   accessibilityLabel,
   accessible,
+  badge,
 }: Props) => {
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
@@ -95,24 +99,28 @@ export const CourseListItem = ({
         />
       }
       trailingItem={
-        hasDetails ? (
-          Platform.select({
-            android: (
-              <Menu course={course}>
-                <IconButton
-                  style={{
-                    padding: spacing[3],
-                  }}
-                  icon={faEllipsisVertical}
-                  color={colors.secondaryText}
-                  size={fontSizes.xl}
-                />
-              </Menu>
-            ),
-          })
-        ) : (
-          <View style={{ width: 20 }} />
-        )
+        <>
+          {badge && <Badge text={badge} />}
+          {hasDetails ? (
+            Platform.select({
+              android: (
+                <Menu course={course}>
+                  <IconButton
+                    style={{
+                      padding: spacing[3],
+                    }}
+                    icon={faEllipsisVertical}
+                    color={colors.secondaryText}
+                    size={fontSizes.xl}
+                  />
+                </Menu>
+              ),
+              ios: <DisclosureIndicator />,
+            })
+          ) : (
+            <View style={{ width: 20 }} />
+          )}
+        </>
       }
       containerStyle={{
         paddingRight: Platform.select({

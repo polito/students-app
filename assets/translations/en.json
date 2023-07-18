@@ -1,10 +1,12 @@
 {
   "agendaScreen": {
     "backToToday": "Back to today",
+    "dailyLayout": "Daily layout",
     "emptyDay": "You have no events today",
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
-    "title": "Agenda"
+    "title": "Agenda",
+    "weeklyLayout": "Weekly layout"
   },
   "bookingsScreen": {
     "title": "Bookings"
@@ -37,18 +39,19 @@
       "true": "Active"
     },
     "agent": "Agent",
+    "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
-    "building": "Building",
     "cache": "Cache",
     "camera": "Camera",
+    "building": "Building",
     "campus": "Campus",
     "cancel": "Cancel",
-    "capacity": "Capacity",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
+    "capacity": "Capacity",
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -81,6 +84,8 @@
     "en": "English",
     "endRefresh": "Refresh completed",
     "error": "Error",
+    "event": "Event",
+    "event_plural": "Events",
     "exam": "Exam",
     "examCall": "Exam call",
     "examCall_plural": "Exam calls",
@@ -96,10 +101,10 @@
     "facilities": "Facilities",
     "file": "File",
     "file_plural": "Files",
-    "floor": "Floor",
     "follow": "Follow",
     "grade": "Grade",
     "hours": "Hour",
+    "floor": "Floor",
     "icon": "Icon",
     "inYourAgenda": "in your agenda",
     "it": "Italian",
@@ -109,6 +114,8 @@
     "loading": "Loading",
     "logout": "Logout",
     "minutes": "Minutes",
+    "newItems": "New item",
+    "newItems_plural": "New items",
     "navigate": "Navigate",
     "notice": "Notice",
     "notice_plural": "Notices",
@@ -145,9 +152,9 @@
     "status": "Status",
     "stop": "Stop",
     "stopFollowing": "Stop following",
-    "structure": "Structure",
     "switchCareerLabel": "Tap to switch career",
     "system": "System",
+    "structure": "Structure",
     "teacher": "Teacher",
     "theme": "Theme",
     "ticket_plural": "Tickets",
@@ -191,7 +198,7 @@
     "title": "Upload assignment"
   },
   "courseAssignmentsTab": {
-    "emptyState": "There are no assignments",
+    "emptyState": "There are no assignments here",
     "title": "Assignments"
   },
   "courseDirectoryListItem": {
@@ -207,7 +214,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "No files available",
+    "empty": "There are no files here",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
@@ -229,7 +236,7 @@
     "yearLabel": "Year"
   },
   "courseLecturesTab": {
-    "emptyState": "There are no lectures",
+    "emptyState": "There are no lectures here",
     "title": "Lectures",
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
@@ -237,7 +244,7 @@
     "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
   },
   "courseNoticesTab": {
-    "emptyState": "There are no notices",
+    "emptyState": "There are no notices here",
     "title": "Notices"
   },
   "coursePreferencesScreen": {
@@ -300,8 +307,27 @@
   "guidesScreen": {
     "title": "Guides"
   },
+  "jobOfferScreen": {
+    "application": "Application",
+    "companyMission": "Mission",
+    "contactInformation": "For information contact",
+    "contractType": "Contract type: ",
+    "description": "Description",
+    "email": "E-mail: ",
+    "endsAtDate": "Expiration: ",
+    "freePositions": "Free positions: ",
+    "location": "Company location: ",
+    "requirements": "Requirements",
+    "salary": "Salary: ",
+    "title": "Job offers",
+    "url": "Website: "
+  },
   "jobOffersScreen": {
+    "endsAtDate": "expiration: ",
     "title": "Job offers"
+  },
+  "josOffersScreen": {
+    "title": "Offers screen"
   },
   "lectureScreen": {
     "courseFilesCta": "Go to course files"
@@ -336,6 +362,10 @@
     "takePhotoHint": "Take one or more photos and generate a file"
   },
   "newsScreen": {
+    "createdAt": "Published on ",
+    "eventStartTime": "Starts on ",
+    "information": "Information",
+    "logo": "Logo",
     "title": "News & Events"
   },
   "notifications": {
@@ -355,9 +385,6 @@
     "role": "Role",
     "sentEmail": "Send e-mail",
     "totalCourses": "There are {{total}} courses"
-  },
-  "placeCategoriesScreen": {
-    "title": "Categories"
   },
   "placeScreen": {
     "capacity": "{{count}} seat",
@@ -444,7 +471,12 @@
   "tickets": {
     "close": "Close ticket",
     "closeTip": "Are you sure you want to close this ticket?",
-    "menuAction": "Ticket actions"
+    "menuAction": "Ticket actions",
+    "status": {
+      "closed": "Closed",
+      "new": "Open",
+      "pending": "Pending"
+    }
   },
   "ticketsScreen": {
     "addNew": "Add ticket",

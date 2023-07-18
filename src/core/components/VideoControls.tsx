@@ -27,7 +27,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { DateTime } from 'luxon';
 
 import { negate } from '../../utils/predicates';
-import { GlobalStyles } from '../styles/globalStyles';
+import { GlobalStyles } from '../styles/GlobalStyles';
 import { darkTheme } from '../themes/dark';
 import { GradientBackdrop } from './GradientBackdrop';
 
@@ -115,7 +115,7 @@ export const VideoControls = ({
       }
       opacityAnimation.current = null;
     });
-  }, [buffering, controlsHidden, controlsOpacity, paused, sliding]);
+  }, [controlsHidden]);
 
   useEffect(() => {
     if ((paused || buffering || sliding) && hideTimeout.current) {
@@ -238,7 +238,7 @@ export const VideoControls = ({
   );
 };
 
-const createStyles = ({ fontWeights }: Theme) =>
+const createStyles = ({ fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     slider: {
       flexGrow: 1,

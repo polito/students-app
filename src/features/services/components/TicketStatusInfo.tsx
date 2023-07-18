@@ -14,7 +14,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDate, formatDateTime } from '../../../utils/dates';
 
 interface TicketStatusProps {
@@ -66,7 +66,7 @@ export const TicketStatusInfo = ({
         />
         <Metric
           title={t('common.status')}
-          value={ticket.status}
+          value={t(`tickets.status.${ticket.status}`)}
           style={GlobalStyles.grow}
           valueStyle={{ textTransform: 'uppercase' }}
         />

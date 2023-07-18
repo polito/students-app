@@ -2,10 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
@@ -13,7 +14,6 @@ import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
-import { CourseScreen } from '../screens/CourseScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { CoursesScreen } from '../screens/CoursesScreen';
@@ -23,8 +23,9 @@ import { NoticeScreen } from '../screens/NoticeScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
+import { CourseNavigator } from './CourseNavigator';
 
-export type TeachingStackParamList = {
+export interface TeachingStackParamList extends ParamListBase {
   Home: undefined;
   Courses: undefined;
   Course: { id: number; courseName: string };
@@ -54,7 +55,7 @@ export type TeachingStackParamList = {
   Exams: undefined;
   Exam: { id: number };
   Transcript: undefined;
-};
+}
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
 
@@ -71,7 +72,7 @@ export const TeachingNavigator = () => {
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
-        ...titlesStyles(theme),
+        ...useTitlesStyles(theme),
       }}
     >
       <Stack.Screen
@@ -91,7 +92,7 @@ export const TeachingNavigator = () => {
       />
       <Stack.Screen
         name="Course"
-        component={CourseScreen}
+        component={CourseNavigator}
         options={{
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,

@@ -131,6 +131,7 @@ jobs:
     - name: Install npm dependencies
       run: npm install
 
+
   build-android:
     name: ${{ needs.configure.outputs.push_to_playstore == 'false' && 'Build' || 'Build & Deploy' }} Android
     needs: configure
@@ -190,7 +191,24 @@ jobs:
       working-directory: ./android
       env:
         STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: bundle exec fastlane release
+    - name: Fastlane APK lane
+      if: |
+        github.event_name == 'push' &&
+        github.ref_type == 'tag'
+      run: bundle exec fastlane apk
+      working-directory: ./android
+    - name: Upload Artifacts
+      if: |
+        github.event_name == 'push' &&
+        github.ref_type == 'tag'
+      uses: actions/upload-artifact@v3
+      with:
+        name: android-release
+        path: android/app/build/outputs/apk/release/*.apk
 
   build-ios:
     name: ${{ needs.configure.outputs.push_to_testflight == 'false' && 'Build' || 'Build & Deploy' }} iOS
@@ -205,7 +223,6 @@ jobs:
       FASTLANE_USERNAME: ${{ secrets.FASTLANE_POLI_MOBILE_USER }}
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
-
     needs: configure
     runs-on: [self-hosted, macos-12]
     steps:
@@ -255,11 +272,17 @@ jobs:
     - name: Fastlane RELEASE lane
       if: needs.configure.outputs.push_to_testflight == 'true'
       working-directory: ./ios
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: |
         bundle exec fastlane release
 
   create-release:
     name: Create GitHub Release
+    permissions:
+      contents: write
     if: |
       github.event_name == 'push' &&
       github.event.repository.full_name == github.repository &&
@@ -269,7 +292,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - uses: ncipollo/release-action@v1
+    - name: Gather artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: android-release
+        path: ./android-release
+    - name: Create release
+      uses: ncipollo/release-action@v1
       with:
         generateReleaseNotes: true
         skipIfReleaseExists: true
+        artifacts: ./android-release/*.apk

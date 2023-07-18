@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { Document } from 'react-native-render-html';
 
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +12,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { parseDocument } from 'htmlparser2';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
@@ -31,23 +32,27 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={styles.container}
     >
-      <Section>
-        <SectionHeader title={faq.question} ellipsizeTitle={false} />
-        <HtmlView source={{ dom }} />
-      </Section>
+      <SafeAreaView>
+        <Section>
+          <SectionHeader title={faq.question} ellipsizeTitle={false} />
+          <HtmlView source={{ dom }} />
+        </Section>
 
-      <CtaButton
-        absolute={false}
-        title={t('ticketFaqsScreen.writeTicket')}
-        hint={t('ticketFaqsScreen.noResultFound')}
-        action={() =>
-          navigation.navigate('CreateTicket', {
-            subtopicId: undefined,
-            topicId: undefined,
-          })
-        }
-        icon={faPencil}
-      />
+        <CtaButton
+          absolute={false}
+          title={t('ticketFaqsScreen.writeTicket')}
+          hint={t('ticketFaqsScreen.noResultFound')}
+          action={() =>
+            navigation.navigate('CreateTicket', {
+              subtopicId: undefined,
+              topicId: undefined,
+            })
+          }
+          icon={faPencil}
+        />
+
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

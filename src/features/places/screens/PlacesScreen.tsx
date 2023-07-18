@@ -49,7 +49,7 @@ import {
   useGetPlaceCategory,
   useGetPlaces,
 } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';

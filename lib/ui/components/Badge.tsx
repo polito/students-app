@@ -1,28 +1,42 @@
 import { useMemo } from 'react';
-import { StyleSheet, Text, TextProps, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, TextProps } from 'react-native';
 
+import { Row } from '@lib/ui/components/Row';
+import { VisuallyHidden } from '@lib/ui/components/VisuallyHidden';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { isNumber } from 'lodash';
+
+import { Text } from './Text';
+
 interface Props {
-  text: string;
+  text?: string | number;
   style?: TextProps['style'];
   variant?: 'outlined' | 'filled';
 }
 
 export const Badge = ({ text, style, variant = 'filled' }: Props) => {
+  const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
-
   const isOutlined = useMemo(() => variant === 'outlined', [variant]);
+  const isNumeric = isNumber(text);
+
   return (
-    <View
+    <Row
+      ph={1}
+      align="center"
+      justify="center"
+      flexShrink={0}
       style={[
         styles.badge,
         {
           backgroundColor: palettes.orange[600],
         },
+        !text && styles.dotBadge,
         isOutlined && {
           backgroundColor: colors.surface,
           borderColor: palettes.orange[600],
@@ -31,29 +45,40 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
         style,
       ]}
     >
-      <Text
-        style={[
-          styles.badgeText,
-          isOutlined && { color: palettes.orange[600] },
-        ]}
-      >
-        {text}
-      </Text>
-    </View>
+      {text && (
+        <Text
+          style={[
+            styles.badgeText,
+            isOutlined && { color: palettes.orange[600] },
+          ]}
+        >
+          {text}
+          {isNumeric && (
+            <VisuallyHidden>
+              {t('common.newItems', { count: Number(text) })}
+            </VisuallyHidden>
+          )}
+        </Text>
+      )}
+    </Row>
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights, shapes, spacing }: Theme) =>
+const createStyles = ({ fontSizes, fontWeights, shapes }: Theme) =>
   StyleSheet.create({
     badge: {
       borderRadius: shapes.xl,
-      paddingHorizontal: spacing[2],
-      paddingVertical: spacing[1],
+      minWidth: 19,
+      minHeight: 19,
+    },
+    dotBadge: {
+      minWidth: 12,
+      minHeight: 12,
     },
     badgeText: {
       color: 'white',
-      fontSize: fontSizes['2xs'],
-      fontWeight: fontWeights.bold,
+      fontWeight: fontWeights.semibold,
+      fontSize: fontSizes.sm,
       textTransform: 'uppercase',
     },
   });

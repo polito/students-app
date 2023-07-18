@@ -1,35 +1,42 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { Badge } from '@lib/ui/components/Badge';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
-interface Props {
-  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Home'>;
-}
+type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
 
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
@@ -39,6 +46,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const transcriptBadge = null;
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
@@ -83,7 +91,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         />
       }
     >
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Section>
           <SectionHeader
             title={t('coursesScreen.title')}
@@ -94,7 +102,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : undefined
             }
           />
-          <SectionList
+          <OverviewList
             loading={coursesQuery.isLoading}
             indented
             emptyStateText={
@@ -109,7 +117,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 course={course}
               />
             ))}
-          </SectionList>
+          </OverviewList>
         </Section>
         <Section>
           <SectionHeader
@@ -121,7 +129,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : undefined
             }
           />
-          <SectionList
+          <OverviewList
             loading={examsQuery.isLoading}
             indented
             emptyStateText={t('examsScreen.emptyState')}
@@ -129,81 +137,89 @@ export const TeachingScreen = ({ navigation }: Props) => {
             {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
             ))}
-          </SectionList>
+          </OverviewList>
         </Section>
         <Section>
           <SectionHeader title={t('common.transcript')} />
 
-          <Card style={styles.sectionContent}>
-            {studentQuery.isLoading ? (
-              <ActivityIndicator style={styles.loader} />
-            ) : (
-              <TouchableHighlight
-                onPress={() => navigation.navigate('Transcript')}
-                underlayColor={colors.touchableHighlight}
-              >
-                <Row p={5} gap={5} align="stretch" justify="space-between">
-                  <Col justify="space-between">
-                    <Metric
-                      title={
-                        studentQuery.data?.averageGradePurged != null
-                          ? t('transcriptScreen.finalAverageLabel')
-                          : t('transcriptScreen.weightedAverageLabel')
+          <View style={GlobalStyles.relative}>
+            <Card style={styles.transcriptCard}>
+              {studentQuery.isLoading ? (
+                <ActivityIndicator style={styles.loader} />
+              ) : (
+                <TouchableHighlight
+                  onPress={() => navigation.navigate('Transcript')}
+                  underlayColor={colors.touchableHighlight}
+                >
+                  <Row p={5} gap={5} align="stretch" justify="space-between">
+                    <Col justify="space-between">
+                      <Metric
+                        title={
+                          studentQuery.data?.averageGradePurged != null
+                            ? t('transcriptScreen.finalAverageLabel')
+                            : t('transcriptScreen.weightedAverageLabel')
+                        }
+                        value={
+                          studentQuery.data?.averageGradePurged ??
+                          studentQuery.data?.averageGrade ??
+                          '--'
+                        }
+                        color={colors.title}
+                      />
+                      {studentQuery.data?.estimatedFinalGradePurged ? (
+                        <Metric
+                          title={t(
+                            'transcriptScreen.estimatedFinalGradePurged',
+                          )}
+                          value={formatFinalGrade(
+                            studentQuery.data?.estimatedFinalGradePurged,
+                          )}
+                          color={colors.title}
+                        />
+                      ) : (
+                        <Metric
+                          title={t('transcriptScreen.estimatedFinalGrade')}
+                          value={formatFinalGrade(
+                            studentQuery.data?.estimatedFinalGrade,
+                          )}
+                          color={colors.title}
+                        />
+                      )}
+                    </Col>
+                    <ProgressChart
+                      label={
+                        studentQuery.data?.totalCredits
+                          ? `${studentQuery.data?.totalAcquiredCredits}/${
+                              studentQuery.data?.totalCredits
+                            }\n${t('common.ects')}`
+                          : undefined
                       }
-                      value={
-                        studentQuery.data?.averageGradePurged ??
-                        studentQuery.data?.averageGrade ??
-                        '--'
+                      data={
+                        studentQuery.data && studentQuery.data.totalCredits
+                          ? [
+                              (studentQuery.data?.totalAttendedCredits ?? 0) /
+                                studentQuery.data?.totalCredits,
+                              (studentQuery.data?.totalAcquiredCredits ?? 0) /
+                                studentQuery.data?.totalCredits,
+                            ]
+                          : []
                       }
-                      color={colors.title}
+                      boxSize={140}
+                      radius={40}
+                      thickness={18}
+                      colors={[palettes.primary[400], palettes.secondary[500]]}
                     />
-                    {studentQuery.data?.estimatedFinalGradePurged ? (
-                      <Metric
-                        title={t('transcriptScreen.estimatedFinalGradePurged')}
-                        value={formatFinalGrade(
-                          studentQuery.data?.estimatedFinalGradePurged,
-                        )}
-                        color={colors.title}
-                      />
-                    ) : (
-                      <Metric
-                        title={t('transcriptScreen.estimatedFinalGrade')}
-                        value={formatFinalGrade(
-                          studentQuery.data?.estimatedFinalGrade,
-                        )}
-                        color={colors.title}
-                      />
-                    )}
-                  </Col>
-                  <ProgressChart
-                    label={
-                      studentQuery.data?.totalCredits
-                        ? `${studentQuery.data?.totalAcquiredCredits}/${
-                            studentQuery.data?.totalCredits
-                          }\n${t('common.ects')}`
-                        : undefined
-                    }
-                    data={
-                      studentQuery.data && studentQuery.data.totalCredits
-                        ? [
-                            studentQuery.data?.totalAttendedCredits /
-                              studentQuery.data?.totalCredits,
-                            studentQuery.data?.totalAcquiredCredits /
-                              studentQuery.data?.totalCredits,
-                          ]
-                        : []
-                    }
-                    boxSize={140}
-                    radius={40}
-                    thickness={18}
-                    colors={[palettes.primary[400], palettes.secondary[500]]}
-                  />
-                </Row>
-              </TouchableHighlight>
+                  </Row>
+                </TouchableHighlight>
+              )}
+            </Card>
+            {transcriptBadge && (
+              <Badge text={transcriptBadge} style={styles.badge} />
             )}
-          </Card>
+          </View>
         </Section>
-      </View>
+      </SafeAreaView>
+      <BottomBarSpacer />
     </ScrollView>
   );
 };
@@ -211,12 +227,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
-      paddingVertical: spacing[5],
+      marginVertical: spacing[5],
     },
     loader: {
       marginVertical: spacing[8],
     },
-    sectionContent: {
+    transcriptCard: {
       marginVertical: spacing[2],
+    },
+    badge: {
+      position: 'absolute',
+      top: 0,
+      right: 10,
     },
   });

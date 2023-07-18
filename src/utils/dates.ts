@@ -3,7 +3,12 @@ import { DateTime } from 'luxon';
 const MACHINE_DATE_REGEX = /([0-9]{4})-0?([0-9]+)-0?([0-9]+)/;
 
 export const formatDate = (date: Date) => {
-  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  return DateTime.fromJSDate(date).toFormat('dd/MM/yyyy');
+};
+
+export const formatDateFromString = (date: string | null) => {
+  if (!date) return '';
+  return DateTime.fromISO(date).toFormat('dd/MM/yyyy');
 };
 
 export const formatDateTime = (date: Date) => {

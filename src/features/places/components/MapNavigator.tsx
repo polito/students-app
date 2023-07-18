@@ -30,7 +30,7 @@ import { Camera, MapView } from '@rnmapbox/maps';
 import { CameraProps } from '@rnmapbox/maps/lib/typescript/components/Camera';
 
 import { IS_IOS } from '../../../core/constants';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 
 interface Insets {

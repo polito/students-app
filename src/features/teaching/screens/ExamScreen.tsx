@@ -1,18 +1,19 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
@@ -43,9 +44,27 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const examAvailable = exam?.status === ExamStatusEnum.Available;
   const showCta = useMemo(() => {
     if (!exam) return false;
-    (
-      [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
-    ).includes(exam.status);
+
+    if (
+      exam.status === ExamStatusEnum.Available &&
+      exam.bookingEndsAt &&
+      exam.bookingEndsAt.getTime() < Date.now()
+    )
+      return false;
+
+    if (
+      exam.status === ExamStatusEnum.Available &&
+      exam.bookingStartsAt &&
+      exam.bookingStartsAt.getTime() > Date.now()
+    )
+      return false;
+
+    return (
+      exam.question?.statement === undefined &&
+      (
+        [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
+      ).includes(exam.status)
+    );
   }, [exam]);
 
   useEffect(() => {
@@ -112,32 +131,38 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         refreshControl={<RefreshControl queries={[examsQuery]} />}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <EventDetails
-          title={exam?.courseName}
-          accessible={true}
-          accessibilityLabel={examAccessibilityLabel}
-          type={t('common.examCall')}
-          time={time}
-        />
-        <SectionList loading={teacherQuery.isLoading} indented>
-          <ListItem
-            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-            title={exam?.classrooms ?? '-'}
-            accessibilityLabel={`${t('examScreen.location')}: ${
-              exam?.classrooms === '-'
-                ? t('examScreen.noClassroom')
-                : exam?.classrooms
-            }`}
-            subtitle={t('examScreen.location')}
+        <SafeAreaView>
+          <EventDetails
+            title={exam?.courseName}
+            accessible={true}
+            accessibilityLabel={examAccessibilityLabel}
+            type={t('common.examCall')}
+            time={time}
+            endTime={exam?.examEndsAt || undefined}
           />
-          {teacherQuery.data && (
-            <PersonListItem
-              person={teacherQuery.data}
-              subtitle={t('common.teacher')}
+          <OverviewList loading={teacherQuery.isLoading} indented>
+            <ListItem
+              leadingItem={
+                <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+              }
+              title={exam?.classrooms ?? '-'}
+              accessibilityLabel={`${t('examScreen.location')}: ${
+                exam?.classrooms === '-'
+                  ? t('examScreen.noClassroom')
+                  : exam?.classrooms
+              }`}
+              subtitle={t('examScreen.location')}
             />
-          )}
-        </SectionList>
-        <CtaButtonSpacer />
+            {teacherQuery.data && (
+              <PersonListItem
+                person={teacherQuery.data}
+                subtitle={t('common.teacher')}
+              />
+            )}
+          </OverviewList>
+          <CtaButtonSpacer />
+          <BottomBarSpacer />
+        </SafeAreaView>
       </ScrollView>
 
       {showCta && (

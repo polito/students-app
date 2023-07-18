@@ -21,13 +21,14 @@ import {
 
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetTicket,
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ChatMessage } from '../components/ChatMessage';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TextMessage } from '../components/TextMessage';
@@ -105,9 +106,10 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
+  const bottomBarHeight = useBottomTabBarHeight();
   const [textFieldHeight, setTextFieldHeight] = useState(50);
   const ticket = ticketQuery.data;
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   useScreenTitle(ticket?.subject);
 
@@ -139,10 +141,13 @@ export const TicketScreen = ({ route, navigation }: Props) => {
       <FlatList
         keyboardShouldPersistTaps="handled"
         inverted
-        contentContainerStyle={{
-          paddingTop: textFieldHeight + +spacing[5],
-          paddingBottom: IS_IOS ? headerHeight : undefined,
-        }}
+        contentContainerStyle={[
+          {
+            paddingTop: textFieldHeight + bottomBarHeight + spacing[5],
+            paddingBottom: IS_IOS ? headerHeight + spacing[5] : undefined,
+          },
+          paddingHorizontal,
+        ]}
         refreshControl={<RefreshControl queries={[ticketQuery]} />}
         data={replies}
         keyExtractor={item => item.id.toString()}

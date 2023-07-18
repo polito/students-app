@@ -66,6 +66,7 @@ export const RootNavigator = () => {
         tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarInactiveTintColor: colors.tabBarInactive,
+        tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}
     >
       <TabNavigator.Screen
@@ -123,7 +124,13 @@ export const RootNavigator = () => {
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({
+  colors,
+  palettes,
+  fontFamilies,
+  fontWeights,
+  fontSizes,
+}: Theme) =>
   StyleSheet.create({
     tabBarStyle: {
       ...tabBarStyle,
@@ -132,5 +139,13 @@ const createStyles = ({ colors }: Theme) =>
     },
     tabBarItemStyle: {
       paddingVertical: 3,
+    },
+    tabBarBadgeStyle: {
+      backgroundColor: palettes.secondary[600],
+      color: 'white',
+      top: -2,
+      fontFamily: fontFamilies.body,
+      fontWeight: fontWeights.semibold,
+      fontSize: fontSizes.sm,
     },
   });

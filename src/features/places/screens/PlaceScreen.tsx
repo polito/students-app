@@ -10,9 +10,9 @@ import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { Col } from '@lib/ui/components/Col';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -23,7 +23,7 @@ import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 import { IS_IOS } from '../../../core/constants';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlace, useGetPlaces } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
@@ -140,17 +140,17 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 title={`${place.data.room.name} ${t('common.inYourAgenda')}`}
                 separator={false}
               />
-              <SectionList translucent>
+              <OverviewList translucent>
                 <Col p={5}>
                   <Text>Coming soon</Text>
                 </Col>
-              </SectionList>
+              </OverviewList>
             </Section>
           )}
 
           <Section>
             <SectionHeader title="Location" separator={false} />
-            <SectionList translucent>
+            <OverviewList translucent>
               <ListItem
                 inverted
                 multilineTitle
@@ -209,13 +209,13 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               {/*  title="Sede Centrale - Cittadella Politecnica"*/}
               {/*  subtitle="Campus"*/}
               {/*/ >*/}
-            </SectionList>
+            </OverviewList>
           </Section>
 
           {(place.data.capacity > 0 || place.data.resources?.length > 0) && (
             <Section>
               <SectionHeader title={t('common.facilities')} separator={false} />
-              <SectionList translucent>
+              <OverviewList translucent>
                 {place.data.capacity > 0 && (
                   <ListItem
                     inverted
@@ -234,7 +234,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     subtitle={r.name}
                   />
                 ))}
-              </SectionList>
+              </OverviewList>
             </Section>
           )}
         </BottomSheetScrollView>

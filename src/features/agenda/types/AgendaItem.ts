@@ -1,14 +1,27 @@
 import { LecturePlace } from '@polito/api-client/models/LecturePlace';
 import { RelatedVirtualClassroom } from '@polito/api-client/models/RelatedVirtualClassroom';
 
-export type AgendaItemTypes = 'booking' | 'deadline' | 'exam' | 'lecture';
+import { DateTime } from 'luxon';
+
+export const ALL_AGENDA_TYPES = [
+  'booking',
+  'deadline',
+  'exam',
+  'lecture',
+] as const;
+
+export type AgendaItemTypes = typeof ALL_AGENDA_TYPES;
+
+export type AgendaItemType = typeof ALL_AGENDA_TYPES[number];
 
 interface BaseAgendaItem {
   key: string;
-  type: AgendaItemTypes;
+  type: AgendaItemType;
   title: string;
   startTimestamp: number;
   date: string;
+  start: DateTime;
+  end: DateTime;
 }
 
 export interface BookingItem extends BaseAgendaItem {

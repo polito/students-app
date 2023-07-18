@@ -9,7 +9,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { RasterLayer, RasterSource, UserLocation } from '@rnmapbox/maps';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { MAX_ZOOM } from '../constants';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { PlaceScreen } from '../screens/PlaceScreen';
@@ -83,7 +83,7 @@ export const PlacesNavigator = () => {
               </RasterSource>
             </>
           ),
-          ...titlesStyles(theme),
+          ...useTitlesStyles(theme),
         }}
       >
         <Map.Screen

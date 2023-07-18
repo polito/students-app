@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { OverviewList } from '@lib/ui/components/OverviewList';
+import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { Select } from '@lib/ui/components/Select';
 import { TextField } from '@lib/ui/components/TextField';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
@@ -20,7 +21,7 @@ import {
   useCreateTicket,
   useGetTicketTopics,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
 import { MessagingView } from '../components/MessagingView';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -89,17 +90,12 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScreenContainer>
       <Section>
         <SectionHeader title={t('createTicketScreen.subtitle')} />
-
-        <SectionList>
+        <OverviewList>
           <Select
-            label={t('createTicketScreen.topic')}
+            label={t('createTicketScreen.topicDropdownLabel')}
             description={t('createTicketScreen.topicDescription')}
             options={topics.map(topic => ({
               id: topic.id.toString(),
@@ -109,9 +105,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             disabled={!!initialTopicId}
             value={topicId}
           />
-        </SectionList>
+        </OverviewList>
 
-        <SectionList>
+        <OverviewList>
           <Select
             options={subTopics.map(subTopic => {
               return {
@@ -122,21 +118,21 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
             value={ticketBody?.subtopicId?.toString()}
-            label={t('createTicketScreen.subtopic')}
+            label={t('createTicketScreen.subtopicDropdownLabel')}
             description={t('createTicketScreen.subtopicDescription')}
           />
-        </SectionList>
+        </OverviewList>
 
-        <SectionList style={styles.objectSection}>
+        <OverviewList style={styles.objectSection}>
           <TextField
             autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
-            inputStyle={styles.textField}
+            inputStyle={styles.textFieldInput}
             editable={!!ticketBody?.subtopicId}
             value={ticketBody.subject}
             onChangeText={updateTicketBodyField('subject')}
           />
-        </SectionList>
+        </OverviewList>
 
         <ChatBubble style={styles.bubbleContainer} bubbleStyle={styles.bubble}>
           <ThemeContext.Provider value={darkTheme}>
@@ -164,7 +160,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         loading={isLoading}
         icon={faPaperPlane}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -178,9 +174,6 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     bubbleContainer: {
       marginHorizontal: spacing[5],
     },
-    container: {
-      paddingVertical: spacing[5],
-    },
     objectSection: {
       height: 60,
       justifyContent: 'center',
@@ -188,6 +181,8 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     textField: {
       borderRadius: shapes.md,
       marginRight: 0,
+    },
+    textFieldInput: {
       borderBottomWidth: 0,
     },
   });

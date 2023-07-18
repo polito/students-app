@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import {
@@ -14,11 +14,11 @@ import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -31,6 +31,7 @@ import {
 } from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -111,64 +112,69 @@ export const ProfileScreen = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[studentQuery]} />}
     >
-      <Section style={styles.header}>
-        <Text weight="bold" variant="title" style={styles.title}>
-          {student?.firstName} {student?.lastName}
-        </Text>
-        <Text variant="secondaryText">
-          {t('profileScreen.careerStatus')}{' '}
-          {t(`profileScreen.careerStatusEnum.${student?.status}`).toLowerCase()}
-        </Text>
-      </Section>
-      <View
-        accessible={true}
-        accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
-          'common.username',
-        )} ${student?.username?.substring(1, student?.username?.length)}, ${
-          student?.firstName
-        } ${student?.lastName}`}
-      >
-        <Section accessible={false}>
-          <SectionHeader title={t('profileScreen.smartCard')} />
-          <Col ph={5} pv={2}>
-            <FastImage
-              style={styles.smartCard}
-              source={{ uri: student?.smartCardPicture }}
-              resizeMode={FastImage.resizeMode.contain}
-            />
-          </Col>
+      <SafeAreaView>
+        <Section style={styles.header}>
+          <Text weight="bold" variant="title" style={styles.title}>
+            {student?.firstName} {student?.lastName}
+          </Text>
+          <Text variant="secondaryText">
+            {t('profileScreen.careerStatus')}{' '}
+            {t(
+              `profileScreen.careerStatusEnum.${student?.status}`,
+            ).toLowerCase()}
+          </Text>
         </Section>
-      </View>
-      <Section accessible={false}>
-        <SectionHeader
-          title={student?.degreeLevel ?? t('profileScreen.course')}
-          trailingItem={<Badge text={t('common.comingSoon')} />}
-        />
-        <SectionList>
-          <ListItem
-            title={student?.degreeName ?? ''}
-            subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+        <View
+          accessible={true}
+          accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
+            'common.username',
+          )} ${student?.username?.substring(1, student?.username?.length)}, ${
+            student?.firstName
+          } ${student?.lastName}`}
+        >
+          <Section accessible={false}>
+            <SectionHeader title={t('profileScreen.smartCard')} />
+            <Col ph={5} pv={2}>
+              <FastImage
+                style={styles.smartCard}
+                source={{ uri: student?.smartCardPicture }}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+            </Col>
+          </Section>
+        </View>
+        <Section accessible={false}>
+          <SectionHeader
+            title={student?.degreeLevel ?? t('profileScreen.course')}
+            trailingItem={<Badge text={t('common.comingSoon')} />}
           />
-        </SectionList>
-        <SectionList indented>
-          <ListItem
-            title={t('profileScreen.settings')}
-            leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
-            linkTo="Settings"
+          <OverviewList>
+            <ListItem
+              title={student?.degreeName ?? ''}
+              subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+            />
+          </OverviewList>
+          <OverviewList indented>
+            <ListItem
+              title={t('profileScreen.settings')}
+              leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
+              linkTo="Settings"
+            />
+            <ListItem
+              title={t('messagesScreen.title')}
+              leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+              linkTo="Notifications"
+            />
+          </OverviewList>
+          <CtaButton
+            absolute={false}
+            title={t('common.logout')}
+            action={handleLogout}
+            icon={faSignOut}
           />
-          <ListItem
-            title={t('messagesScreen.title')}
-            leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
-            linkTo="Notifications"
-          />
-        </SectionList>
-        <CtaButton
-          absolute={false}
-          title={t('common.logout')}
-          action={handleLogout}
-          icon={faSignOut}
-        />
-      </Section>
+        </Section>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

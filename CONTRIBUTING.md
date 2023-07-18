@@ -11,7 +11,7 @@ the [gallium](https://nodejs.org/download/release/v16.16.0/) LTS release).
 [Nvm](https://github.com/nvm-sh/nvm) can be used to automatically select the correct version enforced
 by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/nvm#deeper-shell-integration).
 
-### Adding a GitHub personal access token to pull from package repositories
+### Add a GitHub Personal Access Token
 
 GitHub requires the usage of a personal access token to pull from public registries.
 
@@ -19,15 +19,32 @@ To work on this project, you'll need to configure it correctly in order to be ab
 
 You'll need to create a personal access token with the `read:packages` scope and add it to your `.npmrc` file.
 
-To generate a personal access token head to [GitHub Tokens settings](https://github.com/settings/tokens) and click on `Generate new token (classic)`.
+To generate a personal access token head to [GitHub Tokens settings](https://github.com/settings/tokens) and click
+on `Generate new token (classic)`.
 Then, select the `read:packages` scope and click on `Generate token`.
 
-Finally, add a .npmrc file in your home directory (`/home/YOUR_USER/` on Linux or macOS, `C:\Users\YOUR_USER\` on Windows) with the following content:
+Finally, add a .npmrc file in your home directory (`/home/YOUR_USER/` on Linux or macOS, `C:\Users\YOUR_USER\` on
+Windows) with the following content:
 
 ```
 @polito:registry=https://npm.pkg.github.com/
 //npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE
 ```
+
+### Add a MapBox token
+
+MapBox requires a token in order to install the `@rnmapbox/maps` npm package and pull native dependencies. Create a
+MapBox account and [create a new token](https://account.mapbox.com/access-tokens/create) with all the public scopes and
+the `DOWNLOADS:READ` scope. Paste the generated token in the following files:
+
+- `.env`
+- `android/local.properties`
+- a `.netrc` file in your home directory with the following content:
+  ```
+  machine api.mapbox.com
+    login mapbox
+    password <TOKEN HERE>
+  ```
 
 ## Project setup
 
@@ -45,11 +62,9 @@ environment to run the app.
 ## iOS local development
 
 In order to build and run the application locally (especially if you're not part of the official Apple Development Team)
-you'll have to enable the `Automatically manage signing` option in XCode (students.xcworkspace > students > Signing &
-Capabilities).
-
-Changes to this configuration should not be committed to the repository: the pre-commit hook will warn you if you try to
-do so and give you instructions on how to proceed.
+[select the `students dev` scheme](https://developer.apple.com/documentation/xcode/building-and-running-an-app#Select-a-scheme-for-your-target).
+This scheme is pre-configured to automatically manage signing and will show up with a `DEV` badge and a dedicated bundle
+identifier on the destination device in order to distinguish it from the production app.
 
 ## Project structure
 
@@ -115,7 +130,8 @@ is encouraged. Notably, here are some rules we think are important:
 ### Commits
 
 We use [Conventional Commits](https://conventionalcommits.org/) to keep a consistent style and automatically generate
-changelog entries for new releases. The `npm run commit` script can be of help with this: it runs the commitlint cli to help you
+changelog entries for new releases. The `npm run commit` script can be of help with this: it runs the commitlint cli to
+help you
 write good commit messages.
 
 ### Git flow
@@ -128,7 +144,8 @@ We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like br
 - When useful, add a scope to your commits (ie `feat(teaching): implement trascript page`). Don't repeat branch
   prefixes here.
 - Use kebab-case for branch names and scopes (ie `feature/data-fetching`).
-- Use commit footers to reference related issues (ie `Refs #10`). Be sure to mark resolved issues with `Closes/Fixes #<issue_number>`.
+- Use commit footers to reference related issues (ie `Refs #10`). Be sure to mark resolved issues
+  with `Closes/Fixes #<issue_number>`.
 
 > ⚠️ Respecting these rules is important in order to obtain a clean and coherent changelog. If you have any doubt don't
 > hesitate to ask for help.

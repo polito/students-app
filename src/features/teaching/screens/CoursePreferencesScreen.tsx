@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, View } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import {
@@ -12,15 +12,16 @@ import {
 import { faBroom, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -98,122 +99,125 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl queries={[courseQuery]} />}
       >
-        <View style={{ paddingVertical: spacing[5] }}>
-          <Section>
-            <SectionHeader title={t('common.visualization')} />
-            <SectionList loading={courseQuery.isLoading} indented>
-              <MenuView
-                actions={courseColors.map(cc => {
-                  return {
-                    id: cc.color,
-                    title: t(cc.name),
-                    image: Platform.select({
-                      ios: 'circle.fill',
-                      android: 'circle',
-                    }),
-                    imageColor: cc.color,
-                    state: cc.color === coursePrefs?.color ? 'on' : undefined,
-                  };
-                })}
-                onPressAction={({ nativeEvent: { event: color } }) => {
-                  updatePreference('courses', {
-                    ...coursesPrefs,
-                    [courseId]: {
-                      ...coursePrefs,
-                      color,
-                    },
-                  });
-                }}
-              >
-                <ListItem
-                  title={t('common.color')}
-                  isAction
-                  leadingItem={<CourseIcon color={coursePrefs?.color} />}
-                />
-              </MenuView>
-              <ListItem
-                title={t('common.icon')}
-                isAction
-                onPress={() =>
-                  navigation.navigate('CourseIconPicker', { courseId })
-                }
-                leadingItem={
-                  <Icon
-                    icon={
-                      coursePrefs.icon && coursePrefs.icon in courseIcons
-                        ? courseIcons[coursePrefs.icon]
-                        : faCircle
-                    }
-                    size={fontSizes['2xl']}
+        <SafeAreaView>
+          <View style={{ paddingVertical: spacing[5] }}>
+            <Section>
+              <SectionHeader title={t('common.visualization')} />
+              <OverviewList loading={courseQuery.isLoading} indented>
+                <MenuView
+                  actions={courseColors.map(cc => {
+                    return {
+                      id: cc.color,
+                      title: t(cc.name),
+                      image: Platform.select({
+                        ios: 'circle.fill',
+                        android: 'circle',
+                      }),
+                      imageColor: cc.color,
+                      state: cc.color === coursePrefs?.color ? 'on' : undefined,
+                    };
+                  })}
+                  onPressAction={({ nativeEvent: { event: color } }) => {
+                    updatePreference('courses', {
+                      ...coursesPrefs,
+                      [courseId]: {
+                        ...coursePrefs,
+                        color,
+                      },
+                    });
+                  }}
+                >
+                  <ListItem
+                    title={t('common.color')}
+                    isAction
+                    leadingItem={<CourseIcon color={coursePrefs?.color} />}
                   />
-                }
-              />
-              <SwitchListItem
-                title={t('coursePreferencesScreen.showInExtracts')}
-                subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
-                disabled={!coursePrefs}
-                value={!coursePrefs.isHidden}
-                leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
-                onChange={value => {
-                  updatePreference('courses', {
-                    ...coursesPrefs,
-                    [courseId]: {
-                      ...coursePrefs,
-                      isHidden: !value,
-                    },
-                  });
-                }}
-              />
-            </SectionList>
-          </Section>
+                </MenuView>
+                <ListItem
+                  title={t('common.icon')}
+                  isAction
+                  onPress={() =>
+                    navigation.navigate('CourseIconPicker', { courseId })
+                  }
+                  leadingItem={
+                    <Icon
+                      icon={
+                        coursePrefs.icon && coursePrefs.icon in courseIcons
+                          ? courseIcons[coursePrefs.icon]
+                          : faCircle
+                      }
+                      size={fontSizes['2xl']}
+                    />
+                  }
+                />
+                <SwitchListItem
+                  title={t('coursePreferencesScreen.showInExtracts')}
+                  subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
+                  disabled={!coursePrefs}
+                  value={!coursePrefs.isHidden}
+                  leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
+                  onChange={value => {
+                    updatePreference('courses', {
+                      ...coursesPrefs,
+                      [courseId]: {
+                        ...coursePrefs,
+                        isHidden: !value,
+                      },
+                    });
+                  }}
+                />
+              </OverviewList>
+            </Section>
 
-          <Section>
-            <SectionHeader title={t('common.notifications')} />
-            <SectionList indented>
-              <SwitchListItem
-                title={t('common.notice_plural')}
-                subtitle={t('coursePreferencesScreen.noticesSubtitle')}
-                disabled={!courseQuery.data}
-                value={courseQuery.data?.notifications.avvisidoc}
-                leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-                onChange={() => {
-                  // TODO
-                }}
-              />
+            <Section>
+              <SectionHeader title={t('common.notifications')} />
+              <OverviewList indented>
+                <SwitchListItem
+                  title={t('common.notice_plural')}
+                  subtitle={t('coursePreferencesScreen.noticesSubtitle')}
+                  disabled={!courseQuery.data}
+                  value={courseQuery.data?.notifications.avvisidoc}
+                  leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
+                  onChange={() => {
+                    // TODO
+                  }}
+                />
 
-              <SwitchListItem
-                title={t('common.file_plural')}
-                subtitle={t('coursePreferencesScreen.filesSubtitle')}
-                disabled={!courseQuery.data}
-                value={courseQuery.data?.notifications.matdid}
-                leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-                onChange={() => {
-                  // TODO
-                }}
-              />
+                <SwitchListItem
+                  title={t('common.file_plural')}
+                  subtitle={t('coursePreferencesScreen.filesSubtitle')}
+                  disabled={!courseQuery.data}
+                  value={courseQuery.data?.notifications.matdid}
+                  leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
+                  onChange={() => {
+                    // TODO
+                  }}
+                />
 
-              <SwitchListItem
-                title={t('common.lecture_plural')}
-                subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
-                disabled={!courseQuery.data}
-                value={courseQuery.data?.notifications.videolezioni}
-                leadingItem={
-                  <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
-                }
-                onChange={() => {
-                  // TODO
-                }}
-              />
-            </SectionList>
-          </Section>
+                <SwitchListItem
+                  title={t('common.lecture_plural')}
+                  subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
+                  disabled={!courseQuery.data}
+                  value={courseQuery.data?.notifications.videolezioni}
+                  leadingItem={
+                    <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
+                  }
+                  onChange={() => {
+                    // TODO
+                  }}
+                />
+              </OverviewList>
+            </Section>
 
-          <Section>
-            <SectionHeader title={t('common.file_plural')} />
-            <SectionList indented>
-              <CleanCourseFilesListItem />
-            </SectionList>
-          </Section>
-        </View>
+            <Section>
+              <SectionHeader title={t('common.file_plural')} />
+              <OverviewList indented>
+                <CleanCourseFilesListItem />
+              </OverviewList>
+            </Section>
+          </View>
+          <BottomBarSpacer />
+        </SafeAreaView>
       </ScrollView>
     </CourseContext.Provider>
   );

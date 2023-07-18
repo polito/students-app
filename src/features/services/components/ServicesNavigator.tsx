@@ -7,8 +7,12 @@ import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { titlesStyles } from '../../../core/hooks/titlesStyles';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
+import { JobOfferScreen } from '../screens/JobOfferScreen';
+import { JobOffersScreen } from '../screens/JobOffersScreen';
+import { NewsItemScreen } from '../screens/NewsItemScreen';
+import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
@@ -29,6 +33,12 @@ export type ServiceStackParamList = {
   TicketList: {
     statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
   };
+  JobOffers: undefined;
+  JobOffer: {
+    id: number;
+  };
+  News: undefined;
+  NewsItem: { id: number };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -47,7 +57,7 @@ export const ServicesNavigator = () => {
           backgroundColor: colors.background,
         },
         headerBlurEffect: 'systemUltraThinMaterial',
-        ...titlesStyles(theme),
+        ...useTitlesStyles(theme),
       }}
     >
       <Stack.Screen
@@ -106,6 +116,36 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('ticketFaqScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="JobOffers"
+        component={JobOffersScreen}
+        options={{
+          headerTitle: t('jobOffersScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="JobOffer"
+        component={JobOfferScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('jobOfferScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="News"
+        component={NewsScreen}
+        options={{
+          headerTitle: t('newsScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="NewsItem"
+        component={NewsItemScreen}
+        options={{
+          headerTitle: t('newsScreen.title'),
+          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>

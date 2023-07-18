@@ -1,14 +1,23 @@
-import { useMemo } from 'react';
-import { TextProps } from 'react-native';
+import { PropsWithChildren, useMemo } from 'react';
+import {
+  StyleProp,
+  TextStyle,
+  TouchableHighlightProps,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { PillButton, PillButtonProps } from '@lib/ui/components/PillButton';
+import { Badge } from '@lib/ui/components/Badge';
+
+import color from 'color';
 
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
-export interface Props extends PillButtonProps {
+export interface Props {
   selected?: boolean;
-  textStyle?: TextProps['style'];
+  textStyle?: StyleProp<TextStyle>;
+  badge?: number | string;
 }
 
 /**
@@ -19,17 +28,22 @@ export const Tab = ({
   style,
   selected = false,
   textStyle,
+  badge,
   ...rest
-}: Props) => {
+}: PropsWithChildren<TouchableHighlightProps & Props>) => {
   const { dark, palettes, spacing, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>
-      selected ? palettes.primary[500] : palettes.primary[dark ? 600 : 50],
+      selected
+        ? palettes.primary[500]
+        : color(palettes.primary[dark ? 600 : 50])
+            .alpha(0.4)
+            .toString(),
     [selected, dark, palettes],
   );
 
   return (
-    <PillButton
+    <TouchableOpacity
       accessibilityRole="tab"
       accessible={true}
       accessibilityState={{
@@ -38,26 +52,41 @@ export const Tab = ({
       style={[
         {
           backgroundColor,
+          borderRadius: 10,
+          paddingHorizontal: spacing[2.5],
+          paddingVertical: spacing[1.5],
         },
         style,
       ]}
       {...rest}
     >
-      <Text
-        style={[
-          {
-            color: selected
-              ? palettes.text[50]
-              : dark
-              ? palettes.primary[400]
-              : palettes.primary[500],
-            fontWeight: fontWeights.medium,
-          },
-          textStyle,
-        ]}
-      >
-        {children}
-      </Text>
-    </PillButton>
+      <View style={{ position: 'relative' }}>
+        <Text
+          style={[
+            {
+              color: selected
+                ? palettes.text[50]
+                : dark
+                ? palettes.primary[400]
+                : palettes.primary[500],
+              fontWeight: fontWeights.medium,
+            },
+            textStyle,
+          ]}
+        >
+          {children}
+        </Text>
+        {badge && (
+          <Badge
+            text={badge}
+            style={{
+              position: 'absolute',
+              right: -15,
+              top: -12,
+            }}
+          />
+        )}
+      </View>
+    </TouchableOpacity>
   );
 };

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
@@ -19,9 +20,9 @@ import {
 import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SectionList } from '@lib/ui/components/SectionList';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -31,6 +32,7 @@ import { MenuView } from '@react-native-menu/menu';
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import {
   PreferencesContextBase,
   usePreferencesContext,
@@ -243,7 +245,7 @@ const Notifications = () => {
     };
 
   return (
-    <SectionList indented>
+    <OverviewList indented>
       <SwitchListItem
         disabled
         accessible={true}
@@ -282,7 +284,7 @@ const Notifications = () => {
         onChange={onChangeNotification('presence')}
         leadingItem={<Icon icon={faCalendarCheck} size={fontSizes['2xl']} />}
       />
-    </SectionList>
+    </OverviewList>
   );
 };
 
@@ -292,33 +294,36 @@ export const SettingsScreen = () => {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={styles.container}>
-        <Section>
-          <SectionHeader title={t('common.theme')} />
-          <SectionList indented>
-            <VisualizationListItem />
-          </SectionList>
-        </Section>
-        <Section>
-          <SectionHeader title={t('common.language')} />
-          <SectionList indented>
-            <LanguageListItem />
-          </SectionList>
-        </Section>
-        <Section>
-          <SectionHeader
-            title={t('common.notifications')}
-            trailingItem={<Badge text={t('common.comingSoon')} />}
-          />
-          <Notifications />
-        </Section>
-        <Section>
-          <SectionHeader title={t('common.cache')} />
-          <SectionList indented>
-            <CleanCacheListItem />
-          </SectionList>
-        </Section>
-      </View>
+      <SafeAreaView>
+        <View style={styles.container}>
+          <Section>
+            <SectionHeader title={t('common.theme')} />
+            <OverviewList indented>
+              <VisualizationListItem />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.language')} />
+            <OverviewList indented>
+              <LanguageListItem />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader
+              title={t('common.notifications')}
+              trailingItem={<Badge text={t('common.comingSoon')} />}
+            />
+            <Notifications />
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.cache')} />
+            <OverviewList indented>
+              <CleanCacheListItem />
+            </OverviewList>
+          </Section>
+        </View>
+        <BottomBarSpacer />
+      </SafeAreaView>
     </ScrollView>
   );
 };

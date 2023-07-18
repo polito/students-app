@@ -21,7 +21,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<

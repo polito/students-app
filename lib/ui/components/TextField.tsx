@@ -36,8 +36,8 @@ export const TextField = ({
   numberOfLines = 1,
   autoCapitalize = 'none',
   ...rest
-}: TextInputProps & TextFieldProps) => {
-  const { colors, spacing } = useTheme();
+}: TextFieldProps) => {
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const textInputProps: TextInputProps = useMemo(() => {
@@ -75,9 +75,7 @@ export const TextField = ({
           styles.input,
           {
             textAlignVertical: numberOfLines === 1 ? 'center' : 'top',
-          },
-          IS_IOS && {
-            minHeight: (numberOfLines ?? 1) * 17,
+            minHeight: IS_IOS ? (numberOfLines ?? 1) * 17 : undefined,
           },
           inputStyle,
         ]}
