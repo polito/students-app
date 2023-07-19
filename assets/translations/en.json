@@ -277,12 +277,14 @@
     "topicDropdownPlaceholder": "Pick a topic"
   },
   "examScreen": {
+    "bookedCount": "Booked students",
     "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
     "ctaCancelSuccess": "Booking cancelled",
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
+    "notes": "Notes",
     "title": "Exam call"
   },
   "examsScreen": {

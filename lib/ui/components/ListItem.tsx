@@ -36,6 +36,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   card?: boolean;
   titleProps?: TextProps;
   unread?: boolean;
+  inverted?: boolean;
 }
 
 /**
@@ -60,6 +61,7 @@ export const ListItem = ({
   children,
   titleProps,
   unread = false,
+  inverted = false,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
@@ -111,7 +113,7 @@ export const ListItem = ({
             {leadingItem}
           </View>
         )}
-        <Col flex={1}>
+        <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
           {typeof title === 'string' ? (
             <Row align="center" gap={2}>
               {unread && <Badge />}
@@ -121,13 +123,14 @@ export const ListItem = ({
                   GlobalStyles.grow,
                   {
                     fontSize: fontSizes.md,
+                    lineHeight: fontSizes.md * 1.4,
                   },
                   unread && {
                     fontWeight: fontWeights.semibold,
                   },
                   titleStyle,
                 ]}
-                weight="normal"
+                weight="medium"
                 numberOfLines={card ? 2 : 1}
                 ellipsizeMode="tail"
                 {...titleProps}
@@ -145,7 +148,7 @@ export const ListItem = ({
                 style={[
                   {
                     fontSize: fontSizes.sm,
-                    marginTop: spacing[0.5],
+                    lineHeight: fontSizes.sm * 1.4,
                   },
                   subtitleStyle,
                 ]}

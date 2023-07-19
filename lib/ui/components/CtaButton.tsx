@@ -97,7 +97,7 @@ export const CtaButton = ({
         accessibilityRole="button"
         underlayColor={
           (showSuccess ? destructiveRef.current : destructive)
-            ? palettes.danger[600]
+            ? palettes.danger[700]
             : palettes.primary[600]
         }
         disabled={disabled || loading || showSuccess}
@@ -107,7 +107,7 @@ export const CtaButton = ({
             backgroundColor: (
               showSuccess ? destructiveRef.current : destructive
             )
-              ? palettes.danger[500]
+              ? palettes.danger[600]
               : palettes.primary[500],
           },
           disabled && styles.disabledButton,

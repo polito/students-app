@@ -1,28 +1,37 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import {
+  faCalendar,
+  faClock,
+  faNoteSticky,
+} from '@fortawesome/free-regular-svg-icons';
+import { faLocationDot, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
+import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
+import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { EventDetails } from '../../../core/components/EventDetails';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import {
-  useBookExam,
-  useCancelExamBooking,
-  useGetExams,
-} from '../../../core/queries/examHooks';
+import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatDate, formatDateTime, formatTime } from '../../../utils/dates';
+import {
+  formatDate,
+  formatDateTime,
+  formatReadableDate,
+  formatTime,
+} from '../../../utils/dates';
+import { ExamCTA } from '../components/ExamCTA';
+import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
@@ -30,42 +39,12 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 export const ExamScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
-  const { fontSizes } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
-  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
-  const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
-    useCancelExamBooking(id);
+
   const teacherQuery = useGetPerson(exam?.teacherId);
-  const confirm = useConfirmationDialog();
   const routes = navigation.getState()?.routes;
-
-  const mutationsLoading = isBooking || isCancelingBooking;
-  const examAvailable = exam?.status === ExamStatusEnum.Available;
-  const showCta = useMemo(() => {
-    if (!exam) return false;
-
-    if (
-      exam.status === ExamStatusEnum.Available &&
-      exam.bookingEndsAt &&
-      exam.bookingEndsAt.getTime() < Date.now()
-    )
-      return false;
-
-    if (
-      exam.status === ExamStatusEnum.Available &&
-      exam.bookingStartsAt &&
-      exam.bookingStartsAt.getTime() > Date.now()
-    )
-      return false;
-
-    return (
-      exam.question?.statement === undefined &&
-      (
-        [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
-      ).includes(exam.status)
-    );
-  }, [exam]);
 
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
@@ -74,16 +53,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       });
     }
   }, [navigation, routes, t]);
-
-  const action = async () => {
-    if (examAvailable) {
-      return bookExam({});
-    }
-    if (await confirm()) {
-      return cancelBooking();
-    }
-    return Promise.reject();
-  };
 
   const time = useMemo(() => {
     if (!exam) return;
@@ -128,18 +97,59 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   return (
     <>
       <ScrollView
-        refreshControl={<RefreshControl queries={[examsQuery]} />}
+        refreshControl={<RefreshControl queries={[examsQuery]} manual />}
         contentInsetAdjustmentBehavior="automatic"
       >
         <SafeAreaView>
-          <EventDetails
-            title={exam?.courseName}
+          <View
+            style={{ padding: spacing[5] }}
             accessible={true}
             accessibilityLabel={examAccessibilityLabel}
-            type={t('common.examCall')}
-            time={time}
-            endTime={exam?.examEndsAt || undefined}
-          />
+          >
+            <ScreenTitle
+              style={{ marginBottom: spacing[2] }}
+              title={exam?.courseName}
+            />
+            <Col gap={2}>
+              <Row justify="space-between" align="center">
+                <Text
+                  variant="caption"
+                  style={{ flexShrink: 1, marginRight: spacing[2] }}
+                >
+                  {exam?.type}
+                </Text>
+                {exam?.status && <ExamStatusBadge exam={exam} />}
+              </Row>
+              <Row gap={3}>
+                <Row gap={2} align="center">
+                  <Icon
+                    icon={faCalendar}
+                    color={colors.prose}
+                    size={fontSizes.md}
+                  />
+                  <Text style={{ fontSize: fontSizes.md }}>
+                    {exam?.examStartsAt
+                      ? formatReadableDate(exam.examStartsAt)
+                      : t('common.dateToBeDefined')}
+                  </Text>
+                </Row>
+                <Row gap={2} align="center">
+                  <Icon
+                    icon={faClock}
+                    color={colors.prose}
+                    size={fontSizes.md}
+                  />
+                  <Text style={{ fontSize: fontSizes.md }}>
+                    {exam?.examStartsAt
+                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                          exam.examEndsAt!,
+                        )}`
+                      : t('common.timeToBeDefined')}
+                  </Text>
+                </Row>
+              </Row>
+            </Col>
+          </View>
           <OverviewList loading={teacherQuery.isLoading} indented>
             <ListItem
               leadingItem={
@@ -159,27 +169,30 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 subtitle={t('common.teacher')}
               />
             )}
+            {exam?.notes?.length && (
+              <ListItem
+                leadingItem={
+                  <Icon icon={faNoteSticky} size={fontSizes['2xl']} />
+                }
+                title={exam.notes}
+                accessibilityLabel="a"
+                subtitle={t('examScreen.notes')}
+                inverted
+                titleProps={{ numberOfLines: 0 }}
+              />
+            )}
+            <ListItem
+              leadingItem={<Icon icon={faUsers} size={fontSizes['2xl']} />}
+              inverted
+              title={`${exam?.bookedCount}`}
+              subtitle={t('examScreen.bookedCount')}
+            />
           </OverviewList>
           <CtaButtonSpacer />
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-
-      {showCta && (
-        <CtaButton
-          destructive={!examAvailable}
-          title={
-            examAvailable ? t('examScreen.ctaBook') : t('examScreen.ctaCancel')
-          }
-          action={action}
-          loading={mutationsLoading}
-          successMessage={
-            examAvailable
-              ? t('examScreen.ctaBookSuccess')
-              : t('examScreen.ctaCancelSuccess')
-          }
-        />
-      )}
+      {exam && <ExamCTA exam={exam} />}
     </>
   );
 };

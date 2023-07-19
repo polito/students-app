@@ -277,12 +277,14 @@
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
   "examScreen": {
+    "bookedCount": "Studenti prenotati",
     "ctaBook": "Prenota esame",
     "ctaBookSuccess": "Esame prenotato",
     "ctaCancel": "Annulla prenotazione",
     "ctaCancelSuccess": "Prenotazione annullata",
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
+    "notes": "Note",
     "title": "Appello"
   },
   "examsScreen": {

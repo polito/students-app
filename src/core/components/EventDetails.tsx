@@ -8,7 +8,7 @@ import { formatTime } from '../../utils/dates';
 
 type Props = ViewProps & {
   title?: string;
-  type: string;
+  type?: string;
   time?: string;
   endTime?: Date;
   timeLabel?: string;
