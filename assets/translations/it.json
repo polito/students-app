@@ -106,17 +106,17 @@
     "grade": "Voto",
     "hours": "Ore",
     "icon": "Icona",
-    "it": "Italiano",
     "inYourAgenda": "nella tua agenda",
+    "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "loading": "Caricamento",
     "logout": "Logout",
     "minutes": "Minuti",
+    "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
-    "navigate": "Naviga",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
@@ -386,6 +386,11 @@
     "sentEmail": "Invia e-mail",
     "totalCourses": "Sono presenti {{total}} corsi"
   },
+  "placeCategories": {
+    "classrooms": "Aule",
+    "libraries": "Biblioteche",
+    "studyRooms": "Aule studio"
+  },
   "placeScreen": {
     "capacity": "{{count}} posto",
     "capacity_plural": "{{count}} posti",
@@ -395,7 +400,9 @@
     "changeFloor": "Cambia piano",
     "goToMyPosition": "Vai alla mia posizione",
     "multipleFloors": "I risultati sono su più piani",
+    "noCategoriesFound": "Nessuna categoria trovata",
     "noPlacesFound": "Nessun posto trovato",
+    "searchCategories": "Cerca categorie",
     "title": "Luoghi",
     "viewWholeCampus": "Vedi tutta la sede"
   },

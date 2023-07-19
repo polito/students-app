@@ -47,7 +47,8 @@ const createStyles = ({ colors, spacing }: Theme) =>
     },
     input: {
       margin: 0,
-      paddingHorizontal: 0,
+      paddingLeft: 0,
+      paddingRight: spacing[2],
       borderBottomWidth: 0,
       paddingVertical: spacing[Platform.OS === 'ios' ? 2 : 1],
     },

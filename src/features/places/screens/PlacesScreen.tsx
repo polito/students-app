@@ -17,6 +17,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
+  faChevronDown,
   faCrosshairs,
   faElevator,
   faEllipsis,
@@ -47,6 +48,7 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetPlaceCategory,
+  useGetPlaceSubCategory,
   useGetPlaces,
 } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -55,18 +57,19 @@ import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
+import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
-import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { formatPlaceCategory } from '../utils/category';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
-  const placeCategoryId = route.params?.categoryId;
-  const placeCategory = useGetPlaceCategory(placeCategoryId);
+  const { categoryId, subCategoryId, pitch, bounds } = route.params ?? {};
+  const placeCategory = useGetPlaceCategory(categoryId);
+  const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { spacing, fontSizes } = useTheme();
@@ -77,7 +80,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const { updatePreference } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
-  const { search } = useContext(PlacesContext);
+  const [search, setSearch] = useState('');
   const [floorId, setFloorId] = useState<string>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const bottomSheetPosition = useSharedValue(0);
@@ -99,16 +102,16 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     search: debouncedSearch || undefined,
     siteId: campus?.id,
     floorId: debouncedSearch?.length > 0 ? undefined : floorId,
-    placeCategoryId,
-    // TODO buildingId ?
+    placeCategoryId: categoryId,
+    placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });
 
-  const placeCategoryName = useMemo(
-    () => (placeCategory?.name ? formatPlaceCategory(placeCategory?.name) : ''),
-    [placeCategory],
+  const categoryFilterName = useMemo(
+    () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
+    [placeCategory, placeSubCategory],
   );
 
-  useScreenTitle(placeCategoryName);
+  useScreenTitle(categoryFilterName);
 
   const centerToUserLocation = useCallback(async () => {
     const location = await Mapbox.locationManager.getLastKnownLocation();
@@ -153,11 +156,17 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     return floorId;
   }, [floorId, places?.data, debouncedSearch]);
 
+  const categoryFilterActive = categoryId || subCategoryId;
+
   useLayoutEffect(() => {
     const mapInsetTop =
-      headerHeight - safeAreaInsets.top + (!placeCategoryId ? tabsHeight : 0);
+      headerHeight -
+      safeAreaInsets.top +
+      (!categoryFilterActive ? tabsHeight : 0);
     navigation.setOptions({
-      headerLeft: !placeCategoryId ? () => <HeaderLogo ml={5} /> : undefined,
+      headerLeft: !categoryFilterActive
+        ? () => <HeaderLogo ml={5} />
+        : undefined,
       headerRight: () => <CampusSelector />,
       mapOptions: {
         compassPosition: IS_IOS
@@ -170,18 +179,30 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           padding: {
             paddingTop: mapInsetTop,
           } as CameraPadding,
-          bounds: campus
-            ? {
-                ne: [
-                  campus.longitude - campus.extent,
-                  campus.latitude - campus.extent,
-                ],
-                sw: [
-                  campus.longitude + campus.extent,
-                  campus.latitude + campus.extent,
-                ],
-              }
-            : undefined,
+          bounds:
+            bounds ??
+            (campus
+              ? {
+                  ne: [
+                    campus.longitude - campus.extent,
+                    campus.latitude - campus.extent,
+                  ],
+                  sw: [
+                    campus.longitude + campus.extent,
+                    campus.latitude + campus.extent,
+                  ],
+                }
+              : undefined),
+        },
+        onMapIdle(state) {
+          // navigation.navigate({
+          //   name: 'Places',
+          //   params: {
+          //     pitch: state.properties.pitch,
+          //     bounds: state.properties.bounds,
+          //   },
+          //   merge: true,
+          // });
         },
       },
       mapContent: (
@@ -201,13 +222,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     floorId,
     headerHeight,
     navigation,
-    placeCategoryId,
+    categoryId,
     places?.data,
     route,
     safeAreaInsets.top,
     debouncedSearch,
     spacing,
     tabsHeight,
+    categoryFilterActive,
   ]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
@@ -237,6 +259,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         <Row ph={3} pv={2.5} gap={1} align="center">
           <Icon icon={faElevator} />
           <Text>{campus?.floors.find(f => f.id === floorId)?.name}</Text>
+          <Icon icon={faChevronDown} size={fontSizes.xs} />
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
@@ -252,7 +275,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         },
       }) => setScreenHeight(height)}
     >
-      {!placeCategoryId && (
+      {!categoryFilterActive && (
         <Tabs
           style={{
             minWidth: '100%',
@@ -268,35 +291,35 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
               navigation.navigate({
                 name: 'Places',
                 key: 'Places:AULA',
-                params: { categoryId: 'AULA' },
+                params: { subCategoryId: 'AULA' },
               })
             }
           >
-            Classrooms
+            {t('placeCategories.classrooms')}
           </PillButton>
           <PillButton
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:libraries',
-                params: { categoryId: 'libraries' },
+                key: 'Places:S_STUD',
+                params: { subCategoryId: 'S_STUD' },
               })
             }
           >
-            Libraries
+            {t('placeCategories.studyRooms')}
           </PillButton>
           <PillButton
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:study',
-                params: { categoryId: 'study-rooms' },
+                key: 'Places:BIBLIO',
+                params: { subCategoryId: 'BIBLIO' },
               })
             }
           >
-            Study rooms
+            {t('placeCategories.libraries')}
           </PillButton>
-          <PillButton
+          {/* TODO <PillButton
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -306,7 +329,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             }
           >
             Student services
-          </PillButton>
+          </PillButton>*/}
           <PillButton onPress={() => setCategoriesPanelOpen(true)}>
             <ThemeContext.Provider value={darkTheme}>
               <Row align="center" gap={2}>
@@ -385,9 +408,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       <PlacesBottomSheet
         index={0}
         animatedPosition={bottomSheetPosition}
+        search={search}
+        onSearchChange={setSearch}
         searchFieldLabel={[
           t('common.search'),
-          placeCategoryName,
+          categoryFilterName,
           'in',
           campus?.name,
         ]
@@ -403,10 +428,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   p.room.name.toLowerCase().includes(debouncedSearch),
               )
               ?.map(p => ({
-                title: p.room.name,
-                subtitle: `${p.category.name} - ${t('common.floor')} ${
-                  p.floor.level
-                }`,
+                title: p.room.name ?? p.category.subCategory.name,
+                subtitle: `${p.category.name} - ${p.floor.name}`,
                 linkTo: { screen: 'Place', params: { placeId: p.id } },
               })) ?? [],
           ListEmptyComponent: (
@@ -415,34 +438,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         }}
       />
 
-      <PlacesBottomSheet
-        enablePanDownToClose={true}
-        snapPoints={['100%']}
+      <PlaceCategoriesBottomSheet
         index={categoriesPanelOpen ? 0 : -1}
         onClose={() => setCategoriesPanelOpen(false)}
-        textFieldProps={{ label: 'Search categories' }}
-        listProps={{
-          data: [
-            {
-              title: 'Classrooms',
-            },
-            {
-              title: 'Study rooms',
-            },
-            {
-              title: 'Student services',
-            },
-            {
-              title: 'Bathrooms',
-            },
-            {
-              title: 'Caffetterias',
-            },
-            {
-              title: 'Restaurants',
-            },
-          ],
-        }}
       />
     </View>
   );

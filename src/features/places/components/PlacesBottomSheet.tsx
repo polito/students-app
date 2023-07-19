@@ -1,7 +1,7 @@
-import { useContext, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { BottomSheetFlatListProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/types';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -14,65 +14,73 @@ import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { TranslucentTextFieldProps } from '@lib/ui/components/TranslucentTextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { PlacesContext } from '../contexts/PlacesContext';
-
-export interface PlacesBottomSheetProps<T>
+export interface PlacesBottomSheetProps
   extends Omit<BottomSheetProps, 'children'> {
   textFieldProps?: Partial<TranslucentTextFieldProps>;
   searchFieldLabel?: string;
-  listProps?: Partial<BottomSheetFlatListProps<T>>;
+  listProps?: Partial<BottomSheetFlatListProps<ListItemProps>>;
   isLoading?: boolean;
+  search?: string;
+  onSearchChange?: (newSearch: string) => void;
 }
 
-export const PlacesBottomSheet = <
-  T extends { title: string; subtitle?: string },
->({
-  textFieldProps,
-  listProps,
-  searchFieldLabel,
-  isLoading = false,
-  ...props
-}: PlacesBottomSheetProps<T>) => {
-  const { t } = useTranslation();
-  const { fontSizes, spacing } = useTheme();
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
-  const { search, setSearch } = useContext(PlacesContext);
+export const PlacesBottomSheet = forwardRef<
+  BottomSheetMethods,
+  PlacesBottomSheetProps
+>(
+  (
+    {
+      textFieldProps,
+      listProps,
+      searchFieldLabel,
+      isLoading = false,
+      search,
+      onSearchChange,
+      ...props
+    },
+    ref,
+  ) => {
+    const { t } = useTranslation();
+    const { fontSizes, spacing } = useTheme();
+    const innerRef = useRef<BottomSheetMethods>(null);
 
-  return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      snapPoints={[64, '30%', '100%']}
-      android_keyboardInputMode="adjustResize"
-      {...props}
-    >
-      <BottomSheetTextField
-        label={searchFieldLabel ?? t('common.search')}
-        onFocus={() => bottomSheetRef.current?.expand()}
-        onBlur={() => bottomSheetRef.current?.snapToIndex(1)}
-        value={search}
-        onChangeText={text => setSearch(text)}
-        {...textFieldProps}
-      />
-      <BottomSheetFlatList
-        data={[]}
-        renderItem={({ item }: { item: Partial<ListItemProps> }) => (
-          <ListItem
-            title={item.title ?? t('common.untitled')}
-            subtitle={item.subtitle}
-            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-            linkTo={item.linkTo}
-          />
-        )}
-        ItemSeparatorComponent={IndentedDivider}
-        {...listProps}
-        ListEmptyComponent={
-          isLoading ? (
-            <ActivityIndicator style={{ marginVertical: spacing[8] }} />
-          ) : (
-            listProps?.ListEmptyComponent
-          )
-        }
-      />
-    </BottomSheet>
-  );
-};
+    useImperativeHandle(ref, () => innerRef.current!);
+
+    return (
+      <BottomSheet
+        ref={innerRef}
+        snapPoints={[64, '30%', '100%']}
+        android_keyboardInputMode="adjustResize"
+        {...props}
+      >
+        <BottomSheetTextField
+          label={searchFieldLabel ?? t('common.search')}
+          onFocus={() => innerRef.current?.expand()}
+          onBlur={() => innerRef.current?.snapToIndex(1)}
+          value={search}
+          onChangeText={onSearchChange}
+          {...textFieldProps}
+        />
+        <BottomSheetFlatList
+          data={[]}
+          renderItem={({ item }) => (
+            <ListItem
+              leadingItem={<Icon icon={faMapPin} size={fontSizes['2xl']} />}
+              {...item}
+              title={item.title ?? t('common.untitled')}
+            />
+          )}
+          ItemSeparatorComponent={IndentedDivider}
+          {...listProps}
+          ListEmptyComponent={
+            isLoading ? (
+              <ActivityIndicator style={{ marginVertical: spacing[8] }} />
+            ) : (
+              listProps?.ListEmptyComponent
+            )
+          }
+        />
+      </BottomSheet>
+    );
+  },
+);

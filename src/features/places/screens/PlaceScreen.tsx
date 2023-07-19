@@ -48,8 +48,12 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     floorId,
   });
   const isLoading = isLoadingPlace || isLoadingPlaces;
+  const placeName =
+    place?.data.room.name ??
+    place?.data.category.subCategory.name ??
+    t('common.untitled');
 
-  useScreenTitle(place?.data.room.name);
+  useScreenTitle(placeName);
 
   useLayoutEffect(() => {
     if (place?.data) {
@@ -110,10 +114,21 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     palettes.secondary,
     floorId,
     places?.data,
+    safeAreaInsets.top,
+    spacing,
   ]);
 
   if (isLoading || !place || !places) {
-    return <ActivityIndicator />;
+    return (
+      <View style={GlobalStyles.grow} pointerEvents="box-none">
+        <BottomSheet
+          middleSnapPoint={50}
+          handleStyle={{ paddingVertical: undefined }}
+        >
+          <ActivityIndicator style={{ marginVertical: spacing[8] }} />
+        </BottomSheet>
+      </View>
+    );
   }
 
   return (
@@ -125,7 +140,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
             <Text variant="title" style={styles.title}>
-              {place.data.room.name}
+              {placeName}
             </Text>
             <Text>{place.data.site.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
@@ -137,7 +152,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
             place.data.category.id === 'LAB') && (
             <Section>
               <SectionHeader
-                title={`${place.data.room.name} ${t('common.inYourAgenda')}`}
+                title={`${placeName} ${t('common.inYourAgenda')}`}
                 separator={false}
               />
               <OverviewList translucent>

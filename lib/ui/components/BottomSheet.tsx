@@ -1,6 +1,11 @@
 import { Ref, forwardRef } from 'react';
 import { Platform } from 'react-native';
-import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import {
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 import BaseBottomSheet, {
   BottomSheetProps as BaseBottomSheetProps,
@@ -31,10 +36,18 @@ export const BottomSheet = forwardRef(
     const defaultPosition = useSharedValue(0);
     const panelPosition = animatedPosition ?? defaultPosition;
 
-    const cornerStyles = useAnimatedStyle(() => ({
-      borderTopLeftRadius: Math.min(panelPosition.value, shapes.lg),
-      borderTopRightRadius: Math.min(panelPosition.value, shapes.lg),
-    }));
+    const cornerStyles = useAnimatedStyle(() => {
+      const radius = interpolate(
+        panelPosition.value,
+        [0, shapes.lg],
+        [0, shapes.lg],
+        Extrapolation.CLAMP,
+      );
+      return {
+        borderTopLeftRadius: radius,
+        borderTopRightRadius: radius,
+      };
+    });
 
     return (
       <BaseBottomSheet
@@ -45,6 +58,8 @@ export const BottomSheet = forwardRef(
         style={[
           {
             overflow: 'hidden',
+            borderTopLeftRadius: shapes.lg,
+            borderTopRightRadius: shapes.lg,
           },
           IS_ANDROID && { elevation: 12 },
           cornerStyles,

@@ -81,6 +81,18 @@ export const useGetPlaceCategory = (categoryId?: string) => {
   }, [categoryId, categories?.data]);
 };
 
+export const useGetPlaceSubCategory = (subCategoryId?: string) => {
+  const { data: categories } = useGetPlaceCategories();
+  return useMemo(() => {
+    if (subCategoryId == null || !categories?.data?.length) {
+      return null;
+    }
+    return categories.data
+      .flatMap(c => c.subCategories ?? [])
+      .find(sc => sc.id === subCategoryId);
+  }, [subCategoryId, categories?.data]);
+};
+
 export const useGetPlace = (placeId?: string) => {
   const placesClient = usePlacesClient();
 

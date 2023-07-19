@@ -14,24 +14,28 @@ export const IndoorMapLayer = ({ floorId }: IndoorMapLayerProps) => {
   const colorScheme = useMemo(() => (dark ? 'dark' : 'light'), [dark]);
   const _floorId = floorId?.toLowerCase();
 
-  if (!_floorId) {
-    return null;
-  }
-
   return (
-    <RasterSource
-      key={`indoorSource:${colorScheme}:${_floorId}`}
-      tileUrlTemplates={[
-        `https://app.didattica.polito.it/tiles/int-${colorScheme}-${_floorId}/{z}/{x}/{y}.png?v=2`,
-        // `http://192.168.1.141:6788/map_gen/tile/{z}/{x}/{y}.png`,
-      ]}
-      tileSize={256}
-      maxZoomLevel={MAX_ZOOM}
-      minZoomLevel={INTERIORS_MIN_ZOOM}
-      id="indoorSource"
-      existing={false}
-    >
-      <RasterLayer style={null} id="indoor" aboveLayerID="outdoor" />
-    </RasterSource>
+    <>
+      <RasterLayer
+        key={`indoor:${colorScheme}:${_floorId}`}
+        style={null}
+        id="indoor"
+        sourceID="indoorSource"
+        aboveLayerID="outdoor"
+      />
+      {_floorId && (
+        <RasterSource
+          key={`indoorSource:${colorScheme}:${_floorId}`}
+          id="indoorSource"
+          tileUrlTemplates={[
+            `https://app.didattica.polito.it/tiles/int-${colorScheme}-${_floorId}/{z}/{x}/{y}.png`,
+          ]}
+          tileSize={256}
+          maxZoomLevel={MAX_ZOOM}
+          minZoomLevel={INTERIORS_MIN_ZOOM}
+          existing={false}
+        />
+      )}
+    </>
   );
 };

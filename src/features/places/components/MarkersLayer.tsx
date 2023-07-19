@@ -4,121 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { PlaceOverview } from '@polito/api-client';
+import { Place, PlaceOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
+import { CATEGORIES_DATA, MARKERS_MIN_ZOOM } from '../constants';
+import { CategoryData } from '../types';
 import { MapScreenProps } from './MapNavigator';
 import { PlacesStackParamList } from './PlacesNavigator';
-
-interface CategoryData {
-  icon: string;
-  color: string;
-  priority: number;
-  children: Record<string, Partial<CategoryData>>;
-}
-
-const categoriesData: Record<string, CategoryData> = {
-  VERT: {
-    icon: 'stairs',
-    color: 'gray',
-    priority: 100,
-    children: {
-      SCALA: {},
-    },
-  },
-  SERV: {
-    icon: 'pin',
-    color: 'gray',
-    priority: 90,
-    children: {
-      'PUNTO H2O': { icon: 'water', color: 'lightBlue', priority: 20 },
-      WC: { icon: 'restroom', color: 'green' },
-      WC_F: { icon: 'restroom', color: 'green' },
-      WC_H: { icon: 'restroom', color: 'green' },
-      WC_M: { icon: 'restroom', color: 'green' },
-    },
-  },
-  SUPP: {
-    icon: 'pin',
-    color: 'gray',
-    priority: 100,
-    children: {
-      S_CONFEREN: { icon: 'conference' },
-    },
-  },
-  UFF: {
-    icon: 'pin',
-    color: 'gray',
-    priority: 60,
-    children: {},
-  },
-  AULA: {
-    icon: 'classroom',
-    color: 'navy',
-    priority: 40,
-    children: {
-      AULA: {},
-      AULA_DIS: {},
-      AULA_INF: {},
-      AULA_LAB: {},
-    },
-  },
-  LAB: {
-    icon: 'lab',
-    color: 'navy',
-    priority: 60,
-    children: {},
-  },
-  STUD: {
-    icon: 'study',
-    color: 'navy',
-    priority: 40,
-    children: {
-      BIBLIO: { icon: 'library' },
-      STUD_EST_A: {},
-      STUD_EST_P: {},
-      S_STUD: {},
-    },
-  },
-  TECN: {
-    icon: 'pin',
-    color: 'gray',
-    priority: 100,
-    children: {},
-  },
-  SPEC: {
-    icon: 'service',
-    color: 'red',
-    priority: 60,
-    children: {
-      BAR: { icon: 'bar' },
-      SALA_BAR: { icon: 'bar' },
-      MENSA: { icon: 'restaurant' },
-      RISTORA: { icon: 'restaurant' },
-      Z_RIST: { icon: 'restaurant' },
-      CEN_STAMP: { icon: 'print' },
-      INFERM: { icon: 'medical' },
-      POSTA: { icon: 'post' },
-    },
-  },
-  TBD: {
-    icon: 'pin',
-    color: 'gray',
-    priority: 100,
-    children: {},
-  },
-  EST: {
-    icon: 'pin',
-    color: 'gray',
-    priority: 100,
-    children: {
-      PARK_BIKE: { icon: 'bike' },
-    },
-  },
-};
-
-const LOW_ZOOM = 15;
 
 export interface MarkersLayerProps {
   selectedPoiId?: string;
@@ -136,20 +29,23 @@ export const MarkersLayer = ({
     useNavigation<MapScreenProps<PlacesStackParamList>['navigation']>();
   const { t } = useTranslation();
   const { dark, fontSizes, palettes } = useTheme();
-  const pois = useMemo(() => {
+  const pois = useMemo((): (Place & CategoryData)[] => {
     return places
       ?.filter(p => {
-        const { id: catId, subCategory: subCatId } = p.category;
+        const {
+          id: catId,
+          subCategory: { id: subCatId },
+        } = p.category;
         return (
-          categoriesData[catId]?.children[subCatId] != null ||
+          CATEGORIES_DATA[catId]?.children[subCatId] != null ||
           selectedPoiId === p.id
         );
       })
       ?.map(poi => {
         const categoryData =
-          categoriesData[poi.category.id as keyof typeof categoriesData];
+          CATEGORIES_DATA[poi.category.id as keyof typeof CATEGORIES_DATA];
         const subcategoryData = categoryData.children[
-          poi.category.subCategory as keyof typeof categoryData.children
+          poi.category.subCategory.id as keyof typeof categoryData.children
         ] as any;
         const markerData = {
           ...poi,
@@ -198,15 +94,16 @@ export const MarkersLayer = ({
               type: 'Feature',
               id: `poi-point-${p.id}`,
               properties: {
+                dark,
                 index: i,
                 icon: p.icon,
                 priority: p.priority,
-                name: `${p.room.name ?? p.category.name}${
+                name: `${p.room.name ?? p.category.subCategory.name}${
                   displayFloor ? `\n${t('common.floor')} ${p.floor.level}` : ''
                 }`,
                 color:
                   palettes[p.color as keyof Theme['palettes']][
-                    dark ? 200 : 500
+                    dark ? 200 : p.shade ?? 500
                   ],
               },
               geometry: {
@@ -229,13 +126,14 @@ export const MarkersLayer = ({
           }}
         >
           <SymbolLayer
-            id="poisLayer"
+            id="markers"
             style={{
               iconImage: ['get', 'icon'],
               iconSize: 0.35,
               symbolSortKey: ['get', 'priority'],
               textField: ['get', 'name'],
               textSize: fontSizes['2xs'],
+              textFont: ['Open Sans Semibold', 'Arial Unicode MS Regular'],
               textColor: ['get', 'color'],
               textOffset: [0, 1.2],
               textAnchor: 'top',
@@ -243,39 +141,11 @@ export const MarkersLayer = ({
               textHaloColor: 'white',
               textHaloWidth: dark ? 0 : 0.8,
             }}
-            // aboveLayerID="indoor"
-            minZoomLevel={LOW_ZOOM}
+            minZoomLevel={MARKERS_MIN_ZOOM}
+            aboveLayerID="indoor"
           />
         </ShapeSource>
       )}
-      {/* selectedPoi && (
-        <MarkerView
-          coordinate={[selectedPoi.longitude, selectedPoi.latitude]}
-          anchor={{
-            x: 0.5,
-            y: 1,
-          }}
-          style={{
-            paddingBottom: 20,
-          }}
-        >
-          <Callout>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate({
-                  name: 'Place',
-                  params: { placeId: selectedPoi.id },
-                });
-              }}
-            >
-              <Row p={2} align="center">
-                <Text>{selectedPoi.room.name}</Text>
-                <Icon icon={faChevronRight} size={fontSizes.sm} />
-              </Row>
-            </TouchableOpacity>
-          </Callout>
-        </MarkerView>
-      )*/}
     </>
   );
 };
