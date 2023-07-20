@@ -13,9 +13,10 @@ import { getHtmlTextContent } from '../../../utils/html';
 
 export type Props = {
   message: Message;
+  modal: boolean;
 };
 
-export const MessageItem = ({ message }: Props) => {
+export const MessageItem = ({ message, modal }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const hasSender = !!message?.senderId;
@@ -45,6 +46,7 @@ export const MessageItem = ({ message }: Props) => {
           <PersonListItem
             person={personQuery.data}
             subtitle={t('common.teacher')}
+            navigateEnabled={!modal}
           />
         </>
       )}

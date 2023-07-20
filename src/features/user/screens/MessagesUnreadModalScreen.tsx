@@ -71,7 +71,7 @@ export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{ flexGrow: 1 }}
     >
-      {currentMessage && <MessageItem message={currentMessage} />}
+      {currentMessage && <MessageItem message={currentMessage} modal />}
       <CtaButton
         containerStyle={{ width: '100%' }}
         absolute
