@@ -13,7 +13,7 @@ import { getHtmlTextContent } from '../../../utils/html';
 
 export type Props = {
   message: Message;
-  modal: boolean;
+  modal?: boolean;
 };
 
 export const MessageItem = ({ message, modal }: Props) => {
