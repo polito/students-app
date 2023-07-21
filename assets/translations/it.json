@@ -139,6 +139,7 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
@@ -277,6 +278,7 @@
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
   "examScreen": {
+    "bookingEndsAt": "Prenotazione entro il",
     "bookedCount": "Studenti prenotati",
     "ctaBook": "Prenota esame",
     "ctaBookSuccess": "Esame prenotato",

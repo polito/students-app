@@ -7,7 +7,11 @@ import {
   faClock,
   faNoteSticky,
 } from '@fortawesome/free-regular-svg-icons';
-import { faLocationDot, faUsers } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHourglassEnd,
+  faLocationDot,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
@@ -181,6 +185,18 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 titleProps={{ numberOfLines: 0 }}
               />
             )}
+            <ListItem
+              leadingItem={
+                <Icon icon={faHourglassEnd} size={fontSizes['2xl']} />
+              }
+              inverted
+              title={
+                exam?.bookingEndsAt
+                  ? formatReadableDate(exam?.bookingEndsAt)
+                  : t('common.dateToBeDefined')
+              }
+              subtitle={t('examScreen.bookingEndsAt')}
+            />
             <ListItem
               leadingItem={<Icon icon={faUsers} size={fontSizes['2xl']} />}
               inverted

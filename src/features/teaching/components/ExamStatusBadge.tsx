@@ -43,7 +43,6 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
     palettes.danger,
     palettes.muted,
     palettes.primary,
-    dark,
   ]);
   return (
     <Row

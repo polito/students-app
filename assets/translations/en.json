@@ -139,6 +139,7 @@
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
+    "selectAnOption": "Please select an option",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
@@ -277,6 +278,7 @@
     "topicDropdownPlaceholder": "Pick a topic"
   },
   "examScreen": {
+    "bookingEndsAt": "Booking ends on",
     "bookedCount": "Booked students",
     "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",

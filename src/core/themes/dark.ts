@@ -25,7 +25,7 @@ export const darkTheme: Theme = {
       android: 'rgba(255, 255, 255, .1)',
       ios: 'rgba(0, 0, 0, .1)',
     })!,
-    divider: lightTheme.palettes.gray[600],
+    divider: lightTheme.palettes.gray[500],
     touchableHighlight: 'rgba(255, 255, 255, .08)',
     agendaLecture: lightTheme.palettes.navy[100],
     tabBarInactive: lightTheme.palettes.gray[400],
