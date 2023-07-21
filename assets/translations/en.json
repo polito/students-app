@@ -347,7 +347,7 @@
     "readNext": "Read next",
     "end": "End",
     "sentAt": "Sent at",
-    "youHaveunreadMessages": "You have {{total}} unread messages"
+    "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messageScreen": {
     "title": "Message",

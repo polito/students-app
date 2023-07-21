@@ -37,7 +37,7 @@ export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
       isScreenReaderEnabled().then(isEnabled => {
         if (isEnabled) {
           announce(
-            t('messagesScreen.youHaveunreadMessages', {
+            t('messagesScreen.youHaveUnreadMessages', {
               total: unreadMessages(data || [])?.length || 0,
             }),
           );

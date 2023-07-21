@@ -347,7 +347,7 @@
     "readNext": "Leggi il prossimo",
     "end": "Fine",
     "sentAt": "Inviato il",
-    "youHaveunreadMessages": "Hai {{total}} messaggi non letti"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messageScreen": {
     "title": "Messaggio",
