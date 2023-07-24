@@ -90,6 +90,7 @@
     "examStatus": {
       "available": "Available",
       "booked": "Booked",
+      "requestAccepted": "Booked",
       "requestRejected": "Request rejected",
       "requestable": "Requestable",
       "requested": "Requested",
@@ -277,6 +278,11 @@
     "topicDropdownLabel": "Topic",
     "topicDropdownPlaceholder": "Pick a topic"
   },
+  "examRequestScreen": {
+    "error": "Fill in the text field before proceeding with the request",
+    "title": "You can ask the college chairman to take the exam before the actual delivery of the course",
+    "placeholder": "Explain why you need to take the exam early"
+  },
   "examScreen": {
     "bookingEndsAt": "Booking ends on",
     "bookedCount": "Booked students",
@@ -284,6 +290,7 @@
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
     "ctaCancelSuccess": "Booking cancelled",
+    "ctaRequest": "Request",
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
     "notes": "Notes",

@@ -1,22 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { RadioGroup } from '@lib/ui/components/RadioGroup';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
+import { Text } from '@lib/ui/components/Text';
+import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Option } from '@lib/ui/types/Input';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useBookExam, useGetExams } from '../../../core/queries/examHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
-type Props = NativeStackScreenProps<TeachingStackParamList, 'ExamQuestion'>;
+type Props = NativeStackScreenProps<TeachingStackParamList, 'ExamRequest'>;
 
-export const ExamQuestionScreen = ({ route, navigation }: Props) => {
+export const ExamRequestScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
 
@@ -26,33 +28,17 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
 
   const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
 
-  useEffect(() => {
-    if (exam && !exam.question) navigation.goBack();
-  }, [exam, navigation]);
-
-  const radioData: undefined | Option<number>[] = useMemo(() => {
-    return exam?.question?.options.map(
-      (label, value): Option<number> => ({
-        label,
-        value,
-      }),
-    );
-  }, [exam]);
-
-  const [state, setState] = useState<{ isError: boolean; value?: number }>({
+  const [state, setState] = useState<{ isError: boolean; value?: string }>({
     isError: false,
     value: undefined,
   });
 
   const onSubmit = async () => {
-    if (state.value === undefined) {
+    if (state.value?.length ?? 0 === 0) {
       setState({ ...state, isError: true });
       return;
     }
-    bookExam({
-      questionId: exam!.question!.id,
-      questionOption: state.value + 1,
-    }).then(() => {
+    bookExam({ requestReason: state.value }).then(() => {
       // reset navigation to TeachingScreen
       navigation.reset({
         index: 0,
@@ -70,15 +56,24 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
           <View style={styles.container}>
             <ScreenTitle
               style={styles.screenTitle}
-              title={exam?.question?.statement}
+              title={t('examRequestScreen.title')}
             />
-            {radioData && (
-              <RadioGroup
-                options={radioData}
+            <OverviewList
+              style={[styles.searchBar, state.isError && styles.searchBarError]}
+            >
+              <TextField
+                label={t('examRequestScreen.placeholder')}
+                multiline
+                numberOfLines={5}
                 value={state.value}
-                setValue={value => setState({ ...state, value })}
-                showError={state.isError}
+                onChangeText={value => setState({ isError: false, value })}
+                style={GlobalStyles.grow}
               />
+            </OverviewList>
+            {state.isError && (
+              <Text style={styles.errorFeedback}>
+                {t('examRequestScreen.error')}
+              </Text>
             )}
           </View>
           <CtaButtonSpacer />
@@ -96,12 +91,22 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ dark, palettes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[5],
     },
+    errorFeedback: {
+      color: palettes.danger[dark ? 400 : 600],
+    },
     screenTitle: {
       marginBottom: spacing[7],
+    },
+    searchBar: {
+      marginHorizontal: 0,
+    },
+    searchBarError: {
+      borderWidth: 1,
+      borderColor: palettes.danger[dark ? 400 : 600],
     },
   });

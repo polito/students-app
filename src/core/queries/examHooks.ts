@@ -31,7 +31,7 @@ const mapApiExamToExam = (exam: ApiExam): Exam => {
 
   switch (exam.status) {
     case ExamStatusEnum.Booked:
-      // case ExamStatusEnum.RequestAccepted:
+    case ExamStatusEnum.RequestAccepted:
       statusIcon = faCircleCheck;
       break;
     case ExamStatusEnum.Requested:

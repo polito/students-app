@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -24,22 +23,24 @@ export const ExamCTA = ({ exam }: Props) => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList, any>>();
 
-  const label = useMemo(() => {}, [exam, t]);
-
   const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(exam.id);
   const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
     useCancelExamBooking(exam.id);
 
+  const examRequestable = exam?.status === ExamStatusEnum.Requestable;
   const examAvailable = exam?.status === ExamStatusEnum.Available;
 
   const confirm = useConfirmationDialog();
 
   const disabledStatuses = [
+    ExamStatusEnum.RequestAccepted,
     ExamStatusEnum.RequestRejected,
     ExamStatusEnum.Unavailable,
   ] as ExamStatusEnum[];
   const action = async () => {
-    if (examAvailable) {
+    if (examRequestable) {
+      return navigate('ExamRequest', { id: exam.id });
+    } else if (examAvailable) {
       if (exam.question) {
         return navigate('ExamQuestion', { id: exam.id });
       } else {
@@ -54,35 +55,17 @@ export const ExamCTA = ({ exam }: Props) => {
 
   if (disabledStatuses.includes(exam.status)) return null;
 
-  // const showCta = useMemo(() => {
-  //   if (!exam) return false;
-  //
-  //   if (
-  //     exam.status === ExamStatusEnum.Available &&
-  //     exam.bookingEndsAt &&
-  //     exam.bookingEndsAt.getTime() < Date.now()
-  //   )
-  //     return false;
-  //
-  //   if (
-  //     exam.status === ExamStatusEnum.Available &&
-  //     exam.bookingStartsAt &&
-  //     exam.bookingStartsAt.getTime() > Date.now()
-  //   )
-  //     return false;
-  //
-  //   return (
-  //     [ExamStatusEnum.Available, ExamStatusEnum.Booked] as ExamStatusEnum[]
-  //   ).includes(exam.status);
-  // }, [exam]);
-
   const mutationsLoading = isBooking || isCancelingBooking;
 
   return (
     <CtaButton
-      destructive={!examAvailable}
+      destructive={!examAvailable && !examRequestable}
       title={
-        examAvailable ? t('examScreen.ctaBook') : t('examScreen.ctaCancel')
+        examRequestable
+          ? t('examScreen.ctaRequest')
+          : examAvailable
+          ? t('examScreen.ctaBook')
+          : t('examScreen.ctaCancel')
       }
       action={action}
       loading={mutationsLoading}

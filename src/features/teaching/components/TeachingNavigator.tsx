@@ -20,6 +20,7 @@ import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { CoursesScreen } from '../screens/CoursesScreen';
 import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
+import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { NoticeScreen } from '../screens/NoticeScreen';
@@ -58,6 +59,7 @@ export interface TeachingStackParamList extends ParamListBase {
   Exams: undefined;
   Exam: { id: number };
   ExamQuestion: { id: number };
+  ExamRequest: { id: number };
   MessagesModal: undefined;
   Transcript: undefined;
 }
@@ -224,6 +226,14 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="ExamQuestion"
         component={ExamQuestionScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
+        }}
+      />
+      <Stack.Screen
+        name="ExamRequest"
+        component={ExamRequestScreen}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.examCall'),
