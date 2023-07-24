@@ -12,6 +12,7 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { lightTheme } from '../../../core/themes/light';
 import { Exam } from '../../../core/types/api';
 
 interface Props {
@@ -21,23 +22,41 @@ interface Props {
 
 export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
   const { t } = useTranslation();
-  const { fontSizes, dark, palettes, shapes, spacing } = useTheme();
+  const { fontSizes, colors, dark, palettes, shapes, spacing } = useTheme();
 
   const [backgroundColor, foregroundColor] = useMemo((): [string, string] => {
+    const darkBackgroundOpacity = 'CC';
     switch (exam.statusIcon) {
       case faCircleCheck:
-        return [palettes.success[200], palettes.success[800]];
+        return dark
+          ? [
+              palettes.success[800] + darkBackgroundOpacity,
+              palettes.success[200],
+            ]
+          : [palettes.success[200], palettes.success[800]];
       case faSpinner:
-        return [palettes.warning[200], palettes.success[800]];
+        return dark
+          ? [
+              palettes.warning[800] + darkBackgroundOpacity,
+              palettes.warning[200],
+            ]
+          : [palettes.warning[200], palettes.warning[800]];
       case faCircleXmark:
-        return [palettes.danger[200], palettes.danger[800]];
+        return dark
+          ? [palettes.danger[800] + darkBackgroundOpacity, palettes.danger[200]]
+          : [palettes.danger[200], palettes.danger[800]];
       case faCircleMinus:
-        return [palettes.muted[200], palettes.muted[600]];
+        return dark
+          ? [palettes.muted[600] + darkBackgroundOpacity, palettes.muted[200]]
+          : [palettes.muted[200], palettes.muted[600]];
       default:
-        return [palettes.primary[100], palettes.primary[600]];
+        return dark
+          ? [palettes.primary[500] + '99', lightTheme.colors.surface]
+          : [palettes.primary[100], palettes.primary[600]];
     }
   }, [
     exam.statusIcon,
+    dark,
     palettes.success,
     palettes.warning,
     palettes.danger,

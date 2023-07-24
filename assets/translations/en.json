@@ -90,10 +90,10 @@
     "examStatus": {
       "available": "Available",
       "booked": "Booked",
-      "requestRejected": "Booking request rejected",
-      "requestable": "Booking requestable",
-      "requested": "Booking requested",
-      "unavailable": "Not bookable"
+      "requestRejected": "Request rejected",
+      "requestable": "Requestable",
+      "requested": "Requested",
+      "unavailable": "Unavailable"
     },
     "externalLink": "External link. By pressing the link you will be redirected to an external browser",
     "file": "File",
