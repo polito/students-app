@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
@@ -16,7 +17,7 @@ export type Props = {
   modal?: boolean;
 };
 
-export const MessageItem = ({ message, modal }: Props) => {
+export const MessageScreenContent = ({ message, modal }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const hasSender = !!message?.senderId;
@@ -36,18 +37,20 @@ export const MessageItem = ({ message, modal }: Props) => {
           </View>
         )}
       </Section>
-      {!!personQuery.data && hasSender && (
+      {hasSender && (
         <>
           <View style={styles.container}>
             <Text variant="subHeading" weight="semibold">
               {t('messageScreen.sender')}
             </Text>
           </View>
-          <PersonListItem
-            person={personQuery.data}
-            subtitle={t('common.teacher')}
-            navigateEnabled={!modal}
-          />
+          <OverviewList indented loading={personQuery.isLoading}>
+            <PersonListItem
+              person={personQuery.data!}
+              subtitle={t('common.teacher')}
+              navigateEnabled={!modal}
+            />
+          </OverviewList>
         </>
       )}
     </SafeAreaView>

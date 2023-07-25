@@ -1,4 +1,4 @@
-import { ExamGrade, Student, StudentApi } from '@polito/api-client';
+import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
 import * as Sentry from '@sentry/react-native';
 import {
   useInfiniteQuery,
@@ -9,6 +9,7 @@ import {
 
 import { DateTime, Duration } from 'luxon';
 
+import { unreadMessages } from '../../utils/messages';
 import { pluckData, prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
@@ -97,16 +98,51 @@ export const useGetDeadlineWeeks = () => {
   );
 };
 
-export const useGetMessages = (enabled: boolean) => {
+export const useGetMessages = () => {
+  const queryClient = useQueryClient();
   const studentClient = useStudentClient();
+  const messagesQueryKey = prefixKey([MESSAGES_QUERY_KEY]);
 
   return useQuery(
-    prefixKey([MESSAGES_QUERY_KEY]),
-    () => studentClient.getMessages().then(pluckData),
+    messagesQueryKey,
+    () =>
+      studentClient
+        .getMessages()
+        .then(pluckData)
+        .then(messages => {
+          const previousMessages =
+            queryClient.getQueryData<Message[]>(messagesQueryKey);
+
+          if (
+            previousMessages &&
+            unreadMessages(previousMessages).length >=
+              unreadMessages(messages).length
+          ) {
+            return messages;
+          }
+
+          queryClient.setQueryData(
+            [...messagesQueryKey, 'modal'],
+            unreadMessages(messages),
+          );
+
+          return messages;
+        }),
     {
-      enabled,
+      staleTime: 300000, // 5 minutes
+      refetchInterval: 300000, // 5 minutes
     },
   );
+};
+
+export const useGetModalMessages = () => {
+  const messagesQuery = useGetMessages();
+  const modalQueryKey = prefixKey([MESSAGES_QUERY_KEY, 'modal']);
+
+  return useQuery(modalQueryKey, () => [], {
+    enabled: !!messagesQuery.data,
+    staleTime: Infinity,
+  });
 };
 
 export const useMarkMessageAsRead = () => {

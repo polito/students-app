@@ -11,7 +11,7 @@ import { MessageListItem } from '../components/MessageListItem';
 
 export const MessagesScreen = () => {
   const { spacing } = useTheme();
-  const messagesQuery = useGetMessages(true);
+  const messagesQuery = useGetMessages();
 
   const { isLoading, data: messages } = messagesQuery;
 
@@ -23,12 +23,12 @@ export const MessagesScreen = () => {
       <SafeAreaView>
         <Section style={{ marginTop: spacing['2'] }}>
           <OverviewList loading={isLoading}>
-            {messages?.map((newsItem, index) => (
+            {messages?.map((message, index) => (
               <MessageListItem
-                messageItem={newsItem}
-                key={newsItem.id}
+                messageItem={message}
+                key={message.id}
                 index={index}
-                totalData={messages?.length || 0}
+                totalData={messages.length}
               />
             ))}
           </OverviewList>

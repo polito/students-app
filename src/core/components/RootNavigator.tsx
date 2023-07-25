@@ -24,9 +24,8 @@ import { PlacesNavigator } from '../../features/places/components/PlacesNavigato
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
-import { hasUnreadMessages } from '../../utils/messages';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { useGetMessages, useGetStudent } from '../queries/studentHooks';
+import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
@@ -38,7 +37,7 @@ export const RootNavigator = () => {
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { refetch: getMessages } = useGetMessages(false);
+  const { data: messages } = useGetModalMessages();
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -51,12 +50,9 @@ export const RootNavigator = () => {
   }, [student]);
 
   useEffect(() => {
-    getMessages().then(({ data }) => {
-      if (hasUnreadMessages(data || [])) {
-        navigation.navigate('ProfileTab');
-      }
-    });
-  }, []);
+    if (!messages || messages.length === 0) return;
+    navigation.navigate('MessagesModal');
+  }, [messages, navigation]);
 
   const tabBarIconSize = 20;
 
