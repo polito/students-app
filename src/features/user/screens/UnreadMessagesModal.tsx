@@ -6,23 +6,21 @@ import {
   faCheckCircle,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Message } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import {
-  useGetMessages,
+  useGetModalMessages,
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
-import { unreadMessages } from '../../../utils/messages';
-import { MessageItem } from '../components/MessageItem';
-import { UserStackParamList } from '../components/UserNavigator';
+import { MessageScreenContent } from '../components/MessageScreenContent';
 
-type Props = NativeStackScreenProps<UserStackParamList, 'MessagesUnRead'>;
+type Props = NativeStackScreenProps<any, 'MessagesModal'>;
 
-export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
-  const { refetch: getMessages } = useGetMessages(false);
+export const UnreadMessagesModal = ({ navigation }: Props) => {
+  const { data: messages } = useGetModalMessages();
   const { mutate } = useMarkMessageAsRead();
   const { t } = useTranslation();
   const [messagesToRead, setMessagesToRead] = useState<Message[]>([]);
@@ -32,19 +30,19 @@ export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
   const { isScreenReaderEnabled, announce } = useScreenReader();
 
   useEffect(() => {
-    getMessages().then(({ data }) => {
-      setMessagesToRead(unreadMessages(data || []));
-      isScreenReaderEnabled().then(isEnabled => {
-        if (isEnabled) {
-          announce(
-            t('messagesScreen.youHaveUnreadMessages', {
-              total: unreadMessages(data || [])?.length || 0,
-            }),
-          );
-        }
-      });
+    if (!messages) return;
+
+    setMessagesToRead(messages);
+    isScreenReaderEnabled().then(isEnabled => {
+      if (isEnabled) {
+        announce(
+          t('messagesScreen.youHaveUnreadMessages', {
+            total: messages.length,
+          }),
+        );
+      }
     });
-  }, []);
+  }, [announce, isScreenReaderEnabled, messages, t]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -53,7 +51,7 @@ export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
         total: messagesToReadCount,
       }),
     });
-  }, [t, messagesToRead, messagesReadCount]);
+  }, [t, messagesToRead, messagesReadCount, navigation, messagesToReadCount]);
 
   const currentMessage = messagesToRead?.[messagesReadCount];
 
@@ -67,14 +65,14 @@ export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ flexGrow: 1 }}
-    >
-      {currentMessage && <MessageItem message={currentMessage} modal />}
+    <>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        {currentMessage && (
+          <MessageScreenContent message={currentMessage} modal />
+        )}
+        <CtaButtonSpacer />
+      </ScrollView>
       <CtaButton
-        containerStyle={{ width: '100%' }}
-        absolute
         title={t(
           isLastMessageToRead
             ? 'messagesScreen.end'
@@ -83,6 +81,6 @@ export const MessagesUnreadModalScreen = ({ navigation }: Props) => {
         action={onConfirm}
         icon={isLastMessageToRead ? faCheckCircle : faChevronRight}
       />
-    </ScrollView>
+    </>
   );
 };

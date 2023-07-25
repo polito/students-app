@@ -1,24 +1,17 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { useNavigation } from '@react-navigation/native';
-import {
-  NativeStackNavigationProp,
-  createNativeStackNavigator,
-} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
-import { useGetMessages } from '../../../core/queries/studentHooks';
-import { hasUnreadMessages } from '../../../utils/messages';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
-import { MessagesUnreadModalScreen } from '../screens/MessagesUnreadModalScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { UnreadMessagesModal } from '../screens/UnreadMessagesModal';
 
 export type UserStackParamList = {
   Profile: undefined;
@@ -27,7 +20,7 @@ export type UserStackParamList = {
   Message: {
     id: number;
   };
-  MessagesUnRead: undefined;
+  MessagesModal: undefined;
 };
 const Stack = createNativeStackNavigator<UserStackParamList>();
 
@@ -35,17 +28,6 @@ export const UserNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
-  const navigation =
-    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
-  const { refetch: getMessages } = useGetMessages(false);
-
-  useEffect(() => {
-    getMessages().then(({ data }) => {
-      if (hasUnreadMessages(data || [])) {
-        navigation.navigate('MessagesUnRead');
-      }
-    });
-  }, []);
 
   return (
     <Stack.Navigator
@@ -90,14 +72,14 @@ export const UserNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="MessagesUnRead"
-        component={MessagesUnreadModalScreen}
+        name="MessagesModal"
+        component={UnreadMessagesModal}
         options={{
           headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
-          gestureEnabled: false,
         }}
       />
     </Stack.Navigator>

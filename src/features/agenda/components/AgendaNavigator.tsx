@@ -4,10 +4,12 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
+import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { AgendaWeekScreen } from '../screens/AgendaWeekScreen';
 import { BookingScreen } from '../screens/BookingScreen';
@@ -23,6 +25,7 @@ export type AgendaStackParamList = {
   Deadline: { item: DeadlineItem };
   Booking: { id: number };
   Person: { id: number };
+  MessagesModal: undefined;
 };
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
@@ -107,6 +110,17 @@ export const AgendaNavigator = () => {
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="MessagesModal"
+        component={UnreadMessagesModal}
+        options={{
+          headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
         }}
       />
     </Stack.Navigator>
