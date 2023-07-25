@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>686477782144-n395h7hmfnr89e46odqntbiq12eo94ov.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.686477782144-n395h7hmfnr89e46odqntbiq12eo94ov</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAuCytgeWdXmciEsDlRu8KNrsOfUOVg5v8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>686477782144</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>it.polito.students</string>
+	<key>PROJECT_ID</key>
+	<string>polito-students</string>
+	<key>STORAGE_BUCKET</key>
+	<string>polito-students.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:686477782144:ios:2eac076893dcfc1d4e0a65</string>
+</dict>
+</plist>
