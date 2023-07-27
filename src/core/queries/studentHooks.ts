@@ -1,4 +1,5 @@
 import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
+import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import * as Sentry from '@sentry/react-native';
 import {
   useInfiniteQuery,
@@ -94,6 +95,21 @@ export const useGetDeadlineWeeks = () => {
     },
     {
       staleTime: Infinity,
+    },
+  );
+};
+
+export const useUpdateDevicePreferences = () => {
+  const studentClient = useStudentClient();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (dto: UpdateDevicePreferencesRequest) =>
+      studentClient.updateDevicePreferences(dto),
+    {
+      onSuccess: () => {
+        return queryClient.invalidateQueries([]);
+      },
     },
   );
 };

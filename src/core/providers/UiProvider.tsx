@@ -11,7 +11,6 @@ import { Settings } from 'luxon';
 
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
-import { deviceLanguage } from '../../utils/device';
 import { fromUiTheme } from '../../utils/navigation-theme';
 import { NavigationContainer } from '../components/NavigationContainer';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -32,6 +31,7 @@ i18n.use(initReactI18next).init({
 });
 
 export const UiProvider = ({ children }: PropsWithChildren) => {
+  // eslint-disable-next-line prefer-const
   let { colorScheme, language } = usePreferencesContext();
   const systemColorScheme = useColorScheme();
   const safeAreaInsets = useSafeAreaInsets();
@@ -40,10 +40,6 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
     colorScheme = systemColorScheme ?? 'light';
   } else if (colorScheme !== systemColorScheme) {
     overrideColorScheme.setScheme(colorScheme);
-  }
-
-  if (language === 'system') {
-    language = deviceLanguage;
   }
 
   const uiTheme = useMemo(

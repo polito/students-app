@@ -35,7 +35,7 @@ import { Settings } from 'luxon';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
+import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
@@ -187,38 +187,33 @@ const VisualizationListItem = () => {
 const LanguageListItem = () => {
   const { t } = useTranslation();
   const { language, updatePreference } = usePreferencesContext();
-  const deviceLanguage = useDeviceLanguage();
-
-  const languageLabel = (cc: string) => {
-    return cc === 'system'
-      ? `${t(`common.${cc}`)} (${t(`common.${deviceLanguage}`)})`
-      : t(`common.${cc}`);
-  };
+  const { mutate } = useUpdateDevicePreferences();
 
   return (
     <MenuView
-      actions={['it', 'en', 'system'].map(cc => {
+      actions={['it', 'en'].map(cc => {
         return {
           id: cc,
-          title: languageLabel(cc),
+          title: t(`common.${cc}`),
           state: cc === language ? 'on' : undefined,
         };
       })}
       onPressAction={({ nativeEvent: { event } }) => {
-        const lang = event as 'it' | 'en' | 'system';
+        const lang = event as 'it' | 'en';
+
+        mutate({ updatePreferencesRequest: { language: lang } });
         updatePreference('language', lang);
 
-        const uiLanguage = lang === 'system' ? deviceLanguage : lang;
         i18next
-          .changeLanguage(uiLanguage)
-          .then(() => (Settings.defaultLocale = uiLanguage));
+          .changeLanguage(lang)
+          .then(() => (Settings.defaultLocale = lang));
       }}
     >
       <ListItem
         isAction
-        title={languageLabel(language)}
-        accessibilityLabel={`${t('common.language')}: ${languageLabel(
-          language,
+        title={t(`common.${language}`)}
+        accessibilityLabel={`${t('common.language')}: ${t(
+          `common.${language}`,
         )}. ${t('settingsScreen.openLanguageMenu')}`}
       />
     </MenuView>

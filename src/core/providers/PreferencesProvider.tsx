@@ -9,13 +9,15 @@ import {
   editablePreferenceKeys,
   objectPreferenceKeys,
 } from '../contexts/PreferencesContext';
+import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
 
 export const PreferencesProvider = ({ children }: PropsWithChildren) => {
+  const deviceLanguage = useDeviceLanguage();
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
       colorScheme: 'system',
       courses: {},
-      language: 'system',
+      language: deviceLanguage,
       updatePreference: () => {},
       favoriteServices: [],
     });
@@ -63,6 +65,9 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
         if (objectPreferenceKeys.includes(key)) {
           preferences[typedKey] = JSON.parse(value) ?? {};
         } else {
+          if (typedKey === 'language' && value === 'system') {
+            preferences[typedKey] = deviceLanguage;
+          }
           preferences[typedKey] = value as any;
         }
       });
