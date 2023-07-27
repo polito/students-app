@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
@@ -8,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Message } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
@@ -55,12 +56,20 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
     });
   }, [t, messagesToRead, messagesReadCount, navigation, messagesToReadCount]);
 
+  useFocusEffect(
+    useCallback(() => {
+      // Invalidate message list when the modal is closing
+      return () => {
+        invalidateMessages.run();
+      };
+    }, []),
+  );
+
   const currentMessage = messagesToRead?.[messagesReadCount];
 
   const onConfirm = () => {
     mutate(currentMessage?.id);
     if (isLastMessageToRead) {
-      invalidateMessages.run();
       navigation.goBack();
     } else {
       setMessageReadCount(messagesReadCount + 1);
