@@ -26,7 +26,7 @@ export type PreferencesContextProps = {
   clientId?: string;
   colorScheme: 'light' | 'dark' | 'system';
   courses: CoursesPreferences;
-  language: 'it' | 'en' | 'system';
+  language: 'it' | 'en';
   notifications?: {
     important: boolean;
     events: boolean;
