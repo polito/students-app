@@ -77,12 +77,14 @@ export const useBookExam = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
+  const examsQueryKey = prefixKey([EXAMS_QUERY_KEY]);
+
   return useMutation(
     (dto?: BookExamRequest) =>
       examsClient.bookExam({ examId: examId, bookExamRequest: dto }),
     {
       onSuccess() {
-        return client.invalidateQueries([EXAMS_QUERY_KEY]);
+        return client.invalidateQueries(examsQueryKey);
       },
     },
   );
@@ -92,11 +94,13 @@ export const useCancelExamBooking = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
+  const examsQueryKey = prefixKey([EXAMS_QUERY_KEY]);
+
   return useMutation(
     () => examsClient.deleteExamBookingById({ examId: examId }),
     {
       onSuccess() {
-        return client.invalidateQueries([EXAMS_QUERY_KEY]);
+        return client.invalidateQueries(examsQueryKey);
       },
     },
   );
