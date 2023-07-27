@@ -124,7 +124,7 @@ export const lightTheme: Theme = {
     title: navy[700],
     prose: gray[800],
     secondaryText: gray[500],
-    caption: gray[400],
+    caption: gray[500],
     link: navy[500],
     divider: gray[300],
     tabBar: navy[200],

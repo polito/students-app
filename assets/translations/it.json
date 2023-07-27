@@ -90,9 +90,10 @@
     "examStatus": {
       "available": "Disponibile",
       "booked": "Prenotato",
-      "requestRejected": "Prenotazione rifiutata",
+      "requestAccepted": "Prenotato",
+      "requestRejected": "Richiesta rifiutata",
       "requestable": "Prenotabile",
-      "requested": "Prenotazione richiesta",
+      "requested": "Richiesto",
       "unavailable": "Non prenotabile"
     },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
@@ -139,6 +140,7 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
@@ -276,13 +278,22 @@
     "topicDropdownLabel": "Argomento",
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
+  "examRequestScreen": {
+    "error": "Compila il campo di testo prima di procedere con la richiesta",
+    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso",
+    "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente"
+  },
   "examScreen": {
-    "ctaBook": "Prenota esame",
-    "ctaBookSuccess": "Esame prenotato",
+    "bookingEndsAt": "Prenotazione entro il",
+    "bookedCount": "Studenti prenotati",
+    "ctaBook": "Prenota appello",
+    "ctaBookSuccess": "Appello prenotato",
     "ctaCancel": "Annulla prenotazione",
     "ctaCancelSuccess": "Prenotazione annullata",
+    "ctaRequest": "Richiedi",
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
+    "notes": "Note",
     "title": "Appello"
   },
   "examsScreen": {

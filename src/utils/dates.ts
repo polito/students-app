@@ -6,6 +6,13 @@ export const formatDate = (date: Date) => {
   return DateTime.fromJSDate(date).toFormat('dd/MM/yyyy');
 };
 
+export const formatReadableDate = (date: Date, short = false) => {
+  return DateTime.fromJSDate(date).toLocaleString({
+    month: short ? 'short' : 'long',
+    day: 'numeric',
+  });
+};
+
 export const formatDateFromString = (date: string | null) => {
   if (!date) return '';
   return DateTime.fromISO(date).toFormat('dd/MM/yyyy');
