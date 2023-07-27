@@ -74,6 +74,7 @@ export const RootNavigator = () => {
         tabBarStyle: styles.tabBarStyle,
         tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
+        tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}
@@ -156,5 +157,8 @@ const createStyles = ({
       fontFamily: fontFamilies.body,
       fontWeight: fontWeights.semibold,
       fontSize: fontSizes.sm,
+    },
+    tabBarLabelStyle: {
+      width: 'auto',
     },
   });
