@@ -68,6 +68,7 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
                 value={state.value}
                 onChangeText={value => setState({ isError: false, value })}
                 style={GlobalStyles.grow}
+                inputStyle={{ borderBottomWidth: 0 }}
               />
             </OverviewList>
             {state.isError && (
