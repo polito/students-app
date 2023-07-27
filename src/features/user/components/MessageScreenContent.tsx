@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
@@ -9,8 +10,9 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
 
+import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { getHtmlTextContent } from '../../../utils/html';
+import { sanitizeHtml } from '../../../utils/html';
 
 export type Props = {
   message: Message;
@@ -25,6 +27,8 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
   const text = message?.message;
   const personQuery = useGetPerson(message?.senderId || undefined);
 
+  const html = useMemo(() => sanitizeHtml(text ?? ''), [text]);
+
   return (
     <SafeAreaView>
       <Section>
@@ -33,7 +37,7 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
         </Text>
         {!!text && (
           <View style={styles.textMessage}>
-            <Text weight="normal">{getHtmlTextContent(text)}</Text>
+            <HtmlView source={{ html }} baseStyle={{ padding: 0 }} />
           </View>
         )}
       </Section>
