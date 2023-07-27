@@ -135,6 +135,15 @@ export const useGetMessages = () => {
   );
 };
 
+export const useInvalidateMessages = () => {
+  const queryClient = useQueryClient();
+  const messagesQueryKey = prefixKey([MESSAGES_QUERY_KEY]);
+
+  return {
+    run: () => queryClient.invalidateQueries(messagesQueryKey),
+  };
+};
+
 export const useGetModalMessages = () => {
   const messagesQuery = useGetMessages();
   const modalQueryKey = prefixKey([MESSAGES_QUERY_KEY, 'modal']);
@@ -145,7 +154,7 @@ export const useGetModalMessages = () => {
   });
 };
 
-export const useMarkMessageAsRead = () => {
+export const useMarkMessageAsRead = (invalidate: boolean = true) => {
   const studentClient = useStudentClient();
   const client = useQueryClient();
   const invalidatesQuery = prefixKey([MESSAGES_QUERY_KEY]);
@@ -154,7 +163,7 @@ export const useMarkMessageAsRead = () => {
     (messageId: number) => studentClient.markMessageAsRead({ messageId }),
     {
       onSuccess() {
-        return client.invalidateQueries(invalidatesQuery);
+        return invalidate && client.invalidateQueries(invalidatesQuery);
       },
     },
   );

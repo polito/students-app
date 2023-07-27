@@ -13,6 +13,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import {
   useGetModalMessages,
+  useInvalidateMessages,
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
 import { MessageScreenContent } from '../components/MessageScreenContent';
@@ -21,7 +22,8 @@ type Props = NativeStackScreenProps<any, 'MessagesModal'>;
 
 export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { data: messages } = useGetModalMessages();
-  const { mutate } = useMarkMessageAsRead();
+  const invalidateMessages = useInvalidateMessages();
+  const { mutate } = useMarkMessageAsRead(false);
   const { t } = useTranslation();
   const [messagesToRead, setMessagesToRead] = useState<Message[]>([]);
   const [messagesReadCount, setMessageReadCount] = useState(0);
@@ -58,6 +60,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
   const onConfirm = () => {
     mutate(currentMessage?.id);
     if (isLastMessageToRead) {
+      invalidateMessages.run();
       navigation.goBack();
     } else {
       setMessageReadCount(messagesReadCount + 1);
