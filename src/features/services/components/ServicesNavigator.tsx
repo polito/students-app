@@ -6,8 +6,10 @@ import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -39,6 +41,7 @@ export type ServiceStackParamList = {
   };
   News: undefined;
   NewsItem: { id: number };
+  MessagesModal: undefined;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -146,6 +149,17 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('newsScreen.title'),
           headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="MessagesModal"
+        component={UnreadMessagesModal}
+        options={{
+          headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
         }}
       />
     </Stack.Navigator>

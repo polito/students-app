@@ -1,9 +1,15 @@
-import { ExamGrade, Student, StudentApi } from '@polito/api-client';
+import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
 import * as Sentry from '@sentry/react-native';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
+import { unreadMessages } from '../../utils/messages';
 import { pluckData, prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
@@ -11,6 +17,7 @@ export const DEADLINES_QUERY_KEY = 'deadlines';
 
 export const STUDENT_QUERY_KEY = 'student';
 export const GRADES_QUERY_KEY = 'grades';
+export const MESSAGES_QUERY_KEY = 'messages';
 
 const useStudentClient = (): StudentApi => {
   const {
@@ -87,6 +94,77 @@ export const useGetDeadlineWeeks = () => {
     },
     {
       staleTime: Infinity,
+    },
+  );
+};
+
+export const useGetMessages = () => {
+  const queryClient = useQueryClient();
+  const studentClient = useStudentClient();
+  const messagesQueryKey = prefixKey([MESSAGES_QUERY_KEY]);
+
+  return useQuery(
+    messagesQueryKey,
+    () =>
+      studentClient
+        .getMessages()
+        .then(pluckData)
+        .then(messages => {
+          const previousMessages =
+            queryClient.getQueryData<Message[]>(messagesQueryKey);
+
+          if (
+            previousMessages &&
+            unreadMessages(previousMessages).length >=
+              unreadMessages(messages).length
+          ) {
+            return messages;
+          }
+
+          queryClient.setQueryData(
+            [...messagesQueryKey, 'modal'],
+            unreadMessages(messages),
+          );
+
+          return messages;
+        }),
+    {
+      staleTime: 300000, // 5 minutes
+      refetchInterval: 300000, // 5 minutes
+    },
+  );
+};
+
+export const useInvalidateMessages = () => {
+  const queryClient = useQueryClient();
+  const messagesQueryKey = prefixKey([MESSAGES_QUERY_KEY]);
+
+  return {
+    run: () => queryClient.invalidateQueries(messagesQueryKey),
+  };
+};
+
+export const useGetModalMessages = () => {
+  const messagesQuery = useGetMessages();
+  const modalQueryKey = prefixKey([MESSAGES_QUERY_KEY, 'modal']);
+
+  return useQuery(modalQueryKey, () => [], {
+    enabled: !!messagesQuery.data,
+    staleTime: Infinity,
+  });
+};
+
+export const useMarkMessageAsRead = (invalidate: boolean = true) => {
+  const studentClient = useStudentClient();
+  const client = useQueryClient();
+  const invalidatesQuery = prefixKey([MESSAGES_QUERY_KEY]);
+
+  return useMutation(
+    (messageId: number) => studentClient.markMessageAsRead({ messageId }),
+    {
+      onSuccess() {
+        return invalidate && client.invalidateQueries(invalidatesQuery);
+      },
     },
   );
 };

@@ -39,6 +39,7 @@
       "true": "Active"
     },
     "agent": "Agent",
+    "close": "Close",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
@@ -341,7 +342,17 @@
     "usernameLabelAccessibility": "Enter your username here"
   },
   "messagesScreen": {
-    "title": "Messages archive"
+    "title": "Messages archive",
+    "unreadMessages": "Message ({{read}} of {{total}})",
+    "readNext": "Read next",
+    "end": "End",
+    "sentAt": "Sent at",
+    "youHaveUnreadMessages": "You have {{total}} unread messages"
+  },
+  "messageScreen": {
+    "title": "Message",
+    "backTitle": "Archive",
+    "sender": "Sender"
   },
   "messagingView": {
     "pickFile": "Pick file",

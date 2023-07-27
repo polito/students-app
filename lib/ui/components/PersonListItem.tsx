@@ -9,11 +9,13 @@ import { Person } from '@polito/api-client/models/Person';
 interface Props {
   person: Person | undefined;
   subtitle?: string | JSX.Element;
+  navigateEnabled?: boolean;
 }
 
 export const PersonListItem = ({
   person,
   subtitle,
+  navigateEnabled = true,
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
 
@@ -33,7 +35,7 @@ export const PersonListItem = ({
           : undefined
       }
       linkTo={
-        person?.id
+        person?.id && navigateEnabled
           ? {
               screen: 'Person',
               params: { id: person.id },

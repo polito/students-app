@@ -40,7 +40,7 @@ export const formatMachineDate = (date: Date) => {
 };
 
 export const formatTime = (date: Date) => {
-  return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+  return DateTime.fromJSDate(date).toFormat('HH:mm');
 };
 
 const today = DateTime.now();
