@@ -167,7 +167,8 @@
     "visualization": "Visualizzazione"
   },
   "contactsScreen": {
-    "title": "Contatti"
+    "title": "Contatti",
+    "emptyState": "Nessun contatto trovato"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
