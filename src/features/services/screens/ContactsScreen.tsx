@@ -25,7 +25,7 @@ export const ContactsScreen = () => {
   const [search, setSearch] = useState('');
   const debounceSearch = useDebounceValue(search, 400);
   const styles = useStylesheet(createStyles);
-  const { spacing, palettes } = useTheme();
+  const { palettes } = useTheme();
   const { t } = useTranslation();
   const enabled = debounceSearch.length >= 2;
   const { isLoading, data: people } = useGetPeople(debounceSearch, enabled);
@@ -35,19 +35,12 @@ export const ContactsScreen = () => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         <Section>
-          <OverviewList
-            style={{
-              marginHorizontal: 0,
-              marginVertical: 0,
-              paddingVertical: 10,
-              borderRadius: 0,
-            }}
-          >
+          <OverviewList style={styles.searchBarContainer}>
             <Row align="center" style={styles.searchBar}>
               <Icon
                 icon={faSearch}
                 color={palettes.gray['500']}
-                style={{ position: 'absolute', left: spacing[4] + spacing[1] }}
+                style={styles.searchIcon}
               />
               <TranslucentTextField
                 value={search}
@@ -62,10 +55,7 @@ export const ContactsScreen = () => {
                   color={palettes.gray['500']}
                   accessibilityRole="button"
                   accessibilityLabel={t('contactsScreen.clearSearch')}
-                  style={{
-                    position: 'absolute',
-                    right: spacing[3],
-                  }}
+                  style={styles.cancelIcon}
                 />
               )}
             </Row>
@@ -96,36 +86,22 @@ export const ContactsScreen = () => {
   );
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    heading: {
-      paddingTop: spacing[5],
-      paddingHorizontal: spacing[5],
-    },
     textField: {
       paddingLeft: 20,
-    },
-    title: {
-      fontSize: fontSizes['3xl'],
-      marginBottom: spacing[1],
-    },
-    spacer: {
-      height: spacing[56],
-    },
-    description: {
-      marginBottom: spacing[4],
-    },
-    noResultFound: {
-      textAlign: 'center',
-      color: palettes.text[100],
-    },
-    emptyState: {
-      backgroundColor: palettes.primary[700],
     },
     searchBar: {
       paddingRight: spacing[2],
     },
-    messageInput: {
-      borderBottomWidth: 0,
+    searchBarContainer: {
+      margin: 0,
+      paddingVertical: 10,
+      borderRadius: 0,
+    },
+    searchIcon: { position: 'absolute', left: spacing[4] + spacing[1] },
+    cancelIcon: {
+      position: 'absolute',
+      right: spacing[3],
     },
   });
