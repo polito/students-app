@@ -40,6 +40,7 @@
     },
     "agent": "Operatore",
     "close": "Chiudi",
+    "search": "Cerca",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -168,7 +169,8 @@
   },
   "contactsScreen": {
     "title": "Contatti",
-    "emptyState": "Nessun contatto trovato"
+    "emptyState": "Nessun contatto trovato",
+    "search": "Cerca contatti"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",

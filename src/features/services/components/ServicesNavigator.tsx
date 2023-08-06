@@ -170,17 +170,19 @@ export const ServicesNavigator = () => {
         name="Contacts"
         component={ContactsScreen}
         options={{
-          headerTitle: t('contactsScreen.title'),
           headerLargeTitle: false,
-          headerTransparent: false,
+          headerTitle: t('contactsScreen.title'),
+          headerStyle: Platform.select({
+            ios: {
+              backgroundColor: 'white',
+            },
+          }),
+          headerLargeStyle: Platform.select({
+            ios: {
+              backgroundColor: 'white',
+            },
+          }),
           headerLeft: () => <HeaderLogo />,
-          headerSearchBarOptions: {
-            // inputType: 'text',
-            // autoCapitalize: 'none',
-            // hideWhenScrolling: true,
-            // hideNavigationBar: false,
-            // shouldShowHintSearchIcon: true,
-          },
         }}
       />
       <Stack.Screen
