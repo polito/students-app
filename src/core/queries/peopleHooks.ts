@@ -3,8 +3,11 @@ import { useMemo } from 'react';
 import { PeopleApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
+import { uniqBy } from 'lodash';
+
 import { ignoreNotFound, pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 
 export const PEOPLE_QUERY_KEY = 'people';
 export const PERSON_QUERY_KEY = 'person';
@@ -18,10 +21,18 @@ const usePeopleClient = (): PeopleApi => {
 
 export const useGetPeople = (search: string, enabled: boolean) => {
   const peopleClient = usePeopleClient();
+  const { updatePreference, peopleSearched } = usePreferencesContext();
 
   return useQuery(
     [PEOPLE_QUERY_KEY, search],
-    () => peopleClient.getPeople({ search }).then(pluckData),
+    () =>
+      peopleClient.getPeople({ search }).then(response => {
+        updatePreference(
+          'peopleSearched',
+          uniqBy([...peopleSearched, ...(response.data || [])], 'id'),
+        );
+        return pluckData(response);
+      }),
     {
       enabled: enabled,
     },

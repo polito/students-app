@@ -9,6 +9,7 @@ export const editablePreferenceKeys = [
   'language',
   'notifications',
   'favoriteServices',
+  'peopleSearched',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
@@ -18,15 +19,11 @@ export const objectPreferenceKeys = [
   'courses',
   'notifications',
   'favoriteServices',
+  'peopleSearched',
 ];
 
 export type CoursesPreferences = {
   [courseId: number]: CoursePreferencesProps;
-};
-
-export type PeoplePreferences = {
-  searchString: string;
-  results: PersonOverview[];
 };
 
 export type PreferencesContextProps = {
@@ -41,7 +38,7 @@ export type PreferencesContextProps = {
   };
   updatePreference: (key: PreferenceKey, value: unknown) => void;
   favoriteServices: string[];
-  peopleSearches: PeoplePreferences;
+  peopleSearched: PersonOverview[];
 };
 
 export interface CoursePreferencesProps {

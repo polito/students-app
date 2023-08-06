@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { SearchBarCommands } from 'react-native-screens';
 
 import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -14,37 +13,31 @@ import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useDebounceValue } from '../../../core/hooks/useDebounceValue';
 import { useGetPeople } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { PersonOverviewListItem } from '../components/PersonOverviewListItem';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { RecentSearch } from '../components/RecentSearch';
 
-type Props = NativeStackScreenProps<ServiceStackParamList, 'Contacts'>;
-
-export const ContactsScreen = ({ navigation }: Props) => {
+export const ContactsScreen = () => {
   const [search, setSearch] = useState('');
   const debounceSearch = useDebounceValue(search, 400);
+  const styles = useStylesheet(createStyles);
   const { spacing, palettes } = useTheme();
-  const searchBarRef = useRef<SearchBarCommands>(null);
-  const scrollViewRef = useRef<ScrollView>(null);
   const { t } = useTranslation();
   const enabled = debounceSearch.length >= 2;
-  const styles = useStylesheet(createStyles);
   const { isLoading, data: people } = useGetPeople(debounceSearch, enabled);
+  const { peopleSearched } = usePreferencesContext();
 
-  useEffect(() => {
-    searchBarRef && searchBarRef.current?.focus();
-  }, [searchBarRef, navigation]);
+  console.debug('peopleSearched', peopleSearched);
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       automaticallyAdjustKeyboardInsets
       keyboardShouldPersistTaps="handled"
-      ref={scrollViewRef}
     >
       <SafeAreaView>
         <Section>
@@ -83,7 +76,8 @@ export const ContactsScreen = ({ navigation }: Props) => {
           </OverviewList>
         </Section>
         <Section>
-          {enabled && (
+          {!search && <RecentSearch />}
+          {!!search && enabled && (
             <OverviewList loading={isLoading}>
               {people && people?.length > 0 ? (
                 people?.map(person => (

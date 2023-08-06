@@ -170,7 +170,11 @@
   "contactsScreen": {
     "title": "Contatti",
     "emptyState": "Nessun contatto trovato",
-    "search": "Cerca contatti"
+    "search": "Cerca contatti",
+    "recentSearches": "Ricerche recenti",
+    "recentSearch": "Ricerca recente",
+    "cancelRecentSearch": "Rimuovi",
+    "cancelRecentSearchText": "Rimuovi ricerca recente"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
