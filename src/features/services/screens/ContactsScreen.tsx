@@ -31,8 +31,6 @@ export const ContactsScreen = () => {
   const { isLoading, data: people } = useGetPeople(debounceSearch, enabled);
   const { peopleSearched } = usePreferencesContext();
 
-  console.debug('peopleSearched', peopleSearched);
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -76,7 +74,7 @@ export const ContactsScreen = () => {
           </OverviewList>
         </Section>
         <Section>
-          {!search && <RecentSearch />}
+          {!search && peopleSearched?.length > 0 && <RecentSearch />}
           {!!search && enabled && (
             <OverviewList loading={isLoading}>
               {people && people?.length > 0 ? (
