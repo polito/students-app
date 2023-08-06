@@ -174,12 +174,12 @@ export const ServicesNavigator = () => {
           headerTitle: t('contactsScreen.title'),
           headerStyle: Platform.select({
             ios: {
-              backgroundColor: 'white',
+              backgroundColor: colors.surface,
             },
           }),
           headerLargeStyle: Platform.select({
             ios: {
-              backgroundColor: 'white',
+              backgroundColor: colors.surface,
             },
           }),
           headerLeft: () => <HeaderLogo />,
