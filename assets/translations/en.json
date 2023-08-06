@@ -167,7 +167,15 @@
     "visualization": "Visualization"
   },
   "contactsScreen": {
-    "title": "Contacts"
+    "title": "Contacts",
+    "emptyState": "No contacts found",
+    "search": "Search contacts",
+    "recentSearches": "Recent searches",
+    "recentSearch": "Recent search",
+    "cancelRecentSearch": "Remove",
+    "cancelRecentSearchText": "Remove recent search",
+    "clearSearch": "Clear search",
+    "clearSearches": "Clear searches"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",

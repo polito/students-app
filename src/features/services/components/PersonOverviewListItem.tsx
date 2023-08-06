@@ -7,21 +7,28 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PersonOverview } from '@polito/api-client/models';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { HighlightedText } from './HighlightedText';
 
 interface Props {
   person: PersonOverview;
   searchString?: string;
   trailingItem?: JSX.Element;
+  index: number;
+  totalData: number;
 }
 
 export const PersonOverviewListItem = ({
   person,
   trailingItem,
   searchString,
+  index,
+  totalData,
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { accessibilityListLabel } = useAccessibility();
+  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const subtitle = '';
   const firstName = person?.firstName ?? '';
   const lastName = person?.lastName ?? '';
@@ -37,6 +44,7 @@ export const PersonOverviewListItem = ({
         )
       }
       title={<HighlightedText text={title} highlight={searchString || ''} />}
+      accessibilityLabel={[accessibilityLabel, title, subtitle].join(', ')}
       linkTo={
         person?.id
           ? {

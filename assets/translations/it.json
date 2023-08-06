@@ -174,7 +174,9 @@
     "recentSearches": "Ricerche recenti",
     "recentSearch": "Ricerca recente",
     "cancelRecentSearch": "Rimuovi",
-    "cancelRecentSearchText": "Rimuovi ricerca recente"
+    "cancelRecentSearchText": "Rimuovi ricerca recente",
+    "clearSearch": "Cancella ricerca",
+    "clearSearches": "Cancella ricerche"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",

@@ -32,11 +32,7 @@ export const ContactsScreen = () => {
   const { peopleSearched } = usePreferencesContext();
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      automaticallyAdjustKeyboardInsets
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         <Section>
           <OverviewList
@@ -64,6 +60,8 @@ export const ContactsScreen = () => {
                   onPress={() => setSearch('')}
                   icon={faTimesCircle}
                   color={palettes.gray['500']}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('contactsScreen.clearSearch')}
                   style={{
                     position: 'absolute',
                     right: spacing[3],
@@ -78,11 +76,13 @@ export const ContactsScreen = () => {
           {!!search && enabled && (
             <OverviewList loading={isLoading}>
               {people && people?.length > 0 ? (
-                people?.map(person => (
+                people?.map((person, index) => (
                   <PersonOverviewListItem
                     key={person.id}
                     person={person}
                     searchString={debounceSearch}
+                    index={index}
+                    totalData={people?.length || 0}
                   />
                 ))
               ) : (

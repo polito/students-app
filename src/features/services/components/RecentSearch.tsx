@@ -71,28 +71,33 @@ export const RecentSearch = () => {
           marginHorizontal: spacing[4],
         }}
       >
-        <Text style={{ color: palettes.info[700] }} variant="heading">
+        <Text
+          style={{ padding: spacing[2], color: palettes.info[700] }}
+          variant="heading"
+        >
           {t('contactsScreen.recentSearches')}
         </Text>
         <IconButton
           onPress={clearRecentSearch}
-          style={{ padding: 0 }}
+          style={{ padding: spacing[2] }}
           icon={faTimes}
+          accessibilityRole="button"
+          accessibilityLabel={t('contactsScreen.clearSearches')}
           color={palettes.info[700]}
         />
       </Row>
       <OverviewList>
-        {peopleSearched.map(person =>
+        {peopleSearched.map((person, index) =>
           IS_ANDROID ? (
             <PersonOverviewListItem
+              totalData={peopleSearched.length}
+              index={index}
               key={person.id}
               person={person}
               trailingItem={
                 <Menu person={person}>
                   <IconButton
-                    style={{
-                      padding: spacing[3],
-                    }}
+                    style={{ padding: spacing[3] }}
                     icon={faEllipsisVertical}
                     color={colors.secondaryText}
                     size={fontSizes.xl}
@@ -103,7 +108,11 @@ export const RecentSearch = () => {
           ) : (
             <View key={person.id} accessible={true} accessibilityRole="button">
               <Menu person={person} shouldOpenOnLongPress={true}>
-                <PersonOverviewListItem person={person} />
+                <PersonOverviewListItem
+                  totalData={peopleSearched.length}
+                  index={index}
+                  person={person}
+                />
               </Menu>
             </View>
           ),
