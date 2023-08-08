@@ -99,7 +99,10 @@ const createStyles = ({ spacing }: Theme) =>
       paddingVertical: 10,
       borderRadius: 0,
     },
-    searchIcon: { position: 'absolute', left: spacing[4] + spacing[1] },
+    searchIcon: {
+      position: 'absolute',
+      left: spacing[5],
+    },
     cancelIcon: {
       position: 'absolute',
       right: spacing[3],

@@ -16,14 +16,16 @@ import { IS_ANDROID } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { PersonOverviewListItem } from './PersonOverviewListItem';
 
+type MenuProps = PropsWithChildren<{
+  person: PersonOverview;
+  shouldOpenOnLongPress?: boolean;
+}>;
+
 export const Menu = ({
   person,
   shouldOpenOnLongPress,
   children,
-}: PropsWithChildren<{
-  person: PersonOverview;
-  shouldOpenOnLongPress?: boolean;
-}>) => {
+}: MenuProps) => {
   const { t } = useTranslation();
   const { palettes } = useTheme();
   const { peopleSearched, updatePreference } = usePreferencesContext();
@@ -58,10 +60,6 @@ export const RecentSearch = () => {
   const { spacing, palettes, colors, fontSizes } = useTheme();
   const { t } = useTranslation();
 
-  const clearRecentSearch = () => {
-    updatePreference('peopleSearched', []);
-  };
-
   return (
     <Section>
       <Row
@@ -78,7 +76,7 @@ export const RecentSearch = () => {
           {t('contactsScreen.recentSearches')}
         </Text>
         <IconButton
-          onPress={clearRecentSearch}
+          onPress={() => updatePreference('peopleSearched', [])}
           style={{ padding: spacing[2] }}
           icon={faTimes}
           accessibilityRole="button"
