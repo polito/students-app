@@ -72,6 +72,13 @@ export const ServicesScreen = () => {
         linkTo: { screen: 'JobOffers' },
       },
       {
+        id: 'offering',
+        name: t('offeringScreen.title'),
+        icon: faBookBookmark,
+        disabled: false,
+        linkTo: { screen: 'Offering' },
+      },
+      {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,

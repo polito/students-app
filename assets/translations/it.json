@@ -181,6 +181,11 @@
     "clearSearch": "Cancella ricerca",
     "clearSearches": "Cancella ricerche"
   },
+  "offeringScreen": {
+    "title": "Offerta formativa",
+    "bachelor": "Laurea triennale",
+    "master": "Laurea magistrale"
+  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
