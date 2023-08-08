@@ -17,13 +17,13 @@ import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
-import { OfferingScreen } from '../screens/OfferingScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
 import { TicketListScreen } from '../screens/TicketListScreen';
 import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
+import { OfferingNavigator } from './OfferingNavigator';
 
 export type ServiceStackParamList = {
   Home: undefined;
@@ -192,11 +192,17 @@ export const ServicesNavigator = () => {
       />
       <Stack.Screen
         name="Offering"
-        component={OfferingScreen}
+        component={OfferingNavigator}
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('offeringScreen.title'),
           headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
         }}
       />
     </Stack.Navigator>

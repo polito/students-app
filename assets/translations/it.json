@@ -184,7 +184,14 @@
   "offeringScreen": {
     "title": "Offerta formativa",
     "bachelor": "Laurea triennale",
-    "master": "Laurea magistrale"
+    "master": "Laurea magistrale",
+    "emptyMessage": "Nessun corso disponibile"
+  },
+  "offeringBachelorScreen": {
+    "title": "Lauree triennali"
+  },
+  "offeringMasterScreen": {
+    "title": "Lauree magistrali"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
