@@ -15,6 +15,7 @@ import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
+import { OfferingScreen } from '../screens/OfferingScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
@@ -42,6 +43,7 @@ export type ServiceStackParamList = {
   News: undefined;
   NewsItem: { id: number };
   MessagesModal: undefined;
+  Offering: undefined;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -160,6 +162,15 @@ export const ServicesNavigator = () => {
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="Offering"
+        component={OfferingScreen}
+        options={{
+          headerLeft: () => <HeaderLogo />,
+          headerTitle: t('offeringScreen.title'),
+          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>

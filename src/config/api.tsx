@@ -9,6 +9,7 @@ import {
   JobOffersApi,
   LecturesApi,
   NewsApi,
+  OfferingApi,
   PeopleApi,
   PlacesApi,
   StudentApi,
@@ -57,6 +58,7 @@ export const createApiClients = (token?: string) => {
       tickets: new TicketsApi(configuration),
       jobOffers: new JobOffersApi(configuration),
       news: new NewsApi(configuration),
+      offering: new OfferingApi(configuration),
     };
   }
 

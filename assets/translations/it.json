@@ -169,6 +169,11 @@
   "contactsScreen": {
     "title": "Contatti"
   },
+  "offeringScreen": {
+    "title": "Offerta formativa",
+    "bachelor": "Laurea triennale",
+    "master": "Laurea magistrale"
+  },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
