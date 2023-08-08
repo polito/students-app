@@ -170,18 +170,14 @@ export const ServicesNavigator = () => {
         name="Contacts"
         component={ContactsScreen}
         options={{
-          headerLargeTitle: false,
           headerTitle: t('contactsScreen.title'),
-          headerStyle: Platform.select({
-            ios: {
-              backgroundColor: colors.surface,
-            },
-          }),
-          headerLargeStyle: Platform.select({
-            ios: {
-              backgroundColor: colors.surface,
-            },
-          }),
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+          headerTransparent: false,
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
           headerLeft: () => <HeaderLogo />,
         }}
       />

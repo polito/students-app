@@ -4,6 +4,7 @@ import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -25,42 +26,43 @@ export const ContactsScreen = () => {
   const [search, setSearch] = useState('');
   const debounceSearch = useDebounceValue(search, 400);
   const styles = useStylesheet(createStyles);
-  const { palettes } = useTheme();
+  const { palettes, spacing } = useTheme();
   const { t } = useTranslation();
   const enabled = debounceSearch.length >= 2;
   const { isLoading, data: people } = useGetPeople(debounceSearch, enabled);
   const { peopleSearched } = usePreferencesContext();
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ paddingBottom: spacing[4] }}
+    >
       <SafeAreaView>
-        <Section>
-          <OverviewList style={styles.searchBarContainer}>
-            <Row align="center" style={styles.searchBar}>
-              <Icon
-                icon={faSearch}
+        <HeaderAccessory style={styles.searchBar}>
+          <Row align="center" style={{ flex: 1 }}>
+            <Icon
+              icon={faSearch}
+              color={palettes.gray['500']}
+              style={styles.searchIcon}
+            />
+            <TranslucentTextField
+              value={search}
+              onChangeText={setSearch}
+              style={[GlobalStyles.grow, styles.textField]}
+              label={t('contactsScreen.search')}
+            />
+            {!!search && (
+              <IconButton
+                onPress={() => setSearch('')}
+                icon={faTimesCircle}
                 color={palettes.gray['500']}
-                style={styles.searchIcon}
+                accessibilityRole="button"
+                accessibilityLabel={t('contactsScreen.clearSearch')}
+                style={styles.cancelIcon}
               />
-              <TranslucentTextField
-                value={search}
-                onChangeText={setSearch}
-                style={[GlobalStyles.grow, styles.textField]}
-                label={t('contactsScreen.search')}
-              />
-              {!!search && (
-                <IconButton
-                  onPress={() => setSearch('')}
-                  icon={faTimesCircle}
-                  color={palettes.gray['500']}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('contactsScreen.clearSearch')}
-                  style={styles.cancelIcon}
-                />
-              )}
-            </Row>
-          </OverviewList>
-        </Section>
+            )}
+          </Row>
+        </HeaderAccessory>
         <Section>
           {!search && peopleSearched?.length > 0 && <RecentSearch />}
           {!!search && enabled && (
@@ -93,6 +95,7 @@ const createStyles = ({ spacing }: Theme) =>
     },
     searchBar: {
       paddingRight: spacing[2],
+      paddingBottom: spacing[2],
     },
     searchBarContainer: {
       margin: 0,
@@ -105,6 +108,6 @@ const createStyles = ({ spacing }: Theme) =>
     },
     cancelIcon: {
       position: 'absolute',
-      right: spacing[3],
+      right: spacing[2],
     },
   });

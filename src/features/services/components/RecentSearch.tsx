@@ -66,18 +66,19 @@ export const RecentSearch = () => {
         align="center"
         justify="space-between"
         style={{
+          marginTop: spacing[2],
           marginHorizontal: spacing[4],
         }}
       >
         <Text
-          style={{ padding: spacing[2], color: palettes.info[700] }}
+          style={{ padding: spacing[1], color: palettes.info[700] }}
           variant="heading"
         >
           {t('contactsScreen.recentSearches')}
         </Text>
         <IconButton
           onPress={() => updatePreference('peopleSearched', [])}
-          style={{ padding: spacing[2] }}
+          style={{ padding: spacing[1] }}
           icon={faTimes}
           accessibilityRole="button"
           accessibilityLabel={t('contactsScreen.clearSearches')}
