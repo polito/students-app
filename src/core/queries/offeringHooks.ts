@@ -1,6 +1,8 @@
 import { OfferingApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
+import { compact } from 'lodash';
+
 import { pluckData, prefixKey } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
@@ -27,11 +29,11 @@ export const useGetOfferingDegree = ({
   year,
 }: {
   degreeId: string;
-  year: string;
+  year?: string;
 }) => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(prefixKey([DEGREES_QUERY_KEY, degreeId, year]), () =>
+  return useQuery(prefixKey(compact([DEGREES_QUERY_KEY, degreeId, year])), () =>
     offeringClient.getOfferingDegree({ degreeId, year }),
   );
 };
