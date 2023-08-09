@@ -42,7 +42,10 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
                   key={index}
                   title={degree?.name || degree.id}
                   linkTo={{
-                    screen: 'OfferingDetailScreen',
+                    screen: 'Degree',
+                    params: {
+                      id: degree.id,
+                    },
                   }}
                 />
               ))}

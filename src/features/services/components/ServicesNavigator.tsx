@@ -23,6 +23,7 @@ import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
 import { TicketListScreen } from '../screens/TicketListScreen';
 import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
+import { DegreeNavigator } from './DegreeNavigator';
 import { OfferingNavigator } from './OfferingNavigator';
 
 export type ServiceStackParamList = {
@@ -48,6 +49,7 @@ export type ServiceStackParamList = {
   Contacts: undefined;
   Person: { id: number };
   Offering: undefined;
+  Degree: { id: string };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -196,6 +198,20 @@ export const ServicesNavigator = () => {
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('offeringScreen.title'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Degree"
+        component={DegreeNavigator}
+        options={{
+          headerTitle: t('degreeScreen.title'),
           headerLargeTitle: false,
           headerTransparent: false,
           headerShadowVisible: false,
