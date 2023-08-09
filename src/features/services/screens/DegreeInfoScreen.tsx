@@ -17,13 +17,13 @@ import { getHtmlTextContent } from '../../../utils/html';
 import { DegreeContext } from '../context/DegreeContext';
 
 export const DegreeInfoScreen = () => {
-  const degreeId = useContext(DegreeContext);
+  const { degreeId, year } = useContext(DegreeContext);
   const { spacing } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const degreeQuery = useGetOfferingDegree({
-    degreeId: degreeId,
-    year: '2022',
+    degreeId: degreeId as string,
+    year,
   });
   const degree = degreeQuery?.data?.data;
   const isLoading = degreeQuery.isLoading;

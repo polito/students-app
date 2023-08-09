@@ -5,10 +5,10 @@ import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { DegreeContext } from '../context/DegreeContext';
 
 export const DegreeTracksScreen = () => {
-  const degreeId = useContext(DegreeContext);
+  const { degreeId, year } = useContext(DegreeContext);
   const { data } = useGetOfferingDegree({
-    degreeId: degreeId,
-    year: '2022',
+    degreeId: degreeId as string,
+    year: year,
   });
 
   console.debug('DegreeInfoScreen', data);
