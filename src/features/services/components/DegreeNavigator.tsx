@@ -86,14 +86,14 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
           options={{ title: t('degreeScreen.info') }}
         />
         <TopTabs.Screen
-          name="DegreeJobOpportunitiesScreen"
-          component={DegreeJobOpportunitiesScreen}
-          options={{ title: t('degreeScreen.jobOpportunities') }}
-        />
-        <TopTabs.Screen
           name="DegreeTracksScreen"
           component={DegreeTracksScreen}
           options={{ title: t('degreeScreen.tracks') }}
+        />
+        <TopTabs.Screen
+          name="DegreeJobOpportunitiesScreen"
+          component={DegreeJobOpportunitiesScreen}
+          options={{ title: t('degreeScreen.jobOpportunities') }}
         />
       </TopTabs.Navigator>
     </DegreeContext.Provider>
