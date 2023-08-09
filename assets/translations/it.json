@@ -41,6 +41,11 @@
     "agent": "Operatore",
     "close": "Chiudi",
     "all": "Tutti",
+    "department": "Dipartimento",
+    "location": "Sede",
+    "duration": "Durata",
+    "objectives": "Obiettivi formativi",
+    "notes": "Note",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
     "booking": "Prenotazione",
@@ -174,6 +179,13 @@
     "bachelor": "Laurea triennale",
     "master": "Laurea magistrale",
     "emptyMessage": "Nessun corso disponibile"
+  },
+  "degreeScreen": {
+    "title": "Dettaglio corso",
+    "info": "Info",
+    "tracks": "Piano studi",
+    "jobOpportunities": "Sbocchi",
+    "designAndCommunication": "Design e comunicazione"
   },
   "offeringBachelorScreen": {
     "title": "Lauree triennali"
