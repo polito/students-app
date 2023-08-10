@@ -1,9 +1,10 @@
 import { useContext } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
@@ -32,12 +33,16 @@ export const DegreeJobOpportunitiesScreen = () => {
         {isLoading ? (
           <ActivityIndicator style={styles.loader} />
         ) : (
-          <Card style={styles.card}>
-            <Text variant="subHeading" style={styles.subHeading}>
-              {degree?.objectives?.title}
-            </Text>
-            <Text>{getHtmlTextContent(degree?.objectives?.content ?? '')}</Text>
-          </Card>
+          <Section>
+            <Card style={styles.card}>
+              <Text variant="subHeading" style={styles.subHeading}>
+                {degree?.objectives?.title}
+              </Text>
+              <Text>
+                {getHtmlTextContent(degree?.objectives?.content ?? '')}
+              </Text>
+            </Card>
+          </Section>
         )}
       </SafeAreaView>
     </ScrollView>
@@ -47,6 +52,7 @@ export const DegreeJobOpportunitiesScreen = () => {
 const createStyles = ({ spacing, palettes }: Theme) =>
   StyleSheet.create({
     card: {
+      marginTop: Platform.select({ android: spacing[4] }),
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
     },

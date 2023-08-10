@@ -7,13 +7,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { DegreeNavigator } from '../../services/components/DegreeNavigator';
+import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
+import { DegreeCourseScreen } from '../../services/screens/DegreeCourseScreen';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { UnreadMessagesModal } from '../screens/UnreadMessagesModal';
 
-export type UserStackParamList = {
+export type UserStackParamList = OfferingStackParamList & {
   Profile: undefined;
   Settings: undefined;
   Messages: undefined;
@@ -80,6 +83,29 @@ export const UserNavigator = () => {
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="Degree"
+        component={DegreeNavigator}
+        options={{
+          headerTitle: t('degreeScreen.title'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="DegreeCourse"
+        component={DegreeCourseScreen}
+        options={{
+          headerTitle: t('degreeCourseScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
     </Stack.Navigator>

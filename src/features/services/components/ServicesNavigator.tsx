@@ -27,7 +27,13 @@ import { TicketsScreen } from '../screens/TicketsScreen';
 import { DegreeNavigator } from './DegreeNavigator';
 import { OfferingNavigator } from './OfferingNavigator';
 
-export type ServiceStackParamList = {
+export type OfferingStackParamList = {
+  Offering: undefined;
+  Degree: { id: string; year?: string };
+  DegreeCourse: { courseShortcode: string; year?: string };
+};
+
+export type ServiceStackParamList = OfferingStackParamList & {
   Home: undefined;
   Tickets: undefined;
   Ticket: { id: number };

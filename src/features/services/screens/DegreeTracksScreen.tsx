@@ -99,6 +99,7 @@ export const DegreeTracksScreen = () => {
     <OverviewList loading={isLoading}>
       <SectionList
         ref={sectionListRef}
+        stickySectionHeadersEnabled
         sections={sections}
         keyExtractor={(item, index) => `${item.teachingYear}-${index}`}
         renderSectionHeader={({ section: { title, isExpanded } }) => (
