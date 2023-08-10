@@ -43,11 +43,14 @@ export const useGetOfferingCourse = ({
   year,
 }: {
   courseShortcode: string;
-  year: string;
+  year?: string;
 }) => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(prefixKey([COURSES_QUERY_KEY, courseShortcode, year]), () =>
-    offeringClient.getOfferingCourse({ courseShortcode, year }),
+  return useQuery(
+    prefixKey(
+      compact([DEGREES_QUERY_KEY, COURSES_QUERY_KEY, courseShortcode, year]),
+    ),
+    () => offeringClient.getOfferingCourse({ courseShortcode, year }),
   );
 };
