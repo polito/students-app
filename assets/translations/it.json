@@ -11,6 +11,9 @@
   "bookingsScreen": {
     "title": "Prenotazioni"
   },
+  "bookingScreen": {
+    "cancelFeedback": "Prenoazione annullata"
+  },
   "colors": {
     "amber": "Ambra",
     "blue": "Blu",
@@ -250,6 +253,7 @@
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
+    "cleanCacheFeedback": "I file sono stati rimossi correttamente",
     "cleanCourseFiles": "Rimuovi file del corso",
     "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
     "filesSubtitle": "Nuovi materiali disponibili",
@@ -349,7 +353,6 @@
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
-    "ctaSuccessMessage": "Accedi",
     "forgotYourPassword": "Hai dimenticato la password?",
     "hidePassword": "Nascondi password",
     "passwordLabel": "Password",

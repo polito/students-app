@@ -5,6 +5,7 @@ import { ExamStatusEnum } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   useBookExam,
@@ -19,8 +20,9 @@ interface Props {
 
 export const ExamCTA = ({ exam }: Props) => {
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
 
-  const { navigate } =
+  const { navigate, reset } =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList, any>>();
 
   const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(exam.id);
@@ -44,11 +46,33 @@ export const ExamCTA = ({ exam }: Props) => {
       if (exam.question) {
         return navigate('ExamQuestion', { id: exam.id });
       } else {
-        return bookExam({});
+        return bookExam({})
+          .catch(() => {
+            // TODO handle failure
+          })
+          .then(() => {
+            // reset navigation to TeachingScreen
+            reset({
+              index: 0,
+              routes: [{ name: 'Home' }],
+            });
+          })
+          .then(() => setFeedback({ text: t('examScreen.ctaBookSuccess') }));
       }
     }
     if (await confirm()) {
-      return cancelBooking();
+      return cancelBooking()
+        .catch(() => {
+          // TODO handle failure
+        })
+        .then(() => {
+          // reset navigation to TeachingScreen
+          reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        })
+        .then(() => setFeedback({ text: t('examScreen.ctaCancelSuccess') }));
     }
     return Promise.reject();
   };
@@ -69,11 +93,6 @@ export const ExamCTA = ({ exam }: Props) => {
       }
       action={action}
       loading={mutationsLoading}
-      successMessage={
-        examAvailable
-          ? t('examScreen.ctaBookSuccess')
-          : t('examScreen.ctaCancelSuccess')
-      }
     />
   );
 };

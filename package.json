@@ -3,7 +3,7 @@
   "version": "1.3.2",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --active-arch-only",
+    "android": "react-native run-android --active-arch-only --appIdSuffix=dev",
     "ios": "react-native run-ios --scheme='students dev'",
     "start": "react-native start --reset-cache",
     "test": "jest",

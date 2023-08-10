@@ -21,6 +21,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -34,6 +35,8 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
+
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
   const bookingMutation = useDeleteBooking(id);
@@ -51,8 +54,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const onPressLocation = () => {};
 
   const onPressDelete = () => {
-    // TODO ADD FEEDBACK
-    bookingMutation.mutateAsync().then(() => navigation.goBack());
+    bookingMutation
+      .mutateAsync()
+      .then(() => navigation.goBack())
+      .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
   };
 
   return (
@@ -111,8 +116,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           action={onPressDelete}
           destructive={true}
           loading={bookingMutation.isLoading}
-          successMessage={t('Exam booked')}
-          // onSuccess={() => navigation.goBack()}
         />
       )}
     </>
