@@ -11,6 +11,9 @@
   "bookingsScreen": {
     "title": "Bookings"
   },
+  "bookingScreen": {
+    "cancelFeedback": "Booking canceled"
+  },
   "colors": {
     "amber": "Amber",
     "blue": "Blue",
@@ -249,6 +252,7 @@
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
+    "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "filesSubtitle": "New material available",

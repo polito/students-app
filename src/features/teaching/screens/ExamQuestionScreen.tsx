@@ -11,6 +11,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useBookExam, useGetExams } from '../../../core/queries/examHooks';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
@@ -19,6 +20,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'ExamQuestion'>;
 export const ExamQuestionScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
 
   const { id } = route.params;
   const examsQuery = useGetExams();
@@ -52,15 +54,18 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
     bookExam({
       questionId: exam!.question!.id,
       questionOption: state.value + 1,
-    }).then(() => {
-      // reset navigation to TeachingScreen
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-      // TODO flash success message
-    });
-    // TODO handle failure
+    })
+      .catch(() => {
+        // TODO handle failure
+      })
+      .then(() => {
+        // reset navigation to TeachingScreen
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      })
+      .then(() => setFeedback({ text: t('examScreen.ctaBookSuccess') }));
   };
 
   return (

@@ -16,7 +16,6 @@ import {
 } from '@polito/api-client';
 
 import { ApiContextClientsProps } from '../core/contexts/ApiContext';
-import { deviceLanguage } from '../utils/device';
 
 export const createApiConfiguration = (token?: string) => {
   const basePath = BASE_PATH;
@@ -24,10 +23,6 @@ export const createApiConfiguration = (token?: string) => {
 
   const configurationParameters: ConfigurationParameters = {
     basePath,
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Accept-Language': deviceLanguage, // TODO refactor
-    },
   };
 
   if (token) {

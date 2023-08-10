@@ -23,6 +23,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGetCourse } from '../../../core/queries/courseHooks';
@@ -35,6 +36,8 @@ import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
+
   const { fontSizes } = useTheme();
   const courseFilesCache = useCourseFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(0);
@@ -68,9 +71,12 @@ const CleanCourseFilesListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (courseFilesCache && (await confirm())) {
-          await unlink(courseFilesCache);
-          refreshSize();
-          // TODO feedback
+          unlink(courseFilesCache).then(() => {
+            setFeedback({
+              text: t('coursePreferencesScreen.cleanCacheFeedback'),
+            });
+            refreshSize();
+          });
         }
       }}
     />
