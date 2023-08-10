@@ -11,6 +11,7 @@ import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
+import { DegreeCourseScreen } from '../screens/DegreeCourseScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
@@ -46,6 +47,7 @@ export type ServiceStackParamList = {
   MessagesModal: undefined;
   Offering: undefined;
   Degree: { id: string };
+  DegreeCourse: { courseShortcode: string };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -193,6 +195,15 @@ export const ServicesNavigator = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
+        }}
+      />
+      <Stack.Screen
+        name="DegreeCourse"
+        component={DegreeCourseScreen}
+        options={{
+          headerTitle: t('degreeCourseScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
     </Stack.Navigator>

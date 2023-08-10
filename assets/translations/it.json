@@ -49,6 +49,7 @@
     "notes": "Note",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
+    "year": "anno",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "cache": "Cache",
@@ -263,6 +264,9 @@
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
+  },
+  "degreeCourseScreen": {
+    "title": "Dettaglio esame"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
