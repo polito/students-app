@@ -18,9 +18,9 @@ import { DegreeContext } from '../context/DegreeContext';
 import { DegreeInfoScreen } from '../screens/DegreeInfoScreen';
 import { DegreeJobOpportunitiesScreen } from '../screens/DegreeJobOpportunitiesScreen';
 import { DegreeTracksScreen } from '../screens/DegreeTracksScreen';
-import { ServiceStackParamList } from './ServicesNavigator';
+import { OfferingStackParamList } from './ServicesNavigator';
 
-type Props = NativeStackScreenProps<ServiceStackParamList, 'Degree'>;
+type Props = NativeStackScreenProps<OfferingStackParamList, 'Degree'>;
 
 export interface DegreeTabsParamList extends ParamListBase {
   DegreeInfoScreen: undefined;
@@ -31,12 +31,9 @@ const TopTabs = createMaterialTopTabNavigator<DegreeTabsParamList>();
 export const DegreeNavigator = ({ route, navigation }: Props) => {
   const { palettes } = useTheme();
   const { t } = useTranslation();
-  const { id } = route.params;
-  const [year, setYear] = useState<string | undefined>(undefined);
-  const degreeQuery = useGetOfferingDegree({
-    degreeId: id,
-    year,
-  });
+  const { id: degreeId, year: initialYear } = route.params;
+  const [year, setYear] = useState<string | undefined>(initialYear);
+  const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
   useEffect(() => {
     const editions = degreeQuery.data?.data?.editions;
@@ -75,10 +72,10 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
         ),
       });
     }
-  }, [degreeQuery, navigation, palettes.primary]);
+  }, [navigation, degreeQuery, palettes.primary]);
 
   return (
-    <DegreeContext.Provider value={{ degreeId: id, year }}>
+    <DegreeContext.Provider value={{ degreeId, year }}>
       <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
         <TopTabs.Screen
           name="DegreeInfoScreen"

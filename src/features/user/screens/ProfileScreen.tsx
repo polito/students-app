@@ -149,9 +149,17 @@ export const ProfileScreen = ({ navigation }: Props) => {
             trailingItem={<Badge text={t('common.comingSoon')} />}
           />
           <OverviewList>
+            {/* //TODO: handle degreeId */}
             <ListItem
               title={student?.degreeName ?? ''}
               subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+              linkTo={{
+                screen: 'Degree',
+                params: {
+                  degreeId: student?.degreeCode,
+                  year: student?.firstEnrollmentYear,
+                },
+              }}
             />
           </OverviewList>
           <OverviewList indented>

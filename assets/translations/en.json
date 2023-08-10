@@ -41,6 +41,13 @@
     "agent": "Agent",
     "close": "Close",
     "all": "All",
+    "department": "Department",
+    "location": "Location",
+    "duration": "Duration",
+    "objectives": "Objectives",
+    "notes": "Notes",
+    "cfu": "CFU",
+    "year": "year",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
@@ -168,6 +175,27 @@
   },
   "contactsScreen": {
     "title": "Contacts"
+  },
+  "offeringScreen": {
+    "title": "Offering",
+    "bachelor": "Bachelor degree",
+    "master": "Master degree",
+    "emptyMessage": "No course available"
+  },
+  "degreeScreen": {
+    "title": "Course detail",
+    "info": "Info",
+    "tracks": "Tracks",
+    "jobOpportunities": "Job opportunities"
+  },
+  "offeringBachelorScreen": {
+    "title": "Bachelor degree"
+  },
+  "offeringMasterScreen": {
+    "title": "Master degree"
+  },
+  "degreeCourseScreen": {
+    "title": "Course"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",

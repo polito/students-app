@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -32,7 +32,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
       ) : hasOfferings ? (
         offerings?.map(item => (
           <Section key={item.code} style={styles.section}>
-            <Text variant="subHeading" style={styles.subHeading}>
+            <Text variant="heading" style={styles.subHeading}>
               {item?.name || item.code}
             </Text>
             <OverviewList>
@@ -64,7 +64,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
 const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     subHeading: {
-      marginHorizontal: Platform.select({ ios: spacing[4] }),
+      marginHorizontal: spacing[4],
       color: palettes.info['700'],
     },
     offeringListItem: {

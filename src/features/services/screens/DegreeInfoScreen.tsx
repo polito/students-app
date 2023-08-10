@@ -42,55 +42,59 @@ export const DegreeInfoScreen = () => {
             }}
           />
         ) : (
-          <Section>
-            <ScreenTitle
-              style={styles.heading}
-              title={degree?.name || degree?.id}
-            />
-            <Card style={styles.card}>
-              {degree?.location && (
-                <Text style={styles.text}>
-                  <Text style={styles.label}>{t('common.location')}: </Text>
-                  <Text style={styles.value}>{degree?.location}</Text>
-                </Text>
-              )}
-              {degree?.department?.name && (
-                <Text style={styles.text}>
-                  <Text style={styles.label}>{t('common.department')}: </Text>
-                  <Text style={styles.value}>{degree?.department?.name}</Text>
-                </Text>
-              )}
-              {degree?.duration && (
-                <Text style={styles.text}>
-                  <Text style={styles.label}>{t('common.duration')}: </Text>
-                  <Text style={styles.value}>{degree?.duration}</Text>
-                </Text>
-              )}
-            </Card>
-            <Card style={styles.card}>
-              <Text
-                variant="subHeading"
-                style={[styles.subHeading, { marginTop: 0 }]}
-              >
-                {t('common.notes')}
-              </Text>
-              {degree?.notes?.map((note, index) => (
-                <Text key={index} style={styles.text}>
-                  {getHtmlTextContent(note)}
-                </Text>
-              ))}
-              {degree?.objectives?.content && (
-                <>
-                  <Text variant="subHeading" style={styles.subHeading}>
-                    {t('common.objectives')}
-                  </Text>
+          <>
+            <Section>
+              <ScreenTitle
+                style={styles.heading}
+                title={degree?.name || degree?.id}
+              />
+              <Card style={styles.card}>
+                {degree?.location && (
                   <Text style={styles.text}>
-                    {getHtmlTextContent(degree?.objectives?.content)}
+                    <Text style={styles.label}>{t('common.location')}: </Text>
+                    <Text style={styles.value}>{degree?.location}</Text>
                   </Text>
-                </>
-              )}
-            </Card>
-          </Section>
+                )}
+                {degree?.department?.name && (
+                  <Text style={styles.text}>
+                    <Text style={styles.label}>{t('common.department')}: </Text>
+                    <Text style={styles.value}>{degree?.department?.name}</Text>
+                  </Text>
+                )}
+                {degree?.duration && (
+                  <Text style={styles.text}>
+                    <Text style={styles.label}>{t('common.duration')}: </Text>
+                    <Text style={styles.value}>{degree?.duration}</Text>
+                  </Text>
+                )}
+              </Card>
+            </Section>
+            <Section>
+              <Card style={styles.card}>
+                <Text
+                  variant="subHeading"
+                  style={[styles.subHeading, { marginTop: 0 }]}
+                >
+                  {t('common.notes')}
+                </Text>
+                {degree?.notes?.map((note, index) => (
+                  <Text key={index} style={styles.text}>
+                    {getHtmlTextContent(note)}
+                  </Text>
+                ))}
+                {degree?.objectives?.content && (
+                  <>
+                    <Text variant="subHeading" style={styles.subHeading}>
+                      {t('common.objectives')}
+                    </Text>
+                    <Text style={styles.text}>
+                      {getHtmlTextContent(degree?.objectives?.content)}
+                    </Text>
+                  </>
+                )}
+              </Card>
+            </Section>
+          </>
         )}
       </SafeAreaView>
     </ScrollView>

@@ -33,7 +33,12 @@ export const DegreeTrackSection = ({
       >
         {teachingYear}° {t('common.year')}
       </Text>
-      <OverviewList>
+      <OverviewList
+        style={{
+          marginHorizontal: spacing[4],
+        }}
+        rounded={true}
+      >
         {courses.map((course, index) => {
           return (
             <ListItem
