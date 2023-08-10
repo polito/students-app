@@ -33,6 +33,7 @@ import i18next from 'i18next';
 import { Settings } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
@@ -42,6 +43,8 @@ import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCac
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
+
   const { fontSizes } = useTheme();
   const filesCache = useCoursesFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>();
@@ -74,8 +77,12 @@ const CleanCacheListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
-          await unlink(filesCache);
-          refreshSize();
+          unlink(filesCache).then(() => {
+            setFeedback({
+              text: t('coursePreferencesScreen.cleanCacheFeedback'),
+            });
+            refreshSize();
+          });
         }
       }}
     />
