@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
+import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
@@ -30,9 +30,7 @@ export const DegreeJobOpportunitiesScreen = () => {
       contentContainerStyle={styles.list}
     >
       <SafeAreaView>
-        {isLoading ? (
-          <ActivityIndicator style={styles.loader} />
-        ) : (
+        <LoadingContainer loading={isLoading}>
           <Section>
             <Card style={styles.card}>
               <Text variant="subHeading" style={styles.subHeading}>
@@ -43,7 +41,7 @@ export const DegreeJobOpportunitiesScreen = () => {
               </Text>
             </Card>
           </Section>
-        )}
+        </LoadingContainer>
       </SafeAreaView>
     </ScrollView>
   );
@@ -56,12 +54,11 @@ const createStyles = ({ spacing, palettes }: Theme) =>
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
     },
-    list: { paddingBottom: spacing[6] * 2 },
+    list: {
+      paddingBottom: spacing[8],
+    },
     subHeading: {
       color: palettes.info['700'],
       marginBottom: spacing[2],
-    },
-    loader: {
-      marginVertical: spacing[8],
     },
   });

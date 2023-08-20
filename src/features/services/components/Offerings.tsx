@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
@@ -27,36 +27,37 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
       refreshControl={<RefreshControl queries={[offeringQuery]} manual />}
       contentContainerStyle={styles.list}
     >
-      {isLoading ? (
-        <ActivityIndicator style={styles.loadingIndicator} />
-      ) : hasOfferings ? (
-        offerings?.map(item => (
-          <Section key={item.code} style={styles.section}>
-            <Text variant="heading" style={styles.subHeading}>
-              {item?.name || item.code}
-            </Text>
-            <OverviewList>
-              {item.degrees.map((degree, index) => (
-                <ListItem
-                  containerStyle={styles.offeringListItem}
-                  key={index}
-                  title={degree?.name || degree.id}
-                  linkTo={{
-                    screen: 'Degree',
-                    params: {
-                      id: degree.id,
-                    },
-                  }}
-                />
-              ))}
-            </OverviewList>
-          </Section>
-        ))
-      ) : (
-        <OverviewList>
-          <EmptyState message={t('offeringScreen.emptyMessage')} />
-        </OverviewList>
-      )}
+      <LoadingContainer loading={isLoading}>
+        {hasOfferings ? (
+          offerings?.map(item => (
+            <Section key={item.code} style={styles.section}>
+              <Text variant="subHeading" style={styles.subHeading}>
+                {item?.name || item.code}
+              </Text>
+              <OverviewList>
+                {item.degrees.map((degree, index) => (
+                  <ListItem
+                    containerStyle={styles.offeringListItem}
+                    key={index}
+                    title={degree?.name || degree.id}
+                    accessibilityRole="button"
+                    linkTo={{
+                      screen: 'Degree',
+                      params: {
+                        id: degree.id,
+                      },
+                    }}
+                  />
+                ))}
+              </OverviewList>
+            </Section>
+          ))
+        ) : (
+          <OverviewList>
+            <EmptyState message={t('offeringScreen.emptyMessage')} />
+          </OverviewList>
+        )}
+      </LoadingContainer>
     </ScrollView>
   );
 };

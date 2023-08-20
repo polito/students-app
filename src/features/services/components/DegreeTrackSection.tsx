@@ -64,6 +64,7 @@ export const DegreeTrackSection = ({
                   courseShortcode: course.shortcode,
                 },
               }}
+              accessibilityRole="button"
               trailingItem={
                 <Row>
                   <Text
