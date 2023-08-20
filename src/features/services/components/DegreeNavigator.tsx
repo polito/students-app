@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -29,7 +30,7 @@ export interface DegreeTabsParamList extends ParamListBase {
 }
 const TopTabs = createMaterialTopTabNavigator<DegreeTabsParamList>();
 export const DegreeNavigator = ({ route, navigation }: Props) => {
-  const { palettes } = useTheme();
+  const { palettes, spacing } = useTheme();
   const { t } = useTranslation();
   const { id: degreeId, year: initialYear } = route.params;
   const [year, setYear] = useState<string | undefined>(initialYear);
@@ -49,30 +50,44 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
         })) || [];
       navigation.setOptions({
         headerRight: () => (
-          <MenuView
-            actions={actions}
-            onPressAction={async ({ nativeEvent: { event } }) => {
-              setYear(() => event);
-              await degreeQuery.refetch();
-            }}
+          <View
+            accessibilityLabel={[
+              t('profileScreen.enrollmentYear', {
+                enrollmentYear: `${degreeYear}/${getNextShortYear(degreeYear)}`,
+              }),
+            ].join(' ')}
+            importantForAccessibility="yes"
+            accessibilityRole="button"
+            accessible={true}
           >
-            <Row align="center">
-              <Text variant="prose">
-                {degreeYear}/{getNextShortYear(degreeYear)}
-              </Text>
-              {!!actions && (
-                <Icon
-                  icon={faAngleDown}
-                  color={palettes.primary[600]}
-                  size={12}
-                />
-              )}
-            </Row>
-          </MenuView>
+            <MenuView
+              style={{
+                padding: spacing[1],
+              }}
+              actions={actions}
+              onPressAction={async ({ nativeEvent: { event } }) => {
+                setYear(() => event);
+                await degreeQuery.refetch();
+              }}
+            >
+              <Row align="center">
+                <Text variant="prose">
+                  {degreeYear}/{getNextShortYear(degreeYear)}
+                </Text>
+                {!!actions && (
+                  <Icon
+                    icon={faAngleDown}
+                    color={palettes.primary[600]}
+                    size={12}
+                  />
+                )}
+              </Row>
+            </MenuView>
+          </View>
         ),
       });
     }
-  }, [navigation, degreeQuery, palettes.primary]);
+  }, [navigation, spacing, degreeQuery, t, palettes.primary]);
 
   return (
     <DegreeContext.Provider value={{ degreeId, year }}>
