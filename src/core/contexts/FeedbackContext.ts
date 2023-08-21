@@ -5,6 +5,7 @@ import { Feedback } from '@lib/ui/types/Feedback';
 type FeedbackContextProps = {
   feedback: Feedback | null;
   setFeedback: (f: Feedback) => void;
+  isFeedbackVisible: boolean;
 };
 
 export const FeedbackContext = createContext<FeedbackContextProps | undefined>(

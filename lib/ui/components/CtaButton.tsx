@@ -16,6 +16,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
 interface Props extends TouchableHighlightProps {
@@ -51,19 +52,18 @@ export const CtaButton = ({
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
+  const { isFeedbackVisible } = useFeedbackContext();
 
   return (
     <View
       style={[
         styles.container,
-        absolute && [
-          {
-            position: 'absolute',
-            left: Platform.select({ ios: left }),
-            right,
-            bottom: bottomBarHeight,
-          },
-        ],
+        absolute && {
+          position: 'absolute',
+          left: Platform.select({ ios: left }),
+          right,
+          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[16] : 0),
+        },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
       ]}
