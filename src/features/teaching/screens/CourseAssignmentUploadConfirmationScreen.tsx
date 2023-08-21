@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -20,6 +20,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -35,54 +36,94 @@ export const CourseAssignmentUploadConfirmationScreen = ({
   navigation,
   route,
 }: Props) => {
-  const { courseId, fileUri } = route.params;
+  const { courseId, file } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
-  const uploadMutation = useUploadAssignment(courseId);
+  const { mutateAsync: requestUpload } = useUploadAssignment(courseId);
   const styles = useStylesheet(createStyles);
   const tabBarHeight = useBottomTabBarHeight();
   const { width } = useWindowDimensions();
+  const { setFeedback } = useFeedbackContext();
+
   const [description, setDescription] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
-  const uploadFile = () => {
-    if (!description) return;
+  const uploadFile = useCallback(() => {
+    if (!description) {
+      setFeedback({
+        text: t(
+          'courseAssignmentUploadConfirmationScreen.emptyDescriptionError',
+        ),
+        isError: true,
+      });
+      return;
+    }
 
-    fetch(fileUri)
-      .then(response => response.blob())
-      .then(file => {
-        uploadMutation.mutate({
-          courseId,
-          description,
-          file,
+    setIsUploading(true);
+
+    requestUpload({
+      courseId,
+      description,
+      file: file as any as Blob,
+    })
+      .then(() => {
+        setFeedback({
+          text: t('courseAssignmentUploadConfirmationScreen.successFeedback'),
         });
+
+        let isAssignmentsScreenReached = false;
+
+        // Count how many screens to pop
+        let popCount = 0;
+
+        navigation.getState().routes.forEach(r => {
+          if (isAssignmentsScreenReached) {
+            popCount++;
+          }
+          if (r.name === 'Course') {
+            isAssignmentsScreenReached = true;
+          }
+          return;
+        });
+
+        // Reset navigation stack to the assignments screen
+        navigation.pop(popCount);
       })
-      .catch(e => console.error(e));
-  };
+      .catch(e => {
+        setFeedback({ text: e.message, isError: true });
+      })
+      .finally(() => setIsUploading(false));
+  }, [courseId, description, file, navigation, requestUpload, setFeedback, t]);
 
   useEffect(() => {
-    // TODO loading feedback
+    const iconButton = (
+      <IconButton
+        icon={faPaperPlane}
+        size={fontSizes.xl}
+        color={colors.heading}
+        onPress={uploadFile}
+        disabled={isUploading}
+        loading={isUploading}
+        accessibilityLabel={t(
+          'courseAssignmentUploadConfirmationScreen.ctaUpload',
+        )}
+      />
+    );
+
     navigation.setOptions({
       headerRight: () =>
         Platform.select({
-          android: (
-            <IconButton
-              icon={faPaperPlane}
-              size={fontSizes.xl}
-              color={colors.heading}
-              onPress={uploadFile}
-              accessibilityLabel={t(
-                'courseAssignmentUploadConfirmationScreen.ctaUpload',
-              )}
-            />
-          ),
-          ios: (
+          android: iconButton,
+          ios: isUploading ? (
+            iconButton
+          ) : (
             <TextButton onPress={uploadFile}>
               {t('courseAssignmentUploadConfirmationScreen.ctaUpload')}
             </TextButton>
           ),
         }),
     });
-  }, []);
+  }, [colors.heading, fontSizes.xl, isUploading, navigation, t, uploadFile]);
 
   return (
     <>
@@ -102,9 +143,9 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         />
       </View>
 
-      {fileUri.endsWith('pdf') && (
+      {file.uri!.endsWith('pdf') && (
         <Pdf
-          source={{ uri: fileUri }}
+          source={{ uri: file.uri! }}
           style={[
             {
               paddingBottom: tabBarHeight,
@@ -114,7 +155,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
           ]}
         />
       )}
-      {/\.jpe?g|gif|png|heic$/i.test(fileUri) && (
+      {/\.jpe?g|gif|png|heic$/i.test(file.uri) && (
         <ScrollView
           contentContainerStyle={[
             GlobalStyles.grow,
@@ -126,7 +167,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
           minimumZoomScale={0.5}
         >
           <Image
-            source={{ uri: fileUri }}
+            source={{ uri: file.uri }}
             style={GlobalStyles.grow}
             resizeMode="contain"
           />

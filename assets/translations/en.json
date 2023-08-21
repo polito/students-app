@@ -184,12 +184,15 @@
     "ctaAddPage": "Add",
     "ctaConfirm": "Create PDF",
     "ctaDeletePage": "Delete",
+    "failureFeedback": "PDF creation failed: {{reason}}",
     "title": "Create PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Upload",
     "descriptionLabel": "Assignment description",
+    "emptyDescriptionError": "Please insert a description",
     "previewSectionTitle": "File preview",
+    "successFeedback": "Assignment uploaded successfully",
     "title": "Assignment preview"
   },
   "courseAssignmentUploadScreen": {

@@ -185,12 +185,15 @@
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
     "ctaDeletePage": "Elimina",
+    "failureFeedback": "Creazione PDF fallita: {{reason}}",
     "title": "Crea PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Invia",
     "descriptionLabel": "Descrizione elaborato",
+    "emptyDescriptionError": "Inserisci una descrizione",
     "previewSectionTitle": "Anteprima del file",
+    "successFeedback": "Elaborato caricato correttamente",
     "title": "Anteprima elaborato"
   },
   "courseAssignmentUploadScreen": {

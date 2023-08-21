@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faFileLines } from '@fortawesome/free-regular-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
@@ -60,12 +59,8 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
       </ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
-        disabled
-        rightExtra={
-          <Badge text={t('common.comingSoon')} style={{ marginLeft: 10 }} />
-        }
         action={() =>
-          navigation!.navigate({
+          navigation.navigate({
             name: 'CourseAssignmentUpload',
             params: { courseId },
           })
