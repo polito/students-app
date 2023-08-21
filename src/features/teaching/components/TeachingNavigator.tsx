@@ -27,6 +27,7 @@ import { NoticeScreen } from '../screens/NoticeScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
+import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
 
 export interface TeachingStackParamList extends ParamListBase {
@@ -54,7 +55,7 @@ export interface TeachingStackParamList extends ParamListBase {
   };
   CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
-  CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
+  CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
   CourseIconPicker: { courseId: number };
   Exams: undefined;
   Exam: { id: number };
