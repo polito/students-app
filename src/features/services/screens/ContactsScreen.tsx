@@ -97,11 +97,6 @@ const createStyles = ({ spacing }: Theme) =>
       paddingRight: spacing[2],
       paddingBottom: spacing[2],
     },
-    searchBarContainer: {
-      margin: 0,
-      paddingVertical: 10,
-      borderRadius: 0,
-    },
     searchIcon: {
       position: 'absolute',
       left: spacing[5],
