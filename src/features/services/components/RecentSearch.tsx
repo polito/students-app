@@ -1,14 +1,15 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { faEllipsisVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
+import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Row } from '@lib/ui/components/Row';
-import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
 import { PersonOverview } from '@polito/api-client/models';
 import { MenuView } from '@react-native-menu/menu';
 
@@ -56,76 +57,102 @@ export const Menu = ({
 };
 
 export const RecentSearch = () => {
-  const { peopleSearched, updatePreference } = usePreferencesContext();
+  const { peopleSearched, colorScheme, updatePreference } =
+    usePreferencesContext();
+  const styles = useStylesheet(createStyles);
   const { spacing, palettes, colors, fontSizes } = useTheme();
   const { t } = useTranslation();
 
+  const infoColor =
+    colorScheme === 'light' ? palettes.info[700] : palettes.info[400];
+
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingBottom: spacing[8] }}
-    >
-      <Section>
-        <Row
-          align="center"
-          justify="space-between"
-          style={{
-            marginTop: spacing[2],
-            marginHorizontal: spacing[4],
-          }}
-        >
+    <FlatList
+      contentContainerStyle={styles.container}
+      ListHeaderComponent={
+        <Row align="center" justify="space-between" style={styles.header}>
           <Text
-            style={{ padding: spacing[1], color: palettes.info[700] }}
+            style={[styles.heading, { color: infoColor }]}
             variant="heading"
           >
             {t('contactsScreen.recentSearches')}
           </Text>
           <IconButton
             onPress={() => updatePreference('peopleSearched', [])}
-            style={{ padding: spacing[1] }}
+            style={styles.cancelIcon}
             icon={faTimes}
             accessibilityRole="button"
             accessibilityLabel={t('contactsScreen.clearSearches')}
-            color={palettes.info[700]}
+            color={infoColor}
           />
         </Row>
-        <OverviewList>
-          {peopleSearched.map((person, index) =>
-            IS_ANDROID ? (
+      }
+      data={peopleSearched}
+      ItemSeparatorComponent={Platform.select({
+        ios: () => <IndentedDivider indent={20} />,
+      })}
+      renderItem={({ item: person, index }) => {
+        const isFirstItem = index === 0;
+        const isLastItem = index === peopleSearched.length - 1;
+        return IS_ANDROID ? (
+          <PersonOverviewListItem
+            totalData={peopleSearched.length}
+            index={index}
+            key={person.id}
+            person={person}
+            trailingItem={
+              <Menu person={person}>
+                <IconButton
+                  style={{ padding: spacing[3] }}
+                  icon={faEllipsisVertical}
+                  color={colors.secondaryText}
+                  size={fontSizes.xl}
+                />
+              </Menu>
+            }
+            containerStyle={[
+              isFirstItem && styles.firstItem,
+              isLastItem && styles.lastItem,
+            ]}
+          />
+        ) : (
+          <View key={person.id} accessible={true} accessibilityRole="button">
+            <Menu person={person} shouldOpenOnLongPress={true}>
               <PersonOverviewListItem
                 totalData={peopleSearched.length}
                 index={index}
-                key={person.id}
                 person={person}
-                trailingItem={
-                  <Menu person={person}>
-                    <IconButton
-                      style={{ padding: spacing[3] }}
-                      icon={faEllipsisVertical}
-                      color={colors.secondaryText}
-                      size={fontSizes.xl}
-                    />
-                  </Menu>
-                }
+                containerStyle={[
+                  isFirstItem && styles.firstItem,
+                  isLastItem && styles.lastItem,
+                ]}
               />
-            ) : (
-              <View
-                key={person.id}
-                accessible={true}
-                accessibilityRole="button"
-              >
-                <Menu person={person} shouldOpenOnLongPress={true}>
-                  <PersonOverviewListItem
-                    totalData={peopleSearched.length}
-                    index={index}
-                    person={person}
-                  />
-                </Menu>
-              </View>
-            ),
-          )}
-        </OverviewList>
-      </Section>
-    </ScrollView>
+            </Menu>
+          </View>
+        );
+      }}
+    />
   );
 };
+
+const createStyles = ({ shapes, spacing, palettes }: Theme) =>
+  StyleSheet.create({
+    firstItem: {
+      borderTopLeftRadius: shapes.lg,
+      borderTopRightRadius: shapes.lg,
+    },
+    lastItem: {
+      borderBottomLeftRadius: shapes.lg,
+      borderBottomRightRadius: shapes.lg,
+    },
+    heading: { padding: spacing[1] },
+    header: {
+      marginTop: spacing[5],
+      marginBottom: spacing[2],
+    },
+    container: {
+      flex: 1,
+      marginHorizontal: Platform.select({ ios: spacing[4] }),
+    },
+    cancelIcon: { padding: spacing[1] },
+  });
