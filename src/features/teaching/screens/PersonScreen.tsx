@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -49,6 +48,7 @@ export const PersonScreen = ({ route }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
+  const { accessibilityListLabel } = useAccessibility();
   const person = personQuery.data;
   const fullName = [person?.firstName, person?.lastName]
     .filter(notNullish)
@@ -133,16 +133,11 @@ export const PersonScreen = ({ route }: Props) => {
   };
 
   const RenderedCourse = (course: PersonCourse, index: number) => {
-    const { accessibilityListLabel } = useAccessibility();
-
     const onPressCourse = () => {
       // TODO
-      console.debug('onPressCourse', course);
     };
 
-    const role = useMemo(() => {
-      return course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
-    }, [course.role]);
+    const role = course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
 
     return (
       <ListItem
