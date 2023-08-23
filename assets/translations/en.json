@@ -168,8 +168,8 @@
   },
   "contactsScreen": {
     "title": "Contacts",
-    "emptyState": "No contacts found",
-    "search": "Search contacts",
+    "emptyState": "No people found",
+    "search": "Search people",
     "recentSearches": "Recent searches",
     "recentSearch": "Recent search",
     "cancelRecentSearch": "Remove",

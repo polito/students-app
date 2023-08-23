@@ -71,7 +71,7 @@ export const PersonOverviewListItem = ({
         person?.picture ? (
           <Image source={{ uri: person.picture }} style={styles.picture} />
         ) : (
-          <Icon icon={faUser} size={fontSizes['2xl']} />
+          <Icon icon={faUser} size={fontSizes.xl} />
         )
       }
       title={<HighlightedText text={title} highlight={searchString || ''} />}

@@ -103,10 +103,10 @@ export const RecentSearch = () => {
             trailingItem={
               <Menu person={person}>
                 <IconButton
-                  style={{ padding: spacing[3] }}
+                  adjustSpacing="right"
                   icon={faEllipsisVertical}
                   color={colors.secondaryText}
-                  size={fontSizes.xl}
+                  size={fontSizes.md}
                 />
               </Menu>
             }
@@ -135,20 +135,21 @@ export const RecentSearch = () => {
   );
 };
 
-const createStyles = ({ shapes, spacing, palettes }: Theme) =>
+const createStyles = ({ shapes, spacing }: Theme) =>
   StyleSheet.create({
     firstItem: {
-      borderTopLeftRadius: shapes.lg,
-      borderTopRightRadius: shapes.lg,
+      borderTopLeftRadius: Platform.select({ ios: shapes.lg }),
+      borderTopRightRadius: Platform.select({ ios: shapes.lg }),
     },
     lastItem: {
-      borderBottomLeftRadius: shapes.lg,
-      borderBottomRightRadius: shapes.lg,
+      borderBottomLeftRadius: Platform.select({ ios: shapes.lg }),
+      borderBottomRightRadius: Platform.select({ ios: shapes.lg }),
     },
     heading: { padding: spacing[1] },
     header: {
       marginTop: spacing[5],
       marginBottom: spacing[2],
+      paddingHorizontal: Platform.select({ android: spacing[3] }),
     },
     container: {
       flex: 1,

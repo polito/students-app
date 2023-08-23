@@ -59,13 +59,13 @@ export const ContactsScreen = () => {
         </Row>
       </HeaderAccessory>
       {!search && peopleSearched?.length > 0 && <RecentSearch />}
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingBottom: spacing[4] }}
-      >
-        <SafeAreaView>
-          <Section>
-            {!!search && enabled && (
+      {!!search && enabled && (
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{ paddingBottom: spacing[4] }}
+        >
+          <SafeAreaView>
+            <Section>
               <OverviewList
                 loading={isLoading}
                 style={{ marginTop: spacing[4] }}
@@ -84,10 +84,10 @@ export const ContactsScreen = () => {
                   <EmptyState message={t('contactsScreen.emptyState')} />
                 )}
               </OverviewList>
-            )}
-          </Section>
-        </SafeAreaView>
-      </ScrollView>
+            </Section>
+          </SafeAreaView>
+        </ScrollView>
+      )}
     </>
   );
 };
