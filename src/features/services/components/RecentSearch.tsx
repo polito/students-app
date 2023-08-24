@@ -57,14 +57,12 @@ export const Menu = ({
 };
 
 export const RecentSearch = () => {
-  const { peopleSearched, colorScheme, updatePreference } =
-    usePreferencesContext();
+  const { peopleSearched, updatePreference } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
-  const { spacing, palettes, colors, fontSizes } = useTheme();
+  const { dark, palettes, colors, fontSizes } = useTheme();
   const { t } = useTranslation();
 
-  const infoColor =
-    colorScheme === 'light' ? palettes.info[700] : palettes.info[400];
+  const infoColor = dark ? palettes.info[400] : palettes.info[700];
 
   return (
     <FlatList
