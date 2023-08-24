@@ -20,6 +20,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       language: deviceLanguage,
       updatePreference: () => {},
       favoriteServices: [],
+      peopleSearched: [],
     });
 
   const preferencesInitialized = useRef<boolean>(false);

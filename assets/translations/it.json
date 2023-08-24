@@ -40,6 +40,7 @@
     },
     "agent": "Operatore",
     "close": "Chiudi",
+    "search": "Cerca",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -167,7 +168,15 @@
     "visualization": "Visualizzazione"
   },
   "contactsScreen": {
-    "title": "Contatti"
+    "title": "Contatti",
+    "emptyState": "Nessun contatto trovato",
+    "search": "Cerca contatti",
+    "recentSearches": "Ricerche recenti",
+    "recentSearch": "Ricerca recente",
+    "cancelRecentSearch": "Rimuovi",
+    "cancelRecentSearchText": "Rimuovi ricerca recente",
+    "clearSearch": "Cancella ricerca",
+    "clearSearches": "Cancella ricerche"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",

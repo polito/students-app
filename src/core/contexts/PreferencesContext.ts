@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react';
 
+import { PersonOverview } from '@polito/api-client/models';
+
 export const editablePreferenceKeys = [
   'clientId',
   'colorScheme',
@@ -7,6 +9,7 @@ export const editablePreferenceKeys = [
   'language',
   'notifications',
   'favoriteServices',
+  'peopleSearched',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
@@ -16,6 +19,7 @@ export const objectPreferenceKeys = [
   'courses',
   'notifications',
   'favoriteServices',
+  'peopleSearched',
 ];
 
 export type CoursesPreferences = {
@@ -34,6 +38,7 @@ export type PreferencesContextProps = {
   };
   updatePreference: (key: PreferenceKey, value: unknown) => void;
   favoriteServices: string[];
+  peopleSearched: PersonOverview[];
 };
 
 export interface CoursePreferencesProps {

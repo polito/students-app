@@ -9,7 +9,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
+import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -42,6 +44,8 @@ export type ServiceStackParamList = {
   News: undefined;
   NewsItem: { id: number };
   MessagesModal: undefined;
+  Contacts: undefined;
+  Person: { id: number };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -160,6 +164,30 @@ export const ServicesNavigator = () => {
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="Contacts"
+        component={ContactsScreen}
+        options={{
+          headerTitle: t('contactsScreen.title'),
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+          headerTransparent: false,
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLeft: () => <HeaderLogo />,
+        }}
+      />
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
         }}
       />
     </Stack.Navigator>

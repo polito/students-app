@@ -53,7 +53,7 @@
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
-    "contact": "Contacts",
+    "contact": "Contact",
     "course": "Course",
     "course_plural": "Courses",
     "createdAt": "Created at",
@@ -167,7 +167,15 @@
     "visualization": "Visualization"
   },
   "contactsScreen": {
-    "title": "Contacts"
+    "title": "Contacts",
+    "emptyState": "No people found",
+    "search": "Search people",
+    "recentSearches": "Recent searches",
+    "recentSearch": "Recent search",
+    "cancelRecentSearch": "Remove",
+    "cancelRecentSearchText": "Remove recent search",
+    "clearSearch": "Clear search",
+    "clearSearches": "Clear searches"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
