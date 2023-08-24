@@ -177,8 +177,6 @@ export const ServicesNavigator = () => {
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
-          headerLeft: () => <HeaderLogo />,
         }}
       />
       <Stack.Screen
