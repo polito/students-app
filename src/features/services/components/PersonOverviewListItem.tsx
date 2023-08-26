@@ -1,0 +1,99 @@
+import {
+  Image,
+  StyleProp,
+  StyleSheet,
+  TouchableHighlightProps,
+  ViewStyle,
+} from 'react-native';
+
+import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
+import { ListItem } from '@lib/ui/components/ListItem';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { PersonOverview } from '@polito/api-client/models';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { HighlightedText } from './HighlightedText';
+
+const maxRecentSearches = 10;
+
+interface Props {
+  person: PersonOverview;
+  searchString?: string;
+  trailingItem?: JSX.Element;
+  index: number;
+  totalData: number;
+  containerStyle?: StyleProp<ViewStyle>;
+}
+
+export const PersonOverviewListItem = ({
+  person,
+  trailingItem,
+  searchString,
+  index,
+  totalData,
+  containerStyle,
+  ...rest
+}: TouchableHighlightProps & Props) => {
+  const { fontSizes, colors } = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const styles = useStylesheet(createStyles);
+  const { accessibilityListLabel } = useAccessibility();
+  const { updatePreference, peopleSearched } = usePreferencesContext();
+  const accessibilityLabel = accessibilityListLabel(index, totalData);
+  const subtitle = person.role ?? '';
+  const firstName = person?.firstName ?? '';
+  const lastName = person?.lastName ?? '';
+  const title = [firstName, lastName].join(' ').trim();
+
+  const navigateToPerson = () => {
+    const personIndex = peopleSearched.findIndex(p => p.id === person.id);
+    if (personIndex === -1) {
+      if (peopleSearched.length >= maxRecentSearches) {
+        peopleSearched.pop();
+      }
+      updatePreference('peopleSearched', [person, ...peopleSearched]);
+    } else {
+      const newPeopleSearched = peopleSearched.filter(p => p.id !== person.id);
+      updatePreference('peopleSearched', [person, ...newPeopleSearched]);
+    }
+    navigation.navigate('Person', { id: person.id });
+  };
+
+  return (
+    <ListItem
+      onPress={navigateToPerson}
+      leadingItem={
+        person?.picture ? (
+          <Image source={{ uri: person.picture }} style={styles.picture} />
+        ) : (
+          <Icon icon={faUser} size={fontSizes.xl} />
+        )
+      }
+      title={<HighlightedText text={title} highlight={searchString || ''} />}
+      accessibilityLabel={[accessibilityLabel, title, subtitle].join(', ')}
+      subtitle={subtitle}
+      trailingItem={trailingItem}
+      style={[
+        {
+          backgroundColor: colors.surface,
+        },
+        containerStyle,
+      ]}
+      {...rest}
+    />
+  );
+};
+
+const createStyles = () =>
+  StyleSheet.create({
+    picture: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 20,
+    },
+  });

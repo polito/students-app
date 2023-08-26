@@ -4,6 +4,7 @@ import {
   Animated,
   FlatList,
   Image,
+  Platform,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -29,6 +30,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { displayTabBar, hideTabBar } from '../../../utils/tab-bar';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { pdfSizes } from '../constants';
@@ -48,6 +50,8 @@ export const CourseAssignmentPdfCreationScreen = ({
 
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
+
   const styles = useStylesheet(createStyles);
   const { bottom: marginBottom } = useSafeAreaInsets();
   const [imageUris, setImageUris] = useState<string[]>([firstImageUri]);
@@ -123,7 +127,7 @@ export const CourseAssignmentPdfCreationScreen = ({
     ${imageUris
       .map(
         uri =>
-          `<img style="display: block; width: 1000px; height: 1410px; object-fit: contain; page-break-after: always" src="${uri}"/>`,
+          `<img style='display: block; width: 1000px; height: 1410px; object-fit: contain; page-break-after: always' src='${uri}'/>`,
       )
       .join('\n')}
     </body>
@@ -140,13 +144,23 @@ export const CourseAssignmentPdfCreationScreen = ({
       .then(pdf => {
         navigation.navigate('CourseAssignmentUploadConfirmation', {
           courseId,
-          fileUri: pdf.filePath!,
+          file: {
+            uri:
+              Platform.select({ android: 'file://', ios: '' }) + pdf.filePath!,
+            name: 'assignment.pdf',
+            size: 200, // any size - has no effect
+            type: 'application/pdf',
+          },
         });
       })
-      .catch(e => {
-        // TODO notify user
-        console.error(e);
-      })
+      .catch(e =>
+        setFeedback({
+          text: t('courseAssignmentPdfCreationScreen.failureFeedback', {
+            reason: e.message,
+          }),
+          isError: true,
+        }),
+      )
       .finally(() => setIsCreatingPDF(false));
   };
 

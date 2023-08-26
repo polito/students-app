@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react-native';
 import { AppContent } from './core/components/AppContent';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';
+import { FeedbackProvider } from './core/providers/FeedbackProvider';
 import { PreferencesProvider } from './core/providers/PreferencesProvider';
 import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
@@ -19,11 +20,13 @@ export const App = () => {
         <SplashProvider>
           <PreferencesProvider>
             <UiProvider>
-              <ApiProvider>
-                <DownloadsProvider>
-                  <AppContent />
-                </DownloadsProvider>
-              </ApiProvider>
+              <FeedbackProvider>
+                <ApiProvider>
+                  <DownloadsProvider>
+                    <AppContent />
+                  </DownloadsProvider>
+                </ApiProvider>
+              </FeedbackProvider>
             </UiProvider>
           </PreferencesProvider>
         </SplashProvider>

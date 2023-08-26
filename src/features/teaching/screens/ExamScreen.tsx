@@ -30,7 +30,6 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import {
   formatDate,
-  formatDateTime,
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
@@ -57,17 +56,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       });
     }
   }, [navigation, routes, t]);
-
-  const time = useMemo(() => {
-    if (!exam) return;
-
-    if (!exam.examStartsAt) {
-      return t('common.dateToBeDefined');
-    } else if (exam.isTimeToBeDefined) {
-      return `${formatDate(exam.examStartsAt)}, ${t('common.timeToBeDefined')}`;
-    }
-    return formatDateTime(exam.examStartsAt);
-  }, [exam, t]);
 
   const examAccessibilityLabel = useMemo(() => {
     if (!exam || !teacherQuery.data) return;

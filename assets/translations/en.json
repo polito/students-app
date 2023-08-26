@@ -11,6 +11,9 @@
   "bookingsScreen": {
     "title": "Bookings"
   },
+  "bookingScreen": {
+    "cancelFeedback": "Booking canceled"
+  },
   "colors": {
     "amber": "Amber",
     "blue": "Blue",
@@ -60,7 +63,7 @@
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
-    "contact": "Contacts",
+    "contact": "Contact",
     "course": "Course",
     "course_plural": "Courses",
     "createdAt": "Created at",
@@ -174,7 +177,15 @@
     "visualization": "Visualization"
   },
   "contactsScreen": {
-    "title": "Contacts"
+    "title": "Contacts",
+    "emptyState": "No people found",
+    "search": "Search people",
+    "recentSearches": "Recent searches",
+    "recentSearch": "Recent search",
+    "cancelRecentSearch": "Remove",
+    "cancelRecentSearchText": "Remove recent search",
+    "clearSearch": "Clear search",
+    "clearSearches": "Clear searches"
   },
   "offeringScreen": {
     "title": "Offering",
@@ -201,12 +212,15 @@
     "ctaAddPage": "Add",
     "ctaConfirm": "Create PDF",
     "ctaDeletePage": "Delete",
+    "failureFeedback": "PDF creation failed: {{reason}}",
     "title": "Create PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Upload",
     "descriptionLabel": "Assignment description",
+    "emptyDescriptionError": "Please insert a description",
     "previewSectionTitle": "File preview",
+    "successFeedback": "Assignment uploaded successfully",
     "title": "Assignment preview"
   },
   "courseAssignmentUploadScreen": {
@@ -269,6 +283,7 @@
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
+    "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "filesSubtitle": "New material available",

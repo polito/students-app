@@ -82,7 +82,8 @@ export const ServicesScreen = () => {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,
-        disabled: true,
+        disabled: false,
+        linkTo: { screen: 'Contacts' },
       },
       {
         id: 'guides',

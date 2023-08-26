@@ -16,11 +16,15 @@ const usePeopleClient = (): PeopleApi => {
   return peopleClient!;
 };
 
-export const useGetPeople = (search: string) => {
+export const useGetPeople = (search: string, enabled: boolean) => {
   const peopleClient = usePeopleClient();
 
-  return useQuery([PEOPLE_QUERY_KEY, search], () =>
-    peopleClient.getPeople({ search }).then(pluckData),
+  return useQuery(
+    [PEOPLE_QUERY_KEY, search],
+    () => peopleClient.getPeople({ search }).then(pluckData),
+    {
+      enabled: enabled,
+    },
   );
 };
 

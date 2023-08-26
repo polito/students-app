@@ -269,16 +269,14 @@ export const useUploadAssignment = (courseId: number) => {
   const coursesClient = useCoursesClient();
   const client = useQueryClient();
 
+  const listQueryKey = prefixKey([COURSE_QUERY_KEY, courseId, 'assignments']);
+
   return useMutation(
     (dto: UploadCourseAssignmentRequest) =>
       coursesClient.uploadCourseAssignment(dto),
     {
       onSuccess() {
-        return client.invalidateQueries([
-          COURSE_QUERY_KEY,
-          courseId,
-          'assignments',
-        ]);
+        return client.invalidateQueries(listQueryKey);
       },
     },
   );

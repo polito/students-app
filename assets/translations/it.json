@@ -11,6 +11,9 @@
   "bookingsScreen": {
     "title": "Prenotazioni"
   },
+  "bookingScreen": {
+    "cancelFeedback": "Prenoazione annullata"
+  },
   "colors": {
     "amber": "Ambra",
     "blue": "Blu",
@@ -41,6 +44,7 @@
     "agent": "Operatore",
     "close": "Chiudi",
     "cfu": "CFU",
+    "search": "Cerca",
     "all": "Tutti",
     "department": "Dipartimento",
     "location": "Sede",
@@ -174,7 +178,15 @@
     "visualization": "Visualizzazione"
   },
   "contactsScreen": {
-    "title": "Contatti"
+    "title": "Contatti",
+    "emptyState": "Nessun contatto trovato",
+    "search": "Cerca contatti",
+    "recentSearches": "Ricerche recenti",
+    "recentSearch": "Ricerca recente",
+    "cancelRecentSearch": "Rimuovi",
+    "cancelRecentSearchText": "Rimuovi ricerca recente",
+    "clearSearch": "Cancella ricerca",
+    "clearSearches": "Cancella ricerche"
   },
   "offeringScreen": {
     "title": "Offerta formativa",
@@ -199,12 +211,15 @@
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
     "ctaDeletePage": "Elimina",
+    "failureFeedback": "Creazione PDF fallita: {{reason}}",
     "title": "Crea PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Invia",
     "descriptionLabel": "Descrizione elaborato",
+    "emptyDescriptionError": "Inserisci una descrizione",
     "previewSectionTitle": "Anteprima del file",
+    "successFeedback": "Elaborato caricato correttamente",
     "title": "Anteprima elaborato"
   },
   "courseAssignmentUploadScreen": {
@@ -270,6 +285,7 @@
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
+    "cleanCacheFeedback": "I file sono stati rimossi correttamente",
     "cleanCourseFiles": "Rimuovi file del corso",
     "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
     "filesSubtitle": "Nuovi materiali disponibili",
@@ -369,7 +385,6 @@
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
-    "ctaSuccessMessage": "Accedi",
     "forgotYourPassword": "Hai dimenticato la password?",
     "hidePassword": "Nascondi password",
     "passwordLabel": "Password",

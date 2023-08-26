@@ -118,7 +118,6 @@ export const LoginScreen = () => {
             title={t('loginScreen.cta')}
             action={handleLogin}
             loading={isLoading}
-            successMessage={t('loginScreen.ctaSuccessMessage')}
             disabled={!canLogin}
           />
           <TouchableOpacity
