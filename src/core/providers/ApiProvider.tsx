@@ -29,6 +29,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     token: '',
     refreshContext: () => {},
   });
+  const { setFeedback } = useFeedbackContext();
 
   const splashContext = useSplashContext();
 
@@ -67,7 +68,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         console.warn("Keychain couldn't be accessed!", e);
         refreshContext();
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  useEffect(() => {
     // Handle login status
     onlineManager.setEventListener(setOnline => {
       return NetInfo.addEventListener(state => {
@@ -75,17 +79,19 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         if (wasOnline && !state.isConnected) {
           // Phone just went offline
           setOnline(false);
-          // TODO notify
-          console.debug('Phone just went offline');
+          setFeedback({
+            text: t('common.noInternet'),
+            isError: true,
+            isPersistent: true,
+          });
         } else if (!wasOnline && state.isConnected) {
           // Phone is back online
           setOnline(true);
-          // TODO notify
-          console.debug('Phone is back online');
+          setFeedback(null);
         }
       });
     });
-  }, []);
+  }, [setFeedback, t]);
 
   // Initialization completed, splash can be hidden
   useEffect(() => {
