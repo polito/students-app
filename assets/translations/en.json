@@ -118,6 +118,7 @@
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
+    "noInternet": "You are offline, some features may not be available",
     "of": "Of",
     "ok": "Ok",
     "open": "Open",
