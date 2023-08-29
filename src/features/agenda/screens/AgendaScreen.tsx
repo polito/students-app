@@ -29,11 +29,10 @@ import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
-import { prefixKey, prefixKeys } from '../../../utils/queries';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
-import { AGENDA_QUERY_KEY, useGetAgendaWeeks } from '../queries/agendaHooks';
+import { AGENDA_QUERY_PREFIX, useGetAgendaWeeks } from '../queries/agendaHooks';
 import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
 import { AgendaItemType } from '../types/AgendaItem';
 import { AgendaState } from '../types/AgendaState';
@@ -63,7 +62,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const refreshQueries = () => {
     setAgendaState(prev => ({ ...prev, isRefreshing: true }));
     Promise.all(dependingQueryKeys.map(q => client.invalidateQueries(q)))
-      .then(_ => client.invalidateQueries(agendaQueryKey))
+      .then(_ => client.invalidateQueries([AGENDA_QUERY_PREFIX]))
       .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
   };
 
@@ -85,14 +84,12 @@ export const AgendaScreen = ({ navigation }: Props) => {
     },
   ];
 
-  const dependingQueryKeys = prefixKeys([
-    [EXAMS_QUERY_KEY],
-    [BOOKINGS_QUERY_KEY],
-    [LECTURES_QUERY_KEY],
-    [DEADLINES_QUERY_KEY],
-  ]);
-
-  const agendaQueryKey = prefixKey([AGENDA_QUERY_KEY]);
+  const dependingQueryKeys = [
+    EXAMS_QUERY_KEY,
+    BOOKINGS_QUERY_KEY,
+    LECTURES_QUERY_KEY,
+    DEADLINES_QUERY_KEY,
+  ];
 
   const [agendaState, setAgendaState, agendaStateRef] =
     useStateRef<AgendaState>({

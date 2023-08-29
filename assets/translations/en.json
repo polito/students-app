@@ -49,6 +49,7 @@
     "booking": "Booking",
     "booking_plural": "Bookings",
     "cache": "Cache",
+    "cacheMiss": "Come back online to view",
     "camera": "Camera",
     "cancel": "Cancel",
     "classroomsNotSpecified": "Classroom not specified",

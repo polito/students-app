@@ -16,7 +16,7 @@ import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseTabsParamList } from '../components/CourseNavigator';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
 
 type Props = MaterialTopTabScreenProps<
@@ -28,7 +28,7 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { refresh } = useContext(FilesCacheContext);
-  const courseId = useContext(CourseContext)!;
+  const courseId = useCourseContext();
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
 

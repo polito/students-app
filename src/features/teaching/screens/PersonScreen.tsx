@@ -217,6 +217,7 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
       fontSize: fontSizes['2xl'],
     },
     info: {
+      flex: 1,
       justifyContent: 'center',
       flexDirection: 'column',
     },

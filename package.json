@@ -36,7 +36,9 @@
     "@react-navigation/native-stack": "^6.9.13",
     "@react-navigation/stack": "^6.3.17",
     "@sentry/react-native": "^5.9.1",
+    "@tanstack/query-async-storage-persister": "^4.33.0",
     "@tanstack/react-query": "^4.29.18",
+    "@tanstack/react-query-persist-client": "^4.33.0",
     "@types/luxon": "^3.2.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "color": "^4.2.3",
@@ -78,7 +80,8 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-video": "^5.2.1",
     "react-string-replace": "^1.1.0",
-    "react-usestateref": "^1.0.8"
+    "react-usestateref": "^1.0.8",
+    "superjson": "^1.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

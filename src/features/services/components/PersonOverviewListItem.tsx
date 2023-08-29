@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import {
   Image,
   StyleProp,
@@ -14,9 +15,12 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PersonOverview } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { getPersonKey } from '../../../core/queries/peopleHooks';
 import { HighlightedText } from './HighlightedText';
 
 const maxRecentSearches = 10;
@@ -64,6 +68,14 @@ export const PersonOverviewListItem = ({
     navigation.navigate('Person', { id: person.id });
   };
 
+  const queryClient = useQueryClient();
+
+  const isDataMissing = useCallback(
+    () => queryClient.getQueryData(getPersonKey(person!.id)) === undefined,
+    [person, queryClient],
+  );
+
+  const isDisabled = useOfflineDisabled(isDataMissing);
   return (
     <ListItem
       onPress={navigateToPerson}
@@ -84,6 +96,7 @@ export const PersonOverviewListItem = ({
         },
         containerStyle,
       ]}
+      disabled={isDisabled}
       {...rest}
     />
   );

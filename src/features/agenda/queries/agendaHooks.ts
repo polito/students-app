@@ -9,7 +9,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetDeadlineWeeks } from '../../../core/queries/studentHooks';
 import { Exam } from '../../../core/types/api';
 import { formatMachineDate, formatTime } from '../../../utils/dates';
-import { popPage, prefixKey, shiftPage } from '../../../utils/queries';
+import { popPage, shiftPage } from '../../../utils/queries';
 import { AgendaDay } from '../types/AgendaDay';
 import {
   ALL_AGENDA_TYPES,
@@ -23,7 +23,7 @@ import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { useGetLectureWeeks } from './lectureHooks';
 
-export const AGENDA_QUERY_KEY = 'agenda';
+export const AGENDA_QUERY_PREFIX = 'agenda';
 
 const groupItemsByDay = (
   coursesPreferences: CoursesPreferences,
@@ -189,7 +189,7 @@ export const useGetAgendaWeeks = (
   }
 
   return useInfiniteQuery<AgendaWeek>(
-    prefixKey([AGENDA_QUERY_KEY, JSON.stringify(queryFilters)]),
+    [AGENDA_QUERY_PREFIX, JSON.stringify(queryFilters)],
     async ({ pageParam = startDate }: { pageParam?: DateTime }) => {
       const until = pageParam.plus(oneWeek);
 

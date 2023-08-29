@@ -130,7 +130,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             }
           />
           <OverviewList
-            loading={examsQuery.isLoading}
+            loading={examsQuery.isLoading || coursesQuery.isLoading}
             indented
             emptyStateText={t('examsScreen.emptyState')}
           >

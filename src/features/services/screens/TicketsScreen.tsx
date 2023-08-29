@@ -14,6 +14,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { onlineManager } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
@@ -108,6 +109,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
 
       <CtaButton
         absolute={true}
+        disabled={!onlineManager.isOnline()}
         title={t('ticketsScreen.addNew')}
         action={() => navigation.navigate('TicketFaqs')}
         icon={faPlus}
