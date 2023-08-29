@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 
@@ -10,8 +10,11 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { getCourseKey } from '../../../core/queries/courseHooks';
 import { CourseIcon } from './CourseIcon';
 
 interface Props {
@@ -70,6 +73,16 @@ export const CourseListItem = ({
   const preferences = usePreferencesContext();
 
   const hasDetails = course.id != null;
+  const queryClient = useQueryClient();
+
+  const isDataMissing = useCallback(
+    () =>
+      !!course.id &&
+      queryClient.getQueryData(getCourseKey(course.id)) === undefined,
+    [course.id, queryClient],
+  );
+
+  const isDisabled = useOfflineDisabled(isDataMissing);
 
   const subtitle = useMemo(() => {
     return (
@@ -96,6 +109,7 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
+      disabled={isDisabled}
       accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
         course.cfu
       } ${t('common.credits')}`}

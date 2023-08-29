@@ -6,7 +6,7 @@ import {
   RefreshControlProps,
 } from 'react-native';
 
-import { UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult, onlineManager } from '@tanstack/react-query';
 
 import { usePrevious } from '../../../src/core/hooks/usePrevious';
 
@@ -57,6 +57,7 @@ export const RefreshControl = ({ queries, manual = false, ...rest }: Props) => {
   }, [refreshing, screenReaderEnabled]);
 
   const onRefresh = useCallback(() => {
+    if (!onlineManager.isOnline()) return;
     setRefreshing(true);
     Promise.all(queries.map(q => q.refetch())).finally(() => {
       setRefreshing(false);

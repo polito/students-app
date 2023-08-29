@@ -50,6 +50,7 @@
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "cache": "Cache",
+    "cacheMiss": "Torna online per visualizzare",
     "camera": "Fotocamera",
     "cancel": "Annulla",
     "classroomsNotSpecified": "Luogo non specificato",

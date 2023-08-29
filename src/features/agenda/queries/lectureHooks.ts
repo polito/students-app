@@ -5,19 +5,14 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
-import { useApiContext } from '../../../core/contexts/ApiContext';
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { notNullish } from '../../../utils/predicates';
-import { prefixKey } from '../../../utils/queries';
 
-export const LECTURES_QUERY_KEY = 'lectures';
+export const LECTURES_QUERY_KEY = ['lectures'];
 
 const useLectureClient = (): LecturesApi => {
-  const {
-    clients: { lectures: lectureClient },
-  } = useApiContext();
-  return lectureClient!;
+  return new LecturesApi();
 };
 
 export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
@@ -43,7 +38,7 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
   }, [courses, coursesPreferences]);
 
   return useInfiniteQuery<Lecture[]>(
-    prefixKey([LECTURES_QUERY_KEY]),
+    LECTURES_QUERY_KEY,
     async ({ pageParam: since = DateTime.now().startOf('week') }) => {
       const until = since.plus(oneWeek);
 

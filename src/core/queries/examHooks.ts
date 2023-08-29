@@ -13,17 +13,13 @@ import {
 } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { pluckData, prefixKey } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
+import { pluckData } from '../../utils/queries';
 import { Exam } from '../types/api';
 
-export const EXAMS_QUERY_KEY = 'exams';
+export const EXAMS_QUERY_KEY = ['exams'];
 
 const useExamsClient = (): ExamsApi => {
-  const {
-    clients: { exams: examsClient },
-  } = useApiContext();
-  return examsClient!;
+  return new ExamsApi();
 };
 
 const mapApiExamToExam = (exam: ApiExam): Exam => {
@@ -59,7 +55,7 @@ const mapApiExamToExam = (exam: ApiExam): Exam => {
 export const useGetExams = () => {
   const examsClient = useExamsClient();
 
-  return useQuery<Exam[]>(prefixKey([EXAMS_QUERY_KEY]), () =>
+  return useQuery<Exam[]>(EXAMS_QUERY_KEY, () =>
     examsClient
       .getExams()
       .then(pluckData)
@@ -77,14 +73,12 @@ export const useBookExam = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
-  const examsQueryKey = prefixKey([EXAMS_QUERY_KEY]);
-
   return useMutation(
     (dto?: BookExamRequest) =>
       examsClient.bookExam({ examId: examId, bookExamRequest: dto }),
     {
       onSuccess() {
-        return client.invalidateQueries(examsQueryKey);
+        return client.invalidateQueries(EXAMS_QUERY_KEY);
       },
     },
   );
@@ -94,13 +88,11 @@ export const useCancelExamBooking = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
-  const examsQueryKey = prefixKey([EXAMS_QUERY_KEY]);
-
   return useMutation(
     () => examsClient.deleteExamBookingById({ examId: examId }),
     {
       onSuccess() {
-        return client.invalidateQueries(examsQueryKey);
+        return client.invalidateQueries(EXAMS_QUERY_KEY);
       },
     },
   );

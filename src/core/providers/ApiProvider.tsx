@@ -1,35 +1,38 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
 import { ResponseError } from '@polito/api-client/runtime';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
-import {
-  QueryClient,
-  QueryClientProvider,
-  onlineManager,
-} from '@tanstack/react-query';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { QueryClient, onlineManager } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
-import { createApiClients } from '../../config/api';
+import SuperJSON from 'superjson';
+
+import { createApiConfiguration } from '../../config/api';
 import {
   ApiContext,
   ApiContextProps,
   Credentials,
 } from '../contexts/ApiContext';
+import { useFeedbackContext } from '../contexts/FeedbackContext';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
   const [apiContext, setApiContext] = useState<ApiContextProps>({
-    clients: {},
     isLogged: false,
     username: '',
     token: '',
     refreshContext: () => {},
   });
   const { setFeedback } = useFeedbackContext();
+  const { username } = usePreferencesContext();
 
   const splashContext = useSplashContext();
 
@@ -42,23 +45,26 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         Sentry.setUser(null);
       }
 
+      createApiConfiguration(credentials?.token);
+
       setApiContext(() => {
         return {
           isLogged: !!credentials,
           username: credentials?.username ?? '',
           token: credentials?.token ?? '',
-          clients: createApiClients(credentials?.token),
           refreshContext,
         };
       });
     };
+
     // Retrieve existing token from SecureStore, if any
     Keychain.getGenericPassword()
       .then(keychainCredentials => {
         let credentials = undefined;
-        if (keychainCredentials) {
+
+        if (username && keychainCredentials) {
           credentials = {
-            username: keychainCredentials.username,
+            username: username,
             token: keychainCredentials.password,
           };
         }
@@ -102,51 +108,84 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   const isEnvProduction = process.env.NODE_ENV === 'production';
 
-  const onError = async (error: ResponseError, client: QueryClient) => {
-    if (error.response.status === -401) {
-      setApiContext(c => ({
-        ...c,
-        isLogged: false,
-        username: '',
-        token: '',
-      }));
-      await client.invalidateQueries();
-    }
-    const { message } = await error.response.json();
-    Alert.alert(t('common.error'), message ?? t('common.somethingWentWrong'));
-    if (!isEnvProduction) {
-      console.error(message);
-      console.error(JSON.stringify(error));
-    }
-  };
+  const queryClient = useMemo(() => {
+    const onError = async (error: ResponseError, client: QueryClient) => {
+      if (error.response.status === 401) {
+        await Keychain.resetGenericPassword();
+        setApiContext(c => ({
+          ...c,
+          isLogged: false,
+          username: '',
+          token: '',
+        }));
+        await client.invalidateQueries();
+      }
+      const { message } = await error.response.json();
+      Alert.alert(t('common.error'), message ?? t('common.somethingWentWrong'));
+      if (!isEnvProduction) {
+        console.error(message);
+        console.error(JSON.stringify(error));
+      }
+    };
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: isEnvProduction ? 2 : 1,
-        refetchOnWindowFocus: isEnvProduction,
-        onError(error) {
-          if (error instanceof ResponseError) {
-            onError(error, queryClient);
-          }
+    return new QueryClient({
+      defaultOptions: {
+        queries: {
+          cacheTime: 1000 * 60 * 60 * 24 * 3, // 3 days
+          staleTime: 300000, // 5 minutes
+          // networkMode: 'always',
+          retry: isEnvProduction ? 2 : 1,
+          refetchOnWindowFocus: isEnvProduction,
+          onError(error) {
+            if (error instanceof ResponseError) {
+              onError(error, queryClient);
+            }
+          },
+        },
+        mutations: {
+          retry: 1,
+          onError(error) {
+            if (error instanceof ResponseError) {
+              onError(error, queryClient);
+            }
+          },
         },
       },
-      mutations: {
-        retry: 1,
-        onError(error) {
-          if (error instanceof ResponseError) {
-            onError(error, queryClient);
-          }
-        },
-      },
-    },
+    });
+  }, [isEnvProduction, t]);
+
+  const asyncStoragePersister = createAsyncStoragePersister({
+    key: 'polito-students.queries',
+    storage: AsyncStorage,
+    serialize: SuperJSON.stringify,
+    deserialize: SuperJSON.parse,
   });
+
+  const identityRef = useRef<string>(apiContext.username);
+
+  // Invalidate queries when identity is changed
+  useEffect(() => {
+    const previousIdentity = identityRef.current;
+    identityRef.current = apiContext.username;
+    if (['', identityRef.current].includes(previousIdentity)) return;
+
+    queryClient.invalidateQueries([]);
+  }, [queryClient, apiContext.username, asyncStoragePersister]);
 
   return (
     <ApiContext.Provider value={apiContext}>
-      <QueryClientProvider client={queryClient}>
-        {splashContext.isAppLoaded && children}
-      </QueryClientProvider>
+      {splashContext.isAppLoaded && (
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{
+            persister: asyncStoragePersister,
+            buster: apiContext.username,
+            maxAge: Infinity,
+          }}
+        >
+          {children}
+        </PersistQueryClientProvider>
+      )}
     </ApiContext.Provider>
   );
 };
