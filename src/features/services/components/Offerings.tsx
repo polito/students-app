@@ -53,7 +53,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
             </Section>
           ))
         ) : (
-          <OverviewList>
+          <OverviewList style={styles.emptyMessage}>
             <EmptyState message={t('offeringScreen.emptyMessage')} />
           </OverviewList>
         )}
@@ -62,11 +62,14 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
   );
 };
 
-const createStyles = ({ palettes, spacing }: Theme) =>
+const createStyles = ({ palettes, spacing, dark }: Theme) =>
   StyleSheet.create({
     subHeading: {
       marginHorizontal: spacing[4],
-      color: palettes.info['700'],
+      color: dark ? palettes.info['400'] : palettes.info['700'],
+    },
+    emptyMessage: {
+      marginTop: spacing[4],
     },
     offeringListItem: {
       paddingVertical: spacing[1],

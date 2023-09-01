@@ -47,7 +47,7 @@ export const DegreeJobOpportunitiesScreen = () => {
   );
 };
 
-const createStyles = ({ spacing, palettes }: Theme) =>
+const createStyles = ({ spacing, palettes, dark }: Theme) =>
   StyleSheet.create({
     card: {
       marginTop: Platform.select({ android: spacing[4] }),
@@ -55,10 +55,11 @@ const createStyles = ({ spacing, palettes }: Theme) =>
       paddingVertical: spacing[2],
     },
     list: {
+      paddingTop: spacing[2],
       paddingBottom: spacing[8],
     },
     subHeading: {
-      color: palettes.info['700'],
+      color: dark ? palettes.info['400'] : palettes.info['700'],
       marginBottom: spacing[2],
     },
   });

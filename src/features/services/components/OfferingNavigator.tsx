@@ -13,8 +13,8 @@ export interface OfferingTabsParamList extends ParamListBase {
 
 const TopTabs = createMaterialTopTabNavigator<OfferingTabsParamList>();
 
-const OfferingMasterScreen = () => <Offerings type="master" />;
-const OfferingBachelorScreen = () => <Offerings type="bachelor" />;
+export const OfferingBachelorScreen = () => <Offerings type="bachelor" />;
+export const OfferingMasterScreen = () => <Offerings type="master" />;
 
 export const OfferingNavigator = () => {
   const { t } = useTranslation();

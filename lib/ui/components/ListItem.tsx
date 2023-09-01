@@ -25,6 +25,7 @@ import { Text } from './Text';
 export interface ListItemProps extends TouchableHighlightProps {
   title: string | JSX.Element;
   subtitle?: string | JSX.Element;
+  subtitleProps?: TextProps;
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
@@ -49,6 +50,7 @@ export const ListItem = ({
   titleStyle,
   subtitle,
   subtitleStyle,
+  subtitleProps,
   leadingItem,
   trailingItem,
   linkTo,
@@ -154,6 +156,7 @@ export const ListItem = ({
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
+                {...subtitleProps}
               >
                 {subtitle}
               </Text>

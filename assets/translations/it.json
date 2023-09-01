@@ -281,7 +281,14 @@
     "title": "Avvisi"
   },
   "degreeCourseScreen": {
-    "title": "Dettaglio esame"
+    "title": "Dettaglio esame",
+    "period": "Periodo",
+    "examMode": "Modalità di esame",
+    "lecture": "Lezioni",
+    "classroomExercise": "Esercitazioni in aula",
+    "tutoring": "Tutoraggio",
+    "labExercise": "Esercitazioni in laboratorio",
+    "staff": "Docenti"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",

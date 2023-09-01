@@ -34,6 +34,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
+import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { UserStackParamList } from '../components/UserNavigator';
 
@@ -94,6 +95,9 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { mutate: handleLogout } = useLogout();
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
+  const currentCareerId = student?.username || ''.replace('s', '');
+  const person = useGetPerson(Number(currentCareerId.replace('s', '')));
+  console.debug('student', person.data);
 
   const styles = useStylesheet(createStyles);
   const enrollmentYear = useMemo(() => {

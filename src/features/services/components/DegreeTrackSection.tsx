@@ -19,7 +19,7 @@ type Props = {
 export const DegreeTrackSection = ({
   item: { teachingYear, data: courses },
 }: Props) => {
-  const { spacing, colors, palettes } = useTheme();
+  const { spacing, colors, palettes, dark } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   return (
@@ -53,7 +53,9 @@ export const DegreeTrackSection = ({
                 course.shortcode
               }-${index}`}
               style={{
-                backgroundColor: palettes.gray['100'],
+                backgroundColor: dark
+                  ? colors.surfaceDark
+                  : palettes.gray['100'],
               }}
               containerStyle={{
                 minHeight: 45,
@@ -91,13 +93,13 @@ export const DegreeTrackSection = ({
   );
 };
 
-const createStyles = ({ spacing, palettes }: Theme) =>
+const createStyles = ({ spacing, palettes, dark }: Theme) =>
   StyleSheet.create({
     icon: {
       marginRight: -spacing[1],
     },
     subHeading: {
-      color: palettes.info['700'],
+      color: dark ? palettes.info['400'] : palettes.info['700'],
       marginBottom: spacing[2],
     },
   });
