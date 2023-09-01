@@ -93,7 +93,13 @@ export const DegreeInfoScreen = () => {
   );
 };
 
-const createStyles = ({ spacing, fontWeights, palettes, fontSizes }: Theme) =>
+const createStyles = ({
+  spacing,
+  fontWeights,
+  palettes,
+  fontSizes,
+  dark,
+}: Theme) =>
   StyleSheet.create({
     heading: {
       paddingHorizontal: Platform.select({
@@ -117,6 +123,6 @@ const createStyles = ({ spacing, fontWeights, palettes, fontSizes }: Theme) =>
       paddingVertical: spacing[2],
     },
     subHeading: {
-      color: palettes.info['700'],
+      color: dark ? palettes.info['400'] : palettes.info['700'],
     },
   });

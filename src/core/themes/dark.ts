@@ -13,6 +13,7 @@ export const darkTheme: Theme = {
     ...lightTheme.colors,
     background: lightTheme.palettes.primary[700],
     surface: lightTheme.colors.surfaceDark,
+    surfaceDark: '#002B49',
     headersBackground: '#1e3444',
     heading: lightTheme.palettes.text[50],
     subHeading: lightTheme.palettes.orange[400],
