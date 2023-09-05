@@ -13,6 +13,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
 import { OverviewList } from '@lib/ui/components/OverviewList';
+import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
@@ -21,10 +22,22 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { OfferingCourseStaffInner } from '@polito/api-client/models';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
+import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
+
+const StaffListItem = ({ staff }: { staff: OfferingCourseStaffInner }) => {
+  const { data: person } = useGetPerson(staff.id);
+
+  return person ? (
+    <PersonListItem person={person} subtitle={staff.role} />
+  ) : (
+    <ListItem title=" - " subtitle={staff?.role} />
+  );
+};
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'DegreeCourse'>;
 const listTitleProps = { numberOfLines: 4 };
@@ -125,11 +138,10 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             <SectionHeader
               title={t('degreeCourseScreen.staff')}
               linkTo={{ screen: 'staff' }}
-              linkToMoreCount={offeringCourse?.staff.length}
             />
             <OverviewList>
               {offeringCourse?.staff.map(s => (
-                <ListItem key={s.id} title={s.role} />
+                <StaffListItem key={s.id} staff={s} />
               ))}
             </OverviewList>
           </Section>

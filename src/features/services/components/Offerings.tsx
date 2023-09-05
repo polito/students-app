@@ -21,6 +21,8 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
   const offerings = data ? data[type] : [];
   const hasOfferings = offerings && offerings?.length > 0;
 
+  console.debug('offerings', offerings);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"

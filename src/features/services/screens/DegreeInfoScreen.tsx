@@ -60,6 +60,12 @@ export const DegreeInfoScreen = () => {
                   <Text style={styles.value}>{degree?.duration}</Text>
                 </Text>
               )}
+              {degree?.faculty?.name && (
+                <Text style={styles.text}>
+                  <Text style={styles.label}>{t('common.faculty')}: </Text>
+                  <Text style={styles.value}>{degree?.faculty.name}</Text>
+                </Text>
+              )}
             </Card>
           </Section>
           <Section>
