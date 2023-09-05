@@ -112,10 +112,10 @@ const createStyles = ({
       marginBottom: spacing[2],
     },
     label: {
-      fontWeight: fontWeights.semibold,
+      fontWeight: fontWeights.medium,
     },
     text: {
-      marginBottom: spacing[1],
+      marginBottom: spacing[1.5],
     },
     value: {
       fontSize: fontSizes.sm,

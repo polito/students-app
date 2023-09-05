@@ -30,7 +30,7 @@ type DegreeTracksSection = {
 export const DegreeTracksScreen = () => {
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, fontWeights } = useTheme();
   const { t } = useTranslation();
   const degree = degreeQuery?.data?.data;
   const safeAreaInsets = useSafeAreaInsets();
@@ -126,6 +126,7 @@ export const DegreeTracksScreen = () => {
             >
               <SectionHeader
                 title={title}
+                titleStyle={{ fontWeight: fontWeights.medium }}
                 separator={false}
                 trailingItem={
                   <Icon
