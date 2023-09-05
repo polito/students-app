@@ -48,7 +48,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const courseQuery = useGetOfferingCourse({ courseShortcode, year });
   const { isLoading } = courseQuery;
   const offeringCourse = courseQuery.data?.data;
-  const { cfu, name, editions, hours, shortcode } = offeringCourse || {};
+  const { cfu, name, editions, shortcode } = offeringCourse || {};
+
+  console.debug('offeringCourse', offeringCourse);
 
   return (
     <ScrollView
@@ -145,7 +147,12 @@ export const DegreeCourseScreen = ({ route }: Props) => {
           <Section style={styles.staffSection}>
             <SectionHeader
               title={t('degreeCourseScreen.staff')}
-              linkTo={{ screen: 'staff' }}
+              linkTo={{
+                screen: 'Staff',
+                params: {
+                  personIds: offeringCourse?.staff?.map(s => s.id) || [],
+                },
+              }}
             />
             <OverviewList>
               {offeringCourse?.staff.map(s => (

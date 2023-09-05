@@ -63,7 +63,7 @@ export const useGetPersons = (personIds: number[] | undefined) => {
   const isLoading = useMemo(() => {
     if (!personIds) return true;
     return queries.some(q => q.isLoading);
-  }, [queries]);
+  }, [personIds, queries]);
 
   return { isLoading, queries };
 };
