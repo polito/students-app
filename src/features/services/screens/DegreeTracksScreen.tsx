@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SectionList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,7 +13,7 @@ import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourse
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { DegreeTrackSection } from '../components/DegreeTrackSection';
-import { DegreeContext } from '../context/DegreeContext';
+import { useDegreeContext } from '../context/DegreeContext';
 
 export type OfferingCourse = {
   teachingYear: number;
@@ -28,11 +28,8 @@ type DegreeTracksSection = {
 };
 
 export const DegreeTracksScreen = () => {
-  const { degreeId, year } = useContext(DegreeContext);
-  const degreeQuery = useGetOfferingDegree({
-    degreeId: degreeId as string,
-    year,
-  });
+  const { degreeId, year } = useDegreeContext();
+  const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const { spacing, colors } = useTheme();
   const { t } = useTranslation();
   const degree = degreeQuery?.data?.data;

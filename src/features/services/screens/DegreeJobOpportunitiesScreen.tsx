@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
@@ -11,14 +10,11 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getHtmlTextContent } from '../../../utils/html';
-import { DegreeContext } from '../context/DegreeContext';
+import { useDegreeContext } from '../context/DegreeContext';
 
 export const DegreeJobOpportunitiesScreen = () => {
-  const { degreeId, year } = useContext(DegreeContext);
-  const degreeQuery = useGetOfferingDegree({
-    degreeId: degreeId as string,
-    year,
-  });
+  const { degreeId, year } = useDegreeContext();
+  const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const styles = useStylesheet(createStyles);
   const degree = degreeQuery?.data?.data;
   const isLoading = degreeQuery.isLoading;

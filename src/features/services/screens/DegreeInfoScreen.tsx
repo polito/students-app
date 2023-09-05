@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -14,17 +13,14 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getHtmlTextContent } from '../../../utils/html';
-import { DegreeContext } from '../context/DegreeContext';
+import { useDegreeContext } from '../context/DegreeContext';
 
 export const DegreeInfoScreen = () => {
-  const { degreeId, year } = useContext(DegreeContext);
+  const { degreeId, year } = useDegreeContext();
   const { spacing } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const degreeQuery = useGetOfferingDegree({
-    degreeId: degreeId as string,
-    year,
-  });
+  const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const degree = degreeQuery?.data?.data;
   const isLoading = degreeQuery.isLoading;
 

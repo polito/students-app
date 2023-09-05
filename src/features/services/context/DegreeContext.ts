@@ -1,11 +1,14 @@
 import { createContext, useContext } from 'react';
 
-export const DegreeContext = createContext<{
-  degreeId?: string;
-  year?: string;
-}>({});
+export const DegreeContext = createContext<
+  | {
+      degreeId: string;
+      year?: string;
+    }
+  | undefined
+>(undefined);
 
-export const useCourseContext = () => {
+export const useDegreeContext = () => {
   const degreeContext = useContext(DegreeContext);
   if (!degreeContext)
     throw new Error(
