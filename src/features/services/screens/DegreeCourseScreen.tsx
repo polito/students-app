@@ -50,8 +50,6 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const offeringCourse = courseQuery.data?.data;
   const { cfu, name, editions, shortcode } = offeringCourse || {};
 
-  console.debug('offeringCourse', offeringCourse);
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -155,8 +153,8 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               }}
             />
             <OverviewList>
-              {offeringCourse?.staff.map(s => (
-                <StaffListItem key={s.id} staff={s} />
+              {offeringCourse?.staff.map(item => (
+                <StaffListItem key={item.id} staff={item} />
               ))}
             </OverviewList>
           </Section>
