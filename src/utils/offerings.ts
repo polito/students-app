@@ -1,3 +1,3 @@
-export const getNextShortYear = (year: string): string => {
-  return (Number(year) + 1).toString().substring(2, 4);
+export const getShortYear = (year: number): string => {
+  return year.toString().substring(2, 4);
 };

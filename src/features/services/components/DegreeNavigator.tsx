@@ -14,7 +14,7 @@ import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
-import { getNextShortYear } from '../../../utils/offerings';
+import { getShortYear } from '../../../utils/offerings';
 import { DegreeContext } from '../context/DegreeContext';
 import { DegreeInfoScreen } from '../screens/DegreeInfoScreen';
 import { DegreeJobOpportunitiesScreen } from '../screens/DegreeJobOpportunitiesScreen';
@@ -30,29 +30,23 @@ export interface DegreeTabsParamList extends ParamListBase {
 }
 const TopTabs = createMaterialTopTabNavigator<DegreeTabsParamList>();
 export const DegreeNavigator = ({ route, navigation }: Props) => {
-  const { palettes, spacing } = useTheme();
+  const { palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
   const { id: degreeId, year: initialYear } = route.params;
   const [year, setYear] = useState<string | undefined>(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
   useEffect(() => {
-    const editions = degreeQuery.data?.data?.editions;
+    const editions = degreeQuery.data?.data?.editions || [];
     const degreeYear = degreeQuery.data?.data?.year;
     if (degreeYear) {
+      const nextDegreeYear = Number(degreeYear) + 1;
       setYear(degreeYear);
       const accessibilityLabel = [
         t('profileScreen.enrollmentYear', {
-          enrollmentYear: `${degreeYear}/${getNextShortYear(degreeYear)}`,
+          enrollmentYear: `${degreeYear}/${getShortYear(nextDegreeYear)}`,
         }),
       ].join(' ');
-      const actions =
-        editions?.map(edition => ({
-          id: edition.toString(),
-          title: `${edition.toString()}/${getNextShortYear(
-            edition.toString(),
-          )}`,
-        })) || [];
       navigation.setOptions({
         headerRight: () => (
           <View
@@ -63,7 +57,11 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
           >
             <MenuView
               style={{ padding: spacing[1] }}
-              actions={actions}
+              actions={editions?.map(edition => ({
+                id: edition.toString(),
+                title: `${edition}/${getShortYear(Number(edition) + 1)}`,
+                state: edition === degreeYear ? 'on' : undefined,
+              }))}
               onPressAction={async ({ nativeEvent: { event } }) => {
                 setYear(() => event);
                 await degreeQuery.refetch();
@@ -71,12 +69,13 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
             >
               <Row align="center">
                 <Text variant="prose">
-                  {degreeYear}/{getNextShortYear(degreeYear)}
+                  {degreeYear}/{getShortYear(nextDegreeYear)}
                 </Text>
-                {!!actions && (
+                {!!editions && (
                   <Icon
+                    style={{ marginLeft: spacing[1] }}
                     icon={faAngleDown}
-                    color={palettes.primary[600]}
+                    color={dark ? palettes.text[300] : palettes.primary[600]}
                     size={12}
                   />
                 )}
@@ -86,7 +85,15 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
         ),
       });
     }
-  }, [navigation, spacing, degreeQuery, t, palettes.primary]);
+  }, [
+    navigation,
+    spacing,
+    degreeQuery,
+    t,
+    dark,
+    palettes.primary,
+    palettes.text,
+  ]);
 
   return (
     <DegreeContext.Provider value={{ degreeId, year }}>
