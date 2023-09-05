@@ -44,7 +44,7 @@ export const DegreeTrackSection = ({
             <ListItem
               title={course.name}
               titleStyle={{
-                maxWidth: '70%',
+                maxWidth: '80%',
               }}
               titleProps={{
                 numberOfLines: undefined,
