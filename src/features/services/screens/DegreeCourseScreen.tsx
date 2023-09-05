@@ -48,7 +48,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const courseQuery = useGetOfferingCourse({ courseShortcode, year });
   const { isLoading } = courseQuery;
   const offeringCourse = courseQuery.data?.data;
-  const { cfu, name, editions, shortcode } = offeringCourse || {};
+  const { cfu, name, editions, hours, shortcode } = offeringCourse || {};
 
   return (
     <ScrollView
@@ -87,7 +87,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             {!!offeringCourse?.hours?.lecture && (
               <ListItem
                 inverted
-                title={offeringCourse?.hours?.lecture?.toString()}
+                title={t('degreeCourseScreen.hours', {
+                  hours: offeringCourse?.hours?.lecture?.toString(),
+                })}
                 titleStyle={styles.title}
                 titleProps={listTitleProps}
                 subtitle={t('degreeCourseScreen.lecture')}
@@ -97,7 +99,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             {!!offeringCourse?.hours?.classroomExercise && (
               <ListItem
                 inverted
-                title={offeringCourse?.hours?.classroomExercise?.toString()}
+                title={t('degreeCourseScreen.hours', {
+                  hours: offeringCourse?.hours?.classroomExercise?.toString(),
+                })}
                 titleStyle={styles.title}
                 titleProps={listTitleProps}
                 subtitle={t('degreeCourseScreen.classroomExercise')}
@@ -107,7 +111,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             {!!offeringCourse?.hours?.labExercise && (
               <ListItem
                 inverted
-                title={offeringCourse?.hours?.labExercise?.toString()}
+                title={t('degreeCourseScreen.hours', {
+                  hours: offeringCourse?.hours?.labExercise?.toString(),
+                })}
                 titleStyle={styles.title}
                 titleProps={listTitleProps}
                 subtitle={t('degreeCourseScreen.labExercise')}
@@ -117,7 +123,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             {!!offeringCourse?.hours?.tutoring && (
               <ListItem
                 inverted
-                title={offeringCourse?.hours?.tutoring?.toString()}
+                title={t('degreeCourseScreen.hours', {
+                  hours: offeringCourse?.hours?.tutoring?.toString(),
+                })}
                 titleStyle={styles.title}
                 titleProps={listTitleProps}
                 subtitle={t('degreeCourseScreen.tutoring')}
