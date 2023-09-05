@@ -19,6 +19,7 @@ import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
+import { StaffScreen } from '../screens/StaffScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
 import { TicketListScreen } from '../screens/TicketListScreen';
@@ -55,6 +56,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   MessagesModal: undefined;
   Contacts: undefined;
   Person: { id: number };
+  Staff: { personIds: number[] };
   Offering: undefined;
   Degree: { id: string };
   DegreeCourse: { courseShortcode: string };
@@ -238,6 +240,7 @@ export const ServicesNavigator = () => {
           headerBackTitleVisible: false,
         }}
       />
+      <Stack.Screen name="Staff" component={StaffScreen} />
     </Stack.Navigator>
   );
 };
