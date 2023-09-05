@@ -289,7 +289,8 @@
     "classroomExercise": "Esercitazioni in aula",
     "tutoring": "Tutoraggio",
     "labExercise": "Esercitazioni in laboratorio",
-    "staff": "Docenti"
+    "staff": "Docenti",
+    "hours": "{{hours}} Ore"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
