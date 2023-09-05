@@ -33,7 +33,7 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
   const { palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
   const { id: degreeId, year: initialYear } = route.params;
-  const [year, setYear] = useState<string | undefined>(initialYear);
+  const [year, setYear] = useState(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
   useEffect(() => {
