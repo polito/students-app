@@ -41,6 +41,7 @@
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "faculty": "Classe di Laurea",
     "agent": "Operatore",
     "close": "Chiudi",
     "cfu": "CFU",
