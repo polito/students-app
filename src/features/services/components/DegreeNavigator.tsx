@@ -41,6 +41,11 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
     const degreeYear = degreeQuery.data?.data?.year;
     if (degreeYear) {
       setYear(degreeYear);
+      const accessibilityLabel = [
+        t('profileScreen.enrollmentYear', {
+          enrollmentYear: `${degreeYear}/${getNextShortYear(degreeYear)}`,
+        }),
+      ].join(' ');
       const actions =
         editions?.map(edition => ({
           id: edition.toString(),
@@ -51,19 +56,13 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
       navigation.setOptions({
         headerRight: () => (
           <View
-            accessibilityLabel={[
-              t('profileScreen.enrollmentYear', {
-                enrollmentYear: `${degreeYear}/${getNextShortYear(degreeYear)}`,
-              }),
-            ].join(' ')}
+            accessibilityLabel={accessibilityLabel}
             importantForAccessibility="yes"
             accessibilityRole="button"
             accessible={true}
           >
             <MenuView
-              style={{
-                padding: spacing[1],
-              }}
+              style={{ padding: spacing[1] }}
               actions={actions}
               onPressAction={async ({ nativeEvent: { event } }) => {
                 setYear(() => event);

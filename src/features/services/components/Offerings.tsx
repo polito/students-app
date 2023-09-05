@@ -19,9 +19,6 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const offerings = data ? data[type] : [];
-  const hasOfferings = offerings && offerings?.length > 0;
-
-  console.debug('offerings', offerings);
 
   return (
     <ScrollView
@@ -30,14 +27,14 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
       contentContainerStyle={styles.list}
     >
       <LoadingContainer loading={isLoading}>
-        {hasOfferings ? (
+        {!!offerings && offerings?.length > 0 ? (
           offerings?.map(item => (
             <Section key={item.code} style={styles.section}>
               <Text variant="subHeading" style={styles.subHeading}>
                 {item?.name || item.code}
               </Text>
               <OverviewList>
-                {item.degrees.map((degree, index) => (
+                {item?.degrees.map((degree, index) => (
                   <ListItem
                     containerStyle={styles.offeringListItem}
                     key={index}
@@ -76,9 +73,6 @@ const createStyles = ({ palettes, spacing, dark }: Theme) =>
     offeringListItem: {
       paddingVertical: spacing[1],
       minHeight: 45,
-    },
-    loadingIndicator: {
-      marginVertical: spacing[8],
     },
     section: {
       paddingTop: spacing[2],

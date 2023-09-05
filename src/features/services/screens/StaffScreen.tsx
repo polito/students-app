@@ -33,8 +33,6 @@ export const StaffScreen = ({ route }: Props) => {
     setStaff(staffData);
   }, [isLoading]);
 
-  console.debug('staff', staff);
-
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>

@@ -13,8 +13,8 @@ export interface OfferingTabsParamList extends ParamListBase {
 
 const TopTabs = createMaterialTopTabNavigator<OfferingTabsParamList>();
 
-export const OfferingBachelorScreen = () => <Offerings type="bachelor" />;
-export const OfferingMasterScreen = () => <Offerings type="master" />;
+const OfferingBachelorScreen = () => <Offerings type="bachelor" />;
+const OfferingMasterScreen = () => <Offerings type="master" />;
 
 export const OfferingNavigator = () => {
   const { t } = useTranslation();
@@ -24,16 +24,12 @@ export const OfferingNavigator = () => {
       <TopTabs.Screen
         name="OfferingBachelorScreen"
         component={OfferingBachelorScreen}
-        options={{
-          title: t('offeringBachelorScreen.title'),
-        }}
+        options={{ title: t('offeringBachelorScreen.title') }}
       />
       <TopTabs.Screen
         name="OfferingMasterScreen"
         component={OfferingMasterScreen}
-        options={{
-          title: t('offeringMasterScreen.title'),
-        }}
+        options={{ title: t('offeringMasterScreen.title') }}
       />
     </TopTabs.Navigator>
   );
