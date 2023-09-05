@@ -34,8 +34,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { useGetOffering } from '../../../core/queries/offeringHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import {
+  getStudentDegree,
+  getStudentEnrollmentYear,
+} from '../../../utils/students';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
@@ -95,15 +99,19 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { mutate: handleLogout } = useLogout();
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
-  const currentCareerId = student?.username || ''.replace('s', '');
-  const person = useGetPerson(Number(currentCareerId.replace('s', '')));
-  console.debug('student', person.data);
-
+  const { data: offerings } = useGetOffering();
   const styles = useStylesheet(createStyles);
-  const enrollmentYear = useMemo(() => {
-    if (!student) return '...';
-    return `${student.firstEnrollmentYear - 1}/${student.firstEnrollmentYear}`;
-  }, [student]);
+  console.debug('student', student);
+
+  const studentDegree = useMemo(
+    () => getStudentDegree(student, offerings),
+    [offerings, student],
+  );
+
+  const enrollmentYear = useMemo(
+    () => getStudentEnrollmentYear(student),
+    [student],
+  );
 
   useEffect(() => {
     navigation.setOptions({
@@ -153,17 +161,20 @@ export const ProfileScreen = ({ navigation }: Props) => {
             trailingItem={<Badge text={t('common.comingSoon')} />}
           />
           <OverviewList>
-            {/* //TODO: handle degreeId */}
             <ListItem
               title={student?.degreeName ?? ''}
               subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
-              linkTo={{
-                screen: 'Degree',
-                params: {
-                  degreeId: student?.degreeCode,
-                  year: student?.firstEnrollmentYear,
-                },
-              }}
+              linkTo={
+                studentDegree
+                  ? {
+                      screen: 'Degree',
+                      params: {
+                        id: studentDegree?.id,
+                        year: student?.firstEnrollmentYear,
+                      },
+                    }
+                  : undefined
+              }
             />
           </OverviewList>
           <OverviewList indented>
