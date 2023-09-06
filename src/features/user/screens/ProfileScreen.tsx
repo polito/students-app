@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -24,7 +24,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Student } from '@polito/api-client';
-import messaging from '@react-native-firebase/messaging';
 import {
   MenuAction,
   MenuView,
@@ -108,14 +107,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
     });
   }, [navigation, student]);
 
-  const [token, setToken] = useState('');
-
-  useEffect(() => {
-    messaging()
-      .getToken()
-      .then(tk => setToken(tk));
-  }, []);
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -123,7 +114,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
     >
       <SafeAreaView>
         <Section style={styles.header}>
-          <Text selectable={true}>Token: {token}</Text>
           <Text weight="bold" variant="title" style={styles.title}>
             {student?.firstName} {student?.lastName}
           </Text>

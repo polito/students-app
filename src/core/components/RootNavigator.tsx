@@ -14,6 +14,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import messaging from '@react-native-firebase/messaging';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 import { useNavigation } from '@react-navigation/native';
@@ -25,7 +26,6 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { usePreferencesContext } from '../contexts/PreferencesContext';
 import {
   useGetModalMessages,
   useGetStudent,
@@ -43,13 +43,11 @@ export const RootNavigator = () => {
   const { data: student } = useGetStudent();
   const preferencesQuery = useUpdateDevicePreferences();
 
-  const { language } = usePreferencesContext();
-  useEffect(() => {
-    if (language !== 'it')
-      preferencesQuery.mutate({
-        updatePreferencesRequest: { language: 'en' },
-      });
-  }, []);
+  messaging().onTokenRefresh(fcmRegistrationToken => {
+    preferencesQuery.mutate({
+      updatePreferencesRequest: { fcmRegistrationToken },
+    });
+  });
 
   useEffect(() => {
     if (student?.smartCardPicture) {
