@@ -26,6 +26,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import {
@@ -48,6 +49,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
 
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
+
+  const isOffline = useOfflineDisabled();
 
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
@@ -142,7 +145,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               </Row>
             </Col>
           </View>
-          <OverviewList loading={teacherQuery.isLoading} indented>
+          <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
             <ListItem
               leadingItem={
                 <Icon icon={faLocationDot} size={fontSizes['2xl']} />

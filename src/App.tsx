@@ -10,8 +10,10 @@ import { PreferencesProvider } from './core/providers/PreferencesProvider';
 import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
 import { initSentry } from './utils/sentry';
+import { extendSuperJSON } from './utils/superjson';
 
 initSentry();
+extendSuperJSON();
 
 export const App = () => {
   return (

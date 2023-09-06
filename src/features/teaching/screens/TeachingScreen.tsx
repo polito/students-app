@@ -12,6 +12,7 @@ import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Badge } from '@lib/ui/components/Badge';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -26,6 +27,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -43,6 +45,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = usePreferencesContext();
+  const isOffline = useOfflineDisabled();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -103,13 +106,15 @@ export const TeachingScreen = ({ navigation }: Props) => {
             }
           />
           <OverviewList
-            loading={coursesQuery.isLoading}
+            loading={coursesQuery.isLoading && !isOffline}
             indented
-            emptyStateText={
-              coursesQuery.data?.length ?? 0 > 0
+            emptyStateText={(() => {
+              if (isOffline) return t('common.cacheMiss');
+
+              return coursesQuery.data?.length ?? 0 > 0
                 ? t('teachingScreen.allCoursesHidden')
-                : t('coursesScreen.emptyState')
-            }
+                : t('coursesScreen.emptyState');
+            })()}
           >
             {courses.map(course => (
               <CourseListItem
@@ -130,9 +135,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
             }
           />
           <OverviewList
-            loading={examsQuery.isLoading || coursesQuery.isLoading}
+            loading={
+              !isOffline && (examsQuery.isLoading || coursesQuery.isLoading)
+            }
             indented
-            emptyStateText={t('examsScreen.emptyState')}
+            emptyStateText={
+              isOffline ? t('common.cacheMiss') : t('examsScreen.emptyState')
+            }
           >
             {exams.map(exam => (
               <ExamListItem key={exam.id} exam={exam} />
@@ -145,7 +154,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <View style={GlobalStyles.relative}>
             <Card style={styles.transcriptCard}>
               {studentQuery.isLoading ? (
-                <ActivityIndicator style={styles.loader} />
+                isOffline ? (
+                  <EmptyState message={t('common.cacheMiss')} />
+                ) : (
+                  <ActivityIndicator style={styles.loader} />
+                )
               ) : (
                 <TouchableHighlight
                   onPress={() => navigation.navigate('Transcript')}

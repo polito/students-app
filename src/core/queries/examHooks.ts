@@ -1,14 +1,8 @@
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
-import {
-  faCircleMinus,
-  faCircleXmark,
-  faSpinner,
-} from '@fortawesome/free-solid-svg-icons';
+
+
 import {
   Exam as ApiExam,
   BookExamRequest,
-  ExamStatusEnum,
   ExamsApi,
 } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -23,32 +17,10 @@ const useExamsClient = (): ExamsApi => {
 };
 
 const mapApiExamToExam = (exam: ApiExam): Exam => {
-  let statusIcon: IconDefinition;
-
-  switch (exam.status) {
-    case ExamStatusEnum.Booked:
-    case ExamStatusEnum.RequestAccepted:
-      statusIcon = faCircleCheck;
-      break;
-    case ExamStatusEnum.Requested:
-      statusIcon = faSpinner;
-      break;
-    case ExamStatusEnum.RequestRejected:
-      statusIcon = faCircleXmark;
-      break;
-    case ExamStatusEnum.Unavailable:
-      statusIcon = faCircleMinus;
-      break;
-    default:
-      statusIcon = faCircle;
-      break;
-  }
-
   return {
     ...exam,
     isTimeToBeDefined:
       exam.examStartsAt !== null && exam.examStartsAt.getHours() === 0,
-    statusIcon,
   };
 };
 

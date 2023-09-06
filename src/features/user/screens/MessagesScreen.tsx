@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -14,6 +15,7 @@ export const MessagesScreen = () => {
   const messagesQuery = useGetMessages();
 
   const { isLoading, data: messages } = messagesQuery;
+  const { t } = useTranslation();
 
   return (
     <ScrollView
@@ -22,7 +24,10 @@ export const MessagesScreen = () => {
     >
       <SafeAreaView>
         <Section style={{ marginTop: spacing['2'] }}>
-          <OverviewList loading={isLoading}>
+          <OverviewList
+            loading={isLoading}
+            emptyStateText={t('messagesScreen.empty')}
+          >
             {messages?.map((message, index) => (
               <MessageListItem
                 messageItem={message}
