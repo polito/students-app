@@ -55,7 +55,7 @@ export const useGetStudent = () => {
           data.isCurrentlyEnrolled,
         );
       },
-      staleTime: Infinity,
+      cacheTime: Infinity,
     },
   );
 };
