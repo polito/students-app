@@ -8,16 +8,15 @@ import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getHtmlTextContent } from '../../../utils/html';
 import { useDegreeContext } from '../context/DegreeContext';
 
 export const DegreeInfoScreen = () => {
   const { degreeId, year } = useDegreeContext();
-  const { spacing } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
@@ -28,7 +27,6 @@ export const DegreeInfoScreen = () => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
-      contentContainerStyle={{ paddingBottom: spacing[8] }}
     >
       <SafeAreaView>
         <LoadingContainer loading={isLoading}>
@@ -91,6 +89,7 @@ export const DegreeInfoScreen = () => {
           </Section>
         </LoadingContainer>
       </SafeAreaView>
+      <BottomBarSpacer />
     </ScrollView>
   );
 };

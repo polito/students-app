@@ -8,6 +8,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getHtmlTextContent } from '../../../utils/html';
 import { useDegreeContext } from '../context/DegreeContext';
@@ -39,6 +40,7 @@ export const DegreeJobOpportunitiesScreen = () => {
           </Section>
         </LoadingContainer>
       </SafeAreaView>
+      <BottomBarSpacer />
     </ScrollView>
   );
 };
@@ -52,7 +54,6 @@ const createStyles = ({ spacing, palettes, dark }: Theme) =>
     },
     list: {
       paddingTop: spacing[2],
-      paddingBottom: spacing[8],
     },
     subHeading: {
       color: dark ? palettes.info['400'] : palettes.info['700'],
