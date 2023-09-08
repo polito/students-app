@@ -101,7 +101,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const student = studentQuery.data;
   const { data: offerings } = useGetOffering();
   const styles = useStylesheet(createStyles);
-  console.debug('student', student);
 
   const studentDegree = useMemo(
     () => getStudentDegree(student, offerings),
