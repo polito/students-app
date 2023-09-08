@@ -138,9 +138,7 @@ export const DegreeTracksScreen = () => {
             </View>
           </Pressable>
         )}
-        renderItem={({ item, section }) =>
-          section.isExpanded ? <DegreeTrackSection item={item} /> : null
-        }
+        renderItem={({ item }) => <DegreeTrackSection item={item} />}
       />
     </OverviewList>
   );

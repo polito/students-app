@@ -41,6 +41,7 @@
       "false": "Non active",
       "true": "Active"
     },
+    "faculty": "Faculty",
     "agent": "Agent",
     "close": "Close",
     "all": "All",
@@ -206,7 +207,15 @@
     "title": "Master degree"
   },
   "degreeCourseScreen": {
-    "title": "Course"
+    "title": "Course",
+    "period": "Period",
+    "examMode": "Exam mode",
+    "lecture": "Lecture",
+    "classroomExercise": "Classroom excercise",
+    "tutoring": "Tutoring",
+    "labExercise": "Lab excercise",
+    "staff": "Staff",
+    "hours": "{{hours}} hours"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",

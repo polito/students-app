@@ -11,6 +11,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOffering } from '../../../core/queries/offeringHooks';
 
 export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
@@ -24,7 +25,6 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[offeringQuery]} manual />}
-      contentContainerStyle={styles.list}
     >
       <LoadingContainer loading={isLoading}>
         {!!offerings && offerings?.length > 0 ? (
@@ -57,6 +57,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
           </OverviewList>
         )}
       </LoadingContainer>
+      <BottomBarSpacer />
     </ScrollView>
   );
 };
@@ -76,8 +77,5 @@ const createStyles = ({ palettes, spacing, dark }: Theme) =>
     },
     section: {
       paddingTop: spacing[2],
-    },
-    list: {
-      paddingBottom: spacing[8],
     },
   });
