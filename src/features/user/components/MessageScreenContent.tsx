@@ -12,7 +12,7 @@ import { Message } from '@polito/api-client';
 
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { sanitizeHtml } from '../../../utils/html';
+import { linkUrls } from '../../../utils/html';
 
 export type Props = {
   message: Message;
@@ -27,7 +27,11 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
   const text = message?.message;
   const personQuery = useGetPerson(message?.senderId || undefined);
 
-  const html = useMemo(() => sanitizeHtml(text ?? ''), [text]);
+  // replace every url in string with a link
+  const html = useMemo(() => {
+    if (!text) return '';
+    return linkUrls(text);
+  }, [text]);
 
   return (
     <SafeAreaView>
