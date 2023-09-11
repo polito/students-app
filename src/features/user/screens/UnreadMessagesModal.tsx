@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   faCheckCircle,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButton } from '@lib/ui/components/CtaButton';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -31,6 +33,8 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
   const messagesToReadCount = messagesToRead?.length || 0;
   const isLastMessageToRead = messagesReadCount + 1 === messagesToReadCount;
   const { isScreenReaderEnabled, announce } = useScreenReader();
+
+  const styles = useStylesheet(createStyles);
 
   useEffect(() => {
     if (!messages) return;
@@ -82,17 +86,26 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         {currentMessage && (
           <MessageScreenContent message={currentMessage} modal />
         )}
-        <CtaButtonSpacer />
       </ScrollView>
-      <CtaButton
-        title={t(
-          isLastMessageToRead
-            ? 'messagesScreen.end'
-            : 'messagesScreen.readNext',
-        )}
-        action={onConfirm}
-        icon={isLastMessageToRead ? faCheckCircle : faChevronRight}
-      />
+      <View style={styles.buttonContainer}>
+        <CtaButton
+          absolute={false}
+          title={t(
+            isLastMessageToRead
+              ? 'messagesScreen.end'
+              : 'messagesScreen.readNext',
+          )}
+          action={onConfirm}
+          icon={isLastMessageToRead ? faCheckCircle : faChevronRight}
+        />
+      </View>
     </>
   );
 };
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    buttonContainer: {
+      paddingVertical: spacing[2],
+    },
+  });
