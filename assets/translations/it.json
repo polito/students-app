@@ -41,7 +41,7 @@
       "false": "Non attiva",
       "true": "Attiva"
     },
-    "faculty": "Classe di Laurea",
+    "faculty": "Collegio",
     "agent": "Operatore",
     "close": "Chiudi",
     "search": "Cerca",
@@ -196,11 +196,11 @@
     "emptyMessage": "Nessun corso disponibile"
   },
   "degreeScreen": {
-    "title": "Dettaglio corso",
+    "degreeClass": "Classe di laurea",
     "info": "Info",
-    "tracks": "Piano studi",
     "jobOpportunities": "Sbocchi",
-    "designAndCommunication": "Design e comunicazione"
+    "title": "Dettaglio corso",
+    "tracks": "Piano studi"
   },
   "offeringBachelorScreen": {
     "title": "Lauree triennali"

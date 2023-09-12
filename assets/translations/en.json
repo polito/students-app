@@ -195,10 +195,11 @@
     "emptyMessage": "No course available"
   },
   "degreeScreen": {
-    "title": "Course detail",
+    "degreeClass": "Degree code",
     "info": "Info",
-    "tracks": "Tracks",
-    "jobOpportunities": "Job opportunities"
+    "jobOpportunities": "Job opportunities",
+    "title": "Course detail",
+    "tracks": "Tracks"
   },
   "offeringBachelorScreen": {
     "title": "Bachelor degree"

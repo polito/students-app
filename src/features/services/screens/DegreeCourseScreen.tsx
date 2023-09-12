@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -8,10 +9,11 @@ import {
   faPersonChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
-import { Col } from '@lib/ui/components/Col';
+import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
+import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -22,14 +24,15 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { OfferingCourseStaffInner } from '@polito/api-client/models';
+import { CourseStaffInner } from '@polito/api-client/models';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
-const StaffListItem = ({ staff }: { staff: OfferingCourseStaffInner }) => {
+const StaffListItem = ({ staff }: { staff: CourseStaffInner }) => {
   const { data: person } = useGetPerson(staff.id);
 
   return person ? (
@@ -47,9 +50,15 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const courseQuery = useGetOfferingCourse({ courseShortcode, year });
   const { isLoading } = courseQuery;
-  const offeringCourse = courseQuery.data?.data;
-  const { cfu, name, editions, shortcode } = offeringCourse || {};
+  const offeringCourse = courseQuery.data;
+  const { name, shortcode } = offeringCourse || {};
 
+  const moreStaffCount = useMemo(() => {
+    if (!offeringCourse) return undefined;
+    return offeringCourse.staff?.length > 3
+      ? offeringCourse.staff?.length - 3
+      : undefined;
+  }, [offeringCourse]);
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -63,24 +72,27 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               {shortcode}
             </Text>
           </Section>
-          <Card padded>
+          <Card style={styles.metricsCard}>
             <Row justify="space-between">
-              {!!editions && (
-                <Col justify="flex-start" flex={1}>
-                  <Text>{t('degreeCourseScreen.period')}</Text>
-                  <Text variant="subHeading" style={styles.label}>
-                    {editions?.toString()}
-                  </Text>
-                </Col>
-              )}
-              {!!cfu && (
-                <Col justify="flex-start" flex={1}>
-                  <Text>{t('common.credits')}</Text>
-                  <Text variant="subHeading" style={styles.label}>
-                    {cfu} {t('common.cfu')}
-                  </Text>
-                </Col>
-              )}
+              <Grid>
+                <Metric
+                  title={t('common.period')}
+                  value={`${offeringCourse?.teachingPeriod ?? '--'} - ${
+                    offeringCourse?.year ?? '--'
+                  }`}
+                  style={GlobalStyles.grow}
+                />
+                <Metric
+                  title={t('courseInfoTab.creditsLabel')}
+                  value={t('common.creditsWithUnit', {
+                    credits: offeringCourse?.cfu,
+                  })}
+                  accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
+                    offeringCourse?.cfu
+                  }`}
+                  style={GlobalStyles.grow}
+                />
+              </Grid>
             </Row>
           </Card>
           <OverviewList style={styles.overviewList}>
@@ -145,15 +157,20 @@ export const DegreeCourseScreen = ({ route }: Props) => {
           <Section style={styles.staffSection}>
             <SectionHeader
               title={t('degreeCourseScreen.staff')}
-              linkTo={{
-                screen: 'Staff',
-                params: {
-                  personIds: offeringCourse?.staff?.map(s => s.id) || [],
-                },
-              }}
+              linkToMoreCount={moreStaffCount}
+              linkTo={
+                moreStaffCount
+                  ? {
+                      screen: 'Staff',
+                      params: {
+                        personIds: offeringCourse?.staff?.map(s => s.id) || [],
+                      },
+                    }
+                  : undefined
+              }
             />
             <OverviewList>
-              {offeringCourse?.staff.map(item => (
+              {offeringCourse?.staff.slice(0, 3).map(item => (
                 <StaffListItem key={item.id} staff={item} />
               ))}
             </OverviewList>
@@ -173,6 +190,12 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       }),
       paddingTop: spacing[2],
       marginBottom: spacing[1],
+    },
+    metricsCard: {
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
+      marginTop: 0,
+      marginBottom: spacing[7],
     },
     shortCode: {
       paddingHorizontal: Platform.select({

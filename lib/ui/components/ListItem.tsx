@@ -133,8 +133,8 @@ export const ListItem = ({
                   titleStyle,
                 ]}
                 weight="medium"
-                numberOfLines={card ? 2 : 1}
-                ellipsizeMode="tail"
+                numberOfLines={titleProps?.numberOfLines ?? (card ? 2 : 1)}
+                ellipsizeMode={titleProps?.ellipsizeMode ?? 'tail'}
                 {...titleProps}
               >
                 {title}

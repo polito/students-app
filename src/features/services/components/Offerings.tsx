@@ -25,12 +25,13 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[offeringQuery]} manual />}
+      contentContainerStyle={styles.container}
     >
       <LoadingContainer loading={isLoading}>
         {!!offerings && offerings?.length > 0 ? (
           offerings?.map(item => (
             <Section key={item.code} style={styles.section}>
-              <Text variant="subHeading" style={styles.subHeading}>
+              <Text variant="subHeading" style={styles.offeringClass}>
                 {item?.name || item.code}
               </Text>
               <OverviewList>
@@ -39,6 +40,10 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
                     containerStyle={styles.offeringListItem}
                     key={index}
                     title={degree?.name || degree.id}
+                    titleProps={{
+                      ellipsizeMode: undefined,
+                      numberOfLines: undefined,
+                    }}
                     accessibilityRole="button"
                     linkTo={{
                       screen: 'Degree',
@@ -64,18 +69,19 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
 
 const createStyles = ({ palettes, spacing, dark }: Theme) =>
   StyleSheet.create({
-    subHeading: {
+    container: {
+      paddingVertical: spacing[5],
+    },
+    offeringClass: {
       marginHorizontal: spacing[4],
-      color: dark ? palettes.info['400'] : palettes.info['700'],
     },
     emptyMessage: {
       marginTop: spacing[4],
     },
     offeringListItem: {
-      paddingVertical: spacing[1],
       minHeight: 45,
     },
     section: {
-      paddingTop: spacing[2],
+      marginBottom: spacing[2],
     },
   });

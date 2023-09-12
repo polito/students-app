@@ -206,12 +206,10 @@ export const ServicesNavigator = () => {
         name="Offering"
         component={OfferingNavigator}
         options={{
-          headerLeft: () => <HeaderLogo />,
           headerTitle: t('offeringScreen.title'),
           headerLargeTitle: false,
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -240,7 +238,13 @@ export const ServicesNavigator = () => {
           headerBackTitleVisible: false,
         }}
       />
-      <Stack.Screen name="Staff" component={StaffScreen} />
+      <Stack.Screen
+        name="Staff"
+        component={StaffScreen}
+        options={{
+          headerBackTitleVisible: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };

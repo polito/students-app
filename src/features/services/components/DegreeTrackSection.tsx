@@ -68,7 +68,7 @@ export const DegreeTrackSection = ({
               }}
               accessibilityRole="button"
               trailingItem={
-                <Row>
+                <Row align="center">
                   <Text
                     variant="prose"
                     style={{

@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
@@ -30,100 +36,89 @@ export const DegreeInfoScreen = () => {
     >
       <SafeAreaView>
         <LoadingContainer loading={isLoading}>
-          <Section>
+          <>
             <ScreenTitle
               style={styles.heading}
               title={degree?.name || degree?.id}
             />
-            <Card style={styles.card}>
+            <Card padded style={styles.overviewCard}>
               {degree?.location && (
-                <Text style={styles.text}>
+                <Text>
                   <Text style={styles.label}>{t('common.location')}: </Text>
-                  <Text style={styles.value}>{degree?.location}</Text>
+                  <Text>{degree?.location}</Text>
                 </Text>
               )}
               {degree?.department?.name && (
-                <Text style={styles.text}>
+                <Text>
                   <Text style={styles.label}>{t('common.department')}: </Text>
-                  <Text style={styles.value}>{degree?.department?.name}</Text>
-                </Text>
-              )}
-              {degree?.duration && (
-                <Text style={styles.text}>
-                  <Text style={styles.label}>{t('common.duration')}: </Text>
-                  <Text style={styles.value}>{degree?.duration}</Text>
+                  <Text>{degree?.department?.name}</Text>
                 </Text>
               )}
               {degree?.faculty?.name && (
-                <Text style={styles.text}>
+                <Text>
                   <Text style={styles.label}>{t('common.faculty')}: </Text>
-                  <Text style={styles.value}>{degree?.faculty.name}</Text>
+                  <Text>{degree?.faculty.name}</Text>
+                </Text>
+              )}
+              {degree?.duration && (
+                <Text>
+                  <Text style={styles.label}>{t('common.duration')}: </Text>
+                  <Text>{degree?.duration}</Text>
+                </Text>
+              )}
+              {degree?._class && (
+                <Text>
+                  <Text style={styles.label}>
+                    {t('degreeScreen.degreeClass')}:{' '}
+                  </Text>
+                  <Text>
+                    {degree?._class.name} ({degree._class.code})
+                  </Text>
                 </Text>
               )}
             </Card>
-          </Section>
+          </>
           <Section>
-            <Card style={styles.card}>
-              <Text
-                variant="subHeading"
-                style={[styles.subHeading, { marginTop: 0 }]}
-              >
-                {t('common.notes')}
-              </Text>
-              {degree?.notes?.map((note, index) => (
-                <Text key={index} style={styles.text}>
-                  {getHtmlTextContent(note)}
-                </Text>
-              ))}
-              {degree?.objectives?.content && (
-                <>
-                  <Text variant="subHeading" style={styles.subHeading}>
-                    {t('common.objectives')}
+            <Card padded gapped>
+              <View>
+                <Text variant="subHeading">{t('common.notes')}</Text>
+                {degree?.notes?.map((note, index) => (
+                  <Text key={index} variant="longProse">
+                    {getHtmlTextContent(note)}
                   </Text>
-                  <Text style={styles.text}>
+                ))}
+              </View>
+              {degree?.objectives?.content && (
+                <View>
+                  <Text variant="subHeading">{t('common.objectives')}</Text>
+                  <Text variant="longProse">
                     {getHtmlTextContent(degree?.objectives?.content)}
                   </Text>
-                </>
+                </View>
               )}
             </Card>
           </Section>
         </LoadingContainer>
+        <BottomBarSpacer />
       </SafeAreaView>
-      <BottomBarSpacer />
     </ScrollView>
   );
 };
 
-const createStyles = ({
-  spacing,
-  fontWeights,
-  palettes,
-  fontSizes,
-  dark,
-}: Theme) =>
+const createStyles = ({ spacing, fontWeights, fontSizes }: Theme) =>
   StyleSheet.create({
+    overviewCard: {
+      gap: spacing[1],
+    },
     heading: {
       paddingHorizontal: Platform.select({
         android: spacing[2],
         ios: spacing[4],
       }),
       paddingTop: spacing[3],
-      marginBottom: spacing[2],
     },
     label: {
+      fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
-    },
-    text: {
-      marginBottom: spacing[1.5],
-    },
-    value: {
-      fontSize: fontSizes.sm,
-    },
-    card: {
-      paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2],
-    },
-    subHeading: {
-      color: dark ? palettes.info['400'] : palettes.info['700'],
     },
   });
