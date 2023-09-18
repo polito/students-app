@@ -247,7 +247,9 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
+    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
+    "extra": "Extra APSP",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "There are no notices here",

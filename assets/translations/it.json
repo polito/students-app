@@ -248,7 +248,9 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
+    "extra": "Extra carico",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
