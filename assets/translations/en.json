@@ -36,6 +36,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "other": "Other",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",

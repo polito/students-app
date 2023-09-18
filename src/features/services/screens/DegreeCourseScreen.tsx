@@ -1,6 +1,12 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import {
   faBriefcase,
@@ -8,6 +14,7 @@ import {
   faMicroscope,
   faPersonChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
@@ -23,10 +30,13 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { CourseStaffInner } from '@polito/api-client/models';
+import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
@@ -45,11 +55,16 @@ const StaffListItem = ({ staff }: { staff: CourseStaffInner }) => {
 type Props = NativeStackScreenProps<ServiceStackParamList, 'DegreeCourse'>;
 const listTitleProps = { numberOfLines: 4 };
 export const DegreeCourseScreen = ({ route }: Props) => {
-  const { courseShortcode, year } = route.params;
+  const { courseShortcode, year: initialYear } = route.params;
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const courseQuery = useGetOfferingCourse({ courseShortcode, year });
+  const [year, setYear] = useState(initialYear);
+  const courseQuery = useGetOfferingCourse({
+    courseShortcode,
+    year,
+  });
   const { isLoading } = courseQuery;
+  const { spacing, palettes } = useTheme();
   const offeringCourse = courseQuery.data;
   const { name, shortcode } = offeringCourse || {};
 
@@ -59,6 +74,15 @@ export const DegreeCourseScreen = ({ route }: Props) => {
       ? offeringCourse.staff?.length - 3
       : undefined;
   }, [offeringCourse]);
+
+  useEffect(() => {
+    if (!courseQuery.isLoading) {
+      setYear(offeringCourse?.editions[0] || initialYear);
+    }
+  }, [offeringCourse, courseQuery.isLoading]);
+
+  console.debug('editions', offeringCourse?.editions);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -75,13 +99,41 @@ export const DegreeCourseScreen = ({ route }: Props) => {
           <Card style={styles.metricsCard}>
             <Row justify="space-between">
               <Grid>
-                <Metric
-                  title={t('common.period')}
-                  value={`${offeringCourse?.teachingPeriod ?? '--'} - ${
-                    offeringCourse?.year ?? '--'
-                  }`}
+                <View
                   style={GlobalStyles.grow}
-                />
+                  importantForAccessibility="yes"
+                  accessibilityRole="button"
+                  accessible={true}
+                >
+                  {/* TODO: implement right logic here */}
+                  <MenuView
+                    actions={(offeringCourse?.editions || [])?.map(edition => ({
+                      id: edition.toString(),
+                      title: edition,
+                      state: edition === year ? 'on' : undefined,
+                    }))}
+                    onPressAction={async ({ nativeEvent: { event } }) => {
+                      setYear(() => event);
+                      await courseQuery.refetch();
+                    }}
+                  >
+                    <Row justify="center" align="flex-start">
+                      <Metric
+                        title={t('common.period')}
+                        value={`${offeringCourse?.teachingPeriod ?? '--'} - ${
+                          offeringCourse?.year ?? '--'
+                        }`}
+                        style={GlobalStyles.grow}
+                      />
+                      <Icon
+                        icon={faAngleDown}
+                        color={palettes.secondary['500']}
+                        size={12}
+                      />
+                    </Row>
+                  </MenuView>
+                </View>
+
                 <Metric
                   title={t('courseInfoTab.creditsLabel')}
                   value={t('common.creditsWithUnit', {
@@ -175,6 +227,22 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               ))}
             </OverviewList>
           </Section>
+          <Section>
+            <SectionHeader title={t('common.other')} />
+            <OverviewList>
+              <ListItem
+                title={t('courseGuideScreen.title')}
+                linkTo={{
+                  screen: 'DegreeCourseGuide',
+                  params: {
+                    courseShortcode: shortcode,
+                    year: year,
+                  },
+                }}
+              />
+            </OverviewList>
+          </Section>
+          <BottomBarSpacer />
         </LoadingContainer>
       </SafeAreaView>
     </ScrollView>

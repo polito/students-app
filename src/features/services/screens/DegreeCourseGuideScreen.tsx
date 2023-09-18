@@ -21,12 +21,13 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
     year,
   });
   const { spacing } = useTheme();
-  const offeringCourse = courseQuery.data?.data;
+  const offeringCourse = courseQuery.data;
 
   return (
     <ScrollView
       refreshControl={<RefreshControl queries={[courseQuery]} manual />}
       contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ marginTop: spacing[1] }}
     >
       <SafeAreaView>
         <Card
@@ -39,7 +40,11 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
           }}
         >
           {offeringCourse?.guide.map((section, i) => (
-            <Col justify="flex-start" key={i}>
+            <Col
+              justify="flex-start"
+              key={i}
+              style={{ paddingBottom: spacing[2] }}
+            >
               <Text variant="subHeading" accessibilityRole="header">
                 {section.title}
               </Text>

@@ -14,7 +14,6 @@ export const GroupCoursesExpanded = ({ courses }: Props) => {
     <OverviewList
       style={{
         marginTop: spacing[4],
-        paddingBottom: spacing[1],
         marginHorizontal: 0,
       }}
     >
