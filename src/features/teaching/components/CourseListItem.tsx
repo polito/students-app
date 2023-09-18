@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 
@@ -71,9 +71,18 @@ export const CourseListItem = ({
 
   const hasDetails = course.id != null;
 
+  const subtitle = useMemo(() => {
+    return (
+      `${course.cfu} ${t('common.credits').toLowerCase()}` +
+      (!course.isInPersonalStudyPlan ? ` • ${t('courseListItem.extra')}` : '') +
+      (course.isOverBooking ? ` • ${t('courseListItem.overbooking')}` : '')
+    );
+  }, [course.cfu, course.isInPersonalStudyPlan, course.isOverBooking, t]);
+
   const listItem = (
     <ListItem
       accessible={accessible}
+      disabled={course.isOverBooking}
       linkTo={
         hasDetails
           ? {
@@ -91,7 +100,7 @@ export const CourseListItem = ({
         course.cfu
       } ${t('common.credits')}`}
       title={course.name}
-      subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
+      subtitle={subtitle}
       leadingItem={
         <CourseIcon
           icon={course.id ? preferences.courses[course.id]?.icon : undefined}

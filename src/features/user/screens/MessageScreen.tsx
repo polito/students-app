@@ -2,6 +2,7 @@ import { ScrollView } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetMessages } from '../../../core/queries/studentHooks';
 import { MessageScreenContent } from '../components/MessageScreenContent';
 import { UserStackParamList } from '../components/UserNavigator';
@@ -16,6 +17,7 @@ export const MessageScreen = ({ route }: Props) => {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       {message && <MessageScreenContent message={message} />}
+      <BottomBarSpacer />
     </ScrollView>
   );
 };

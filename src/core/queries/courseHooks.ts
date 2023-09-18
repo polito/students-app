@@ -44,6 +44,7 @@ export const useGetCourses = () => {
     coursesClient
       .getCourses()
       .then(pluckData)
+      .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
       .then(p => {
         let hasNewPreferences = false;
         // Associate each course with a set of preferences, if missing
