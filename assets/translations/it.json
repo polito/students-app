@@ -36,17 +36,16 @@
     "yellow": "Giallo"
   },
   "common": {
-    "other": "Altro",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
-    "faculty": "Classe di Laurea",
+    "faculty": "Collegio",
     "agent": "Operatore",
     "close": "Chiudi",
-    "cfu": "CFU",
     "search": "Cerca",
+    "cfu": "CFU",
     "all": "Tutti",
     "department": "Dipartimento",
     "location": "Sede",
@@ -197,11 +196,11 @@
     "emptyMessage": "Nessun corso disponibile"
   },
   "degreeScreen": {
-    "title": "Dettaglio corso",
+    "degreeClass": "Classe di laurea",
     "info": "Info",
-    "tracks": "Piano studi",
     "jobOpportunities": "Sbocchi",
-    "designAndCommunication": "Design e comunicazione"
+    "title": "Dettaglio corso",
+    "tracks": "Piano studi"
   },
   "offeringBachelorScreen": {
     "title": "Lauree triennali"
@@ -276,9 +275,7 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
-    "extra": "Extra carico",
-    "overbooking": "Overbooking"
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",

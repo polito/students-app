@@ -51,6 +51,17 @@ export const useGetOfferingCourse = ({
     prefixKey(
       compact([DEGREES_QUERY_KEY, COURSES_QUERY_KEY, courseShortcode, year]),
     ),
-    () => offeringClient.getOfferingCourse({ courseShortcode, year }),
+    () =>
+      offeringClient
+        .getOfferingCourse({ courseShortcode, year })
+        .then(pluckData)
+        .then(course => {
+          const { teachingPeriod } = course;
+          const period = teachingPeriod.split('-');
+          if (period.length > 1 && period[0] === period[1]) {
+            course.teachingPeriod = period[0];
+          }
+          return course;
+        }),
   );
 };

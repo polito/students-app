@@ -36,7 +36,6 @@
     "yellow": "Yellow"
   },
   "common": {
-    "other": "Other",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -196,10 +195,11 @@
     "emptyMessage": "No course available"
   },
   "degreeScreen": {
-    "title": "Course detail",
+    "degreeClass": "Degree code",
     "info": "Info",
-    "tracks": "Tracks",
-    "jobOpportunities": "Job opportunities"
+    "jobOpportunities": "Job opportunities",
+    "title": "Course detail",
+    "tracks": "Tracks"
   },
   "offeringBachelorScreen": {
     "title": "Bachelor degree"
@@ -285,9 +285,7 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
-    "extra": "Extra APSP",
-    "overbooking": "Overbooking"
+    "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
   },
   "courseNoticesTab": {
     "emptyState": "There are no notices here",

@@ -151,7 +151,8 @@ const createStyles = ({ spacing }: Theme) =>
     metricsCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: spacing[4],
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
       marginTop: 0,
       marginBottom: spacing[7],
     },

@@ -17,7 +17,7 @@ export const DegreeJobOpportunitiesScreen = () => {
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const styles = useStylesheet(createStyles);
-  const degree = degreeQuery?.data;
+  const degree = degreeQuery?.data?.data;
   const isLoading = degreeQuery.isLoading;
 
   return (
@@ -29,12 +29,12 @@ export const DegreeJobOpportunitiesScreen = () => {
       <SafeAreaView>
         <LoadingContainer loading={isLoading}>
           <Section>
-            <Card style={styles.card}>
+            <Card padded>
               <Text variant="subHeading" style={styles.subHeading}>
-                {degree?.objectives?.title}
+                {degree?.jobOpportunities?.title}
               </Text>
-              <Text>
-                {getHtmlTextContent(degree?.objectives?.content ?? '')}
+              <Text variant="longProse">
+                {getHtmlTextContent(degree?.jobOpportunities?.content ?? '')}
               </Text>
             </Card>
           </Section>
@@ -45,18 +45,17 @@ export const DegreeJobOpportunitiesScreen = () => {
   );
 };
 
-const createStyles = ({ spacing, palettes, dark }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     card: {
       marginTop: Platform.select({ android: spacing[4] }),
-      paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[2.5],
+      paddingVertical: spacing[2.5],
     },
     list: {
       paddingTop: spacing[2],
     },
     subHeading: {
-      color: dark ? palettes.info['400'] : palettes.info['700'],
       marginBottom: spacing[2],
     },
   });
