@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SectionList, View } from 'react-native';
+import { Pressable, SectionList, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -8,12 +8,14 @@ import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
 import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
-import { getTracksCoursesGrouped } from '../../../utils/offerings';
+import { getTracksCoursesSections } from '../../../utils/offerings';
 import { DegreeTrackSection } from '../components/DegreeTrackSection';
 import { useDegreeContext } from '../context/DegreeContext';
 
@@ -31,37 +33,33 @@ type DegreeTracksSection = {
 
 export const DegreeTracksScreen = () => {
   const bottomBarHeight = useBottomTabBarHeight();
+  const { t } = useTranslation();
+  const safeAreaInsets = useSafeAreaInsets();
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
-  const { spacing, colors, fontWeights } = useTheme();
-  const { t } = useTranslation();
-  const degree = degreeQuery?.data;
-  const safeAreaInsets = useSafeAreaInsets();
-  const isLoading = degreeQuery.isLoading;
-  const sectionListRef =
-    useRef<SectionList<OfferingCourse, DegreeTracksSection>>(null);
+  const { spacing, colors } = useTheme();
   const [sections, setSections] = useState<DegreeTracksSection[]>([]);
+  const styles = useStylesheet(createStyles);
+  const degree = degreeQuery?.data;
 
   useEffect(() => {
-    if (!isLoading) {
-      setSections(getTracksCoursesGrouped(degree?.tracks));
+    if (!degreeQuery.isLoading) {
+      setSections(getTracksCoursesSections(degree?.tracks));
     }
-  }, [degree?.tracks, isLoading]);
+  }, [degree?.tracks, degreeQuery.isLoading]);
 
   const toggleSection = (toggleIndex: number) => {
-    setSections(oldSec =>
-      oldSec.map((section, index) => {
-        return {
-          ...section,
-          isExpanded: index === toggleIndex ? !section.isExpanded : false,
-        };
-      }),
+    setSections(oldSections =>
+      oldSections.map((section, index) => ({
+        ...section,
+        isExpanded: index === toggleIndex ? !section.isExpanded : false,
+      })),
     );
   };
 
   return (
     <OverviewList
-      loading={isLoading}
+      loading={degreeQuery.isLoading}
       indented={true}
       style={{
         marginTop: spacing[4],
@@ -69,7 +67,6 @@ export const DegreeTracksScreen = () => {
       }}
     >
       <SectionList
-        ref={sectionListRef}
         stickySectionHeadersEnabled
         sections={sections}
         keyExtractor={(item, index) => `${item.teachingYear}-${index}`}
@@ -87,13 +84,12 @@ export const DegreeTracksScreen = () => {
               style={{
                 paddingLeft: safeAreaInsets.left,
                 paddingRight: safeAreaInsets.right,
-                paddingVertical: spacing[3],
-                backgroundColor: colors.surface,
+                ...styles.sectionHeader,
               }}
             >
               <SectionHeader
                 title={title}
-                titleStyle={{ fontWeight: fontWeights.medium }}
+                titleStyle={styles.titleStyle}
                 separator={false}
                 trailingItem={
                   <Icon
@@ -112,3 +108,14 @@ export const DegreeTracksScreen = () => {
     </OverviewList>
   );
 };
+
+const createStyles = ({ spacing, fontWeights, colors }: Theme) =>
+  StyleSheet.create({
+    sectionHeader: {
+      paddingVertical: spacing[3],
+      backgroundColor: colors.surface,
+    },
+    titleStyle: {
+      fontWeight: fontWeights.medium,
+    },
+  });
