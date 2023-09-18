@@ -147,6 +147,7 @@ export const PersonScreen = ({ route }: Props) => {
 
     return (
       <ListItem
+        disabled
         key={course.id}
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
