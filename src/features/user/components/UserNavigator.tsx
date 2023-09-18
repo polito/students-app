@@ -9,6 +9,7 @@ import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { DegreeNavigator } from '../../services/components/DegreeNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
+import { DegreeCourseGuideScreen } from '../../services/screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../../services/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../services/screens/StaffScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
@@ -117,6 +118,15 @@ export const UserNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="DegreeCourseGuide"
+        component={DegreeCourseGuideScreen}
+        options={{
+          headerTitle: t('courseGuideScreen.title'),
+          headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
       />

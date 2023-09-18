@@ -35,6 +35,7 @@ import { CourseStaffInner } from '@polito/api-client/models';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -54,7 +55,7 @@ const listTitleProps = { numberOfLines: 4 };
 export const DegreeCourseScreen = ({ route }: Props) => {
   const { courseShortcode, year: initialYear, teachingYear } = route.params;
   const styles = useStylesheet(createStyles);
-  const { palettes, spacing, dark } = useTheme();
+  const { palettes, spacing } = useTheme();
   const { t } = useTranslation();
   const [year, setYear] = useState(initialYear);
   const courseQuery = useGetOfferingCourse({
@@ -67,11 +68,11 @@ export const DegreeCourseScreen = ({ route }: Props) => {
 
   useEffect(() => {
     if (!courseQuery.isLoading) {
-      setYear(offeringCourse?.editions[0] || initialYear);
+      !year && setYear(offeringCourse?.editions[0]);
     }
   }, [offeringCourse, courseQuery.isLoading]);
 
-  console.debug('editions', editions);
+  console.debug('editions', offeringCourse);
 
   return (
     <ScrollView
@@ -210,6 +211,22 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               ))}
             </OverviewList>
           </Section>
+          <Section>
+            <SectionHeader title={t('common.other')} />
+            <OverviewList>
+              <ListItem
+                title={t('courseGuideScreen.title')}
+                linkTo={{
+                  screen: 'DegreeCourseGuide',
+                  params: {
+                    courseShortcode: shortcode,
+                    year: year,
+                  },
+                }}
+              />
+            </OverviewList>
+          </Section>
+          <BottomBarSpacer />
         </LoadingContainer>
       </SafeAreaView>
     </ScrollView>

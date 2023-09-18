@@ -13,6 +13,7 @@ import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
+import { DegreeCourseGuideScreen } from '../screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../screens/DegreeCourseScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -35,6 +36,10 @@ export type OfferingStackParamList = {
     courseShortcode: string;
     year?: string;
     teachingYear?: number;
+  };
+  DegreeCourseGuide: {
+    courseShortcode: string;
+    year?: string;
   };
   Staff: { personIds: number[] };
 };
@@ -215,6 +220,15 @@ export const ServicesNavigator = () => {
         component={DegreeCourseScreen}
         options={{
           headerTitle: t('degreeCourseScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="DegreeCourseGuide"
+        component={DegreeCourseGuideScreen}
+        options={{
+          headerTitle: t('courseGuideScreen.title'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
