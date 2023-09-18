@@ -95,7 +95,7 @@ export const CourseListItem = ({
   const listItem = (
     <ListItem
       accessible={accessible}
-      disabled={course.isOverBooking}
+      disabled={isDisabled || course.isOverBooking}
       linkTo={
         hasDetails
           ? {
@@ -109,7 +109,6 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
-      disabled={isDisabled}
       accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
         course.cfu
       } ${t('common.credits')}`}
