@@ -225,7 +225,7 @@ export const TranscriptScreen = () => {
           <OverviewList
             loading={!isOffline && gradesQuery.isLoading}
             emptyStateText={
-              isOffline
+              isOffline && gradesQuery.isLoading
                 ? t('common.cacheMiss')
                 : t('transcriptScreen.emptyState')
             }
