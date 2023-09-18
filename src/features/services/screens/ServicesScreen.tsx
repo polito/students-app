@@ -34,6 +34,9 @@ export const ServicesScreen = () => {
   const isOffline = useOfflineDisabled();
 
   const queryClient = useQueryClient();
+
+  const { peopleSearched } = usePreferencesContext();
+
   const services = useMemo(
     () => [
       {
@@ -86,7 +89,7 @@ export const ServicesScreen = () => {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,
-        disabled: false,
+        disabled: isOffline && peopleSearched?.length === 0,
         linkTo: { screen: 'Contacts' },
       },
       {
