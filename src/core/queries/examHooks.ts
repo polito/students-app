@@ -1,10 +1,4 @@
-
-
-import {
-  Exam as ApiExam,
-  BookExamRequest,
-  ExamsApi,
-} from '@polito/api-client';
+import { Exam as ApiExam, BookExamRequest, ExamsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

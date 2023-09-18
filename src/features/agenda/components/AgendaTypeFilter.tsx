@@ -10,16 +10,16 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { MenuAction, MenuView } from '@react-native-menu/menu';
+import { useQueryClient } from '@tanstack/react-query';
 
+import {
+  AGENDA_FILTERS_KEY,
+  useGetAgendaTypesFilter,
+} from '../queries/agendaHooks';
 import { ALL_AGENDA_TYPES, AgendaItemType } from '../types/AgendaItem';
 import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 
-interface Props {
-  state: AgendaTypesFilterState;
-  toggleState: (type: AgendaItemType) => void;
-}
-
-export const AgendaTypeFilter = ({ state, toggleState }: Props) => {
+export const AgendaTypeFilter = () => {
   const { t } = useTranslation();
   const getLocalizedType = useCallback(
     (type: AgendaItemType) => {
@@ -29,6 +29,14 @@ export const AgendaTypeFilter = ({ state, toggleState }: Props) => {
     },
     [t],
   );
+
+  const { data } = useGetAgendaTypesFilter();
+  const queryClient = useQueryClient();
+  const toggleFilter = (type: AgendaItemType) =>
+    queryClient.setQueryData(AGENDA_FILTERS_KEY, oldF => ({
+      ...(oldF ?? {}),
+      [type]: !(oldF as AgendaTypesFilterState)[type],
+    }));
 
   const { colors } = useTheme();
 
@@ -50,9 +58,12 @@ export const AgendaTypeFilter = ({ state, toggleState }: Props) => {
 
   // Update the pill content when the state changes
   const pillContent = useMemo(() => {
-    const selectedTypes = ALL_AGENDA_TYPES.filter(
-      type => state[type as AgendaItemType],
-    ) as AgendaItemType[];
+    if (!data) return null;
+
+    const selectedTypes: AgendaItemType[] = [];
+    Object.entries(data).forEach(([type, enabled]) => {
+      if (enabled) selectedTypes.push(type as AgendaItemType);
+    });
 
     if (selectedTypes.length === 0 || selectedTypes.length === 4) {
       return <Text>{t('common.all')}</Text>;
@@ -64,9 +75,11 @@ export const AgendaTypeFilter = ({ state, toggleState }: Props) => {
         </View>
       ));
     }
-  }, [colorsMap, getLocalizedType, state, styles.buttonType, t]);
+  }, [data, colorsMap, getLocalizedType, styles.buttonType, t]);
 
   const typeActions = useMemo(() => {
+    if (!data) return [];
+
     return ALL_AGENDA_TYPES.map(eventType => {
       const typedEventType = eventType as AgendaItemType;
       const title = getLocalizedType(typedEventType);
@@ -74,7 +87,7 @@ export const AgendaTypeFilter = ({ state, toggleState }: Props) => {
       return {
         id: eventType,
         title,
-        state: (state[typedEventType] ? 'on' : 'off') as MenuAction['state'],
+        state: (data[typedEventType] ? 'on' : 'off') as MenuAction['state'],
         imageColor: colorsMap[typedEventType],
         image: Platform.select({
           ios: 'circle',
@@ -82,14 +95,14 @@ export const AgendaTypeFilter = ({ state, toggleState }: Props) => {
         }),
       };
     });
-  }, [colorsMap, getLocalizedType, state]);
+  }, [data, colorsMap, getLocalizedType]);
 
   return (
     <MenuView
       actions={typeActions}
       onPressAction={({ nativeEvent: { event } }) => {
         const type = event as AgendaItemType;
-        toggleState(type);
+        toggleFilter(type);
       }}
     >
       <PillDropdownActivator variant="neutral">
