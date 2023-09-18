@@ -34,7 +34,7 @@ export const useGetOfferingDegree = ({
   const offeringClient = useOfferingClient();
 
   return useQuery(prefixKey(compact([DEGREES_QUERY_KEY, degreeId, year])), () =>
-    offeringClient.getOfferingDegree({ degreeId, year }),
+    offeringClient.getOfferingDegree({ degreeId, year }).then(pluckData),
   );
 };
 

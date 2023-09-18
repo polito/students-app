@@ -17,7 +17,7 @@ export const DegreeJobOpportunitiesScreen = () => {
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const styles = useStylesheet(createStyles);
-  const degree = degreeQuery?.data?.data;
+  const degree = degreeQuery?.data;
   const isLoading = degreeQuery.isLoading;
 
   return (

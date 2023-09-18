@@ -20,7 +20,7 @@ export const DegreeInfoScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
-  const degree = degreeQuery?.data?.data;
+  const degree = degreeQuery?.data;
   const isLoading = degreeQuery.isLoading;
 
   return (

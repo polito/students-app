@@ -10,8 +10,10 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
+import { getTracksCoursesGrouped } from '../../../utils/offerings';
 import { DegreeTrackSection } from '../components/DegreeTrackSection';
 import { useDegreeContext } from '../context/DegreeContext';
 
@@ -28,78 +30,43 @@ type DegreeTracksSection = {
 };
 
 export const DegreeTracksScreen = () => {
+  const bottomBarHeight = useBottomTabBarHeight();
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const { spacing, colors, fontWeights } = useTheme();
   const { t } = useTranslation();
-  const degree = degreeQuery?.data?.data;
+  const degree = degreeQuery?.data;
   const safeAreaInsets = useSafeAreaInsets();
   const isLoading = degreeQuery.isLoading;
   const sectionListRef =
     useRef<SectionList<OfferingCourse, DegreeTracksSection>>(null);
   const [sections, setSections] = useState<DegreeTracksSection[]>([]);
 
-  const toggleSection = (sectionTitle: string) => {
-    setSections(oldS => {
-      return oldS.map((section, index) => {
-        let isExpanded = false;
-        let data: unknown = [];
-        if (section.title === sectionTitle) {
-          isExpanded = !section.isExpanded;
-        }
-
-        if (isExpanded && !section.data.length) {
-          data = degree?.tracks?.[index]?.courses.reduce(
-            (acc: OfferingCourse[], item: OfferingCourseOverview) => {
-              const { teachingYear } = item;
-              const offeringCourseIndex = acc.findIndex(
-                i => i.teachingYear === teachingYear,
-              );
-              if (offeringCourseIndex > -1) {
-                acc[offeringCourseIndex].data.push(item);
-                return acc;
-              } else {
-                return [
-                  ...acc,
-                  {
-                    teachingYear: teachingYear,
-                    data: [item],
-                  },
-                ];
-              }
-            },
-            [] as OfferingCourse[],
-          );
-        }
-
-        return {
-          title: section.title,
-          isExpanded,
-          data,
-        } as DegreeTracksSection;
-      });
-    });
-  };
   useEffect(() => {
     if (!isLoading) {
-      setSections(() => {
-        return (degree?.tracks || [])?.map((track, index) => {
-          return {
-            title: track.name,
-            data: [],
-            index,
-            isExpanded: false,
-          };
-        });
-      });
+      setSections(getTracksCoursesGrouped(degree?.tracks));
     }
-  }, [isLoading, degree?.tracks]);
+  }, [degree?.tracks, isLoading]);
+
+  const toggleSection = (toggleIndex: number) => {
+    setSections(oldSec =>
+      oldSec.map((section, index) => {
+        return {
+          ...section,
+          isExpanded: index === toggleIndex ? !section.isExpanded : false,
+        };
+      }),
+    );
+  };
 
   return (
     <OverviewList
       loading={isLoading}
       indented={true}
-      style={{ marginTop: spacing[4] }}
+      style={{
+        marginTop: spacing[4],
+        marginBottom: bottomBarHeight + spacing[2],
+      }}
     >
       <SectionList
         ref={sectionListRef}
@@ -109,9 +76,9 @@ export const DegreeTracksScreen = () => {
         renderSectionFooter={({ section: { index } }) =>
           index !== sections.length - 1 ? <IndentedDivider indent={14} /> : null
         }
-        renderSectionHeader={({ section: { title, isExpanded } }) => (
+        renderSectionHeader={({ section: { title, index, isExpanded } }) => (
           <Pressable
-            onPress={() => toggleSection(title)}
+            onPress={() => toggleSection(index)}
             accessibilityLabel={`${title}. ${t(
               `common.openedStatus.${isExpanded}`,
             )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}
@@ -138,7 +105,9 @@ export const DegreeTracksScreen = () => {
             </View>
           </Pressable>
         )}
-        renderItem={({ item }) => <DegreeTrackSection item={item} />}
+        renderItem={({ item, section }) =>
+          section?.isExpanded ? <DegreeTrackSection item={item} /> : null
+        }
       />
     </OverviewList>
   );

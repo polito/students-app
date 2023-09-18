@@ -37,8 +37,8 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
   useEffect(() => {
-    const editions = degreeQuery.data?.data?.editions || [];
-    const degreeYear = degreeQuery.data?.data?.year;
+    const editions = degreeQuery.data?.editions || [];
+    const degreeYear = degreeQuery.data?.year;
     if (degreeYear) {
       const nextDegreeYear = Number(degreeYear) + 1;
       setYear(degreeYear);
