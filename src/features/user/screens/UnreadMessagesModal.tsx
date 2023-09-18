@@ -19,6 +19,7 @@ import {
   useInvalidateMessages,
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
+import { tabBarStyle } from '../../../utils/tab-bar';
 import { MessageScreenContent } from '../components/MessageScreenContent';
 
 type Props = NativeStackScreenProps<any, 'MessagesModal'>;
@@ -58,6 +59,9 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         total: messagesToReadCount,
       }),
     });
+    navigation.getParent()!.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
   }, [t, messagesToRead, messagesReadCount, navigation, messagesToReadCount]);
 
   useFocusEffect(
@@ -65,6 +69,9 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
       // Invalidate message list when the modal is closing
       return () => {
         invalidateMessages.run();
+        navigation.getParent()!.setOptions({
+          tabBarStyle: tabBarStyle,
+        });
       };
     }, []),
   );
