@@ -140,7 +140,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
             }
             indented
             emptyStateText={
-              isOffline ? t('common.cacheMiss') : t('examsScreen.emptyState')
+              isOffline && examsQuery.isLoading
+                ? t('common.cacheMiss')
+                : t('examsScreen.emptyState')
             }
           >
             {exams.map(exam => (
