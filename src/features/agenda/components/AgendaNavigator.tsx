@@ -79,6 +79,7 @@ export const AgendaNavigator = () => {
         name="Lecture"
         component={LectureScreen}
         options={{
+          headerLargeTitle: false,
           headerTitle: t('common.lecture'),
         }}
       />
@@ -87,6 +88,7 @@ export const AgendaNavigator = () => {
         component={ExamScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
         }}
       />
       <Stack.Screen
@@ -94,6 +96,7 @@ export const AgendaNavigator = () => {
         component={BookingScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.booking'),
         }}
       />
       <Stack.Screen
@@ -101,6 +104,7 @@ export const AgendaNavigator = () => {
         component={DeadlineScreen}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.deadline'),
         }}
       />
       <Stack.Screen

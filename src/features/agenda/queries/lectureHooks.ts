@@ -8,6 +8,7 @@ import { DateTime, Duration } from 'luxon';
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { notNullish } from '../../../utils/predicates';
+import { pluckData } from '../../../utils/queries';
 
 export const LECTURES_QUERY_KEY = ['lectures'];
 
@@ -48,7 +49,7 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
           toDate: until.toJSDate(),
           courseIds: visibleCourseIds,
         })
-        .then(r => r.data);
+        .then(pluckData);
     },
     {
       enabled: Array.isArray(visibleCourseIds),

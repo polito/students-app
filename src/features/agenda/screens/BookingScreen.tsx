@@ -22,6 +22,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -41,6 +42,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const bookingsQuery = useGetBookings();
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
+  const isDisabled = useOfflineDisabled();
   const styles = useStylesheet(createStyles);
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
@@ -108,12 +110,12 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {/* {bookingMutation.isIdle && (*/}
       {booking?.canBeCancelled && (
         <CtaButton
           icon="close"
           title={t('Delete Booking')}
           action={onPressDelete}
+          disabled={isDisabled}
           destructive={true}
           loading={bookingMutation.isLoading}
         />

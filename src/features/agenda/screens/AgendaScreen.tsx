@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
@@ -14,6 +14,7 @@ import {
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -25,6 +26,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
@@ -34,9 +36,7 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
 import { AGENDA_QUERY_PREFIX, useGetAgendaWeeks } from '../queries/agendaHooks';
 import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
-import { AgendaItemType } from '../types/AgendaItem';
 import { AgendaState } from '../types/AgendaState';
-import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
@@ -49,29 +49,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
 
-  const [filters, setFilters] = useState<AgendaTypesFilterState>({
-    booking: false,
-    deadline: false,
-    exam: false,
-    lecture: false,
-  });
-
-  const toggleFilter = (type: AgendaItemType) =>
-    setFilters(prev => ({ ...prev, [type]: !prev[type] }));
-
-  const refreshQueries = () => {
-    setAgendaState(prev => ({ ...prev, isRefreshing: true }));
-    Promise.all(dependingQueryKeys.map(q => client.invalidateQueries(q)))
-      .then(_ => client.invalidateQueries([AGENDA_QUERY_PREFIX]))
-      .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
-  };
-
   const { data, fetchNextPage, isFetchingNextPage, isFetchingPreviousPage } =
-    useGetAgendaWeeks(coursesPreferences, filters);
+    useGetAgendaWeeks(coursesPreferences);
 
   const flatListRef = useRef<FlatList<AgendaWeek>>(null);
 
   const prevPageThreshold = 300;
+
+  const isOffline = useOfflineDisabled();
 
   const screenOptions = [
     {
@@ -84,13 +69,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
     },
   ];
 
-  const dependingQueryKeys = [
-    EXAMS_QUERY_KEY,
-    BOOKINGS_QUERY_KEY,
-    LECTURES_QUERY_KEY,
-    DEADLINES_QUERY_KEY,
-  ];
-
   const [agendaState, setAgendaState, agendaStateRef] =
     useStateRef<AgendaState>({
       contentHeight: 0, // the total height of scrollview content
@@ -101,6 +79,20 @@ export const AgendaScreen = ({ navigation }: Props) => {
       todayOffsetInWeek: 0, // the offset of today inside its week
       todayOffsetOverall: 0, // the offset of today, based on contentHeight
     });
+
+  const refreshQueries = useCallback(() => {
+    const dependingQueryKeys = [
+      EXAMS_QUERY_KEY,
+      BOOKINGS_QUERY_KEY,
+      LECTURES_QUERY_KEY,
+      DEADLINES_QUERY_KEY,
+    ];
+
+    setAgendaState(prev => ({ ...prev, isRefreshing: true }));
+    Promise.all(dependingQueryKeys.map(q => client.invalidateQueries(q)))
+      .then(_ => client.invalidateQueries([AGENDA_QUERY_PREFIX]))
+      .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
+  }, [client, setAgendaState]);
 
   const setTodayOffset = (offsetY: number) => {
     setAgendaState(prev => ({
@@ -203,10 +195,14 @@ export const AgendaScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <HeaderAccessory>
-        <AgendaFilters state={filters} toggleState={toggleFilter} />
+        <AgendaFilters />
       </HeaderAccessory>
-      {!data || agendaState.isRefreshing ? (
-        <ActivityIndicator style={styles.activityIndicator} size="large" />
+      {!data ? (
+        isOffline ? (
+          <EmptyState message={t('common.cacheMiss')} />
+        ) : (
+          <ActivityIndicator style={styles.activityIndicator} size="large" />
+        )
       ) : (
         <FlatList
           ref={flatListRef}

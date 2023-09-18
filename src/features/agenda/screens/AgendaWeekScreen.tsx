@@ -20,6 +20,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { BookingCard } from '../components/BookingCard';
@@ -28,21 +29,13 @@ import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
 import { useGetAgendaWeeks } from '../queries/agendaHooks';
-import { AgendaItem, AgendaItemType } from '../types/AgendaItem';
-import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
+import { AgendaItem } from '../types/AgendaItem';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
 
 export const AgendaWeekScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { courses: coursesPreferences } = usePreferencesContext();
-
-  const [filters, setFilters] = useState<AgendaTypesFilterState>({
-    booking: false,
-    deadline: false,
-    exam: false,
-    lecture: false,
-  });
 
   const { language } = usePreferencesContext();
 
@@ -57,8 +50,8 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
 
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(0);
 
-  const { data, isFetching, fetchPreviousPage, fetchNextPage } =
-    useGetAgendaWeeks(coursesPreferences, filters);
+  const { data, isFetching, fetchPreviousPage, fetchNextPage, refetch } =
+    useGetAgendaWeeks(coursesPreferences);
 
   const nextWeek = useCallback(() => {
     const updatedWeek = currentWeekStart.plus({ days: 7 });
@@ -85,9 +78,6 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
       });
     }
   }, [currentWeekStart, currentPageNumber, fetchPreviousPage]);
-
-  const toggleFilter = (type: AgendaItemType) =>
-    setFilters(prev => ({ ...prev, [type]: !prev[type] }));
 
   const [weeklyEvents, setWeeklyEvents] = useState<AgendaItem[]>([]);
 
@@ -123,7 +113,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           navigation.navigate('Agenda');
           break;
         case 'refresh':
-          // TODO refreshQueries();
+          refetch();
           break;
       }
     };
@@ -160,15 +150,30 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
     });
   }, [palettes.primary, fontSizes.lg, navigation, screenOptions, t]);
 
+  const prevMissingCallback = useCallback(
+    () => data?.pages[currentPageNumber - 1] === undefined,
+    [data?.pages, currentPageNumber],
+  );
+
+  const nextMissingCallback = useCallback(
+    () => data?.pages[currentPageNumber + 1] === undefined,
+    [data?.pages, currentPageNumber],
+  );
+  const isOffline = useOfflineDisabled();
+
+  const isPrevWeekDisabled = isOffline ? prevMissingCallback() : isFetching;
+  const isNextWeekDisabled = isOffline ? nextMissingCallback() : isFetching;
+
   return (
     <>
       <HeaderAccessory justify="space-between">
-        <AgendaFilters state={filters} toggleState={toggleFilter} />
+        <AgendaFilters />
         <WeekFilter
           current={currentWeekStart}
           getNext={nextWeek}
           getPrev={prevWeek}
-          enabled={!isFetching}
+          isNextWeekDisabled={isNextWeekDisabled}
+          isPrevWeekDisabled={isPrevWeekDisabled}
         ></WeekFilter>
       </HeaderAccessory>
       <View
@@ -179,7 +184,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
         }}
       >
         {!calendarHeight ||
-          (isFetching && (
+          (isFetching && !data?.pages[currentPageNumber] && (
             <ActivityIndicator size="large" style={styles.loader} />
           ))}
         {calendarHeight && (
