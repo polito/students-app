@@ -31,7 +31,12 @@ import { OfferingNavigator } from './OfferingNavigator';
 export type OfferingStackParamList = {
   Offering: undefined;
   Degree: { id: string; year?: string };
-  DegreeCourse: { courseShortcode: string; year?: string };
+  DegreeCourse: {
+    courseShortcode: string;
+    year?: string;
+    teachingYear?: number;
+  };
+  Staff: { personIds: number[] };
 };
 
 export type ServiceStackParamList = OfferingStackParamList & {
@@ -56,7 +61,6 @@ export type ServiceStackParamList = OfferingStackParamList & {
   MessagesModal: undefined;
   Contacts: undefined;
   Person: { id: number };
-  Staff: { personIds: number[] };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();

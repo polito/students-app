@@ -10,6 +10,8 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { DegreeNavigator } from '../../services/components/DegreeNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { DegreeCourseScreen } from '../../services/screens/DegreeCourseScreen';
+import { StaffScreen } from '../../services/screens/StaffScreen';
+import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -24,6 +26,7 @@ export type UserStackParamList = OfferingStackParamList & {
     id: number;
   };
   MessagesModal: undefined;
+  Person: { id: number };
 };
 const Stack = createNativeStackNavigator<UserStackParamList>();
 
@@ -108,6 +111,16 @@ export const UserNavigator = () => {
           headerBackTitleVisible: false,
         }}
       />
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen name="Staff" component={StaffScreen} />
     </Stack.Navigator>
   );
 };

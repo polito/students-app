@@ -1,7 +1,15 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import {
+  faAngleDown,
   faBriefcase,
   faFlaskVial,
   faMicroscope,
@@ -21,15 +29,17 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { OfferingCourseStaffInner } from '@polito/api-client/models';
+import { CourseStaffInner } from '@polito/api-client/models';
+import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
-const StaffListItem = ({ staff }: { staff: OfferingCourseStaffInner }) => {
+const StaffListItem = ({ staff }: { staff: CourseStaffInner }) => {
   const { data: person } = useGetPerson(staff.id);
 
   return person ? (
@@ -42,13 +52,26 @@ const StaffListItem = ({ staff }: { staff: OfferingCourseStaffInner }) => {
 type Props = NativeStackScreenProps<ServiceStackParamList, 'DegreeCourse'>;
 const listTitleProps = { numberOfLines: 4 };
 export const DegreeCourseScreen = ({ route }: Props) => {
-  const { courseShortcode, year } = route.params;
+  const { courseShortcode, year: initialYear, teachingYear } = route.params;
   const styles = useStylesheet(createStyles);
+  const { palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
-  const courseQuery = useGetOfferingCourse({ courseShortcode, year });
+  const [year, setYear] = useState(initialYear);
+  const courseQuery = useGetOfferingCourse({
+    courseShortcode,
+    year,
+  });
   const { isLoading } = courseQuery;
   const offeringCourse = courseQuery.data?.data;
   const { cfu, name, editions, shortcode } = offeringCourse || {};
+
+  useEffect(() => {
+    if (!courseQuery.isLoading) {
+      setYear(offeringCourse?.editions[0] || initialYear);
+    }
+  }, [offeringCourse, courseQuery.isLoading]);
+
+  console.debug('editions', editions);
 
   return (
     <ScrollView
@@ -68,9 +91,38 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               {!!editions && (
                 <Col justify="flex-start" flex={1}>
                   <Text>{t('degreeCourseScreen.period')}</Text>
-                  <Text variant="subHeading" style={styles.label}>
-                    {editions?.toString()}
-                  </Text>
+                  <View
+                    importantForAccessibility="yes"
+                    accessibilityRole="button"
+                    accessible={true}
+                  >
+                    <MenuView
+                      actions={editions?.map(edition => ({
+                        id: edition.toString(),
+                        title: edition,
+                        state: edition === year ? 'on' : undefined,
+                      }))}
+                      onPressAction={async ({ nativeEvent: { event } }) => {
+                        setYear(() => event);
+                        await courseQuery.refetch();
+                      }}
+                    >
+                      <Row align="center">
+                        <Text variant="subHeading" style={styles.label}>
+                          {teachingYear} - {year}
+                        </Text>
+                        <Icon
+                          style={{
+                            marginLeft: spacing[1],
+                            marginTop: spacing[1],
+                          }}
+                          icon={faAngleDown}
+                          color={palettes.secondary['500']}
+                          size={12}
+                        />
+                      </Row>
+                    </MenuView>
+                  </View>
                 </Col>
               )}
               {!!cfu && (

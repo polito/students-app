@@ -11,6 +11,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { useDegreeContext } from '../context/DegreeContext';
 import { OfferingCourse } from '../screens/DegreeTracksScreen';
 
 type Props = {
@@ -22,6 +23,7 @@ export const DegreeTrackSection = ({
   const { spacing, colors, palettes, dark } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { year } = useDegreeContext();
   return (
     <View style={{ marginTop: spacing[2] }}>
       <Text
@@ -64,6 +66,7 @@ export const DegreeTrackSection = ({
                 screen: 'DegreeCourse',
                 params: {
                   courseShortcode: course.shortcode,
+                  teachingYear: course.teachingYear,
                 },
               }}
               accessibilityRole="button"
