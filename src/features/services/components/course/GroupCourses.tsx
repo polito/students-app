@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -19,13 +18,16 @@ interface GroupCoursesProps {
   toggleExpand: () => void;
 }
 
-export const GroupCourses = ({ group }: GroupCoursesProps) => {
+export const GroupCourses = ({
+  group,
+  isExpanded,
+  toggleExpand,
+}: GroupCoursesProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <Col style={styles.container}>
-      <Pressable onPress={() => setIsExpanded(!isExpanded)}>
+      <Pressable onPress={toggleExpand}>
         <Row justify="space-between" align="center">
           <Text variant="title" style={styles.title}>
             {group.name}
