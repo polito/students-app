@@ -7,9 +7,8 @@ export const routingInstrumentation =
 
 export const initSentry = () => {
   Sentry.init({
-    dsn: 'https://6b860b219cbe49daa89a10a5d20f4d79@sentry.k8s.polito.it/2',
+    dsn: 'https://0b3fe6c2fc0bd91481a14b1ad5c6b00d@sentry.k8s.polito.it/3',
     enabled: process.env.NODE_ENV === 'production',
-    enableNative: false, // TODO re-enable once Sentry instance if working
     integrations: [
       new Sentry.ReactNativeTracing({
         routingInstrumentation,
@@ -18,5 +17,6 @@ export const initSentry = () => {
     dist: DeviceInfo.getBuildNumber(),
     release: DeviceInfo.getVersion(),
     environment: process.env.NODE_ENV,
+    tracesSampleRate: 1.0,
   });
 };
