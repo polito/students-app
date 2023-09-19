@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
-import {
-  faChevronDown,
-  faChevronRight,
-} from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
@@ -18,6 +15,8 @@ import { GroupCoursesExpanded } from './GroupCoursesExpanded';
 
 interface GroupCoursesProps {
   group: { name: string; data: OfferingCourseOverview[] };
+  isExpanded: boolean;
+  toggleExpand: () => void;
 }
 
 export const GroupCourses = ({ group }: GroupCoursesProps) => {
@@ -32,7 +31,7 @@ export const GroupCourses = ({ group }: GroupCoursesProps) => {
             {group.name}
           </Text>
           <Icon
-            icon={isExpanded ? faChevronDown : faChevronRight}
+            icon={isExpanded ? faChevronUp : faChevronDown}
             color={colors.secondaryText}
             style={styles.icon}
           />
