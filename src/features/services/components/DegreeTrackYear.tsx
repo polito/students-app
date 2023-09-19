@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -30,6 +30,8 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
     [courses],
   );
 
+  const [expandedGroupIndex, setExpandedGroupIndex] = useState<number>();
+
   return (
     <View style={styles.trackSectionContainer}>
       <Text variant="subHeading" style={styles.subHeading}>
@@ -57,7 +59,16 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
           />
         ))}
         {coursesByGroup.map((group, index) => (
-          <GroupCourses key={index} group={group} />
+          <GroupCourses
+            key={index}
+            group={group}
+            isExpanded={expandedGroupIndex === index}
+            toggleExpand={() =>
+              setExpandedGroupIndex(prevIndex =>
+                prevIndex !== index ? index : undefined,
+              )
+            }
+          />
         ))}
       </OverviewList>
     </View>

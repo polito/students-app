@@ -73,6 +73,7 @@ export const DegreeTracksScreen = () => {
         renderSectionFooter={({ section: { index } }) =>
           index !== sections.length - 1 ? <IndentedDivider indent={14} /> : null
         }
+        initialNumToRender={2}
         renderSectionHeader={({ section: { title, index, isExpanded } }) => (
           <Pressable
             onPress={() => toggleSection(index)}
