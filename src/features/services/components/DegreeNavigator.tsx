@@ -37,54 +37,53 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
   useEffect(() => {
-    const editions = degreeQuery.data?.editions || [];
-    const degreeYear = degreeQuery.data?.year;
-    if (degreeYear) {
-      const nextDegreeYear = Number(degreeYear) + 1;
-      setYear(degreeYear);
-      const accessibilityLabel = [
-        t('profileScreen.enrollmentYear', {
-          enrollmentYear: `${degreeYear}/${getShortYear(nextDegreeYear)}`,
-        }),
-      ].join(' ');
-      navigation.setOptions({
-        headerRight: () => (
-          <View
-            accessibilityLabel={accessibilityLabel}
-            importantForAccessibility="yes"
-            accessibilityRole="button"
-            accessible={true}
+    if (!degreeQuery.data) return;
+    const editions = degreeQuery.data.editions.reverse();
+    const degreeYear = degreeQuery.data.year;
+    const nextDegreeYear = Number(degreeYear) + 1;
+    setYear(degreeYear);
+    const accessibilityLabel = [
+      t('profileScreen.enrollmentYear', {
+        enrollmentYear: `${degreeYear}/${getShortYear(nextDegreeYear)}`,
+      }),
+    ].join(' ');
+    navigation.setOptions({
+      headerRight: () => (
+        <View
+          accessibilityLabel={accessibilityLabel}
+          importantForAccessibility="yes"
+          accessibilityRole="button"
+          accessible={true}
+        >
+          <MenuView
+            style={{ padding: spacing[1] }}
+            actions={editions?.map(edition => ({
+              id: edition.toString(),
+              title: `${edition}/${getShortYear(Number(edition) + 1)}`,
+              state: edition === degreeYear ? 'on' : undefined,
+            }))}
+            onPressAction={async ({ nativeEvent: { event } }) => {
+              setYear(() => event);
+              await degreeQuery.refetch();
+            }}
           >
-            <MenuView
-              style={{ padding: spacing[1] }}
-              actions={editions?.map(edition => ({
-                id: edition.toString(),
-                title: `${edition}/${getShortYear(Number(edition) + 1)}`,
-                state: edition === degreeYear ? 'on' : undefined,
-              }))}
-              onPressAction={async ({ nativeEvent: { event } }) => {
-                setYear(() => event);
-                await degreeQuery.refetch();
-              }}
-            >
-              <Row align="center">
-                <Text variant="prose">
-                  {degreeYear}/{getShortYear(nextDegreeYear)}
-                </Text>
-                {!!editions && (
-                  <Icon
-                    style={{ marginLeft: spacing[1] }}
-                    icon={faAngleDown}
-                    color={dark ? palettes.text[300] : palettes.primary[600]}
-                    size={12}
-                  />
-                )}
-              </Row>
-            </MenuView>
-          </View>
-        ),
-      });
-    }
+            <Row align="center">
+              <Text variant="prose">
+                {degreeYear}/{getShortYear(nextDegreeYear)}
+              </Text>
+              {!!editions && (
+                <Icon
+                  style={{ marginLeft: spacing[1] }}
+                  icon={faAngleDown}
+                  color={dark ? palettes.text[300] : palettes.primary[600]}
+                  size={12}
+                />
+              )}
+            </Row>
+          </MenuView>
+        </View>
+      ),
+    });
   }, [
     navigation,
     spacing,
