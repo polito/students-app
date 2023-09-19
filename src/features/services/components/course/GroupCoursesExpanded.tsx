@@ -21,7 +21,6 @@ export const GroupCoursesExpanded = ({ courses }: Props) => {
         return (
           <ListItem
             title={course.name}
-            titleStyle={{ maxWidth: '90%' }}
             titleProps={{ numberOfLines: undefined }}
             key={course.name}
             linkTo={{

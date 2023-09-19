@@ -14,7 +14,7 @@ export const CourseTrailingItem = ({ cfu }: TrailingItemProps) => {
   const { spacing, colors, palettes } = useTheme();
   const { t } = useTranslation();
   return (
-    <Row>
+    <Row pl={2}>
       <Text
         variant="prose"
         style={{
