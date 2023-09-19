@@ -16,10 +16,7 @@ import { ServiceStackParamList } from '../components/ServicesNavigator';
 type Props = NativeStackScreenProps<ServiceStackParamList, 'DegreeCourseGuide'>;
 export const DegreeCourseGuideScreen = ({ route }: Props) => {
   const { courseShortcode, year } = route.params;
-  const courseQuery = useGetOfferingCourse({
-    courseShortcode,
-    year,
-  });
+  const courseQuery = useGetOfferingCourse({ courseShortcode, year });
   const { spacing } = useTheme();
   const offeringCourse = courseQuery.data;
 

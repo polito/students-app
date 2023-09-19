@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import {
   faBriefcase,
@@ -10,7 +16,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
-import { Col } from '@lib/ui/components/Col';
 import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -54,13 +59,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const [year, setYear] = useState(initialYear);
-  const courseQuery = useGetOfferingCourse({
-    courseShortcode,
-    year,
-  });
-  const { palettes, spacing, dark, fontSizes, fontWeights } = useTheme();
+  const courseQuery = useGetOfferingCourse({ courseShortcode, year });
+  const { palettes, spacing } = useTheme();
   const offeringCourse = courseQuery.data;
-  const { name, shortcode } = offeringCourse || {};
 
   const moreStaffCount = useMemo(() => {
     if (!offeringCourse) return undefined;
@@ -84,22 +85,21 @@ export const DegreeCourseScreen = ({ route }: Props) => {
       <SafeAreaView>
         <LoadingContainer loading={courseQuery.isLoading}>
           <Section>
-            <ScreenTitle style={styles.heading} title={name} />
+            <ScreenTitle style={styles.heading} title={offeringCourse?.name} />
             <Text style={styles.shortCode} variant="caption">
-              {shortcode}
+              {offeringCourse?.shortcode}
             </Text>
           </Section>
           <Card style={styles.metricsCard}>
             <Row justify="space-between">
               <Grid>
-                <Col
-                  align="flex-start"
+                <View
                   style={GlobalStyles.grow}
                   importantForAccessibility="yes"
                   accessibilityRole="button"
                   accessible={true}
                 >
-                  <Text>{t('degreeCourseScreen.period')}</Text>
+                  {/* <Text>{t('degreeCourseScreen.period')}</Text> */}
                   <MenuView
                     actions={(offeringCourse?.editions || [])?.map(edition => ({
                       id: edition.toString(),
@@ -111,27 +111,30 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                       await courseQuery.refetch();
                     }}
                   >
-                    <Row justify="center" align="center">
-                      <Text
-                        style={{
-                          color: palettes.secondary[dark ? 500 : 600],
-                          fontSize: fontSizes.lg,
-                          fontWeight: fontWeights.semibold,
-                        }}
-                      >
-                        {`${offeringCourse?.teachingPeriod ?? '--'} - ${
+                    <Row justify="flex-start" align="center">
+                      <Metric
+                        title={t('degreeCourseScreen.period')}
+                        value={`${offeringCourse?.teachingPeriod ?? '--'} - ${
                           year ?? '--'
                         }`}
-                      </Text>
+                        accessibilityLabel={`${t(
+                          'degreeCourseScreen.period',
+                        )}: ${offeringCourse?.teachingPeriod ?? '--'} - ${
+                          year ?? '--'
+                        }`}
+                      />
                       <Icon
                         icon={faAngleDown}
                         color={palettes.secondary['500']}
-                        size={12}
-                        style={{ marginLeft: spacing[2] }}
+                        size={14}
+                        style={{
+                          marginLeft: spacing[2],
+                          marginTop: spacing[4],
+                        }}
                       />
                     </Row>
                   </MenuView>
-                </Col>
+                </View>
 
                 <Metric
                   title={t('courseInfoTab.creditsLabel')}
@@ -234,7 +237,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                 linkTo={{
                   screen: 'DegreeCourseGuide',
                   params: {
-                    courseShortcode: shortcode,
+                    courseShortcode: offeringCourse?.shortcode,
                     year: offeringCourse?.year,
                   },
                 }}
