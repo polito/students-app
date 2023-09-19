@@ -51,7 +51,6 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
               screen: 'DegreeCourse',
               params: {
                 courseShortcode: course.shortcode,
-                teachingYear: course.teachingYear,
               },
             }}
             accessibilityRole="button"

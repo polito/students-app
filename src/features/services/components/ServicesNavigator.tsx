@@ -35,7 +35,6 @@ export type OfferingStackParamList = {
   DegreeCourse: {
     courseShortcode: string;
     year?: string;
-    teachingYear?: number;
   };
   DegreeCourseGuide: {
     courseShortcode: string;
