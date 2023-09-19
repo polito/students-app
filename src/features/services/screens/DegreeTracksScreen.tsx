@@ -16,19 +16,19 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getTracksCoursesSections } from '../../../utils/offerings';
-import { DegreeTrackSection } from '../components/DegreeTrackSection';
+import { DegreeTrackYear } from '../components/DegreeTrackYear';
 import { useDegreeContext } from '../context/DegreeContext';
 
-export type OfferingCourse = {
+export type OfferingCourseYear = {
   teachingYear: number;
   data: OfferingCourseOverview[];
 };
 
-type DegreeTracksSection = {
+type DegreeTrackSection = {
   title: string;
   isExpanded?: boolean;
   index: number;
-  data: OfferingCourse[];
+  data: OfferingCourseYear[];
 };
 
 export const DegreeTracksScreen = () => {
@@ -38,7 +38,7 @@ export const DegreeTracksScreen = () => {
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const { spacing, colors } = useTheme();
-  const [sections, setSections] = useState<DegreeTracksSection[]>([]);
+  const [sections, setSections] = useState<DegreeTrackSection[]>([]);
   const styles = useStylesheet(createStyles);
   const degree = degreeQuery?.data;
 
@@ -102,7 +102,7 @@ export const DegreeTracksScreen = () => {
           </Pressable>
         )}
         renderItem={({ item, section }) =>
-          section?.isExpanded ? <DegreeTrackSection item={item} /> : null
+          section?.isExpanded ? <DegreeTrackYear item={item} /> : null
         }
       />
     </OverviewList>

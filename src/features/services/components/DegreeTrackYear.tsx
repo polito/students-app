@@ -12,15 +12,15 @@ import {
   getTracksCoursesGrouped,
   getTracksCoursesWithoutGroup,
 } from '../../../utils/offerings';
-import { OfferingCourse } from '../screens/DegreeTracksScreen';
+import { OfferingCourseYear } from '../screens/DegreeTracksScreen';
 import { CourseTrailingItem } from './course/CourseTrailingItem';
 import { GroupCourses } from './course/GroupCourses';
 
-interface DegreeTrackSectionProps {
-  item: OfferingCourse;
+interface DegreeTrackYearProps {
+  item: OfferingCourseYear;
 }
 
-export const DegreeTrackSection = ({ item }: DegreeTrackSectionProps) => {
+export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
   const { teachingYear, data: courses } = item;
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -39,7 +39,6 @@ export const DegreeTrackSection = ({ item }: DegreeTrackSectionProps) => {
         {firstLevelCourses.map((course, index) => (
           <ListItem
             title={course.name}
-            titleStyle={{ maxWidth: '80%' }}
             titleProps={{ numberOfLines: undefined }}
             key={`${course.teachingYear.toString()}-${
               course.shortcode
