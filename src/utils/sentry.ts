@@ -8,6 +8,7 @@ export const initSentry = () => {
   Sentry.init({
     dsn: 'https://0b3fe6c2fc0bd91481a14b1ad5c6b00d@sentry.k8s.polito.it/3',
     enabled: process.env.NODE_ENV === 'production',
+    enableNative: true,
     integrations: [
       new Sentry.ReactNativeTracing({
         routingInstrumentation,

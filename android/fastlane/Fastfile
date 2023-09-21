@@ -54,7 +54,6 @@ platform :android do
     source_map_path = 'app/build/generated/sourcemaps/react/release/index.android.bundle.map'
     bundle_path = 'app/build/generated/assets/createBundleReleaseJsAndAssets/index.android.bundle'
 
-
     sentry_upload_sourcemap(
       auth_token: ENV['SENTRY_AUTH_TOKEN'],
       org_slug: ENV['SENTRY_ORG'],
