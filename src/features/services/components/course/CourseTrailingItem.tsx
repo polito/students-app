@@ -19,7 +19,7 @@ export const CourseTrailingItem = ({ cfu }: TrailingItemProps) => {
         variant="prose"
         style={{
           color: palettes.text['500'],
-          marginRight: spacing[2],
+          marginRight: spacing[3],
         }}
       >
         {cfu} {t('common.cfu')}

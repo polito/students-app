@@ -64,8 +64,8 @@ const createStyles = ({
     },
     container: {
       backgroundColor: dark ? colors.surfaceDark : palettes.gray['100'],
-      paddingHorizontal: spacing[4],
       paddingVertical: spacing[3],
+      paddingHorizontal: spacing[4],
     },
     title: {
       fontSize: fontSizes.md,

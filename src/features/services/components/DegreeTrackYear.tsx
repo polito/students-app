@@ -37,7 +37,7 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
       <Text variant="subHeading" style={styles.subHeading}>
         {teachingYear}° {t('common.year')}
       </Text>
-      <OverviewList rounded={true}>
+      <OverviewList rounded={true} style={styles.firstLevelOverviewList}>
         {firstLevelCourses.map((course, index) => (
           <ListItem
             title={course.name}
@@ -76,6 +76,10 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
 
 const createStyles = ({ spacing, colors, palettes, dark }: Theme) =>
   StyleSheet.create({
+    firstLevelOverviewList: {
+      marginHorizontal: spacing[4],
+      elevation: 0,
+    },
     icon: {
       marginRight: -spacing[1],
     },
