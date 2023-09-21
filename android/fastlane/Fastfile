@@ -60,7 +60,7 @@ platform :android do
       org_slug: ENV['SENTRY_ORG'],
       project_slug: ENV['SENTRY_PROJECT'],
       version: ENV['APP_VERSION'],
-      build: ENV['BUILD_NO'],
+      build: ENV['BUILD_PIECE'],
       sourcemap: [bundle_path, source_map_path],
       rewrite: true
     )

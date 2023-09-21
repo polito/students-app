@@ -1,5 +1,4 @@
-import DeviceInfo from 'react-native-device-info';
-
+import { APP_BUILD, APP_VERSION } from '@env';
 import * as Sentry from '@sentry/react-native';
 
 export const routingInstrumentation =
@@ -14,8 +13,8 @@ export const initSentry = () => {
         routingInstrumentation,
       }),
     ],
-    dist: DeviceInfo.getBuildNumber(),
-    release: DeviceInfo.getVersion(),
+    release: `it.polito.students@${APP_VERSION}`,
+    dist: APP_BUILD,
     environment: process.env.NODE_ENV,
     tracesSampleRate: 1.0,
   });
