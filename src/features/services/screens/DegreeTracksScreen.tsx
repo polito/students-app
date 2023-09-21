@@ -7,6 +7,7 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
+import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -67,6 +68,7 @@ export const DegreeTracksScreen = () => {
       }}
     >
       <SectionList
+        refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
         stickySectionHeadersEnabled
         sections={sections}
         keyExtractor={(item, index) => `${item.teachingYear}-${index}`}
