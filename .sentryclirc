@@ -1,0 +1,4 @@
+[defaults]
+url = https://sentry.k8s.polito.it
+project = students-app
+org = polito
