@@ -40,8 +40,7 @@ platform :ios do
       apple_id: "6443913305",
     )
 
-    source_map_path = 'dist/main.jsbundle.map'
-    bundle_path = 'dist/main.jsbundle'
+    source_map_path = '../main.jsbundle.map'
 
     sentry_upload_sourcemap(
       auth_token: ENV['SENTRY_AUTH_TOKEN'],
@@ -49,7 +48,7 @@ platform :ios do
       project_slug: ENV['SENTRY_PROJECT'],
       version: 'it.polito.students@' + ENV['APP_VERSION'],
       build: ENV['BUILD_PIECE'],
-      sourcemap: [bundle_path, source_map_path],
+      sourcemap: [source_map_path],
       rewrite: true
     )
 

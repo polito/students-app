@@ -143,8 +143,7 @@ jobs:
       with:
         environment: 'production'
         ignore_missing: true
-        dist: ${{ steps.configure.outputs.build_piece }}
-        version: it.polito.students@${{ steps.configure.outputs.version }}
+        version: it.polito.students@${{ steps.configure.outputs.version }}+${{ steps.configure.outputs.build_piece }}
 
   build-android:
     name: ${{ needs.configure.outputs.push_to_playstore == 'false' && 'Build' || 'Build & Deploy' }} Android
