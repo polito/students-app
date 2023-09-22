@@ -165,7 +165,7 @@ jobs:
     - name: Set .env
       run:
         echo "APP_VERSION=${{ needs.configure.outputs.version }}" >> .env
-        echo "APP_BUILD=${{ needs.configure.outputs.build_piece }}" >> .env
+        echo "APP_BUILD=${{ needs.configure.outputs.build_no }}" >> .env
     - name: Gradle Wrapper Validation
       uses: gradle/wrapper-validation-action@v1
     - name: Setup Ruby
@@ -255,7 +255,7 @@ jobs:
     - name: Set .env
       run:
         echo "APP_VERSION=${{ needs.configure.outputs.version }}" >> .env
-        echo "APP_BUILD=${{ needs.configure.outputs.build_piece }}" >> .env
+        echo "APP_BUILD=${{ needs.configure.outputs.build_no }}" >> .env
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
