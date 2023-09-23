@@ -164,7 +164,7 @@ jobs:
     - name: Set .env
       run:
         echo "APP_VERSION=${{ needs.configure.outputs.version }}" >> .env
-        echo "APP_BUILD=${{ needs.configure.outputs.build_no }}" >> .env
+        echo "APP_BUILD=${{ needs.configure.outputs.build_piece }}" >> .env
     - name: Gradle Wrapper Validation
       uses: gradle/wrapper-validation-action@v1
     - name: Setup Ruby
@@ -214,15 +214,15 @@ jobs:
         SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: bundle exec fastlane release
     - name: Fastlane APK lane
-#      if: |
-#        github.event_name == 'push' &&
-#        github.ref_type == 'tag'
+      if: |
+        github.event_name == 'push' &&
+        github.ref_type == 'tag'
       run: bundle exec fastlane apk
       working-directory: ./android
     - name: Upload Artifacts
-#      if: |
-#        github.event_name == 'push' &&
-#        github.ref_type == 'tag'
+      if: |
+        github.event_name == 'push' &&
+        github.ref_type == 'tag'
       uses: actions/upload-artifact@v3
       with:
         name: android-release
@@ -254,7 +254,7 @@ jobs:
     - name: Set .env
       run:
         echo "APP_VERSION=${{ needs.configure.outputs.version }}" >> .env
-        echo "APP_BUILD=${{ needs.configure.outputs.build_no }}" >> .env
+        echo "APP_BUILD=${{ needs.configure.outputs.build_piece }}" >> .env
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -306,10 +306,10 @@ jobs:
     name: Create GitHub Release
     permissions:
       contents: write
-#    if: |
-#      github.event_name == 'push' &&
-#      github.event.repository.full_name == github.repository &&
-#      github.ref_type == 'tag'
+    if: |
+      github.event_name == 'push' &&
+      github.event.repository.full_name == github.repository &&
+      github.ref_type == 'tag'
     needs: [build-android, build-ios]
     runs-on: ubuntu-latest
     steps:
