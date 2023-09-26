@@ -51,7 +51,6 @@ export const LoginScreen = () => {
           t('loginScreen.authnErrorDescription'),
         );
       }
-      throw e;
     });
 
   return (
