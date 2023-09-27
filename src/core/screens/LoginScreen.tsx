@@ -40,7 +40,7 @@ export const LoginScreen = () => {
   const canLogin = username?.length && password?.length;
 
   const handleLogin = () =>
-    login({ username, password }).catch(e => {
+    login({ username, password, preferences: {} }).catch(e => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
