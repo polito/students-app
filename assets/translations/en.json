@@ -58,6 +58,7 @@
     "booking": "Booking",
     "booking_plural": "Bookings",
     "cache": "Cache",
+    "cacheMiss": "Come back online to view",
     "camera": "Camera",
     "cancel": "Cancel",
     "classroomsNotSpecified": "Classroom not specified",
@@ -127,6 +128,7 @@
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
+    "noInternet": "You are offline, some features may not be available",
     "of": "Of",
     "ok": "Ok",
     "open": "Open",
@@ -411,7 +413,8 @@
     "readNext": "Read next",
     "end": "End",
     "sentAt": "Sent at",
-    "youHaveUnreadMessages": "You have {{total}} unread messages"
+    "youHaveUnreadMessages": "You have {{total}} unread messages",
+    "empty": "You have no messages"
   },
   "messageScreen": {
     "title": "Message",

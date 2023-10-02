@@ -51,7 +51,6 @@ export const LoginScreen = () => {
           t('loginScreen.authnErrorDescription'),
         );
       }
-      throw e;
     });
 
   return (
@@ -70,7 +69,7 @@ export const LoginScreen = () => {
               label={t('loginScreen.usernameLabel')}
               value={username}
               accessibilityLabel={t('loginScreen.usernameLabelAccessibility')}
-              onChangeText={setUsername}
+              onChangeText={text => setUsername(text.trim())}
               editable={!isLoading}
               returnKeyType="next"
               onSubmitEditing={() => {

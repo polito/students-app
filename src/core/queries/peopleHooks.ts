@@ -4,23 +4,19 @@ import { PeopleApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { ignoreNotFound, pluckData } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
 
-export const PEOPLE_QUERY_KEY = 'people';
-export const PERSON_QUERY_KEY = 'person';
+export const PEOPLE_QUERY_PREFIX = 'people';
+export const PERSON_QUERY_PREFIX = 'person';
 
 const usePeopleClient = (): PeopleApi => {
-  const {
-    clients: { people: peopleClient },
-  } = useApiContext();
-  return peopleClient!;
+  return new PeopleApi();
 };
 
 export const useGetPeople = (search: string, enabled: boolean) => {
   const peopleClient = usePeopleClient();
 
   return useQuery(
-    [PEOPLE_QUERY_KEY, search],
+    [PEOPLE_QUERY_PREFIX, search],
     () => peopleClient.getPeople({ search }).then(pluckData),
     {
       enabled: enabled,
@@ -28,11 +24,16 @@ export const useGetPeople = (search: string, enabled: boolean) => {
   );
 };
 
+export const getPersonKey = (personId: number) => [
+  PERSON_QUERY_PREFIX,
+  personId,
+];
+
 export const useGetPerson = (personId: number | undefined) => {
   const peopleClient = usePeopleClient();
 
   return useQuery(
-    [PERSON_QUERY_KEY, personId],
+    getPersonKey(personId!),
     () =>
       peopleClient
         .getPerson({ personId: personId! })
@@ -50,7 +51,7 @@ export const useGetPersons = (personIds: number[] | undefined) => {
 
   const queries = useQueries({
     queries: (personIds ?? []).map(personId => ({
-      queryKey: [PERSON_QUERY_KEY, personId],
+      queryKey: [PERSON_QUERY_PREFIX, personId],
       queryFn: () =>
         peopleClient
           .getPerson({ personId })

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Grid } from '@lib/ui/components/Grid';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Metric } from '@lib/ui/components/Metric';
@@ -18,6 +17,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useGetGrades,
   useGetStudent,
@@ -51,6 +51,8 @@ export const TranscriptScreen = () => {
     () => gradesQuery.data?.filter(g => !g.isProvisional),
     [gradesQuery],
   );
+
+  const isOffline = useOfflineDisabled();
 
   return (
     <ScrollView
@@ -220,43 +222,40 @@ export const TranscriptScreen = () => {
               { total: transcriptGrades?.length || 0 },
             )}`}
           />
-          <OverviewList>
-            {transcriptGrades &&
-              (transcriptGrades.length ? (
-                transcriptGrades.map((grade, index) => (
-                  <ListItem
-                    key={grade.courseName}
-                    title={grade.courseName}
-                    accessibilityLabel={`${t(
-                      accessibilityListLabel(
-                        index,
-                        transcriptGrades?.length || 0,
-                      ),
-                    )}. ${grade.courseName}: ${formatDate(grade.date)} ${t(
-                      'common.grade',
-                    )}: ${grade?.grade} - ${t('common.creditsWithUnit', {
-                      credits: grade.credits,
-                    })}`}
-                    subtitle={`${formatDate(grade.date)} - ${t(
-                      'common.creditsWithUnit',
-                      { credits: grade.credits },
-                    )}`}
-                    trailingItem={
-                      <Text
-                        variant="title"
-                        style={styles.grade}
-                        accessibilityLabel={`${t('common.grade')}: ${
-                          grade?.grade
-                        }`}
-                      >
-                        {t(formatGrade(grade.grade))}
-                      </Text>
-                    }
-                  />
-                ))
-              ) : (
-                <EmptyState message={t('transcriptScreen.emptyState')} />
-              ))}
+          <OverviewList
+            loading={!isOffline && gradesQuery.isLoading}
+            emptyStateText={
+              isOffline && gradesQuery.isLoading
+                ? t('common.cacheMiss')
+                : t('transcriptScreen.emptyState')
+            }
+          >
+            {transcriptGrades?.map((grade, index) => (
+              <ListItem
+                key={grade.courseName}
+                title={grade.courseName}
+                accessibilityLabel={`${t(
+                  accessibilityListLabel(index, transcriptGrades?.length || 0),
+                )}. ${grade.courseName}: ${formatDate(grade.date)} ${t(
+                  'common.grade',
+                )}: ${grade?.grade} - ${t('common.creditsWithUnit', {
+                  credits: grade.credits,
+                })}`}
+                subtitle={`${formatDate(grade.date)} - ${t(
+                  'common.creditsWithUnit',
+                  { credits: grade.credits },
+                )}`}
+                trailingItem={
+                  <Text
+                    variant="title"
+                    style={styles.grade}
+                    accessibilityLabel={`${t('common.grade')}: ${grade?.grade}`}
+                  >
+                    {t(formatGrade(grade.grade))}
+                  </Text>
+                }
+              />
+            ))}
           </OverviewList>
         </Section>
         <BottomBarSpacer />

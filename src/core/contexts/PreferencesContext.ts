@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 import { PersonOverview } from '@polito/api-client/models';
 
 export const editablePreferenceKeys = [
-  'clientId',
+  'username',
   'colorScheme',
   'courses',
   'language',
@@ -27,7 +27,7 @@ export type CoursesPreferences = {
 };
 
 export type PreferencesContextProps = {
-  clientId?: string;
+  username: string;
   colorScheme: 'light' | 'dark' | 'system';
   courses: CoursesPreferences;
   language: 'it' | 'en';

@@ -3,23 +3,21 @@ import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
-import { STUDENT_QUERY_KEY } from './studentHooks';
 
 const useAuthClient = (): AuthApi => {
-  const {
-    clients: { auth: authClient },
-  } = useApiContext();
-  return authClient!;
+  return new AuthApi();
 };
 
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
+  const { updatePreference } = usePreferencesContext();
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
@@ -52,11 +50,9 @@ export const useLogin = () => {
     },
     onSuccess: async data => {
       const { token, clientId, username } = data;
-      await Keychain.setGenericPassword(clientId, token);
       refreshContext({ username, token });
-    },
-    onError: error => {
-      console.debug('loginError', JSON.stringify(error));
+      updatePreference('username', username);
+      await Keychain.setGenericPassword(clientId, token);
     },
   });
 };
@@ -70,29 +66,27 @@ export const useLogout = () => {
     onSuccess: async () => {
       refreshContext();
       await Keychain.resetGenericPassword();
-      // await queryClient.invalidateQueries([]);
     },
   });
 };
 
 export const useSwitchCareer = () => {
   const authClient = useAuthClient();
-  const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
+  const { updatePreference } = usePreferencesContext();
 
   return useMutation({
     mutationFn: (dto?: SwitchCareerRequest) =>
       authClient.switchCareer({ switchCareerRequest: dto }).then(pluckData),
-    onSuccess: data => {
-      Keychain.resetGenericPassword().then(() => {
-        refreshContext({
-          token: data.token,
-          username: data.username,
-        });
-        Keychain.setGenericPassword(data.clientId, data.token).then(() =>
-          queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
-        );
+    onSuccess: async data => {
+      const { token, username } = data;
+      refreshContext({
+        token,
+        username,
       });
+      updatePreference('username', username);
+
+      await Keychain.setGenericPassword(data.clientId, data.token);
     },
   });
 };

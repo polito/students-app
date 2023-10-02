@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import {
   faCircleMinus,
   faCircleXmark,
@@ -11,6 +11,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ExamStatusEnum } from '@polito/api-client';
 
 import { lightTheme } from '../../../core/themes/light';
 import { Exam } from '../../../core/types/api';
@@ -24,28 +25,44 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
   const { t } = useTranslation();
   const { fontSizes, colors, dark, palettes, shapes, spacing } = useTheme();
 
+  const statusIcon = useMemo(() => {
+    switch (exam.status) {
+      case ExamStatusEnum.Booked:
+      case ExamStatusEnum.RequestAccepted:
+        return faCircleCheck;
+      case ExamStatusEnum.Requested:
+        return faSpinner;
+      case ExamStatusEnum.RequestRejected:
+        return faCircleXmark;
+      case ExamStatusEnum.Unavailable:
+        return faCircleMinus;
+      default:
+        return faCircle;
+    }
+  }, [exam.status]);
+
   const [backgroundColor, foregroundColor] = useMemo((): [string, string] => {
     const darkBackgroundOpacity = 'CC';
-    switch (exam.statusIcon) {
-      case faCircleCheck:
+    switch (statusIcon.iconName) {
+      case faCircleCheck.iconName:
         return dark
           ? [
               palettes.success[800] + darkBackgroundOpacity,
               palettes.success[200],
             ]
           : [palettes.success[200], palettes.success[800]];
-      case faSpinner:
+      case faSpinner.iconName:
         return dark
           ? [
               palettes.warning[800] + darkBackgroundOpacity,
               palettes.warning[200],
             ]
           : [palettes.warning[200], palettes.warning[800]];
-      case faCircleXmark:
+      case faCircleXmark.iconName:
         return dark
           ? [palettes.danger[800] + darkBackgroundOpacity, palettes.danger[200]]
           : [palettes.danger[200], palettes.danger[800]];
-      case faCircleMinus:
+      case faCircleMinus.iconName:
         return dark
           ? [palettes.muted[600] + darkBackgroundOpacity, palettes.muted[200]]
           : [palettes.muted[200], palettes.muted[600]];
@@ -55,7 +72,7 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
           : [palettes.primary[100], palettes.primary[600]];
     }
   }, [
-    exam.statusIcon,
+    statusIcon,
     dark,
     palettes.success,
     palettes.warning,
@@ -80,11 +97,7 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
       ]}
     >
       {!textOnly && (
-        <Icon
-          icon={exam.statusIcon}
-          size={fontSizes.md}
-          color={foregroundColor}
-        />
+        <Icon icon={statusIcon} size={fontSizes.md} color={foregroundColor} />
       )}
       <Text
         style={{ color: foregroundColor, fontSize: fontSizes.xs }}

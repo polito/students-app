@@ -147,6 +147,7 @@ export const PersonScreen = ({ route }: Props) => {
 
     return (
       <ListItem
+        disabled
         key={course.id}
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
@@ -217,6 +218,7 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
       fontSize: fontSizes['2xl'],
     },
     info: {
+      flex: 1,
       justifyContent: 'center',
       flexDirection: 'column',
     },

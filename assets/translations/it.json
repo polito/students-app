@@ -59,6 +59,7 @@
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "cache": "Cache",
+    "cacheMiss": "Torna online per visualizzare",
     "camera": "Fotocamera",
     "cancel": "Annulla",
     "classroomsNotSpecified": "Luogo non specificato",
@@ -128,6 +129,7 @@
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
+    "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
@@ -411,7 +413,8 @@
     "readNext": "Leggi il prossimo",
     "end": "Fine",
     "sentAt": "Inviato il",
-    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
+    "empty": "Non ci sono messaggi"
   },
   "messageScreen": {
     "title": "Messaggio",

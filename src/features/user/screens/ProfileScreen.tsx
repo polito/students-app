@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -30,29 +30,37 @@ import {
   NativeActionEvent,
 } from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import { useGetOffering } from '../../../core/queries/offeringHooks';
-import { useGetStudent } from '../../../core/queries/studentHooks';
 import {
-  getStudentDegree,
-  getStudentEnrollmentYear,
-} from '../../../utils/students';
+  MESSAGES_QUERY_KEY,
+  useGetStudent,
+} from '../../../core/queries/studentHooks';
+import { getStudentDegree } from '../../../utils/students';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
   navigation: NativeStackNavigationProp<UserStackParamList, 'Profile'>;
 }
 
-const HeaderRightDropdown = ({ student }: { student?: Student }) => {
+const HeaderRightDropdown = ({
+  student,
+  isOffline,
+}: {
+  student?: Student;
+  isOffline: boolean;
+}) => {
   const { mutate } = useSwitchCareer();
   const { t } = useTranslation();
   const { palettes, spacing } = useTheme();
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
-  const canSwitchCareer = allCareerIds.length > 1;
+  const canSwitchCareer = allCareerIds.length > 1 && !isOffline;
 
   const actions = useMemo((): MenuAction[] => {
     if (!canSwitchCareer) return [];
@@ -67,6 +75,7 @@ const HeaderRightDropdown = ({ student }: { student?: Student }) => {
   }, [canSwitchCareer, allCareerIds, username]);
 
   const onPressAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
+    if (event === username) return;
     mutate({ username: event });
   };
 
@@ -99,6 +108,8 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const { mutate: handleLogout } = useLogout();
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
+  const queryClient = useQueryClient();
+
   const { data: offerings } = useGetOffering();
   const styles = useStylesheet(createStyles);
 
@@ -107,16 +118,26 @@ export const ProfileScreen = ({ navigation }: Props) => {
     [offerings, student],
   );
 
-  const enrollmentYear = useMemo(
-    () => getStudentEnrollmentYear(student),
-    [student],
+  const enrollmentYear = useMemo(() => {
+    if (!student) return '...';
+    return `${student.firstEnrollmentYear - 1}/${student.firstEnrollmentYear}`;
+  }, [student]);
+
+  const areMessagesMissing = useCallback(
+    () => queryClient.getQueryData(MESSAGES_QUERY_KEY) === undefined,
+    [queryClient],
   );
+  const areMessagesDisabled = useOfflineDisabled(areMessagesMissing);
+
+  const isOffline = useOfflineDisabled();
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <HeaderRightDropdown student={student} />,
+      headerRight: () => (
+        <HeaderRightDropdown student={student} isOffline={isOffline} />
+      ),
     });
-  }, [navigation, student]);
+  }, [isOffline, navigation, student]);
 
   return (
     <ScrollView
@@ -186,10 +207,12 @@ export const ProfileScreen = ({ navigation }: Props) => {
               title={t('messagesScreen.title')}
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
               linkTo="Messages"
+              disabled={areMessagesDisabled}
             />
           </OverviewList>
           <CtaButton
             absolute={false}
+            disabled={isOffline}
             title={t('common.logout')}
             action={handleLogout}
             icon={faSignOut}

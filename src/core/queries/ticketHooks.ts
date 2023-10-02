@@ -10,27 +10,24 @@ import {
 } from '@polito/api-client/apis/TicketsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { pluckData, prefixKey, prefixKeys } from '../../utils/queries';
+import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
-export const TICKETS_QUERY_KEY = 'tickets';
-export const TICKET_QUERY_KEY = 'ticket';
+export const TICKETS_QUERY_KEY = ['tickets'];
+export const TICKET_QUERY_PREFIX = 'ticket';
 
-export const TICKETS_ATTACHMENTS_KEY = 'attachments';
-export const TOPICS_QUERY_KEY = 'topics';
-export const FAQS_QUERY_KEY = 'faqs';
+export const TICKETS_ATTACHMENTS_PREFIX = 'attachments';
+export const TOPICS_QUERY_KEY = ['topics'];
+export const FAQS_QUERY_KEY = ['faqs'];
 
 const useTicketsClient = (): TicketsApi => {
-  const {
-    clients: { tickets: ticketsClient },
-  } = useApiContext();
-  return ticketsClient!;
+  return new TicketsApi();
 };
 
 export const useGetTickets = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(prefixKey([TICKETS_QUERY_KEY]), () =>
+  return useQuery(TICKETS_QUERY_KEY, () =>
     ticketsClient.getTickets().then(pluckData),
   );
 };
@@ -38,14 +35,13 @@ export const useGetTickets = () => {
 export const useCreateTicket = () => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
-  const invalidatesQuery = prefixKey([TICKETS_QUERY_KEY]);
 
   return useMutation(
     (dto: CreateTicketRequest) =>
       ticketsClient.createTicket(dto).then(pluckData),
     {
       onSuccess() {
-        return client.invalidateQueries(invalidatesQuery);
+        return client.invalidateQueries(TICKETS_QUERY_KEY);
       },
     },
   );
@@ -54,17 +50,17 @@ export const useCreateTicket = () => {
 export const useReplyToTicket = (ticketId: number) => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
-  const invalidatesQueries = prefixKeys([
-    [TICKETS_QUERY_KEY],
-    [TICKET_QUERY_KEY, ticketId],
-  ]);
+  const invalidatesQueries = [
+    TICKETS_QUERY_KEY,
+    [TICKET_QUERY_PREFIX, ticketId],
+  ];
 
   return useMutation({
     mutationFn: (dto: ReplyToTicketRequest) => {
       return ticketsClient.replyToTicket(dto);
     },
     onSuccess() {
-      return invalidatesQueries.map(q => client.invalidateQueries(q));
+      return invalidatesQueries.forEach(q => client.invalidateQueries(q));
     },
   });
 };
@@ -72,7 +68,7 @@ export const useReplyToTicket = (ticketId: number) => {
 export const useGetTicket = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(prefixKey([TICKET_QUERY_KEY, ticketId]), () =>
+  return useQuery([TICKET_QUERY_PREFIX, ticketId], () =>
     ticketsClient.getTicket({ ticketId }).then(pluckData),
   );
 };
@@ -80,14 +76,14 @@ export const useGetTicket = (ticketId: number) => {
 export const useMarkTicketAsClosed = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
-  const invalidatesQueries = prefixKeys([
-    [TICKETS_QUERY_KEY],
-    [TICKET_QUERY_KEY, ticketId],
-  ]);
+  const invalidatesQueries = [
+    TICKETS_QUERY_KEY,
+    [TICKET_QUERY_PREFIX, ticketId],
+  ];
 
   return useMutation(() => ticketsClient.markTicketAsClosed({ ticketId }), {
     onSuccess() {
-      return invalidatesQueries.map(q => client.invalidateQueries(q));
+      return invalidatesQueries.forEach(q => client.invalidateQueries(q));
     },
   });
 };
@@ -95,11 +91,10 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
 export const useMarkTicketAsRead = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
-  const invalidatesQuery = prefixKey([TICKETS_QUERY_KEY]);
 
   return useMutation(() => ticketsClient.markTicketAsRead({ ticketId }), {
     onSuccess() {
-      return client.invalidateQueries(invalidatesQuery);
+      return client.invalidateQueries(TICKETS_QUERY_KEY);
     },
   });
 };
@@ -107,7 +102,7 @@ export const useMarkTicketAsRead = (ticketId: number) => {
 export const useGetTicketTopics = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TOPICS_QUERY_KEY], () =>
+  return useQuery(TOPICS_QUERY_KEY, () =>
     ticketsClient.getTicketTopics().then(pluckData),
   );
 };
@@ -120,7 +115,7 @@ export const useGetTicketReplyAttachment = (
   const { token } = useApiContext();
 
   return useQuery(
-    prefixKey([TICKETS_ATTACHMENTS_KEY, ticketId, replyId, attachmentId]),
+    [TICKETS_ATTACHMENTS_PREFIX, ticketId, replyId, attachmentId],
     () =>
       ReactNativeBlobUtil.config({
         fileCache: true,
@@ -154,7 +149,7 @@ export const useGetTicketAttachment = (
   const { token } = useApiContext();
 
   return useQuery(
-    prefixKey([TICKETS_ATTACHMENTS_KEY, ticketId, attachmentId]),
+    [TICKETS_ATTACHMENTS_PREFIX, ticketId, attachmentId],
     () =>
       ReactNativeBlobUtil.config({
         fileCache: true,
@@ -183,7 +178,7 @@ export const useSearchTicketFaqs = (search: string) => {
   const ticketsClient = useTicketsClient();
 
   return useQuery(
-    [FAQS_QUERY_KEY],
+    FAQS_QUERY_KEY,
     () => ticketsClient.searchTicketFAQs({ search }).then(pluckData),
     {
       enabled: false,

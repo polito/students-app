@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -16,22 +16,26 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
+  CourseSectionEnum,
+  getCourseKey,
   useGetCourse,
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { ExamListItem } from '../components/ExamListItem';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
 export const CourseInfoScreen = () => {
   const { t } = useTranslation();
-  const courseId = useContext(CourseContext)!;
+  const courseId = useCourseContext();
   const styles = useStylesheet(createStyles);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const courseQuery = useGetCourse(courseId);
@@ -63,6 +67,17 @@ export const CourseInfoScreen = () => {
 
     setStaff(staffData);
   }, [isStaffLoading]);
+
+  const queryClient = useQueryClient();
+  const isGuideDataMissing = useCallback(
+    () =>
+      queryClient.getQueryData(
+        getCourseKey(courseId, CourseSectionEnum.Guide),
+      ) === undefined,
+    [courseId, queryClient],
+  );
+
+  const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
 
   return (
     <ScrollView
@@ -133,6 +148,7 @@ export const CourseInfoScreen = () => {
             <ListItem
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
+              disabled={isGuideDisabled}
             />
           </OverviewList>
         </Section>

@@ -35,6 +35,7 @@ export const TouchableCard = ({
     <TouchableHighlight
       underlayColor={colors.touchableHighlight}
       style={[rounded && { borderRadius: shapes.lg }, style]}
+      disabled={disabled}
       {...rest}
     >
       <Card

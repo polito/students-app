@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
@@ -19,10 +19,15 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useMarkTicketAsClosed } from '../../../core/queries/ticketHooks';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import {
+  TICKET_QUERY_PREFIX,
+  useMarkTicketAsClosed,
+} from '../../../core/queries/ticketHooks';
 import { formatDateTime } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 
@@ -40,6 +45,14 @@ export const TicketListItem = ({ ticket }: Props) => {
   });
 
   const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
+  const queryClient = useQueryClient();
+
+  const isDataMissing = useCallback(
+    () =>
+      queryClient.getQueryData([TICKET_QUERY_PREFIX, ticket.id]) === undefined,
+    [ticket, queryClient],
+  );
+  const isDisabled = useOfflineDisabled(isDataMissing);
 
   const actions = useMemo(() => {
     if (markTicketAsClosedEnabled) {
@@ -53,7 +66,7 @@ export const TicketListItem = ({ ticket }: Props) => {
       ];
     }
     return [];
-  }, [markTicketAsClosedEnabled]);
+  }, [markTicketAsClosedEnabled, t]);
 
   const UnReadCount = () => {
     return (
@@ -77,6 +90,7 @@ export const TicketListItem = ({ ticket }: Props) => {
           screen: 'Ticket',
           params: { id: ticket.id },
         }}
+        disabled={isDisabled}
         title={getHtmlTextContent(ticket?.subject)}
         subtitle={`${formatDateTime(ticket.updatedAt)} - ${getHtmlTextContent(
           ticket?.message,

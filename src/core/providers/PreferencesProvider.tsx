@@ -15,6 +15,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const deviceLanguage = useDeviceLanguage();
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
+      username: '',
       colorScheme: 'system',
       courses: {},
       language: deviceLanguage,

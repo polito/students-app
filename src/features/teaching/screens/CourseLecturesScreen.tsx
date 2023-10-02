@@ -1,10 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
   Platform,
   Pressable,
   SectionList,
+  SectionListData,
   StyleSheet,
   View,
 } from 'react-native';
@@ -26,11 +27,12 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { TranslucentView } from '../../../core/components/TranslucentView';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { formatDate } from '../../../utils/dates';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 import {
   CourseLecture,
   CourseLectureSection,
@@ -39,14 +41,16 @@ import {
 export const CourseLecturesScreen = () => {
   const { t } = useTranslation();
   const safeAreaInsets = useSafeAreaInsets();
-  const courseId = useContext(CourseContext)!;
-  const { spacing, colors, fontSizes } = useTheme();
+  const courseId = useCourseContext();
+  const { spacing, colors } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =
     useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
-  const { marginHorizontal } = useSafeAreaSpacing();
+  const isCacheMissing = useOfflineDisabled(
+    () => courseLecturesQuery.data === undefined,
+  );
 
   useEffect(() => {
     if (!courseLecturesQuery.data) return;
@@ -97,14 +101,24 @@ export const CourseLecturesScreen = () => {
       sections={lectures}
       refreshControl={<RefreshControl queries={[courseLecturesQuery]} />}
       stickySectionHeadersEnabled={true}
-      ListEmptyComponent={
-        !courseLecturesQuery.isLoading ? (
-          <EmptyState
-            message={t('courseLecturesTab.emptyState')}
-            icon={faChalkboardTeacher}
-          />
-        ) : null
-      }
+      ListEmptyComponent={() => {
+        if (!courseLecturesQuery.isLoading) {
+          return (
+            <EmptyState
+              message={t('courseLecturesTab.emptyState')}
+              icon={faChalkboardTeacher}
+            />
+          );
+        } else if (isCacheMissing) {
+          return (
+            <EmptyState
+              icon={faChalkboardTeacher}
+              message={t('common.cacheMiss')}
+            />
+          );
+        }
+        return null;
+      }}
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
         { useNativeDriver: false },
@@ -149,53 +163,74 @@ export const CourseLecturesScreen = () => {
         </Pressable>
       )}
       renderItem={({ section, item: lecture }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { data: teacher } = useGetPerson(lecture.teacherId);
         return (
-          <ListItem
-            title={lecture.title}
-            subtitle={[
-              formatDate(lecture.createdAt),
-              lecture.duration,
-              teacher && `${teacher.firstName} ${teacher.lastName}`,
-            ]
-              .filter(i => !!i)
-              .join(' - ')}
-            accessibilityLabel={[
-              lecture.title,
-              lecture.duration
-                .replace('m', t('common.minutes'))
-                .replace('h', t('common.hours')),
-              teacher && `${teacher.firstName} ${teacher.lastName}`,
-            ]
-              .filter(i => !!i)
-              .join(' - ')}
-            leadingItem={
-              <Icon
-                icon={
-                  section.type === 'VideoLecture'
-                    ? faVideo
-                    : faChalkboardTeacher
-                }
-                size={fontSizes['2xl']}
-              />
-            }
-            linkTo={{
-              screen:
-                section.type === 'VideoLecture'
-                  ? 'CourseVideolecture'
-                  : 'CourseVirtualClassroom',
-              params: {
-                courseId,
-                lectureId: lecture.id,
-                teacherId: lecture.teacherId,
-              },
-            }}
-            containerStyle={marginHorizontal}
+          <CourseLectureListItem
+            courseId={courseId}
+            section={section}
+            lecture={lecture}
           />
         );
       }}
       ListFooterComponent={<BottomBarSpacer />}
+    />
+  );
+};
+
+type CourseLectureListItemProps = {
+  courseId: number;
+  section: SectionListData<CourseLecture, CourseLectureSection>;
+  lecture: CourseLecture;
+};
+
+export const CourseLectureListItem = ({
+  courseId,
+  section,
+  lecture,
+}: CourseLectureListItemProps) => {
+  const isDisabled = useOfflineDisabled();
+  const { data: teacher } = useGetPerson(lecture.teacherId);
+  const { marginHorizontal } = useSafeAreaSpacing();
+  const { fontSizes } = useTheme();
+  const { t } = useTranslation();
+
+  return (
+    <ListItem
+      title={lecture.title}
+      subtitle={[
+        formatDate(lecture.createdAt),
+        lecture.duration,
+        teacher && `${teacher.firstName} ${teacher.lastName}`,
+      ]
+        .filter(i => !!i)
+        .join(' - ')}
+      accessibilityLabel={[
+        lecture.title,
+        lecture.duration
+          .replace('m', t('common.minutes'))
+          .replace('h', t('common.hours')),
+        teacher && `${teacher.firstName} ${teacher.lastName}`,
+      ]
+        .filter(i => !!i)
+        .join(' - ')}
+      leadingItem={
+        <Icon
+          icon={section.type === 'VideoLecture' ? faVideo : faChalkboardTeacher}
+          size={fontSizes['2xl']}
+        />
+      }
+      linkTo={{
+        screen:
+          section.type === 'VideoLecture'
+            ? 'CourseVideolecture'
+            : 'CourseVirtualClassroom',
+        params: {
+          courseId,
+          lectureId: lecture.id,
+          teacherId: lecture.teacherId,
+        },
+      }}
+      containerStyle={marginHorizontal}
+      disabled={isDisabled}
     />
   );
 };

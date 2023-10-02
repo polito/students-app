@@ -62,7 +62,7 @@ export const CtaButton = ({
           position: 'absolute',
           left: Platform.select({ ios: left }),
           right,
-          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[16] : 0),
+          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
         },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,

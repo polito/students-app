@@ -1,30 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-// TODO see above
 import { ResponseError } from '@polito/api-client/runtime';
 import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 
-import { useApiContext } from '../core/contexts/ApiContext';
+import { DateTime } from 'luxon';
+
 import { SuccessResponse } from '../core/types/api';
-
-/**
- * Add student username as key prefix to allow identity switch while keeping cache
- *
- * @param queryKey
- */
-export const prefixKey = (queryKey: (string | number)[]) => {
-  const { username } = useApiContext();
-  return [username, ...queryKey];
-};
-
-/**
- * Add student username as key prefix to all passed keys to allow identity switch while keeping cache
- *
- * @param queryKeys
- */
-export const prefixKeys = (queryKeys: (string | number)[][]) => {
-  const { username } = useApiContext();
-  return queryKeys.map(q => [username, ...q]);
-};
 
 /**
  * Pluck data from API response
@@ -51,6 +30,29 @@ export const shiftPage: {
   <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
 } = infiniteQuery => {
   return [...infiniteQuery.data!.pages].shift()!;
+};
+
+export const getPageByPageParam = async <T>(
+  infiniteQuery: InfiniteQueryObserverResult<T[]>,
+  pageParam: DateTime,
+): Promise<T[]> => {
+  const pageIndex = infiniteQuery.data?.pageParams.findIndex(
+    item => item === pageParam,
+  );
+
+  if (pageIndex && pageIndex >= 0) {
+    return Promise.resolve([...infiniteQuery.data!.pages[pageIndex]!]);
+  }
+
+  // fetch page by its pageParam
+  if (
+    infiniteQuery.data?.pageParams[0] &&
+    pageParam < infiniteQuery.data.pageParams[0]
+  ) {
+    return await infiniteQuery.fetchPreviousPage({ pageParam }).then(shiftPage);
+  }
+
+  return await infiniteQuery.fetchNextPage({ pageParam }).then(popPage);
 };
 
 /**
