@@ -3,23 +3,19 @@ import { useQuery } from '@tanstack/react-query';
 
 import { compact } from 'lodash';
 
-import { pluckData, prefixKey } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
+import { pluckData } from '../../utils/queries';
 
-export const OFFERING_QUERY_KEY = 'offering';
-export const DEGREES_QUERY_KEY = 'degrees';
-export const COURSES_QUERY_KEY = 'courses';
+export const OFFERING_QUERY_KEY = ['offering'];
+export const DEGREES_QUERY_PREFIX = 'degrees';
+export const COURSES_QUERY_PREFIX = 'courses';
 const useOfferingClient = (): OfferingApi => {
-  const {
-    clients: { offering: offeringClient },
-  } = useApiContext();
-  return offeringClient!;
+  return new OfferingApi();
 };
 
 export const useGetOffering = () => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(prefixKey([OFFERING_QUERY_KEY]), () =>
+  return useQuery(OFFERING_QUERY_KEY, () =>
     offeringClient.getOffering().then(pluckData),
   );
 };
@@ -33,7 +29,7 @@ export const useGetOfferingDegree = ({
 }) => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(prefixKey(compact([DEGREES_QUERY_KEY, degreeId, year])), () =>
+  return useQuery(compact([DEGREES_QUERY_PREFIX, degreeId, year]), () =>
     offeringClient.getOfferingDegree({ degreeId, year }).then(pluckData),
   );
 };
@@ -48,9 +44,12 @@ export const useGetOfferingCourse = ({
   const offeringClient = useOfferingClient();
 
   return useQuery(
-    prefixKey(
-      compact([DEGREES_QUERY_KEY, COURSES_QUERY_KEY, courseShortcode, year]),
-    ),
+    compact([
+      DEGREES_QUERY_PREFIX,
+      COURSES_QUERY_PREFIX,
+      courseShortcode,
+      year,
+    ]),
     () =>
       offeringClient
         .getOfferingCourse({ courseShortcode, year })
