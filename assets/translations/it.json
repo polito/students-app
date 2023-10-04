@@ -202,7 +202,7 @@
     "degreeClass": "Classe di laurea",
     "info": "Info",
     "jobOpportunities": "Sbocchi",
-    "title": "Dettaglio corso",
+    "title": "Corso di laurea",
     "tracks": "Piano studi"
   },
   "offeringBachelorScreen": {
@@ -278,14 +278,16 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
+    "extra": "Extra carico",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
   },
   "degreeCourseScreen": {
-    "title": "Dettaglio esame",
+    "title": "Corso",
     "period": "Periodo",
     "examMode": "Modalità di esame",
     "lecture": "Lezioni",
@@ -293,7 +295,8 @@
     "tutoring": "Tutoraggio",
     "labExercise": "Esercitazioni in laboratorio",
     "staff": "Docenti",
-    "hours": "{{hours}} Ore"
+    "hours": "{{hours}} Ore",
+    "noStaff": "Nessun docente associato a questo corso"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",

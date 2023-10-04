@@ -139,9 +139,7 @@ export const PersonScreen = ({ route }: Props) => {
   };
 
   const RenderedCourse = (course: PersonCourse, index: number) => {
-    const onPressCourse = () => {
-      // TODO
-    };
+    const onPressCourse = () => {};
 
     const role = course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
 

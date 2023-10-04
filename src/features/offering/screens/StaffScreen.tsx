@@ -1,48 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
-import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Section } from '@lib/ui/components/Section';
+import { OfferingCourseStaffInner } from '@polito/api-client/models';
 import { Person } from '@polito/api-client/models/Person';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { StaffListItem } from '../components/StaffListItem';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Staff'>;
 
 export const StaffScreen = ({ route }: Props) => {
-  const { personIds } = route.params;
-  const { queries: staffQueries, isLoading } = useGetPersons(personIds);
-  const [staff, setStaff] = useState<Person[]>([]);
+  const { staff } = route.params;
 
-  useEffect(() => {
+  const staffIds = useMemo(() => staff.map(s => s.id), [staff]);
+
+  const { queries: staffQueries, isLoading } = useGetPersons(staffIds);
+
+  const staffPeople: (Person & OfferingCourseStaffInner)[] = useMemo(() => {
     if (isLoading) {
-      return;
+      return [];
     }
-    const staffData: Person[] = [];
 
-    staffQueries.forEach(staffQuery => {
+    const staffData: (Person & OfferingCourseStaffInner)[] = [];
+
+    staffQueries.forEach((staffQuery, index) => {
       if (!staffQuery.data) return;
       staffData.push({
         ...staffQuery.data,
+        ...staff[index],
       });
     });
 
-    setStaff(staffData);
-  }, [isLoading]);
+    return staffData;
+  }, [isLoading, staff, staffQueries]);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         <Section>
           <OverviewList loading={isLoading}>
-            {staff.map(person => (
-              <PersonListItem
-                key={`${person.id}`}
-                person={person}
-                subtitle={person.role}
+            {staffPeople.map(person => (
+              <StaffListItem
+                key={`${person.id}${person.courseId}`}
+                staff={person}
               />
             ))}
           </OverviewList>

@@ -18,7 +18,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getTracksCoursesSections } from '../../../utils/offerings';
 import { DegreeTrackYear } from '../components/DegreeTrackYear';
-import { useDegreeContext } from '../context/DegreeContext';
+import { useDegreeContext } from '../contexts/DegreeContext';
 
 export type OfferingCourseYear = {
   teachingYear: number;

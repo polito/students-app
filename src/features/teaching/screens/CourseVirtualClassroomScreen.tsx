@@ -43,7 +43,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       <SafeAreaView>
-        {lecture?.videoUrl && (
+        {lecture?.type === 'recording' && lecture?.videoUrl && (
           <VideoPlayer
             source={{ uri: lecture.videoUrl }}
             poster={lecture?.coverUrl ?? undefined}

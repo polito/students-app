@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 
 import {
+  faAngleDown,
   faBriefcase,
   faFlaskVial,
   faMicroscope,
   faPersonChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
@@ -22,7 +22,6 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
-import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
@@ -32,25 +31,14 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { CourseStaffInner } from '@polito/api-client/models';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
-
-const StaffListItem = ({ staff }: { staff: CourseStaffInner }) => {
-  const { data: person } = useGetPerson(staff.id);
-
-  return person ? (
-    <PersonListItem person={person} subtitle={staff.role} />
-  ) : (
-    <ListItem title=" - " subtitle={staff?.role} />
-  );
-};
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { StaffListItem } from '../components/StaffListItem';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'DegreeCourse'>;
 const listTitleProps = { numberOfLines: 4 };
@@ -58,8 +46,13 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const { courseShortcode, year: initialYear } = route.params;
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const [year, setYear] = useState(initialYear);
-  const courseQuery = useGetOfferingCourse({ courseShortcode, year });
+  const [selectedYear, setSelectedYear] = useState(initialYear);
+  const [currentYear, setCurrentYear] = useState(initialYear);
+
+  const courseQuery = useGetOfferingCourse({
+    courseShortcode,
+    year: selectedYear,
+  });
   const { palettes, spacing } = useTheme();
   const offeringCourse = courseQuery.data;
 
@@ -72,10 +65,8 @@ export const DegreeCourseScreen = ({ route }: Props) => {
 
   useEffect(() => {
     if (!offeringCourse) return;
-    if (!year) {
-      setYear(offeringCourse?.editions[0]);
-    }
-  }, [offeringCourse, year]);
+    setCurrentYear(offeringCourse.year);
+  }, [offeringCourse]);
 
   return (
     <ScrollView
@@ -99,15 +90,14 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   accessibilityRole="button"
                   accessible={true}
                 >
-                  {/* <Text>{t('degreeCourseScreen.period')}</Text> */}
                   <MenuView
                     actions={(offeringCourse?.editions || [])?.map(edition => ({
                       id: edition.toString(),
                       title: edition,
-                      state: edition === year ? 'on' : undefined,
+                      state: edition === currentYear ? 'on' : undefined,
                     }))}
                     onPressAction={async ({ nativeEvent: { event } }) => {
-                      setYear(() => event);
+                      setSelectedYear(() => event);
                       await courseQuery.refetch();
                     }}
                   >
@@ -115,12 +105,12 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                       <Metric
                         title={t('degreeCourseScreen.period')}
                         value={`${offeringCourse?.teachingPeriod ?? '--'} - ${
-                          year ?? '--'
+                          currentYear ?? '--'
                         }`}
                         accessibilityLabel={`${t(
                           'degreeCourseScreen.period',
                         )}: ${offeringCourse?.teachingPeriod ?? '--'} - ${
-                          year ?? '--'
+                          currentYear ?? '--'
                         }`}
                       />
                       <Icon
@@ -149,65 +139,63 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               </Grid>
             </Row>
           </Card>
-          <OverviewList style={styles.overviewList}>
-            {!!offeringCourse?.hours?.lecture && (
-              <ListItem
-                inverted
-                title={t('degreeCourseScreen.hours', {
-                  hours: offeringCourse?.hours?.lecture?.toString(),
-                })}
-                titleStyle={styles.title}
-                titleProps={listTitleProps}
-                subtitle={t('degreeCourseScreen.lecture')}
-                leadingItem={<Icon size={20} icon={faBriefcase} />}
-              />
+          {offeringCourse?.hours &&
+            offeringCourse.hours?.lecture &&
+            offeringCourse.hours?.classroomExercise &&
+            offeringCourse.hours?.labExercise &&
+            offeringCourse.hours?.tutoring && (
+              <OverviewList>
+                {!!offeringCourse?.hours?.lecture && (
+                  <ListItem
+                    inverted
+                    title={t('degreeCourseScreen.hours', {
+                      hours: offeringCourse?.hours?.lecture?.toString(),
+                    })}
+                    titleStyle={styles.title}
+                    titleProps={listTitleProps}
+                    subtitle={t('degreeCourseScreen.lecture')}
+                    leadingItem={<Icon size={20} icon={faBriefcase} />}
+                  />
+                )}
+                {!!offeringCourse?.hours?.classroomExercise && (
+                  <ListItem
+                    inverted
+                    title={t('degreeCourseScreen.hours', {
+                      hours:
+                        offeringCourse?.hours?.classroomExercise?.toString(),
+                    })}
+                    titleStyle={styles.title}
+                    titleProps={listTitleProps}
+                    subtitle={t('degreeCourseScreen.classroomExercise')}
+                    leadingItem={<Icon size={20} icon={faMicroscope} />}
+                  />
+                )}
+                {!!offeringCourse?.hours?.labExercise && (
+                  <ListItem
+                    inverted
+                    title={t('degreeCourseScreen.hours', {
+                      hours: offeringCourse?.hours?.labExercise?.toString(),
+                    })}
+                    titleStyle={styles.title}
+                    titleProps={listTitleProps}
+                    subtitle={t('degreeCourseScreen.labExercise')}
+                    leadingItem={<Icon size={20} icon={faFlaskVial} />}
+                  />
+                )}
+                {!!offeringCourse?.hours?.tutoring && (
+                  <ListItem
+                    inverted
+                    title={t('degreeCourseScreen.hours', {
+                      hours: offeringCourse?.hours?.tutoring?.toString(),
+                    })}
+                    titleStyle={styles.title}
+                    titleProps={listTitleProps}
+                    subtitle={t('degreeCourseScreen.tutoring')}
+                    leadingItem={<Icon size={20} icon={faPersonChalkboard} />}
+                  />
+                )}
+              </OverviewList>
             )}
-            {!!offeringCourse?.hours?.classroomExercise && (
-              <ListItem
-                inverted
-                title={t('degreeCourseScreen.hours', {
-                  hours: offeringCourse?.hours?.classroomExercise?.toString(),
-                })}
-                titleStyle={styles.title}
-                titleProps={listTitleProps}
-                subtitle={t('degreeCourseScreen.classroomExercise')}
-                leadingItem={<Icon size={20} icon={faMicroscope} />}
-              />
-            )}
-            {!!offeringCourse?.hours?.labExercise && (
-              <ListItem
-                inverted
-                title={t('degreeCourseScreen.hours', {
-                  hours: offeringCourse?.hours?.labExercise?.toString(),
-                })}
-                titleStyle={styles.title}
-                titleProps={listTitleProps}
-                subtitle={t('degreeCourseScreen.labExercise')}
-                leadingItem={<Icon size={20} icon={faFlaskVial} />}
-              />
-            )}
-            {!!offeringCourse?.hours?.tutoring && (
-              <ListItem
-                inverted
-                title={t('degreeCourseScreen.hours', {
-                  hours: offeringCourse?.hours?.tutoring?.toString(),
-                })}
-                titleStyle={styles.title}
-                titleProps={listTitleProps}
-                subtitle={t('degreeCourseScreen.tutoring')}
-                leadingItem={<Icon size={20} icon={faPersonChalkboard} />}
-              />
-            )}
-            {offeringCourse?.examMode && (
-              <ListItem
-                inverted
-                title={offeringCourse?.examMode}
-                titleStyle={styles.title}
-                titleProps={listTitleProps}
-                subtitle={t('degreeCourseScreen.examMode')}
-              />
-            )}
-          </OverviewList>
           <Section style={styles.staffSection}>
             <SectionHeader
               title={t('degreeCourseScreen.staff')}
@@ -217,15 +205,18 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   ? {
                       screen: 'Staff',
                       params: {
-                        personIds: offeringCourse?.staff?.map(s => s.id) || [],
+                        staff: offeringCourse!.staff,
                       },
                     }
                   : undefined
               }
             />
-            <OverviewList>
+            <OverviewList emptyStateText={t('degreeCourseScreen.noStaff')}>
               {offeringCourse?.staff.slice(0, 3).map(item => (
-                <StaffListItem key={item.id} staff={item} />
+                <StaffListItem
+                  key={`${item.id}${item.courseId}`}
+                  staff={item}
+                />
               ))}
             </OverviewList>
           </Section>
@@ -277,12 +268,7 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       fontSize: fontSizes.sm,
       lineHeight: fontSizes.md * 1.2,
     },
-    overviewList: {
-      marginTop: spacing[3],
-    },
-    staffSection: {
-      marginTop: spacing[3],
-    },
+    staffSection: {},
     label: {
       color: palettes.secondary['500'],
     },

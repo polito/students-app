@@ -15,11 +15,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getShortYear } from '../../../utils/offerings';
-import { DegreeContext } from '../context/DegreeContext';
+import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
+import { DegreeContext } from '../contexts/DegreeContext';
 import { DegreeInfoScreen } from '../screens/DegreeInfoScreen';
 import { DegreeJobOpportunitiesScreen } from '../screens/DegreeJobOpportunitiesScreen';
 import { DegreeTracksScreen } from '../screens/DegreeTracksScreen';
-import { OfferingStackParamList } from './ServicesNavigator';
 
 type Props = NativeStackScreenProps<OfferingStackParamList, 'Degree'>;
 
@@ -29,7 +29,7 @@ export interface DegreeTabsParamList extends ParamListBase {
   DegreeTracksScreen: undefined;
 }
 const TopTabs = createMaterialTopTabNavigator<DegreeTabsParamList>();
-export const DegreeNavigator = ({ route, navigation }: Props) => {
+export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   const { palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
   const { id: degreeId, year: initialYear } = route.params;
@@ -38,10 +38,10 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     if (!degreeQuery.data) return;
-    const editions = degreeQuery.data.editions.reverse();
+    const editions = degreeQuery.data.editions;
     const degreeYear = degreeQuery.data.year;
     const nextDegreeYear = Number(degreeYear) + 1;
-    setYear(degreeYear);
+    // setYear(degreeYear);
     const accessibilityLabel = [
       t('profileScreen.enrollmentYear', {
         enrollmentYear: `${degreeYear}/${getShortYear(nextDegreeYear)}`,
@@ -64,7 +64,6 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
             }))}
             onPressAction={async ({ nativeEvent: { event } }) => {
               setYear(() => event);
-              await degreeQuery.refetch();
             }}
           >
             <Row align="center">
@@ -103,7 +102,7 @@ export const DegreeNavigator = ({ route, navigation }: Props) => {
           options={{ title: t('degreeScreen.info') }}
         />
         <TopTabs.Screen
-          name="DegreeTracksScreen"
+          name="Degree1TracksScreen"
           component={DegreeTracksScreen}
           options={{ title: t('degreeScreen.tracks') }}
         />

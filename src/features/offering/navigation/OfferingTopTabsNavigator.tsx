@@ -4,7 +4,7 @@ import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 
-import { Offerings } from './Offerings';
+import { Offerings } from '../screens/Offerings';
 
 export interface OfferingTabsParamList extends ParamListBase {
   OfferingBachelorScreen: undefined;
@@ -16,7 +16,7 @@ const TopTabs = createMaterialTopTabNavigator<OfferingTabsParamList>();
 const OfferingBachelorScreen = () => <Offerings type="bachelor" />;
 const OfferingMasterScreen = () => <Offerings type="master" />;
 
-export const OfferingNavigator = () => {
+export const OfferingTopTabsNavigator = () => {
   const { t } = useTranslation();
 
   return (

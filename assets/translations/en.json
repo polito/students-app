@@ -201,7 +201,7 @@
     "degreeClass": "Degree code",
     "info": "Info",
     "jobOpportunities": "Job opportunities",
-    "title": "Course detail",
+    "title": "Degree",
     "tracks": "Tracks"
   },
   "offeringBachelorScreen": {
@@ -219,7 +219,8 @@
     "tutoring": "Tutoring",
     "labExercise": "Lab excercise",
     "staff": "Staff",
-    "hours": "{{hours}} hours"
+    "hours": "{{hours}} hours",
+    "noStaff": "No teacher is associated to this course"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
@@ -288,7 +289,9 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
+    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
+    "extra": "Extra APSP",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "There are no notices here",

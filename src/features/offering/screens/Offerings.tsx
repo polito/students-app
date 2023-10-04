@@ -67,7 +67,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
   );
 };
 
-const createStyles = ({ palettes, spacing, dark }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
       paddingVertical: spacing[5],

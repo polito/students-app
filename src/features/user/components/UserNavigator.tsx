@@ -7,11 +7,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
-import { DegreeNavigator } from '../../services/components/DegreeNavigator';
+import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
+import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
+import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
+import { StaffScreen } from '../../offering/screens/StaffScreen';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
-import { DegreeCourseGuideScreen } from '../../services/screens/DegreeCourseGuideScreen';
-import { DegreeCourseScreen } from '../../services/screens/DegreeCourseScreen';
-import { StaffScreen } from '../../services/screens/StaffScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
@@ -91,7 +91,7 @@ export const UserNavigator = () => {
       />
       <Stack.Screen
         name="Degree"
-        component={DegreeNavigator}
+        component={DegreeTopTabsNavigator}
         options={{
           headerTitle: t('degreeScreen.title'),
           headerLargeTitle: false,

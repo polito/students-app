@@ -11,7 +11,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getHtmlTextContent } from '../../../utils/html';
-import { useDegreeContext } from '../context/DegreeContext';
+import { useDegreeContext } from '../contexts/DegreeContext';
 
 export const DegreeJobOpportunitiesScreen = () => {
   const { degreeId, year } = useDegreeContext();

@@ -12,9 +12,10 @@ import {
   getTracksCoursesGrouped,
   getTracksCoursesWithoutGroup,
 } from '../../../utils/offerings';
+import { useDegreeContext } from '../contexts/DegreeContext';
 import { OfferingCourseYear } from '../screens/DegreeTracksScreen';
-import { CourseTrailingItem } from './course/CourseTrailingItem';
-import { GroupCourses } from './course/GroupCourses';
+import { CourseTrailingItem } from './CourseTrailingItem';
+import { GroupCourses } from './GroupCourses';
 
 interface DegreeTrackYearProps {
   item: OfferingCourseYear;
@@ -29,6 +30,8 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
     () => getTracksCoursesGrouped(courses),
     [courses],
   );
+
+  const { year } = useDegreeContext();
 
   const [expandedGroupIndex, setExpandedGroupIndex] = useState<number>();
 
@@ -51,6 +54,7 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
               screen: 'DegreeCourse',
               params: {
                 courseShortcode: course.shortcode,
+                teachingYear: year,
               },
             }}
             accessibilityRole="button"

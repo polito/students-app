@@ -3,31 +3,32 @@ import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { TicketStatus } from '@polito/api-client';
+import { OfferingCourseStaffInner } from '@polito/api-client/models';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
+import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
+import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
+import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
+import { StaffScreen } from '../../offering/screens/StaffScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
-import { DegreeCourseGuideScreen } from '../screens/DegreeCourseGuideScreen';
-import { DegreeCourseScreen } from '../screens/DegreeCourseScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
-import { StaffScreen } from '../screens/StaffScreen';
 import { TicketFaqScreen } from '../screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
 import { TicketListScreen } from '../screens/TicketListScreen';
 import { TicketScreen } from '../screens/TicketScreen';
 import { TicketsScreen } from '../screens/TicketsScreen';
-import { DegreeNavigator } from './DegreeNavigator';
-import { OfferingNavigator } from './OfferingNavigator';
 
 export type OfferingStackParamList = {
   Offering: undefined;
@@ -40,7 +41,7 @@ export type OfferingStackParamList = {
     courseShortcode: string;
     year?: string;
   };
-  Staff: { personIds: number[] };
+  Staff: { staff: OfferingCourseStaffInner[] };
 };
 
 export type ServiceStackParamList = OfferingStackParamList & {
@@ -187,7 +188,7 @@ export const ServicesNavigator = () => {
       />
       <Stack.Screen
         name="Offering"
-        component={OfferingNavigator}
+        component={OfferingTopTabsNavigator}
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('offeringScreen.title'),
@@ -202,7 +203,7 @@ export const ServicesNavigator = () => {
       />
       <Stack.Screen
         name="Degree"
-        component={DegreeNavigator}
+        component={DegreeTopTabsNavigator}
         options={{
           headerTitle: t('degreeScreen.title'),
           headerLargeTitle: false,
@@ -228,7 +229,6 @@ export const ServicesNavigator = () => {
         component={DegreeCourseGuideScreen}
         options={{
           headerTitle: t('courseGuideScreen.title'),
-          headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
       />
