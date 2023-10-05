@@ -9,10 +9,15 @@
     "weeklyLayout": "Layout settimanale"
   },
   "bookingsScreen": {
-    "title": "Prenotazioni"
+    "title": "Prenotazioni",
+    "sectionTitle": "Attive"
   },
   "bookingScreen": {
-    "cancelFeedback": "Prenoazione annullata"
+    "cancelFeedback": "Prenoazione annullata",
+    "cancelBooking": "Annulla prenotazione",
+    "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
+    "barCodeTitle": "Barcode",
+    "checkIn": "Check-in"
   },
   "colors": {
     "amber": "Ambra",
