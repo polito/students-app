@@ -1,5 +1,18 @@
-import { ComponentProps, useContext, useRef, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import {
+  ComponentProps,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -7,9 +20,9 @@ import {
   Header,
   HeaderBackButton,
   HeaderBackContext,
-  HeaderHeightContext,
   Screen,
   getHeaderTitle,
+  useHeaderHeight,
 } from '@react-navigation/elements';
 import {
   DefaultRouterOptions,
@@ -29,7 +42,9 @@ import {
 import { Camera, MapView } from '@rnmapbox/maps';
 import { CameraProps } from '@rnmapbox/maps/lib/typescript/components/Camera';
 
-import { IS_IOS } from '../../../core/constants';
+import { IS_ANDROID, IS_IOS } from '../../../core/constants';
+import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
+import { useKeyboardVisibile } from '../../../core/hooks/useKeyboardVisibile';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 
@@ -39,6 +54,30 @@ interface Insets {
   left?: number;
   right?: number;
 }
+
+interface RouteProps {
+  renderRoute: (...args: unknown[]) => ReactNode;
+}
+
+const Route = ({ renderRoute }: RouteProps) => {
+  const headerHeight = useHeaderHeight();
+  const keyboardVisible = useKeyboardVisibile();
+  const tabBarHeight = useBottomTabBarHeight();
+  return (
+    <SafeAreaView
+      style={{
+        position: 'absolute',
+        top: headerHeight,
+        bottom: IS_ANDROID && keyboardVisible ? 0 : tabBarHeight,
+        left: 0,
+        right: 0,
+      }}
+      pointerEvents="box-none"
+    >
+      {renderRoute()}
+    </SafeAreaView>
+  );
+};
 
 export const MapNavigator = ({
   initialRouteName,
@@ -57,7 +96,6 @@ export const MapNavigator = ({
       screenOptions,
       initialRouteName,
     });
-  const [headerHeight, setHeaderHeight] = useState(0);
   const mapRef = useRef<MapView>(null);
   const cameraRef = useRef<Camera>(null);
   const currentRoute = descriptors[state.routes[state.index].key];
@@ -75,11 +113,22 @@ export const MapNavigator = ({
       }
     : parentHeaderBack;
   const canGoBack = headerBack !== undefined;
-  const tabBarHeight = useBottomTabBarHeight();
   const title = getHeaderTitle(
     currentRoute.options,
     state.routes[state.index].name,
   );
+  const orientation = useDeviceOrientation();
+  const [rotating, setRotating] = useState(false);
+
+  useEffect(() => {
+    if (IS_IOS) {
+      setRotating(true);
+      setTimeout(() => {
+        setRotating(false);
+      }, 1500);
+    }
+  }, [orientation]);
+
   const {
     header,
     headerShown,
@@ -179,7 +228,7 @@ export const MapNavigator = ({
         <HeaderBackContext.Provider value={headerBack}>
           <MapView
             ref={mapRef}
-            style={GlobalStyles.grow}
+            style={[GlobalStyles.grow, rotating && { display: 'none' }]}
             {...mapDefaultOptions}
             {...mapOptions}
           >
@@ -193,29 +242,18 @@ export const MapNavigator = ({
           </MapView>
 
           <MapNavigatorContext.Provider value={{ mapRef, cameraRef }}>
-            <HeaderHeightContext.Consumer>
-              {height => {
-                if (height != null) {
-                  setTimeout(() => {
-                    setHeaderHeight(height);
-                  });
-                }
-                return (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: height,
-                      bottom: tabBarHeight,
-                      left: 0,
-                      right: 0,
-                    }}
-                    pointerEvents="box-none"
-                  >
-                    {currentRoute.render()}
-                  </View>
-                );
-              }}
-            </HeaderHeightContext.Consumer>
+            {!rotating ? (
+              <Route renderRoute={currentRoute.render} />
+            ) : (
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { alignItems: 'center', justifyContent: 'center' },
+                ]}
+              >
+                <ActivityIndicator />
+              </View>
+            )}
           </MapNavigatorContext.Provider>
         </HeaderBackContext.Provider>
       </Screen>

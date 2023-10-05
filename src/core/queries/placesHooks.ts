@@ -3,18 +3,13 @@ import { useMemo } from 'react';
 import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
-import { useApiContext } from '../contexts/ApiContext';
-
 export const SITES_QUERY_KEY = 'sites';
 export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 
 const usePlacesClient = (): PlacesApi => {
-  const {
-    clients: { places: placesClient },
-  } = useApiContext();
-  return placesClient!;
+  return new PlacesApi();
 };
 
 export const useGetSites = () => {

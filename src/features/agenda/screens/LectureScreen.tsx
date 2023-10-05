@@ -18,12 +18,13 @@ import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { convertMachineDateToFormatDate } from '../../../utils/dates';
+import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { CourseIcon } from '../../teaching/components/CourseIcon';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
-export const LectureScreen = ({ route }: Props) => {
+export const LectureScreen = ({ route, navigation }: Props) => {
   const { item: lecture } = route.params;
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
@@ -69,6 +70,17 @@ export const LectureScreen = ({ route }: Props) => {
                 <Icon icon={faLocationDot} size={fontSizes['2xl']} />
               }
               title={lecture.place.name}
+              isAction
+              onPress={() => {
+                // @ts-expect-error Top-level navigation type
+                navigation.navigate('PlacesTab', {
+                  screen: 'Place',
+                  params: {
+                    placeId: resolvePlaceId(lecture.place!),
+                  },
+                  initial: false,
+                });
+              }}
             />
           )}
           {teacherQuery.data && (

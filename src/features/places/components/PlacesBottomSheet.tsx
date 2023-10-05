@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { faMapPin } from '@fortawesome/free-solid-svg-icons';
@@ -43,6 +43,8 @@ export const PlacesBottomSheet = forwardRef<
     const { t } = useTranslation();
     const { fontSizes, spacing } = useTheme();
     const innerRef = useRef<BottomSheetMethods>(null);
+    const [typing, setTyping] = useState(false);
+    const [recentSearches, setRecentSearches] = useState([]);
 
     useImperativeHandle(ref, () => innerRef.current!);
 
@@ -55,14 +57,19 @@ export const PlacesBottomSheet = forwardRef<
       >
         <BottomSheetTextField
           label={searchFieldLabel ?? t('common.search')}
-          onFocus={() => innerRef.current?.expand()}
-          onBlur={() => innerRef.current?.snapToIndex(1)}
+          onFocus={() => {
+            setTyping(true);
+            innerRef.current?.expand();
+          }}
+          onBlur={() => {
+            setTyping(false);
+            innerRef.current?.snapToIndex(1);
+          }}
           value={search}
           onChangeText={onSearchChange}
           {...textFieldProps}
         />
         <BottomSheetFlatList
-          data={[]}
           renderItem={({ item }) => (
             <ListItem
               leadingItem={<Icon icon={faMapPin} size={fontSizes['2xl']} />}
@@ -72,6 +79,11 @@ export const PlacesBottomSheet = forwardRef<
           )}
           ItemSeparatorComponent={IndentedDivider}
           {...listProps}
+          data={
+            typing && !(listProps?.data as any[])?.length
+              ? recentSearches
+              : listProps?.data ?? []
+          }
           ListEmptyComponent={
             isLoading ? (
               <ActivityIndicator style={{ marginVertical: spacing[8] }} />

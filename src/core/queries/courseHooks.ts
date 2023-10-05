@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  CourseAllOfPreviousEditions,
-  CourseAllOfVcOtherCourses,
   CourseDirectory,
   CourseDirectoryContentInner,
   CourseFileOverview,
   CourseOverview,
+  CourseOverviewPreviousEditionsInner,
+  CourseVcOtherCoursesInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
@@ -25,7 +25,6 @@ import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
 import {
   CoursesPreferences,
-  PreferenceKey,
   usePreferencesContext,
 } from '../contexts/PreferencesContext';
 import { useGetExams } from './examHooks';
@@ -40,7 +39,9 @@ const useCoursesClient = (): CoursesApi => {
 const setupCourses = (
   courses: CourseOverview[],
   coursePreferences: CoursesPreferences,
-  updatePreference: (key: PreferenceKey, value: unknown) => void,
+  updatePreference: ReturnType<
+    typeof usePreferencesContext
+  >['updatePreference'],
 ) => {
   let hasNewPreferences = false;
   // Associate each course with a set of preferences, if missing
@@ -335,7 +336,10 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (CourseAllOfPreviousEditions | CourseAllOfVcOtherCourses)[],
+  relatedVCs: (
+    | CourseOverviewPreviousEditionsInner
+    | CourseVcOtherCoursesInner
+  )[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -377,8 +381,8 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseAllOfPreviousEditions
-    | CourseAllOfVcOtherCourses
+    | CourseOverviewPreviousEditionsInner
+    | CourseVcOtherCoursesInner
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],
   );

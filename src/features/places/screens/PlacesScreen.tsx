@@ -4,6 +4,7 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,9 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
+  faBookOpen,
+  faBookReader,
+  faChalkboardTeacher,
   faChevronDown,
   faCrosshairs,
   faElevator,
@@ -28,6 +32,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { PillButton } from '@lib/ui/components/PillButton';
+import { PillIconButton } from '@lib/ui/components/PillIconButton';
 import { Row } from '@lib/ui/components/Row';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
@@ -41,6 +46,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
+import { DateTime } from 'luxon';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { IS_IOS } from '../../../core/constants';
@@ -53,6 +59,8 @@ import {
 } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
+import { useGetAgendaWeeks } from '../../agenda/queries/agendaHooks';
+import { LectureItem } from '../../agenda/types/AgendaItem';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -60,9 +68,13 @@ import { MarkersLayer } from '../components/MarkersLayer';
 import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { UPCOMING_COMMITMENT_HOURS_OFFSET } from '../constants';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { PlaceOverviewWithMetadata } from '../types';
 import { formatPlaceCategory } from '../utils/category';
+import { formatAgendaItem } from '../utils/formatAgendaItem';
+import { resolvePlaceId } from '../utils/resolvePlaceId';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
@@ -77,7 +89,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const headerHeight = useHeaderHeight();
   const [tabsHeight, setTabsHeight] = useState(46);
   const campus = useGetCurrentCampus();
-  const { updatePreference } = usePreferencesContext();
+  const { updatePreference, placesSearched } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const [search, setSearch] = useState('');
@@ -105,6 +117,50 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     placeCategoryId: categoryId,
     placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });
+  const { courses: coursesPreferences } = usePreferencesContext();
+  const now = useRef(DateTime.now());
+  const { data: agendaPages } = useGetAgendaWeeks(
+    coursesPreferences,
+    now.current,
+  );
+  const upcomingCommitments = useMemo(
+    () =>
+      agendaPages?.pages?.[0]?.data
+        .filter(i => i.isToday)
+        .flatMap(i => i.items)
+        .filter(
+          i =>
+            (i as LectureItem).place != null &&
+            i.start >= now.current &&
+            i.start.diff(now.current).milliseconds <
+              UPCOMING_COMMITMENT_HOURS_OFFSET * 60 * 60 * 1000,
+        ) as
+        | (LectureItem & { place: Exclude<LectureItem['place'], null> })[]
+        | undefined,
+    [agendaPages],
+  );
+  const orderedPlaces = useMemo(() => {
+    let result = places?.data?.sort(a =>
+      placesSearched.some(p => a.id === p.id) ? -1 : 1,
+    ) as PlaceOverviewWithMetadata[] | undefined;
+    if (!search) {
+      result = result?.filter(p => p.room.name != null);
+    }
+    if (!upcomingCommitments?.length || !result?.length) {
+      return result;
+    }
+    for (const commitment of upcomingCommitments.reverse()) {
+      const placeIndex = result.findIndex(
+        p => p.id === resolvePlaceId(commitment.place),
+      );
+      if (placeIndex !== -1) {
+        const place = result.splice(placeIndex, 1)[0];
+        place.agendaItem = commitment;
+        result.unshift(place);
+      }
+    }
+    return result;
+  }, [places?.data, placesSearched, search, upcomingCommitments]);
 
   const categoryFilterName = useMemo(
     () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
@@ -150,11 +206,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   const displayFloorId = useMemo(() => {
     if (debouncedSearch) {
-      const floorIds = new Set(places?.data.map(p => p.floor.id));
-      return floorIds.size === 1 ? places?.data[0].floor.id : undefined;
+      const floorIds = new Set(orderedPlaces?.map(p => p.floor.id));
+      return floorIds.size === 1 ? orderedPlaces?.[0]?.floor.id : undefined;
     }
     return floorId;
-  }, [floorId, places?.data, debouncedSearch]);
+  }, [debouncedSearch, floorId, orderedPlaces]);
 
   const categoryFilterActive = categoryId || subCategoryId;
 
@@ -210,7 +266,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <IndoorMapLayer floorId={displayFloorId} />
           <MarkersLayer
             search={debouncedSearch}
-            places={places?.data ?? []}
+            places={orderedPlaces ?? []}
             displayFloor={!displayFloorId}
           />
         </>
@@ -230,6 +286,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     spacing,
     tabsHeight,
     categoryFilterActive,
+    bounds,
+    orderedPlaces,
   ]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
@@ -286,7 +344,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             },
           }) => setTabsHeight(height)}
         >
-          <PillButton
+          {/* <PillIconButton*/}
+          {/*  icon={faClock}*/}
+          {/*  onPress={() => navigation.navigate('FreeRooms')}*/}
+          {/* >*/}
+          {/*  {t('freeRoomsScreen.title')}*/}
+          {/* </PillIconButton>*/}
+          <PillIconButton
+            icon={faChalkboardTeacher}
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -296,8 +361,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             }
           >
             {t('placeCategories.classrooms')}
-          </PillButton>
-          <PillButton
+          </PillIconButton>
+          <PillIconButton
+            icon={faBookReader}
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -307,8 +373,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             }
           >
             {t('placeCategories.studyRooms')}
-          </PillButton>
-          <PillButton
+          </PillIconButton>
+          <PillIconButton
+            icon={faBookOpen}
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -318,7 +385,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             }
           >
             {t('placeCategories.libraries')}
-          </PillButton>
+          </PillIconButton>
           {/* TODO <PillButton
             onPress={() =>
               navigation.navigate({
@@ -421,7 +488,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         isLoading={isLoadingPlaces}
         listProps={{
           data:
-            places?.data
+            orderedPlaces
               ?.filter(
                 p =>
                   !debouncedSearch ||
@@ -429,7 +496,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
               )
               ?.map(p => ({
                 title: p.room.name ?? p.category.subCategory.name,
-                subtitle: `${p.category.name} - ${p.floor.name}`,
+                subtitle: `${
+                  p.agendaItem != null
+                    ? formatAgendaItem(p.agendaItem)
+                    : placesSearched.some(ps => ps.id === p.id)
+                    ? t('common.recentlyViewed')
+                    : p.category.name
+                } - ${p.floor.name}`,
                 linkTo: { screen: 'Place', params: { placeId: p.id } },
               })) ?? [],
           ListEmptyComponent: (

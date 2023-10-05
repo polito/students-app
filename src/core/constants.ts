@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
-
+export const MAX_RECENT_SEARCHES = 10;
 export const courseColors = [
   { name: 'colors.red', color: '#DC2626' },
   { name: 'colors.orange', color: '#EA580C' },

@@ -19,7 +19,7 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useDebounceValue } from '../../../core/hooks/useDebounceValue';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPeople } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { PersonOverviewListItem } from '../components/PersonOverviewListItem';
 import { RecentSearch } from '../components/RecentSearch';
 

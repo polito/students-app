@@ -20,7 +20,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
-import { IS_IOS } from '../../../core/constants';
+import { IS_IOS, MAX_RECENT_SEARCHES } from '../../../core/constants';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlace, useGetPlaces } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -36,6 +37,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const { placesSearched, updatePreference } = usePreferencesContext();
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
@@ -57,6 +59,12 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
 
   useLayoutEffect(() => {
     if (place?.data) {
+      updatePreference('placesSearched', [
+        place.data,
+        ...placesSearched
+          .filter(p => p.id !== place.data.id)
+          .slice(0, MAX_RECENT_SEARCHES - 1),
+      ]);
       const { latitude, longitude } = place.data;
       navigation.setOptions({
         mapOptions: {

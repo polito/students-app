@@ -4,19 +4,19 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { Place, PlaceOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { CATEGORIES_DATA, MARKERS_MIN_ZOOM } from '../constants';
-import { CategoryData } from '../types';
+import { CategoryData, PlaceOverviewWithMetadata } from '../types';
+import { formatAgendaItem } from '../utils/formatAgendaItem';
 import { MapScreenProps } from './MapNavigator';
 import { PlacesStackParamList } from './PlacesNavigator';
 
 export interface MarkersLayerProps {
   selectedPoiId?: string;
   search?: string;
-  places?: PlaceOverview[];
+  places?: PlaceOverviewWithMetadata[];
   displayFloor?: boolean;
 }
 
@@ -29,51 +29,58 @@ export const MarkersLayer = ({
     useNavigation<MapScreenProps<PlacesStackParamList>['navigation']>();
   const { t } = useTranslation();
   const { dark, fontSizes, palettes } = useTheme();
-  const pois = useMemo((): (Place & CategoryData)[] => {
-    return places
-      ?.filter(p => {
-        const {
-          id: catId,
-          subCategory: { id: subCatId },
-        } = p.category;
-        return (
-          CATEGORIES_DATA[catId]?.children[subCatId] != null ||
-          selectedPoiId === p.id
-        );
-      })
-      ?.map(poi => {
-        const categoryData =
-          CATEGORIES_DATA[poi.category.id as keyof typeof CATEGORIES_DATA];
-        const subcategoryData = categoryData.children[
-          poi.category.subCategory.id as keyof typeof categoryData.children
-        ] as any;
-        const markerData = {
-          ...poi,
-          ...categoryData,
-          ...subcategoryData,
-          priority:
-            selectedPoiId === poi.id
-              ? 0
-              : subcategoryData?.priority ?? categoryData.priority,
-        };
-        if (!markerData.icon) {
-          markerData.icon = 'pin';
-          markerData.color = 'gray';
-        }
-        return markerData;
-      });
+  const pois = useMemo((): (PlaceOverviewWithMetadata & CategoryData)[] => {
+    return (
+      places
+        // ?.filter(p => {
+        //   const {
+        //     id: catId,
+        //     subCategory: { id: subCatId },
+        //   } = p.category;
+        //   return (
+        //     CATEGORIES_DATA[catId]?.children[subCatId] != null ||
+        //     selectedPoiId === p.id
+        //   );
+        // })
+        ?.map(poi => {
+          const categoryData =
+            CATEGORIES_DATA[poi.category.id as keyof typeof CATEGORIES_DATA] ??
+            CATEGORIES_DATA.default;
+          const subcategoryData =
+            (categoryData.children[
+              poi.category.subCategory.id as keyof typeof categoryData.children
+            ] as any) ?? {};
+          const markerData = {
+            ...poi,
+            ...categoryData,
+            ...subcategoryData,
+            priority:
+              selectedPoiId === poi.id || poi.agendaItem != null
+                ? 0
+                : subcategoryData?.priority ?? categoryData.priority,
+          };
+          if (!markerData.icon) {
+            markerData.icon = 'pin';
+            markerData.color = 'gray';
+          }
+          return markerData;
+        })
+    );
   }, [places, selectedPoiId]);
   return (
     <>
       <Images
         images={{
           bar: require('../../../../assets/map-icons/bar.png'),
+          bed: require('../../../../assets/map-icons/bed.png'),
           bike: require('../../../../assets/map-icons/bike.png'),
+          car: require('../../../../assets/map-icons/car.png'),
           classroom: require('../../../../assets/map-icons/classroom.png'),
           conference: require('../../../../assets/map-icons/conference.png'),
           lab: require('../../../../assets/map-icons/lab.png'),
           library: require('../../../../assets/map-icons/library.png'),
           medical: require('../../../../assets/map-icons/medical.png'),
+          pin: require('../../../../assets/map-icons/pin.png'),
           post: require('../../../../assets/map-icons/post.png'),
           print: require('../../../../assets/map-icons/print.png'),
           restaurant: require('../../../../assets/map-icons/restaurant.png'),
@@ -82,7 +89,6 @@ export const MarkersLayer = ({
           stairs: require('../../../../assets/map-icons/stairs.png'),
           study: require('../../../../assets/map-icons/study.png'),
           water: require('../../../../assets/map-icons/water.png'),
-          pin: require('../../../../assets/map-icons/pin.png'),
         }}
       />
       {pois && (
@@ -99,7 +105,11 @@ export const MarkersLayer = ({
                 icon: p.icon,
                 priority: p.priority,
                 name: `${p.room.name ?? p.category.subCategory.name}${
-                  displayFloor ? `\n${t('common.floor')} ${p.floor.level}` : ''
+                  p.agendaItem != null
+                    ? `\n${formatAgendaItem(p.agendaItem, true)}`
+                    : displayFloor
+                    ? `\n${t('common.floor')} ${p.floor.level}`
+                    : ''
                 }`,
                 color:
                   palettes[p.color as keyof Theme['palettes']][
