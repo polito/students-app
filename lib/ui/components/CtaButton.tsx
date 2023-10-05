@@ -28,6 +28,7 @@ interface Props extends TouchableHighlightProps {
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
   destructive?: boolean;
+  outlined?: boolean;
   hint?: string;
 }
 
@@ -46,9 +47,10 @@ export const CtaButton = ({
   rightExtra,
   hint,
   containerStyle,
+  outlined,
   ...rest
 }: Props) => {
-  const { palettes, fontSizes, spacing } = useTheme();
+  const { palettes, colors, fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
@@ -72,15 +74,31 @@ export const CtaButton = ({
       <TouchableHighlight
         accessibilityRole="button"
         underlayColor={
-          destructive ? palettes.danger[700] : palettes.primary[600]
+          outlined
+            ? palettes.gray[200]
+            : destructive
+            ? palettes.danger[700]
+            : palettes.primary[600]
         }
         disabled={disabled || loading}
         style={[
           styles.button,
           {
-            backgroundColor: destructive
+            backgroundColor: outlined
+              ? colors.background
+              : destructive
               ? palettes.danger[600]
               : palettes.primary[500],
+          },
+          {
+            borderColor: outlined
+              ? destructive
+                ? palettes.danger[600]
+                : palettes.primary[500]
+              : undefined,
+          },
+          {
+            borderWidth: outlined ? 1 : 0,
           },
           disabled && styles.disabledButton,
           style,
@@ -106,7 +124,20 @@ export const CtaButton = ({
                   style={{ marginRight: spacing[2] }}
                 />
               )}
-              <Text style={styles.textStyle}>{title}</Text>
+              <Text
+                style={[
+                  styles.textStyle,
+                  {
+                    color: outlined
+                      ? destructive
+                        ? palettes.danger[600]
+                        : palettes.primary[500]
+                      : colors.white,
+                  },
+                ]}
+              >
+                {title}
+              </Text>
               {rightExtra && rightExtra}
             </View>
           </Row>
@@ -158,7 +189,7 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
       textAlign: 'center',
-      color: 'white',
+      color: colors.white,
     },
     icon: {
       marginVertical: -2,

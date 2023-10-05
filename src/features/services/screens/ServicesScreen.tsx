@@ -93,15 +93,15 @@ export const ServicesScreen = () => {
         linkTo: { screen: 'Contacts' },
       },
       {
-        id: 'guides',
-        name: t('guidesScreen.title'),
-        icon: faSignsPost,
-        disabled: true,
-      },
-      {
         id: 'bookings',
         name: t('bookingsScreen.title'),
         icon: faPersonCirclePlus,
+        linkTo: { screen: 'Bookings' },
+      },
+      {
+        id: 'guides',
+        name: t('guidesScreen.title'),
+        icon: faSignsPost,
         disabled: true,
       },
       {

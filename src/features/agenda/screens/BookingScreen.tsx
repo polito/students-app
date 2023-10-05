@@ -1,6 +1,11 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
 import { faLocation } from '@fortawesome/free-solid-svg-icons';
@@ -10,8 +15,9 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
-import { Separator } from '@lib/ui/components/Separator';
+import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -19,16 +25,18 @@ import { Theme } from '@lib/ui/types/Theme';
 import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { EventDetails } from '../../../core/components/EventDetails';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { formatDateTime, formatTime } from '../../../utils/dates';
+import { BookingTimeDetail } from '../../services/components/BookingTimeDetail';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
@@ -42,35 +50,53 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const bookingsQuery = useGetBookings();
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
+  const confirmCancel = useConfirmationDialog({
+    title: t('bookingScreen.cancelBooking'),
+    message: t('bookingScreen.cancelBookingText'),
+  });
   const isDisabled = useOfflineDisabled();
   const styles = useStylesheet(createStyles);
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
-  const timeLabel = useMemo(() => {
-    if (!booking) return '';
-    const fromDate = formatDateTime(booking.startsAt);
-    const toTime = formatTime(booking.endsAt);
-    return `${fromDate} - ${toTime}`;
-  }, [booking]);
+  const subTopicTitle = booking?.subtopic?.title ?? '';
+
+  const showCheckIn = !!(
+    booking?.locationCheck?.enabled && !booking?.locationCheck?.checked
+  );
+  const canBeCancelled =
+    !!booking?.cancelableUntil &&
+    DateTime.fromJSDate(booking?.cancelableUntil) > DateTime.now();
 
   const onPressLocation = () => {};
 
-  const onPressDelete = () => {
-    bookingMutation
-      .mutateAsync()
-      .then(() => navigation.goBack())
-      .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
+  const onPressCheckIn = () => {};
+
+  const onPressDelete = async () => {
+    if (await confirmCancel()) {
+      console.debug('ok');
+      // return bookingMutation
+      //   .mutateAsync()
+      //   .then(() => navigation.goBack())
+      //   .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
+    }
   };
 
   return (
     <>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={styles.wrapper}
-        refreshControl={<RefreshControl queries={[bookingsQuery]} />}
+        refreshControl={<RefreshControl manual queries={[bookingsQuery]} />}
       >
         <SafeAreaView>
-          <EventDetails title={title} type={t('Booking')} time={timeLabel} />
+          <View style={{ padding: spacing[5] }}>
+            <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
+            {subTopicTitle && (
+              <Text variant="caption" style={{ marginBottom: spacing[1] }}>
+                {subTopicTitle}
+              </Text>
+            )}
+            {booking && <BookingTimeDetail booking={booking} />}
+          </View>
           {booking?.location?.name && (
             <OverviewList>
               <ListItem
@@ -88,11 +114,8 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               />
             </OverviewList>
           )}
-          <Section style={styles.sectionSeparator}>
-            <Separator />
-            <Text variant="caption">{t('Barcode')}</Text>
-          </Section>
-          <Section style={styles.sectionContainer}>
+          <Section style={{ marginTop: spacing[4] }} mb={0}>
+            <SectionHeader title={t('bookingScreen.barCodeTitle')} />
             <Card style={styles.barCodeCard} rounded>
               {studentQuery.data && (
                 <Barcode
@@ -106,14 +129,23 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               )}
             </Card>
           </Section>
+          {showCheckIn && (
+            <CtaButton
+              title={t('bookingScreen.checkIn')}
+              action={onPressCheckIn}
+              outlined
+              absolute={false}
+              disabled={isDisabled}
+              loading={bookingMutation.isLoading}
+            />
+          )}
           <CtaButtonSpacer />
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {booking?.canBeCancelled && (
+      {canBeCancelled && (
         <CtaButton
-          icon="close"
-          title={t('Delete Booking')}
+          title={t('bookingScreen.cancelBooking')}
           action={onPressDelete}
           disabled={isDisabled}
           destructive={true}
@@ -127,7 +159,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
 const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
     barCodeCard: {
-      width: '100%',
       padding: fontSizes.md,
       flexDirection: 'row',
       justifyContent: 'center',
@@ -144,10 +175,6 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    wrapper: {
-      marginTop: fontSizes.xs,
-      // padding: fontSizes.sm,
     },
     booking: {
       color: palettes.primary[400],
