@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -9,7 +8,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
@@ -18,6 +16,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
 interface Props extends TouchableHighlightProps {
@@ -28,23 +27,18 @@ interface Props extends TouchableHighlightProps {
   rightExtra?: JSX.Element;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
-  successMessage?: string;
   destructive?: boolean;
   hint?: string;
 }
 
 /**
- * A call-to-action button with in-place async action feedback
- *
- * If `action` returns a Promise, its result will be used to show
- * a temporary success message before moving to the next state
+ * A call-to-action button with in-place loading indicator.
  */
 export const CtaButton = ({
   style,
   absolute = true,
   title,
   loading,
-  successMessage,
   disabled,
   destructive = false,
   action,
@@ -58,36 +52,18 @@ export const CtaButton = ({
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
-  const [showSuccess, setShowSuccess] = useState(false);
-  const successMessageRef = useRef<string>();
-  const destructiveRef = useRef<boolean>();
-
-  const onPress = () => {
-    successMessageRef.current = successMessage;
-    destructiveRef.current = destructive;
-    const promise = action();
-    if (promise instanceof Promise) {
-      promise.then(() => {
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 2000);
-      });
-    }
-  };
+  const { isFeedbackVisible } = useFeedbackContext();
 
   return (
     <View
       style={[
         styles.container,
-        absolute && [
-          {
-            position: 'absolute',
-            left: Platform.select({ ios: left }),
-            right,
-            bottom: bottomBarHeight,
-          },
-        ],
+        absolute && {
+          position: 'absolute',
+          left: Platform.select({ ios: left }),
+          right,
+          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
+        },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
       ]}
@@ -96,25 +72,21 @@ export const CtaButton = ({
       <TouchableHighlight
         accessibilityRole="button"
         underlayColor={
-          (showSuccess ? destructiveRef.current : destructive)
-            ? palettes.danger[600]
-            : palettes.primary[600]
+          destructive ? palettes.danger[700] : palettes.primary[600]
         }
-        disabled={disabled || loading || showSuccess}
+        disabled={disabled || loading}
         style={[
           styles.button,
           {
-            backgroundColor: (
-              showSuccess ? destructiveRef.current : destructive
-            )
-              ? palettes.danger[500]
+            backgroundColor: destructive
+              ? palettes.danger[600]
               : palettes.primary[500],
           },
           disabled && styles.disabledButton,
           style,
         ]}
         accessibilityLabel={title}
-        onPress={onPress}
+        onPress={action}
         {...rest}
       >
         <View>
@@ -125,34 +97,18 @@ export const CtaButton = ({
             {/* {!loading && ( */}
             {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
             {/* )} */}
-            {showSuccess ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {icon && (
                 <Icon
-                  icon={faCheckCircle}
+                  icon={icon}
                   size={fontSizes.xl}
-                  color="white"
-                  style={styles.icon}
+                  color={palettes.text[100]}
+                  style={{ marginRight: spacing[2] }}
                 />
-                {successMessageRef.current && (
-                  <Text style={styles.textStyle}>
-                    {successMessageRef.current}
-                  </Text>
-                )}
-              </View>
-            ) : (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {icon && (
-                  <Icon
-                    icon={icon}
-                    size={fontSizes.xl}
-                    color={palettes.text[100]}
-                    style={{ marginRight: spacing[2] }}
-                  />
-                )}
-                <Text style={styles.textStyle}>{title}</Text>
-                {rightExtra && rightExtra}
-              </View>
-            )}
+              )}
+              <Text style={styles.textStyle}>{title}</Text>
+              {rightExtra && rightExtra}
+            </View>
           </Row>
         </View>
       </TouchableHighlight>

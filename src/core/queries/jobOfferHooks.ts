@@ -1,21 +1,18 @@
 import { JobOffersApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
-import { pluckData, prefixKey } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
+import { pluckData } from '../../utils/queries';
 
-export const JOB_OFFERS_QUERY_KEY = 'jobOffers';
+export const JOB_OFFER_QUERY_PREFIX = 'jobOffers';
+export const JOB_OFFERS_QUERY_KEY = [JOB_OFFER_QUERY_PREFIX];
 const useJobOffersClient = (): JobOffersApi => {
-  const {
-    clients: { jobOffers: jobOffersClient },
-  } = useApiContext();
-  return jobOffersClient!;
+  return new JobOffersApi();
 };
 
 export const useGetJobOffers = () => {
   const jobOffersClient = useJobOffersClient();
 
-  return useQuery(prefixKey([JOB_OFFERS_QUERY_KEY]), () =>
+  return useQuery(JOB_OFFERS_QUERY_KEY, () =>
     jobOffersClient.getJobOffers().then(pluckData),
   );
 };
@@ -23,7 +20,7 @@ export const useGetJobOffers = () => {
 export const useGetJobOffer = (jobOfferId: number) => {
   const jobOffersClient = useJobOffersClient();
 
-  return useQuery(prefixKey([JOB_OFFERS_QUERY_KEY, jobOfferId]), () =>
+  return useQuery([JOB_OFFER_QUERY_PREFIX, jobOfferId], () =>
     jobOffersClient.getJobOffer({ jobOfferId }).then(pluckData),
   );
 };

@@ -79,13 +79,14 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
+              lineHeight: fontSizes.md * 1.4,
             },
             unread && {
               fontWeight: fontWeights.semibold,
             },
             titleStyle,
           ]}
-          weight="normal"
+          weight="medium"
           numberOfLines={card ? 2 : 1}
           ellipsizeMode="tail"
           {...titleProps}
@@ -164,18 +165,9 @@ export const ListItem = ({
             {leadingItem}
           </View>
         )}
-        <Col flex={1}>
-          {!inverted ? (
-            <>
-              {titleElement}
-              {subtitleElement}
-            </>
-          ) : (
-            <>
-              {subtitleElement}
-              {titleElement}
-            </>
-          )}
+        <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
+          {titleElement}
+          {subtitleElement}
         </Col>
         {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (

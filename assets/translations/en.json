@@ -11,6 +11,9 @@
   "bookingsScreen": {
     "title": "Bookings"
   },
+  "bookingScreen": {
+    "cancelFeedback": "Booking canceled"
+  },
   "colors": {
     "amber": "Amber",
     "blue": "Blue",
@@ -39,6 +42,7 @@
       "true": "Active"
     },
     "agent": "Agent",
+    "close": "Close",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
@@ -46,6 +50,7 @@
     "booking_plural": "Bookings",
     "building": "Building",
     "cache": "Cache",
+    "cacheMiss": "Come back online to view",
     "camera": "Camera",
     "campus": "Campus",
     "cancel": "Cancel",
@@ -55,7 +60,7 @@
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
-    "contact": "Contacts",
+    "contact": "Contact",
     "course": "Course",
     "course_plural": "Courses",
     "createdAt": "Created at",
@@ -92,10 +97,11 @@
     "examStatus": {
       "available": "Available",
       "booked": "Booked",
-      "requestRejected": "Booking request rejected",
-      "requestable": "Booking requestable",
-      "requested": "Booking requested",
-      "unavailable": "Not bookable"
+      "requestAccepted": "Booked",
+      "requestRejected": "Request rejected",
+      "requestable": "Requestable",
+      "requested": "Requested",
+      "unavailable": "Unavailable"
     },
     "externalLink": "External link. By pressing the link you will be redirected to an external browser",
     "facilities": "Facilities",
@@ -120,6 +126,7 @@
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
+    "noInternet": "You are offline, some features may not be available",
     "of": "Of",
     "ok": "Ok",
     "open": "Open",
@@ -145,6 +152,7 @@
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
+    "selectAnOption": "Please select an option",
     "search": "Search",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
@@ -154,7 +162,6 @@
     "stopFollowing": "Stop following",
     "structure": "Structure",
     "switchCareerLabel": "Tap to switch career",
-    "system": "System",
     "teacher": "Teacher",
     "theme": "Theme",
     "ticket_plural": "Tickets",
@@ -175,18 +182,29 @@
     "visualization": "Visualization"
   },
   "contactsScreen": {
-    "title": "Contacts"
+    "title": "Contacts",
+    "emptyState": "No people found",
+    "search": "Search people",
+    "recentSearches": "Recent searches",
+    "recentSearch": "Recent search",
+    "cancelRecentSearch": "Remove",
+    "cancelRecentSearchText": "Remove recent search",
+    "clearSearch": "Clear search",
+    "clearSearches": "Clear searches"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
     "ctaConfirm": "Create PDF",
     "ctaDeletePage": "Delete",
+    "failureFeedback": "PDF creation failed: {{reason}}",
     "title": "Create PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Upload",
     "descriptionLabel": "Assignment description",
+    "emptyDescriptionError": "Please insert a description",
     "previewSectionTitle": "File preview",
+    "successFeedback": "Assignment uploaded successfully",
     "title": "Assignment preview"
   },
   "courseAssignmentUploadScreen": {
@@ -241,7 +259,9 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "This course doesn't have any details"
+    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
+    "extra": "Extra APSP",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "There are no notices here",
@@ -249,6 +269,7 @@
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
+    "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "filesSubtitle": "New material available",
@@ -285,13 +306,22 @@
     "topicDropdownLabel": "Topic",
     "topicDropdownPlaceholder": "Pick a topic"
   },
+  "examRequestScreen": {
+    "error": "Fill in the text field before proceeding with the request",
+    "title": "You can ask the college chairman to take the exam before the actual delivery of the course",
+    "placeholder": "Explain why you need to take the exam early"
+  },
   "examScreen": {
+    "bookingEndsAt": "Booking ends on",
+    "bookedCount": "Booked students",
     "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
     "ctaCancelSuccess": "Booking cancelled",
+    "ctaRequest": "Request",
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
+    "notes": "Notes",
     "title": "Exam call"
   },
   "examsScreen": {
@@ -351,7 +381,18 @@
     "usernameLabelAccessibility": "Enter your username here"
   },
   "messagesScreen": {
-    "title": "Messages archive"
+    "title": "Messages archive",
+    "unreadMessages": "Message ({{read}} of {{total}})",
+    "readNext": "Read next",
+    "end": "End",
+    "sentAt": "Sent at",
+    "youHaveUnreadMessages": "You have {{total}} unread messages",
+    "empty": "You have no messages"
+  },
+  "messageScreen": {
+    "title": "Message",
+    "backTitle": "Archive",
+    "sender": "Sender"
   },
   "messagingView": {
     "pickFile": "Pick file",

@@ -43,6 +43,7 @@ jobs:
     outputs:
       version: ${{ steps.configure.outputs.version }}
       build_no: ${{ steps.configure.outputs.build_no }}
+      build_piece: ${{ steps.configure.outputs.build_piece }}
       push_to_testflight: ${{ steps.configure.outputs.push_to_testflight }}
       push_to_playstore: ${{ steps.configure.outputs.push_to_playstore }}
     steps:
@@ -111,11 +112,12 @@ jobs:
           BUILD_NO=$(( MAJOR*1000000 + MINOR*10000 + SUBV*100 + BUILD_PIECE ))
           echo "build_no=$BUILD_NO" >> $GITHUB_OUTPUT
           echo "version=$MAJOR.$MINOR.$SUBV" >> $GITHUB_OUTPUT
+          echo "build_piece=$BUILD_PIECE" >> $GITHUB_OUTPUT
         elif [[ "$VERSION" != "" ]]; then
           echo "INVALID VERSION FORMAT: $VERSION"
           exit 2
         fi
-
+        
         echo "push_to_playstore=$PUSH_PLAYSTORE" >> $GITHUB_OUTPUT
         echo "push_to_testflight=$PUSH_TESTFLIGHT" >> $GITHUB_OUTPUT
         echo "CONFIGURED:"
@@ -130,7 +132,18 @@ jobs:
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
     - name: Install npm dependencies
       run: npm install
-
+    - name: Sentry Release
+      uses: getsentry/action-release@v1.4.1
+      if: steps.configure.outputs.build_no != ''
+      env:
+        SENTRY_URL: ${{ vars.SENTRY_URL }}
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      with:
+        environment: 'production'
+        ignore_missing: true
+        version: it.polito.students@${{ steps.configure.outputs.version }}+${{ steps.configure.outputs.build_piece }}
 
   build-android:
     name: ${{ needs.configure.outputs.push_to_playstore == 'false' && 'Build' || 'Build & Deploy' }} Android
@@ -140,6 +153,7 @@ jobs:
       LANG: en_US.UTF-8
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
+      BUILD_PIECE: ${{ needs.configure.outputs.build_piece }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
       SUPPLY_GOOGLE_JSON_PATH: './pc-api-secret.json'
       KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PW }}
@@ -147,6 +161,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Set .env
+      run:
+        echo "APP_VERSION=${{ needs.configure.outputs.version }}" >> .env
+        echo "APP_BUILD=${{ needs.configure.outputs.build_piece }}" >> .env
     - name: Gradle Wrapper Validation
       uses: gradle/wrapper-validation-action@v1
     - name: Setup Ruby
@@ -217,6 +235,7 @@ jobs:
       LANG: en_US.UTF-8
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
+      BUILD_PIECE: ${{ needs.configure.outputs.build_piece }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
       MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_KEY }}
       MATCH_GIT_PRIVATE_KEY: "./github_access.pk"
@@ -232,6 +251,10 @@ jobs:
         xcode-version: '14'
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Set .env
+      run:
+        echo "APP_VERSION=${{ needs.configure.outputs.version }}" >> .env
+        echo "APP_BUILD=${{ needs.configure.outputs.build_piece }}" >> .env
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -303,3 +326,4 @@ jobs:
         generateReleaseNotes: true
         skipIfReleaseExists: true
         artifacts: ./android-release/*.apk
+        tag: v1.4.0

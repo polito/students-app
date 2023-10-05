@@ -1,14 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import DocumentPicker, { isInProgress } from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -16,6 +14,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { pdfSizes } from '../constants';
+import { Assignment } from '../types/Assignment';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
@@ -37,10 +36,10 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
       includeBase64: true,
     });
 
-  const handlePickedFile = (fileUri: string) => {
+  const handlePickedFile = (file: Assignment) => {
     navigation.navigate('CourseAssignmentUploadConfirmation', {
       courseId,
-      fileUri,
+      file,
     });
   };
 
@@ -60,7 +59,12 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
               copyTo: 'cachesDirectory',
             })
               .then(response => {
-                handlePickedFile(response.fileCopyUri!);
+                handlePickedFile({
+                  uri: response.fileCopyUri!,
+                  name: response.name!,
+                  size: response.size!,
+                  type: response.type!,
+                });
               })
               .catch(e => {
                 if (DocumentPicker.isCancel(e) || isInProgress(e)) return;
@@ -88,42 +92,6 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
         />
       </OverviewList>
     </ScrollView>
-  );
-};
-
-interface ActionProps {
-  title: string;
-  subtitle: string;
-  icon: IconDefinition;
-  onPress: () => void;
-}
-
-const AssignmentUploadAction = ({
-  title,
-  subtitle,
-  icon,
-  onPress,
-}: ActionProps) => {
-  const styles = useStylesheet(createStyles);
-  const { colors, palettes, fontSizes } = useTheme();
-  return (
-    <TouchableHighlight
-      style={styles.uploadAction}
-      underlayColor={colors.touchableHighlight}
-      onPress={onPress}
-    >
-      <View style={styles.innerContainer}>
-        <View>
-          <Text variant="title">{title}</Text>
-          <Text variant="secondaryText">{subtitle}</Text>
-        </View>
-        <Icon
-          icon={icon}
-          size={fontSizes['3xl']}
-          color={palettes.secondary[600]}
-        />
-      </View>
-    </TouchableHighlight>
   );
 };
 

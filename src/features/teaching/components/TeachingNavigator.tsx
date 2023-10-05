@@ -5,8 +5,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
@@ -17,12 +19,15 @@ import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
 import { CoursesScreen } from '../screens/CoursesScreen';
+import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
+import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { NoticeScreen } from '../screens/NoticeScreen';
 import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
+import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
 
 export interface TeachingStackParamList extends ParamListBase {
@@ -50,10 +55,13 @@ export interface TeachingStackParamList extends ParamListBase {
   };
   CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
-  CourseAssignmentUploadConfirmation: { courseId: number; fileUri: string };
+  CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
   CourseIconPicker: { courseId: number };
   Exams: undefined;
   Exam: { id: number };
+  ExamQuestion: { id: number };
+  ExamRequest: { id: number };
+  MessagesModal: undefined;
   Transcript: undefined;
 }
 
@@ -217,6 +225,22 @@ export const TeachingNavigator = () => {
         }}
       />
       <Stack.Screen
+        name="ExamQuestion"
+        component={ExamQuestionScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
+        }}
+      />
+      <Stack.Screen
+        name="ExamRequest"
+        component={ExamRequestScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
+        }}
+      />
+      <Stack.Screen
         name="Person"
         component={PersonScreen}
         options={{
@@ -230,6 +254,17 @@ export const TeachingNavigator = () => {
         component={TranscriptScreen}
         options={{
           headerTitle: t('common.transcript'),
+        }}
+      />
+      <Stack.Screen
+        name="MessagesModal"
+        component={UnreadMessagesModal}
+        options={{
+          headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
         }}
       />
     </Stack.Navigator>

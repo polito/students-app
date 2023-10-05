@@ -10,3 +10,11 @@ export const getHtmlTextContent = (text: string) => {
   const dom = parseDocument(sanitizeHtml(text ?? '')) as Document;
   return innerText(dom.children as any[]);
 };
+
+export const linkUrls = (html: string) => {
+  const regex =
+    /(?:https?:\/\/|www\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/gi;
+  return html.replace(regex, match => {
+    return `<a href="${match}">${match}</a>`;
+  });
+};

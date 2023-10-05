@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -34,7 +33,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { notNullish } from '../../../utils/predicates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -49,71 +47,79 @@ export const PersonScreen = ({ route }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
+  const { accessibilityListLabel } = useAccessibility();
   const person = personQuery.data;
   const fullName = [person?.firstName, person?.lastName]
     .filter(notNullish)
     .join(' ');
-  useScreenTitle(fullName, false);
   const courses = person?.courses ?? [];
   const phoneNumbers = person?.phoneNumbers;
 
   const header = (
-    <Col ph={5} pv={2} gap={5} mb={5}>
+    <Col ph={5} gap={6} mb={6}>
       <Text weight="bold" variant="title" style={styles.title}>
         {fullName}
       </Text>
-      <Row>
-        <View accessible={true} accessibilityLabel={t('common.profilePic')}>
-          {person?.picture ? (
-            <Image
-              source={{ uri: person.picture }}
-              style={styles.profileImage}
-            />
-          ) : (
-            <View style={styles.profileImagePlaceholder}>
-              <Icon
-                icon={faUser}
-                size={fontSizes['3xl']}
-                color={colors.title}
+      {(!person ||
+        person?.picture ||
+        person?.role ||
+        person?.facilityShortName ||
+        person?.profileUrl) && (
+        <Row gap={6}>
+          <View accessible={true} accessibilityLabel={t('common.profilePic')}>
+            {person?.picture ? (
+              <Image
+                source={{ uri: person.picture }}
+                style={styles.profileImage}
               />
-            </View>
-          )}
-        </View>
-        <Col style={styles.info}>
-          <Metric
-            title={t('personScreen.role')}
-            value={person?.role ?? ''}
-            style={styles.spaceBottom}
-            accessible={true}
-          />
-          {person?.facilityShortName && (
-            <Metric
-              title={t('personScreen.department')}
-              value={person?.facilityShortName}
-              style={styles.spaceBottom}
-              accessible={true}
-            />
-          )}
-
-          {!!person?.profileUrl && (
-            <TouchableOpacity
-              onPress={() => Linking.openURL(person?.profileUrl)}
-              accessible={true}
-              accessibilityRole="link"
-            >
-              <Row align="center">
+            ) : (
+              <View style={styles.profileImagePlaceholder}>
                 <Icon
-                  icon={faLink}
-                  size={20}
-                  color={colors.link}
-                  style={styles.linkIcon}
+                  icon={faUser}
+                  size={fontSizes['3xl']}
+                  color={colors.title}
                 />
-                <Text variant="link">{t('personScreen.moreInfo')}</Text>
-              </Row>
-            </TouchableOpacity>
-          )}
-        </Col>
-      </Row>
+              </View>
+            )}
+          </View>
+          <Col style={styles.info}>
+            {person?.role && (
+              <Metric
+                title={t('personScreen.role')}
+                value={person.role}
+                style={styles.spaceBottom}
+                accessible={true}
+              />
+            )}
+            {person?.facilityShortName && (
+              <Metric
+                title={t('personScreen.department')}
+                value={person.facilityShortName}
+                style={styles.spaceBottom}
+                accessible={true}
+              />
+            )}
+
+            {person?.profileUrl && (
+              <TouchableOpacity
+                onPress={() => Linking.openURL(person.profileUrl)}
+                accessible={true}
+                accessibilityRole="link"
+              >
+                <Row align="center">
+                  <Icon
+                    icon={faLink}
+                    size={20}
+                    color={colors.link}
+                    style={styles.linkIcon}
+                  />
+                  <Text variant="link">{t('personScreen.moreInfo')}</Text>
+                </Row>
+              </TouchableOpacity>
+            )}
+          </Col>
+        </Row>
+      )}
     </Col>
   );
 
@@ -133,19 +139,15 @@ export const PersonScreen = ({ route }: Props) => {
   };
 
   const RenderedCourse = (course: PersonCourse, index: number) => {
-    const { accessibilityListLabel } = useAccessibility();
-
     const onPressCourse = () => {
       // TODO
-      console.debug('onPressCourse', course);
     };
 
-    const role = useMemo(() => {
-      return course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
-    }, [course.role]);
+    const role = course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
 
     return (
       <ListItem
+        disabled
         key={course.id}
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
@@ -161,42 +163,44 @@ export const PersonScreen = ({ route }: Props) => {
 
   return (
     <ScrollView
-      refreshControl={<RefreshControl queries={[personQuery]} />}
+      refreshControl={<RefreshControl queries={[personQuery]} manual />}
       contentInsetAdjustmentBehavior="automatic"
     >
       <SafeAreaView>
-        {header}
-        <Section>
-          <SectionHeader
-            title={t('personScreen.contacts')}
-            accessibilityLabel={`${t('personScreen.contacts')}. ${
-              phoneNumbers?.length && t('common.phoneContacts')
-            }. ${t('personScreen.sentEmail')}`}
-          />
-          <OverviewList indented>
-            {phoneNumbers?.map(renderPhoneNumber)}
-            <ListItem
-              isAction
-              leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-              title={t('common.email')}
-              subtitle={person?.email}
-              onPress={() => Linking.openURL(`mailto:${person?.email}`)}
-            />
-          </OverviewList>
-        </Section>
-        {courses.length > 0 && (
+        <Col pv={5}>
+          {header}
           <Section>
             <SectionHeader
-              title={t('common.course_plural')}
-              accessible={true}
-              accessibilityLabel={`${t('personScreen.coursesLabel')}. ${t(
-                'personScreen.totalCourses',
-                { total: courses.length },
-              )}`}
+              title={t('personScreen.contacts')}
+              accessibilityLabel={`${t('personScreen.contacts')}. ${
+                phoneNumbers?.length && t('common.phoneContacts')
+              }. ${t('personScreen.sentEmail')}`}
             />
-            <OverviewList>{courses.map(RenderedCourse)}</OverviewList>
+            <OverviewList indented loading={personQuery.isLoading}>
+              {phoneNumbers?.map(renderPhoneNumber)}
+              <ListItem
+                isAction
+                leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+                title={t('common.email')}
+                subtitle={person?.email}
+                onPress={() => Linking.openURL(`mailto:${person?.email}`)}
+              />
+            </OverviewList>
           </Section>
-        )}
+          {courses.length > 0 && (
+            <Section>
+              <SectionHeader
+                title={t('common.course_plural')}
+                accessible={true}
+                accessibilityLabel={`${t('personScreen.coursesLabel')}. ${t(
+                  'personScreen.totalCourses',
+                  { total: courses.length },
+                )}`}
+              />
+              <OverviewList>{courses.map(RenderedCourse)}</OverviewList>
+            </Section>
+          )}
+        </Col>
         <BottomBarSpacer />
       </SafeAreaView>
     </ScrollView>
@@ -214,7 +218,9 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
       fontSize: fontSizes['2xl'],
     },
     info: {
-      paddingLeft: spacing[4],
+      flex: 1,
+      justifyContent: 'center',
+      flexDirection: 'column',
     },
     profileImage,
     profileImagePlaceholder: {

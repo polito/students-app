@@ -154,6 +154,8 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
+    fastlane-plugin-sentry (1.15.0)
+      os (~> 1.1, >= 1.1.4)
     ffi (1.15.5)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -277,6 +279,7 @@ PLATFORMS
 DEPENDENCIES
   cocoapods (~> 1.11, >= 1.11.2)
   fastlane
+  fastlane-plugin-sentry
 
 RUBY VERSION
    ruby 2.7.6p219

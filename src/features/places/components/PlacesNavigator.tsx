@@ -6,6 +6,7 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { Divider } from '@lib/ui/components/Divider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   MapState,
   RasterLayer,
@@ -13,12 +14,21 @@ import {
   UserLocation,
 } from '@rnmapbox/maps';
 
+import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
+import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { MAX_ZOOM } from '../constants';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
+
+export type ServiceStackParamList = {
+  Places: undefined;
+  MessagesModal: undefined;
+};
+const Stack = createNativeStackNavigator<ServiceStackParamList>();
 
 export type PlacesStackParamList = {
   Places: {
@@ -31,6 +41,7 @@ export type PlacesStackParamList = {
     placeId: string;
   };
   PlaceCategories: undefined;
+  MessagesModal: undefined;
 };
 
 const Map = createMapNavigator<PlacesStackParamList>();
@@ -101,6 +112,17 @@ export const PlacesNavigator = () => {
         component={PlaceScreen}
         options={{
           title: t('placeScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="MessagesModal"
+        component={UnreadMessagesModal}
+        options={{
+          headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
         }}
       />
     </Map.Navigator>

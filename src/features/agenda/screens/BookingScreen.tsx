@@ -21,6 +21,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -34,10 +36,13 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
+
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
+  const isDisabled = useOfflineDisabled();
   const styles = useStylesheet(createStyles);
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
@@ -51,8 +56,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const onPressLocation = () => {};
 
   const onPressDelete = () => {
-    // TODO ADD FEEDBACK
-    bookingMutation.mutateAsync().then(() => navigation.goBack());
+    bookingMutation
+      .mutateAsync()
+      .then(() => navigation.goBack())
+      .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
   };
 
   return (
@@ -103,16 +110,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {/* {bookingMutation.isIdle && (*/}
       {booking?.canBeCancelled && (
         <CtaButton
           icon="close"
           title={t('Delete Booking')}
           action={onPressDelete}
+          disabled={isDisabled}
           destructive={true}
           loading={bookingMutation.isLoading}
-          successMessage={t('Exam booked')}
-          // onSuccess={() => navigation.goBack()}
         />
       )}
     </>

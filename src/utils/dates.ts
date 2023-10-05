@@ -6,6 +6,13 @@ export const formatDate = (date: Date) => {
   return DateTime.fromJSDate(date).toFormat('dd/MM/yyyy');
 };
 
+export const formatReadableDate = (date: Date, short = false) => {
+  return DateTime.fromJSDate(date).toLocaleString({
+    month: short ? 'short' : 'long',
+    day: 'numeric',
+  });
+};
+
 export const formatDateFromString = (date: string | null) => {
   if (!date) return '';
   return DateTime.fromISO(date).toFormat('dd/MM/yyyy');
@@ -40,7 +47,7 @@ export const formatMachineDate = (date: Date) => {
 };
 
 export const formatTime = (date: Date) => {
-  return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+  return DateTime.fromJSDate(date).toFormat('HH:mm');
 };
 
 const today = DateTime.now();

@@ -11,6 +11,9 @@
   "bookingsScreen": {
     "title": "Prenotazioni"
   },
+  "bookingScreen": {
+    "cancelFeedback": "Prenoazione annullata"
+  },
   "colors": {
     "amber": "Ambra",
     "blue": "Blu",
@@ -39,6 +42,8 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "close": "Chiudi",
+    "search": "Cerca",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -46,6 +51,7 @@
     "booking_plural": "Prenotazioni",
     "building": "Edificio",
     "cache": "Cache",
+    "cacheMiss": "Torna online per visualizzare",
     "camera": "Fotocamera",
     "campus": "Sede",
     "cancel": "Annulla",
@@ -92,9 +98,10 @@
     "examStatus": {
       "available": "Disponibile",
       "booked": "Prenotato",
-      "requestRejected": "Prenotazione rifiutata",
+      "requestAccepted": "Prenotato",
+      "requestRejected": "Richiesta rifiutata",
       "requestable": "Prenotabile",
-      "requested": "Prenotazione richiesta",
+      "requested": "Richiesto",
       "unavailable": "Non prenotabile"
     },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
@@ -120,6 +127,7 @@
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
+    "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
@@ -145,7 +153,7 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
-    "search": "Cerca",
+    "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
@@ -154,7 +162,6 @@
     "stopFollowing": "Non seguire",
     "structure": "Struttura",
     "switchCareerLabel": "Premi per effettuare un cambio matricola",
-    "system": "Di sistema",
     "teacher": "Docente",
     "theme": "Tema",
     "ticket_plural": "Ticket",
@@ -175,18 +182,29 @@
     "visualization": "Visualizzazione"
   },
   "contactsScreen": {
-    "title": "Contatti"
+    "title": "Contatti",
+    "emptyState": "Nessun contatto trovato",
+    "search": "Cerca contatti",
+    "recentSearches": "Ricerche recenti",
+    "recentSearch": "Ricerca recente",
+    "cancelRecentSearch": "Rimuovi",
+    "cancelRecentSearchText": "Rimuovi ricerca recente",
+    "clearSearch": "Cancella ricerca",
+    "clearSearches": "Cancella ricerche"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
     "ctaConfirm": "Crea PDF",
     "ctaDeletePage": "Elimina",
+    "failureFeedback": "Creazione PDF fallita: {{reason}}",
     "title": "Crea PDF"
   },
   "courseAssignmentUploadConfirmationScreen": {
     "ctaUpload": "Invia",
     "descriptionLabel": "Descrizione elaborato",
+    "emptyDescriptionError": "Inserisci una descrizione",
     "previewSectionTitle": "Anteprima del file",
+    "successFeedback": "Elaborato caricato correttamente",
     "title": "Anteprima elaborato"
   },
   "courseAssignmentUploadScreen": {
@@ -241,7 +259,9 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
+    "extra": "Extra carico",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
@@ -249,6 +269,7 @@
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
+    "cleanCacheFeedback": "I file sono stati rimossi correttamente",
     "cleanCourseFiles": "Rimuovi file del corso",
     "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
     "filesSubtitle": "Nuovi materiali disponibili",
@@ -285,13 +306,22 @@
     "topicDropdownLabel": "Argomento",
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
+  "examRequestScreen": {
+    "error": "Compila il campo di testo prima di procedere con la richiesta",
+    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso",
+    "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente"
+  },
   "examScreen": {
-    "ctaBook": "Prenota esame",
-    "ctaBookSuccess": "Esame prenotato",
+    "bookingEndsAt": "Prenotazione entro il",
+    "bookedCount": "Studenti prenotati",
+    "ctaBook": "Prenota appello",
+    "ctaBookSuccess": "Appello prenotato",
     "ctaCancel": "Annulla prenotazione",
     "ctaCancelSuccess": "Prenotazione annullata",
+    "ctaRequest": "Richiedi",
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
+    "notes": "Note",
     "title": "Appello"
   },
   "examsScreen": {
@@ -339,7 +369,6 @@
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
-    "ctaSuccessMessage": "Accedi",
     "forgotYourPassword": "Hai dimenticato la password?",
     "hidePassword": "Nascondi password",
     "passwordLabel": "Password",
@@ -351,7 +380,18 @@
     "usernameLabelAccessibility": "Inserisci qui il tuo username"
   },
   "messagesScreen": {
-    "title": "Archivio messaggi"
+    "title": "Archivio messaggi",
+    "unreadMessages": "Messaggio ({{read}} di {{total}})",
+    "readNext": "Leggi il prossimo",
+    "end": "Fine",
+    "sentAt": "Inviato il",
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
+    "empty": "Non ci sono messaggi"
+  },
+  "messageScreen": {
+    "title": "Messaggio",
+    "backTitle": "Archivio",
+    "sender": "Mittente"
   },
   "messagingView": {
     "pickFile": "Scegli un file",

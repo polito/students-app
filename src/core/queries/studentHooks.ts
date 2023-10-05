@@ -1,22 +1,27 @@
-import { ExamGrade, Student, StudentApi } from '@polito/api-client';
+import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
+import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import * as Sentry from '@sentry/react-native';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
-import { pluckData, prefixKey } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
+import { unreadMessages } from '../../utils/messages';
+import { pluckData } from '../../utils/queries';
 
-export const DEADLINES_QUERY_KEY = 'deadlines';
+export const DEADLINES_QUERY_KEY = ['deadlines'];
 
-export const STUDENT_QUERY_KEY = 'student';
-export const GRADES_QUERY_KEY = 'grades';
+export const STUDENT_QUERY_KEY = ['student'];
+export const GRADES_QUERY_KEY = ['grades'];
+export const MESSAGES_QUERY_PREFIX = 'messages';
+export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
 
 const useStudentClient = (): StudentApi => {
-  const {
-    clients: { student: studentClient },
-  } = useApiContext();
-  return studentClient!;
+  return new StudentApi();
 };
 
 const handleAcquiredCredits = (student: Student) => {
@@ -31,7 +36,7 @@ export const useGetStudent = () => {
   const studentClient = useStudentClient();
 
   return useQuery(
-    prefixKey([STUDENT_QUERY_KEY]),
+    STUDENT_QUERY_KEY,
     () =>
       studentClient
         .getStudent()
@@ -50,7 +55,7 @@ export const useGetStudent = () => {
           data.isCurrentlyEnrolled,
         );
       },
-      staleTime: Infinity,
+      cacheTime: Infinity,
     },
   );
 };
@@ -63,7 +68,7 @@ const sortGrades = (response: ExamGrade[]) => {
 export const useGetGrades = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(prefixKey([GRADES_QUERY_KEY]), () =>
+  return useQuery(GRADES_QUERY_KEY, () =>
     studentClient.getStudentGrades().then(pluckData).then(sortGrades),
   );
 };
@@ -74,7 +79,7 @@ export const useGetDeadlineWeeks = () => {
   const oneWeek = Duration.fromDurationLike({ week: 1 });
 
   return useInfiniteQuery(
-    prefixKey([DEADLINES_QUERY_KEY]),
+    DEADLINES_QUERY_KEY,
     ({ pageParam: since = DateTime.now().startOf('week') }) => {
       const until = since.plus(oneWeek);
 
@@ -87,6 +92,88 @@ export const useGetDeadlineWeeks = () => {
     },
     {
       staleTime: Infinity,
+    },
+  );
+};
+
+export const useUpdateDevicePreferences = () => {
+  const studentClient = useStudentClient();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (dto: UpdateDevicePreferencesRequest) =>
+      studentClient.updateDevicePreferences(dto),
+    {
+      onSuccess: () => {
+        return queryClient.invalidateQueries([]);
+      },
+    },
+  );
+};
+
+export const useGetMessages = () => {
+  const queryClient = useQueryClient();
+  const studentClient = useStudentClient();
+
+  return useQuery(
+    MESSAGES_QUERY_KEY,
+    () =>
+      studentClient
+        .getMessages()
+        .then(pluckData)
+        .then(messages => {
+          const previousMessages =
+            queryClient.getQueryData<Message[]>(MESSAGES_QUERY_KEY);
+
+          if (
+            previousMessages &&
+            unreadMessages(previousMessages).length >=
+              unreadMessages(messages).length
+          ) {
+            return messages;
+          }
+
+          queryClient.setQueryData(
+            [MESSAGES_QUERY_PREFIX, 'modal'],
+            unreadMessages(messages),
+          );
+
+          return messages;
+        }),
+    {
+      staleTime: 300000, // 5 minutes
+      refetchInterval: 300000, // 5 minutes
+    },
+  );
+};
+
+export const useInvalidateMessages = () => {
+  const queryClient = useQueryClient();
+
+  return {
+    run: () => queryClient.invalidateQueries(MESSAGES_QUERY_KEY),
+  };
+};
+
+export const useGetModalMessages = () => {
+  const messagesQuery = useGetMessages();
+
+  return useQuery([MESSAGES_QUERY_PREFIX, 'modal'], () => [], {
+    enabled: !!messagesQuery.data,
+    staleTime: Infinity,
+  });
+};
+
+export const useMarkMessageAsRead = (invalidate: boolean = true) => {
+  const studentClient = useStudentClient();
+  const client = useQueryClient();
+
+  return useMutation(
+    (messageId: number) => studentClient.markMessageAsRead({ messageId }),
+    {
+      onSuccess() {
+        return invalidate && client.invalidateQueries(MESSAGES_QUERY_KEY);
+      },
     },
   );
 };

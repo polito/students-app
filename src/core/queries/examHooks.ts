@@ -1,37 +1,36 @@
-import { BookExamRequest, ExamsApi } from '@polito/api-client';
+import { Exam as ApiExam, BookExamRequest, ExamsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { pluckData, prefixKey } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
+import { pluckData } from '../../utils/queries';
 import { Exam } from '../types/api';
 
-export const EXAMS_QUERY_KEY = 'exams';
+export const EXAMS_QUERY_KEY = ['exams'];
 
 const useExamsClient = (): ExamsApi => {
-  const {
-    clients: { exams: examsClient },
-  } = useApiContext();
-  return examsClient!;
+  return new ExamsApi();
+};
+
+const mapApiExamToExam = (exam: ApiExam): Exam => {
+  return {
+    ...exam,
+    isTimeToBeDefined:
+      exam.examStartsAt !== null && exam.examStartsAt.getHours() === 0,
+  };
 };
 
 export const useGetExams = () => {
   const examsClient = useExamsClient();
 
-  return useQuery<Exam[]>(prefixKey([EXAMS_QUERY_KEY]), () =>
+  return useQuery<Exam[]>(EXAMS_QUERY_KEY, () =>
     examsClient
       .getExams()
       .then(pluckData)
       .then(exams =>
-        exams.map(exam => ({
-          ...exam,
-          isTimeToBeDefined:
-            exam.examStartsAt !== null && exam.examStartsAt.getHours() === 0,
-        })),
-      )
-      .then(exams =>
-        exams.sort(
-          (a, b) => a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf(),
-        ),
+        exams
+          .map(mapApiExamToExam)
+          .sort(
+            (a, b) => a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf(),
+          ),
       ),
   );
 };
@@ -45,7 +44,7 @@ export const useBookExam = (examId: number) => {
       examsClient.bookExam({ examId: examId, bookExamRequest: dto }),
     {
       onSuccess() {
-        return client.invalidateQueries([EXAMS_QUERY_KEY]);
+        return client.invalidateQueries(EXAMS_QUERY_KEY);
       },
     },
   );
@@ -59,7 +58,7 @@ export const useCancelExamBooking = (examId: number) => {
     () => examsClient.deleteExamBookingById({ examId: examId }),
     {
       onSuccess() {
-        return client.invalidateQueries([EXAMS_QUERY_KEY]);
+        return client.invalidateQueries(EXAMS_QUERY_KEY);
       },
     },
   );

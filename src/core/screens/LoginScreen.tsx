@@ -25,6 +25,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useLogin } from '../queries/authHooks';
 
@@ -38,9 +39,10 @@ export const LoginScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
+  const { language } = usePreferencesContext();
 
   const handleLogin = () =>
-    login({ username, password }).catch(e => {
+    login({ username, password, preferences: { language } }).catch(e => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
@@ -49,7 +51,6 @@ export const LoginScreen = () => {
           t('loginScreen.authnErrorDescription'),
         );
       }
-      throw e;
     });
 
   return (
@@ -68,7 +69,7 @@ export const LoginScreen = () => {
               label={t('loginScreen.usernameLabel')}
               value={username}
               accessibilityLabel={t('loginScreen.usernameLabelAccessibility')}
-              onChangeText={setUsername}
+              onChangeText={text => setUsername(text.trim())}
               editable={!isLoading}
               returnKeyType="next"
               onSubmitEditing={() => {
@@ -116,7 +117,6 @@ export const LoginScreen = () => {
             title={t('loginScreen.cta')}
             action={handleLogin}
             loading={isLoading}
-            successMessage={t('loginScreen.ctaSuccessMessage')}
             disabled={!canLogin}
           />
           <TouchableOpacity

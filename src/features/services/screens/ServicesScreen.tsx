@@ -17,9 +17,12 @@ import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
 
@@ -28,18 +31,28 @@ export const ServicesScreen = () => {
   const { favoriteServices: favoriteServiceIds, updatePreference } =
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
+  const isOffline = useOfflineDisabled();
+
+  const queryClient = useQueryClient();
+
+  const { peopleSearched } = usePreferencesContext();
+
   const services = useMemo(
     () => [
       {
         id: 'tickets',
         name: t('ticketsScreen.title'),
         icon: faComments,
+        disabled:
+          isOffline &&
+          queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
       },
       {
         id: 'appFeedback',
         name: t('common.appFeedback'),
         icon: faMobileScreenButton,
+        disabled: isOffline,
         linkTo: {
           screen: 'CreateTicket',
           params: {
@@ -60,6 +73,7 @@ export const ServicesScreen = () => {
         id: 'news',
         name: t('newsScreen.title'),
         icon: faBullhorn,
+        disabled: isOffline,
         linkTo: {
           screen: 'News',
         },
@@ -68,14 +82,15 @@ export const ServicesScreen = () => {
         id: 'jobOffers',
         name: t('jobOffersScreen.title'),
         icon: faBriefcase,
-        disabled: false,
+        disabled: isOffline,
         linkTo: { screen: 'JobOffers' },
       },
       {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,
-        disabled: true,
+        disabled: isOffline && peopleSearched?.length === 0,
+        linkTo: { screen: 'Contacts' },
       },
       {
         id: 'guides',
@@ -96,7 +111,7 @@ export const ServicesScreen = () => {
         disabled: true,
       },
     ],
-    [styles.betaBadge, t],
+    [isOffline, queryClient, styles.betaBadge, t],
   );
 
   const [favoriteServices, otherServices] = useMemo(

@@ -6,8 +6,12 @@ import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { PersonScreen } from '../../teaching/screens/PersonScreen';
+import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
+import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -39,6 +43,9 @@ export type ServiceStackParamList = {
   };
   News: undefined;
   NewsItem: { id: number };
+  MessagesModal: undefined;
+  Contacts: undefined;
+  Person: { id: number };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -146,6 +153,39 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('newsScreen.title'),
           headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="MessagesModal"
+        component={UnreadMessagesModal}
+        options={{
+          headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="Contacts"
+        component={ContactsScreen}
+        options={{
+          headerTitle: t('contactsScreen.title'),
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+          headerTransparent: false,
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
         }}
       />
     </Stack.Navigator>

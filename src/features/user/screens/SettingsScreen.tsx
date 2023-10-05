@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -33,18 +33,22 @@ import i18next from 'i18next';
 import { Settings } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import {
   PreferencesContextBase,
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useDeviceLanguage } from '../../../core/hooks/useDeviceLanguage';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
+  const { setFeedback } = useFeedbackContext();
+
   const { fontSizes } = useTheme();
   const filesCache = useCoursesFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>();
@@ -77,8 +81,12 @@ const CleanCacheListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
-          await unlink(filesCache);
-          refreshSize();
+          unlink(filesCache).then(() => {
+            setFeedback({
+              text: t('coursePreferencesScreen.cleanCacheFeedback'),
+            });
+            refreshSize();
+          });
         }
       }}
     />
@@ -193,38 +201,40 @@ const VisualizationListItem = () => {
 const LanguageListItem = () => {
   const { t } = useTranslation();
   const { language, updatePreference } = usePreferencesContext();
-  const deviceLanguage = useDeviceLanguage();
+  const { mutate } = useUpdateDevicePreferences();
+  const isDisabled = useOfflineDisabled();
 
-  const languageLabel = (cc: string) => {
-    return cc === 'system'
-      ? `${t(`common.${cc}`)} (${t(`common.${deviceLanguage}`)})`
-      : t(`common.${cc}`);
-  };
+  const choices = useMemo(() => {
+    if (isDisabled) return [];
 
+    return ['it', 'en'] as const;
+  }, [isDisabled]);
   return (
     <MenuView
-      actions={['it', 'en', 'system'].map(cc => {
+      actions={choices.map(cc => {
         return {
           id: cc,
-          title: languageLabel(cc),
+          title: t(`common.${cc}`),
           state: cc === language ? 'on' : undefined,
         };
       })}
       onPressAction={({ nativeEvent: { event } }) => {
-        const lang = event as 'it' | 'en' | 'system';
+        const lang = event as 'it' | 'en';
+
+        mutate({ updatePreferencesRequest: { language: lang } });
         updatePreference('language', lang);
 
-        const uiLanguage = lang === 'system' ? deviceLanguage : lang;
         i18next
-          .changeLanguage(uiLanguage)
-          .then(() => (Settings.defaultLocale = uiLanguage));
+          .changeLanguage(lang)
+          .then(() => (Settings.defaultLocale = lang));
       }}
     >
       <ListItem
         isAction
-        title={languageLabel(language)}
-        accessibilityLabel={`${t('common.language')}: ${languageLabel(
-          language,
+        disabled={isDisabled}
+        title={t(`common.${language}`)}
+        accessibilityLabel={`${t('common.language')}: ${t(
+          `common.${language}`,
         )}. ${t('settingsScreen.openLanguageMenu')}`}
       />
     </MenuView>
