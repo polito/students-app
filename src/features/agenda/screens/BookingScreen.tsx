@@ -30,9 +30,11 @@ import { DateTime } from 'luxon';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
+  useGetBookingTopics,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -41,13 +43,15 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 
-export const BookingScreen = ({ navigation, route }: Props) => {
+export const BookingScreen = ({ route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-
+  const { getCurrentPosition, computeDistance } = useGeolocation();
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
+  const topics = useGetBookingTopics();
+  // const slots = useGetBookingSlots('SPECIAL_NEEDS');
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
   const confirmCancel = useConfirmationDialog({
@@ -69,11 +73,22 @@ export const BookingScreen = ({ navigation, route }: Props) => {
 
   const onPressLocation = () => {};
 
-  const onPressCheckIn = () => {};
+  const onPressCheckIn = () => {
+    const otherCoordinates = {
+      latitude: 45.6956362,
+      longitude: 9.7578599,
+    };
+    getCurrentPosition().then(currentDeviceCoordinates => {
+      console.debug({ currentDeviceCoordinates });
+      const res = computeDistance(currentDeviceCoordinates, otherCoordinates);
+      console.debug({ res });
+    });
+  };
 
   const onPressDelete = async () => {
     if (await confirmCancel()) {
-      console.debug('ok');
+      // console.debug('ok');
+      setFeedback({ text: t('bookingScreen.cancelFeedback') });
       // return bookingMutation
       //   .mutateAsync()
       //   .then(() => navigation.goBack())
@@ -109,7 +124,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                   />
                 }
                 title={booking.location.name}
-                subtitle={booking.location?.type}
+                subtitle={t(
+                  `bookingScreen.locationType.${booking.location?.type}`,
+                )}
                 onPress={onPressLocation}
               />
             </OverviewList>
@@ -136,7 +153,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               outlined
               absolute={false}
               disabled={isDisabled}
-              loading={bookingMutation.isLoading}
             />
           )}
           <CtaButtonSpacer />
