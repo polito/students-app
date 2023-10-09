@@ -207,7 +207,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     barCodeCard: {
       padding: fontSizes.md,
@@ -216,23 +216,5 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       alignItems: 'center',
       borderRadius: fontSizes.md,
       marginHorizontal: Platform.select({ ios: spacing[4] }),
-    },
-    sectionSeparator: {
-      paddingHorizontal: fontSizes.lg,
-      marginTop: fontSizes.xs,
-    },
-    sectionContainer: {
-      paddingHorizontal: fontSizes.md,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    booking: {
-      color: palettes.primary[400],
-      textTransform: 'uppercase',
-      marginVertical: fontSizes.sm,
-    },
-    time: {
-      textTransform: 'capitalize',
     },
   });
