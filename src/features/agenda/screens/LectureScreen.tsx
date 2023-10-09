@@ -47,12 +47,13 @@ export const LectureScreen = ({ route }: Props) => {
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       <SafeAreaView>
-        {virtualClassroom?.videoUrl && (
-          <VideoPlayer
-            source={{ uri: virtualClassroom?.videoUrl }}
-            poster={virtualClassroom?.coverUrl ?? undefined}
-          />
-        )}
+        {virtualClassroom?.type === 'recording' &&
+          virtualClassroom?.videoUrl && (
+            <VideoPlayer
+              source={{ uri: virtualClassroom?.videoUrl }}
+              poster={virtualClassroom?.coverUrl ?? undefined}
+            />
+          )}
         <Row justify="space-between" align="center">
           <EventDetails
             title={virtualClassroom?.title ?? lecture.title}
