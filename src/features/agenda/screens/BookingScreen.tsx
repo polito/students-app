@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Linking,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -35,6 +37,7 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
   useGetBookings,
+  useUpdateBooking,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { BookingTimeDetail } from '../../services/components/BookingTimeDetail';
@@ -42,7 +45,21 @@ import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 
-export const BookingScreen = ({ route }: Props) => {
+const bookingLocationHasValidCoordinates = (
+  location: Booking['locationCheck'],
+) => {
+  return !!location?.latitude && !!location?.longitude && !!location.radiusInKm;
+};
+
+const checkInEnabled = (booking?: Booking) => {
+  return (
+    booking?.locationCheck?.enabled &&
+    !booking?.locationCheck?.checked &&
+    bookingLocationHasValidCoordinates(booking?.locationCheck)
+  );
+};
+
+export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
@@ -50,6 +67,7 @@ export const BookingScreen = ({ route }: Props) => {
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
   const bookingMutation = useDeleteBooking(id);
+  const updateBookingMutation = useUpdateBooking();
   const studentQuery = useGetStudent();
   const confirmCancel = useConfirmationDialog({
     title: t('bookingScreen.cancelBooking'),
@@ -61,44 +79,47 @@ export const BookingScreen = ({ route }: Props) => {
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
 
+  const showCheckIn = useMemo(() => checkInEnabled(booking), [booking]);
+  const canBeCancelled = useMemo(() => cancelEnabled(booking), [booking]);
+
   console.debug('booking', booking);
 
-  const showCheckIn = !!(
-    booking?.locationCheck?.enabled && !booking?.locationCheck?.checked
-  );
-  const canBeCancelled =
-    !!booking?.cancelableUntil &&
-    DateTime.fromJSDate(booking?.cancelableUntil) > DateTime.now();
-
-  const canBeCancelled = useMemo(
-    () =>
-      !!booking?.cancelableUntil &&
-      booking?.cancelableUntil.getTime() > Date.now(),
-    [booking],
-  );
-
-  const onPressLocation = () => {};
-
-  const onPressCheckIn = () => {
-    const otherCoordinates = {
-      latitude: 45.6956362,
-      longitude: 9.7578599,
-    };
+  const onPressCheckIn = async () => {
+    if (!booking?.id) return;
     getCurrentPosition().then(currentDeviceCoordinates => {
-      console.debug({ currentDeviceCoordinates });
-      const res = computeDistance(currentDeviceCoordinates, otherCoordinates);
-      console.debug({ res });
+      const computedDistance = computeDistance(currentDeviceCoordinates, {
+        latitude: Number(booking?.locationCheck?.latitude),
+        longitude: Number(booking?.locationCheck?.longitude),
+      });
+      if (computedDistance < Number(booking?.locationCheck?.radiusInKm)) {
+        console.debug({ bookingId: booking.id, isLocationChecked: true });
+        updateBookingMutation
+          .mutateAsync({
+            bookingId: booking.id,
+            isLocationChecked: true,
+          })
+          .then(() => {
+            setFeedback({ text: t('bookingScreen.checkInFeedback') });
+          });
+      } else {
+        setFeedback({ text: t('bookingScreen.checkLocationErrorFeedback') });
+      }
     });
+  };
+
+  const onPressLocation = async (location: Booking['location']) => {
+    if (location.type === 'virtualPlace') {
+      await Linking.openURL(location.url);
+    }
   };
 
   const onPressDelete = async () => {
     if (await confirmCancel()) {
-      // console.debug('ok');
       setFeedback({ text: t('bookingScreen.cancelFeedback') });
-      // return bookingMutation
-      //   .mutateAsync()
-      //   .then(() => navigation.goBack())
-      //   .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
+      return bookingMutation
+        .mutateAsync()
+        .then(() => navigation.goBack())
+        .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
     }
   };
 
@@ -133,7 +154,7 @@ export const BookingScreen = ({ route }: Props) => {
                 subtitle={t(
                   `bookingScreen.locationType.${booking.location?.type}`,
                 )}
-                onPress={onPressLocation}
+                onPress={() => onPressLocation(booking?.location)}
               />
             </OverviewList>
           )}
@@ -156,6 +177,7 @@ export const BookingScreen = ({ route }: Props) => {
             <CtaButton
               title={t('bookingScreen.checkIn')}
               action={onPressCheckIn}
+              loading={updateBookingMutation.isLoading}
               outlined
               absolute={false}
               disabled={isDisabled}

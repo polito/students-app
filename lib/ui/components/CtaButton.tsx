@@ -109,7 +109,17 @@ export const CtaButton = ({
       >
         <View>
           <View style={styles.stack}>
-            {loading && <ActivityIndicator color="white" />}
+            {loading && (
+              <ActivityIndicator
+                color={
+                  outlined
+                    ? destructive
+                      ? palettes.danger[600]
+                      : palettes.primary[500]
+                    : 'white'
+                }
+              />
+            )}
           </View>
           <Row style={{ opacity: loading ? 0 : 1 }}>
             {/* {!loading && ( */}

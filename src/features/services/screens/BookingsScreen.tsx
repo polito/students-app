@@ -7,6 +7,7 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -19,6 +20,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Bookings'>;
 export const BookingsScreen = ({ navigation }: Props) => {
   const bookingsQuery = useGetBookings();
   const { t } = useTranslation();
+  const { spacing } = useTheme();
 
   return (
     <>
@@ -27,7 +29,7 @@ export const BookingsScreen = ({ navigation }: Props) => {
         refreshControl={<RefreshControl queries={[bookingsQuery]} manual />}
       >
         <SafeAreaView>
-          <Section>
+          <Section style={{ marginTop: spacing[2] }}>
             <SectionHeader title={t('bookingsScreen.sectionTitle')} />
             <OverviewList loading={bookingsQuery.isLoading}>
               {bookingsQuery?.data?.map((booking, index) => (
