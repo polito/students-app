@@ -1,13 +1,17 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDiamondTurnRight,
+  faSignsPost,
+} from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { Col } from '@lib/ui/components/Col';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -17,6 +21,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
@@ -42,20 +47,37 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
   const { placeId } = route.params;
-  const { data: place, isLoading: isLoadingPlace } = useGetPlace(placeId);
+  const {
+    data: place,
+    isLoading: isLoadingPlace,
+    error: getPlaceError,
+  } = useGetPlace(placeId);
   const siteId = place?.data.site.id;
   const floorId = place?.data.floor.id;
-  const { data: places, isLoading: isLoadingPlaces } = useGetPlaces({
+  const {
+    data: places,
+    isLoading: isLoadingPlaces,
+    fetchStatus: placesFetchStatus,
+  } = useGetPlaces({
     siteId,
     floorId,
   });
-  const isLoading = isLoadingPlace || isLoadingPlaces;
+  const filteredPlaces = useMemo(
+    () => places?.data?.filter(p => p.room.name) ?? [],
+    [places?.data],
+  );
+  const isLoading =
+    isLoadingPlace || (isLoadingPlaces && placesFetchStatus === 'fetching');
   const placeName =
     place?.data.room.name ??
     place?.data.category.subCategory.name ??
     t('common.untitled');
 
-  useScreenTitle(placeName);
+  useScreenTitle(
+    (getPlaceError as ResponseError)?.response?.status === 404
+      ? t('common.notFound')
+      : placeName,
+  );
 
   useLayoutEffect(() => {
     if (place?.data) {
@@ -88,28 +110,30 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         mapContent: (
           <>
             <IndoorMapLayer floorId={floorId} />
-            <MarkersLayer selectedPoiId={placeId} places={places?.data ?? []} />
-            <ShapeSource
-              id="placeHighlightSource"
-              shape={place.data.geoJson as any} // TODO fix incompatible types
-              existing={false}
-            >
-              <LineLayer
-                id="placeHighlightLine"
-                aboveLayerID="indoor"
-                style={{
-                  lineColor: palettes.secondary[600],
-                  lineWidth: 2,
-                }}
-              />
-              <FillLayer
-                id="placeHighlightFill"
-                aboveLayerID="indoor"
-                style={{
-                  fillColor: `${palettes.secondary[600]}33`,
-                }}
-              />
-            </ShapeSource>
+            <MarkersLayer selectedPoiId={placeId} places={filteredPlaces} />
+            {place.data.geoJson != null && (
+              <ShapeSource
+                id="placeHighlightSource"
+                shape={place.data.geoJson as any} // TODO fix incompatible types
+                existing={false}
+              >
+                <LineLayer
+                  id="placeHighlightLine"
+                  aboveLayerID="indoor"
+                  style={{
+                    lineColor: palettes.secondary[600],
+                    lineWidth: 2,
+                  }}
+                />
+                <FillLayer
+                  id="placeHighlightFill"
+                  aboveLayerID="indoor"
+                  style={{
+                    fillColor: `${palettes.secondary[600]}33`,
+                  }}
+                />
+              </ShapeSource>
+            )}
           </>
         ),
       });
@@ -121,12 +145,14 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     headerHeight,
     palettes.secondary,
     floorId,
-    places?.data,
     safeAreaInsets.top,
     spacing,
+    updatePreference,
+    placesSearched,
+    filteredPlaces,
   ]);
 
-  if (isLoading || !place || !places) {
+  if (isLoading) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
         <BottomSheet
@@ -137,6 +163,29 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         </BottomSheet>
       </View>
     );
+  }
+
+  if (
+    getPlaceError &&
+    (getPlaceError as ResponseError).response.status === 404
+  ) {
+    return (
+      <View style={GlobalStyles.grow} pointerEvents="box-none">
+        <BottomSheet
+          middleSnapPoint={50}
+          handleStyle={{ paddingVertical: undefined }}
+        >
+          <EmptyState
+            message={t('placeScreen.placeNotFound')}
+            icon={faSignsPost}
+          />
+        </BottomSheet>
+      </View>
+    );
+  }
+
+  if (!place) {
+    return null;
   }
 
   return (

@@ -68,8 +68,26 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
       AULA_LAB: {},
     },
   },
-  LAB: {
+  LAIB: {
     icon: 'lab',
+    color: 'navy',
+    priority: 60,
+    children: {},
+  },
+  INGRESSO: {
+    icon: 'door',
+    color: 'gray',
+    priority: 60,
+    children: {},
+  },
+  UFF_PUBB: {
+    icon: 'office',
+    color: 'gray',
+    priority: 60,
+    children: {},
+  },
+  LAB: {
+    icon: 'classroom',
     color: 'navy',
     priority: 60,
     children: {},

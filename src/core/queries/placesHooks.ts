@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
+import { noop } from 'lodash';
+
 export const SITES_QUERY_KEY = 'sites';
 export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
@@ -47,6 +49,9 @@ export const useGetPlaces = (params: GetPlacesRequest) => {
   }
   if (params.placeCategoryId != null) {
     key.push(params.placeCategoryId);
+  }
+  if (params.placeSubCategoryId != null) {
+    key.push(params.placeSubCategoryId.join());
   }
 
   return useQuery(key, () => placesClient.getPlaces(params), {
@@ -97,6 +102,7 @@ export const useGetPlace = (placeId?: string) => {
     {
       enabled: placeId != null,
       staleTime: Infinity,
+      onError: noop,
     },
   );
 };

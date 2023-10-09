@@ -124,6 +124,7 @@
     "newItems": "New item",
     "newItems_plural": "New items",
     "noInternet": "You are offline, some features may not be available",
+    "notFound": "Not found",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
@@ -439,6 +440,7 @@
   "placeScreen": {
     "capacity": "{{count}} seat",
     "capacity_plural": "{{count}} seats",
+    "placeNotFound": "Place not found",
     "title": "Place"
   },
   "placesScreen": {

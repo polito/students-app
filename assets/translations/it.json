@@ -124,6 +124,7 @@
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
+    "notFound": "Luogo inesistente",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
@@ -438,6 +439,7 @@
   "placeScreen": {
     "capacity": "{{count}} posto",
     "capacity_plural": "{{count}} posti",
+    "placeNotFound": "Questo luogo non esiste",
     "title": "Luogo"
   },
   "placesScreen": {
