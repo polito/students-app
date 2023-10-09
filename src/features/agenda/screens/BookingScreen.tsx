@@ -34,7 +34,6 @@ import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
-  useGetBookingTopics,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -50,8 +49,6 @@ export const BookingScreen = ({ route }: Props) => {
   const { getCurrentPosition, computeDistance } = useGeolocation();
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
-  const topics = useGetBookingTopics();
-  // const slots = useGetBookingSlots('SPECIAL_NEEDS');
   const bookingMutation = useDeleteBooking(id);
   const studentQuery = useGetStudent();
   const confirmCancel = useConfirmationDialog({
@@ -63,6 +60,8 @@ export const BookingScreen = ({ route }: Props) => {
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
+
+  console.debug('booking', booking);
 
   const showCheckIn = !!(
     booking?.locationCheck?.enabled && !booking?.locationCheck?.checked

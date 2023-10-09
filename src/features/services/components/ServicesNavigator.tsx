@@ -17,6 +17,7 @@ import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
+import { NewBookingScreen } from '../screens/NewBookingScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
@@ -50,6 +51,7 @@ export type ServiceStackParamList = {
   Person: { id: number };
   Bookings: undefined;
   Booking: { id: number };
+  NewBooking: undefined;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -206,6 +208,15 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: '',
           headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="NewBooking"
+        component={NewBookingScreen}
+        options={{
+          headerTitle: t('bookingsScreen.newBooking'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
     </Stack.Navigator>
