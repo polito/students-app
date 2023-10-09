@@ -11,16 +11,19 @@
   "bookingsScreen": {
     "title": "Prenotazioni",
     "sectionTitle": "Attive",
-    "newBooking": "Nuova prenotazione",
+    "newBooking": "Nuova prenotazione"
   },
   "bookingScreen": {
     "cancelFeedback": "Prenoazione annullata",
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
+    "checkInFeedback": "Check in eseguito!",
+    "checkLocationErrorFeedback": "Sei troppo distante per effettuare il check-in della prenotazione",
     "barCodeTitle": "Barcode",
     "checkIn": "Check-in",
     "locationType": {
-      "place": "Luogo"
+      "place": "Luogo",
+      "virtualPlace": "Link sportello virtuale"
     }
   },
   "colors": {
@@ -53,6 +56,9 @@
     "agent": "Operatore",
     "close": "Chiudi",
     "search": "Cerca",
+    "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
+    "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
+    "openSettings": "Apri impostazioni",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",

@@ -67,7 +67,6 @@ export const useGetBookingSeats = (
 
 export const useUpdateBooking = () => {
   const bookingClient = useBookingClient();
-  const client = useQueryClient();
 
   return useMutation(
     ({
@@ -81,11 +80,6 @@ export const useUpdateBooking = () => {
         bookingId,
         updateBookingRequest: { isLocationChecked },
       }),
-    {
-      onSuccess() {
-        return client.invalidateQueries(BOOKINGS_QUERY_KEY);
-      },
-    },
   );
 };
 

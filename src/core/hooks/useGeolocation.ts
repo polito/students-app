@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 
 import Geolocation from '@react-native-community/geolocation';
@@ -36,27 +37,23 @@ export const computeDistance = (a?: Coordinates, b?: Coordinates) => {
   const pointA = new GeoPoint(a.latitude, a.longitude);
   const pointB = new GeoPoint(b.latitude, b.longitude);
 
-  return pointA.distanceTo(pointB, true); // output in kilometers
+  return pointA.distanceTo(pointB, true);
 };
 
 export const useGeolocation = () => {
   const { setFeedback } = useFeedbackContext();
+  const { t } = useTranslation();
 
   const getCurrentPosition = useCallback(() => {
     return new Promise<Coordinates>((resolve, reject) => {
       Geolocation.getCurrentPosition(
         ({ coords: { latitude, longitude } }) => {
-          console.debug('Geolocation.getCurrentPosition success: ', {
-            latitude,
-            longitude,
-          });
           resolve({ latitude, longitude });
         },
         error => {
-          console.error('Geolocation.getCurrentPosition error: ', error);
           if (error.code === 2) {
             setFeedback({
-              text: 'You need to enable location services to check in reservation.',
+              text: t('common.enableLocationServiceFeedback'),
               isPersistent: false,
             });
           }
@@ -64,20 +61,17 @@ export const useGeolocation = () => {
         },
       );
     });
-  }, []);
+  }, [t]);
 
   useEffect(() => {
-    console.debug('Geolocation permission request');
     Geolocation.requestAuthorization(
       () => console.debug('Geolocation permission granted'),
       error => {
-        console.error('Geolocation request permission error: ', error);
         if (error.code === 1) {
-          console.error('User denied access to location services.');
           setFeedback({
-            text: 'You need to enable location services to check in reservation.',
+            text: t('common.enableLocationPermissionFeedback'),
             action: {
-              label: 'Open settings',
+              label: t('common.openSettings'),
               onPress: openSettings,
             },
             isPersistent: true,
@@ -85,7 +79,7 @@ export const useGeolocation = () => {
         }
       },
     );
-  }, []);
+  }, [t]);
 
   return {
     getCurrentPosition,
