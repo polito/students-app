@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  CourseAllOfPreviousEditions,
-  CourseAllOfVcOtherCourses,
   CourseDirectory,
   CourseDirectoryContentInner,
   CourseFileOverview,
@@ -11,6 +9,8 @@ import {
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
+import { CourseOverviewPreviousEditionsInner } from '@polito/api-client/models/CourseOverviewPreviousEditionsInner';
+import { CourseVcOtherCoursesInner } from '@polito/api-client/models/CourseVcOtherCoursesInner';
 import {
   useMutation,
   useQueries,
@@ -335,7 +335,10 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (CourseAllOfPreviousEditions | CourseAllOfVcOtherCourses)[],
+  relatedVCs: (
+    | CourseOverviewPreviousEditionsInner
+    | CourseVcOtherCoursesInner
+  )[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -377,8 +380,8 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseAllOfPreviousEditions
-    | CourseAllOfVcOtherCourses
+    | CourseOverviewPreviousEditionsInner
+    | CourseVcOtherCoursesInner
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],
   );

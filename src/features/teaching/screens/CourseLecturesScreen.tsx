@@ -198,16 +198,18 @@ export const CourseLectureListItem = ({
       title={lecture.title}
       subtitle={[
         formatDate(lecture.createdAt),
-        lecture.duration,
+        'duration' in lecture ? lecture.duration : '',
         teacher && `${teacher.firstName} ${teacher.lastName}`,
       ]
         .filter(i => !!i)
         .join(' - ')}
       accessibilityLabel={[
         lecture.title,
-        lecture.duration
-          .replace('m', t('common.minutes'))
-          .replace('h', t('common.hours')),
+        'duration' in lecture
+          ? lecture.duration
+              .replace('m', t('common.minutes'))
+              .replace('h', t('common.hours'))
+          : '',
         teacher && `${teacher.firstName} ${teacher.lastName}`,
       ]
         .filter(i => !!i)
