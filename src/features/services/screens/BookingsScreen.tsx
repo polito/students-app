@@ -7,18 +7,18 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { BookingListItem } from '../components/BookingListItem';
+import { ServiceStackParamList } from '../components/ServicesNavigator';
 
-export const BookingsScreen = () => {
+type Props = NativeStackScreenProps<ServiceStackParamList, 'Bookings'>;
+
+export const BookingsScreen = ({ navigation }: Props) => {
   const bookingsQuery = useGetBookings();
   const { t } = useTranslation();
-
-  const onPressCreateBooking = () => {
-    console.debug('onPressCreateBooking');
-  };
 
   return (
     <>
@@ -44,7 +44,10 @@ export const BookingsScreen = () => {
         </SafeAreaView>
       </ScrollView>
       <CtaButton
-        action={onPressCreateBooking}
+        action={() => {
+          navigation.goBack();
+          navigation.navigate('NewBooking');
+        }}
         title={t('bookingsScreen.newBooking')}
         icon={faPlus}
       />
