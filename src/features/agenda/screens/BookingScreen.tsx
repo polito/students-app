@@ -24,6 +24,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { isToday } from '@lib/ui/utils/calendar';
 import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -53,6 +54,8 @@ const bookingLocationHasValidCoordinates = (
 
 const checkInEnabled = (booking?: Booking) => {
   return (
+    booking?.startsAt &&
+    isToday(DateTime.fromJSDate(booking?.startsAt)) &&
     booking?.locationCheck?.enabled &&
     !booking?.locationCheck?.checked &&
     bookingLocationHasValidCoordinates(booking?.locationCheck)
@@ -88,8 +91,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
 
   const showCheckIn = useMemo(() => checkInEnabled(booking), [booking]);
   const canBeCancelled = useMemo(() => cancelEnabled(booking), [booking]);
-
-  console.debug('booking', booking);
 
   const onPressCheckIn = async () => {
     if (!booking?.id) return;

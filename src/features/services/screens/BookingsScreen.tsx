@@ -16,6 +16,7 @@ import { BookingListItem } from '../components/BookingListItem';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Bookings'>;
+const createBookingEnabled = false;
 
 export const BookingsScreen = ({ navigation }: Props) => {
   const bookingsQuery = useGetBookings();
@@ -45,14 +46,16 @@ export const BookingsScreen = ({ navigation }: Props) => {
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      <CtaButton
-        action={() => {
-          navigation.goBack();
-          navigation.navigate('NewBooking');
-        }}
-        title={t('bookingsScreen.newBooking')}
-        icon={faPlus}
-      />
+      {createBookingEnabled && (
+        <CtaButton
+          action={() => {
+            navigation.goBack();
+            navigation.navigate('NewBooking');
+          }}
+          title={t('bookingsScreen.newBooking')}
+          icon={faPlus}
+        />
+      )}
     </>
   );
 };

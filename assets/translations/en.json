@@ -9,10 +9,22 @@
     "weeklyLayout": "Weekly layout"
   },
   "bookingsScreen": {
-    "title": "Bookings"
+    "title": "Bookings",
+    "sectionTitle": "Active",
+    "newBooking": "New booking"
   },
   "bookingScreen": {
-    "cancelFeedback": "Booking canceled"
+    "cancelFeedback": "Booking canceled",
+    "cancelBooking": "Cancel booking",
+    "cancelBookingText": "Are you sure you want to cancel this booking?",
+    "checkInFeedback": "Check in done!",
+    "checkLocationErrorFeedback": "You are not in the right place to check in the booking",
+    "barCodeTitle": "Barcode",
+    "checkIn": "Check-in",
+    "locationType": {
+      "place": "Place",
+      "virtualPlace": "Link virtual place"
+    }
   },
   "colors": {
     "amber": "Amber",
@@ -43,6 +55,9 @@
     },
     "agent": "Agent",
     "close": "Close",
+    "search": "Search",
+    "enableLocationServiceFeedback": "Enable location service to complete the operation",
+    "enableLocationPermissionFeedback": "Enable location permission to complete the operation",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
