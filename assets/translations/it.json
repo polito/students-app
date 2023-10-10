@@ -327,7 +327,11 @@
     "pass": "Sup"
   },
   "guidesScreen": {
-    "title": "Guide"
+    "title": "Guide",
+    "total": "Sono presenti {{ total }} guide"
+  },
+  "guideScreen": {
+    "title": "Guida"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
