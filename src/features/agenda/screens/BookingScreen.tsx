@@ -131,7 +131,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         refreshControl={<RefreshControl manual queries={[bookingsQuery]} />}
       >
         <SafeAreaView>
-          <View style={{ padding: spacing[5] }}>
+          <View style={{ padding: spacing[5] }} accessible>
             <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
             {subTopicTitle && (
               <Text variant="caption" style={{ marginBottom: spacing[1] }}>
@@ -159,8 +159,11 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               />
             </OverviewList>
           )}
-          <Section style={{ marginTop: spacing[4] }} mb={0}>
-            <SectionHeader title={t('bookingScreen.barCodeTitle')} />
+          <Section style={{ marginTop: spacing[4] }} mb={0} accessible>
+            <SectionHeader
+              title={t('bookingScreen.barCodeTitle')}
+              accessible={false}
+            />
             <Card style={styles.barCodeCard} rounded>
               {studentQuery.data && (
                 <Barcode

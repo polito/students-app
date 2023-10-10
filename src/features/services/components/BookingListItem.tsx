@@ -8,6 +8,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Booking } from '@polito/api-client';
 
+import { DateTime } from 'luxon';
+
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { getHtmlTextContent } from '../../../utils/html';
 import { BookingTimeDetail } from './BookingTimeDetail';
@@ -22,6 +24,9 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { accessibilityListLabel } = useAccessibility();
+  const date = DateTime.fromJSDate(booking?.startsAt).toFormat('dd MMMM');
+  const startsAtTime = DateTime.fromJSDate(booking?.startsAt).toFormat('HH:mm');
+  const endAtTime = DateTime.fromJSDate(booking?.endsAt).toFormat('HH:mm');
 
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(booking?.topic?.title ?? '');
@@ -36,8 +41,14 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
           id: booking?.id,
         },
       }}
-      subtitle={<BookingTimeDetail booking={booking} />}
-      accessibilityLabel={[accessibilityLabel, title].join(', ')}
+      accessibilityRole="button"
+      subtitle={<BookingTimeDetail booking={booking} accessible={false} />}
+      accessibilityLabel={[
+        accessibilityLabel,
+        title,
+        date,
+        `${startsAtTime} - ${endAtTime}`,
+      ].join(', ')}
       subtitleStyle={styles.subtitle}
       trailingItem={
         <Icon
