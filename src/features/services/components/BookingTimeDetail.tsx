@@ -9,15 +9,16 @@ import { DateTime } from 'luxon';
 
 type Props = {
   booking: Booking;
+  accessible?: boolean;
 };
-export const BookingTimeDetail = ({ booking }: Props) => {
+export const BookingTimeDetail = ({ booking, accessible }: Props) => {
   const { spacing, palettes } = useTheme();
   const date = DateTime.fromJSDate(booking?.startsAt).toFormat('dd MMMM');
   const startsAtTime = DateTime.fromJSDate(booking?.startsAt).toFormat('HH:mm');
   const endAtTime = DateTime.fromJSDate(booking?.endsAt).toFormat('HH:mm');
 
   return (
-    <Row style={{ marginTop: spacing[1] }}>
+    <Row style={{ marginTop: spacing[1] }} accessible={accessible}>
       <Icon
         icon={faCalendar}
         color={palettes.gray[500]}
