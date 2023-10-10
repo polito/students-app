@@ -83,7 +83,13 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const subTopicTitle = booking?.subtopic?.title ?? '';
 
   const showCheckIn = useMemo(() => checkInEnabled(booking), [booking]);
-  const canBeCancelled = useMemo(() => cancelEnabled(booking), [booking]);
+
+  const canBeCancelled = useMemo(
+    () =>
+      !!booking?.cancelableUntil &&
+      booking?.cancelableUntil.getTime() > Date.now(),
+    [booking],
+  );
 
   const onPressCheckIn = async () => {
     if (!booking?.id) return;

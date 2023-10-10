@@ -8,23 +8,23 @@
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale"
   },
-  "bookingsScreen": {
-    "title": "Prenotazioni",
-    "sectionTitle": "Attive",
-    "newBooking": "Nuova prenotazione"
-  },
   "bookingScreen": {
-    "cancelFeedback": "Prenoazione annullata",
+    "barCodeTitle": "Barcode",
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
+    "cancelFeedback": "Prenoazione annullata",
+    "checkIn": "Check-in",
     "checkInFeedback": "Check in eseguito!",
     "checkLocationErrorFeedback": "Sei troppo distante per effettuare il check-in della prenotazione",
-    "barCodeTitle": "Barcode",
-    "checkIn": "Check-in",
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
     }
+  },
+  "bookingsScreen": {
+    "newBooking": "Nuova prenotazione",
+    "sectionTitle": "Attive",
+    "title": "Prenotazioni"
   },
   "colors": {
     "amber": "Ambra",
@@ -54,11 +54,6 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
-    "close": "Chiudi",
-    "search": "Cerca",
-    "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
-    "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
-    "openSettings": "Apri impostazioni",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -70,6 +65,7 @@
     "cancel": "Annulla",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
+    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -100,6 +96,8 @@
     "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
+    "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
+    "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
     "event": "Evento",
@@ -132,13 +130,14 @@
     "minutes": "Minuti",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
+    "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
-    "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
+    "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
     "openedStatus": {
       "false": "Chiuso",
@@ -161,6 +160,7 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "search": "Cerca",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
@@ -188,15 +188,15 @@
     "visualization": "Visualizzazione"
   },
   "contactsScreen": {
-    "title": "Contatti",
-    "emptyState": "Nessun contatto trovato",
-    "search": "Cerca contatti",
-    "recentSearches": "Ricerche recenti",
-    "recentSearch": "Ricerca recente",
     "cancelRecentSearch": "Rimuovi",
     "cancelRecentSearchText": "Rimuovi ricerca recente",
     "clearSearch": "Cancella ricerca",
-    "clearSearches": "Cancella ricerche"
+    "clearSearches": "Cancella ricerche",
+    "emptyState": "Nessun contatto trovato",
+    "recentSearch": "Ricerca recente",
+    "recentSearches": "Ricerche recenti",
+    "search": "Cerca contatti",
+    "title": "Contatti"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -315,12 +315,12 @@
   },
   "examRequestScreen": {
     "error": "Compila il campo di testo prima di procedere con la richiesta",
-    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso",
-    "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente"
+    "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
+    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso"
   },
   "examScreen": {
-    "bookingEndsAt": "Prenotazione entro il",
     "bookedCount": "Studenti prenotati",
+    "bookingEndsAt": "Prenotazione entro il",
     "ctaBook": "Prenota appello",
     "ctaBookSuccess": "Appello prenotato",
     "ctaCancel": "Annulla prenotazione",
@@ -386,19 +386,19 @@
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username"
   },
+  "messageScreen": {
+    "backTitle": "Archivio",
+    "sender": "Mittente",
+    "title": "Messaggio"
+  },
   "messagesScreen": {
+    "empty": "Non ci sono messaggi",
+    "end": "Fine",
+    "readNext": "Leggi il prossimo",
+    "sentAt": "Inviato il",
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
-    "readNext": "Leggi il prossimo",
-    "end": "Fine",
-    "sentAt": "Inviato il",
-    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
-    "empty": "Non ci sono messaggi"
-  },
-  "messageScreen": {
-    "title": "Messaggio",
-    "backTitle": "Archivio",
-    "sender": "Mittente"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messagingView": {
     "pickFile": "Scegli un file",
