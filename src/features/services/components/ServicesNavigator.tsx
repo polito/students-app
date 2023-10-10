@@ -17,7 +17,8 @@ import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
-import { NewBookingScreen } from '../screens/NewBookingScreen';
+import { NewBookingSlotsSelectionScreen } from '../screens/NewBookingSlotsSelectionScreen';
+import { NewBookingTopicSelectionScreen } from '../screens/NewBookingTopicSelectionScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
@@ -51,7 +52,8 @@ export type ServiceStackParamList = {
   Person: { id: number };
   Bookings: undefined;
   Booking: { id: number };
-  NewBooking: undefined;
+  NewBookingTopicSelection: undefined;
+  NewBookingSlotsSelection: { topicId: string; topicName: string };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -211,13 +213,22 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="NewBooking"
-        component={NewBookingScreen}
+        name="NewBookingTopicSelection"
+        component={NewBookingTopicSelectionScreen}
         options={{
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
+      />
+      <Stack.Screen
+        name="NewBookingSlotsSelection"
+        component={NewBookingSlotsSelectionScreen}
+        options={({ route }) => ({
+          headerTitle: route.params.topicName,
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        })}
       />
     </Stack.Navigator>
   );
