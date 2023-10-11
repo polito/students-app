@@ -1,8 +1,6 @@
 import { BookingsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { DateTime } from 'luxon';
-
 import { pluckData } from '../../utils/queries';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
@@ -37,16 +35,16 @@ export const useGetBookingSlots = (bookingTopicId: string) => {
     bookingClient
       .getBookingSlots({
         bookingTopicId,
-        fromDate: DateTime.fromObject({
-          day: 1,
-          month: 11,
-          year: 2023,
-        }).toJSDate(),
-        toDate: DateTime.fromObject({
-          day: 3,
-          month: 11,
-          year: 2023,
-        }).toJSDate(),
+        // fromDate: DateTime.fromObject({
+        //   day: 1,
+        //   month: 11,
+        //   year: 2023,
+        // }).toJSDate(),
+        // toDate: DateTime.fromObject({
+        //   day: 3,
+        //   month: 11,
+        //   year: 2023,
+        // }).toJSDate(),
       })
       .then(pluckData),
   );

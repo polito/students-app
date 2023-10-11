@@ -19,6 +19,12 @@
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
+    },
+    "bookingStatus": {
+      "notAvailable": "Non prenotabile",
+      "available": "Prenotabile",
+      "booked": "Prenotato",
+      "full": "Pieno"
     }
   },
   "bookingsScreen": {
@@ -55,6 +61,7 @@
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "legend": "Legenda",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
