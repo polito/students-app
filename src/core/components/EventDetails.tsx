@@ -9,7 +9,7 @@ import { formatTime } from '../../utils/dates';
 type Props = ViewProps & {
   title?: string;
   type?: string;
-  time?: string;
+  time?: string | JSX.Element;
   endTime?: Date;
   timeLabel?: string;
 };
@@ -29,12 +29,15 @@ export const EventDetails = ({
       <Text variant="caption" style={{ marginBottom: spacing[2] }}>
         {type}
       </Text>
-      {time && (
-        <Text style={{ fontSize: fontSizes.md }}>
-          {time}
-          {endTime && ` - ${formatTime(endTime)}`}
-        </Text>
-      )}
+      {time &&
+        (typeof time === 'string' ? (
+          <Text style={{ fontSize: fontSizes.md }}>
+            {time}
+            {endTime && ` - ${formatTime(endTime)}`}
+          </Text>
+        ) : (
+          time
+        ))}
       {!!timeLabel && (
         <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
       )}

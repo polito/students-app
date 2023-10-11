@@ -96,6 +96,7 @@ export interface Colors {
   agendaExam: string;
   agendaLecture: string;
   translucentSurface: string;
+  white: string;
 }
 
 export interface Palettes {

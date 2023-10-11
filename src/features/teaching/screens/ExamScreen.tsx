@@ -2,11 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import {
-  faCalendar,
-  faClock,
-  faNoteSticky,
-} from '@fortawesome/free-regular-svg-icons';
+import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
 import {
   faHourglassEnd,
   faLocationDot,
@@ -20,6 +16,7 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
+import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -115,34 +112,21 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 </Text>
                 {exam?.status && <ExamStatusBadge exam={exam} />}
               </Row>
-              <Row gap={3}>
-                <Row gap={2} align="center">
-                  <Icon
-                    icon={faCalendar}
-                    color={colors.prose}
-                    size={fontSizes.md}
-                  />
-                  <Text style={{ fontSize: fontSizes.md }}>
-                    {exam?.examStartsAt
-                      ? formatReadableDate(exam.examStartsAt)
-                      : t('common.dateToBeDefined')}
-                  </Text>
-                </Row>
-                <Row gap={2} align="center">
-                  <Icon
-                    icon={faClock}
-                    color={colors.prose}
-                    size={fontSizes.md}
-                  />
-                  <Text style={{ fontSize: fontSizes.md }}>
-                    {exam?.examStartsAt
-                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
-                          exam.examEndsAt!,
-                        )}`
-                      : t('common.timeToBeDefined')}
-                  </Text>
-                </Row>
-              </Row>
+              <ScreenDateTime
+                accessible={true}
+                date={
+                  exam?.examStartsAt
+                    ? formatReadableDate(exam?.examStartsAt)
+                    : t('common.dateToBeDefined')
+                }
+                time={
+                  exam?.examStartsAt
+                    ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                        exam.examEndsAt!,
+                      )}`
+                    : t('common.timeToBeDefined')
+                }
+              />
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>

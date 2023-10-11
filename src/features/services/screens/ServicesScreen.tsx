@@ -22,6 +22,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
@@ -93,15 +94,18 @@ export const ServicesScreen = () => {
         linkTo: { screen: 'Contacts' },
       },
       {
-        id: 'guides',
-        name: t('guidesScreen.title'),
-        icon: faSignsPost,
-        disabled: true,
-      },
-      {
         id: 'bookings',
         name: t('bookingsScreen.title'),
         icon: faPersonCirclePlus,
+        disabled:
+          isOffline &&
+          queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
+        linkTo: { screen: 'Bookings' },
+      },
+      {
+        id: 'guides',
+        name: t('guidesScreen.title'),
+        icon: faSignsPost,
         disabled: true,
       },
       {
