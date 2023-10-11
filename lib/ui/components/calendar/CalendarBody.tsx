@@ -10,6 +10,7 @@ import {
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { DateTime, Interval } from 'luxon';
 
@@ -81,6 +82,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
 }: CalendarBodyProps<T>) => {
   const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
+  const bottomBarHeight = useBottomTabBarHeight();
 
   const styles = useStylesheet(createStyles);
 
@@ -172,7 +174,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
             ? { x: 0, y: scrollOffsetMinutes }
             : { x: 0, y: 0 }
         }
-        contentContainerStyle={{ paddingBottom: 150 }}
+        contentContainerStyle={{ paddingBottom: bottomBarHeight + cellHeight }}
       >
         <SafeAreaView
           style={{
@@ -195,12 +197,13 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                   centerVertically={false}
                 />
               )}
-              {hours.map(hour => (
+              {hours.map((hour, index) => (
                 <HourGuideColumn
                   key={hour}
                   cellHeight={cellHeight}
                   hour={hour}
                   ampm={ampm}
+                  centerVertically={!(!showAllDayEventCell && index === 0)}
                 />
               ))}
             </View>

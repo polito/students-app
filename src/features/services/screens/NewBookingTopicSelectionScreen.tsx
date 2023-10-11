@@ -33,7 +33,7 @@ type TopicSection = {
 
 type Props = NativeStackScreenProps<
   ServiceStackParamList,
-  'NewBookingSlotsSelection'
+  'NewBookingTopicSelection'
 >;
 
 export const NewBookingTopicSelectionScreen = ({ navigation }: Props) => {

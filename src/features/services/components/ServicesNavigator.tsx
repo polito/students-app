@@ -228,6 +228,11 @@ export const ServicesNavigator = () => {
           headerTitle: route.params.topicName,
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
         })}
       />
     </Stack.Navigator>
