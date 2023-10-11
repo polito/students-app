@@ -102,7 +102,7 @@ export const ExamListItem = ({
               ellipsizeMode="tail"
               style={{ flexShrink: 1 }}
             >
-              {exam.classrooms}
+              {exam.places?.map(place => place.name).join(', ')}
             </Text>
           </Row>
         </Row>

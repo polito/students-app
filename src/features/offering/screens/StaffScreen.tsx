@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
-import { OfferingCourseStaffInner } from '@polito/api-client/models';
+import { OfferingCourseStaff } from '@polito/api-client/models';
 import { Person } from '@polito/api-client/models/Person';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -20,12 +20,12 @@ export const StaffScreen = ({ route }: Props) => {
 
   const { queries: staffQueries, isLoading } = useGetPersons(staffIds);
 
-  const staffPeople: (Person & OfferingCourseStaffInner)[] = useMemo(() => {
+  const staffPeople: (Person & OfferingCourseStaff)[] = useMemo(() => {
     if (isLoading) {
       return [];
     }
 
-    const staffData: (Person & OfferingCourseStaffInner)[] = [];
+    const staffData: (Person & OfferingCourseStaff)[] = [];
 
     staffQueries.forEach((staffQuery, index) => {
       if (!staffQuery.data) return;

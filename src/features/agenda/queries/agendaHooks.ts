@@ -55,7 +55,7 @@ const groupItemsByDay = (
           fromTime: formatTime(exam.examStartsAt!),
           isTimeToBeDefined: exam.isTimeToBeDefined,
           title: exam.courseName,
-          classroom: exam?.classrooms,
+          places: exam?.places ?? [],
           teacherId: exam.teacherId,
         };
         return item;
@@ -112,7 +112,7 @@ const groupItemsByDay = (
       startDate.setHours(0, 0, 0);
 
       const item: DeadlineItem = {
-        key: 'deadline' + deadline.date.valueOf(),
+        key: 'deadline-' + deadline.id,
         start: DateTime.fromJSDate(startDate),
         end: DateTime.fromJSDate(startDate).plus({ hour: 1 }),
         startTimestamp: deadline.date.valueOf(),

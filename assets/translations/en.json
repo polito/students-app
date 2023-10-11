@@ -8,11 +8,24 @@
     "title": "Agenda",
     "weeklyLayout": "Weekly layout"
   },
-  "bookingsScreen": {
-    "title": "Bookings"
-  },
   "bookingScreen": {
-    "cancelFeedback": "Booking canceled"
+    "barCodeTitle": "Barcode",
+    "cancelBooking": "Cancel booking",
+    "cancelBookingText": "Are you sure you want to cancel this booking?",
+    "cancelFeedback": "Booking canceled",
+    "checkIn": "Check-in",
+    "checkInFeedback": "Check in done!",
+    "checkLocationErrorFeedback": "You are not in the right place to check in the booking",
+    "locationType": {
+      "place": "Place",
+      "virtualPlace": "Link virtual place"
+    }
+  },
+  "bookingsScreen": {
+    "emptyState": "You have no active bookings",
+    "newBooking": "New booking",
+    "sectionTitle": "Active",
+    "title": "Bookings"
   },
   "colors": {
     "amber": "Amber",
@@ -44,7 +57,6 @@
     },
     "faculty": "Faculty",
     "agent": "Agent",
-    "close": "Close",
     "all": "All",
     "department": "Department",
     "location": "Location",
@@ -63,6 +75,7 @@
     "cancel": "Cancel",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
+    "close": "Close",
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -93,6 +106,8 @@
     "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
+    "enableLocationPermissionFeedback": "Enable location permission to complete the operation",
+    "enableLocationServiceFeedback": "Enable location service to complete the operation",
     "endRefresh": "Refresh completed",
     "error": "Error",
     "event": "Event",
@@ -125,13 +140,14 @@
     "minutes": "Minutes",
     "newItems": "New item",
     "newItems_plural": "New items",
+    "noInternet": "You are offline, some features may not be available",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
-    "noInternet": "You are offline, some features may not be available",
     "of": "Of",
     "ok": "Ok",
     "open": "Open",
+    "openSettings": "Open settings",
     "openSource": "Open Source",
     "openedStatus": {
       "false": "Closed",
@@ -154,6 +170,7 @@
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
+    "search": "Search",
     "selectAnOption": "Please select an option",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
@@ -181,15 +198,15 @@
     "visualization": "Visualization"
   },
   "contactsScreen": {
-    "title": "Contacts",
-    "emptyState": "No people found",
-    "search": "Search people",
-    "recentSearches": "Recent searches",
-    "recentSearch": "Recent search",
     "cancelRecentSearch": "Remove",
     "cancelRecentSearchText": "Remove recent search",
     "clearSearch": "Clear search",
-    "clearSearches": "Clear searches"
+    "clearSearches": "Clear searches",
+    "emptyState": "No people found",
+    "recentSearch": "Recent search",
+    "recentSearches": "Recent searches",
+    "search": "Search people",
+    "title": "Contacts"
   },
   "offeringScreen": {
     "title": "Offering",
@@ -313,7 +330,8 @@
     "fileDownloadFailed": "The download failed. Please try again later."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
+    "title": "Virtual classroom",
+    "liveCta": "Join live streaming"
   },
   "coursesScreen": {
     "emptyState": "No courses available",
@@ -338,12 +356,12 @@
   },
   "examRequestScreen": {
     "error": "Fill in the text field before proceeding with the request",
-    "title": "You can ask the college chairman to take the exam before the actual delivery of the course",
-    "placeholder": "Explain why you need to take the exam early"
+    "placeholder": "Explain why you need to take the exam early",
+    "title": "You can ask the college chairman to take the exam before the actual delivery of the course"
   },
   "examScreen": {
-    "bookingEndsAt": "Booking ends on",
     "bookedCount": "Booked students",
+    "bookingEndsAt": "Booking ends on",
     "ctaBook": "Book exam",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
@@ -399,7 +417,6 @@
     "authnError": "Authentication error",
     "authnErrorDescription": "The credentials you provided may be wrong.",
     "cta": "Login",
-    "ctaSuccessMessage": "Logged in",
     "forgotYourPassword": "Forgot your password?",
     "hidePassword": "Hide password",
     "passwordLabel": "Password",
@@ -410,19 +427,19 @@
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here"
   },
+  "messageScreen": {
+    "backTitle": "Archive",
+    "sender": "Sender",
+    "title": "Message"
+  },
   "messagesScreen": {
+    "empty": "You have no messages",
+    "end": "End",
+    "readNext": "Read next",
+    "sentAt": "Sent at",
     "title": "Messages archive",
     "unreadMessages": "Message ({{read}} of {{total}})",
-    "readNext": "Read next",
-    "end": "End",
-    "sentAt": "Sent at",
-    "youHaveUnreadMessages": "You have {{total}} unread messages",
-    "empty": "You have no messages"
-  },
-  "messageScreen": {
-    "title": "Message",
-    "backTitle": "Archive",
-    "sender": "Sender"
+    "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messagingView": {
     "pickFile": "Pick file",

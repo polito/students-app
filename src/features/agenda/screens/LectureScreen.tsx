@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -19,6 +19,11 @@ import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { convertMachineDateToFormatDate } from '../../../utils/dates';
 import { CourseIcon } from '../../teaching/components/CourseIcon';
+import {
+  isLiveVC,
+  isRecordedVC,
+  isVideoLecture,
+} from '../../teaching/utils/lectures';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
@@ -47,11 +52,18 @@ export const LectureScreen = ({ route }: Props) => {
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       <SafeAreaView>
-        {virtualClassroom?.videoUrl && (
-          <VideoPlayer
-            source={{ uri: virtualClassroom?.videoUrl }}
-            poster={virtualClassroom?.coverUrl ?? undefined}
-          />
+        {lecture &&
+          (isRecordedVC(lecture) || isVideoLecture(lecture)) &&
+          lecture.videoUrl && (
+            <VideoPlayer
+              source={{ uri: lecture.videoUrl }}
+              poster={lecture?.coverUrl ?? undefined}
+            />
+          )}
+        {lecture && isLiveVC(lecture) && (
+          <View></View>
+          // TODO handle live VC
+          // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
         )}
         <Row justify="space-between" align="center">
           <EventDetails
