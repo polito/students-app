@@ -32,7 +32,10 @@ export const BookingsScreen = ({ navigation }: Props) => {
         <SafeAreaView>
           <Section style={{ marginTop: spacing[2] }}>
             <SectionHeader title={t('bookingsScreen.sectionTitle')} />
-            <OverviewList loading={bookingsQuery.isLoading}>
+            <OverviewList
+              loading={bookingsQuery.isLoading}
+              emptyStateText={t('bookingsScreen.emptyState')}
+            >
               {bookingsQuery?.data?.map((booking, index) => (
                 <BookingListItem
                   booking={booking}
