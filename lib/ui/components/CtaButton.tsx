@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -15,6 +16,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { shadeColor } from '@lib/ui/utils/colors';
 
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
@@ -27,8 +29,9 @@ interface Props extends TouchableHighlightProps {
   rightExtra?: JSX.Element;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
+  variant?: 'filled' | 'outlined';
   destructive?: boolean;
-  outlined?: boolean;
+  success?: boolean;
   hint?: string;
 }
 
@@ -42,19 +45,54 @@ export const CtaButton = ({
   loading,
   disabled,
   destructive = false,
+  success = false,
   action,
   icon,
   rightExtra,
   hint,
   containerStyle,
-  outlined,
+  variant = 'filled',
   ...rest
 }: Props) => {
-  const { palettes, colors, fontSizes, spacing } = useTheme();
+  const { palettes, colors, fontSizes, spacing, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
+
+  const outlined = variant === 'outlined';
+
+  const underlayColor = useMemo(() => {
+    if (variant === 'outlined') {
+      if (dark) return shadeColor(colors.background, 20);
+      else return shadeColor(colors.background, -10);
+    } else {
+      if (destructive) return palettes.danger[700];
+      return palettes.primary[500];
+    }
+  }, [
+    colors.background,
+    dark,
+    destructive,
+    palettes.danger,
+    palettes.primary,
+    variant,
+  ]);
+
+  const color = useMemo(() => {
+    if (success) {
+      return dark ? palettes.success[400] : palettes.success[700];
+    }
+    if (destructive) return palettes.danger[600];
+    return palettes.primary[400];
+  }, [
+    dark,
+    destructive,
+    palettes.danger,
+    palettes.primary,
+    palettes.success,
+    success,
+  ]);
 
   return (
     <View
@@ -73,34 +111,19 @@ export const CtaButton = ({
       {hint && <Text style={styles.hint}>{hint}</Text>}
       <TouchableHighlight
         accessibilityRole="button"
-        underlayColor={
-          outlined
-            ? palettes.gray[200]
-            : destructive
-            ? palettes.danger[700]
-            : palettes.primary[600]
-        }
+        underlayColor={underlayColor}
         disabled={disabled || loading}
         style={[
           styles.button,
-          {
-            backgroundColor: outlined
-              ? colors.background
-              : destructive
-              ? palettes.danger[600]
-              : palettes.primary[500],
+          variant === 'outlined' && {
+            borderColor: color,
+            borderWidth: 1,
+            backgroundColor: colors.background,
           },
-          {
-            borderColor: outlined
-              ? destructive
-                ? palettes.danger[600]
-                : palettes.primary[500]
-              : undefined,
+          variant === 'filled' && {
+            backgroundColor: color,
           },
-          {
-            borderWidth: outlined ? 1 : 0,
-          },
-          disabled && styles.disabledButton,
+          disabled && variant === 'filled' && styles.disabledButton,
           style,
         ]}
         accessibilityLabel={title}
@@ -130,19 +153,18 @@ export const CtaButton = ({
                 <Icon
                   icon={icon}
                   size={fontSizes.xl}
-                  color={palettes.text[100]}
+                  color={variant === 'filled' ? colors.white : color}
                   style={{ marginRight: spacing[2] }}
                 />
               )}
               <Text
                 style={[
                   styles.textStyle,
+                  variant === 'outlined' && {
+                    borderColor: palettes.primary[400],
+                  },
                   {
-                    color: outlined
-                      ? destructive
-                        ? palettes.danger[600]
-                        : palettes.primary[500]
-                      : colors.white,
+                    color: variant === 'filled' ? colors.white : color,
                   },
                 ]}
               >

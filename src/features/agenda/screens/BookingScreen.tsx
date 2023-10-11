@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
-import { faLocation } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -52,16 +53,6 @@ const bookingLocationHasValidCoordinates = (
   return !!location?.latitude && !!location?.longitude && !!location.radiusInKm;
 };
 
-const checkInEnabled = (booking?: Booking) => {
-  return (
-    booking?.startsAt &&
-    isToday(DateTime.fromJSDate(booking?.startsAt)) &&
-    booking?.locationCheck?.enabled &&
-    !booking?.locationCheck?.checked &&
-    bookingLocationHasValidCoordinates(booking?.locationCheck)
-  );
-};
-
 export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
@@ -82,7 +73,19 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
 
-  const showCheckIn = useMemo(() => checkInEnabled(booking), [booking]);
+  const hasCheckIn = useMemo(
+    () =>
+      booking?.startsAt &&
+      isToday(DateTime.fromJSDate(booking?.startsAt)) &&
+      booking?.locationCheck?.enabled &&
+      bookingLocationHasValidCoordinates(booking?.locationCheck),
+    [booking],
+  );
+
+  const completedCheckIn = useMemo(
+    () => hasCheckIn && booking?.locationCheck?.checked,
+    [booking?.locationCheck?.checked, hasCheckIn],
+  );
 
   const canBeCancelled = useMemo(
     () =>
@@ -99,7 +102,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         longitude: Number(booking?.locationCheck?.longitude),
       });
       if (computedDistance < Number(booking?.locationCheck?.radiusInKm)) {
-        console.debug({ bookingId: booking.id, isLocationChecked: true });
         updateBookingMutation
           .mutateAsync({
             bookingId: booking.id,
@@ -183,29 +185,41 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               )}
             </Card>
           </Section>
-          {showCheckIn && (
-            <CtaButton
-              title={t('bookingScreen.checkIn')}
-              action={onPressCheckIn}
-              loading={updateBookingMutation.isLoading}
-              outlined
-              absolute={false}
-              disabled={isDisabled}
-            />
-          )}
-          <CtaButtonSpacer />
+          {hasCheckIn && <CtaButtonSpacer />}
+          {canBeCancelled && <CtaButtonSpacer />}
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {canBeCancelled && (
-        <CtaButton
-          title={t('bookingScreen.cancelBooking')}
-          action={onPressDelete}
-          disabled={isDisabled}
-          destructive={true}
-          loading={bookingMutation.isLoading}
-        />
-      )}
+      <CtaButtonContainer absolute={true}>
+        {hasCheckIn && (
+          <CtaButton
+            title={
+              completedCheckIn
+                ? t('bookingScreen.checkInFeedback')
+                : t('bookingScreen.checkIn')
+            }
+            action={onPressCheckIn}
+            loading={updateBookingMutation.isLoading}
+            variant="outlined"
+            icon={completedCheckIn ? faCheckCircle : undefined}
+            absolute={false}
+            success={completedCheckIn}
+            disabled={isDisabled || completedCheckIn}
+            containerStyle={{ paddingVertical: 0 }}
+          />
+        )}
+        {canBeCancelled && (
+          <CtaButton
+            title={t('bookingScreen.cancelBooking')}
+            action={onPressDelete}
+            loading={bookingMutation.isLoading}
+            absolute={false}
+            disabled={isDisabled}
+            destructive={true}
+            containerStyle={{ paddingVertical: 0 }}
+          />
+        )}
+      </CtaButtonContainer>
     </>
   );
 };
