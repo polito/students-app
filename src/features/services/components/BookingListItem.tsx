@@ -12,7 +12,7 @@ import { DateTime } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { getHtmlTextContent } from '../../../utils/html';
-import { BookingTimeDetail } from './BookingTimeDetail';
+import { BookingDateTime } from '../../bookings/components/BookingDateTime';
 
 interface Props {
   booking: Booking;
@@ -42,7 +42,7 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
         },
       }}
       accessibilityRole="button"
-      subtitle={<BookingTimeDetail booking={booking} accessible={false} />}
+      subtitle={<BookingDateTime booking={booking} inListItem={true} />}
       accessibilityLabel={[
         accessibilityLabel,
         title,

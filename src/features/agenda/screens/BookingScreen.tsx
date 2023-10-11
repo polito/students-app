@@ -42,7 +42,7 @@ import {
   useUpdateBooking,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { BookingTimeDetail } from '../../services/components/BookingTimeDetail';
+import { BookingDateTime } from '../../bookings/components/BookingDateTime';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
@@ -146,7 +146,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                 {subTopicTitle}
               </Text>
             )}
-            {booking && <BookingTimeDetail booking={booking} />}
+            <BookingDateTime accessible={true} booking={booking} />
           </View>
           {booking?.location?.name && (
             <OverviewList>
@@ -172,7 +172,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               title={t('bookingScreen.barCodeTitle')}
               accessible={false}
             />
-            <Card style={styles.barCodeCard} rounded>
+            <Card style={styles.barCodeCard} spaced>
               {studentQuery.data && (
                 <Barcode
                   value={studentQuery.data.username}
@@ -231,7 +231,6 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: fontSizes.md,
       marginHorizontal: Platform.select({ ios: spacing[4] }),
     },
   });
