@@ -60,7 +60,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const { getCurrentPosition, computeDistance } = useGeolocation();
   const { colors, palettes, spacing } = useTheme();
   const bookingsQuery = useGetBookings();
-  const bookingMutation = useDeleteBooking(id);
+  const deleteBookingMutation = useDeleteBooking(id);
   const updateBookingMutation = useUpdateBooking();
   const studentQuery = useGetStudent();
   const confirmCancel = useConfirmationDialog({
@@ -125,7 +125,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const onPressDelete = async () => {
     if (await confirmCancel()) {
       setFeedback({ text: t('bookingScreen.cancelFeedback') });
-      return bookingMutation
+      return deleteBookingMutation
         .mutateAsync()
         .then(() => navigation.goBack())
         .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
@@ -204,7 +204,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
             icon={completedCheckIn ? faCheckCircle : undefined}
             absolute={false}
             success={completedCheckIn}
-            disabled={isDisabled || completedCheckIn}
+            disabled={
+              isDisabled || updateBookingMutation.isLoading || completedCheckIn
+            }
             containerStyle={{ paddingVertical: 0 }}
           />
         )}
@@ -212,9 +214,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <CtaButton
             title={t('bookingScreen.cancelBooking')}
             action={onPressDelete}
-            loading={bookingMutation.isLoading}
+            loading={deleteBookingMutation.isLoading}
             absolute={false}
-            disabled={isDisabled}
+            disabled={isDisabled || deleteBookingMutation.isLoading}
             destructive={true}
             containerStyle={{ paddingVertical: 0 }}
           />
