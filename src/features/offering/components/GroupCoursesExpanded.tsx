@@ -7,8 +7,9 @@ import { CourseTrailingItem } from './CourseTrailingItem';
 
 interface Props {
   courses: OfferingCourseOverview[];
+  disabled?: boolean;
 }
-export const GroupCoursesExpanded = ({ courses }: Props) => {
+export const GroupCoursesExpanded = ({ courses, disabled }: Props) => {
   const { year } = useDegreeContext();
 
   return (
@@ -27,6 +28,7 @@ export const GroupCoursesExpanded = ({ courses }: Props) => {
               },
             }}
             trailingItem={<CourseTrailingItem cfu={course.cfu} />}
+            disabled={disabled}
           />
         );
       })}

@@ -90,7 +90,7 @@ export const ServicesScreen = () => {
         id: 'offering',
         name: t('offeringScreen.title'),
         icon: faBookBookmark,
-        disabled: false,
+        disabled: isOffline,
         linkTo: { screen: 'Offering' },
       },
       {

@@ -31,10 +31,11 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView } from '@react-native-menu/menu';
+import { MenuAction, MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -48,6 +49,8 @@ export const DegreeCourseScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const [selectedYear, setSelectedYear] = useState(initialYear);
   const [currentYear, setCurrentYear] = useState(initialYear);
+
+  const isOffline = useOfflineDisabled();
 
   const courseQuery = useGetOfferingCourse({
     courseShortcode,
@@ -67,6 +70,24 @@ export const DegreeCourseScreen = ({ route }: Props) => {
     if (!offeringCourse) return;
     setCurrentYear(offeringCourse.year);
   }, [offeringCourse]);
+
+  const yearOptions = useMemo(() => {
+    if (
+      !offeringCourse?.editions ||
+      isOffline ||
+      !currentYear ||
+      offeringCourse.editions.length < 2
+    )
+      return [];
+    return offeringCourse.editions?.map(
+      edition =>
+        ({
+          id: edition.toString(),
+          title: edition,
+          state: edition === currentYear ? 'on' : undefined,
+        } as MenuAction),
+    );
+  }, [currentYear, isOffline, offeringCourse]);
 
   return (
     <ScrollView
@@ -91,11 +112,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   accessible={true}
                 >
                   <MenuView
-                    actions={(offeringCourse?.editions || [])?.map(edition => ({
-                      id: edition.toString(),
-                      title: edition,
-                      state: edition === currentYear ? 'on' : undefined,
-                    }))}
+                    actions={yearOptions}
                     onPressAction={async ({ nativeEvent: { event } }) => {
                       setSelectedYear(() => event);
                       await courseQuery.refetch();
@@ -113,15 +130,17 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                           currentYear ?? '--'
                         }`}
                       />
-                      <Icon
-                        icon={faAngleDown}
-                        color={palettes.secondary['500']}
-                        size={14}
-                        style={{
-                          marginLeft: spacing[2],
-                          marginTop: spacing[4],
-                        }}
-                      />
+                      {yearOptions.length > 0 && (
+                        <Icon
+                          icon={faAngleDown}
+                          color={palettes.secondary['500']}
+                          size={14}
+                          style={{
+                            marginLeft: spacing[2],
+                            marginTop: spacing[4],
+                          }}
+                        />
+                      )}
                     </Row>
                   </MenuView>
                 </View>
@@ -229,7 +248,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   screen: 'DegreeCourseGuide',
                   params: {
                     courseShortcode: offeringCourse?.shortcode,
-                    year: offeringCourse?.year,
+                    year: initialYear,
                   },
                 }}
               />

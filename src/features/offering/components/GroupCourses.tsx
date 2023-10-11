@@ -16,9 +16,11 @@ interface GroupCoursesProps {
   group: { name: string; data: OfferingCourseOverview[] };
   isExpanded: boolean;
   toggleExpand: () => void;
+  disabled?: boolean;
 }
 
 export const GroupCourses = ({
+  disabled,
   group,
   isExpanded,
   toggleExpand,
@@ -39,7 +41,9 @@ export const GroupCourses = ({
           />
         </Row>
       </Pressable>
-      {isExpanded && <GroupCoursesExpanded courses={group.data} />}
+      {isExpanded && (
+        <GroupCoursesExpanded courses={group.data} disabled={disabled} />
+      )}
     </Col>
   );
 };

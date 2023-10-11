@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -8,11 +8,12 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuView } from '@react-native-menu/menu';
+import { MenuAction, MenuView } from '@react-native-menu/menu';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getShortYear } from '../../../utils/offerings';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
@@ -36,9 +37,28 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   const [year, setYear] = useState(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
+  const isOffline = useOfflineDisabled();
+
+  const yearOptions = useMemo(() => {
+    if (
+      !degreeQuery?.data?.editions ||
+      degreeQuery.data.editions.length < 2 ||
+      isOffline
+    )
+      return [];
+
+    return degreeQuery.data.editions?.map(
+      edition =>
+        ({
+          id: edition,
+          title: edition,
+          state: edition === year ? 'on' : undefined,
+        } as MenuAction),
+    );
+  }, [degreeQuery?.data?.editions, isOffline, year]);
+
   useEffect(() => {
     if (!degreeQuery.data) return;
-    const editions = degreeQuery.data.editions;
     const degreeYear = degreeQuery.data.year;
     const nextDegreeYear = Number(degreeYear) + 1;
     // setYear(degreeYear);
@@ -57,11 +77,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
         >
           <MenuView
             style={{ padding: spacing[1] }}
-            actions={editions?.map(edition => ({
-              id: edition.toString(),
-              title: `${edition}/${getShortYear(Number(edition) + 1)}`,
-              state: edition === degreeYear ? 'on' : undefined,
-            }))}
+            actions={yearOptions}
             onPressAction={async ({ nativeEvent: { event } }) => {
               setYear(() => event);
             }}
@@ -70,7 +86,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
               <Text variant="prose">
                 {degreeYear}/{getShortYear(nextDegreeYear)}
               </Text>
-              {!!editions && (
+              {yearOptions.length > 0 && (
                 <Icon
                   style={{ marginLeft: spacing[1] }}
                   icon={faAngleDown}
@@ -91,6 +107,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
     dark,
     palettes.primary,
     palettes.text,
+    yearOptions,
   ]);
 
   return (

@@ -8,6 +8,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   getTracksCoursesGrouped,
   getTracksCoursesWithoutGroup,
@@ -31,10 +32,11 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
     [courses],
   );
 
+  const isOffline = useOfflineDisabled();
+
   const { year } = useDegreeContext();
 
   const [expandedGroupIndex, setExpandedGroupIndex] = useState<number>();
-
   return (
     <View style={styles.trackSectionContainer}>
       <Text variant="subHeading" style={styles.subHeading}>
@@ -59,6 +61,7 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
             }}
             accessibilityRole="button"
             trailingItem={<CourseTrailingItem cfu={course.cfu} />}
+            disabled={isOffline}
           />
         ))}
         {coursesByGroup.map((group, index) => (
@@ -71,6 +74,7 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
                 prevIndex !== index ? index : undefined,
               )
             }
+            disabled={isOffline}
           />
         ))}
       </OverviewList>

@@ -12,6 +12,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOffering } from '../../../core/queries/offeringHooks';
 
 export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
@@ -19,6 +20,8 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
   const { data, isLoading } = offeringQuery;
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const isOffline = useOfflineDisabled();
+
   const offerings = data ? data[type] : [];
 
   return (
@@ -51,6 +54,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
                         id: degree.id,
                       },
                     }}
+                    disabled={isOffline}
                   />
                 ))}
               </OverviewList>
