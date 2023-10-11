@@ -273,7 +273,8 @@
     "fileDownloadFailed": "The download failed. Please try again later."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
+    "title": "Virtual classroom",
+    "liveCta": "Join live streaming"
   },
   "coursesScreen": {
     "emptyState": "No courses available",

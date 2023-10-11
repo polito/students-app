@@ -60,6 +60,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     }
   }, [navigation, routes, t]);
 
+  const classrooms = exam?.places?.map(p => p.name).join(', ') ?? '-';
+
   const examAccessibilityLabel = useMemo(() => {
     if (!exam || !teacherQuery.data) return;
 
@@ -78,15 +80,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       }
     }
 
-    const classrooms =
-      exam?.classrooms && exam?.classrooms !== '-'
-        ? `${t('examScreen.location')}: ${exam?.classrooms}`
-        : '';
+    const accessibleClassrooms =
+      classrooms !== '-' ? `${t('examScreen.location')}: ${classrooms}` : '';
     const teacher = `${t('common.teacher')}: ${teacherQuery.data.firstName} ${
       teacherQuery.data.lastName
     }`;
 
-    return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
+    return `${exam.courseName}. ${accessibleDateTime}. ${accessibleClassrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
   return (
@@ -150,11 +150,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               leadingItem={
                 <Icon icon={faLocationDot} size={fontSizes['2xl']} />
               }
-              title={exam?.classrooms ?? '-'}
+              title={classrooms}
               accessibilityLabel={`${t('examScreen.location')}: ${
-                exam?.classrooms === '-'
-                  ? t('examScreen.noClassroom')
-                  : exam?.classrooms
+                classrooms !== '-' ? classrooms : t('examScreen.noClassroom')
               }`}
               subtitle={t('examScreen.location')}
             />

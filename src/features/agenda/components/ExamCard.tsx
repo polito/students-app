@@ -28,7 +28,7 @@ export const ExamCard = ({ item, compact = false }: Props) => {
       time={
         item.isTimeToBeDefined ? t('common.timeToBeDefined') : item.fromTime
       }
-      location={item.classroom}
+      location={item.places.map(place => place.name).join(', ')}
       onPress={() =>
         navigate({
           name: 'Exam',

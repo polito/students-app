@@ -274,7 +274,8 @@
     "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
+    "title": "Virtual classroom",
+    "liveCta": "Collegati alla diretta"
   },
   "coursesScreen": {
     "emptyState": "Non ci sono corsi",

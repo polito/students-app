@@ -37,6 +37,7 @@ import {
   CourseLecture,
   CourseLectureSection,
 } from '../types/CourseLectureSections';
+import { isRecordedVC, isVideoLecture } from '../utils/lectures';
 
 export const CourseLecturesScreen = () => {
   const { t } = useTranslation();
@@ -193,21 +194,26 @@ export const CourseLectureListItem = ({
   const { fontSizes } = useTheme();
   const { t } = useTranslation();
 
+  let duration = null;
+  if (isRecordedVC(lecture) || isVideoLecture(lecture)) {
+    duration = lecture.duration;
+  }
+
   return (
     <ListItem
       title={lecture.title}
       subtitle={[
         formatDate(lecture.createdAt),
-        lecture.duration,
+        duration,
         teacher && `${teacher.firstName} ${teacher.lastName}`,
       ]
         .filter(i => !!i)
         .join(' - ')}
       accessibilityLabel={[
         lecture.title,
-        lecture.duration
-          .replace('m', t('common.minutes'))
-          .replace('h', t('common.hours')),
+        duration
+          ?.replace('m', t('common.minutes'))
+          ?.replace('h', t('common.hours')),
         teacher && `${teacher.firstName} ${teacher.lastName}`,
       ]
         .filter(i => !!i)

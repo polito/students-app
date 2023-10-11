@@ -69,7 +69,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
     const hiddenNonModuleCourses: string[] = [];
 
     Object.keys(coursePreferences).forEach((key: string) => {
-      if (coursePreferences[+key].isHidden) {
+      if (coursePreferences[+key]?.isHidden) {
         const hiddenCourse = coursesQuery.data?.find(c => c.id === +key);
         if (hiddenCourse && !hiddenCourse.isModule)
           hiddenNonModuleCourses.push(hiddenCourse.shortcode);

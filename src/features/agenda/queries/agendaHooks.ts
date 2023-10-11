@@ -55,7 +55,7 @@ const groupItemsByDay = (
           fromTime: formatTime(exam.examStartsAt!),
           isTimeToBeDefined: exam.isTimeToBeDefined,
           title: exam.courseName,
-          classroom: exam?.classrooms,
+          places: exam?.places ?? [],
           teacherId: exam.teacherId,
         };
         return item;

@@ -53,6 +53,13 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     return `${fromDate} - ${toTime}`;
   }, [booking]);
 
+  const canBeCancelled = useMemo(
+    () =>
+      !!booking?.cancelableUntil &&
+      booking?.cancelableUntil.getTime() > Date.now(),
+    [booking],
+  );
+
   const onPressLocation = () => {};
 
   const onPressDelete = () => {
@@ -110,7 +117,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {booking?.canBeCancelled && (
+      {canBeCancelled && (
         <CtaButton
           icon="close"
           title={t('Delete Booking')}
