@@ -6,7 +6,9 @@
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "room": "Aula {{roomName}}",
+    "rooms": "Aule {{roomNames}}"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",

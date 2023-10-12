@@ -74,8 +74,8 @@ export const ExamListItem = ({
       accessibilityRole="button"
       leadingItem={
         <CourseIcon
-          icon={coursesPreferences[exam.courseId]?.icon}
-          color={coursesPreferences[exam.courseId]?.color}
+          icon={coursesPreferences[exam.uniqueShortcode]?.icon}
+          color={coursesPreferences[exam.uniqueShortcode]?.color}
         />
       }
       trailingItem={

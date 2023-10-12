@@ -81,7 +81,11 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               leadingItem={
                 <Icon icon={faLocationDot} size={fontSizes['2xl']} />
               }
-              title={lecture.place.name}
+              title={
+                lecture.place?.name
+                  ? t('agendaScreen.room', { roomName: lecture.place.name })
+                  : '-'
+              }
               isAction
               onPress={() => {
                 // @ts-expect-error Top-level navigation type

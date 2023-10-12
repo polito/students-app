@@ -6,7 +6,9 @@
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout"
+    "weeklyLayout": "Weekly layout",
+    "room": "Room {{roomName}}",
+    "rooms": "Rooms {{roomNames}}"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",

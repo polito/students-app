@@ -33,10 +33,10 @@ import { CourseNavigator } from './CourseNavigator';
 export interface TeachingStackParamList extends ParamListBase {
   Home: undefined;
   Courses: undefined;
-  Course: { id: number; courseName: string };
+  Course: { id: number };
   Notice: { noticeId: number; courseId: number };
   Person: { id: number };
-  CoursePreferences: { courseId: number };
+  CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseDirectory: {
     courseId: number;
     directoryId?: string;
@@ -56,7 +56,7 @@ export interface TeachingStackParamList extends ParamListBase {
   CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
-  CourseIconPicker: { courseId: number };
+  CourseIconPicker: { uniqueShortcode: string };
   Exams: undefined;
   Exam: { id: number };
   ExamQuestion: { id: number };

@@ -25,12 +25,7 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { usePreferencesContext } from '../contexts/PreferencesContext';
-import {
-  useGetModalMessages,
-  useGetStudent,
-  useUpdateDevicePreferences,
-} from '../queries/studentHooks';
+import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
@@ -41,15 +36,6 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
-  const preferencesQuery = useUpdateDevicePreferences();
-
-  const { language } = usePreferencesContext();
-  useEffect(() => {
-    if (language !== 'it')
-      preferencesQuery.mutate({
-        updatePreferencesRequest: { language: 'en' },
-      });
-  }, []);
 
   useEffect(() => {
     if (student?.smartCardPicture) {
