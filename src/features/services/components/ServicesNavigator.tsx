@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { OnboardingScreen } from '../../../core/screens/OnboardingScreen';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
@@ -52,6 +53,7 @@ export type ServiceStackParamList = {
   Bookings: undefined;
   Booking: { id: number };
   NewBooking: undefined;
+  Onboarding: undefined;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -217,6 +219,17 @@ export const ServicesNavigator = () => {
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingScreen}
+        options={{
+          headerTitle: t('onboardingScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
         }}
       />
     </Stack.Navigator>

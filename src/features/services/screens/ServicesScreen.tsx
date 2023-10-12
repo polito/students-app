@@ -12,6 +12,7 @@ import {
   faMobileScreenButton,
   faPersonCirclePlus,
   faSignsPost,
+  faSkullCrossbones,
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
@@ -113,6 +114,12 @@ export const ServicesScreen = () => {
         name: t('libraryScreen.title'),
         icon: faBookBookmark,
         disabled: true,
+      },
+      {
+        id: 'onboarding',
+        name: t('onboardingScreen.title'),
+        icon: faSkullCrossbones,
+        linkTo: { screen: 'Onboarding' },
       },
     ],
     [isOffline, queryClient, styles.betaBadge, t],

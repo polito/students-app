@@ -546,5 +546,11 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
+  },
+  "onboardingScreen": {
+    "title" : "Onboarding TEST",
+    "fase1" : "Onboarding Fase1",
+    "fase2" : "Onboarding Fase2",
+    "fase3" : "Onboarding Fase3"
   }
 }
