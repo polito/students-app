@@ -548,12 +548,24 @@
     "speedSectionTitle": "Velocità"
   },
   "onboardingScreen": {
-    "title" : "Onboarding TEST",
-    "titleFase1" : "Onboarding Fase1",
-    "contentFase1": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone.",
-    "titleFase2" : "Onboarding Fase2",
-    "contentFase2": "Non avrai più difficoltà a orientarti all’interno del Politecnico grazie al nuovo sistema di mappe, planimetrie e filtri per trovare ciò che cerchi.",
-    "titleFase3" : "Onboarding Fase3",
-    "contentFase3": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo."
+    "title" : "Novità",
+    "steps": {
+      "0": {
+        "title" : "Cosa è cambiato?",
+        "content": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone."
+      },
+      "1": {
+        "title" : "Cosa è cambiato?",
+        "content": "Non avrai più difficoltà a orientarti all’interno del Politecnico grazie al nuovo sistema di mappe, planimetrie e filtri per trovare ciò che cerchi."
+      },
+      "2":{
+        "title" : "Come dare un feedback?",
+        "content": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo."
+      },
+      "3":{
+        "title" : "Come configurare l’email?",
+        "content": "Per avere accesso alla tua email Polito segui la guida “Configura la tua email” nella nuova sezione “Guide”."
+      }
+    }
   }
 }

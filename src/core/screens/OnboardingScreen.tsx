@@ -1,7 +1,12 @@
-import { useState } from 'react';
-import { Animated, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import {
+  Animated,
+  FlatList,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
-import { ScrollView } from 'react-native-gesture-handler';
 
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -9,43 +14,64 @@ import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { useNavigation } from '@react-navigation/native';
 
 import { OnboardingStep } from '../components/OnboardingStep';
 
-// export type Props = {
-//     content:
-// }
-
 export const OnboardingScreen = () => {
-  const actionButton = () => {};
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
 
   const { width } = useWindowDimensions();
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
+  const stepsRef = useRef<FlatList>(null);
 
+  const { navigate } = useNavigation();
+  const data = [0, 1, 2, 3];
+  const isLastStep = useMemo(
+    () => currentPageIndex === data.length - 1,
+    [currentPageIndex, data],
+  );
+  const onPrevPage = () => {
+    stepsRef.current?.scrollToIndex({
+      animated: true,
+      index: currentPageIndex - 1,
+    });
+  };
+
+  const onNextPage = () => {
+    if (isLastStep) {
+      // TODO NAVIGATE TO GUIDE
+      return;
+    }
+
+    stepsRef.current?.scrollToIndex({
+      animated: true,
+      index: currentPageIndex + 1,
+    });
+  };
   return (
     <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Animated.FlatList
-          data={[0, 1, 2, 3]}
-          horizontal
-          pagingEnabled
-          keyExtractor={item => item.toString()}
-          onScroll={({
-            nativeEvent: {
-              contentOffset: { x },
-            },
-          }) => {
-            setCurrentPageIndex(Math.max(0, Math.round(x / width)));
-          }}
-          scrollEventThrottle={100}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <OnboardingStep stepNumber={item} width={width} />
-          )}
-        />
-      </ScrollView>
+      <Animated.FlatList
+        ref={stepsRef}
+        data={data}
+        horizontal
+        pagingEnabled
+        keyExtractor={item => item.toString()}
+        onScroll={({
+          nativeEvent: {
+            contentOffset: { x },
+          },
+        }) => {
+          setCurrentPageIndex(Math.max(0, Math.round(x / width)));
+        }}
+        scrollEventThrottle={100}
+        showsHorizontalScrollIndicator={false}
+        style={{ backgroundColor: 'pink' }}
+        renderItem={({ item }) => (
+          <OnboardingStep stepNumber={item} width={width} />
+        )}
+      />
       <View style={styles.fixedContainer}>
         <View style={styles.dotsContainer}>
           <AnimatedDotsCarousel
@@ -86,30 +112,28 @@ export const OnboardingScreen = () => {
             ]}
           />
         </View>
-        {currentPageIndex === 0 && (
-          <CtaButton absolute={false} title="Next" action={actionButton} />
-        )}
+        <Row gap={2} ph={4}>
+          {currentPageIndex > 0 && (
+            <Col flex={1}>
+              <CtaButton
+                variant="outlined"
+                absolute={false}
+                title="Back"
+                action={onPrevPage}
+                containerStyle={styles.buttonContainer}
+              />
+            </Col>
+          )}
 
-        {currentPageIndex > 0 && (
-          <Row gap={2} ph={4}>
-            <Col flex={1} style={{ flex: 1, backgroundColor: 'yellow' }}>
-              <CtaButton
-                absolute={false}
-                title="Next"
-                action={actionButton}
-                containerStyle={styles.buttonContainer}
-              />
-            </Col>
-            <Col style={{ flex: 1 }}>
-              <CtaButton
-                absolute={false}
-                title="Next"
-                action={actionButton}
-                containerStyle={styles.buttonContainer}
-              />
-            </Col>
-          </Row>
-        )}
+          <Animated.View style={{ flex: 1 }}>
+            <CtaButton
+              absolute={false}
+              title={isLastStep ? 'Guide' : 'Next'}
+              action={onNextPage}
+              containerStyle={styles.buttonContainer}
+            />
+          </Animated.View>
+        </Row>
       </View>
     </>
   );
