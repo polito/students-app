@@ -144,6 +144,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               <PersonListItem
                 person={teacherQuery.data}
                 subtitle={t('common.teacher')}
+                isCrossNavigation={true}
               />
             )}
             {exam?.notes?.length && (

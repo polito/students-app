@@ -7,12 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
-import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
-import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
-import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
-import { StaffScreen } from '../../offering/screens/StaffScreen';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
-import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -38,6 +33,7 @@ export const UserNavigator = () => {
 
   return (
     <Stack.Navigator
+      id="UserTabNavigator"
       screenOptions={{
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
@@ -73,6 +69,7 @@ export const UserNavigator = () => {
       <Stack.Screen
         name="Message"
         component={MessageScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerTitle: t('messageScreen.title'),
           headerBackTitle: t('messageScreen.backTitle'),
@@ -89,48 +86,6 @@ export const UserNavigator = () => {
           headerRight: () => <HeaderCloseButton />,
         }}
       />
-      <Stack.Screen
-        name="Degree"
-        component={DegreeTopTabsNavigator}
-        options={{
-          headerTitle: t('degreeScreen.title'),
-          headerLargeTitle: false,
-          headerTransparent: false,
-          headerShadowVisible: false,
-          headerBackTitleVisible: false,
-          headerLargeStyle: {
-            backgroundColor: colors.headersBackground,
-          },
-        }}
-      />
-      <Stack.Screen
-        name="DegreeCourse"
-        component={DegreeCourseScreen}
-        options={{
-          headerTitle: t('degreeCourseScreen.title'),
-          headerLargeTitle: false,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Person"
-        component={PersonScreen}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('common.contact'),
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="DegreeCourseGuide"
-        component={DegreeCourseGuideScreen}
-        options={{
-          headerTitle: t('courseGuideScreen.title'),
-          headerLargeTitle: false,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen name="Staff" component={StaffScreen} />
     </Stack.Navigator>
   );
 };

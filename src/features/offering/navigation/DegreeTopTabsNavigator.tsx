@@ -76,6 +76,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
           accessible={true}
         >
           <MenuView
+            title={t('degreeScreen.cohort')}
             style={{ padding: spacing[1] }}
             actions={yearOptions}
             onPressAction={async ({ nativeEvent: { event } }) => {

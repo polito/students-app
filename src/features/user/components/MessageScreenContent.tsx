@@ -57,6 +57,7 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
               person={personQuery.data!}
               subtitle={t('common.teacher')}
               navigateEnabled={!modal}
+              isCrossNavigation={!modal}
             />
           </OverviewList>
         </>

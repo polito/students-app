@@ -44,7 +44,11 @@ export type OfferingStackParamList = {
     courseShortcode: string;
     year?: string;
   };
-  Staff: { staff: OfferingCourseStaff[] };
+  Staff: {
+    courseShortcode: string;
+    year?: string;
+    staff: OfferingCourseStaff[];
+  };
 };
 
 export type ServiceStackParamList = OfferingStackParamList & {
@@ -68,7 +72,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   NewsItem: { id: number };
   MessagesModal: undefined;
   Contacts: undefined;
-  Person: { id: number };
+  Person: { id: number; isCrossNavigation?: boolean };
   Bookings: undefined;
   Booking: { id: number };
   NewBooking: undefined;
@@ -83,6 +87,7 @@ export const ServicesNavigator = () => {
 
   return (
     <Stack.Navigator
+      id="ServicesTabNavigator"
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
@@ -118,6 +123,7 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="Ticket"
         component={TicketScreen}
+        getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
@@ -161,6 +167,7 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="JobOffer"
         component={JobOfferScreen}
+        getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
           headerTitle: t('jobOfferScreen.title'),
@@ -176,6 +183,7 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="NewsItem"
         component={NewsItemScreen}
+        getId={({ params: { id } }) => id.toString()}
         options={{
           headerTitle: t('newsScreen.title'),
           headerLargeTitle: false,
@@ -210,6 +218,7 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="Degree"
         component={DegreeTopTabsNavigator}
+        getId={({ params: { id, year } }) => id + (year ?? '0')}
         options={{
           headerTitle: t('degreeScreen.title'),
           headerLargeTitle: false,
@@ -224,6 +233,9 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="DegreeCourse"
         component={DegreeCourseScreen}
+        getId={({ params: { courseShortcode, year } }) =>
+          courseShortcode + (year ?? '0')
+        }
         options={{
           headerTitle: t('degreeCourseScreen.title'),
           headerLargeTitle: false,
@@ -233,10 +245,20 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="DegreeCourseGuide"
         component={DegreeCourseGuideScreen}
+        getId={({ params: { courseShortcode, year } }) =>
+          courseShortcode + (year ?? '0')
+        }
         options={{
           headerTitle: t('courseGuideScreen.title'),
           headerBackTitleVisible: false,
         }}
+      />
+      <Stack.Screen
+        name="Staff"
+        component={StaffScreen}
+        getId={({ params: { courseShortcode, year } }) =>
+          courseShortcode + (year ?? '0')
+        }
       />
       <Stack.Screen
         name="Contacts"
@@ -254,6 +276,7 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="Person"
         component={PersonScreen}
+        getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
@@ -271,6 +294,7 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="Booking"
         component={BookingScreen}
+        getId={({ params: { id } }) => id.toString()}
         options={{
           headerTitle: '',
           headerLargeTitle: false,
@@ -285,7 +309,6 @@ export const ServicesNavigator = () => {
           headerBackTitleVisible: false,
         }}
       />
-      <Stack.Screen name="Staff" component={StaffScreen} />
     </Stack.Navigator>
   );
 };

@@ -224,6 +224,8 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   ? {
                       screen: 'Staff',
                       params: {
+                        courseShortcode: offeringCourse?.shortcode,
+                        year: initialYear,
                         staff: offeringCourse!.staff,
                       },
                     }

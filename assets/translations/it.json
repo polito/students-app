@@ -215,6 +215,7 @@
     "emptyMessage": "Nessun corso disponibile"
   },
   "degreeScreen": {
+    "cohort": "Coorte",
     "degreeClass": "Classe di laurea",
     "info": "Info",
     "jobOpportunities": "Sbocchi",

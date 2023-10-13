@@ -24,6 +24,7 @@ export const PlacesNavigator = () => {
 
   return (
     <Stack.Navigator
+      id="PlacesTabNavigator"
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),

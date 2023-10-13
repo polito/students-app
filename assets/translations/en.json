@@ -215,6 +215,7 @@
     "emptyMessage": "No course available"
   },
   "degreeScreen": {
+    "cohort": "Coorte",
     "degreeClass": "Degree code",
     "info": "Info",
     "jobOpportunities": "Job opportunities",

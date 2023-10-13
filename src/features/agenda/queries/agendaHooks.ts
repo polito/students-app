@@ -112,6 +112,7 @@ const groupItemsByDay = (
       startDate.setHours(0, 0, 0);
 
       const item: DeadlineItem = {
+        id: deadline.id!,
         key: 'deadline-' + deadline.id,
         start: DateTime.fromJSDate(startDate),
         end: DateTime.fromJSDate(startDate).plus({ hour: 1 }),
