@@ -113,12 +113,6 @@ export const ServicesScreen = () => {
         linkTo: { screen: 'Bookings' },
       },
       {
-        id: 'guides',
-        name: t('guidesScreen.title'),
-        icon: faSignsPost,
-        disabled: true,
-      },
-      {
         id: 'library',
         name: t('libraryScreen.title'),
         icon: faBookBookmark,
@@ -198,7 +192,7 @@ export const ServicesScreen = () => {
                 linkTo={service.linkTo}
                 onPress={service.onPress}
                 onFavoriteChange={updateFavorite(service)}
-                unReadCount={99}
+                unReadCount={service?.unReadCount}
               >
                 {service.additionalContent}
               </ServiceCard>
