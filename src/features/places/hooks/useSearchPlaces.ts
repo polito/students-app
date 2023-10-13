@@ -94,14 +94,14 @@ export const useSearchPlaces = ({
         result.unshift(place);
       }
     }
-    if (buildings?.data?.length) {
-      result = result?.concat(
-        buildings.data.map(b => ({
-          ...b,
-          type: 'building',
-        })),
-      );
-    }
+    // if (buildings?.data?.length) {
+    //   result = result?.concat(
+    //     buildings.data.map(b => ({
+    //       ...b,
+    //       type: 'building',
+    //     })),
+    //   );
+    // }
     if (search) {
       result = result?.filter(p => {
         if (isPlace(p)) {
