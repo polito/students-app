@@ -1,4 +1,4 @@
-import { LecturePlace } from '@polito/api-client/models/LecturePlace';
+import { PlaceRef } from '@polito/api-client';
 import { RelatedVirtualClassroom } from '@polito/api-client/models/RelatedVirtualClassroom';
 
 import { DateTime } from 'luxon';
@@ -40,8 +40,8 @@ export interface ExamItem extends BaseAgendaItem {
   fromTime: string;
   isTimeToBeDefined: boolean;
   teacherId: number;
-  classroom: string;
-  color: string;
+  places: PlaceRef[];
+  color?: string;
   icon?: string;
 }
 
@@ -53,9 +53,9 @@ export interface LectureItem extends BaseAgendaItem {
   toTime: string;
   teacherId: number;
   description: string | null;
-  place: LecturePlace | null;
+  place: PlaceRef | null;
   virtualClassrooms: RelatedVirtualClassroom[];
-  color: string;
+  color?: string;
   icon?: string;
 }
 

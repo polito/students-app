@@ -30,8 +30,10 @@
 	<dict/>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan documents</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Access to current position to check-in bookings</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+    <string>Check in bookings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Scan documents and pick images for assignments and ticket attachments</string>
 	<key>UIAppFonts</key>

@@ -8,14 +8,14 @@ import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
-import { CourseIcon } from './CourseIcon';
+import { CourseOverview } from '../../../core/types/api';
+import { CourseIndicator } from './CourseIndicator';
 
 interface Props {
   course: CourseOverview;
@@ -34,7 +34,8 @@ const Menu = ({
 }>) => {
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
-  const isHidden = preferences.courses[course.id!]?.isHidden ?? false;
+  const isHidden =
+    preferences.courses[course.uniqueShortcode]?.isHidden ?? false;
 
   return (
     <MenuView
@@ -50,8 +51,8 @@ const Menu = ({
       onPressAction={() => {
         preferences.updatePreference('courses', {
           ...preferences.courses,
-          [course.id!]: {
-            ...preferences.courses[course.id!],
+          [course.uniqueShortcode!]: {
+            ...preferences.courses[course.uniqueShortcode],
             isHidden: !isHidden,
           },
         });
@@ -100,7 +101,11 @@ export const CourseListItem = ({
         hasDetails
           ? {
               screen: 'Course',
-              params: { id: course.id, courseName: course.name },
+              params: {
+                id: course.id,
+                courseName: course.name,
+                uniqueShortcode: course.uniqueShortcode,
+              },
             }
           : undefined
       }
@@ -114,12 +119,7 @@ export const CourseListItem = ({
       } ${t('common.credits')}`}
       title={course.name}
       subtitle={subtitle}
-      leadingItem={
-        <CourseIcon
-          icon={course.id ? preferences.courses[course.id]?.icon : undefined}
-          color={course.id ? preferences.courses[course.id]?.color : undefined}
-        />
-      }
+      leadingItem={<CourseIndicator uniqueShortcode={course.uniqueShortcode} />}
       trailingItem={
         <>
           {badge && <Badge text={badge} />}

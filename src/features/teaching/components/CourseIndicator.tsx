@@ -4,13 +4,13 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { CourseIcon } from './CourseIcon';
 
 interface Props {
-  courseId: number;
+  uniqueShortcode: string;
 }
 
-export const CourseIndicator = ({ courseId }: Props) => {
+export const CourseIndicator = ({ uniqueShortcode }: Props) => {
   const { palettes } = useTheme();
   const prefs = usePreferencesContext();
-  const coursePrefs = prefs.courses[courseId];
+  const coursePrefs = prefs.courses[uniqueShortcode];
 
   if (!coursePrefs) {
     return <CourseIcon color={palettes.primary[500]} />;

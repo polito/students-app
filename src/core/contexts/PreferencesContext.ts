@@ -4,6 +4,7 @@ import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
 export const editablePreferenceKeys = [
+  'lastInstalledVersion',
   'username',
   'campusId',
   'colorScheme',
@@ -27,10 +28,11 @@ export const objectPreferenceKeys = [
 ];
 
 export type CoursesPreferences = {
-  [courseId: number]: CoursePreferencesProps;
+  [courseId: number | string]: CoursePreferencesProps;
 };
 
 export interface PreferencesContextBase {
+  lastInstalledVersion: string | null;
   username: string;
   campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';

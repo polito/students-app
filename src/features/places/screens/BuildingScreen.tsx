@@ -1,3 +1,5 @@
+export {};
+
 // import { useLayoutEffect } from 'react';
 // import { useTranslation } from 'react-i18next';
 // import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';

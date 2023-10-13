@@ -1,4 +1,4 @@
-import { LecturePlace } from '@polito/api-client/models/LecturePlace';
+import { PlaceRef } from '@polito/api-client';
 
-export const resolvePlaceId = (place: LecturePlace) =>
+export const resolvePlaceId = (place: PlaceRef) =>
   [place.buildingId, place.floorId, place.roomId].join('-');

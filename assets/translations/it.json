@@ -6,12 +6,27 @@
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "room": "Aula {{roomName}}",
+    "rooms": "Aule {{roomNames}}"
   },
   "bookingScreen": {
-    "cancelFeedback": "Prenotazione annullata"
+    "barCodeTitle": "Barcode",
+    "cancelBooking": "Annulla prenotazione",
+    "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
+    "cancelFeedback": "Prenoazione annullata",
+    "checkIn": "Check-in",
+    "checkInFeedback": "Check in eseguito!",
+    "checkLocationErrorFeedback": "Sei troppo distante per effettuare il check-in della prenotazione",
+    "locationType": {
+      "place": "Luogo",
+      "virtualPlace": "Link sportello virtuale"
+    }
   },
   "bookingsScreen": {
+    "emptyState": "Non hai prenotazioni attive",
+    "newBooking": "Nuova prenotazione",
+    "sectionTitle": "Attive",
     "title": "Prenotazioni"
   },
   "colors": {
@@ -87,6 +102,8 @@
     "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
+    "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
+    "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
     "event": "Evento",
@@ -133,6 +150,7 @@
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
+    "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
     "openedStatus": {
       "false": "Chiuso",
@@ -287,7 +305,8 @@
     "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
+    "title": "Virtual classroom",
+    "liveCta": "Collegati alla diretta"
   },
   "coursesScreen": {
     "emptyState": "Non ci sono corsi",

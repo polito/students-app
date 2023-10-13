@@ -55,7 +55,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
     if (!coursesQuery.data) return [];
 
     return coursesQuery.data
-      .filter(c => c.id && !coursePreferences[c.id]?.isHidden)
+      .filter(
+        c =>
+          c.uniqueShortcode && !coursePreferences[c.uniqueShortcode]?.isHidden,
+      )
       .sort(
         (a: CourseOverview, b) =>
           (coursePreferences[a.id!]?.order ?? 0) -
@@ -66,19 +69,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const exams = useMemo(() => {
     if (!coursesQuery.data || !examsQuery.data) return [];
 
-    const hiddenNonModuleCourses: string[] = [];
+    const hiddenCourses: string[] = [];
 
     Object.keys(coursePreferences).forEach((key: string) => {
-      if (coursePreferences[+key].isHidden) {
-        const hiddenCourse = coursesQuery.data?.find(c => c.id === +key);
-        if (hiddenCourse && !hiddenCourse.isModule)
-          hiddenNonModuleCourses.push(hiddenCourse.shortcode);
+      if (coursePreferences[key].isHidden) {
+        hiddenCourses.push(key);
       }
     });
 
     return (
       examsQuery.data
-        .filter(e => !hiddenNonModuleCourses.includes(e.courseShortcode))
+        .filter(e => !hiddenCourses.includes(e.uniqueShortcode))
         .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
         .slice(0, 4) ?? []
     );
