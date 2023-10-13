@@ -1,5 +1,5 @@
 import { Palette } from '@lib/ui/types/Theme';
-import { PlaceOverview } from '@polito/api-client';
+import { Building, PlaceOverview } from '@polito/api-client';
 
 import { AgendaItem } from '../agenda/types/AgendaItem';
 
@@ -12,5 +12,17 @@ export interface CategoryData {
 }
 
 export type PlaceOverviewWithMetadata = PlaceOverview & {
+  type: 'place';
   agendaItem?: AgendaItem;
 };
+
+export type BuildingWithMetadata = Building & {
+  type: 'building';
+};
+
+export type SearchPlace = PlaceOverviewWithMetadata | BuildingWithMetadata;
+
+export const isPlace = (
+  placeOrBuilding: SearchPlace,
+): placeOrBuilding is PlaceOverviewWithMetadata =>
+  placeOrBuilding.type === 'place';

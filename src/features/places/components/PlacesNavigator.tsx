@@ -20,6 +20,7 @@ import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { MAX_ZOOM } from '../constants';
+import { BuildingScreen } from '../screens/BuildingScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
@@ -40,8 +41,12 @@ export type PlacesStackParamList = {
   Place: {
     placeId: string;
   };
+  Building: {
+    buildingId: string;
+  };
   PlaceCategories: undefined;
   MessagesModal: undefined;
+  FreeRooms: undefined;
 };
 
 const Map = createMapNavigator<PlacesStackParamList>();
@@ -114,6 +119,13 @@ export const PlacesNavigator = () => {
           title: t('placeScreen.title'),
         }}
       />
+      <Map.Screen
+        name="Building"
+        component={BuildingScreen}
+        options={{
+          title: t('common.building'),
+        }}
+      />
       <Stack.Screen
         name="MessagesModal"
         component={UnreadMessagesModal}
@@ -125,6 +137,13 @@ export const PlacesNavigator = () => {
           headerRight: () => <HeaderCloseButton />,
         }}
       />
+      {/* <Map.Screen*/}
+      {/*  name="FreeRooms"*/}
+      {/*  component={FreeRoomsScreen}*/}
+      {/*  options={{*/}
+      {/*    title: t('freeRoomsScreen.title'),*/}
+      {/*  }}*/}
+      {/*/ >*/}
     </Map.Navigator>
   );
 };

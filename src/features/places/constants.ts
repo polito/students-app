@@ -119,7 +119,6 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
       MENSA: { icon: 'restaurant' },
       RISTORA: { icon: 'restaurant' },
       Z_RIST: { icon: 'restaurant' },
-      CEN_STAMP: { icon: 'print' },
       INFERM: { icon: 'medical' },
       POSTA: { icon: 'post' },
     },
@@ -139,4 +138,4 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     },
   },
 };
-export const UPCOMING_COMMITMENT_HOURS_OFFSET = 4;
+export const UPCOMING_COMMITMENT_HOURS_OFFSET = 24;

@@ -4,7 +4,6 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +45,6 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
-import { DateTime } from 'luxon';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { IS_IOS } from '../../../core/constants';
@@ -55,12 +53,10 @@ import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetPlaceCategory,
   useGetPlaceSubCategory,
-  useGetPlaces,
+  useGetSites,
 } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
-import { useGetAgendaWeeks } from '../../agenda/queries/agendaHooks';
-import { LectureItem } from '../../agenda/types/AgendaItem';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -68,18 +64,17 @@ import { MarkersLayer } from '../components/MarkersLayer';
 import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { UPCOMING_COMMITMENT_HOURS_OFFSET } from '../constants';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
-import { PlaceOverviewWithMetadata } from '../types';
+import { useSearchPlaces } from '../hooks/useSearchPlaces';
+import { PlaceOverviewWithMetadata, isPlace } from '../types';
 import { formatPlaceCategory } from '../utils/category';
 import { formatAgendaItem } from '../utils/formatAgendaItem';
-import { resolvePlaceId } from '../utils/resolvePlaceId';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
-  const { categoryId, subCategoryId, pitch, bounds } = route.params ?? {};
+  const { categoryId, subCategoryId, bounds } = route.params ?? {};
   const placeCategory = useGetPlaceCategory(categoryId);
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
   const { t } = useTranslation();
@@ -88,6 +83,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
   const headerHeight = useHeaderHeight();
   const [tabsHeight, setTabsHeight] = useState(46);
+  const { data: sites } = useGetSites();
   const campus = useGetCurrentCampus();
   const { updatePreference, placesSearched } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
@@ -102,7 +98,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateDebouncedSearch = useCallback(
-    debounce((newSearch: string) => setDebouncedSearch(newSearch), 200),
+    debounce(
+      (newSearch: string) => setDebouncedSearch(newSearch.trim().toLowerCase()),
+      200,
+    ),
     [],
   );
 
@@ -110,57 +109,12 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     updateDebouncedSearch(search);
   }, [search, updateDebouncedSearch]);
 
-  const { data: places, isLoading: isLoadingPlaces } = useGetPlaces({
-    search: debouncedSearch || undefined,
-    siteId: campus?.id,
-    floorId: debouncedSearch?.length > 0 ? undefined : floorId,
-    placeCategoryId: categoryId,
-    placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
+  const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
+    search: debouncedSearch,
+    floorId,
+    categoryId,
+    subCategoryId,
   });
-  const { courses: coursesPreferences } = usePreferencesContext();
-  const now = useRef(DateTime.now());
-  const { data: agendaPages } = useGetAgendaWeeks(
-    coursesPreferences,
-    now.current,
-  );
-  const upcomingCommitments = useMemo(
-    () =>
-      agendaPages?.pages?.[0]?.data
-        .filter(i => i.isToday)
-        .flatMap(i => i.items)
-        .filter(
-          i =>
-            (i as LectureItem).place != null &&
-            i.start >= now.current &&
-            i.start.diff(now.current).milliseconds <
-              UPCOMING_COMMITMENT_HOURS_OFFSET * 60 * 60 * 1000,
-        ) as
-        | (LectureItem & { place: Exclude<LectureItem['place'], null> })[]
-        | undefined,
-    [agendaPages],
-  );
-  const orderedPlaces = useMemo(() => {
-    let result = places?.data?.sort(a =>
-      placesSearched.some(p => a.id === p.id) ? -1 : 1,
-    ) as PlaceOverviewWithMetadata[] | undefined;
-    if (!search) {
-      result = result?.filter(p => p.room.name != null);
-    }
-    if (!upcomingCommitments?.length || !result?.length) {
-      return result;
-    }
-    for (const commitment of upcomingCommitments.reverse()) {
-      const placeIndex = result.findIndex(
-        p => p.id === resolvePlaceId(commitment.place),
-      );
-      if (placeIndex !== -1) {
-        const place = result.splice(placeIndex, 1)[0];
-        place.agendaItem = commitment;
-        result.unshift(place);
-      }
-    }
-    return result;
-  }, [places?.data, placesSearched, search, upcomingCommitments]);
 
   const categoryFilterName = useMemo(
     () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
@@ -192,7 +146,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     if (!campus) {
-      updatePreference('campusId', 'TO_CEN');
+      if (sites?.data?.length) {
+        updatePreference('campusId', sites?.data[0].id);
+      }
     } else {
       if (!floorId && campus.floors?.length) {
         setFloorId(
@@ -202,15 +158,19 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       }
       centerToCurrentCampus();
     }
-  }, [campus, centerToCurrentCampus, floorId, updatePreference]);
+  }, [campus, sites, centerToCurrentCampus, floorId, updatePreference]);
 
   const displayFloorId = useMemo(() => {
     if (debouncedSearch) {
-      const floorIds = new Set(orderedPlaces?.map(p => p.floor.id));
-      return floorIds.size === 1 ? orderedPlaces?.[0]?.floor.id : undefined;
+      const floorIds = new Set(
+        places
+          ?.filter(p => isPlace(p))
+          .map(p => (p as PlaceOverviewWithMetadata).floor.id),
+      );
+      return floorIds.size === 1 ? [...floorIds.values()][0] : undefined;
     }
     return floorId;
-  }, [debouncedSearch, floorId, orderedPlaces]);
+  }, [debouncedSearch, floorId, places]);
 
   const categoryFilterActive = categoryId || subCategoryId;
 
@@ -250,23 +210,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                 }
               : undefined),
         },
-        onMapIdle(state) {
-          // navigation.navigate({
-          //   name: 'Places',
-          //   params: {
-          //     pitch: state.properties.pitch,
-          //     bounds: state.properties.bounds,
-          //   },
-          //   merge: true,
-          // });
-        },
       },
       mapContent: (
         <>
           <IndoorMapLayer floorId={displayFloorId} />
           <MarkersLayer
             search={debouncedSearch}
-            places={orderedPlaces ?? []}
+            places={places ?? []}
             displayFloor={!displayFloorId}
           />
         </>
@@ -279,7 +229,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     headerHeight,
     navigation,
     categoryId,
-    places?.data,
     route,
     safeAreaInsets.top,
     debouncedSearch,
@@ -287,7 +236,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     tabsHeight,
     categoryFilterActive,
     bounds,
-    orderedPlaces,
+    places,
   ]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
@@ -307,6 +256,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       ],
     };
   });
+
+  const listPlaces = useMemo(() => {
+    if (!search && !categoryId && !subCategoryId) {
+      return places?.filter(p => isPlace(p) && p.room.name != null);
+    }
+    return places;
+  }, [categoryId, places, search, subCategoryId]);
 
   const floorSelectorButton = (
     <TranslucentCard>
@@ -488,23 +444,23 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         isLoading={isLoadingPlaces}
         listProps={{
           data:
-            orderedPlaces
-              ?.filter(
-                p =>
-                  !debouncedSearch ||
-                  p.room.name.toLowerCase().includes(debouncedSearch),
-              )
-              ?.map(p => ({
-                title: p.room.name ?? p.category.subCategory.name,
-                subtitle: `${
-                  p.agendaItem != null
-                    ? formatAgendaItem(p.agendaItem)
-                    : placesSearched.some(ps => ps.id === p.id)
-                    ? t('common.recentlyViewed')
-                    : p.category.name
-                } - ${p.floor.name}`,
-                linkTo: { screen: 'Place', params: { placeId: p.id } },
-              })) ?? [],
+            listPlaces?.map(p => ({
+              title: isPlace(p)
+                ? p.room.name ?? p.category.subCategory.name
+                : p.name,
+              subtitle: isPlace(p)
+                ? `${
+                    p.agendaItem != null
+                      ? formatAgendaItem(p.agendaItem)
+                      : placesSearched.some(ps => ps.id === p.id)
+                      ? t('common.recentlyViewed')
+                      : p.category.name
+                  } - ${p.floor.name}`
+                : t('common.building'),
+              linkTo: isPlace(p)
+                ? { screen: 'Place', params: { placeId: p.id } }
+                : { screen: 'Building', params: { buildingId: p.id } },
+            })) ?? [],
           ListEmptyComponent: (
             <EmptyState message={t('placesScreen.noPlacesFound')} />
           ),

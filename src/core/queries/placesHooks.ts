@@ -6,9 +6,11 @@ import { useQuery } from '@tanstack/react-query';
 import { noop } from 'lodash';
 
 export const SITES_QUERY_KEY = 'sites';
+export const BUILDINGS_QUERY_KEY = 'buildings';
 export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
+export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -20,6 +22,33 @@ export const useGetSites = () => {
   return useQuery([SITES_QUERY_KEY], () => placesClient.getSites(), {
     staleTime: Infinity,
   });
+};
+
+export const useGetBuildings = (siteId?: string) => {
+  const placesClient = usePlacesClient();
+
+  return useQuery(
+    [BUILDINGS_QUERY_KEY],
+    () => placesClient.getBuildings({ siteId: siteId! }),
+    {
+      staleTime: Infinity,
+      enabled: siteId != null,
+    },
+  );
+};
+
+export const useGetBuilding = (buildingId?: string) => {
+  const { data: buildings, ...rest } = useGetBuildings();
+  return useMemo(
+    () => ({
+      ...rest,
+      data:
+        buildingId == null || !buildings?.data?.length
+          ? null
+          : buildings.data.find(s => s.id === buildingId),
+    }),
+    [buildingId, buildings?.data, rest],
+  );
 };
 
 export const useGetSite = (siteId?: string) => {

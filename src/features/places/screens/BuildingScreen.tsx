@@ -25,10 +25,10 @@ import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
-import { IS_IOS, MAX_RECENT_SEARCHES } from '../../../core/constants';
+import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetPlace } from '../../../core/queries/placesHooks';
+import { useGetBuilding } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -37,9 +37,9 @@ import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
 
-type Props = MapScreenProps<PlacesStackParamList, 'Place'>;
+type Props = MapScreenProps<PlacesStackParamList, 'Building'>;
 
-export const PlaceScreen = ({ navigation, route }: Props) => {
+export const BuildingScreen = ({ navigation, route }: Props) => {
   const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -47,22 +47,22 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { placeId } = route.params;
+  const { buildingId } = route.params;
   const {
-    data: place,
-    isLoading: isLoadingPlace,
+    data: building,
+    isLoading: isLoadingBuilding,
     error: getPlaceError,
-  } = useGetPlace(placeId);
-  const siteId = place?.data.site.id;
-  const floorId = place?.data.floor.id;
+  } = useGetBuilding(buildingId);
+  const siteId = building?.site.id;
+  const floorId = building?.floor.id;
   const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
     floorId,
   });
-  const isLoading = isLoadingPlace || isLoadingPlaces;
+  const isLoading = isLoadingBuilding || isLoadingPlaces;
   const placeName =
-    place?.data.room.name ??
-    place?.data.category.subCategory.name ??
+    building?.name ??
+    building?.category.subCategory.name ??
     t('common.untitled');
 
   useScreenTitle(
@@ -72,14 +72,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   );
 
   useLayoutEffect(() => {
-    if (place?.data) {
-      updatePreference('placesSearched', [
-        place.data,
-        ...placesSearched
-          .filter(p => p.id !== place.data.id)
-          .slice(0, MAX_RECENT_SEARCHES - 1),
-      ]);
-      const { latitude, longitude } = place.data;
+    if (building) {
+      const { latitude, longitude } = building;
       navigation.setOptions({
         mapOptions: {
           compassPosition: IS_IOS
@@ -102,11 +96,11 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         mapContent: (
           <>
             <IndoorMapLayer floorId={floorId} />
-            <MarkersLayer selectedPoiId={placeId} places={places} />
-            {place.data.geoJson != null && (
+            <MarkersLayer selectedPoiId={buildingId} places={places} />
+            {building?.geoJson != null && (
               <ShapeSource
                 id="placeHighlightSource"
-                shape={place.data.geoJson as any} // TODO fix incompatible types
+                shape={building?.geoJson as any} // TODO fix incompatible types
                 existing={false}
               >
                 <LineLayer
@@ -131,8 +125,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       });
     }
   }, [
-    placeId,
-    place,
+    buildingId,
+    building,
     navigation,
     headerHeight,
     palettes.secondary,
@@ -176,7 +170,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     );
   }
 
-  if (!place) {
+  if (!building) {
     return null;
   }
 
@@ -191,26 +185,11 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
             <Text variant="title" style={styles.title}>
               {placeName}
             </Text>
-            <Text>{place.data.site.name}</Text>
+            <Text>{building?.site.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
-              {formatPlaceCategory(place.data.category.name)}
+              {formatPlaceCategory(building?.category.name)}
             </Text>
           </Col>
-
-          {(place.data.category.id === 'AULA' ||
-            place.data.category.id === 'LAB') && (
-            <Section>
-              <SectionHeader
-                title={`${placeName} ${t('common.inYourAgenda')}`}
-                separator={false}
-              />
-              <OverviewList translucent>
-                <Col p={5}>
-                  <Text>Coming soon</Text>
-                </Col>
-              </OverviewList>
-            </Section>
-          )}
 
           <Section>
             <SectionHeader title="Location" separator={false} />
@@ -218,7 +197,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
-                title={place.data.site.name}
+                title={building?.site.name}
                 subtitle={t('common.campus')}
                 trailingItem={
                   <IconButton
@@ -232,10 +211,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                         android: 'geo:0,0?q=',
                       });
                       const latLng = [
-                        place?.data.latitude,
-                        place?.data.longitude,
+                        building?.latitude,
+                        building?.longitude,
                       ].join(',');
-                      const label = place?.data.room.name;
+                      const label = building?.name;
                       const url = Platform.select({
                         ios: `${scheme}${label}@${latLng}`,
                         android: `${scheme}${latLng}(${label})`,
@@ -245,62 +224,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                   />
                 }
               />
-              <ListItem
-                inverted
-                title={place.data.building.name}
-                subtitle={t('common.building')}
-              />
-              <ListItem
-                inverted
-                title={`${place.data.floor.level} - ${place.data.floor.name}`}
-                subtitle={t('common.floor')}
-              />
-              {place.data.structure && (
-                <ListItem
-                  inverted
-                  multilineTitle
-                  title={place.data.structure?.name}
-                  subtitle={t('common.structure')}
-                />
-              )}
-              {/* <ListItem*/}
-              {/*  inverted*/}
-              {/*  isAction*/}
-              {/*  titleProps={{*/}
-              {/*    numberOfLines: undefined,*/}
-              {/*    ellipsizeMode: undefined,*/}
-              {/*  }}*/}
-              {/*  title="Sede Centrale - Cittadella Politecnica"*/}
-              {/*  subtitle="Campus"*/}
-              {/*/ >*/}
             </OverviewList>
           </Section>
-
-          {(place.data.capacity > 0 || place.data.resources?.length > 0) && (
-            <Section>
-              <SectionHeader title={t('common.facilities')} separator={false} />
-              <OverviewList translucent>
-                {place.data.capacity > 0 && (
-                  <ListItem
-                    inverted
-                    title={t('placeScreen.capacity', {
-                      count: place.data.capacity,
-                    })}
-                    subtitle={t('common.capacity')}
-                  />
-                )}
-                {place.data.resources?.map(r => (
-                  <ListItem
-                    key={r.name}
-                    inverted
-                    multilineTitle
-                    title={r.description}
-                    subtitle={r.name}
-                  />
-                ))}
-              </OverviewList>
-            </Section>
-          )}
         </BottomSheetScrollView>
       </BottomSheet>
     </View>
