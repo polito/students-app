@@ -28,7 +28,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
   },
   RESIDENCE: {
     icon: 'bed',
-    color: 'red',
+    color: 'orange',
     priority: 100,
     children: {},
   },
@@ -84,7 +84,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
   },
   UFF_PUBB: {
     icon: 'office',
-    color: 'gray',
+    color: 'red',
     priority: 60,
     children: {},
   },
@@ -113,7 +113,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
   },
   SPEC: {
     icon: 'service',
-    color: 'red',
+    color: 'orange',
     priority: 60,
     children: {
       BAR: { icon: 'bar' },

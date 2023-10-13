@@ -134,7 +134,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       }
     },
     // eslint-disable-next-line
-    [],
+    [place?.data],
   );
 
   if (isLoading) {
