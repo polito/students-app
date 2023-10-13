@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 
 import {
@@ -24,10 +24,9 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
-import { PlaceOverview } from '@polito/api-client';
+
+import { DateTime } from 'luxon';
 
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -37,24 +36,48 @@ import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { useSearchPlaces } from '../hooks/useSearchPlaces';
+import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
 
 type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
 
 export const FreeRoomsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const styles = useStylesheet(createStyles);
   const { spacing, fontSizes } = useTheme();
   const campus = useGetCurrentCampus();
-  const { data: rooms, isLoading: isLoadingRooms } = useGetFreeRooms();
+  const [initialDateTime] = useState(
+    DateTime.now().set({ minute: 0, second: 0, millisecond: 0 }),
+  );
   const [selectedTimeSlotIndex, setSelectedTimeSlotIndex] = useState(0);
+  const startDateTime = useMemo(
+    () => initialDateTime.plus({ hour: 3 * selectedTimeSlotIndex }),
+    [initialDateTime, selectedTimeSlotIndex],
+  );
+  const { places: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
+  const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
+    siteId: campus?.id,
+    date: startDateTime.toISO().split('T')[0],
+    timeFrom: startDateTime.toISOTime(),
+    timeTo: startDateTime.plus({ hour: 3 }).toISOTime(),
+  });
+  const places = useMemo(
+    () =>
+      freeRooms?.data.map(fr => {
+        const place = sitePlaces?.find(p => p.id === fr.id);
+        if (!place) return null;
+        return { ...fr, ...place };
+      }) as (SearchPlace & {
+        freeFrom: Date;
+        freeTo: Date;
+      })[],
+    [freeRooms?.data, sitePlaces],
+  );
   const pagerRef = useRef<PagerView>();
   const displayFloorId = useMemo(() => {
-    const floorIds = new Set(
-      rooms?.data.flatMap(i => i.rooms).map(r => r.floor!.id),
-    );
+    const floorIds = new Set(freeRooms?.data?.map(r => r.floorId));
     return floorIds.size === 1 ? Array.from(floorIds.values())[0] : undefined;
-  }, [rooms?.data]);
+  }, [freeRooms?.data]);
 
   useEffect(() => {
     pagerRef.current?.setPage(selectedTimeSlotIndex);
@@ -66,22 +89,11 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
       mapContent: (
         <>
           <IndoorMapLayer floorId={displayFloorId} />
-          <MarkersLayer
-            places={
-              (rooms?.data[selectedTimeSlotIndex].rooms as PlaceOverview[]) ??
-              []
-            }
-            displayFloor={!displayFloorId}
-          />
+          <MarkersLayer places={places ?? []} displayFloor={!displayFloorId} />
         </>
       ),
     });
-  }, [displayFloorId, navigation, rooms?.data, selectedTimeSlotIndex]);
-
-  const selectedSlot = useMemo(
-    () => rooms?.data[selectedTimeSlotIndex],
-    [rooms?.data, selectedTimeSlotIndex],
-  );
+  }, [displayFloorId, navigation, places]);
 
   return (
     <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -94,7 +106,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
           <IconButton
             icon={faChevronLeft}
             color={colors.secondaryText}
-            disabled={!rooms?.data || !selectedTimeSlotIndex}
+            disabled={!freeRooms?.data || !selectedTimeSlotIndex}
             onPress={() =>
               setSelectedTimeSlotIndex(prevIdx => Math.max(0, prevIdx - 1))
             }
@@ -111,39 +123,42 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
               setSelectedTimeSlotIndex(position)
             }
           >
-            {rooms?.data.map(slot => (
-              <Text
-                key={slot.from.toISO()}
-                style={{
-                  flexGrow: 1,
-                  textTransform: 'capitalize',
-                  textAlign: 'center',
-                  marginVertical: spacing[2],
-                }}
-              >
-                {slot.from.toRelativeCalendar()} {slot.from.toFormat('HH:mm')} -{' '}
-                {slot.to.toFormat('HH:mm')}
-              </Text>
-            ))}
+            {Array.from({ length: selectedTimeSlotIndex + 2 }).map(
+              (_, slotIndex) => {
+                const startDate = initialDateTime.plus({ hour: 3 * slotIndex });
+                const endDate = startDate.plus({ hour: 3 });
+                return (
+                  <Text
+                    key={slotIndex}
+                    style={{
+                      flexGrow: 1,
+                      textTransform: 'capitalize',
+                      textAlign: 'center',
+                      marginVertical: spacing[2],
+                    }}
+                  >
+                    {startDate.toRelativeCalendar()}{' '}
+                    {startDate.toFormat('HH:mm')} - {endDate.toFormat('HH:mm')}
+                  </Text>
+                );
+              },
+            )}
           </PagerView>
           <IconButton
             icon={faChevronRight}
             color={colors.secondaryText}
-            disabled={
-              !rooms?.data || selectedTimeSlotIndex === rooms.data.length - 1
-            }
-            onPress={() =>
-              setSelectedTimeSlotIndex(prevIdx =>
-                Math.min(prevIdx + 1, rooms?.data ? rooms.data.length - 1 : 0),
-              )
-            }
+            onPress={() => setSelectedTimeSlotIndex(prevIdx => prevIdx + 1)}
           />
         </Row>
         <BottomSheetFlatList
           data={
-            selectedSlot?.rooms.map(p => ({
-              title: p.room!.name ?? p.category!.subCategory.name,
-              subtitle: `${p.category!.name} - ${p.floor!.name}`,
+            places?.map(p => ({
+              title:
+                (p as PlaceOverviewWithMetadata).room.name ??
+                t('common.untitled'),
+              subtitle: `${t(
+                'common.free',
+              )} ${p.freeFrom.toLocaleTimeString()} - ${p.freeTo.toLocaleTimeString()}`,
               linkTo: { screen: 'Place', params: { placeId: p.id } },
             })) ?? []
           }
@@ -165,5 +180,3 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     </View>
   );
 };
-
-const createStyles = ({ colors }: Theme) => StyleSheet.create({});

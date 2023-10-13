@@ -80,6 +80,7 @@ export const MarkersLayer = ({
         })
     );
   }, [places, selectedPoiId]);
+
   return (
     <>
       <Images

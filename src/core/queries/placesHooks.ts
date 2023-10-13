@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
+import { GetFreeRoomsRequest } from '@polito/api-client/apis/PlacesApi';
 import { useQuery } from '@tanstack/react-query';
 
 import { noop } from 'lodash';
@@ -86,6 +87,26 @@ export const useGetPlaces = (params: GetPlacesRequest) => {
   return useQuery(key, () => placesClient.getPlaces(params), {
     enabled: params.siteId != null,
   });
+};
+
+export const useGetFreeRooms = (params: Partial<GetFreeRoomsRequest>) => {
+  const placesClient = usePlacesClient();
+  const key = [
+    FREE_ROOMS_QUERY_KEY,
+    params.siteId,
+    params.date,
+    params.timeFrom,
+    params.timeTo,
+  ];
+
+  return useQuery(
+    key,
+    () => placesClient.getFreeRooms(params as GetFreeRoomsRequest),
+    {
+      enabled: params.siteId != null,
+      staleTime: Infinity,
+    },
+  );
 };
 
 export const useGetPlaceCategories = () => {

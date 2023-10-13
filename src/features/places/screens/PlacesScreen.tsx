@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { faClock } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
   faBookReader,
@@ -300,12 +301,12 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             },
           }) => setTabsHeight(height)}
         >
-          {/* <PillIconButton*/}
-          {/*  icon={faClock}*/}
-          {/*  onPress={() => navigation.navigate('FreeRooms')}*/}
-          {/* >*/}
-          {/*  {t('freeRoomsScreen.title')}*/}
-          {/* </PillIconButton>*/}
+          <PillIconButton
+            icon={faClock}
+            onPress={() => navigation.navigate('FreeRooms')}
+          >
+            {t('freeRoomsScreen.title')}
+          </PillIconButton>
           <PillIconButton
             icon={faChalkboardTeacher}
             onPress={() =>

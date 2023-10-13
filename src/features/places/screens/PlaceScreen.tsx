@@ -71,78 +71,71 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       : placeName,
   );
 
-  useLayoutEffect(() => {
-    if (place?.data) {
-      updatePreference('placesSearched', [
-        place.data,
-        ...placesSearched
-          .filter(p => p.id !== place.data.id)
-          .slice(0, MAX_RECENT_SEARCHES - 1),
-      ]);
-      const { latitude, longitude } = place.data;
-      navigation.setOptions({
-        mapOptions: {
-          compassPosition: IS_IOS
-            ? {
-                top: headerHeight - safeAreaInsets.top + spacing[2],
-                right: spacing[3],
-              }
-            : undefined,
-          camera: {
-            centerCoordinate: [longitude, latitude],
-            padding: {
-              paddingTop: 0,
-              paddingLeft: 0,
-              paddingRight: 0,
-              paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
+  useLayoutEffect(
+    () => {
+      if (place?.data) {
+        updatePreference('placesSearched', [
+          place.data,
+          ...placesSearched
+            .filter(p => p.id !== place.data.id)
+            .slice(0, MAX_RECENT_SEARCHES - 1),
+        ]);
+        const { latitude, longitude } = place.data;
+        navigation.setOptions({
+          mapOptions: {
+            compassPosition: IS_IOS
+              ? {
+                  top: headerHeight - safeAreaInsets.top + spacing[2],
+                  right: spacing[3],
+                }
+              : undefined,
+            camera: {
+              centerCoordinate: [longitude, latitude],
+              padding: {
+                paddingTop: 0,
+                paddingLeft: 0,
+                paddingRight: 0,
+                paddingBottom:
+                  Dimensions.get('window').height / 2 - headerHeight,
+              },
+              zoomLevel: 19,
             },
-            zoomLevel: 19,
           },
-        },
-        mapContent: (
-          <>
-            <IndoorMapLayer floorId={floorId} />
-            <MarkersLayer selectedPoiId={placeId} places={places} />
-            {place.data.geoJson != null && (
-              <ShapeSource
-                id="placeHighlightSource"
-                shape={place.data.geoJson as any} // TODO fix incompatible types
-                existing={false}
-              >
-                <LineLayer
-                  id="placeHighlightLine"
-                  aboveLayerID="indoor"
-                  style={{
-                    lineColor: palettes.secondary[600],
-                    lineWidth: 2,
-                  }}
-                />
-                <FillLayer
-                  id="placeHighlightFill"
-                  aboveLayerID="indoor"
-                  style={{
-                    fillColor: `${palettes.secondary[600]}33`,
-                  }}
-                />
-              </ShapeSource>
-            )}
-          </>
-        ),
-      });
-    }
-  }, [
-    placeId,
-    place,
-    navigation,
-    headerHeight,
-    palettes.secondary,
-    floorId,
-    safeAreaInsets.top,
-    spacing,
-    updatePreference,
-    placesSearched,
-    places,
-  ]);
+          mapContent: (
+            <>
+              <IndoorMapLayer floorId={floorId} />
+              <MarkersLayer selectedPoiId={placeId} places={places} />
+              {place.data.geoJson != null && (
+                <ShapeSource
+                  id="placeHighlightSource"
+                  shape={place.data.geoJson as any} // TODO fix incompatible types
+                  existing={false}
+                >
+                  <LineLayer
+                    id="placeHighlightLine"
+                    aboveLayerID="indoor"
+                    style={{
+                      lineColor: palettes.secondary[600],
+                      lineWidth: 2,
+                    }}
+                  />
+                  <FillLayer
+                    id="placeHighlightFill"
+                    aboveLayerID="indoor"
+                    style={{
+                      fillColor: `${palettes.secondary[600]}33`,
+                    }}
+                  />
+                </ShapeSource>
+              )}
+            </>
+          ),
+        });
+      }
+    },
+    // eslint-disable-next-line
+    [],
+  );
 
   if (isLoading) {
     return (

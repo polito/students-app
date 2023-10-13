@@ -21,6 +21,7 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { MAX_ZOOM } from '../constants';
 import { BuildingScreen } from '../screens/BuildingScreen';
+import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
@@ -137,13 +138,13 @@ export const PlacesNavigator = () => {
           headerRight: () => <HeaderCloseButton />,
         }}
       />
-      {/* <Map.Screen*/}
-      {/*  name="FreeRooms"*/}
-      {/*  component={FreeRoomsScreen}*/}
-      {/*  options={{*/}
-      {/*    title: t('freeRoomsScreen.title'),*/}
-      {/*  }}*/}
-      {/*/ >*/}
+      <Map.Screen
+        name="FreeRooms"
+        component={FreeRoomsScreen}
+        options={{
+          title: t('freeRoomsScreen.title'),
+        }}
+      />
     </Map.Navigator>
   );
 };
