@@ -9,14 +9,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { BookingScreen } from '../../agenda/screens/BookingScreen';
 import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
+import { BookingsScreen } from '../screens/BookingsScreen';
 import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
+import { NewBookingScreen } from '../screens/NewBookingScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
@@ -48,6 +51,9 @@ export type ServiceStackParamList = {
   MessagesModal: undefined;
   Contacts: undefined;
   Person: { id: number };
+  Bookings: undefined;
+  Booking: { id: number };
+  NewBooking: undefined;
   Guide: { id: string };
   Guides: undefined;
 };
@@ -191,6 +197,31 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Bookings"
+        component={BookingsScreen}
+        options={{
+          headerTitle: t('bookingsScreen.title'),
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="Booking"
+        component={BookingScreen}
+        options={{
+          headerTitle: '',
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="NewBooking"
+        component={NewBookingScreen}
+        options={{
+          headerTitle: t('bookingsScreen.newBooking'),
+          headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
       />

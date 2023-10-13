@@ -41,7 +41,6 @@ export interface ExamItem extends BaseAgendaItem {
   isTimeToBeDefined: boolean;
   teacherId: number;
   places: PlaceRef[];
-
   color: string;
   icon?: string;
 }
