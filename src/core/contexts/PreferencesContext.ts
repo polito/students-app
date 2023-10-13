@@ -32,6 +32,7 @@ export type CoursesPreferences = {
 };
 
 export interface PreferencesContextBase {
+  lastInstalledVersion: string | null;
   username: string;
   campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';

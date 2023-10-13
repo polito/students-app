@@ -43,7 +43,7 @@ const setupCourses = (
   updatePreference: ReturnType<
     typeof usePreferencesContext
   >['updatePreference'],
-) : CourseOverview[] => {
+): CourseOverview[] => {
   let hasNewPreferences = false;
   // Associate each course with a set of preferences, if missing
 
