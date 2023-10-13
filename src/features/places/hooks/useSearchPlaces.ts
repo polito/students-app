@@ -62,7 +62,6 @@ export const useSearchPlaces = ({
   );
 
   const { data: places, fetchStatus: placesFetchStatus } = useGetPlaces({
-    search: search || undefined,
     siteId: actualSiteId,
     floorId: search?.length ? undefined : floorId,
     placeCategoryId: categoryId,
@@ -106,22 +105,16 @@ export const useSearchPlaces = ({
       result = result?.filter(p => {
         if (isPlace(p)) {
           return (
-            p.room.name.toLowerCase().includes(search) ||
+            p.room.name?.toLowerCase().includes(search) ||
             p.category.name.toLowerCase().includes(search) ||
-            p.category.subCategory.name.toLowerCase().includes(search)
+            p.category.subCategory?.name.toLowerCase().includes(search)
           );
         }
         return p.name.toLowerCase().includes(search);
       });
     }
     return result?.filter(p => p.latitude != null && p.longitude != null);
-  }, [
-    buildings?.data,
-    places?.data,
-    placesSearched,
-    search,
-    upcomingCommitments,
-  ]);
+  }, [places?.data, placesSearched, search, upcomingCommitments]);
 
   return {
     places: combinedPlaces,

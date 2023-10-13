@@ -5,6 +5,7 @@ export const INTERIORS_MIN_ZOOM = 18.6;
 export const MAX_ZOOM = 24;
 export const MARKERS_MIN_ZOOM = 15;
 export const UPCOMING_COMMITMENT_HOURS_OFFSET = 80;
+export const FREE_ROOMS_TIME_WINDOW_SIZE_HOURS = 3;
 export const CATEGORIES_DATA: Record<string, CategoryData> = {
   default: {
     icon: 'pin',
@@ -17,7 +18,11 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'gray',
     priority: 100,
     children: {
-      SCALA: {},
+      ASCENSORE: {
+        icon: 'elevator',
+        color: 'gray',
+        priority: 100,
+      },
     },
   },
   PARK: {
@@ -38,13 +43,21 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     priority: 90,
     children: {
       'PUNTO H2O': { icon: 'water', color: 'lightBlue', priority: 20 },
+      FONTANELLA: { icon: 'water', color: 'lightBlue', priority: 20 },
+      DIST_ACQUA: { icon: 'water', color: 'lightBlue', priority: 20 },
       WC: { icon: 'restroom', color: 'green', shade: 600 },
       WC_F: { icon: 'restroom', color: 'green', shade: 600 },
       WC_H: { icon: 'restroom', color: 'green', shade: 600 },
       WC_M: { icon: 'restroom', color: 'green', shade: 600 },
+      INGRESSO: {
+        icon: 'microscope',
+        color: 'gray',
+        priority: 60,
+        children: {},
+      },
+      AREA_BICI: { icon: 'bike' },
     },
   },
-  FONTANELLA: { icon: 'water', color: 'lightBlue', priority: 20, children: {} },
   SUPP: {
     icon: 'pin',
     color: 'gray',
@@ -54,10 +67,17 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     },
   },
   UFF: {
-    icon: 'pin',
-    color: 'gray',
+    icon: 'office',
+    color: 'red',
     priority: 60,
-    children: {},
+    children: {
+      UFF_PUBB: {
+        icon: 'office',
+        color: 'red',
+        priority: 60,
+        children: {},
+      },
+    },
   },
   AULA: {
     icon: 'classroom',
@@ -68,25 +88,10 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
       AULA_DIS: {},
       AULA_INF: {},
       AULA_LAB: {},
+      LAIB: {
+        icon: 'lab',
+      },
     },
-  },
-  LAIB: {
-    icon: 'lab',
-    color: 'navy',
-    priority: 60,
-    children: {},
-  },
-  INGRESSO: {
-    icon: 'door',
-    color: 'gray',
-    priority: 60,
-    children: {},
-  },
-  UFF_PUBB: {
-    icon: 'office',
-    color: 'red',
-    priority: 60,
-    children: {},
   },
   LAB: {
     icon: 'classroom',
@@ -100,9 +105,6 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     priority: 40,
     children: {
       BIBLIO: { icon: 'library' },
-      STUD_EST_A: {},
-      STUD_EST_P: {},
-      S_STUD: {},
     },
   },
   TECN: {
@@ -137,6 +139,24 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     priority: 100,
     children: {
       PARK_BIKE: { icon: 'bike' },
+      SCALA_EST: {
+        icon: 'stairs',
+        color: 'gray',
+        priority: 100,
+      },
+      STUD_EST_A: {
+        icon: 'study',
+        color: 'navy',
+        priority: 40,
+      },
+      STUD_EST_P: {
+        icon: 'study',
+        color: 'navy',
+        priority: 40,
+      },
+      ISOLA_ECO: {
+        icon: 'recycle',
+      },
     },
   },
 };

@@ -7,6 +7,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
+import { capitalize } from 'lodash';
+
 import { CATEGORIES_DATA, MARKERS_MIN_ZOOM } from '../constants';
 import {
   CategoryData,
@@ -36,37 +38,50 @@ export const MarkersLayer = ({
   const { dark, fontSizes, palettes } = useTheme();
   const formatAgendaItem = useFormatAgendaItem();
   const pois = useMemo((): (SearchPlace & CategoryData)[] => {
-    return places?.map(poi => {
-      const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
-        ? CATEGORIES_DATA[
-            (poi as PlaceOverviewWithMetadata).category
-              .id as keyof typeof CATEGORIES_DATA
-          ] ?? CATEGORIES_DATA.default
-        : CATEGORIES_DATA.default;
-      const subcategoryData = (poi as PlaceOverviewWithMetadata).category
-        ?.subCategory?.id
-        ? (categoryData.children[
-            (poi as PlaceOverviewWithMetadata).category.subCategory
-              .id as keyof typeof categoryData.children
-          ] as any) ?? {}
-        : {};
+    return places
+      ?.filter(
+        p =>
+          selectedPoiId === p.id ||
+          ((p.category.id !== 'UFF' ||
+            (p as PlaceOverviewWithMetadata).room.name) &&
+            (p as PlaceOverviewWithMetadata).category.subCategory?.id !==
+              'PARK_EST' &&
+            (p as PlaceOverviewWithMetadata).category.subCategory?.id !==
+              'RAMPA EST' &&
+            (p as PlaceOverviewWithMetadata).category.subCategory?.id !==
+              'RAMPA_C'),
+      )
+      ?.map(poi => {
+        const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
+          ? CATEGORIES_DATA[
+              (poi as PlaceOverviewWithMetadata).category
+                .id as keyof typeof CATEGORIES_DATA
+            ] ?? CATEGORIES_DATA.default
+          : CATEGORIES_DATA.default;
+        const subcategoryData = (poi as PlaceOverviewWithMetadata).category
+          ?.subCategory?.id
+          ? (categoryData.children[
+              (poi as PlaceOverviewWithMetadata).category.subCategory
+                .id as keyof typeof categoryData.children
+            ] as any) ?? {}
+          : {};
 
-      const markerData = {
-        ...poi,
-        ...categoryData,
-        ...subcategoryData,
-        priority:
-          selectedPoiId === poi.id ||
-          (poi as PlaceOverviewWithMetadata).agendaItem != null
-            ? 0
-            : subcategoryData?.priority ?? categoryData.priority,
-      };
-      if (!markerData.icon) {
-        markerData.icon = 'pin';
-        markerData.color = 'gray';
-      }
-      return markerData;
-    });
+        const markerData = {
+          ...poi,
+          ...categoryData,
+          ...subcategoryData,
+          priority:
+            selectedPoiId === poi.id ||
+            (poi as PlaceOverviewWithMetadata).agendaItem != null
+              ? 0
+              : subcategoryData?.priority ?? categoryData.priority,
+        };
+        if (!markerData.icon) {
+          markerData.icon = 'pin';
+          markerData.color = 'gray';
+        }
+        return markerData;
+      });
   }, [places, selectedPoiId]);
 
   return (
@@ -80,13 +95,16 @@ export const MarkersLayer = ({
           classroom: require('../../../../assets/map-icons/classroom.png'),
           conference: require('../../../../assets/map-icons/conference.png'),
           door: require('../../../../assets/map-icons/door.png'),
+          elevator: require('../../../../assets/map-icons/elevator.png'),
           lab: require('../../../../assets/map-icons/lab.png'),
           library: require('../../../../assets/map-icons/library.png'),
           medical: require('../../../../assets/map-icons/medical.png'),
+          microscope: require('../../../../assets/map-icons/microscope.png'),
           office: require('../../../../assets/map-icons/office.png'),
           pin: require('../../../../assets/map-icons/pin.png'),
           post: require('../../../../assets/map-icons/post.png'),
           print: require('../../../../assets/map-icons/print.png'),
+          recycle: require('../../../../assets/map-icons/recycle.png'),
           restaurant: require('../../../../assets/map-icons/restaurant.png'),
           restroom: require('../../../../assets/map-icons/restroom.png'),
           service: require('../../../../assets/map-icons/service.png'),
@@ -109,15 +127,17 @@ export const MarkersLayer = ({
                   index: i,
                   icon: p.icon,
                   priority: p.priority,
-                  name: isPlace(p)
-                    ? `${p.room.name ?? p.category.subCategory.name}${
-                        p.agendaItem != null
-                          ? `\n${formatAgendaItem(p.agendaItem, true)}`
-                          : displayFloor
-                          ? `\n${t('common.floor')} ${p.floor.level}`
-                          : ''
-                      }`
-                    : p.name,
+                  name: capitalize(
+                    isPlace(p)
+                      ? `${p.room.name ?? p.category.subCategory.name}${
+                          p.agendaItem != null
+                            ? `\n${formatAgendaItem(p.agendaItem, true)}`
+                            : displayFloor
+                            ? `\n${t('common.floor')} ${p.floor.level}`
+                            : ''
+                        }`
+                      : p.name,
+                  ),
                   color:
                     palettes[p.color as keyof Theme['palettes']][
                       dark ? 200 : p.shade ?? 500
