@@ -30,6 +30,7 @@ import { DateTime } from 'luxon';
 
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -63,11 +64,13 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   });
   const places = useMemo(
     () =>
-      freeRooms?.data.map(fr => {
-        const place = sitePlaces?.find(p => p.id === fr.id);
-        if (!place) return null;
-        return { ...fr, ...place };
-      }) as (SearchPlace & {
+      freeRooms?.data
+        .map(fr => {
+          const place = sitePlaces?.find(p => p.id === fr.id);
+          if (!place) return null;
+          return { ...fr, ...place };
+        })
+        ?.filter(notNullish) as (SearchPlace & {
         freeFrom: Date;
         freeTo: Date;
       })[],

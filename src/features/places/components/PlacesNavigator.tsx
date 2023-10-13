@@ -20,7 +20,6 @@ import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { MAX_ZOOM } from '../constants';
-import { BuildingScreen } from '../screens/BuildingScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
@@ -120,13 +119,13 @@ export const PlacesNavigator = () => {
           title: t('placeScreen.title'),
         }}
       />
-      <Map.Screen
-        name="Building"
-        component={BuildingScreen}
-        options={{
-          title: t('common.building'),
-        }}
-      />
+      {/* <Map.Screen*/}
+      {/*  name="Building"*/}
+      {/*  component={BuildingScreen}*/}
+      {/*  options={{*/}
+      {/*    title: t('common.building'),*/}
+      {/*  }}*/}
+      {/*/ >*/}
       <Stack.Screen
         name="MessagesModal"
         component={UnreadMessagesModal}

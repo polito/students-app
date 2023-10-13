@@ -4,6 +4,7 @@ import { CategoryData } from './types';
 export const INTERIORS_MIN_ZOOM = 18.6;
 export const MAX_ZOOM = 24;
 export const MARKERS_MIN_ZOOM = 15;
+export const UPCOMING_COMMITMENT_HOURS_OFFSET = 80;
 export const CATEGORIES_DATA: Record<string, CategoryData> = {
   default: {
     icon: 'pin',
@@ -43,6 +44,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
       WC_M: { icon: 'restroom', color: 'green', shade: 600 },
     },
   },
+  FONTANELLA: { icon: 'water', color: 'lightBlue', priority: 20, children: {} },
   SUPP: {
     icon: 'pin',
     color: 'gray',
@@ -138,4 +140,3 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     },
   },
 };
-export const UPCOMING_COMMITMENT_HOURS_OFFSET = 24;

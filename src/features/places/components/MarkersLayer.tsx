@@ -14,7 +14,7 @@ import {
   SearchPlace,
   isPlace,
 } from '../types';
-import { formatAgendaItem } from '../utils/formatAgendaItem';
+import { useFormatAgendaItem } from '../utils/formatAgendaItem';
 import { MapScreenProps } from './MapNavigator';
 import { PlacesStackParamList } from './PlacesNavigator';
 
@@ -34,51 +34,39 @@ export const MarkersLayer = ({
     useNavigation<MapScreenProps<PlacesStackParamList>['navigation']>();
   const { t } = useTranslation();
   const { dark, fontSizes, palettes } = useTheme();
+  const formatAgendaItem = useFormatAgendaItem();
   const pois = useMemo((): (SearchPlace & CategoryData)[] => {
-    return (
-      places
-        // ?.filter(p => {
-        //   const {
-        //     id: catId,
-        //     subCategory: { id: subCatId },
-        //   } = p.category;
-        //   return (
-        //     CATEGORIES_DATA[catId]?.children[subCatId] != null ||
-        //     selectedPoiId === p.id
-        //   );
-        // })
-        ?.map(poi => {
-          const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
-            ? CATEGORIES_DATA[
-                (poi as PlaceOverviewWithMetadata).category
-                  .id as keyof typeof CATEGORIES_DATA
-              ] ?? CATEGORIES_DATA.default
-            : CATEGORIES_DATA.default;
-          const subcategoryData = (poi as PlaceOverviewWithMetadata).category
-            ?.subCategory?.id
-            ? (categoryData.children[
-                (poi as PlaceOverviewWithMetadata).category.subCategory
-                  .id as keyof typeof categoryData.children
-              ] as any) ?? {}
-            : {};
+    return places?.map(poi => {
+      const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
+        ? CATEGORIES_DATA[
+            (poi as PlaceOverviewWithMetadata).category
+              .id as keyof typeof CATEGORIES_DATA
+          ] ?? CATEGORIES_DATA.default
+        : CATEGORIES_DATA.default;
+      const subcategoryData = (poi as PlaceOverviewWithMetadata).category
+        ?.subCategory?.id
+        ? (categoryData.children[
+            (poi as PlaceOverviewWithMetadata).category.subCategory
+              .id as keyof typeof categoryData.children
+          ] as any) ?? {}
+        : {};
 
-          const markerData = {
-            ...poi,
-            ...categoryData,
-            ...subcategoryData,
-            priority:
-              selectedPoiId === poi.id ||
-              (poi as PlaceOverviewWithMetadata).agendaItem != null
-                ? 0
-                : subcategoryData?.priority ?? categoryData.priority,
-          };
-          if (!markerData.icon) {
-            markerData.icon = 'pin';
-            markerData.color = 'gray';
-          }
-          return markerData;
-        })
-    );
+      const markerData = {
+        ...poi,
+        ...categoryData,
+        ...subcategoryData,
+        priority:
+          selectedPoiId === poi.id ||
+          (poi as PlaceOverviewWithMetadata).agendaItem != null
+            ? 0
+            : subcategoryData?.priority ?? categoryData.priority,
+      };
+      if (!markerData.icon) {
+        markerData.icon = 'pin';
+        markerData.color = 'gray';
+      }
+      return markerData;
+    });
   }, [places, selectedPoiId]);
 
   return (
