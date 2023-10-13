@@ -101,7 +101,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
   const titleStyles = useTitlesStyles(theme);
-
   const { id, courseName } = route.params;
 
   useLayoutEffect(() => {

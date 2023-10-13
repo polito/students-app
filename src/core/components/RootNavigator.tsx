@@ -26,15 +26,18 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { usePushNotificationHandlers } from '../hooks/usePushNotificationHandlers';
 import {
   useGetModalMessages,
   useGetStudent,
   useUpdateDevicePreferences,
 } from '../queries/studentHooks';
+import { RootParamList } from '../types/navigation';
+import { RemoteMessage } from '../types/notifications';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
-const TabNavigator = createBottomTabNavigator();
+const TabNavigator = createBottomTabNavigator<RootParamList>();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
@@ -42,6 +45,9 @@ export const RootNavigator = () => {
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
   const preferencesQuery = useUpdateDevicePreferences();
+  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+  const { navigateToUpdate, updateUnreadStatus } =
+    usePushNotificationHandlers();
 
   messaging().onTokenRefresh(fcmRegistrationToken => {
     preferencesQuery.mutate({
@@ -59,12 +65,41 @@ export const RootNavigator = () => {
     }
   }, [student]);
 
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  useEffect(() => {
+    (async () => {
+      const authorizationStatus = await messaging().requestPermission();
+      if (authorizationStatus !== messaging.AuthorizationStatus.DENIED) {
+        messaging().onNotificationOpenedApp(remoteMessage => {
+          navigateToUpdate(remoteMessage as RemoteMessage);
+        });
+
+        messaging()
+          .getInitialNotification()
+          .then(remoteMessage => {
+            navigateToUpdate(remoteMessage as RemoteMessage);
+          });
+
+        // messaging().onMessage(remoteMessage =>
+        //   updateUnreadStatus(remoteMessage as RemoteMessage),
+        // );
+        // messaging().setBackgroundMessageHandler(async remoteMessage =>
+        //   updateUnreadStatus(remoteMessage as RemoteMessage),
+        // );
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const { data: messages } = useGetModalMessages();
 
   useEffect(() => {
     if (!messages || messages.length === 0) return;
-    navigation.navigate('MessagesModal');
+    navigation.navigate('TeachingTab', {
+      screen: 'Home',
+      params: {
+        screen: 'MessagesModal',
+      },
+    });
   }, [messages, navigation]);
 
   const tabBarIconSize = 20;

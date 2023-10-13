@@ -10,6 +10,7 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'unreadNotifications',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
@@ -20,6 +21,7 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'unreadNotifications',
 ];
 
 export type CoursesPreferences = {
@@ -39,6 +41,16 @@ export type PreferencesContextProps = {
   updatePreference: (key: PreferenceKey, value: unknown) => void;
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
+  /**
+   * A map from notification object path to number of unread notifications
+   *
+   * @example
+   * {
+   *   "courses/12345/notices/12345": 1,
+   *   "tickets/12345": 2,
+   * }
+   */
+  unreadNotifications: Record<string, number>;
 };
 
 export interface CoursePreferencesProps {
