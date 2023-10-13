@@ -27,7 +27,7 @@ import { Slider } from '@miblanchard/react-native-slider';
 import { DateTime } from 'luxon';
 
 import { negate } from '../../utils/predicates';
-import { GlobalStyles } from '../styles/globalStyles';
+import { GlobalStyles } from '../styles/GlobalStyles';
 import { darkTheme } from '../themes/dark';
 import { GradientBackdrop } from './GradientBackdrop';
 

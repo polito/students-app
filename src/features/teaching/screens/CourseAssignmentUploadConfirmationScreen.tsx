@@ -22,7 +22,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<

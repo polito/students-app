@@ -15,7 +15,7 @@ import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { IS_IOS } from '../../../core/constants';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { pdfSizes } from '../../teaching/constants';
 import { Attachment } from '../types/Attachment';
 import { AttachmentChip } from './AttachmentChip';

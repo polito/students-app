@@ -90,7 +90,7 @@ export const ServicesScreen = () => {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,
-        disabled: isOffline && peopleSearched?.length === 0,
+        disabled: isOffline && peopleSearched?.length === 0, // TODO why?
         linkTo: { screen: 'Contacts' },
       },
       {

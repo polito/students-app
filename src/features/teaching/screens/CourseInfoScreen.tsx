@@ -27,7 +27,7 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ExamListItem } from '../components/ExamListItem';
 import { useCourseContext } from '../contexts/CourseContext';
 

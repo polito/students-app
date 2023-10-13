@@ -25,7 +25,6 @@ import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
 import {
   CoursesPreferences,
-  PreferenceKey,
   usePreferencesContext,
 } from '../contexts/PreferencesContext';
 import { useGetExams } from './examHooks';
@@ -40,7 +39,9 @@ const useCoursesClient = (): CoursesApi => {
 const setupCourses = (
   courses: CourseOverview[],
   coursePreferences: CoursesPreferences,
-  updatePreference: (key: PreferenceKey, value: unknown) => void,
+  updatePreference: ReturnType<
+    typeof usePreferencesContext
+  >['updatePreference'],
 ) => {
   let hasNewPreferences = false;
   // Associate each course with a set of preferences, if missing

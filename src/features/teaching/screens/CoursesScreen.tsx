@@ -37,7 +37,10 @@ export const CoursesScreen = () => {
                 (byPeriod[course.teachingPeriod] =
                   byPeriod[course.teachingPeriod] ?? []).push(course);
                 return byPeriod;
-              }, {} as Record<string, CourseOverview[]>),
+              }, {} as Record<string, CourseOverview[]>) as Record<
+                string,
+                CourseOverview[]
+              >,
             ).map(([period, courses]) => (
               <Section key={period}>
                 <SectionHeader

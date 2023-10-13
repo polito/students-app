@@ -16,7 +16,7 @@ import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 import { useCourseContext } from '../contexts/CourseContext';

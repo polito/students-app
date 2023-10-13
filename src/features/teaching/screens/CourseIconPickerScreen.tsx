@@ -8,7 +8,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  PreferencesContextBase,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
@@ -93,7 +96,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
                 ...coursePrefs,
                 icon: null,
               },
-            });
+            } as PreferencesContextBase['courses']);
             navigation.goBack();
           }}
         />

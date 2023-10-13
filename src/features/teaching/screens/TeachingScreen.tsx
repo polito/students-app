@@ -31,7 +31,7 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
