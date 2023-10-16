@@ -5,10 +5,10 @@
     "emptyDay": "Non hai impegni oggi",
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
-    "title": "Agenda",
-    "weeklyLayout": "Layout settimanale",
     "room": "Aula {{roomName}}",
-    "rooms": "Aule {{roomNames}}"
+    "rooms": "Aule {{roomNames}}",
+    "title": "Agenda",
+    "weeklyLayout": "Layout settimanale"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -53,26 +53,15 @@
   "common": {
     "back": "Indietro",
     "next": "Avanti",
-    "other": "Altro",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
-    "faculty": "Collegio",
     "agent": "Operatore",
-    "close": "Chiudi",
-    "search": "Cerca",
-    "cfu": "CFU",
     "all": "Tutti",
-    "department": "Dipartimento",
-    "location": "Sede",
-    "duration": "Durata",
-    "objectives": "Obiettivi formativi",
-    "notes": "Note",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
-    "year": "anno",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "building": "Edificio",
@@ -82,8 +71,10 @@
     "campus": "Sede",
     "cancel": "Annulla",
     "capacity": "Capacità",
+    "cfu": "CFU",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
+    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -99,6 +90,7 @@
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
+    "department": "Dipartimento",
     "done": "Fatto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
@@ -109,6 +101,7 @@
       "false": "Non scaricato",
       "true": "Scaricato"
     },
+    "duration": "Durata",
     "earnedCredits": "Crediti acquisiti",
     "ects": "CFU",
     "elementCount": "Elemento {{count}} di {{total}}",
@@ -134,6 +127,7 @@
     },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
     "facilities": "Dotazioni",
+    "faculty": "Collegio",
     "file": "File",
     "file_plural": "File",
     "floor": "Piano",
@@ -148,6 +142,7 @@
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "loading": "Caricamento",
+    "location": "Sede",
     "logout": "Logout",
     "minutes": "Minuti",
     "navigate": "Naviga",
@@ -155,10 +150,12 @@
     "newItems_plural": "Nuovi elementi",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "notFound": "Luogo inesistente",
+    "notes": "Note",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
     "now": "Adesso",
+    "objectives": "Obiettivi formativi",
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
@@ -173,6 +170,7 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
     "phone": "Telefono",
@@ -186,6 +184,7 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "search": "Cerca",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
@@ -212,7 +211,8 @@
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
-    "visualization": "Visualizzazione"
+    "visualization": "Visualizzazione",
+    "year": "anno"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -224,26 +224,6 @@
     "recentSearches": "Ricerche recenti",
     "search": "Cerca contatti",
     "title": "Contatti"
-  },
-  "offeringScreen": {
-    "title": "Offerta formativa",
-    "bachelor": "Laurea triennale",
-    "master": "Laurea magistrale",
-    "emptyMessage": "Nessun corso disponibile"
-  },
-  "degreeScreen": {
-    "cohort": "Coorte",
-    "degreeClass": "Classe di laurea",
-    "info": "Info",
-    "jobOpportunities": "Sbocchi",
-    "title": "Corso di laurea",
-    "tracks": "Piano studi"
-  },
-  "offeringBachelorScreen": {
-    "title": "Lauree triennali"
-  },
-  "offeringMasterScreen": {
-    "title": "Lauree magistrali"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -320,18 +300,6 @@
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
   },
-  "degreeCourseScreen": {
-    "title": "Corso",
-    "period": "Periodo",
-    "examMode": "Modalità di esame",
-    "lecture": "Lezioni",
-    "classroomExercise": "Esercitazioni in aula",
-    "tutoring": "Tutoraggio",
-    "labExercise": "Esercitazioni in laboratorio",
-    "staff": "Docenti",
-    "hours": "{{hours}} Ore",
-    "noStaff": "Nessun docente associato a questo corso"
-  },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCacheFeedback": "I file sono stati rimossi correttamente",
@@ -348,8 +316,8 @@
     "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom",
-    "liveCta": "Collegati alla diretta"
+    "liveCta": "Collegati alla diretta",
+    "title": "Virtual classroom"
   },
   "coursesScreen": {
     "emptyState": "Non ci sono corsi",
@@ -371,6 +339,26 @@
     "topicDescription": "Seleziona l'argomento",
     "topicDropdownLabel": "Argomento",
     "topicDropdownPlaceholder": "Seleziona l'argomento"
+  },
+  "degreeCourseScreen": {
+    "classroomExercise": "Esercitazioni in aula",
+    "examMode": "Modalità di esame",
+    "hours": "{{hours}} Ore",
+    "labExercise": "Esercitazioni in laboratorio",
+    "lecture": "Lezioni",
+    "noStaff": "Nessun docente associato a questo corso",
+    "period": "Periodo",
+    "staff": "Docenti",
+    "title": "Corso",
+    "tutoring": "Tutoraggio"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Classe di laurea",
+    "info": "Info",
+    "jobOpportunities": "Sbocchi",
+    "title": "Corso di laurea",
+    "tracks": "Piano studi"
   },
   "examRequestScreen": {
     "error": "Compila il campo di testo prima di procedere con la richiesta",
@@ -396,6 +384,7 @@
     "total": "Sono presenti {{ total }} appelli"
   },
   "freeRoomsScreen": {
+    "noFreeRooms": "Nessuna aula libera trovata",
     "title": "Aule libere"
   },
   "grades": {
@@ -403,13 +392,13 @@
     "fail": "Ins",
     "pass": "Sup"
   },
+  "guideScreen": {
+    "copiedFieldFeedback": "{{field}} copiato",
+    "title": "Guida"
+  },
   "guidesScreen": {
     "title": "Guide",
     "total": "Sono presenti {{ total }} guide"
-  },
-  "guideScreen": {
-    "title": "Guida",
-    "copiedFieldFeedback": "{{field}} copiato"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
@@ -489,6 +478,18 @@
   },
   "notificationsScreen": {
     "title": "Archivio notifiche"
+  },
+  "offeringBachelorScreen": {
+    "title": "Lauree triennali"
+  },
+  "offeringMasterScreen": {
+    "title": "Lauree magistrali"
+  },
+  "offeringScreen": {
+    "bachelor": "Laurea triennale",
+    "emptyMessage": "Nessun corso disponibile",
+    "master": "Laurea magistrale",
+    "title": "Offerta formativa"
   },
   "personScreen": {
     "call": "Chiama",

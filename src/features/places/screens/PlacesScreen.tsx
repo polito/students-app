@@ -232,20 +232,18 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       ),
     });
   }, [
-    campus,
-    displayFloorId,
-    floorId,
-    headerHeight,
-    navigation,
-    categoryId,
-    route,
-    safeAreaInsets.top,
-    debouncedSearch,
-    spacing,
-    tabsHeight,
-    categoryFilterActive,
     bounds,
+    campus,
+    categoryFilterActive,
+    categoryId,
+    debouncedSearch,
+    displayFloorId,
+    headerHeight,
     places,
+    safeAreaInsets.top,
+    spacing,
+    subCategoryId,
+    tabsHeight,
   ]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
@@ -320,7 +318,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:AULA',
                 params: { subCategoryId: 'AULA' },
               })
             }
@@ -332,7 +329,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:S_STUD',
                 params: { subCategoryId: 'S_STUD' },
               })
             }
@@ -344,7 +340,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:BIBLIO',
                 params: { subCategoryId: 'BIBLIO' },
               })
             }

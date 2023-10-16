@@ -5,10 +5,10 @@
     "emptyDay": "You have no events today",
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
-    "title": "Agenda",
-    "weeklyLayout": "Weekly layout",
     "room": "Room {{roomName}}",
-    "rooms": "Rooms {{roomNames}}"
+    "rooms": "Rooms {{roomNames}}",
+    "title": "Agenda",
+    "weeklyLayout": "Weekly layout"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -59,16 +59,8 @@
       "false": "Non active",
       "true": "Active"
     },
-    "faculty": "Faculty",
     "agent": "Agent",
     "all": "All",
-    "department": "Department",
-    "location": "Location",
-    "duration": "Duration",
-    "objectives": "Objectives",
-    "notes": "Notes",
-    "cfu": "CFU",
-    "year": "year",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
@@ -80,6 +72,7 @@
     "campus": "Campus",
     "cancel": "Cancel",
     "capacity": "Capacity",
+    "cfu": "CFU",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
     "close": "Close",
@@ -98,6 +91,7 @@
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
+    "department": "Department",
     "done": "Done",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
@@ -108,6 +102,7 @@
       "false": "Not downloaded",
       "true": "Downloaded"
     },
+    "duration": "Duration",
     "earnedCredits": "Earned credits",
     "ects": "ECTS",
     "elementCount": "Element {{count}} of {{total}}",
@@ -133,6 +128,7 @@
     },
     "externalLink": "External link. By pressing the link you will be redirected to an external browser",
     "facilities": "Facilities",
+    "faculty": "Faculty",
     "file": "File",
     "file_plural": "Files",
     "floor": "Floor",
@@ -147,6 +143,7 @@
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
     "loading": "Loading",
+    "location": "Location",
     "logout": "Logout",
     "minutes": "Minutes",
     "navigate": "Navigate",
@@ -154,10 +151,12 @@
     "newItems_plural": "New items",
     "noInternet": "You are offline, some features may not be available",
     "notFound": "Not found",
+    "notes": "Notes",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
     "now": "Now",
+    "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
     "open": "Open",
@@ -212,7 +211,8 @@
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
-    "visualization": "Visualization"
+    "visualization": "Visualization",
+    "year": "year"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -224,38 +224,6 @@
     "recentSearches": "Recent searches",
     "search": "Search people",
     "title": "Contacts"
-  },
-  "offeringScreen": {
-    "title": "Offering",
-    "bachelor": "Bachelor degree",
-    "master": "Master degree",
-    "emptyMessage": "No course available"
-  },
-  "degreeScreen": {
-    "cohort": "Coorte",
-    "degreeClass": "Degree code",
-    "info": "Info",
-    "jobOpportunities": "Job opportunities",
-    "title": "Degree",
-    "tracks": "Tracks"
-  },
-  "offeringBachelorScreen": {
-    "title": "Bachelor degree"
-  },
-  "offeringMasterScreen": {
-    "title": "Master degree"
-  },
-  "degreeCourseScreen": {
-    "title": "Course",
-    "period": "Period",
-    "examMode": "Exam mode",
-    "lecture": "Lecture",
-    "classroomExercise": "Classroom excercise",
-    "tutoring": "Tutoring",
-    "labExercise": "Lab excercise",
-    "staff": "Staff",
-    "hours": "{{hours}} hours",
-    "noStaff": "No teacher is associated to this course"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
@@ -348,8 +316,8 @@
     "fileDownloadFailed": "The download failed. Please try again later."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom",
-    "liveCta": "Join live streaming"
+    "liveCta": "Join live streaming",
+    "title": "Virtual classroom"
   },
   "coursesScreen": {
     "emptyState": "No courses available",
@@ -371,6 +339,26 @@
     "topicDescription": "Select topic",
     "topicDropdownLabel": "Topic",
     "topicDropdownPlaceholder": "Pick a topic"
+  },
+  "degreeCourseScreen": {
+    "classroomExercise": "Classroom excercise",
+    "examMode": "Exam mode",
+    "hours": "{{hours}} hours",
+    "labExercise": "Lab excercise",
+    "lecture": "Lecture",
+    "noStaff": "No teacher is associated to this course",
+    "period": "Period",
+    "staff": "Staff",
+    "title": "Course",
+    "tutoring": "Tutoring"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Degree code",
+    "info": "Info",
+    "jobOpportunities": "Job opportunities",
+    "title": "Degree",
+    "tracks": "Tracks"
   },
   "examRequestScreen": {
     "error": "Fill in the text field before proceeding with the request",
@@ -396,6 +384,7 @@
     "total": "There are {{ total }} exam calls"
   },
   "freeRoomsScreen": {
+    "noFreeRooms": "No free rooms found",
     "title": "Free rooms"
   },
   "grades": {
@@ -403,12 +392,12 @@
     "fail": "Fail",
     "pass": "Pass"
   },
+  "guideScreen": {
+    "copiedFieldFeedback": "{{field}} copied",
+    "title": "Guide"
+  },
   "guidesScreen": {
     "title": "Guides"
-  },
-  "guideScreen": {
-    "title": "Guide",
-    "copiedFieldFeedback": "{{field}} copied"
   },
   "jobOfferScreen": {
     "application": "Application",
@@ -488,6 +477,18 @@
   },
   "notificationsScreen": {
     "title": "Notifications archive"
+  },
+  "offeringBachelorScreen": {
+    "title": "Bachelor degree"
+  },
+  "offeringMasterScreen": {
+    "title": "Master degree"
+  },
+  "offeringScreen": {
+    "bachelor": "Bachelor degree",
+    "emptyMessage": "No course available",
+    "master": "Master degree",
+    "title": "Offering"
   },
   "personScreen": {
     "call": "Call",

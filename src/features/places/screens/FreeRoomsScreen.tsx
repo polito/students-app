@@ -10,6 +10,7 @@ import {
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
@@ -171,7 +172,9 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
           ListEmptyComponent={
             isLoadingRooms ? (
               <ActivityIndicator style={{ marginVertical: spacing[8] }} />
-            ) : undefined
+            ) : (
+              <EmptyState message={t('freeRoomsScreen.noFreeRooms')} />
+            )
           }
         />
       </BottomSheet>
