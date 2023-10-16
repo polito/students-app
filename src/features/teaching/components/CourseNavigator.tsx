@@ -7,9 +7,13 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {
+  MaterialTopTabNavigationOptions,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseContext } from '../contexts/CourseContext';
@@ -39,6 +43,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
+  const { getUnreadsCount } = usePushNotifications();
   const titleStyles = useTitlesStyles(theme);
 
   const { id } = route.params;
@@ -123,6 +128,12 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseNoticesScreen}
             options={{
               title: t('courseNoticesTab.title'),
+              tabBarBadge: getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'notices',
+              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
             }}
           />
           <TopTabs.Screen
@@ -130,6 +141,12 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseFilesScreen}
             options={{
               title: t('courseFilesTab.title'),
+              tabBarBadge: getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'files',
+              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
             }}
           />
           <TopTabs.Screen

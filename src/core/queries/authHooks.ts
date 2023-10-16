@@ -3,6 +3,7 @@ import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
+import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
@@ -28,8 +29,9 @@ export const useLogin = () => {
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
+        messaging().getToken(),
       ])
-        .then(([name, model, manufacturer]) => {
+        .then(([name, model, manufacturer, fcmRegistrationToken]) => {
           dto.device = {
             name,
             platform: Platform.OS,
@@ -37,6 +39,7 @@ export const useLogin = () => {
             model,
             manufacturer,
           };
+          dto.preferences = { ...dto.preferences, fcmRegistrationToken };
         })
         .then(() => authClient.login({ loginRequest: dto }))
         .then(pluckData)

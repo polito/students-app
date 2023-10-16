@@ -405,7 +405,8 @@
     "title": "Guides"
   },
   "guideScreen": {
-    "title": "Guide"
+    "title": "Guide",
+    "copiedFieldFeedback": "{{field}} copied"
   },
   "jobOfferScreen": {
     "application": "Application",

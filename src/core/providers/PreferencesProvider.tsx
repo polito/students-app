@@ -23,6 +23,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       updatePreference: () => {},
       favoriteServices: [],
       peopleSearched: [],
+      unreadNotifications: {},
       placesSearched: [],
     });
 

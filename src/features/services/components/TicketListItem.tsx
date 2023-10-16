@@ -11,7 +11,7 @@ import {
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { ListItem } from '@lib/ui/components/ListItem';
+import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -31,11 +31,11 @@ import {
 import { formatDateTime } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 
-interface Props {
+interface TicketListItemProps extends Partial<ListItemProps> {
   ticket: TicketOverview;
 }
 
-export const TicketListItem = ({ ticket }: Props) => {
+export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
   const { fontSizes, colors, palettes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -86,6 +86,7 @@ export const TicketListItem = ({ ticket }: Props) => {
   const Item = () => {
     return (
       <ListItem
+        {...props}
         linkTo={{
           screen: 'Ticket',
           params: { id: ticket.id },

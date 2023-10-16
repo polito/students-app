@@ -229,6 +229,7 @@ jobs:
       FASTLANE_USERNAME: ${{ secrets.FASTLANE_POLI_MOBILE_USER }}
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
+      SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
     needs: configure
     runs-on: [self-hosted, macos-12]
     steps:
@@ -273,6 +274,8 @@ jobs:
       run: |
         echo "${{ secrets.MATCH_GIT_AUTH_PK }}" > ${MATCH_GIT_PRIVATE_KEY}
         chmod 600 ${MATCH_GIT_PRIVATE_KEY}
+        echo "${{ secrets.SUPPLY_GOOGLE_SERVICE_INFO_PLIST }}" | base64 -d > ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
+        chmod 600 ${MATCH_GIT_PRIVATE_KEY} ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_testflight == 'false'
       working-directory: ./ios

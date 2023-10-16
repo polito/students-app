@@ -131,7 +131,7 @@ export const useGetCourse = (courseId: number) => {
         .then(pluckData)
         .then(course => {
           const { teachingPeriod } = course;
-          const period = teachingPeriod.split('-');
+          const period = teachingPeriod?.split('-');
           if (period.length > 1 && period[0] === period[1]) {
             course.teachingPeriod = period[0];
           }

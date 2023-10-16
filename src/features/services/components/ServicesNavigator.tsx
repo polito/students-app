@@ -131,7 +131,7 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
-          headerBackTitle: t('ticketScreen.headerBackTitle'),
+          headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
           headerLargeStyle: {
             backgroundColor: 'transparent',
           },

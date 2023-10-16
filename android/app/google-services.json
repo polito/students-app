@@ -1,0 +1,84 @@
+{
+  "project_info": {
+    "project_number": "686477782144",
+    "project_id": "polito-students",
+    "storage_bucket": "polito-students.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686477782144:android:25aaa955814ff5c04e0a65",
+        "android_client_info": {
+          "package_name": "it.polito.students"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686477782144-l30fp9a4dnfrl37armb7veq5q244npet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjZaRxuZzPxc6noBkNcoIiV3qgpskdbqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686477782144-l30fp9a4dnfrl37armb7veq5q244npet.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "686477782144-n395h7hmfnr89e46odqntbiq12eo94ov.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "it.polito.students",
+                "app_store_id": "6443913305"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686477782144:android:25aaa955814ff5c04e0a65",
+        "android_client_info": {
+          "package_name": "it.polito.students.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686477782144-l30fp9a4dnfrl37armb7veq5q244npet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjZaRxuZzPxc6noBkNcoIiV3qgpskdbqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686477782144-l30fp9a4dnfrl37armb7veq5q244npet.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "686477782144-n395h7hmfnr89e46odqntbiq12eo94ov.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "it.polito.students.dev",
+                "app_store_id": "6443913305"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
