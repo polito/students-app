@@ -126,12 +126,6 @@ export const ServicesScreen = ({ navigation }: Props) => {
           queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Bookings' },
       },
-      {
-        id: 'library',
-        name: t('libraryScreen.title'),
-        icon: faBookBookmark,
-        disabled: true,
-      },
     ];
   }, [
     emailGuideRead,

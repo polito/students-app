@@ -54,7 +54,7 @@ export const GuideScreen = ({ navigation, route }: Props) => {
           <ScreenTitle title={guide?.title ?? ''} padded />
         </Section>
         <Section>
-          <Card padded>
+          <Card padded style={styles.card}>
             <Text>{guide?.intro}</Text>
           </Card>
           <OverviewList indented loading={query.isLoading}>
@@ -62,7 +62,7 @@ export const GuideScreen = ({ navigation, route }: Props) => {
               return <GuideFieldListItem field={field} key={field.label} />;
             })}
           </OverviewList>
-          <Card padded>
+          <Card padded style={styles.card}>
             {guide?.sections.map(section => {
               return (
                 <GuideSectionListItem section={section} key={section.title} />
@@ -79,4 +79,5 @@ export const GuideScreen = ({ navigation, route }: Props) => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     paddingTop: { paddingTop: spacing[2] },
+    card: { paddingHorizontal: spacing[5] },
   });

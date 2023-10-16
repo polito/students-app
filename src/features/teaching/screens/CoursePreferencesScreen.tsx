@@ -3,13 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import {
-  faBell,
-  faCircle,
-  faEye,
-  faFile,
-} from '@fortawesome/free-regular-svg-icons';
-import { faBroom, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faEye } from '@fortawesome/free-regular-svg-icons';
+import { faBroom } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -178,7 +173,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               </OverviewList>
             </Section>
 
-            <Section>
+            {/* <Section>
               <SectionHeader title={t('common.notifications')} />
               <OverviewList indented>
                 <SwitchListItem
@@ -216,7 +211,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   }}
                 />
               </OverviewList>
-            </Section>
+            </Section>*/}
 
             <Section>
               <SectionHeader title={t('common.file_plural')} />

@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { OnboardingScreen } from '../../../core/screens/OnboardingScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
@@ -62,6 +63,7 @@ export interface TeachingStackParamList extends ParamListBase {
   ExamRequest: { id: number };
   MessagesModal: undefined;
   Transcript: undefined;
+  OnboardingModal: { step: number };
 }
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -265,6 +267,17 @@ export const TeachingNavigator = () => {
         component={UnreadMessagesModal}
         options={{
           headerTitle: t('messagesScreen.title'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
+          headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="OnboardingModal"
+        component={OnboardingScreen}
+        options={{
+          headerTitle: t('onboardingScreen.title'),
           headerLargeTitle: false,
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,

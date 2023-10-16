@@ -26,6 +26,7 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import {
   useGetModalMessages,
@@ -103,7 +104,24 @@ export const RootNavigator = () => {
 
   const { data: messages } = useGetModalMessages();
 
+  const { onboardingStep } = usePreferencesContext();
+
   useEffect(() => {
+    if (onboardingStep && onboardingStep >= 4) return;
+    navigation.navigate('TeachingTab', {
+      screen: 'OnboardingModal',
+      params: {
+        step: onboardingStep ?? 0,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!onboardingStep || onboardingStep < 4) {
+      return;
+    }
+
     if (!messages || messages.length === 0) return;
     navigation.navigate('TeachingTab', {
       screen: 'Home',

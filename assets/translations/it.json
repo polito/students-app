@@ -51,6 +51,8 @@
     "yellow": "Giallo"
   },
   "common": {
+    "back": "Indietro",
+    "next": "Avanti",
     "other": "Altro",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
@@ -631,5 +633,26 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
+  },
+  "onboardingScreen": {
+    "title" : "Novità",
+    "steps": {
+      "0": {
+        "title" : "Cosa è cambiato?",
+        "content": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone."
+      },
+      "1": {
+        "title" : "Cosa è cambiato?",
+        "content": "Ti orienterai con più facilità all'interno del Politecnico grazie al nuovo sistema di mappe e filtri per trovare ciò che cerchi."
+      },
+      "2":{
+        "title" : "Come dare un feedback?",
+        "content": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo."
+      },
+      "3":{
+        "title" : "Come configurare l’email?",
+        "content": "Per avere accesso alla tua email Polito segui la guida “Configura la tua email” nella nuova sezione “Guide”."
+      }
+    }
   }
 }

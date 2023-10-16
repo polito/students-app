@@ -51,6 +51,8 @@
     "yellow": "Yellow"
   },
   "common": {
+    "back": "Back",
+    "next": "Next",
     "other": "Other",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
@@ -630,5 +632,26 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
+  },
+  "onboardingScreen": {
+    "title": "What's new",
+    "steps": {
+      "0": {
+        "title": "What has changed?",
+        "content": "You can customize what you see and make your agenda more organized by choosing the courses to view, the colors and the icons."
+      },
+      "1": {
+        "title": "What has changed?",
+        "content": "You will find your way around the Polytechnic more easily thanks to the new system of maps and filters to find what you are looking for."
+      },
+      "2": {
+        "title": "How to give feedback?",
+        "content": "Your comments help us improve: you can send feedback on the new app by opening a ticket that will go directly to the development team."
+      },
+      "3": {
+        "title": "How to configure email?",
+        "content": "To have access to your Polito email, follow the “Configure your email” guide in the new “Guides” section."
+      }
+    }
   }
 }
