@@ -41,7 +41,7 @@ export interface ExamItem extends BaseAgendaItem {
   isTimeToBeDefined: boolean;
   teacherId: number;
   places: PlaceRef[];
-  color: string;
+  color?: string;
   icon?: string;
 }
 
@@ -55,7 +55,7 @@ export interface LectureItem extends BaseAgendaItem {
   description: string | null;
   place: PlaceRef | null;
   virtualClassrooms: RelatedVirtualClassroom[];
-  color: string;
+  color?: string;
   icon?: string;
 }
 

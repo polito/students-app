@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import * as Keychain from 'react-native-keychain';
@@ -22,6 +22,13 @@ import {
 import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
+
+export const asyncStoragePersister = createAsyncStoragePersister({
+  key: 'polito-students.queries',
+  storage: AsyncStorage,
+  serialize: SuperJSON.stringify,
+  deserialize: SuperJSON.parse,
+});
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
@@ -154,24 +161,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     });
   }, [isEnvProduction, t]);
 
-  const asyncStoragePersister = createAsyncStoragePersister({
-    key: 'polito-students.queries',
-    storage: AsyncStorage,
-    serialize: SuperJSON.stringify,
-    deserialize: SuperJSON.parse,
-  });
-
-  const identityRef = useRef<string>(apiContext.username);
-
-  // Invalidate queries when identity is changed
-  useEffect(() => {
-    const previousIdentity = identityRef.current;
-    identityRef.current = apiContext.username;
-    if (['', identityRef.current].includes(previousIdentity)) return;
-
-    queryClient.invalidateQueries([]);
-  }, [queryClient, apiContext.username, asyncStoragePersister]);
-
   return (
     <ApiContext.Provider value={apiContext}>
       {splashContext.isAppLoaded && (
@@ -179,7 +168,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
           client={queryClient}
           persistOptions={{
             persister: asyncStoragePersister,
-            buster: apiContext.username,
             maxAge: Infinity,
           }}
         >

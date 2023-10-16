@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
-import { Lecture, LecturesApi } from '@polito/api-client';
+import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
-import { notNullish } from '../../../utils/predicates';
 import { pluckData } from '../../../utils/queries';
+import { Lecture } from '../types/Lecture';
 
 export const LECTURES_QUERY_KEY = ['lectures'];
 
@@ -29,14 +29,26 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
   const visibleCourseIds = useMemo(() => {
     if (!courses) return [];
 
-    const courseIds = courses.filter(notNullish).map(c => c.id!);
-
-    const hiddenCourseIds = Object.entries(coursesPreferences)
+    const hiddenUniqueShortcodes = Object.entries(coursesPreferences)
       .filter(([_, prefs]) => prefs.isHidden)
-      .map(([id]) => Number(id));
+      .map(([uniqueShortcode]) => uniqueShortcode);
 
-    return courseIds.filter(id => id && !hiddenCourseIds.includes(id));
+    return courses
+      .filter(
+        course =>
+          course.id !== null &&
+          !hiddenUniqueShortcodes.includes(course.uniqueShortcode),
+      )
+      .map(course => course.id as number);
   }, [courses, coursesPreferences]);
+
+  const addUniqueShortcodeToLectures = (lectures: ApiLecture[]): Lecture[] => {
+    return lectures.map(lecture => ({
+      ...lecture,
+      uniqueShortcode: courses!.find(course => course.id === lecture.courseId)
+        ?.uniqueShortcode,
+    }));
+  };
 
   return useInfiniteQuery<Lecture[]>(
     LECTURES_QUERY_KEY,
@@ -49,7 +61,8 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
           toDate: until.toJSDate(),
           courseIds: visibleCourseIds,
         })
-        .then(pluckData);
+        .then(pluckData)
+        .then(addUniqueShortcodeToLectures);
     },
     {
       enabled: Array.isArray(visibleCourseIds),

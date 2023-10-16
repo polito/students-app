@@ -91,12 +91,12 @@ type Props = NativeStackScreenProps<
 export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { spacing, fontSizes } = useTheme();
-  const { courseId } = route.params;
+  const { courseId, uniqueShortcode } = route.params;
   const courseQuery = useGetCourse(courseId);
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
-    () => coursesPrefs[courseId],
-    [courseId, coursesPrefs],
+    () => coursesPrefs[uniqueShortcode],
+    [uniqueShortcode, coursesPrefs],
   );
 
   return (
@@ -126,7 +126,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   onPressAction={({ nativeEvent: { event: color } }) => {
                     updatePreference('courses', {
                       ...coursesPrefs,
-                      [courseId]: {
+                      [uniqueShortcode]: {
                         ...coursePrefs,
                         color,
                       },
@@ -143,7 +143,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('common.icon')}
                   isAction
                   onPress={() =>
-                    navigation.navigate('CourseIconPicker', { courseId })
+                    navigation.navigate('CourseIconPicker', { uniqueShortcode })
                   }
                   leadingItem={
                     <Icon
@@ -165,7 +165,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   onChange={value => {
                     updatePreference('courses', {
                       ...coursesPrefs,
-                      [courseId]: {
+                      [uniqueShortcode]: {
                         ...coursePrefs,
                         isHidden: !value,
                       },

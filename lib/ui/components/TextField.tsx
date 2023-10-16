@@ -15,7 +15,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { IS_IOS } from '../../../src/core/constants';
 import { useTheme } from '../hooks/useTheme';
 
-export interface Props extends Omit<TextInputProps, 'placeholder'> {
+export interface TextFieldProps extends Omit<TextInputProps, 'placeholder'> {
   inputRef?: Ref<TextInput>;
   label: string;
   type?: 'text' | 'password';
@@ -36,7 +36,7 @@ export const TextField = ({
   numberOfLines = 1,
   autoCapitalize = 'none',
   ...rest
-}: TextInputProps & Props) => {
+}: TextFieldProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
