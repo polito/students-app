@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   FlatList,
@@ -15,20 +15,26 @@ import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
+import { tabBarStyle } from '../../utils/tab-bar';
 import { OnboardingStep } from '../components/OnboardingStep';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 
-export const OnboardingScreen = () => {
+type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
+
+export const OnboardingScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
 
+  const { step } = route.params;
   const { width } = useWindowDimensions();
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState<number>(step);
   const stepsRef = useRef<FlatList>(null);
 
-  const { navigate } = useNavigation();
-  const data = [0, 1, 2, 3];
+  const data = useMemo(() => [0, 1, 2, 3], []);
   const isLastStep = useMemo(
     () => currentPageIndex === data.length - 1,
     [currentPageIndex, data],
@@ -40,9 +46,30 @@ export const OnboardingScreen = () => {
     });
   };
 
+  const { updatePreference } = usePreferencesContext();
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.getParent()!.setOptions({
+        tabBarStyle: { display: 'none' },
+      });
+      return () => {
+        updatePreference('onboardingStep', currentPageIndex + 1);
+        navigation.getParent()!.setOptions({
+          tabBarStyle: tabBarStyle,
+        });
+      };
+    }, [navigation]),
+  );
   const onNextPage = () => {
+    updatePreference('onboardingStep', currentPageIndex + 1);
     if (isLastStep) {
-      // TODO NAVIGATE TO GUIDE
+      navigation.navigate({
+        name: 'ServicesTab',
+        params: {
+          name: 'GuidesScreen',
+        },
+      });
       return;
     }
 
@@ -68,7 +95,7 @@ export const OnboardingScreen = () => {
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
-        initialNumToRender={data.length}
+        initialNumToRender={2}
         renderItem={({ item }) => (
           <OnboardingStep stepNumber={item} width={width} />
         )}

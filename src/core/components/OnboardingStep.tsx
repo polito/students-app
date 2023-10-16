@@ -1,36 +1,32 @@
-import { useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { tabBarStyle } from '../../utils/tab-bar';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 
 interface Props {
   stepNumber: number;
   width: number;
 }
+
 export const OnboardingStep = ({ stepNumber, width }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const navigation = useNavigation();
-  useFocusEffect(
-    useCallback(() => {
-      navigation.getParent()!.setOptions({
-        tabBarStyle: { display: 'none' },
-      });
-      // Invalidate message list when the modal is closing
-      return () => {
-        navigation.getParent()!.setOptions({
-          tabBarStyle: tabBarStyle,
-        });
-      };
-    }, []),
-  );
+  const { language } = usePreferencesContext();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const videoUrl = useMemo(() => {
+    return `https://video.polito.it/public/app/onboarding_step_${
+      stepNumber + 1
+    }_${Platform.OS}_${language}.mp4`;
+  }, [language, stepNumber]);
 
   return (
     <SafeAreaView>
@@ -43,40 +39,57 @@ export const OnboardingStep = ({ stepNumber, width }: Props) => {
             {t(`onboardingScreen.steps.${stepNumber}.content`)}
           </Text>
         </View>
-        <Video
-          source={{
-            uri: 'https://video.polito.it/public/app/onboarding_step_1_android_it.mp4',
-          }}
-          style={styles.video}
-          resizeMode="contain"
-          repeat={true}
-        />
+        <View style={styles.videoContainer}>
+          <Video
+            onReadyForDisplay={() => {
+              setIsLoading(false);
+            }}
+            source={{
+              uri: videoUrl,
+            }}
+            style={[styles.video, isLoading && styles.loadingVideo]}
+            resizeMode="contain"
+            repeat={true}
+          />
+          {isLoading && <ActivityIndicator style={styles.activityIndicator} />}
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ dark, spacing, palettes }: Theme) =>
   StyleSheet.create({
     content: {
       paddingTop: spacing[5],
       height: '100%',
-      justifyContent: 'space-between',
-      gap: spacing[5],
+      justifyContent: 'space-evenly',
+      gap: spacing[10],
+      paddingVertical: spacing[5],
     },
     header: {
       paddingHorizontal: spacing[5],
       gap: spacing[5],
     },
     video: {
-      position: 'absolute',
       borderRadius: 25,
       borderColor: 'transparent',
       borderWidth: 1,
-      height: Platform.select({ ios: '80%', android: '78%' }),
+      height: '75%',
+      maxHeight: 600,
       alignSelf: 'center',
       aspectRatio: 1080 / 2340,
-      bottom: Platform.select({ ios: 0, android: spacing[5] }),
       elevation: 4,
+    },
+    loadingVideo: {
+      backgroundColor: dark ? palettes.gray[600] : palettes.gray[200],
+    },
+    activityIndicator: {
+      position: 'absolute',
+      alignSelf: 'center',
+    },
+    videoContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
