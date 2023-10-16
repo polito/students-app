@@ -51,6 +51,8 @@
     "yellow": "Yellow"
   },
   "common": {
+    "back": "Back",
+    "next": "Next",
     "other": "Other",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Animated,
   FlatList,
@@ -28,6 +29,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
 export const OnboardingScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const { step } = route.params;
   const { width } = useWindowDimensions();
@@ -141,26 +143,26 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
           />
         </View>
         <Row gap={2} ph={4}>
-          {currentPageIndex > 0 && (
-            <Col flex={1}>
+          <Col flex={1}>
+            {currentPageIndex > 0 && (
               <CtaButton
                 variant="outlined"
                 absolute={false}
-                title="Back"
+                title={t('common.back')}
                 action={onPrevPage}
                 containerStyle={styles.buttonContainer}
               />
-            </Col>
-          )}
+            )}
+          </Col>
 
-          <Animated.View style={{ flex: 1 }}>
+          <Col flex={1}>
             <CtaButton
               absolute={false}
-              title={isLastStep ? 'Guide' : 'Next'}
+              title={isLastStep ? t('guideScreen.title') : t('common.next')}
               action={onNextPage}
               containerStyle={styles.buttonContainer}
             />
-          </Animated.View>
+          </Col>
         </Row>
       </View>
     </>
