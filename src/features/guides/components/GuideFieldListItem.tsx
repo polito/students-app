@@ -20,7 +20,9 @@ export const GuideFieldListItem = ({ field }: Props) => {
   const copyToClipboard = () => {
     if (!field.isCopyEnabled) return;
     Clipboard.setString(field.value);
-    setFeedback(t('guideScreen.copiedFieldFeedback', { field: field.label }));
+    setFeedback({
+      text: t('guideScreen.copiedFieldFeedback', { field: field.label }),
+    });
   };
 
   return (
