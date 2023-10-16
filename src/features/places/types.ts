@@ -8,6 +8,7 @@ export interface CategoryData {
   color: string;
   shade?: keyof Palette;
   priority: number;
+  showInitially?: boolean;
   children: Record<string, Partial<CategoryData>>;
 }
 

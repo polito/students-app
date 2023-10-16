@@ -9,7 +9,11 @@ import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { capitalize } from 'lodash';
 
-import { CATEGORIES_DATA, MARKERS_MIN_ZOOM } from '../constants';
+import {
+  CATEGORIES_DATA,
+  MARKERS_MIN_ZOOM,
+  SUBCATEGORIES_INITIALLY_SHOWN,
+} from '../constants';
 import {
   CategoryData,
   PlaceOverviewWithMetadata,
@@ -25,12 +29,16 @@ export interface MarkersLayerProps {
   search?: string;
   places?: SearchPlace[];
   displayFloor?: boolean;
+  categoryId?: string;
+  subCategoryId?: string;
 }
 
 export const MarkersLayer = ({
   selectedPoiId,
   places = [],
   displayFloor,
+  categoryId,
+  subCategoryId,
 }: MarkersLayerProps) => {
   const { navigate } =
     useNavigation<MapScreenProps<PlacesStackParamList>['navigation']>();
@@ -39,17 +47,19 @@ export const MarkersLayer = ({
   const formatAgendaItem = useFormatAgendaItem();
   const pois = useMemo((): (SearchPlace & CategoryData)[] => {
     return places
-      ?.filter(
-        p =>
-          selectedPoiId === p.id ||
-          ((p.category.id !== 'UFF' ||
-            (p as PlaceOverviewWithMetadata).room.name) &&
-            (p as PlaceOverviewWithMetadata).category.subCategory?.id !==
-              'PARK_EST' &&
-            (p as PlaceOverviewWithMetadata).category.subCategory?.id !==
-              'RAMPA EST' &&
-            (p as PlaceOverviewWithMetadata).category.subCategory?.id !==
-              'RAMPA_C'),
+      ?.filter(p =>
+        selectedPoiId === p.id ||
+        (categoryId != null &&
+          (p as PlaceOverviewWithMetadata).category?.id === categoryId) ||
+        (subCategoryId != null &&
+          (p as PlaceOverviewWithMetadata).category?.subCategory.id ===
+            subCategoryId) ||
+        p.category.id === 'UFF'
+          ? (p as PlaceOverviewWithMetadata).room?.name
+          : (p as PlaceOverviewWithMetadata).category?.subCategory.id &&
+            SUBCATEGORIES_INITIALLY_SHOWN.includes(
+              (p as PlaceOverviewWithMetadata).category?.subCategory.id,
+            ),
       )
       ?.map(poi => {
         const categoryData = (poi as PlaceOverviewWithMetadata).category?.id

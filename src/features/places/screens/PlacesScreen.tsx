@@ -220,6 +220,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             search={debouncedSearch}
             places={places ?? []}
             displayFloor={!displayFloorId}
+            categoryId={categoryId}
+            subCategoryId={subCategoryId}
           />
         </>
       ),

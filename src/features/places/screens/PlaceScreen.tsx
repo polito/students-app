@@ -106,7 +106,12 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
           mapContent: (
             <>
               <IndoorMapLayer floorId={floorId} />
-              <MarkersLayer selectedPoiId={placeId} places={places} />
+              <MarkersLayer
+                selectedPoiId={placeId}
+                places={places}
+                categoryId={place.data?.category?.id}
+                subCategoryId={place.data?.category?.subCategory?.id}
+              />
               {place.data.geoJson != null && (
                 <ShapeSource
                   id="placeHighlightSource"
@@ -192,20 +197,20 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
             </Text>
           </Col>
 
-          {(place.data.category.id === 'AULA' ||
-            place.data.category.id === 'LAB') && (
-            <Section>
-              <SectionHeader
-                title={`${placeName} ${t('common.inYourAgenda')}`}
-                separator={false}
-              />
-              <OverviewList translucent>
-                <Col p={5}>
-                  <Text>Coming soon</Text>
-                </Col>
-              </OverviewList>
-            </Section>
-          )}
+          {/* {(place.data.category.id === 'AULA' ||*/}
+          {/*  place.data.category.id === 'LAB') && (*/}
+          {/*  <Section>*/}
+          {/*    <SectionHeader*/}
+          {/*      title={`${placeName} ${t('common.inYourAgenda')}`}*/}
+          {/*      separator={false}*/}
+          {/*    />*/}
+          {/*    <OverviewList translucent>*/}
+          {/*      <Col p={5}>*/}
+          {/*        <Text>Coming soon</Text>*/}
+          {/*      </Col>*/}
+          {/*    </OverviewList>*/}
+          {/*  </Section>*/}
+          {/* )}*/}
 
           <Section>
             <SectionHeader title="Location" separator={false} />

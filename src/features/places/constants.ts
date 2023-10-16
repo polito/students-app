@@ -18,10 +18,14 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'gray',
     priority: 100,
     children: {
+      SCALA: {
+        showInitially: true,
+      },
       ASCENSORE: {
         icon: 'elevator',
         color: 'gray',
         priority: 100,
+        showInitially: true,
       },
     },
   },
@@ -42,18 +46,49 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'gray',
     priority: 90,
     children: {
-      'PUNTO H2O': { icon: 'water', color: 'lightBlue', priority: 20 },
-      FONTANELLA: { icon: 'water', color: 'lightBlue', priority: 20 },
-      DIST_ACQUA: { icon: 'water', color: 'lightBlue', priority: 20 },
-      WC: { icon: 'restroom', color: 'green', shade: 600 },
-      WC_F: { icon: 'restroom', color: 'green', shade: 600 },
-      WC_H: { icon: 'restroom', color: 'green', shade: 600 },
-      WC_M: { icon: 'restroom', color: 'green', shade: 600 },
+      'PUNTO H2O': {
+        icon: 'water',
+        color: 'lightBlue',
+        priority: 20,
+        showInitially: true,
+      },
+      FONTANELLA: {
+        icon: 'water',
+        color: 'lightBlue',
+        priority: 20,
+        showInitially: true,
+      },
+      DIST_ACQUA: {
+        icon: 'water',
+        color: 'lightBlue',
+        priority: 20,
+        showInitially: true,
+      },
+      WC: { icon: 'restroom', color: 'green', shade: 600, showInitially: true },
+      WC_F: {
+        icon: 'restroom',
+        color: 'green',
+        shade: 600,
+        showInitially: true,
+      },
+      WC_H: {
+        icon: 'restroom',
+        color: 'green',
+        shade: 600,
+        showInitially: true,
+      },
+      WC_M: {
+        icon: 'restroom',
+        color: 'green',
+        shade: 600,
+        showInitially: true,
+      },
       INGRESSO: {
         icon: 'microscope',
         color: 'gray',
         priority: 60,
         children: {},
+        showInitially: true,
       },
       AREA_BICI: { icon: 'bike' },
     },
@@ -63,7 +98,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'gray',
     priority: 100,
     children: {
-      S_CONFEREN: { icon: 'conference' },
+      S_CONFEREN: { icon: 'conference', showInitially: true },
     },
   },
   UFF: {
@@ -76,6 +111,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
         color: 'red',
         priority: 60,
         children: {},
+        showInitially: true,
       },
     },
   },
@@ -84,12 +120,12 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'navy',
     priority: 40,
     children: {
-      AULA: {},
-      AULA_DIS: {},
-      AULA_INF: {},
-      AULA_LAB: {},
+      AULA: {
+        showInitially: true,
+      },
       LAIB: {
         icon: 'lab',
+        showInitially: true,
       },
     },
   },
@@ -104,7 +140,9 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'navy',
     priority: 40,
     children: {
-      BIBLIO: { icon: 'library' },
+      S_STUD: { showInitially: true },
+      BIBLIO: { icon: 'library', showInitially: true },
+      BIBLIO_DIP: { icon: 'library', showInitially: true },
     },
   },
   TECN: {
@@ -118,13 +156,13 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'orange',
     priority: 60,
     children: {
-      BAR: { icon: 'bar' },
-      SALA_BAR: { icon: 'bar' },
-      MENSA: { icon: 'restaurant' },
-      RISTORA: { icon: 'restaurant' },
-      Z_RIST: { icon: 'restaurant' },
-      INFERM: { icon: 'medical' },
-      POSTA: { icon: 'post' },
+      BAR: { icon: 'bar', showInitially: true },
+      SALA_BAR: { icon: 'bar', showInitially: true },
+      MENSA: { icon: 'restaurant', showInitially: true },
+      RISTORA: { icon: 'restaurant', showInitially: true },
+      Z_RIST: { icon: 'restaurant', showInitially: true },
+      INFERM: { icon: 'medical', color: 'red', showInitially: true },
+      POSTA: { icon: 'post', showInitially: true },
     },
   },
   TBD: {
@@ -138,25 +176,39 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
     color: 'gray',
     priority: 100,
     children: {
-      PARK_BIKE: { icon: 'bike' },
+      PARK_BIKE: {
+        icon: 'bike',
+        showInitially: true,
+      },
       SCALA_EST: {
         icon: 'stairs',
         color: 'gray',
         priority: 100,
+        showInitially: true,
       },
       STUD_EST_A: {
         icon: 'study',
         color: 'navy',
         priority: 40,
+        showInitially: true,
       },
       STUD_EST_P: {
         icon: 'study',
         color: 'navy',
         priority: 40,
+        showInitially: true,
       },
       ISOLA_ECO: {
         icon: 'recycle',
+        showInitially: true,
       },
     },
   },
 };
+export const SUBCATEGORIES_INITIALLY_SHOWN = Object.entries(
+  CATEGORIES_DATA,
+).flatMap(([, catData]) =>
+  Object.entries(catData.children)
+    .filter(([, v]) => v.showInitially)
+    .map(([k]) => k),
+);
