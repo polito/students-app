@@ -90,7 +90,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const [search, setSearch] = useState('');
-  const [floorId, setFloorId] = useState<string>();
+  const [floorId, setFloorId] = useState<string | null>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const formatAgendaItem = useFormatAgendaItem();
   const bottomSheetPosition = useSharedValue(0);
@@ -155,7 +155,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       if (!floorId && campus.floors?.length) {
         setFloorId(
           campus.floors.find(f => f.id === 'XPTE')?.id ??
-            campus.floors.find(f => f.level === 0)?.id,
+            campus.floors.find(f => f.level === 0)?.id ??
+            null,
         );
       }
       centerToCurrentCampus();
@@ -215,32 +216,34 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       },
       mapContent: (
         <>
-          <IndoorMapLayer floorId={displayFloorId} />
-          <MarkersLayer
-            search={debouncedSearch}
-            places={places ?? []}
-            displayFloor={!displayFloorId}
-            categoryId={categoryId}
-            subCategoryId={subCategoryId}
-          />
+          {displayFloorId !== undefined && (
+            <IndoorMapLayer floorId={displayFloorId} />
+          )}
+          {displayFloorId !== undefined && (
+            <MarkersLayer
+              search={debouncedSearch}
+              places={places ?? []}
+              displayFloor={!displayFloorId}
+              categoryId={categoryId}
+              subCategoryId={subCategoryId}
+            />
+          )}
         </>
       ),
     });
   }, [
-    campus,
-    displayFloorId,
-    floorId,
-    headerHeight,
-    navigation,
-    categoryId,
-    route,
-    safeAreaInsets.top,
-    debouncedSearch,
-    spacing,
-    tabsHeight,
-    categoryFilterActive,
     bounds,
+    campus,
+    categoryFilterActive,
+    categoryId,
+    debouncedSearch,
+    displayFloorId,
+    headerHeight,
     places,
+    safeAreaInsets.top,
+    spacing,
+    subCategoryId,
+    tabsHeight,
   ]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
@@ -315,7 +318,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:AULA',
                 params: { subCategoryId: 'AULA' },
               })
             }
@@ -327,7 +329,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:S_STUD',
                 params: { subCategoryId: 'S_STUD' },
               })
             }
@@ -339,7 +340,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:BIBLIO',
                 params: { subCategoryId: 'BIBLIO' },
               })
             }

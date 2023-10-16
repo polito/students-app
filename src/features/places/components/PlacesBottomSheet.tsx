@@ -77,6 +77,7 @@ export const PlacesBottomSheet = forwardRef<
               title={item.title ?? t('common.untitled')}
             />
           )}
+          keyboardShouldPersistTaps="handled"
           ItemSeparatorComponent={IndentedDivider}
           {...listProps}
           data={

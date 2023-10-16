@@ -8,6 +8,7 @@ import { Divider } from '@lib/ui/components/Divider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
+  Images,
   MapState,
   RasterLayer,
   RasterSource,
@@ -93,6 +94,33 @@ export const PlacesNavigator = () => {
         mapDefaultContent: (
           <>
             <UserLocation />
+            <Images
+              images={{
+                bar: require('../../../../assets/map-icons/bar.png'),
+                bed: require('../../../../assets/map-icons/bed.png'),
+                bike: require('../../../../assets/map-icons/bike.png'),
+                car: require('../../../../assets/map-icons/car.png'),
+                classroom: require('../../../../assets/map-icons/classroom.png'),
+                conference: require('../../../../assets/map-icons/conference.png'),
+                door: require('../../../../assets/map-icons/door.png'),
+                elevator: require('../../../../assets/map-icons/elevator.png'),
+                lab: require('../../../../assets/map-icons/lab.png'),
+                library: require('../../../../assets/map-icons/library.png'),
+                medical: require('../../../../assets/map-icons/medical.png'),
+                microscope: require('../../../../assets/map-icons/microscope.png'),
+                office: require('../../../../assets/map-icons/office.png'),
+                pin: require('../../../../assets/map-icons/pin.png'),
+                post: require('../../../../assets/map-icons/post.png'),
+                print: require('../../../../assets/map-icons/print.png'),
+                recycle: require('../../../../assets/map-icons/recycle.png'),
+                restaurant: require('../../../../assets/map-icons/restaurant.png'),
+                restroom: require('../../../../assets/map-icons/restroom.png'),
+                service: require('../../../../assets/map-icons/service.png'),
+                stairs: require('../../../../assets/map-icons/stairs.png'),
+                study: require('../../../../assets/map-icons/study.png'),
+                water: require('../../../../assets/map-icons/water.png'),
+              }}
+            />
             <RasterSource
               key={`outdoorSource:${colorScheme}`}
               tileUrlTemplates={[
@@ -114,6 +142,9 @@ export const PlacesNavigator = () => {
         name="Places"
         component={PlacesScreen}
         options={{ title: t('placesScreen.title') }}
+        getId={({ params }) =>
+          [params?.categoryId, params?.subCategoryId].join()
+        }
       />
       <Map.Screen
         name="Place"

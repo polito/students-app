@@ -6,15 +6,10 @@ import {
   useRef,
   useState,
 } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
