@@ -77,7 +77,7 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
       animated: true,
       index: currentPageIndex + 1,
     });
-  }, [currentPageIndex]);
+  }, [currentPageIndex, isLastStep]);
   return (
     <>
       <Animated.FlatList
