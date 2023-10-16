@@ -4,7 +4,7 @@ import { CategoryData } from './types';
 export const INTERIORS_MIN_ZOOM = 18.6;
 export const MAX_ZOOM = 24;
 export const MARKERS_MIN_ZOOM = 15;
-export const UPCOMING_COMMITMENT_HOURS_OFFSET = 80;
+export const UPCOMING_COMMITMENT_HOURS_OFFSET = 24;
 export const FREE_ROOMS_TIME_WINDOW_SIZE_HOURS = 3;
 export const CATEGORIES_DATA: Record<string, CategoryData> = {
   default: {

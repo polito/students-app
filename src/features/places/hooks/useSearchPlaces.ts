@@ -66,25 +66,27 @@ export const useSearchPlaces = ({
   //   useGetBuildings(actualSiteId);
 
   const combinedPlaces = useMemo(() => {
+    if (!places?.data?.length) {
+      return [];
+    }
     let result = places?.data
       ?.map(p => ({ ...p, type: 'place' }))
       ?.sort(a => (placesSearched.some(p => a.id === p.id) ? -1 : 1)) as
       | (PlaceOverviewWithMetadata | BuildingWithMetadata)[]
       | undefined;
-    if (!upcomingCommitments?.length || !result?.length) {
-      return result;
-    }
-    for (const commitment of upcomingCommitments.reverse()) {
-      const placeIndex = result.findIndex(
-        p => p.id === resolvePlaceId(commitment.place),
-      );
-      if (placeIndex !== -1) {
-        const place = result.splice(
-          placeIndex,
-          1,
-        )[0] as PlaceOverviewWithMetadata;
-        place.agendaItem = commitment;
-        result.unshift(place);
+    if (upcomingCommitments?.length) {
+      for (const commitment of upcomingCommitments.reverse()) {
+        const placeIndex = result!.findIndex(
+          p => p.id === resolvePlaceId(commitment.place),
+        );
+        if (placeIndex !== -1) {
+          const place = result!.splice(
+            placeIndex,
+            1,
+          )[0] as PlaceOverviewWithMetadata;
+          place.agendaItem = commitment;
+          result!.unshift(place);
+        }
       }
     }
     // if (buildings?.data?.length) {
@@ -107,7 +109,7 @@ export const useSearchPlaces = ({
         return p.name.toLowerCase().includes(search);
       });
     }
-    return result?.filter(p => p.latitude != null && p.longitude != null);
+    return result;
   }, [places?.data, placesSearched, search, upcomingCommitments]);
 
   return {
