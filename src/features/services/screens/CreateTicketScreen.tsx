@@ -61,7 +61,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     if (isSuccess && !!data.id) {
-      navigation.navigate(initialTopicId ? 'Home' : 'Tickets');
+      navigation.navigate(initialTopicId ? 'Services' : 'Tickets');
       navigation.navigate('Ticket', { id: data.id });
     }
   }, [isSuccess, data]);

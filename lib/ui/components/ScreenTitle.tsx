@@ -1,5 +1,6 @@
 import { TextProps, View, ViewStyle } from 'react-native';
 
+import { useTheme } from '../hooks/useTheme';
 import { Separator } from './Separator';
 import { Text } from './Text';
 
@@ -7,6 +8,7 @@ interface Props {
   title?: string;
   style?: ViewStyle;
   ellipsizeTitle?: boolean;
+  padded?: boolean;
 }
 
 /**
@@ -16,7 +18,9 @@ export const ScreenTitle = ({
   title,
   style,
   ellipsizeTitle = false,
+  padded = false,
 }: Props) => {
+  const { spacing } = useTheme();
   const ellipsis: Partial<TextProps> = ellipsizeTitle
     ? {
         numberOfLines: 1,
@@ -25,7 +29,7 @@ export const ScreenTitle = ({
     : {};
 
   return (
-    <View style={style}>
+    <View style={[padded ? { paddingHorizontal: spacing[5] } : {}, style]}>
       <Separator />
       <Text variant="title" role="heading" {...ellipsis}>
         {title ?? ''}

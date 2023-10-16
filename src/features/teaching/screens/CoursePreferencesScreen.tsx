@@ -143,7 +143,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('common.icon')}
                   isAction
                   onPress={() =>
-                    navigation.navigate('CourseIconPicker', { uniqueShortcode })
+                    navigation.navigate('CourseIconPicker', {
+                      courseId,
+                      uniqueShortcode,
+                    })
                   }
                   leadingItem={
                     <Icon

@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarFilled } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
@@ -30,6 +31,7 @@ interface Props extends PropsWithChildren<TouchableCardProps> {
   onFavoriteChange: (favorite: boolean) => void;
   linkTo?: To<any>;
   onPress?: () => void;
+  unReadCount?: number;
 }
 
 export const ServiceCard = ({
@@ -42,6 +44,7 @@ export const ServiceCard = ({
   linkTo,
   onPress,
   children,
+  unReadCount = 0,
   ...props
 }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -74,9 +77,12 @@ export const ServiceCard = ({
           hitSlop={uniformInsets(16)}
         />
       </Row>
-      <Text variant="title" style={styles.title}>
-        {name}
-      </Text>
+      <Row justify="space-between" align="baseline">
+        <Text variant="title" style={styles.title}>
+          {name}
+        </Text>
+        {unReadCount > 0 && !disabled && <Badge text={unReadCount} />}
+      </Row>
       {children}
     </TouchableCard>
   );
@@ -101,6 +107,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
     },
     title: {
       fontSize: fontSizes.md,
+      flexShrink: 1,
     },
     favButton: {
       padding: spacing[1],

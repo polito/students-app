@@ -42,11 +42,11 @@ export const CourseGuideScreen = ({ route }: Props) => {
       <SafeAreaView>
         <Section>
           <Card
+            padded
+            gapped
             style={{
               marginVertical: spacing[2],
               marginHorizontal: Platform.select({ ios: spacing[4] }),
-              paddingHorizontal: spacing[5],
-              paddingBottom: spacing[4],
             }}
           >
             {guideSections.map((section, i) => (
@@ -58,7 +58,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
                 >
                   {section.title}
                 </Text>
-                <Text>{section.content}</Text>
+                <Text variant="longProse">{section.content}</Text>
               </Col>
             ))}
           </Card>

@@ -30,6 +30,7 @@ export interface BookingItem extends BaseAgendaItem {
 }
 
 export interface DeadlineItem extends BaseAgendaItem {
+  id: number;
   type: 'deadline';
   url: string | null;
 }

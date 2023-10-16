@@ -10,7 +10,6 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -22,6 +21,7 @@ import {
   faPrint,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { CarouselDots } from '@lib/ui/components/CarouselDots';
 import { Divider } from '@lib/ui/components/Divider';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
@@ -48,7 +48,6 @@ export const CourseAssignmentPdfCreationScreen = ({
 }: Props) => {
   const { courseId, firstImageUri } = route.params;
 
-  const { colors } = useTheme();
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
 
@@ -223,42 +222,10 @@ export const CourseAssignmentPdfCreationScreen = ({
         extraData={imageUris}
       />
       <View style={styles.dotsContainer}>
-        <AnimatedDotsCarousel
-          length={imageUris.length ?? 0}
-          currentIndex={currentPageIndex}
-          maxIndicators={4}
-          activeIndicatorConfig={{
-            color: colors.heading,
-            margin: 3,
-            opacity: 1,
-            size: 6,
-          }}
-          inactiveIndicatorConfig={{
-            color: colors.heading,
-            margin: 3,
-            opacity: 0.5,
-            size: 6,
-          }}
-          decreasingDots={[
-            {
-              config: {
-                color: colors.heading,
-                margin: 3,
-                opacity: 0.5,
-                size: 5,
-              },
-              quantity: 1,
-            },
-            {
-              config: {
-                color: colors.heading,
-                margin: 3,
-                opacity: 0.5,
-                size: 4,
-              },
-              quantity: 1,
-            },
-          ]}
+        <CarouselDots
+          carouselLength={imageUris.length ?? 0}
+          carouselIndex={currentPageIndex}
+          expandedDotsCounts={4}
         />
       </View>
 

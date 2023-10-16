@@ -33,16 +33,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { notNullish } from '../../../utils/predicates';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
-type Props = NativeStackScreenProps<TeachingStackParamList, 'Person'>;
+type Props = NativeStackScreenProps<ServiceStackParamList, 'Person'>;
 
 const profileImageSize = 120;
 
-export const PersonScreen = ({ route }: Props) => {
-  const { id } = route.params;
+export const PersonScreen = ({ route, navigation }: Props) => {
+  const { id, isCrossNavigation } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -54,6 +55,8 @@ export const PersonScreen = ({ route }: Props) => {
     .join(' ');
   const courses = person?.courses ?? [];
   const phoneNumbers = person?.phoneNumbers;
+
+  const isOffline = useOfflineDisabled();
 
   const header = (
     <Col ph={5} gap={6} mb={6}>
@@ -138,17 +141,17 @@ export const PersonScreen = ({ route }: Props) => {
     );
   };
 
-  const RenderedCourse = (course: PersonCourse, index: number) => {
-    const onPressCourse = () => {
-      // TODO
-    };
+  interface RenderedCourseProps {
+    course: PersonCourse;
+    index: number;
+    disabled: boolean;
+  }
 
+  const RenderedCourse = ({ course, index, disabled }: RenderedCourseProps) => {
     const role = course.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
 
     return (
       <ListItem
-        disabled
-        key={course.id}
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
@@ -156,7 +159,19 @@ export const PersonScreen = ({ route }: Props) => {
           index,
           courses?.length || 0,
         )}. ${course.name}, ${course.year} -${t('common.' + role)}`}
-        onPress={onPressCourse}
+        linkTo={{
+          screen: 'ServicesTab',
+          params: {
+            screen: 'DegreeCourse',
+            params: {
+              courseShortcode: course.shortcode,
+              year: course.year,
+              isCrossNavigation: navigation.getId() !== 'ServicesNavigator',
+            },
+            initial: true,
+          },
+        }}
+        disabled={disabled}
       />
     );
   };
@@ -197,7 +212,16 @@ export const PersonScreen = ({ route }: Props) => {
                   { total: courses.length },
                 )}`}
               />
-              <OverviewList>{courses.map(RenderedCourse)}</OverviewList>
+              <OverviewList>
+                {courses.map((course, index) => (
+                  <RenderedCourse
+                    key={course.id}
+                    course={course}
+                    index={index}
+                    disabled={isOffline}
+                  />
+                ))}
+              </OverviewList>
             </Section>
           )}
         </Col>

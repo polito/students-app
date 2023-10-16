@@ -24,7 +24,6 @@ import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { NoticeScreen } from '../screens/NoticeScreen';
-import { PersonScreen } from '../screens/PersonScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 import { TranscriptScreen } from '../screens/TranscriptScreen';
 import { Assignment } from '../types/Assignment';
@@ -56,7 +55,7 @@ export interface TeachingStackParamList extends ParamListBase {
   CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
-  CourseIconPicker: { uniqueShortcode: string };
+  CourseIconPicker: { courseId: number; uniqueShortcode: string };
   Exams: undefined;
   Exam: { id: number };
   ExamQuestion: { id: number };
@@ -74,6 +73,7 @@ export const TeachingNavigator = () => {
 
   return (
     <Stack.Navigator
+      id="TeachingTabNavigator"
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
@@ -101,6 +101,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="Course"
         component={CourseNavigator}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
@@ -114,6 +115,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="Notice"
         component={NoticeScreen}
+        getId={({ params }) => `${params.courseId}${params.noticeId}`}
         options={{
           headerBackTitle: t('common.course'),
           headerTitle: t('common.notice'),
@@ -122,6 +124,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CoursePreferences"
         component={CoursePreferencesScreen}
+        getId={({ params }) => `${params.courseId}`}
         options={{
           title: t('common.preferences'),
           headerLargeTitle: false,
@@ -131,6 +134,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseIconPicker"
         component={CourseIconPickerScreen}
+        getId={({ params }) => `${params.courseId}`}
         options={{
           title: t('courseIconPickerScreen.title'),
           headerLargeTitle: false,
@@ -153,6 +157,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseGuide"
         component={CourseGuideScreen}
+        getId={({ params }) => `${params.courseId}`}
         options={{
           headerTitle: t('courseGuideScreen.title'),
           headerBackTitle: t('common.course'),
@@ -161,6 +166,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseVideolecture"
         component={CourseVideolectureScreen}
+        getId={({ params }) => `${params.courseId}${params.lectureId}`}
         options={{
           headerLargeTitle: false,
           headerBackTitle: t('common.course'),
@@ -170,6 +176,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseVirtualClassroom"
         component={CourseVirtualClassroomScreen}
+        getId={({ params }) => `${params.courseId}${params.lectureId}`}
         options={{
           headerLargeTitle: false,
           headerBackTitle: t('common.course'),
@@ -179,6 +186,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseAssignmentPdfCreation"
         component={CourseAssignmentPdfCreationScreen}
+        getId={({ params }) => `${params.courseId}`}
         options={{
           headerBackTitleVisible: false,
           headerTitle: t('courseAssignmentPdfCreationScreen.title'),
@@ -189,6 +197,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
+        getId={({ params }) => `${params.courseId}`}
         options={{
           headerBackTitle: t('common.course'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
@@ -198,6 +207,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="CourseAssignmentUploadConfirmation"
         component={CourseAssignmentUploadConfirmationScreen}
+        getId={({ params }) => `${params.courseId}`}
         options={{
           headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
@@ -219,6 +229,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="Exam"
         component={ExamScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.examCall'),
@@ -227,6 +238,7 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="ExamQuestion"
         component={ExamQuestionScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.examCall'),
@@ -235,18 +247,10 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="ExamRequest"
         component={ExamRequestScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.examCall'),
-        }}
-      />
-      <Stack.Screen
-        name="Person"
-        component={PersonScreen}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('common.contact'),
-          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
