@@ -34,12 +34,15 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
       style={[
         styles.badge,
         {
-          backgroundColor: palettes.orange[600],
+          backgroundColor: isNumeric
+            ? palettes.rose[600]
+            : palettes.orange[600],
         },
         !text && styles.dotBadge,
         isOutlined && {
           backgroundColor: colors.surface,
-          borderColor: palettes.orange[600],
+          borderColor: isNumeric ? palettes.rose[600] : palettes.orange[600],
+
           borderWidth: 2,
         },
         style,
@@ -64,7 +67,7 @@ export const Badge = ({ text, style, variant = 'filled' }: Props) => {
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights, shapes }: Theme) =>
+const createStyles = ({ fontSizes, fontWeights, shapes, palettes }: Theme) =>
   StyleSheet.create({
     badge: {
       borderRadius: shapes.xl,
@@ -74,6 +77,10 @@ const createStyles = ({ fontSizes, fontWeights, shapes }: Theme) =>
     dotBadge: {
       minWidth: 12,
       minHeight: 12,
+      backgroundColor: palettes.rose[600],
+    },
+    badgeNumber: {
+      backgroundColor: palettes.rose[600],
     },
     badgeText: {
       color: 'white',

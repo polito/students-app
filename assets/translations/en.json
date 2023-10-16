@@ -362,6 +362,9 @@
   "guidesScreen": {
     "title": "Guides"
   },
+  "guideScreen": {
+    "title": "Guide"
+  },
   "jobOfferScreen": {
     "application": "Application",
     "companyMission": "Mission",

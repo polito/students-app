@@ -93,7 +93,9 @@ const createStyles = ({ fontSizes, spacing }: Theme) =>
       fontSize: fontSizes.sm,
       textTransform: 'uppercase',
     },
-    prose: {},
+    prose: {
+      fontSize: fontSizes.md,
+    },
     secondaryText: {},
     link: {},
   });

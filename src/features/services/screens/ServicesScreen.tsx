@@ -29,8 +29,11 @@ import { ServiceCard } from '../components/ServiceCard';
 
 export const ServicesScreen = () => {
   const { t } = useTranslation();
-  const { favoriteServices: favoriteServiceIds, updatePreference } =
-    usePreferencesContext();
+  const {
+    favoriteServices: favoriteServiceIds,
+    emailGuideRead,
+    updatePreference,
+  } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
 
@@ -94,6 +97,13 @@ export const ServicesScreen = () => {
         linkTo: { screen: 'Contacts' },
       },
       {
+        id: 'guides',
+        name: t('guidesScreen.title'),
+        icon: faSignsPost,
+        linkTo: { screen: 'Guides' },
+        unReadCount: emailGuideRead ? 0 : 1,
+      },
+      {
         id: 'bookings',
         name: t('bookingsScreen.title'),
         icon: faPersonCirclePlus,
@@ -103,19 +113,20 @@ export const ServicesScreen = () => {
         linkTo: { screen: 'Bookings' },
       },
       {
-        id: 'guides',
-        name: t('guidesScreen.title'),
-        icon: faSignsPost,
-        disabled: true,
-      },
-      {
         id: 'library',
         name: t('libraryScreen.title'),
         icon: faBookBookmark,
         disabled: true,
       },
     ],
-    [isOffline, queryClient, styles.betaBadge, t],
+    [
+      emailGuideRead,
+      isOffline,
+      peopleSearched?.length,
+      queryClient,
+      styles.betaBadge,
+      t,
+    ],
   );
 
   const [favoriteServices, otherServices] = useMemo(
@@ -156,6 +167,7 @@ export const ServicesScreen = () => {
                 onPress={service.onPress}
                 favorite
                 onFavoriteChange={updateFavorite(service)}
+                unReadCount={service?.unReadCount}
               >
                 {service.additionalContent}
               </ServiceCard>
@@ -180,6 +192,7 @@ export const ServicesScreen = () => {
                 linkTo={service.linkTo}
                 onPress={service.onPress}
                 onFavoriteChange={updateFavorite(service)}
+                unReadCount={service?.unReadCount}
               >
                 {service.additionalContent}
               </ServiceCard>

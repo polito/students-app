@@ -13,6 +13,8 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'onboardingStep',
+  'emailGuideRead',
   'placesSearched',
 ] as const;
 
@@ -24,6 +26,8 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'onboardingStep',
+  'emailGuideRead',
   'placesSearched',
 ];
 
@@ -45,6 +49,8 @@ export interface PreferencesContextBase {
   };
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
+  onboardingStep?: number;
+  emailGuideRead?: boolean;
   placesSearched: PlaceOverview[];
 }
 

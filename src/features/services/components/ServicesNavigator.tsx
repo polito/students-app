@@ -10,6 +10,8 @@ import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
+import { GuideScreen } from '../../guides/screens/GuideScreen';
+import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { BookingsScreen } from '../screens/BookingsScreen';
@@ -52,6 +54,8 @@ export type ServiceStackParamList = {
   Bookings: undefined;
   Booking: { id: number };
   NewBooking: undefined;
+  Guide: { id: string };
+  Guides: undefined;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -144,6 +148,7 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('jobOfferScreen.title'),
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -159,6 +164,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('newsScreen.title'),
           headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -217,6 +223,23 @@ export const ServicesNavigator = () => {
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Guide"
+        component={GuideScreen}
+        options={{
+          headerTitle: t('guideScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Guides"
+        component={GuidesScreen}
+        options={{
+          headerTitle: t('guidesScreen.title'),
+          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>
