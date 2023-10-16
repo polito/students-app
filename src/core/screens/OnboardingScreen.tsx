@@ -59,10 +59,9 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
           tabBarStyle: tabBarStyle,
         });
       };
-    }, [navigation]),
+    }, [navigation, currentPageIndex]),
   );
-  const onNextPage = () => {
-    updatePreference('onboardingStep', currentPageIndex + 1);
+  const onNextPage = useCallback(() => {
     if (isLastStep) {
       navigation.navigate({
         name: 'ServicesTab',
@@ -72,12 +71,13 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
       });
       return;
     }
+    updatePreference('onboardingStep', currentPageIndex + 1);
 
     stepsRef.current?.scrollToIndex({
       animated: true,
       index: currentPageIndex + 1,
     });
-  };
+  }, [currentPageIndex]);
   return (
     <>
       <Animated.FlatList
