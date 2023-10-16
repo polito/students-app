@@ -6,13 +6,28 @@
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
-  },
-  "bookingsScreen": {
-    "title": "Prenotazioni"
+    "weeklyLayout": "Layout settimanale",
+    "room": "Aula {{roomName}}",
+    "rooms": "Aule {{roomNames}}"
   },
   "bookingScreen": {
-    "cancelFeedback": "Prenoazione annullata"
+    "barCodeTitle": "Barcode",
+    "cancelBooking": "Annulla prenotazione",
+    "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
+    "cancelFeedback": "Prenoazione annullata",
+    "checkIn": "Check-in",
+    "checkInFeedback": "Check in eseguito!",
+    "checkLocationErrorFeedback": "Sei troppo distante per effettuare il check-in della prenotazione",
+    "locationType": {
+      "place": "Luogo",
+      "virtualPlace": "Link sportello virtuale"
+    }
+  },
+  "bookingsScreen": {
+    "emptyState": "Non hai prenotazioni attive",
+    "newBooking": "Nuova prenotazione",
+    "sectionTitle": "Attive",
+    "title": "Prenotazioni"
   },
   "colors": {
     "amber": "Ambra",
@@ -36,22 +51,35 @@
     "yellow": "Giallo"
   },
   "common": {
+    "other": "Altro",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "faculty": "Collegio",
     "agent": "Operatore",
     "close": "Chiudi",
     "search": "Cerca",
+    "cfu": "CFU",
     "all": "Tutti",
+    "department": "Dipartimento",
+    "location": "Sede",
+    "duration": "Durata",
+    "objectives": "Obiettivi formativi",
+    "notes": "Note",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
+    "year": "anno",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
+    "building": "Edificio",
     "cache": "Cache",
+    "cacheMiss": "Torna online per visualizzare",
     "camera": "Fotocamera",
+    "campus": "Sede",
     "cancel": "Annulla",
+    "capacity": "Capacità",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
     "color": "Colore",
@@ -84,6 +112,8 @@
     "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
+    "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
+    "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
     "endRefresh": "Caricamento terminato",
     "error": "Errore",
     "event": "Evento",
@@ -101,12 +131,16 @@
       "unavailable": "Non prenotabile"
     },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
+    "facilities": "Dotazioni",
     "file": "File",
     "file_plural": "File",
+    "floor": "Piano",
     "follow": "Segui",
+    "free": "Libera",
     "grade": "Voto",
     "hours": "Ore",
     "icon": "Icona",
+    "inYourAgenda": "nella tua agenda",
     "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
@@ -114,14 +148,19 @@
     "loading": "Caricamento",
     "logout": "Logout",
     "minutes": "Minuti",
+    "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
+    "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
+    "notFound": "Luogo inesistente",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
+    "now": "Adesso",
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
+    "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
     "openedStatus": {
       "false": "Chiuso",
@@ -139,6 +178,7 @@
     "play": "Riproduci",
     "preferences": "Preferenze",
     "profilePic": "Immagine di profilo",
+    "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
     "retract": "Ritira",
@@ -151,7 +191,8 @@
     "status": "Stato",
     "stop": "Stop",
     "stopFollowing": "Non seguire",
-    "switchCareerLabel": "Premi per affettuare un cambio matricola",
+    "structure": "Struttura",
+    "switchCareerLabel": "Premi per effettuare un cambio matricola",
     "teacher": "Docente",
     "theme": "Tema",
     "ticket_plural": "Ticket",
@@ -161,6 +202,7 @@
     "tomorrow": "Domani",
     "transcript": "Libretto",
     "unnamedFile": "File senza nome",
+    "untitled": "Senza titolo",
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",
@@ -171,15 +213,35 @@
     "visualization": "Visualizzazione"
   },
   "contactsScreen": {
-    "title": "Contatti",
-    "emptyState": "Nessun contatto trovato",
-    "search": "Cerca contatti",
-    "recentSearches": "Ricerche recenti",
-    "recentSearch": "Ricerca recente",
     "cancelRecentSearch": "Rimuovi",
     "cancelRecentSearchText": "Rimuovi ricerca recente",
     "clearSearch": "Cancella ricerca",
-    "clearSearches": "Cancella ricerche"
+    "clearSearches": "Cancella ricerche",
+    "emptyState": "Nessun contatto trovato",
+    "recentSearch": "Ricerca recente",
+    "recentSearches": "Ricerche recenti",
+    "search": "Cerca contatti",
+    "title": "Contatti"
+  },
+  "offeringScreen": {
+    "title": "Offerta formativa",
+    "bachelor": "Laurea triennale",
+    "master": "Laurea magistrale",
+    "emptyMessage": "Nessun corso disponibile"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Classe di laurea",
+    "info": "Info",
+    "jobOpportunities": "Sbocchi",
+    "title": "Corso di laurea",
+    "tracks": "Piano studi"
+  },
+  "offeringBachelorScreen": {
+    "title": "Lauree triennali"
+  },
+  "offeringMasterScreen": {
+    "title": "Lauree magistrali"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -248,11 +310,25 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli"
+    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
+    "extra": "Extra carico",
+    "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
+  },
+  "degreeCourseScreen": {
+    "title": "Corso",
+    "period": "Periodo",
+    "examMode": "Modalità di esame",
+    "lecture": "Lezioni",
+    "classroomExercise": "Esercitazioni in aula",
+    "tutoring": "Tutoraggio",
+    "labExercise": "Esercitazioni in laboratorio",
+    "staff": "Docenti",
+    "hours": "{{hours}} Ore",
+    "noStaff": "Nessun docente associato a questo corso"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
@@ -270,7 +346,8 @@
     "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
   },
   "courseVirtualClassroomScreen": {
-    "title": "Virtual classroom"
+    "title": "Virtual classroom",
+    "liveCta": "Collegati alla diretta"
   },
   "coursesScreen": {
     "emptyState": "Non ci sono corsi",
@@ -295,12 +372,12 @@
   },
   "examRequestScreen": {
     "error": "Compila il campo di testo prima di procedere con la richiesta",
-    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso",
-    "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente"
+    "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
+    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso"
   },
   "examScreen": {
-    "bookingEndsAt": "Prenotazione entro il",
     "bookedCount": "Studenti prenotati",
+    "bookingEndsAt": "Prenotazione entro il",
     "ctaBook": "Prenota appello",
     "ctaBookSuccess": "Appello prenotato",
     "ctaCancel": "Annulla prenotazione",
@@ -316,13 +393,20 @@
     "title": "Appelli",
     "total": "Sono presenti {{ total }} appelli"
   },
+  "freeRoomsScreen": {
+    "title": "Aule libere"
+  },
   "grades": {
     "absent": "Ass",
     "fail": "Ins",
     "pass": "Sup"
   },
   "guidesScreen": {
-    "title": "Guide"
+    "title": "Guide",
+    "total": "Sono presenti {{ total }} guide"
+  },
+  "guideScreen": {
+    "title": "Guida"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
@@ -366,30 +450,31 @@
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username"
   },
+  "messageScreen": {
+    "backTitle": "Archivio",
+    "sender": "Mittente",
+    "title": "Messaggio"
+  },
   "messagesScreen": {
+    "empty": "Non ci sono messaggi",
+    "end": "Fine",
+    "readNext": "Leggi il prossimo",
+    "sentAt": "Inviato il",
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
-    "readNext": "Leggi il prossimo",
-    "end": "Fine",
-    "sentAt": "Inviato il",
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
-  },
-  "messageScreen": {
-    "title": "Messaggio",
-    "backTitle": "Archivio",
-    "sender": "Mittente"
   },
   "messagingView": {
     "pickFile": "Scegli un file",
-    "pickFileHint": "Dal tuo dispositivio o dal cloud",
+    "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
     "pickPhotoHint": "Dalla tua galleria",
-    "takePhoto": "Acquisci con la fotocamera",
+    "takePhoto": "Acquisisci con la fotocamera",
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "newsScreen": {
     "createdAt": "Pubblicato il ",
-    "eventStartTime": "Inicio evento",
+    "eventStartTime": "Inizio evento",
     "information": "Informazioni",
     "logo": "Logo",
     "title": "Avvisi & News"
@@ -412,8 +497,29 @@
     "sentEmail": "Invia e-mail",
     "totalCourses": "Sono presenti {{total}} corsi"
   },
+  "placeCategories": {
+    "classrooms": "Aule",
+    "libraries": "Biblioteche",
+    "studyRooms": "Aule studio"
+  },
+  "placeScreen": {
+    "capacity": "{{count}} posto",
+    "capacity_plural": "{{count}} posti",
+    "placeNotFound": "Questo luogo non esiste",
+    "title": "Luogo"
+  },
   "placesScreen": {
-    "title": "Luoghi"
+    "changeFloor": "Cambia piano",
+    "goToMyPosition": "Vai alla mia posizione",
+    "multipleFloors": "I risultati sono su più piani",
+    "noCategoriesFound": "Nessuna categoria trovata",
+    "noPlacesFound": "Nessun posto trovato",
+    "searchCategories": "Cerca categorie",
+    "title": "Luoghi",
+    "viewWholeCampus": "Vedi tutta la sede"
+  },
+  "placesSearchScreen": {
+    "searchPlaceholder": "Prova con \"Aula 1\""
   },
   "profileScreen": {
     "careerStatus": "Stato carriera:",
@@ -463,7 +569,7 @@
     "writeTicket": "Scrivi ticket"
   },
   "ticketFaqsScreen": {
-    "emptyState": "Nessun risutato trovato",
+    "emptyState": "Nessun risultato trovato",
     "findFAQ": "Cerca tra le FAQ",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
     "noResultFound": "Non hai trovato quello che cerchi?",

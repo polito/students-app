@@ -8,6 +8,7 @@ import {
   JobOffersApi,
   LecturesApi,
   NewsApi,
+  OfferingApi,
   PeopleApi,
   PlacesApi,
   StudentApi,
@@ -22,7 +23,6 @@ export interface Credentials {
 export interface ApiContextProps extends Credentials {
   isLogged: boolean;
   refreshContext: (credentials?: Credentials) => void;
-  clients: Partial<ApiContextClientsProps>;
 }
 
 export interface ApiContextClientsProps {
@@ -37,6 +37,7 @@ export interface ApiContextClientsProps {
   tickets: TicketsApi;
   news: NewsApi;
   jobOffers: JobOffersApi;
+  offering: OfferingApi;
 }
 
 export const ApiContext = createContext<ApiContextProps | undefined>(undefined);

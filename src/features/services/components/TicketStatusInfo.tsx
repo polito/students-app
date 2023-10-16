@@ -14,7 +14,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
 
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDate, formatDateTime } from '../../../utils/dates';
 
 interface TicketStatusProps {

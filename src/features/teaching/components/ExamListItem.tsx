@@ -74,8 +74,8 @@ export const ExamListItem = ({
       accessibilityRole="button"
       leadingItem={
         <CourseIcon
-          icon={coursesPreferences[exam.courseId]?.icon}
-          color={coursesPreferences[exam.courseId]?.color}
+          icon={coursesPreferences[exam.uniqueShortcode]?.icon}
+          color={coursesPreferences[exam.uniqueShortcode]?.color}
         />
       }
       trailingItem={
@@ -102,7 +102,7 @@ export const ExamListItem = ({
               ellipsizeMode="tail"
               style={{ flexShrink: 1 }}
             >
-              {exam.classrooms}
+              {exam.places?.map(place => place.name).join(', ')}
             </Text>
           </Row>
         </Row>

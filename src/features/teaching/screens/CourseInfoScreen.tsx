@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -16,22 +16,26 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
+  CourseSectionEnum,
+  getCourseKey,
   useGetCourse,
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ExamListItem } from '../components/ExamListItem';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
 export const CourseInfoScreen = () => {
   const { t } = useTranslation();
-  const courseId = useContext(CourseContext)!;
+  const courseId = useCourseContext();
   const styles = useStylesheet(createStyles);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const courseQuery = useGetCourse(courseId);
@@ -42,6 +46,8 @@ export const CourseInfoScreen = () => {
   const { queries: staffQueries, isLoading: isStaffLoading } = useGetPersons(
     courseQuery.data?.staff.map(s => s.id),
   );
+
+  const isOffline = useOfflineDisabled();
 
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
@@ -63,6 +69,17 @@ export const CourseInfoScreen = () => {
 
     setStaff(staffData);
   }, [isStaffLoading]);
+
+  const queryClient = useQueryClient();
+  const isGuideDataMissing = useCallback(
+    () =>
+      queryClient.getQueryData(
+        getCourseKey(courseId, CourseSectionEnum.Guide),
+      ) === undefined,
+    [courseId, queryClient],
+  );
+
+  const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
 
   return (
     <ScrollView
@@ -99,40 +116,51 @@ export const CourseInfoScreen = () => {
             />
           </Grid>
         </Card>
-        <Section>
+        {/*  <Section>
           <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
           <OverviewList emptyStateText={t('common.comingSoon')}></OverviewList>
+        </Section>*/}
+        <Section>
+          <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
+          <OverviewList
+            indented
+            loading={
+              (courseQuery.data?.staff?.length ?? 0) > 0 && staff.length === 0
+            }
+          >
+            {staff.map(member => (
+              <PersonListItem
+                key={`${member.id}`}
+                person={member}
+                subtitle={t(`common.${member.courseRole}`)}
+                isCrossNavigation={true}
+              />
+            ))}
+          </OverviewList>
         </Section>
-        {courseExamsQuery.data?.length > 0 && (
-          <Section>
-            <SectionHeader title={t('examsScreen.title')} />
-            <OverviewList loading={courseExamsQuery.isLoading} indented>
-              {courseExamsQuery.data?.map(exam => (
-                <ExamListItem key={exam.id} exam={exam} />
-              ))}
-            </OverviewList>
-          </Section>
-        )}
-        {staff.length > 0 && (
-          <Section>
-            <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
-            <OverviewList indented>
-              {staff.map(member => (
-                <PersonListItem
-                  key={`${member.id}`}
-                  person={member}
-                  subtitle={t(`common.${member.courseRole}`)}
-                />
-              ))}
-            </OverviewList>
-          </Section>
-        )}
+        <Section>
+          <SectionHeader title={t('examsScreen.title')} />
+          <OverviewList
+            loading={courseExamsQuery.isLoading}
+            indented
+            emptyStateText={
+              isOffline && courseExamsQuery.isLoading
+                ? t('common.cacheMiss')
+                : t('examsScreen.emptyState')
+            }
+          >
+            {courseExamsQuery.data?.map(exam => (
+              <ExamListItem key={exam.id} exam={exam} />
+            ))}
+          </OverviewList>
+        </Section>
         <Section>
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
             <ListItem
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
+              disabled={isGuideDisabled}
             />
           </OverviewList>
         </Section>
@@ -151,7 +179,8 @@ const createStyles = ({ spacing }: Theme) =>
     metricsCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: spacing[4],
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
       marginTop: 0,
       marginBottom: spacing[7],
     },

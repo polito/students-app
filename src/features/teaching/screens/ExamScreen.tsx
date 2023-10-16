@@ -2,11 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import {
-  faCalendar,
-  faClock,
-  faNoteSticky,
-} from '@fortawesome/free-regular-svg-icons';
+import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
 import {
   faHourglassEnd,
   faLocationDot,
@@ -20,12 +16,14 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
+import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import {
@@ -45,9 +43,10 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
-
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
+
+  const isOffline = useOfflineDisabled();
 
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
@@ -56,6 +55,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       });
     }
   }, [navigation, routes, t]);
+
+  const classrooms = exam?.places?.map(p => p.name).join(', ') ?? '-';
 
   const examAccessibilityLabel = useMemo(() => {
     if (!exam || !teacherQuery.data) return;
@@ -75,15 +76,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       }
     }
 
-    const classrooms =
-      exam?.classrooms && exam?.classrooms !== '-'
-        ? `${t('examScreen.location')}: ${exam?.classrooms}`
-        : '';
+    const accessibleClassrooms =
+      classrooms !== '-' ? `${t('examScreen.location')}: ${classrooms}` : '';
     const teacher = `${t('common.teacher')}: ${teacherQuery.data.firstName} ${
       teacherQuery.data.lastName
     }`;
 
-    return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
+    return `${exam.courseName}. ${accessibleDateTime}. ${accessibleClassrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
   return (
@@ -112,46 +111,31 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 </Text>
                 {exam?.status && <ExamStatusBadge exam={exam} />}
               </Row>
-              <Row gap={3}>
-                <Row gap={2} align="center">
-                  <Icon
-                    icon={faCalendar}
-                    color={colors.prose}
-                    size={fontSizes.md}
-                  />
-                  <Text style={{ fontSize: fontSizes.md }}>
-                    {exam?.examStartsAt
-                      ? formatReadableDate(exam.examStartsAt)
-                      : t('common.dateToBeDefined')}
-                  </Text>
-                </Row>
-                <Row gap={2} align="center">
-                  <Icon
-                    icon={faClock}
-                    color={colors.prose}
-                    size={fontSizes.md}
-                  />
-                  <Text style={{ fontSize: fontSizes.md }}>
-                    {exam?.examStartsAt
-                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
-                          exam.examEndsAt!,
-                        )}`
-                      : t('common.timeToBeDefined')}
-                  </Text>
-                </Row>
-              </Row>
+              <ScreenDateTime
+                accessible={true}
+                date={
+                  exam?.examStartsAt
+                    ? formatReadableDate(exam?.examStartsAt)
+                    : t('common.dateToBeDefined')
+                }
+                time={
+                  exam?.examStartsAt
+                    ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                        exam.examEndsAt!,
+                      )}`
+                    : t('common.timeToBeDefined')
+                }
+              />
             </Col>
           </View>
-          <OverviewList loading={teacherQuery.isLoading} indented>
+          <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
             <ListItem
               leadingItem={
                 <Icon icon={faLocationDot} size={fontSizes['2xl']} />
               }
-              title={exam?.classrooms ?? '-'}
+              title={classrooms}
               accessibilityLabel={`${t('examScreen.location')}: ${
-                exam?.classrooms === '-'
-                  ? t('examScreen.noClassroom')
-                  : exam?.classrooms
+                classrooms !== '-' ? classrooms : t('examScreen.noClassroom')
               }`}
               subtitle={t('examScreen.location')}
             />
@@ -159,6 +143,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               <PersonListItem
                 person={teacherQuery.data}
                 subtitle={t('common.teacher')}
+                isCrossNavigation={true}
               />
             )}
             {exam?.notes?.length && (

@@ -134,6 +134,15 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
+  - MapboxCommon (23.8.3)
+  - MapboxCoreMaps (10.16.1):
+    - MapboxCommon (~> 23.8)
+  - MapboxMaps (10.16.1):
+    - MapboxCommon (= 23.8.3)
+    - MapboxCoreMaps (= 10.16.1)
+    - MapboxMobileEvents (= 1.0.10)
+    - Turf (~> 2.0)
+  - MapboxMobileEvents (1.0.10)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
@@ -397,9 +406,11 @@ PODS:
     - React-Core
   - react-native-document-picker (8.1.3):
     - React-Core
+  - react-native-geolocation (3.1.0):
+    - React-Core
   - react-native-html-to-pdf (0.12.0):
     - React-Core
-  - react-native-menu (0.7.3):
+  - react-native-menu (0.8.0):
     - React
   - react-native-netinfo (9.3.4):
     - React-Core
@@ -508,6 +519,8 @@ PODS:
     - React-perflogger (= 0.71.2)
   - RNCAsyncStorage (1.17.11):
     - React-Core
+  - RNCClipboard (1.12.1):
+    - React-Core
   - RNDeviceInfo (10.3.0):
     - React-Core
   - RNFastImage (8.6.3):
@@ -526,7 +539,7 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.9.0):
+  - RNGestureHandler (2.13.2):
     - React-Core
   - RNImageCropPicker (0.38.0):
     - React-Core
@@ -539,12 +552,52 @@ PODS:
     - TOCropViewController
   - RNKeychain (8.1.1):
     - React-Core
+  - rnmapbox-maps (10.0.15):
+    - MapboxMaps (~> 10.16.0)
+    - React
+    - React-Core
+    - rnmapbox-maps/DynamicLibrary (= 10.0.15)
+    - Turf
+  - rnmapbox-maps/DynamicLibrary (10.0.15):
+    - MapboxMaps (~> 10.16.0)
+    - React
+    - React-Core
+    - Turf
+  - RNPermissions (3.10.0):
+    - React-Core
+  - RNReanimated (2.17.0):
+    - DoubleConversion
+    - FBLazyVector
+    - FBReactNativeSpec
+    - glog
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-callinvoker
+    - React-Core
+    - React-Core/DevSupport
+    - React-Core/RCTWebSocket
+    - React-CoreModules
+    - React-cxxreact
+    - React-jsi
+    - React-jsiexecutor
+    - React-jsinspector
+    - React-RCTActionSheet
+    - React-RCTAnimation
+    - React-RCTBlob
+    - React-RCTImage
+    - React-RCTLinking
+    - React-RCTNetwork
+    - React-RCTSettings
+    - React-RCTText
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNScreens (3.22.0):
     - React-Core
     - React-RCTImage
-  - RNSentry (5.6.0):
+  - RNSentry (5.11.1):
     - React-Core
-    - Sentry/HybridSDK (= 8.7.3)
+    - Sentry/HybridSDK (= 8.13.0)
   - RNSVG (13.4.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -553,10 +606,11 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry/HybridSDK (8.7.3):
-    - SentryPrivate (= 8.7.3)
-  - SentryPrivate (8.7.3)
+  - Sentry/HybridSDK (8.13.0):
+    - SentryPrivate (= 8.13.0)
+  - SentryPrivate (8.13.0)
   - TOCropViewController (2.6.1)
+  - Turf (2.7.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -589,6 +643,7 @@ DEPENDENCIES:
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -612,6 +667,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -621,6 +677,9 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
+  - "rnmapbox-maps (from `../node_modules/@rnmapbox/maps`)"
+  - RNPermissions (from `../node_modules/react-native-permissions`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -641,6 +700,10 @@ SPEC REPOS:
     - GoogleUtilities
     - libevent
     - libwebp
+    - MapboxCommon
+    - MapboxCoreMaps
+    - MapboxMaps
+    - MapboxMobileEvents
     - nanopb
     - PromisesObjC
     - SDWebImage
@@ -648,6 +711,7 @@ SPEC REPOS:
     - Sentry
     - SentryPrivate
     - TOCropViewController
+    - Turf
 
 EXTERNAL SOURCES:
   boost:
@@ -696,6 +760,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-geolocation:
+    :path: "../node_modules/@react-native-community/geolocation"
   react-native-html-to-pdf:
     :path: "../node_modules/react-native-html-to-pdf"
   react-native-menu:
@@ -742,6 +808,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -760,6 +828,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-crop-picker"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
+  rnmapbox-maps:
+    :path: "../node_modules/@rnmapbox/maps"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSentry:
@@ -789,6 +863,10 @@ SPEC CHECKSUMS:
   hermes-engine: 6351580c827b3b03e5f25aadcf989f582d0b0a86
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
+  MapboxCommon: b2c348867dfed7d7a23545e6c2024d712bfda10f
+  MapboxCoreMaps: c66f482b5ea983cf873122853c4ee94c159bec43
+  MapboxMaps: fdbe05e3899abd24f31a7f91789586e44e57f7fc
+  MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
@@ -808,8 +886,9 @@ SPEC CHECKSUMS:
   react-native-blob-util: 4ec16cc21bfc8de8f0ddfd2c81ada00f8c34b646
   react-native-blur: 50c9feabacbc5f49b61337ebc32192c6be7ec3c3
   react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
+  react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
-  react-native-menu: 9d7d6f819cc7fa14a15cf86888c53f3240d86f1b
+  react-native-menu: 5b9b82dabcc779cebde15d292ccbcba4469ff311
   react-native-netinfo: 6ac9bcc7c88dc51717bda3484eb99093acb755e0
   react-native-override-color-scheme: 3badbbee9a4ea2a9c3e5b4a5d9fd9eaba8761870
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
@@ -831,25 +910,30 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 4bf9a9086d27f74065fce1dddac274aa95216952
   ReactCommon: f697c0ac52e999aa818e43e2b6f277787c735e2d
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
+  RNCClipboard: d77213bfa269013bf4b857b7a9ca37ee062d8ef1
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: 0b534885354024f4d171ede8da04521d81bc1767
   RNFBMessaging: a2ebefff4dd99eba6b16105bbc0b931bfdb0ce74
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
+  RNGestureHandler: bb86e378287f7713baf3ca205423eb8109790022
   RNImageCropPicker: ffbba608264885c241cbf3a8f78eb7aeeb978241
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
+  rnmapbox-maps: b6219b7432508ae2cea169365116a811f822612e
+  RNPermissions: e2972ae89feea467caba18701ca7640dee936fdd
+  RNReanimated: f186e85d9f28c9383d05ca39e11dd194f59093ec
   RNScreens: 68fd1060f57dd1023880bf4c05d74784b5392789
-  RNSentry: 9f0447b3ce13806f544903748de423259ead8552
+  RNSentry: e668d4e68fe09d475dc084bab81f02c3be2db173
   RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: c7a86f43510a7d5678d4de28d78c28ab351d295b
-  SentryPrivate: 2eaabf598a46d4b9b8822aef766df2a84caf2e6f
+  Sentry: a067ca1db308066097314d8478e9682f3b575dee
+  SentryPrivate: 917c91aeb0f199cd079404fab2b50c83e4bad25c
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  Turf: 13d1a92d969ca0311bbc26e8356cca178ce95da2
   Yoga: 5b0304b3dbef2b52e078052138e23a19c7dacaef
 
-PODFILE CHECKSUM: 04c5d0e851d76c2786d5625437476ab5fe3366cc
+PODFILE CHECKSUM: 35df0ac3fdb9cd146aa5e101d3a33ec1024b0725
 
 COCOAPODS: 1.12.1

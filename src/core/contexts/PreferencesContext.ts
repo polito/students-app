@@ -1,11 +1,14 @@
 import { createContext, useContext } from 'react';
 
+import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
 import { UnreadNotifications } from '../types/notifications';
 
 export const editablePreferenceKeys = [
-  'clientId',
+  'lastInstalledVersion',
+  'username',
+  'campusId',
   'colorScheme',
   'courses',
   'language',
@@ -13,6 +16,9 @@ export const editablePreferenceKeys = [
   'favoriteServices',
   'peopleSearched',
   'unreadNotifications',
+  'onboardingStep',
+  'emailGuideRead',
+  'placesSearched',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
@@ -24,14 +30,19 @@ export const objectPreferenceKeys = [
   'favoriteServices',
   'peopleSearched',
   'unreadNotifications',
+  'onboardingStep',
+  'emailGuideRead',
+  'placesSearched',
 ];
 
 export type CoursesPreferences = {
-  [courseId: number]: CoursePreferencesProps;
+  [courseId: number | string]: CoursePreferencesProps;
 };
 
-export type PreferencesContextProps = {
-  clientId?: string;
+export interface PreferencesContextBase {
+  lastInstalledVersion: string | null;
+  username: string;
+  campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';
   courses: CoursesPreferences;
   language: 'it' | 'en';
@@ -40,9 +51,11 @@ export type PreferencesContextProps = {
     events: boolean;
     presence: boolean;
   };
-  updatePreference: (key: PreferenceKey, value: unknown) => void;
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
+  onboardingStep?: number;
+  emailGuideRead?: boolean;
+  placesSearched: PlaceOverview[];
   /**
    * A map whose keys represent a path to an object or area where the update
    * occurred and leaf values are the number of unread updates
@@ -54,7 +67,14 @@ export type PreferencesContextProps = {
    * }
    */
   unreadNotifications: UnreadNotifications;
-};
+}
+
+export interface PreferencesContextProps extends PreferencesContextBase {
+  updatePreference: <T extends PreferenceKey>(
+    key: T,
+    value: PreferencesContextBase[T],
+  ) => void;
+}
 
 export interface CoursePreferencesProps {
   color: string;

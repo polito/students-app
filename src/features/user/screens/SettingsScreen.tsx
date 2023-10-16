@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -34,8 +34,12 @@ import { Settings } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  PreferencesContextBase,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
@@ -176,7 +180,10 @@ const VisualizationListItem = () => {
         };
       })}
       onPressAction={({ nativeEvent: { event } }) => {
-        updatePreference('colorScheme', event);
+        updatePreference(
+          'colorScheme',
+          event as PreferencesContextBase['colorScheme'],
+        );
       }}
     >
       <ListItem
@@ -195,10 +202,16 @@ const LanguageListItem = () => {
   const { t } = useTranslation();
   const { language, updatePreference } = usePreferencesContext();
   const { mutate } = useUpdateDevicePreferences();
+  const isDisabled = useOfflineDisabled();
 
+  const choices = useMemo(() => {
+    if (isDisabled) return [];
+
+    return ['it', 'en'] as const;
+  }, [isDisabled]);
   return (
     <MenuView
-      actions={['it', 'en'].map(cc => {
+      actions={choices.map(cc => {
         return {
           id: cc,
           title: t(`common.${cc}`),
@@ -218,6 +231,7 @@ const LanguageListItem = () => {
     >
       <ListItem
         isAction
+        disabled={isDisabled}
         title={t(`common.${language}`)}
         accessibilityLabel={`${t('common.language')}: ${t(
           `common.${language}`,
@@ -237,7 +251,7 @@ const Notifications = () => {
       updatePreference('notifications', {
         ...notifications,
         [notificationType]: value,
-      });
+      } as PreferencesContextBase['notifications']);
     };
 
   return (

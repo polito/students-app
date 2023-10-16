@@ -8,7 +8,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  PreferencesContextBase,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
@@ -23,10 +26,10 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const [searchFilter, setSearchFilter] = useState('');
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const { marginHorizontal } = useSafeAreaSpacing();
-  const { courseId } = route.params;
+  const { uniqueShortcode } = route.params;
   const coursePrefs = useMemo(
-    () => coursesPrefs[courseId],
-    [courseId, coursesPrefs],
+    () => coursesPrefs[uniqueShortcode],
+    [uniqueShortcode, coursesPrefs],
   );
   const filteredIcons = useMemo(
     () =>
@@ -59,7 +62,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
             onPress={() => {
               updatePreference('courses', {
                 ...coursesPrefs,
-                [courseId]: {
+                [uniqueShortcode]: {
                   ...coursePrefs,
                   icon: item[0],
                 },
@@ -89,11 +92,11 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
           action={() => {
             updatePreference('courses', {
               ...coursesPrefs,
-              [courseId]: {
+              [uniqueShortcode]: {
                 ...coursePrefs,
                 icon: null,
               },
-            });
+            } as PreferencesContextBase['courses']);
             navigation.goBack();
           }}
         />

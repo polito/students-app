@@ -8,7 +8,6 @@ import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
-import { PersonScreen } from '../../teaching/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { AgendaWeekScreen } from '../screens/AgendaWeekScreen';
@@ -37,6 +36,7 @@ export const AgendaNavigator = () => {
 
   return (
     <Stack.Navigator
+      id="AgendaTabNavigator"
       screenOptions={{
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
@@ -78,38 +78,37 @@ export const AgendaNavigator = () => {
       <Stack.Screen
         name="Lecture"
         component={LectureScreen}
+        getId={({ params }) => `${params.item.courseId}${params.item.id}`}
         options={{
+          headerLargeTitle: false,
           headerTitle: t('common.lecture'),
         }}
       />
       <Stack.Screen
         name="Exam"
         component={ExamScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
         }}
       />
       <Stack.Screen
         name="Booking"
         component={BookingScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerLargeTitle: false,
+          headerTitle: t('common.booking'),
         }}
       />
       <Stack.Screen
         name="Deadline"
         component={DeadlineScreen}
+        getId={({ params }) => `${params.item.id}`}
         options={{
           headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="Person"
-        component={PersonScreen}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('common.contact'),
-          headerBackTitleVisible: false,
+          headerTitle: t('common.deadline'),
         }}
       />
       <Stack.Screen

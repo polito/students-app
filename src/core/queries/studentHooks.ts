@@ -11,20 +11,18 @@ import {
 import { DateTime, Duration } from 'luxon';
 
 import { unreadMessages } from '../../utils/messages';
-import { pluckData, prefixKey } from '../../utils/queries';
-import { useApiContext } from '../contexts/ApiContext';
+import { pluckData } from '../../utils/queries';
 
-export const DEADLINES_QUERY_KEY = 'deadlines';
+export const DEADLINES_QUERY_KEY = ['deadlines'];
 
-export const STUDENT_QUERY_KEY = 'student';
-export const GRADES_QUERY_KEY = 'grades';
-export const MESSAGES_QUERY_KEY = 'messages';
+export const STUDENT_QUERY_KEY = ['student'];
+export const GRADES_QUERY_KEY = ['grades'];
+export const MESSAGES_QUERY_PREFIX = 'messages';
+export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
+export const GUIDES_QUERY_KEY = ['guides'];
 
 const useStudentClient = (): StudentApi => {
-  const {
-    clients: { student: studentClient },
-  } = useApiContext();
-  return studentClient!;
+  return new StudentApi();
 };
 
 const handleAcquiredCredits = (student: Student) => {
@@ -39,7 +37,7 @@ export const useGetStudent = () => {
   const studentClient = useStudentClient();
 
   return useQuery(
-    prefixKey([STUDENT_QUERY_KEY]),
+    STUDENT_QUERY_KEY,
     () =>
       studentClient
         .getStudent()
@@ -51,14 +49,15 @@ export const useGetStudent = () => {
         }),
     {
       onSuccess: async data => {
-        Sentry.setTag('student_degree_code', data.degreeCode);
+        Sentry.setTag('student_degree_id', data.degreeName);
+        Sentry.setTag('student_degree_name', data.degreeId);
         Sentry.setTag('student_status', data.status);
         Sentry.setTag(
           'student_is_currently_enrolled',
           data.isCurrentlyEnrolled,
         );
       },
-      staleTime: Infinity,
+      cacheTime: Infinity,
     },
   );
 };
@@ -71,7 +70,7 @@ const sortGrades = (response: ExamGrade[]) => {
 export const useGetGrades = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(prefixKey([GRADES_QUERY_KEY]), () =>
+  return useQuery(GRADES_QUERY_KEY, () =>
     studentClient.getStudentGrades().then(pluckData).then(sortGrades),
   );
 };
@@ -82,7 +81,7 @@ export const useGetDeadlineWeeks = () => {
   const oneWeek = Duration.fromDurationLike({ week: 1 });
 
   return useInfiniteQuery(
-    prefixKey([DEADLINES_QUERY_KEY]),
+    DEADLINES_QUERY_KEY,
     ({ pageParam: since = DateTime.now().startOf('week') }) => {
       const until = since.plus(oneWeek);
 
@@ -117,17 +116,16 @@ export const useUpdateDevicePreferences = () => {
 export const useGetMessages = () => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
-  const messagesQueryKey = prefixKey([MESSAGES_QUERY_KEY]);
 
   return useQuery(
-    messagesQueryKey,
+    MESSAGES_QUERY_KEY,
     () =>
       studentClient
         .getMessages()
         .then(pluckData)
         .then(messages => {
           const previousMessages =
-            queryClient.getQueryData<Message[]>(messagesQueryKey);
+            queryClient.getQueryData<Message[]>(MESSAGES_QUERY_KEY);
 
           if (
             previousMessages &&
@@ -138,7 +136,7 @@ export const useGetMessages = () => {
           }
 
           queryClient.setQueryData(
-            [...messagesQueryKey, 'modal'],
+            [MESSAGES_QUERY_PREFIX, 'modal'],
             unreadMessages(messages),
           );
 
@@ -153,18 +151,16 @@ export const useGetMessages = () => {
 
 export const useInvalidateMessages = () => {
   const queryClient = useQueryClient();
-  const messagesQueryKey = prefixKey([MESSAGES_QUERY_KEY]);
 
   return {
-    run: () => queryClient.invalidateQueries(messagesQueryKey),
+    run: () => queryClient.invalidateQueries(MESSAGES_QUERY_KEY),
   };
 };
 
 export const useGetModalMessages = () => {
   const messagesQuery = useGetMessages();
-  const modalQueryKey = prefixKey([MESSAGES_QUERY_KEY, 'modal']);
 
-  return useQuery(modalQueryKey, () => [], {
+  return useQuery([MESSAGES_QUERY_PREFIX, 'modal'], () => [], {
     enabled: !!messagesQuery.data,
     staleTime: Infinity,
   });
@@ -173,14 +169,21 @@ export const useGetModalMessages = () => {
 export const useMarkMessageAsRead = (invalidate: boolean = true) => {
   const studentClient = useStudentClient();
   const client = useQueryClient();
-  const invalidatesQuery = prefixKey([MESSAGES_QUERY_KEY]);
 
   return useMutation(
     (messageId: number) => studentClient.markMessageAsRead({ messageId }),
     {
       onSuccess() {
-        return invalidate && client.invalidateQueries(invalidatesQuery);
+        return invalidate && client.invalidateQueries(MESSAGES_QUERY_KEY);
       },
     },
+  );
+};
+
+export const useGetGuides = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery(GUIDES_QUERY_KEY, () =>
+    studentClient.getGuides().then(pluckData),
   );
 };

@@ -17,8 +17,9 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useDebounceValue } from '../../../core/hooks/useDebounceValue';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPeople } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { PersonOverviewListItem } from '../components/PersonOverviewListItem';
 import { RecentSearch } from '../components/RecentSearch';
 
@@ -35,6 +36,8 @@ export const ContactsScreen = () => {
   const infoColor =
     colorScheme === 'light' ? palettes.gray['500'] : palettes.gray['400'];
 
+  const isInputDisabled = useOfflineDisabled();
+
   return (
     <>
       <HeaderAccessory style={styles.searchBar}>
@@ -45,6 +48,7 @@ export const ContactsScreen = () => {
             onChangeText={setSearch}
             style={[GlobalStyles.grow, styles.textField]}
             label={t('contactsScreen.search')}
+            editable={!isInputDisabled}
           />
           {!!search && (
             <IconButton

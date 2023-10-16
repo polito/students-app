@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 
@@ -8,11 +8,14 @@ import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { CourseIcon } from './CourseIcon';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { getCourseKey } from '../../../core/queries/courseHooks';
+import { CourseOverview } from '../../../core/types/api';
+import { CourseIndicator } from './CourseIndicator';
 
 interface Props {
   course: CourseOverview;
@@ -31,7 +34,8 @@ const Menu = ({
 }>) => {
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
-  const isHidden = preferences.courses[course.id!]?.isHidden ?? false;
+  const isHidden =
+    preferences.courses[course.uniqueShortcode]?.isHidden ?? false;
 
   return (
     <MenuView
@@ -47,8 +51,8 @@ const Menu = ({
       onPressAction={() => {
         preferences.updatePreference('courses', {
           ...preferences.courses,
-          [course.id!]: {
-            ...preferences.courses[course.id!],
+          [course.uniqueShortcode!]: {
+            ...preferences.courses[course.uniqueShortcode],
             isHidden: !isHidden,
           },
         });
@@ -70,15 +74,38 @@ export const CourseListItem = ({
   const preferences = usePreferencesContext();
 
   const hasDetails = course.id != null;
+  const queryClient = useQueryClient();
+
+  const isDataMissing = useCallback(
+    () =>
+      !!course.id &&
+      queryClient.getQueryData(getCourseKey(course.id)) === undefined,
+    [course.id, queryClient],
+  );
+
+  const isDisabled = useOfflineDisabled(isDataMissing);
+
+  const subtitle = useMemo(() => {
+    return (
+      `${course.cfu} ${t('common.credits').toLowerCase()}` +
+      (!course.isInPersonalStudyPlan ? ` • ${t('courseListItem.extra')}` : '') +
+      (course.isOverBooking ? ` • ${t('courseListItem.overbooking')}` : '')
+    );
+  }, [course.cfu, course.isInPersonalStudyPlan, course.isOverBooking, t]);
 
   const listItem = (
     <ListItem
       accessible={accessible}
+      disabled={isDisabled || course.isOverBooking}
       linkTo={
         hasDetails
           ? {
               screen: 'Course',
-              params: { id: course.id, courseName: course.name },
+              params: {
+                id: course.id,
+                courseName: course.name,
+                uniqueShortcode: course.uniqueShortcode,
+              },
             }
           : undefined
       }
@@ -91,13 +118,8 @@ export const CourseListItem = ({
         course.cfu
       } ${t('common.credits')}`}
       title={course.name}
-      subtitle={`${course.cfu} ${t('common.credits').toLowerCase()}`}
-      leadingItem={
-        <CourseIcon
-          icon={course.id ? preferences.courses[course.id]?.icon : undefined}
-          color={course.id ? preferences.courses[course.id]?.color : undefined}
-        />
-      }
+      subtitle={subtitle}
+      leadingItem={<CourseIndicator uniqueShortcode={course.uniqueShortcode} />}
       trailingItem={
         <>
           {badge && <Badge text={badge} />}

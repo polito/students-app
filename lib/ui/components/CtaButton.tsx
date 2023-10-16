@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -15,6 +16,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { shadeColor } from '@lib/ui/utils/colors';
 
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
@@ -27,7 +29,9 @@ interface Props extends TouchableHighlightProps {
   rightExtra?: JSX.Element;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
+  variant?: 'filled' | 'outlined';
   destructive?: boolean;
+  success?: boolean;
   hint?: string;
 }
 
@@ -41,18 +45,54 @@ export const CtaButton = ({
   loading,
   disabled,
   destructive = false,
+  success = false,
   action,
   icon,
   rightExtra,
   hint,
   containerStyle,
+  variant = 'filled',
   ...rest
 }: Props) => {
-  const { palettes, fontSizes, spacing } = useTheme();
+  const { palettes, colors, fontSizes, spacing, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
+
+  const outlined = variant === 'outlined';
+
+  const underlayColor = useMemo(() => {
+    if (variant === 'outlined') {
+      if (dark) return shadeColor(colors.background, 20);
+      else return shadeColor(colors.background, -10);
+    } else {
+      if (destructive) return palettes.danger[700];
+      return palettes.primary[500];
+    }
+  }, [
+    colors.background,
+    dark,
+    destructive,
+    palettes.danger,
+    palettes.primary,
+    variant,
+  ]);
+
+  const color = useMemo(() => {
+    if (success) {
+      return dark ? palettes.success[400] : palettes.success[700];
+    }
+    if (destructive) return palettes.danger[600];
+    return palettes.primary[400];
+  }, [
+    dark,
+    destructive,
+    palettes.danger,
+    palettes.primary,
+    palettes.success,
+    success,
+  ]);
 
   return (
     <View
@@ -62,7 +102,7 @@ export const CtaButton = ({
           position: 'absolute',
           left: Platform.select({ ios: left }),
           right,
-          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[16] : 0),
+          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
         },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
@@ -71,18 +111,19 @@ export const CtaButton = ({
       {hint && <Text style={styles.hint}>{hint}</Text>}
       <TouchableHighlight
         accessibilityRole="button"
-        underlayColor={
-          destructive ? palettes.danger[700] : palettes.primary[600]
-        }
+        underlayColor={underlayColor}
         disabled={disabled || loading}
         style={[
           styles.button,
-          {
-            backgroundColor: destructive
-              ? palettes.danger[600]
-              : palettes.primary[500],
+          variant === 'outlined' && {
+            borderColor: color,
+            borderWidth: 1,
+            backgroundColor: colors.background,
           },
-          disabled && styles.disabledButton,
+          variant === 'filled' && {
+            backgroundColor: color,
+          },
+          disabled && variant === 'filled' && styles.disabledButton,
           style,
         ]}
         accessibilityLabel={title}
@@ -91,7 +132,17 @@ export const CtaButton = ({
       >
         <View>
           <View style={styles.stack}>
-            {loading && <ActivityIndicator color="white" />}
+            {loading && (
+              <ActivityIndicator
+                color={
+                  outlined
+                    ? destructive
+                      ? palettes.danger[600]
+                      : palettes.primary[500]
+                    : 'white'
+                }
+              />
+            )}
           </View>
           <Row style={{ opacity: loading ? 0 : 1 }}>
             {/* {!loading && ( */}
@@ -102,11 +153,23 @@ export const CtaButton = ({
                 <Icon
                   icon={icon}
                   size={fontSizes.xl}
-                  color={palettes.text[100]}
+                  color={variant === 'filled' ? colors.white : color}
                   style={{ marginRight: spacing[2] }}
                 />
               )}
-              <Text style={styles.textStyle}>{title}</Text>
+              <Text
+                style={[
+                  styles.textStyle,
+                  variant === 'outlined' && {
+                    borderColor: palettes.primary[400],
+                  },
+                  {
+                    color: variant === 'filled' ? colors.white : color,
+                  },
+                ]}
+              >
+                {title}
+              </Text>
               {rightExtra && rightExtra}
             </View>
           </Row>
@@ -158,7 +221,7 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
       textAlign: 'center',
-      color: 'white',
+      color: colors.white,
     },
     icon: {
       marginVertical: -2,

@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
@@ -14,22 +14,26 @@ import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
-import { CourseContext } from '../contexts/CourseContext';
+import { useCourseContext } from '../contexts/CourseContext';
 
 export const CourseNoticesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const courseId = useContext(CourseContext)!;
+  const courseId = useCourseContext();
   const noticesQuery = useGetCourseNotices(courseId);
   const { accessibilityListLabel } = useAccessibility();
   const { resetUnread } = usePushNotifications();
   const { paddingHorizontal } = useSafeAreaSpacing();
+  const isCacheMissing = useOfflineDisabled(
+    () => noticesQuery.data === undefined,
+  );
   const notices = useMemo(
     () =>
       noticesQuery.data?.map(notice => ({
@@ -66,14 +70,19 @@ export const CourseNoticesScreen = () => {
       )}
       ListFooterComponent={<BottomBarSpacer />}
       ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
-      ListEmptyComponent={
-        !noticesQuery.isLoading ? (
-          <EmptyState
-            icon={faInbox}
-            message={t('courseNoticesTab.emptyState')}
-          />
-        ) : null
-      }
+      ListEmptyComponent={() => {
+        if (!noticesQuery.isLoading) {
+          return (
+            <EmptyState
+              icon={faInbox}
+              message={t('courseNoticesTab.emptyState')}
+            />
+          );
+        } else if (isCacheMissing) {
+          return <EmptyState icon={faInbox} message={t('common.cacheMiss')} />;
+        }
+        return null;
+      }}
     />
   );
 };

@@ -8,19 +8,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
-import { STUDENT_QUERY_KEY } from './studentHooks';
+import { asyncStoragePersister } from '../providers/ApiProvider';
 
 const useAuthClient = (): AuthApi => {
-  const {
-    clients: { auth: authClient },
-  } = useApiContext();
-  return authClient!;
+  return new AuthApi();
 };
 
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
+  const { updatePreference } = usePreferencesContext();
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
@@ -55,47 +54,48 @@ export const useLogin = () => {
     },
     onSuccess: async data => {
       const { token, clientId, username } = data;
-      await Keychain.setGenericPassword(clientId, token);
       refreshContext({ username, token });
-    },
-    onError: error => {
-      console.debug('loginError', JSON.stringify(error));
+      updatePreference('username', username);
+      await Keychain.setGenericPassword(clientId, token);
     },
   });
 };
 
 export const useLogout = () => {
   const authClient = useAuthClient();
+  const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
 
   return useMutation({
     mutationFn: () => authClient.logout(),
     onSuccess: async () => {
       refreshContext();
+      asyncStoragePersister.removeClient();
+      queryClient.invalidateQueries([]);
       await Keychain.resetGenericPassword();
-      // await queryClient.invalidateQueries([]);
     },
   });
 };
 
 export const useSwitchCareer = () => {
   const authClient = useAuthClient();
-  const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
+  const { updatePreference } = usePreferencesContext();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (dto?: SwitchCareerRequest) =>
       authClient.switchCareer({ switchCareerRequest: dto }).then(pluckData),
-    onSuccess: data => {
-      Keychain.resetGenericPassword().then(() => {
-        refreshContext({
-          token: data.token,
-          username: data.username,
-        });
-        Keychain.setGenericPassword(data.clientId, data.token).then(() =>
-          queryClient.invalidateQueries([STUDENT_QUERY_KEY]),
-        );
+    onSuccess: async data => {
+      const { token, username } = data;
+      refreshContext({
+        token,
+        username,
       });
+      updatePreference('username', username);
+      asyncStoragePersister.removeClient();
+      queryClient.invalidateQueries([]);
+      await Keychain.setGenericPassword(data.clientId, data.token);
     },
   });
 };

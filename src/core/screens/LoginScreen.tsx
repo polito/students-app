@@ -42,7 +42,7 @@ export const LoginScreen = () => {
   const { language } = usePreferencesContext();
 
   const handleLogin = () =>
-    login({ username, password, preferences: { language } }).catch(e => {
+    login({ username, password, preferences: {} }).catch(e => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
@@ -51,7 +51,6 @@ export const LoginScreen = () => {
           t('loginScreen.authnErrorDescription'),
         );
       }
-      throw e;
     });
 
   return (
@@ -70,7 +69,7 @@ export const LoginScreen = () => {
               label={t('loginScreen.usernameLabel')}
               value={username}
               accessibilityLabel={t('loginScreen.usernameLabelAccessibility')}
-              onChangeText={setUsername}
+              onChangeText={text => setUsername(text.trim())}
               editable={!isLoading}
               returnKeyType="next"
               onSubmitEditing={() => {

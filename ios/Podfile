@@ -13,6 +13,7 @@ prepare_react_native_project!
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
 # ```
+$RNMapboxMapsImpl = 'mapbox'
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled(["Debug"], { 'Flipper' => '0.189.0' })
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -71,6 +72,13 @@ target 'students' do
       end
     end
 
+    # NOTE: Change IPHONEOS_DEPLOYMENT_TARGET to 12.4.
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
+      end
+    end
+
     installer.pods_project.targets.each do |target|
       if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
         target.build_configurations.each do |config|
@@ -78,5 +86,11 @@ target 'students' do
         end
       end
     end
+
+    $RNMapboxMaps.post_install(installer)
   end
+end
+
+pre_install do |installer|
+  $RNMapboxMaps.pre_install(installer)
 end

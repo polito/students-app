@@ -83,6 +83,7 @@ export interface Colors {
   heading: string;
   subHeading: string;
   prose: string;
+  longProse: string;
   secondaryText: string;
   caption: string;
   link: string;
@@ -96,6 +97,7 @@ export interface Colors {
   agendaExam: string;
   agendaLecture: string;
   translucentSurface: string;
+  white: string;
 }
 
 export interface Palettes {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
@@ -12,9 +12,10 @@ import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { isLiveVC, isRecordedVC } from '../utils/lectures';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
@@ -43,11 +44,16 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       <SafeAreaView>
-        {lecture?.videoUrl && (
+        {lecture && isRecordedVC(lecture) && lecture.videoUrl && (
           <VideoPlayer
             source={{ uri: lecture.videoUrl }}
             poster={lecture?.coverUrl ?? undefined}
           />
+        )}
+        {lecture && isLiveVC(lecture) && (
+          <View></View>
+          // TODO handle live VC
+          // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
         )}
         <EventDetails
           title={lecture?.title ?? ''}
@@ -63,6 +69,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
             <PersonListItem
               person={teacherQuery.data}
               subtitle={t('common.teacher')}
+              isCrossNavigation={true}
             />
           )}
         </OverviewList>

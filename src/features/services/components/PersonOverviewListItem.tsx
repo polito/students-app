@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import {
   Image,
   StyleProp,
@@ -14,12 +15,14 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PersonOverview } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { MAX_RECENT_SEARCHES } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { getPersonKey } from '../../../core/queries/peopleHooks';
 import { HighlightedText } from './HighlightedText';
-
-const maxRecentSearches = 10;
 
 interface Props {
   person: PersonOverview;
@@ -53,7 +56,7 @@ export const PersonOverviewListItem = ({
   const navigateToPerson = () => {
     const personIndex = peopleSearched.findIndex(p => p.id === person.id);
     if (personIndex === -1) {
-      if (peopleSearched.length >= maxRecentSearches) {
+      if (peopleSearched.length >= MAX_RECENT_SEARCHES) {
         peopleSearched.pop();
       }
       updatePreference('peopleSearched', [person, ...peopleSearched]);
@@ -64,6 +67,14 @@ export const PersonOverviewListItem = ({
     navigation.navigate('Person', { id: person.id });
   };
 
+  const queryClient = useQueryClient();
+
+  const isDataMissing = useCallback(
+    () => queryClient.getQueryData(getPersonKey(person!.id)) === undefined,
+    [person, queryClient],
+  );
+
+  const isDisabled = useOfflineDisabled(isDataMissing);
   return (
     <ListItem
       onPress={navigateToPerson}
@@ -84,6 +95,7 @@ export const PersonOverviewListItem = ({
         },
         containerStyle,
       ]}
+      disabled={isDisabled}
       {...rest}
     />
   );

@@ -23,6 +23,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { useOfflineDisabled } from '../../../src/core/hooks/useOfflineDisabled';
+
 type IconType = string;
 
 const mimeTypeIcons: Record<IconType, IconDefinition> = {
@@ -82,6 +84,7 @@ export const FileListItem = ({
 
   const downloadLabel = t(`common.downloadStatus.${isDownloaded}`);
 
+  const isDisabled = useOfflineDisabled(() => !isDownloaded);
   return (
     <ListItem
       accessible={true}
@@ -111,6 +114,7 @@ export const FileListItem = ({
         </View>
       }
       subtitle={subtitle}
+      disabled={isDisabled}
       {...rest}
     />
   );

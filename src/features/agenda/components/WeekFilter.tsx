@@ -9,9 +9,7 @@ import {
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 
 import { DateTime } from 'luxon';
 
@@ -19,24 +17,30 @@ interface Props {
   current: DateTime;
   getNext: () => void;
   getPrev: () => void;
-  enabled: boolean;
+  isPrevWeekDisabled: boolean;
+  isNextWeekDisabled: boolean;
 }
-export const WeekFilter = ({ current, getNext, getPrev, enabled }: Props) => {
+export const WeekFilter = ({
+  current,
+  getNext,
+  getPrev,
+  isPrevWeekDisabled = false,
+  isNextWeekDisabled = false,
+}: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-
-  const styles = useStylesheet(createStyles);
 
   const endOfWeek = useMemo(() => {
     return current.plus({ days: 6 });
   }, [current]);
+
   return (
     <Row align="center">
       <IconButton
         icon={faChevronLeft}
         accessibilityLabel={t('loginScreen.showPassword')}
         color={colors.secondaryText}
-        disabled={!enabled}
+        disabled={isPrevWeekDisabled}
         onPress={() => getPrev()}
       />
 
@@ -47,16 +51,15 @@ export const WeekFilter = ({ current, getNext, getPrev, enabled }: Props) => {
         icon={faChevronRight}
         accessibilityLabel={t('loginScreen.showPassword')}
         color={colors.secondaryText}
-        disabled={!enabled}
+        disabled={isNextWeekDisabled}
         onPress={() => getNext()}
       />
     </Row>
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
-  StyleSheet.create({
-    item: {
-      fontWeight: '500',
-    },
-  });
+const styles = StyleSheet.create({
+  item: {
+    fontWeight: '500',
+  },
+});

@@ -129,7 +129,6 @@ export const Snackbar = ({
 
   const wrapperPaddings = {
     paddingBottom: bottom,
-    paddingHorizontal: 30,
   };
 
   return (
@@ -172,25 +171,26 @@ export const Snackbar = ({
 Snackbar.DURATION = DURATION_TIME;
 Snackbar.ANIMATION = ANIMATION_TIME;
 
-const createStyles = ({ dark, palettes, shapes }: Theme) =>
+const createStyles = ({ dark, palettes, shapes, spacing }: Theme) =>
   StyleSheet.create({
     wrapper: {
       position: 'absolute',
       bottom: 60,
       width: '100%',
+      paddingHorizontal: spacing[5],
     },
     container: {
+      margin: 0,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      margin: 8,
       minHeight: 48,
       elevation: 6,
       borderRadius: shapes.md,
       backgroundColor: palettes.gray[dark ? 200 : 800],
     },
     content: {
-      marginHorizontal: 16,
+      marginHorizontal: spacing[4],
       marginVertical: 14,
       flex: 1,
       fontWeight: '500',

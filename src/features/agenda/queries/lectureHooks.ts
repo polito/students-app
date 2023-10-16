@@ -1,23 +1,19 @@
 import { useMemo } from 'react';
 
-import { Lecture, LecturesApi } from '@polito/api-client';
+import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
-import { useApiContext } from '../../../core/contexts/ApiContext';
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
-import { notNullish } from '../../../utils/predicates';
-import { prefixKey } from '../../../utils/queries';
+import { pluckData } from '../../../utils/queries';
+import { Lecture } from '../types/Lecture';
 
-export const LECTURES_QUERY_KEY = 'lectures';
+export const LECTURES_QUERY_KEY = ['lectures'];
 
 const useLectureClient = (): LecturesApi => {
-  const {
-    clients: { lectures: lectureClient },
-  } = useApiContext();
-  return lectureClient!;
+  return new LecturesApi();
 };
 
 export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
@@ -33,17 +29,29 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
   const visibleCourseIds = useMemo(() => {
     if (!courses) return [];
 
-    const courseIds = courses.filter(notNullish).map(c => c.id!);
-
-    const hiddenCourseIds = Object.entries(coursesPreferences)
+    const hiddenUniqueShortcodes = Object.entries(coursesPreferences)
       .filter(([_, prefs]) => prefs.isHidden)
-      .map(([id]) => Number(id));
+      .map(([uniqueShortcode]) => uniqueShortcode);
 
-    return courseIds.filter(id => id && !hiddenCourseIds.includes(id));
+    return courses
+      .filter(
+        course =>
+          course.id !== null &&
+          !hiddenUniqueShortcodes.includes(course.uniqueShortcode),
+      )
+      .map(course => course.id as number);
   }, [courses, coursesPreferences]);
 
+  const addUniqueShortcodeToLectures = (lectures: ApiLecture[]): Lecture[] => {
+    return lectures.map(lecture => ({
+      ...lecture,
+      uniqueShortcode: courses!.find(course => course.id === lecture.courseId)
+        ?.uniqueShortcode,
+    }));
+  };
+
   return useInfiniteQuery<Lecture[]>(
-    prefixKey([LECTURES_QUERY_KEY]),
+    LECTURES_QUERY_KEY,
     async ({ pageParam: since = DateTime.now().startOf('week') }) => {
       const until = since.plus(oneWeek);
 
@@ -53,7 +61,8 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
           toDate: until.toJSDate(),
           courseIds: visibleCourseIds,
         })
-        .then(r => r.data);
+        .then(pluckData)
+        .then(addUniqueShortcodeToLectures);
     },
     {
       enabled: Array.isArray(visibleCourseIds),
