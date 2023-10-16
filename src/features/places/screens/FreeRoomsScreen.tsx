@@ -1,14 +1,6 @@
-import {
-  LegacyRef,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import PagerView from 'react-native-pager-view';
 
 import {
   faChevronLeft,
@@ -30,16 +22,23 @@ import { DateTime } from 'luxon';
 
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { FREE_ROOMS_TIME_WINDOW_SIZE_HOURS } from '../constants';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
 
 type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
+
+const isWithinFirstHours = (date: DateTime) =>
+  date.get('hour') <= FREE_ROOMS_TIME_WINDOW_SIZE_HOURS;
+const isWithinLastHours = (date: DateTime) =>
+  (date.get('hour') || 24) >= 24 - FREE_ROOMS_TIME_WINDOW_SIZE_HOURS;
 
 export const FreeRoomsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
@@ -50,38 +49,49 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     DateTime.now().set({ minute: 0, second: 0, millisecond: 0 }),
   );
   const [selectedTimeSlotIndex, setSelectedTimeSlotIndex] = useState(0);
-  const startDateTime = useMemo(
-    () => initialDateTime.plus({ hour: 3 * selectedTimeSlotIndex }),
-    [initialDateTime, selectedTimeSlotIndex],
-  );
+  const startDateTime = useMemo(() => {
+    const startDate = initialDateTime.plus({
+      hour: FREE_ROOMS_TIME_WINDOW_SIZE_HOURS * selectedTimeSlotIndex,
+    });
+    if (isWithinFirstHours(startDate)) {
+      return startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    }
+    return startDate;
+  }, [initialDateTime, selectedTimeSlotIndex]);
+  const endDateTime = useMemo(() => {
+    const endDate = startDateTime.plus({
+      hour: FREE_ROOMS_TIME_WINDOW_SIZE_HOURS,
+    });
+    if (isWithinLastHours(endDate)) {
+      return startDateTime.set({ hour: 23, minute: 59, second: 59 });
+    }
+    return endDate;
+  }, [startDateTime]);
   const { places: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
   const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
     siteId: campus?.id,
     date: startDateTime.toISO().split('T')[0],
     timeFrom: startDateTime.toISOTime(),
-    timeTo: startDateTime.plus({ hour: 3 }).toISOTime(),
+    timeTo: endDateTime.toISOTime(),
   });
   const places = useMemo(
     () =>
-      freeRooms?.data.map(fr => {
-        const place = sitePlaces?.find(p => p.id === fr.id);
-        if (!place) return null;
-        return { ...fr, ...place };
-      }) as (SearchPlace & {
+      freeRooms?.data
+        .map(fr => {
+          const place = sitePlaces?.find(p => p.id === fr.id);
+          if (!place) return null;
+          return { ...fr, ...place };
+        })
+        ?.filter(notNullish) as (SearchPlace & {
         freeFrom: Date;
         freeTo: Date;
       })[],
     [freeRooms?.data, sitePlaces],
   );
-  const pagerRef = useRef<PagerView>();
   const displayFloorId = useMemo(() => {
     const floorIds = new Set(freeRooms?.data?.map(r => r.floorId));
     return floorIds.size === 1 ? Array.from(floorIds.values())[0] : undefined;
   }, [freeRooms?.data]);
-
-  useEffect(() => {
-    pagerRef.current?.setPage(selectedTimeSlotIndex);
-  }, [selectedTimeSlotIndex]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -111,43 +121,31 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
               setSelectedTimeSlotIndex(prevIdx => Math.max(0, prevIdx - 1))
             }
           />
-          <PagerView
-            ref={pagerRef as LegacyRef<PagerView>}
+          <View
             style={{
               flexGrow: 1,
               height: '100%',
             }}
-            orientation="horizontal"
-            initialPage={selectedTimeSlotIndex}
-            onPageSelected={({ nativeEvent: { position } }) =>
-              setSelectedTimeSlotIndex(position)
-            }
           >
-            {Array.from({ length: selectedTimeSlotIndex + 2 }).map(
-              (_, slotIndex) => {
-                const startDate = initialDateTime.plus({ hour: 3 * slotIndex });
-                const endDate = startDate.plus({ hour: 3 });
-                return (
-                  <Text
-                    key={slotIndex}
-                    style={{
-                      flexGrow: 1,
-                      textTransform: 'capitalize',
-                      textAlign: 'center',
-                      marginVertical: spacing[2],
-                    }}
-                  >
-                    {startDate.toRelativeCalendar()}{' '}
-                    {startDate.toFormat('HH:mm')} - {endDate.toFormat('HH:mm')}
-                  </Text>
-                );
-              },
-            )}
-          </PagerView>
+            <Text
+              style={{
+                flexGrow: 1,
+                textTransform: 'capitalize',
+                textAlign: 'center',
+                marginVertical: spacing[2],
+              }}
+            >
+              {startDateTime.toRelativeCalendar()}{' '}
+              {startDateTime.toFormat('HH:mm')} -{' '}
+              {endDateTime.toFormat('HH:mm')}
+            </Text>
+          </View>
           <IconButton
             icon={faChevronRight}
             color={colors.secondaryText}
-            onPress={() => setSelectedTimeSlotIndex(prevIdx => prevIdx + 1)}
+            onPress={() => {
+              setSelectedTimeSlotIndex(prevIdx => prevIdx + 1);
+            }}
           />
         </Row>
         <BottomSheetFlatList

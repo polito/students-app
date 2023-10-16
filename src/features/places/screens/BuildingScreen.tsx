@@ -26,9 +26,8 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
 import { IS_IOS } from '../../../core/constants';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetBuilding } from '../../../core/queries/placesHooks';
+import { useGetBuilding, useGetSite } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -43,7 +42,6 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { placesSearched, updatePreference } = usePreferencesContext();
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
@@ -51,22 +49,18 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const {
     data: building,
     isLoading: isLoadingBuilding,
-    error: getPlaceError,
+    error: getBuildingError,
   } = useGetBuilding(buildingId);
-  const siteId = building?.site.id;
-  const floorId = building?.floor.id;
+  const siteId = building?.siteId;
+  const site = useGetSite(siteId);
   const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
-    floorId,
   });
   const isLoading = isLoadingBuilding || isLoadingPlaces;
-  const placeName =
-    building?.name ??
-    building?.category.subCategory.name ??
-    t('common.untitled');
+  const placeName = building?.name ?? t('common.untitled');
 
   useScreenTitle(
-    (getPlaceError as ResponseError)?.response?.status === 404
+    (getBuildingError as ResponseError)?.response?.status === 404
       ? t('common.notFound')
       : placeName,
   );
@@ -95,7 +89,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
         },
         mapContent: (
           <>
-            <IndoorMapLayer floorId={floorId} />
+            <IndoorMapLayer />
             <MarkersLayer selectedPoiId={buildingId} places={places} />
             {building?.geoJson != null && (
               <ShapeSource
@@ -125,17 +119,14 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
       });
     }
   }, [
-    buildingId,
     building,
-    navigation,
+    buildingId,
     headerHeight,
+    navigation,
     palettes.secondary,
-    floorId,
+    places,
     safeAreaInsets.top,
     spacing,
-    updatePreference,
-    placesSearched,
-    places,
   ]);
 
   if (isLoading) {
@@ -152,8 +143,8 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   }
 
   if (
-    getPlaceError &&
-    (getPlaceError as ResponseError).response.status === 404
+    getBuildingError &&
+    (getBuildingError as ResponseError).response.status === 404
   ) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -185,7 +176,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
             <Text variant="title" style={styles.title}>
               {placeName}
             </Text>
-            <Text>{building?.site.name}</Text>
+            <Text>{site?.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
               {formatPlaceCategory(building?.category.name)}
             </Text>
@@ -197,7 +188,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
-                title={building?.site.name}
+                title={site?.name ?? '--'}
                 subtitle={t('common.campus')}
                 trailingItem={
                   <IconButton

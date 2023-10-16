@@ -25,6 +25,8 @@ import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
+import { capitalize } from 'lodash';
+
 import { IS_IOS, MAX_RECENT_SEARCHES } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
@@ -68,7 +70,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   useScreenTitle(
     (getPlaceError as ResponseError)?.response?.status === 404
       ? t('common.notFound')
-      : placeName,
+      : capitalize(placeName),
   );
 
   useLayoutEffect(
@@ -134,7 +136,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       }
     },
     // eslint-disable-next-line
-    [],
+    [place?.data],
   );
 
   if (isLoading) {
@@ -304,5 +306,6 @@ const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     title: {
       fontSize: fontSizes['2xl'],
+      textTransform: 'capitalize',
     },
   });

@@ -70,7 +70,7 @@ import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { PlaceOverviewWithMetadata, isPlace } from '../types';
 import { formatPlaceCategory } from '../utils/category';
-import { formatAgendaItem } from '../utils/formatAgendaItem';
+import { useFormatAgendaItem } from '../utils/formatAgendaItem';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
@@ -92,6 +92,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const [search, setSearch] = useState('');
   const [floorId, setFloorId] = useState<string>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const formatAgendaItem = useFormatAgendaItem();
   const bottomSheetPosition = useSharedValue(0);
   const [screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
