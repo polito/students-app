@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -13,12 +14,13 @@ type Props = {
   field: GuideField;
 };
 export const GuideFieldListItem = ({ field }: Props) => {
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
   const copyToClipboard = () => {
     if (!field.isCopyEnabled) return;
     Clipboard.setString(field.value);
-    setFeedback({ text: `${field.label} copied` });
+    setFeedback(t('guideScreen.copiedFieldFeedback', { field: field.label }));
   };
 
   return (
@@ -40,13 +42,14 @@ export const GuideFieldListItem = ({ field }: Props) => {
   );
 };
 
-const createStyles = ({ fontSizes }: Theme) =>
+const createStyles = ({ fontSizes, spacing }: Theme) =>
   StyleSheet.create({
     row: {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      gap: spacing[2],
     },
     text: {
       fontSize: fontSizes.md,

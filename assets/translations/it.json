@@ -406,7 +406,8 @@
     "total": "Sono presenti {{ total }} guide"
   },
   "guideScreen": {
-    "title": "Guida"
+    "title": "Guida",
+    "copiedFieldFeedback": "{{field}} copiato"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
