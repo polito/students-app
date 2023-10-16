@@ -92,7 +92,7 @@ export const MarkersLayer = ({
         }
         return markerData;
       });
-  }, [places, selectedPoiId]);
+  }, [categoryId, places, selectedPoiId, subCategoryId]);
 
   return (
     <>

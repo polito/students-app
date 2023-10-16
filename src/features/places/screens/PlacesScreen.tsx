@@ -90,7 +90,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const [search, setSearch] = useState('');
-  const [floorId, setFloorId] = useState<string>();
+  const [floorId, setFloorId] = useState<string | null>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const formatAgendaItem = useFormatAgendaItem();
   const bottomSheetPosition = useSharedValue(0);
@@ -155,7 +155,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       if (!floorId && campus.floors?.length) {
         setFloorId(
           campus.floors.find(f => f.id === 'XPTE')?.id ??
-            campus.floors.find(f => f.level === 0)?.id,
+            campus.floors.find(f => f.level === 0)?.id ??
+            null,
         );
       }
       centerToCurrentCampus();
@@ -215,14 +216,18 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       },
       mapContent: (
         <>
-          <IndoorMapLayer floorId={displayFloorId} />
-          <MarkersLayer
-            search={debouncedSearch}
-            places={places ?? []}
-            displayFloor={!displayFloorId}
-            categoryId={categoryId}
-            subCategoryId={subCategoryId}
-          />
+          {displayFloorId !== undefined && (
+            <IndoorMapLayer floorId={displayFloorId} />
+          )}
+          {displayFloorId !== undefined && (
+            <MarkersLayer
+              search={debouncedSearch}
+              places={places ?? []}
+              displayFloor={!displayFloorId}
+              categoryId={categoryId}
+              subCategoryId={subCategoryId}
+            />
+          )}
         </>
       ),
     });

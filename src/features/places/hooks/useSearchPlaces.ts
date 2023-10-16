@@ -1,12 +1,9 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useState } from 'react';
 
 import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import {
-  useGetBuildings,
-  useGetPlaces,
-} from '../../../core/queries/placesHooks';
+import { useGetPlaces } from '../../../core/queries/placesHooks';
 import { useGetAgendaWeeks } from '../../agenda/queries/agendaHooks';
 import { LectureItem } from '../../agenda/types/AgendaItem';
 import { UPCOMING_COMMITMENT_HOURS_OFFSET } from '../constants';
@@ -21,7 +18,7 @@ import { useGetCurrentCampus } from './useGetCurrentCampus';
 interface UseSearchPlacesOptions {
   search?: string;
   siteId?: string;
-  floorId?: string;
+  floorId?: string | null;
   categoryId?: string;
   subCategoryId?: string;
 }
@@ -39,11 +36,8 @@ export const useSearchPlaces = ({
   const campus = useGetCurrentCampus();
   const actualSiteId = siteId ?? campus?.id;
 
-  const now = useRef(DateTime.now());
-  const { data: agendaPages } = useGetAgendaWeeks(
-    coursesPreferences,
-    now.current,
-  );
+  const [now] = useState(DateTime.now());
+  const { data: agendaPages } = useGetAgendaWeeks(coursesPreferences, now);
   const upcomingCommitments = useMemo(
     () =>
       agendaPages?.pages?.[0]?.data
@@ -51,25 +45,25 @@ export const useSearchPlaces = ({
         .filter(
           i =>
             (i as LectureItem).place != null &&
-            ((i.start >= now.current &&
-              i.start.diff(now.current).milliseconds <
+            ((i.start >= now &&
+              i.start.diff(now).milliseconds <
                 UPCOMING_COMMITMENT_HOURS_OFFSET * 60 * 60 * 1000) ||
-              (i.start <= now.current && i.end >= now.current)),
+              (i.start <= now && i.end >= now)),
         ) as
         | (LectureItem & { place: Exclude<LectureItem['place'], null> })[]
         | undefined,
-    [agendaPages],
+    [agendaPages?.pages, now],
   );
 
   const { data: places, fetchStatus: placesFetchStatus } = useGetPlaces({
     siteId: actualSiteId,
-    floorId: search?.length ? undefined : floorId,
+    floorId: search?.length ? null : floorId,
     placeCategoryId: categoryId,
     placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });
 
-  const { data: buildings, fetchStatus: buildingFetchStatus } =
-    useGetBuildings(actualSiteId);
+  // const { data: buildings, fetchStatus: buildingFetchStatus } =
+  //   useGetBuildings(actualSiteId);
 
   const combinedPlaces = useMemo(() => {
     let result = places?.data
@@ -119,6 +113,7 @@ export const useSearchPlaces = ({
   return {
     places: combinedPlaces,
     isLoading:
-      placesFetchStatus === 'fetching' || buildingFetchStatus === 'fetching',
+      placesFetchStatus ===
+      'fetching' /* || buildingFetchStatus === 'fetching'*/,
   };
 };
