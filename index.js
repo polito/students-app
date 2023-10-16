@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler';
+
 import { AppRegistry } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';

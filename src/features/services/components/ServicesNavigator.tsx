@@ -11,6 +11,8 @@ import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
+import { GuideScreen } from '../../guides/screens/GuideScreen';
+import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
 import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
@@ -76,6 +78,8 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Bookings: undefined;
   Booking: { id: number };
   NewBooking: undefined;
+  Guide: { id: string };
+  Guides: undefined;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -171,6 +175,7 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('jobOfferScreen.title'),
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -187,6 +192,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('newsScreen.title'),
           headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -209,7 +215,6 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -307,6 +312,23 @@ export const ServicesNavigator = () => {
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Guide"
+        component={GuideScreen}
+        options={{
+          headerTitle: t('guideScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Guides"
+        component={GuidesScreen}
+        options={{
+          headerTitle: t('guidesScreen.title'),
+          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>

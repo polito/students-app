@@ -18,6 +18,7 @@ type Props = PropsWithChildren<
     indented?: boolean;
     emptyStateText?: string;
     rounded?: boolean;
+    translucent?: boolean;
   }
 >;
 
@@ -30,6 +31,7 @@ export const OverviewList = ({
   loading = false,
   indented = false,
   dividers,
+  translucent = false,
   emptyStateText,
   style,
   rounded,
@@ -42,6 +44,7 @@ export const OverviewList = ({
     <Card
       accessible={Platform.select({ android: true, ios: false })}
       rounded={rounded ?? Platform.select({ android: false })}
+      translucent={translucent}
       style={[
         {
           marginVertical: spacing[2],

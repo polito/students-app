@@ -43,7 +43,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { colors, fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
-
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
 

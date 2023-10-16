@@ -12,7 +12,7 @@ import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { isLiveVC, isRecordedVC } from '../utils/lectures';

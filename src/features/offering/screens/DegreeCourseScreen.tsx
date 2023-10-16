@@ -37,7 +37,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { StaffListItem } from '../components/StaffListItem';
 

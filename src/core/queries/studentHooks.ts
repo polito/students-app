@@ -19,6 +19,7 @@ export const STUDENT_QUERY_KEY = ['student'];
 export const GRADES_QUERY_KEY = ['grades'];
 export const MESSAGES_QUERY_PREFIX = 'messages';
 export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
+export const GUIDES_QUERY_KEY = ['guides'];
 
 const useStudentClient = (): StudentApi => {
   return new StudentApi();
@@ -176,5 +177,13 @@ export const useMarkMessageAsRead = (invalidate: boolean = true) => {
         return invalidate && client.invalidateQueries(MESSAGES_QUERY_KEY);
       },
     },
+  );
+};
+
+export const useGetGuides = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery(GUIDES_QUERY_KEY, () =>
+    studentClient.getGuides().then(pluckData),
   );
 };

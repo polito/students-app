@@ -13,7 +13,6 @@ import {
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
@@ -33,8 +32,11 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Services'>;
 
 export const ServicesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { favoriteServices: favoriteServiceIds, updatePreference } =
-    usePreferencesContext();
+  const {
+    favoriteServices: favoriteServiceIds,
+    emailGuideRead,
+    updatePreference,
+  } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
 
@@ -65,7 +67,6 @@ export const ServicesScreen = ({ navigation }: Props) => {
             subtopicId: 2001,
           },
         },
-        additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
       },
       {
         id: 'github',
@@ -101,8 +102,15 @@ export const ServicesScreen = ({ navigation }: Props) => {
         id: 'contacts',
         name: t('contactsScreen.title'),
         icon: faIdCard,
-        disabled: isOffline && peopleSearched?.length === 0,
+        disabled: isOffline && peopleSearched?.length === 0, // TODO why?
         linkTo: { screen: 'Contacts' },
+      },
+      {
+        id: 'guides',
+        name: t('guidesScreen.title'),
+        icon: faSignsPost,
+        linkTo: { screen: 'Guides' },
+        unReadCount: emailGuideRead ? 0 : 1,
       },
       {
         id: 'bookings',
@@ -114,19 +122,20 @@ export const ServicesScreen = ({ navigation }: Props) => {
         linkTo: { screen: 'Bookings' },
       },
       {
-        id: 'guides',
-        name: t('guidesScreen.title'),
-        icon: faSignsPost,
-        disabled: true,
-      },
-      {
         id: 'library',
         name: t('libraryScreen.title'),
         icon: faBookBookmark,
         disabled: true,
       },
     ],
-    [isOffline, queryClient, styles.betaBadge, t],
+    [
+      emailGuideRead,
+      isOffline,
+      peopleSearched?.length,
+      queryClient,
+      styles.betaBadge,
+      t,
+    ],
   );
 
   const [favoriteServices, otherServices] = useMemo(
@@ -167,9 +176,8 @@ export const ServicesScreen = ({ navigation }: Props) => {
                 onPress={service.onPress}
                 favorite
                 onFavoriteChange={updateFavorite(service)}
-              >
-                {service.additionalContent}
-              </ServiceCard>
+                unReadCount={service?.unReadCount}
+              />
             ))}
           </Grid>
         )}
@@ -191,9 +199,8 @@ export const ServicesScreen = ({ navigation }: Props) => {
                 linkTo={service.linkTo}
                 onPress={service.onPress}
                 onFavoriteChange={updateFavorite(service)}
-              >
-                {service.additionalContent}
-              </ServiceCard>
+                unReadCount={service?.unReadCount}
+              />
             ))}
           </Grid>
         )}

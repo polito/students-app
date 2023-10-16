@@ -94,7 +94,9 @@ const createStyles = ({ fontSizes }: Theme) =>
       fontSize: fontSizes.sm,
       textTransform: 'uppercase',
     },
-    prose: {},
+    prose: {
+      fontSize: fontSizes.md,
+    },
     longProse: {
       fontSize: fontSizes.sm,
       lineHeight: fontSizes.sm * 1.5,

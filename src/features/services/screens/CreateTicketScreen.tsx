@@ -21,7 +21,7 @@ import {
   useCreateTicket,
   useGetTicketTopics,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
 import { MessagingView } from '../components/MessagingView';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
