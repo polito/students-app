@@ -8,8 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { QueryClient, onlineManager } from '@tanstack/react-query';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import {
+  QueryClient,
+  QueryClientProvider,
+  onlineManager,
+} from '@tanstack/react-query';
 
 import SuperJSON from 'superjson';
 
@@ -163,7 +166,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ApiContext.Provider value={apiContext}>
-      {splashContext.isAppLoaded && (
+      <QueryClientProvider client={queryClient}>
+        {splashContext.isAppLoaded && children}
+      </QueryClientProvider>
+      {/* {splashContext.isAppLoaded && (
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{
@@ -173,7 +179,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         >
           {children}
         </PersistQueryClientProvider>
-      )}
+      )}*/}
     </ApiContext.Provider>
   );
 };
