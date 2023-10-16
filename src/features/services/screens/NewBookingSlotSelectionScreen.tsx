@@ -1,5 +1,4 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
@@ -17,49 +16,70 @@ import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useGetBookingSlots } from '../../../core/queries/bookingHooks';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<
   ServiceStackParamList,
-  'NewBookingSlotsSelection'
+  'NewBookingSlotSelection'
 >;
 
-const weekStart = DateTime.now().startOf('week');
+type BookingCalendarEvent = {
+  start: DateTime;
+  end: DateTime;
+  title: string;
+  slotId: number;
+};
 
-export const NewBookingSlotsSelectionScreen = ({
-  route,
-  navigation,
-}: Props) => {
+const bookingCalendarEvent: BookingCalendarEvent[] = [
+  {
+    slotId: 123456,
+    start: DateTime.fromObject({
+      year: 2023,
+      month: 10,
+      day: 17,
+      hour: 9,
+    }),
+    end: DateTime.fromObject({
+      year: 2023,
+      month: 10,
+      day: 17,
+      hour: 10,
+    }),
+    title: 'Test',
+  },
+];
+
+export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
   const { palettes, colors } = useTheme();
-  const { t } = useTranslation();
-  const isFetching = false;
   const styles = useStylesheet(createStyles);
-  const [currentWeekStart, setCurrentWeekStart] = useState(weekStart);
-  const [currentPageNumber, setCurrentPageNumber] = useState(0);
+  const isOffline = useOfflineDisabled();
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    DateTime.now().startOf('week'),
+  );
+  const { isFetching, ...bookingSlotsQuery } = useGetBookingSlots(
+    topicId,
+    currentWeekStart,
+  );
+
+  console.debug('bookingSlotsQuery', bookingSlotsQuery.data);
+
   const { language } = usePreferencesContext();
 
   const nextWeek = useCallback(() => {
-    const updatedWeek = currentWeekStart.plus({ days: 7 });
-    setCurrentWeekStart(updatedWeek);
-  }, [currentPageNumber, currentWeekStart]);
+    setCurrentWeekStart(odlW => odlW.plus({ days: 7 }));
+  }, []);
 
   const prevWeek = useCallback(() => {
-    const updatedWeek = currentWeekStart.minus({ days: 7 });
-    setCurrentWeekStart(updatedWeek);
-  }, [currentWeekStart, currentPageNumber]);
+    setCurrentWeekStart(odlW => odlW.minus({ days: 7 }));
+  }, []);
 
-  const prevMissingCallback = useCallback(() => false, []);
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
   );
-  const nextMissingCallback = useCallback(() => false, []);
-  const isOffline = useOfflineDisabled();
-
-  const isPrevWeekDisabled = isOffline ? prevMissingCallback() : isFetching;
-  const isNextWeekDisabled = isOffline ? nextMissingCallback() : isFetching;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -69,8 +89,7 @@ export const NewBookingSlotsSelectionScreen = ({
           color={palettes.primary['500']}
           adjustSpacing="left"
           onPress={() => {
-            const updatedWeek = DateTime.now().startOf('day');
-            setCurrentWeekStart(updatedWeek);
+            setCurrentWeekStart(DateTime.now().startOf('week'));
           }}
         />
       ),
@@ -87,8 +106,8 @@ export const NewBookingSlotsSelectionScreen = ({
           current={currentWeekStart}
           getNext={nextWeek}
           getPrev={prevWeek}
-          isNextWeekDisabled={isNextWeekDisabled}
-          isPrevWeekDisabled={isPrevWeekDisabled}
+          isNextWeekDisabled={isOffline || isFetching}
+          isPrevWeekDisabled={isOffline || isFetching}
         />
       </HeaderAccessory>
       <View
@@ -96,7 +115,7 @@ export const NewBookingSlotsSelectionScreen = ({
         onLayout={e => setCalendarHeight(e.nativeEvent.layout.height)}
       >
         {calendarHeight && (
-          <Calendar
+          <Calendar<BookingCalendarEvent>
             weekStartsOn={1}
             weekEndsOn={5}
             headerContentStyle={styles.dayHeader}
@@ -111,7 +130,12 @@ export const NewBookingSlotsSelectionScreen = ({
             renderHeader={props => (
               <CalendarHeader {...props} cellHeight={-1} />
             )}
-            events={[]}
+            onPressEvent={event => {
+              navigation.navigate('NewBookingSeatSelection', {
+                slotId: event.slotId,
+              });
+            }}
+            events={bookingCalendarEvent}
             height={calendarHeight}
             renderEvent={(item, touchableOpacityProps) => {
               return (
@@ -143,6 +167,8 @@ const createStyles = () =>
       shadowOpacity: undefined,
       shadowRadius: undefined,
       elevation: undefined,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     dayHeader: {
       display: 'flex',

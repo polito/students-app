@@ -17,7 +17,8 @@ import { ContactsScreen } from '../screens/ContactsScreen';
 import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
-import { NewBookingSlotsSelectionScreen } from '../screens/NewBookingSlotsSelectionScreen';
+import { NewBookingSeatSelectionScreen } from '../screens/NewBookingSeatSelectionScreen';
+import { NewBookingSlotSelectionScreen } from '../screens/NewBookingSlotSelectionScreen';
 import { NewBookingTopicSelectionScreen } from '../screens/NewBookingTopicSelectionScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
@@ -53,7 +54,8 @@ export type ServiceStackParamList = {
   Bookings: undefined;
   Booking: { id: number };
   NewBookingTopicSelection: undefined;
-  NewBookingSlotsSelection: { topicId: string; topicName: string };
+  NewBookingSlotSelection: { topicId: string; topicName: string };
+  NewBookingSeatSelection: { slotId: number };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -61,7 +63,7 @@ const Stack = createNativeStackNavigator<ServiceStackParamList>();
 export const ServicesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, palettes } = theme;
 
   return (
     <Stack.Navigator
@@ -222,8 +224,8 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="NewBookingSlotsSelection"
-        component={NewBookingSlotsSelectionScreen}
+        name="NewBookingSlotSelection"
+        component={NewBookingSlotSelectionScreen}
         options={({ route }) => ({
           headerTitle: route.params.topicName,
           headerLargeTitle: false,
@@ -234,6 +236,16 @@ export const ServicesNavigator = () => {
             backgroundColor: colors.headersBackground,
           },
         })}
+      />
+      <Stack.Screen
+        name="NewBookingSeatSelection"
+        component={NewBookingSeatSelectionScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          presentation: 'modal',
+          headerTitle: t('bookingSeatScreen.title'),
+        }}
       />
     </Stack.Navigator>
   );

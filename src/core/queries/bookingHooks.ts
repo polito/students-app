@@ -1,6 +1,8 @@
 import { BookingsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { DateTime } from 'luxon';
+
 import { pluckData } from '../../utils/queries';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
@@ -28,25 +30,28 @@ export const useGetBookingTopics = () => {
   );
 };
 
-export const useGetBookingSlots = (bookingTopicId: string) => {
+export const useGetBookingSlots = (
+  bookingTopicId: string,
+  weekStart: DateTime,
+) => {
   const bookingClient = useBookingClient();
+  const weekEnd = weekStart.endOf('week');
 
-  return useQuery(BOOKINGS_SLOTS_QUERY_KEY, () =>
-    bookingClient
-      .getBookingSlots({
-        bookingTopicId,
-        // fromDate: DateTime.fromObject({
-        //   day: 1,
-        //   month: 11,
-        //   year: 2023,
-        // }).toJSDate(),
-        // toDate: DateTime.fromObject({
-        //   day: 3,
-        //   month: 11,
-        //   year: 2023,
-        // }).toJSDate(),
-      })
-      .then(pluckData),
+  return useQuery(
+    [
+      ...BOOKINGS_SLOTS_QUERY_KEY,
+      bookingTopicId,
+      weekStart.toISODate(),
+      weekEnd.toISODate(),
+    ],
+    () =>
+      bookingClient
+        .getBookingSlots({
+          bookingTopicId,
+          fromDate: weekStart.toJSDate(),
+          toDate: weekEnd.toJSDate(),
+        })
+        .then(pluckData),
   );
 };
 

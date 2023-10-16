@@ -33,6 +33,12 @@
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
   },
+  "bookingSeatScreen": {
+    "title": "Scegli il posto",
+    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
+    "deadlineExpired": "Siamo spiacenti,\nscaduto il termine ultimo per potersi prenotare a questo turno",
+    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal {date}"
+  },
   "colors": {
     "amber": "Ambra",
     "blue": "Blu",

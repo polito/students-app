@@ -47,6 +47,7 @@ export const NewBookingTopicSelectionScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (topicsQuery.data) {
+      console.debug(topicsQuery.data);
       const newSections = topicsQuery?.data?.map((topic, index) => {
         return {
           title: topic.title,
@@ -71,7 +72,7 @@ export const NewBookingTopicSelectionScreen = ({ navigation }: Props) => {
   };
 
   const onSelectTopic = (topicId: string, topicTitle: string) => {
-    navigation.navigate('NewBookingSlotsSelection', {
+    navigation.navigate('NewBookingSlotSelection', {
       topicId: topicId,
       topicName: topicTitle,
     });
