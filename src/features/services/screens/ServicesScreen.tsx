@@ -13,10 +13,10 @@ import {
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -26,8 +26,11 @@ import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
+import { ServiceStackParamList } from '../components/ServicesNavigator';
 
-export const ServicesScreen = () => {
+type Props = NativeStackScreenProps<ServiceStackParamList, 'Services'>;
+
+export const ServicesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const {
     favoriteServices: favoriteServiceIds,
@@ -64,7 +67,6 @@ export const ServicesScreen = () => {
             subtopicId: 2001,
           },
         },
-        additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
       },
       {
         id: 'github',
@@ -88,6 +90,13 @@ export const ServicesScreen = () => {
         icon: faBriefcase,
         disabled: isOffline,
         linkTo: { screen: 'JobOffers' },
+      },
+      {
+        id: 'offering',
+        name: t('offeringScreen.title'),
+        icon: faBookBookmark,
+        disabled: isOffline,
+        linkTo: { screen: 'Offering' },
       },
       {
         id: 'contacts',
@@ -168,9 +177,7 @@ export const ServicesScreen = () => {
                 favorite
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
-              >
-                {service.additionalContent}
-              </ServiceCard>
+              />
             ))}
           </Grid>
         )}
@@ -193,9 +200,7 @@ export const ServicesScreen = () => {
                 onPress={service.onPress}
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
-              >
-                {service.additionalContent}
-              </ServiceCard>
+              />
             ))}
           </Grid>
         )}

@@ -64,6 +64,7 @@ export const PlacesNavigator = () => {
 
   return (
     <Map.Navigator
+      id="PlacesTabNavigator"
       key={`PlacesNavigator:${colorScheme}}`}
       screenOptions={{
         orientation: 'portrait',

@@ -51,13 +51,22 @@
     "yellow": "Yellow"
   },
   "common": {
+    "other": "Other",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
     },
+    "faculty": "Faculty",
     "agent": "Agent",
     "all": "All",
+    "department": "Department",
+    "location": "Location",
+    "duration": "Duration",
+    "objectives": "Objectives",
+    "notes": "Notes",
+    "cfu": "CFU",
+    "year": "year",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
@@ -213,6 +222,38 @@
     "recentSearches": "Recent searches",
     "search": "Search people",
     "title": "Contacts"
+  },
+  "offeringScreen": {
+    "title": "Offering",
+    "bachelor": "Bachelor degree",
+    "master": "Master degree",
+    "emptyMessage": "No course available"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Degree code",
+    "info": "Info",
+    "jobOpportunities": "Job opportunities",
+    "title": "Degree",
+    "tracks": "Tracks"
+  },
+  "offeringBachelorScreen": {
+    "title": "Bachelor degree"
+  },
+  "offeringMasterScreen": {
+    "title": "Master degree"
+  },
+  "degreeCourseScreen": {
+    "title": "Course",
+    "period": "Period",
+    "examMode": "Exam mode",
+    "lecture": "Lecture",
+    "classroomExercise": "Classroom excercise",
+    "tutoring": "Tutoring",
+    "labExercise": "Lab excercise",
+    "staff": "Staff",
+    "hours": "{{hours}} hours",
+    "noStaff": "No teacher is associated to this course"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",

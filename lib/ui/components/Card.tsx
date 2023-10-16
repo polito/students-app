@@ -56,12 +56,12 @@ export const Card = ({
             IS_IOS && translucent ? colors.translucentSurface : colors.surface,
           elevation: 2,
           marginHorizontal: spaced ? spacing[4] : undefined,
-          marginVertical: spaced ? spacing[2] : undefined,
+          marginVertical: spacing[2],
           overflow: 'hidden',
         },
         padded
           ? {
-              paddingHorizontal: padded ? spacing[5] : undefined,
+              paddingHorizontal: padded ? spacing[2.5] : undefined,
               paddingVertical: padded ? spacing[2.5] : undefined,
             }
           : {},

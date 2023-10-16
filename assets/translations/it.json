@@ -51,15 +51,26 @@
     "yellow": "Giallo"
   },
   "common": {
+    "other": "Altro",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "faculty": "Collegio",
     "agent": "Operatore",
+    "close": "Chiudi",
+    "search": "Cerca",
+    "cfu": "CFU",
     "all": "Tutti",
+    "department": "Dipartimento",
+    "location": "Sede",
+    "duration": "Durata",
+    "objectives": "Obiettivi formativi",
+    "notes": "Note",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
+    "year": "anno",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "building": "Edificio",
@@ -71,7 +82,6 @@
     "capacity": "Capacità",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
-    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -174,7 +184,6 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
-    "search": "Cerca",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
@@ -213,6 +222,26 @@
     "recentSearches": "Ricerche recenti",
     "search": "Cerca contatti",
     "title": "Contatti"
+  },
+  "offeringScreen": {
+    "title": "Offerta formativa",
+    "bachelor": "Laurea triennale",
+    "master": "Laurea magistrale",
+    "emptyMessage": "Nessun corso disponibile"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Classe di laurea",
+    "info": "Info",
+    "jobOpportunities": "Sbocchi",
+    "title": "Corso di laurea",
+    "tracks": "Piano studi"
+  },
+  "offeringBachelorScreen": {
+    "title": "Lauree triennali"
+  },
+  "offeringMasterScreen": {
+    "title": "Lauree magistrali"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -288,6 +317,18 @@
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
+  },
+  "degreeCourseScreen": {
+    "title": "Corso",
+    "period": "Periodo",
+    "examMode": "Modalità di esame",
+    "lecture": "Lezioni",
+    "classroomExercise": "Esercitazioni in aula",
+    "tutoring": "Tutoraggio",
+    "labExercise": "Esercitazioni in laboratorio",
+    "staff": "Docenti",
+    "hours": "{{hours}} Ore",
+    "noStaff": "Nessun docente associato a questo corso"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",

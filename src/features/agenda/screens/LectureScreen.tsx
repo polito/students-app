@@ -103,6 +103,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             <PersonListItem
               person={teacherQuery.data}
               subtitle={t('common.teacher')}
+              isCrossNavigation={true}
             />
           )}
           <ListItem

@@ -7,13 +7,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { UnreadMessagesModal } from '../screens/UnreadMessagesModal';
 
-export type UserStackParamList = {
+export type UserStackParamList = OfferingStackParamList & {
   Profile: undefined;
   Settings: undefined;
   Messages: undefined;
@@ -21,6 +22,7 @@ export type UserStackParamList = {
     id: number;
   };
   MessagesModal: undefined;
+  Person: { id: number };
 };
 const Stack = createNativeStackNavigator<UserStackParamList>();
 
@@ -31,6 +33,7 @@ export const UserNavigator = () => {
 
   return (
     <Stack.Navigator
+      id="UserTabNavigator"
       screenOptions={{
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
@@ -66,6 +69,7 @@ export const UserNavigator = () => {
       <Stack.Screen
         name="Message"
         component={MessageScreen}
+        getId={({ params }) => `${params.id}`}
         options={{
           headerTitle: t('messageScreen.title'),
           headerBackTitle: t('messageScreen.backTitle'),
