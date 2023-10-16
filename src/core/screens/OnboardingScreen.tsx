@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import {
   Animated,
   FlatList,
+  Platform,
   StyleSheet,
   View,
   useWindowDimensions,
@@ -67,7 +68,7 @@ export const OnboardingScreen = () => {
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
-        style={{ backgroundColor: 'pink' }}
+        initialNumToRender={data.length}
         renderItem={({ item }) => (
           <OnboardingStep stepNumber={item} width={width} />
         )}
@@ -142,7 +143,10 @@ export const OnboardingScreen = () => {
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     fixedContainer: {
-      paddingVertical: spacing[5],
+      paddingVertical: Platform.select({
+        ios: spacing[5],
+        android: spacing[0],
+      }),
       gap: spacing[2],
     },
     dotsContainer: {
