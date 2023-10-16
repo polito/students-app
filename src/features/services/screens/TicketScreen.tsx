@@ -21,6 +21,7 @@ import {
 
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
@@ -110,11 +111,18 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const [textFieldHeight, setTextFieldHeight] = useState(50);
   const ticket = ticketQuery.data;
   const { paddingHorizontal } = useSafeAreaSpacing();
+  const { resetUnread } = usePushNotifications();
 
   useScreenTitle(ticket?.subject);
 
   useEffect(() => {
-    if (!ticket || ticket.unreadCount === 0) return;
+    if (!ticket) {
+      return;
+    }
+    resetUnread(['services', 'tickets', ticket?.id.toString()]);
+    if (ticket.unreadCount === 0) {
+      return;
+    }
     markAsRead();
   }, [markAsRead, ticket]);
 

@@ -12,10 +12,11 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketStatus } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
@@ -23,6 +24,16 @@ import { TicketListItem } from '../components/TicketListItem';
 interface Props {
   navigation: NativeStackNavigationProp<ServiceStackParamList, 'Tickets'>;
 }
+
+const ListItem = ({ ticket }: { ticket: TicketOverview }) => {
+  const { getUnreadsCount } = usePushNotifications();
+  const unread = useMemo(
+    () => !!getUnreadsCount(['services', 'tickets', ticket.id.toString()]),
+    [getUnreadsCount, ticket.id],
+  );
+
+  return <TicketListItem ticket={ticket} key={ticket.id} unread={unread} />;
+};
 
 export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
@@ -41,7 +52,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
           (openTickets.length > 0 ? (
             <OverviewList indented>
               {openTickets?.map(ticket => (
-                <TicketListItem ticket={ticket} key={ticket.id} />
+                <ListItem ticket={ticket} key={ticket.id} />
               ))}
             </OverviewList>
           ) : (
@@ -77,7 +88,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
           (renderedClosedTickets.length > 0 ? (
             <OverviewList indented>
               {renderedClosedTickets.map(ticket => (
-                <TicketListItem ticket={ticket} key={ticket.id} />
+                <ListItem ticket={ticket} key={ticket.id} />
               ))}
             </OverviewList>
           ) : (

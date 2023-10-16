@@ -8,11 +8,13 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/globalStyles';
@@ -26,6 +28,7 @@ export const CourseNoticesScreen = () => {
   const courseId = useContext(CourseContext)!;
   const noticesQuery = useGetCourseNotices(courseId);
   const { accessibilityListLabel } = useAccessibility();
+  const { resetUnread } = usePushNotifications();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const notices = useMemo(
     () =>
@@ -35,6 +38,10 @@ export const CourseNoticesScreen = () => {
       })) ?? [],
     [noticesQuery],
   );
+
+  useFocusEffect(() => {
+    resetUnread(['teaching', 'courses', courseId.toString(), 'notices']);
+  });
 
   return (
     <FlatList

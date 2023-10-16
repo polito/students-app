@@ -21,6 +21,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       updatePreference: () => {},
       favoriteServices: [],
       peopleSearched: [],
+      unreadNotifications: {},
     });
 
   const preferencesInitialized = useRef<boolean>(false);

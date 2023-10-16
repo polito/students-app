@@ -26,6 +26,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -43,6 +44,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = usePreferencesContext();
+  const { getUnreadsCount } = usePushNotifications();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -115,6 +117,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
+                badge={getUnreadsCount([
+                  // @ts-expect-error TODO fix path typing
+                  'teaching',
+                  // @ts-expect-error TODO fix path typing
+                  'courses',
+                  course.id!.toString(),
+                ])}
               />
             ))}
           </OverviewList>

@@ -11,10 +11,12 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   MaterialTopTabBarProps,
+  MaterialTopTabNavigationOptions,
   createMaterialTopTabNavigator,
 } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { CourseContext } from '../contexts/CourseContext';
 import { FilesCacheProvider } from '../providers/FilesCacheProvider';
@@ -85,6 +87,7 @@ const TabBar = ({ state, descriptors, navigation }: MaterialTopTabBarProps) => {
               testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
+              badge={options.tabBarBadge as unknown as string}
             >
               {label as string}
             </Tab>
@@ -100,6 +103,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
+  const { getUnreadsCount } = usePushNotifications();
   const titleStyles = useTitlesStyles(theme);
   const { id, courseName } = route.params;
 
@@ -177,6 +181,12 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseNoticesScreen}
             options={{
               title: t('courseNoticesTab.title'),
+              tabBarBadge: getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'notices',
+              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
             }}
           />
           <TopTabs.Screen
@@ -184,6 +194,12 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseFilesScreen}
             options={{
               title: t('courseFilesTab.title'),
+              tabBarBadge: getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'files',
+              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
             }}
           />
           <TopTabs.Screen

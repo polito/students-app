@@ -2,6 +2,8 @@ import { createContext, useContext } from 'react';
 
 import { PersonOverview } from '@polito/api-client/models';
 
+import { UnreadNotifications } from '../types/notifications';
+
 export const editablePreferenceKeys = [
   'clientId',
   'colorScheme',
@@ -42,15 +44,16 @@ export type PreferencesContextProps = {
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
   /**
-   * A map from notification object path to number of unread notifications
+   * A map whose keys represent a path to an object or area where the update
+   * occurred and leaf values are the number of unread updates
    *
    * @example
    * {
-   *   "courses/12345/notices/12345": 1,
-   *   "tickets/12345": 2,
+   *   "teaching": { "courses": { "12345": { "notices": { "12345": 1 } } } },
+   *   "services": { "tickets": { "12345": 2 } },
    * }
    */
-  unreadNotifications: Record<string, number>;
+  unreadNotifications: UnreadNotifications;
 };
 
 export interface CoursePreferencesProps {

@@ -20,6 +20,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
 
@@ -27,14 +28,19 @@ export const ServicesScreen = () => {
   const { t } = useTranslation();
   const { favoriteServices: favoriteServiceIds, updatePreference } =
     usePreferencesContext();
+  const { getUnreadsCount } = usePushNotifications();
   const styles = useStylesheet(createStyles);
-  const services = useMemo(
-    () => [
+  const unreadTickets = getUnreadsCount(['services', 'tickets']);
+  const services = useMemo(() => {
+    return [
       {
         id: 'tickets',
         name: t('ticketsScreen.title'),
         icon: faComments,
         linkTo: { screen: 'Tickets' },
+        additionalContent: unreadTickets && (
+          <Badge text={unreadTickets} style={styles.badge} />
+        ),
       },
       {
         id: 'appFeedback',
@@ -47,7 +53,7 @@ export const ServicesScreen = () => {
             subtopicId: 2001,
           },
         },
-        additionalContent: <Badge text="BETA" style={styles.betaBadge} />,
+        additionalContent: <Badge text="BETA" style={styles.badge} />,
       },
       {
         id: 'github',
@@ -96,9 +102,8 @@ export const ServicesScreen = () => {
         icon: faBookBookmark,
         disabled: true,
       },
-    ],
-    [styles.betaBadge, t],
-  );
+    ];
+  }, [styles.badge, t, unreadTickets]);
 
   const [favoriteServices, otherServices] = useMemo(
     () =>
@@ -179,7 +184,7 @@ const createStyles = ({ spacing }: Theme) =>
     grid: {
       margin: spacing[5],
     },
-    betaBadge: {
+    badge: {
       position: 'absolute',
       top: -spacing[2.5],
       right: -spacing[2],

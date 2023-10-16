@@ -41,12 +41,10 @@ export const useLogin = () => {
             manufacturer,
           };
           dto.preferences = { ...dto.preferences, fcmRegistrationToken };
-          console.log(dto);
         })
         .then(() => authClient.login({ loginRequest: dto }))
         .then(pluckData)
         .then(res => {
-          console.log('Res', res);
           if (res?.type !== 'student') {
             throw new UnsupportedUserTypeError(
               `User type ${res?.type} not supported by this app`,

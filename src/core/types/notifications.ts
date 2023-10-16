@@ -30,3 +30,28 @@ export interface PushNotificationPayload {
   idAvviso?: number;
   origine?: string;
 }
+
+export interface UnreadNotifications {
+  teaching?: {
+    courses?: {
+      [courseId: string]: {
+        files?: number;
+        notices?: number;
+      };
+    };
+  };
+
+  services?: {
+    tickets?: {
+      [ticketId: string]: number;
+    };
+  };
+
+  messages?: {
+    [messageId: string]: number;
+  };
+}
+
+export interface UnreadNotificationsNode {
+  [key: string]: UnreadNotificationsNode | number;
+}

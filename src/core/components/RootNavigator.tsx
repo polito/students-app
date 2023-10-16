@@ -26,7 +26,7 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { usePushNotificationHandlers } from '../hooks/usePushNotificationHandlers';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 import {
   useGetModalMessages,
   useGetStudent,
@@ -46,8 +46,8 @@ export const RootNavigator = () => {
   const { data: student } = useGetStudent();
   const preferencesQuery = useUpdateDevicePreferences();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
-  const { navigateToUpdate, updateUnreadStatus } =
-    usePushNotificationHandlers();
+  const { navigateToUpdate, updateUnreadStatus, getUnreadsCount } =
+    usePushNotifications();
 
   messaging().onTokenRefresh(fcmRegistrationToken => {
     preferencesQuery.mutate({
@@ -67,11 +67,16 @@ export const RootNavigator = () => {
 
   useEffect(() => {
     (async () => {
-      const authorizationStatus = await messaging().requestPermission();
+      const authorizationStatus = await messaging().requestPermission({
+        badge: true,
+        alert: true,
+        sound: true,
+      });
       if (authorizationStatus !== messaging.AuthorizationStatus.DENIED) {
-        messaging().onNotificationOpenedApp(remoteMessage => {
-          navigateToUpdate(remoteMessage as RemoteMessage);
-        });
+        const unsubscribeOnNotificationOpenedApp =
+          messaging().onNotificationOpenedApp(remoteMessage => {
+            navigateToUpdate(remoteMessage as RemoteMessage);
+          });
 
         messaging()
           .getInitialNotification()
@@ -79,12 +84,18 @@ export const RootNavigator = () => {
             navigateToUpdate(remoteMessage as RemoteMessage);
           });
 
-        // messaging().onMessage(remoteMessage =>
-        //   updateUnreadStatus(remoteMessage as RemoteMessage),
-        // );
-        // messaging().setBackgroundMessageHandler(async remoteMessage =>
-        //   updateUnreadStatus(remoteMessage as RemoteMessage),
-        // );
+        const unsubscribeOnMessage = messaging().onMessage(remoteMessage =>
+          updateUnreadStatus(remoteMessage as RemoteMessage),
+        );
+
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+          updateUnreadStatus(remoteMessage as RemoteMessage);
+        });
+
+        return () =>
+          [unsubscribeOnMessage, unsubscribeOnNotificationOpenedApp].forEach(
+            fn => fn(),
+          );
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,6 +146,7 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
           ),
+          tabBarBadge: getUnreadsCount(['teaching']),
         }}
       />
       <TabNavigator.Screen
@@ -166,6 +178,7 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
           ),
+          tabBarBadge: getUnreadsCount(['services']),
         }}
       />
       <TabNavigator.Screen
