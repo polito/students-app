@@ -15,6 +15,7 @@ const mapApiExamToExam = (exam: ApiExam): Exam => {
     ...exam,
     isTimeToBeDefined:
       exam.examStartsAt !== null && exam.examStartsAt.getHours() === 0,
+    uniqueShortcode: exam.courseShortcode + exam.moduleNumber,
   };
 };
 

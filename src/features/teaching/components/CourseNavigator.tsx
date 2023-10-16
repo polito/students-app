@@ -1,21 +1,17 @@
-import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { Tab } from '@lib/ui/components/Tab';
-import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
+import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import {
-  MaterialTopTabBarProps,
-  createMaterialTopTabNavigator,
-} from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseContext } from '../contexts/CourseContext';
 import { FilesCacheProvider } from '../providers/FilesCacheProvider';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
@@ -38,63 +34,6 @@ export interface CourseTabsParamList extends TeachingStackParamList {
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
-const TabBar = ({ state, descriptors, navigation }: MaterialTopTabBarProps) => {
-  return (
-    <HeaderAccessory>
-      <Tabs>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
-
-          const isFocused = state.index === index;
-
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
-
-            if (!isFocused && !event.defaultPrevented) {
-              // The `merge: true` option makes sure that the params inside the tab screen are preserved
-              navigation.navigate({
-                name: route.name,
-                merge: true,
-                params: {},
-              });
-            }
-          };
-
-          const onLongPress = () => {
-            navigation.emit({
-              type: 'tabLongPress',
-              target: route.key,
-            });
-          };
-
-          return (
-            <Tab
-              key={route.key}
-              selected={isFocused}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-            >
-              {label as string}
-            </Tab>
-          );
-        })}
-      </Tabs>
-    </HeaderAccessory>
-  );
-};
-
 export const CourseNavigator = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -102,30 +41,14 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const { width } = useWindowDimensions();
   const titleStyles = useTitlesStyles(theme);
 
-  const { id, courseName } = route.params;
+  const { id } = route.params;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <IconButton
-          icon={faSliders}
-          color={palettes.primary[400]}
-          size={fontSizes.lg}
-          accessibilityRole="button"
-          accessibilityLabel={t('common.preferences')}
-          hitSlop={{
-            left: +spacing[3],
-            right: +spacing[3],
-          }}
-          onPress={() => {
-            navigation.navigate('CoursePreferences', { courseId: id });
-          }}
-        />
-      ),
-    });
-  }, []);
+  const coursesQuery = useGetCourses();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    if (!coursesQuery.data) return;
+    const course = coursesQuery.data.find(c => c.id === id);
+    if (!course) return;
     navigation.setOptions({
       headerTitle: () => (
         <View
@@ -135,7 +58,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             left: Platform.select({ android: -20 }),
           }}
         >
-          <CourseIndicator courseId={id} />
+          <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
           <Text
             variant="title"
             style={[
@@ -148,24 +71,46 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {courseName}
+            {course.name}
           </Text>
         </View>
       ),
+      headerRight: () => (
+        <IconButton
+          icon={faSliders}
+          color={palettes.primary[400]}
+          size={fontSizes.lg}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.preferences')}
+          hitSlop={{
+            left: +spacing[3],
+            right: +spacing[3],
+          }}
+          onPress={() => {
+            navigation.navigate('CoursePreferences', {
+              courseId: id,
+              uniqueShortcode: course.uniqueShortcode,
+            });
+          }}
+        />
+      ),
     });
   }, [
-    courseName,
-    width,
+    coursesQuery.data,
+    fontSizes.lg,
     id,
     navigation,
+    palettes.primary,
     spacing,
+    t,
     titleStyles.headerTitleStyle,
+    width,
   ]);
 
   return (
     <CourseContext.Provider value={id}>
       <FilesCacheProvider>
-        <TopTabs.Navigator tabBar={props => <TabBar {...props} />}>
+        <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
           <TopTabs.Screen
             name="CourseInfoScreen"
             component={CourseInfoScreen}

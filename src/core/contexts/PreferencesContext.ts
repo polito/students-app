@@ -1,15 +1,21 @@
 import { createContext, useContext } from 'react';
 
+import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
 export const editablePreferenceKeys = [
+  'lastInstalledVersion',
   'username',
+  'campusId',
   'colorScheme',
   'courses',
   'language',
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'onboardingStep',
+  'emailGuideRead',
+  'placesSearched',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
@@ -20,14 +26,19 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'onboardingStep',
+  'emailGuideRead',
+  'placesSearched',
 ];
 
 export type CoursesPreferences = {
-  [courseId: number]: CoursePreferencesProps;
+  [courseId: number | string]: CoursePreferencesProps;
 };
 
-export type PreferencesContextProps = {
+export interface PreferencesContextBase {
+  lastInstalledVersion: string | null;
   username: string;
+  campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';
   courses: CoursesPreferences;
   language: 'it' | 'en';
@@ -36,10 +47,19 @@ export type PreferencesContextProps = {
     events: boolean;
     presence: boolean;
   };
-  updatePreference: (key: PreferenceKey, value: unknown) => void;
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
-};
+  onboardingStep?: number;
+  emailGuideRead?: boolean;
+  placesSearched: PlaceOverview[];
+}
+
+export interface PreferencesContextProps extends PreferencesContextBase {
+  updatePreference: <T extends PreferenceKey>(
+    key: T,
+    value: PreferencesContextBase[T],
+  ) => void;
+}
 
 export interface CoursePreferencesProps {
   color: string;

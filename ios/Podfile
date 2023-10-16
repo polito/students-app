@@ -13,6 +13,7 @@ prepare_react_native_project!
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
 # ```
+$RNMapboxMapsImpl = 'mapbox'
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled(["Debug"], { 'Flipper' => '0.189.0' })
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -82,5 +83,11 @@ target 'students' do
         end
       end
     end
+
+    $RNMapboxMaps.post_install(installer)
   end
+end
+
+pre_install do |installer|
+  $RNMapboxMaps.pre_install(installer)
 end

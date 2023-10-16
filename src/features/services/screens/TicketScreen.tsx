@@ -28,7 +28,7 @@ import {
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ChatMessage } from '../components/ChatMessage';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TextMessage } from '../components/TextMessage';

@@ -15,6 +15,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const deviceLanguage = useDeviceLanguage();
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
+      lastInstalledVersion: null,
       username: '',
       colorScheme: 'system',
       courses: {},
@@ -22,6 +23,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       updatePreference: () => {},
       favoriteServices: [],
       peopleSearched: [],
+      placesSearched: [],
     });
 
   const preferencesInitialized = useRef<boolean>(false);

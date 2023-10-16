@@ -9,7 +9,6 @@ import {
   faCog,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
@@ -109,6 +108,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const queryClient = useQueryClient();
 
   const styles = useStylesheet(createStyles);
+
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
     return `${student.firstEnrollmentYear - 1}/${student.firstEnrollmentYear}`;
@@ -169,12 +169,23 @@ export const ProfileScreen = ({ navigation }: Props) => {
         <Section accessible={false}>
           <SectionHeader
             title={student?.degreeLevel ?? t('profileScreen.course')}
-            trailingItem={<Badge text={t('common.comingSoon')} />}
           />
           <OverviewList>
             <ListItem
               title={student?.degreeName ?? ''}
               subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+              linkTo={{
+                screen: 'ServicesTab',
+                params: {
+                  screen: 'Degree',
+                  params: {
+                    id: student?.degreeId,
+                    year: student?.firstEnrollmentYear,
+                    isCrossNavigation: true,
+                  },
+                  initial: false,
+                },
+              }}
             />
           </OverviewList>
           <OverviewList indented>

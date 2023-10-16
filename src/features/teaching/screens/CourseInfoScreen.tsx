@@ -27,7 +27,7 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ExamListItem } from '../components/ExamListItem';
 import { useCourseContext } from '../contexts/CourseContext';
 
@@ -46,6 +46,8 @@ export const CourseInfoScreen = () => {
   const { queries: staffQueries, isLoading: isStaffLoading } = useGetPersons(
     courseQuery.data?.staff.map(s => s.id),
   );
+
+  const isOffline = useOfflineDisabled();
 
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
@@ -114,34 +116,44 @@ export const CourseInfoScreen = () => {
             />
           </Grid>
         </Card>
-        <Section>
+        {/*  <Section>
           <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
           <OverviewList emptyStateText={t('common.comingSoon')}></OverviewList>
+        </Section>*/}
+        <Section>
+          <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
+          <OverviewList
+            indented
+            loading={
+              (courseQuery.data?.staff?.length ?? 0) > 0 && staff.length === 0
+            }
+          >
+            {staff.map(member => (
+              <PersonListItem
+                key={`${member.id}`}
+                person={member}
+                subtitle={t(`common.${member.courseRole}`)}
+                isCrossNavigation={true}
+              />
+            ))}
+          </OverviewList>
         </Section>
-        {courseExamsQuery.data?.length > 0 && (
-          <Section>
-            <SectionHeader title={t('examsScreen.title')} />
-            <OverviewList loading={courseExamsQuery.isLoading} indented>
-              {courseExamsQuery.data?.map(exam => (
-                <ExamListItem key={exam.id} exam={exam} />
-              ))}
-            </OverviewList>
-          </Section>
-        )}
-        {staff.length > 0 && (
-          <Section>
-            <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
-            <OverviewList indented>
-              {staff.map(member => (
-                <PersonListItem
-                  key={`${member.id}`}
-                  person={member}
-                  subtitle={t(`common.${member.courseRole}`)}
-                />
-              ))}
-            </OverviewList>
-          </Section>
-        )}
+        <Section>
+          <SectionHeader title={t('examsScreen.title')} />
+          <OverviewList
+            loading={courseExamsQuery.isLoading}
+            indented
+            emptyStateText={
+              isOffline && courseExamsQuery.isLoading
+                ? t('common.cacheMiss')
+                : t('examsScreen.emptyState')
+            }
+          >
+            {courseExamsQuery.data?.map(exam => (
+              <ExamListItem key={exam.id} exam={exam} />
+            ))}
+          </OverviewList>
+        </Section>
         <Section>
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
@@ -167,7 +179,8 @@ const createStyles = ({ spacing }: Theme) =>
     metricsCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: spacing[4],
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
       marginTop: 0,
       marginBottom: spacing[7],
     },

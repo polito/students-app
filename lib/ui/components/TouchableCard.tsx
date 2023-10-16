@@ -39,7 +39,11 @@ export const TouchableCard = ({
       {...rest}
     >
       <Card
-        style={[disabled && { opacity: 0.5, elevation: 0 }, cardStyle]}
+        style={[
+          { marginVertical: 0 },
+          disabled && { opacity: 0.5, elevation: 0 },
+          cardStyle,
+        ]}
         spaced={false}
         rounded
       >

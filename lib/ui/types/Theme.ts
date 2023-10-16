@@ -83,6 +83,7 @@ export interface Colors {
   heading: string;
   subHeading: string;
   prose: string;
+  longProse: string;
   secondaryText: string;
   caption: string;
   link: string;
