@@ -143,7 +143,7 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
                   {...touchableOpacityProps}
                   style={[touchableOpacityProps.style, styles.event]}
                 >
-                  <Text>cc</Text>
+                  <Text>{item.slotId}</Text>
                 </TouchableOpacity>
               );
             }}
