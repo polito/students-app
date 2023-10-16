@@ -35,7 +35,7 @@ import { TicketsScreen } from '../screens/TicketsScreen';
 
 export type OfferingStackParamList = {
   Offering: undefined;
-  Degree: { id: string; year?: string };
+  Degree: { id: string; year?: string; isCrossNavigation?: boolean };
   DegreeCourse: {
     courseShortcode: string;
     year?: string;
@@ -52,7 +52,7 @@ export type OfferingStackParamList = {
 };
 
 export type ServiceStackParamList = OfferingStackParamList & {
-  Home: undefined;
+  Services: undefined;
   Tickets: undefined;
   Ticket: { id: number };
   CreateTicket: {
@@ -99,7 +99,7 @@ export const ServicesNavigator = () => {
       }}
     >
       <Stack.Screen
-        name="Home"
+        name="Services"
         component={ServicesScreen}
         options={{
           headerLeft: () => <HeaderLogo />,

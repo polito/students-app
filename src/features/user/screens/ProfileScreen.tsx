@@ -9,7 +9,6 @@ import {
   faCog,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
@@ -36,12 +35,10 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
-import { useGetOffering } from '../../../core/queries/offeringHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
-import { getStudentDegree } from '../../../utils/students';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
@@ -110,13 +107,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const student = studentQuery.data;
   const queryClient = useQueryClient();
 
-  const { data: offerings } = useGetOffering();
   const styles = useStylesheet(createStyles);
-
-  const studentDegree = useMemo(
-    () => getStudentDegree(student, offerings),
-    [offerings, student],
-  );
 
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
@@ -178,23 +169,23 @@ export const ProfileScreen = ({ navigation }: Props) => {
         <Section accessible={false}>
           <SectionHeader
             title={student?.degreeLevel ?? t('profileScreen.course')}
-            trailingItem={<Badge text={t('common.comingSoon')} />}
           />
           <OverviewList>
             <ListItem
               title={student?.degreeName ?? ''}
               subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
-              linkTo={
-                studentDegree
-                  ? {
-                      screen: 'Degree',
-                      params: {
-                        id: studentDegree?.id,
-                        year: student?.firstEnrollmentYear,
-                      },
-                    }
-                  : undefined
-              }
+              linkTo={{
+                screen: 'ServicesTab',
+                params: {
+                  screen: 'Degree',
+                  params: {
+                    id: student?.degreeId,
+                    year: student?.firstEnrollmentYear,
+                    isCrossNavigation: true,
+                  },
+                  initial: false,
+                },
+              }}
             />
           </OverviewList>
           <OverviewList indented>

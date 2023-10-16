@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -36,7 +35,6 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { setCustomBackHandler } from '../../../utils/navigation';
 import { notNullish } from '../../../utils/predicates';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
@@ -57,10 +55,6 @@ export const PersonScreen = ({ route, navigation }: Props) => {
     .join(' ');
   const courses = person?.courses ?? [];
   const phoneNumbers = person?.phoneNumbers;
-
-  useEffect(() => {
-    setCustomBackHandler(navigation, isCrossNavigation ?? false);
-  }, [isCrossNavigation, navigation]);
 
   const isOffline = useOfflineDisabled();
 

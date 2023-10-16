@@ -48,7 +48,8 @@ export const useGetStudent = () => {
         }),
     {
       onSuccess: async data => {
-        Sentry.setTag('student_degree_code', data.degreeCode);
+        Sentry.setTag('student_degree_id', data.degreeName);
+        Sentry.setTag('student_degree_name', data.degreeId);
         Sentry.setTag('student_status', data.status);
         Sentry.setTag(
           'student_is_currently_enrolled',

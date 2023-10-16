@@ -47,6 +47,8 @@ export const CourseInfoScreen = () => {
     courseQuery.data?.staff.map(s => s.id),
   );
 
+  const isOffline = useOfflineDisabled();
+
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
       return;
@@ -114,35 +116,44 @@ export const CourseInfoScreen = () => {
             />
           </Grid>
         </Card>
-        <Section>
+        {/*  <Section>
           <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
           <OverviewList emptyStateText={t('common.comingSoon')}></OverviewList>
+        </Section>*/}
+        <Section>
+          <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
+          <OverviewList
+            indented
+            loading={
+              (courseQuery.data?.staff?.length ?? 0) > 0 && staff.length === 0
+            }
+          >
+            {staff.map(member => (
+              <PersonListItem
+                key={`${member.id}`}
+                person={member}
+                subtitle={t(`common.${member.courseRole}`)}
+                isCrossNavigation={true}
+              />
+            ))}
+          </OverviewList>
         </Section>
-        {courseExamsQuery.data?.length > 0 && (
-          <Section>
-            <SectionHeader title={t('examsScreen.title')} />
-            <OverviewList loading={courseExamsQuery.isLoading} indented>
-              {courseExamsQuery.data?.map(exam => (
-                <ExamListItem key={exam.id} exam={exam} />
-              ))}
-            </OverviewList>
-          </Section>
-        )}
-        {staff.length > 0 && (
-          <Section>
-            <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
-            <OverviewList indented>
-              {staff.map(member => (
-                <PersonListItem
-                  key={`${member.id}`}
-                  person={member}
-                  subtitle={t(`common.${member.courseRole}`)}
-                  isCrossNavigation={true}
-                />
-              ))}
-            </OverviewList>
-          </Section>
-        )}
+        <Section>
+          <SectionHeader title={t('examsScreen.title')} />
+          <OverviewList
+            loading={courseExamsQuery.isLoading}
+            indented
+            emptyStateText={
+              isOffline && courseExamsQuery.isLoading
+                ? t('common.cacheMiss')
+                : t('examsScreen.emptyState')
+            }
+          >
+            {courseExamsQuery.data?.map(exam => (
+              <ExamListItem key={exam.id} exam={exam} />
+            ))}
+          </OverviewList>
+        </Section>
         <Section>
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>

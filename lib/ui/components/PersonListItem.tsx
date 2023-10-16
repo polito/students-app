@@ -43,6 +43,7 @@ export const PersonListItem = ({
               params: {
                 screen: 'Person',
                 params: { id: person.id, isCrossNavigation },
+                initial: false,
               },
             }
           : undefined
