@@ -17,7 +17,6 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -318,13 +317,13 @@ export const SettingsScreen = () => {
               <LanguageListItem />
             </OverviewList>
           </Section>
-          <Section>
+          {/* <Section>
             <SectionHeader
               title={t('common.notifications')}
               trailingItem={<Badge text={t('common.comingSoon')} />}
             />
             <Notifications />
-          </Section>
+          </Section>*/}
           <Section>
             <SectionHeader title={t('common.cache')} />
             <OverviewList indented>
