@@ -63,8 +63,7 @@ const createStyles = ({ dark, spacing, palettes }: Theme) =>
     content: {
       paddingTop: spacing[5],
       height: '100%',
-      justifyContent: 'space-evenly',
-      gap: spacing[10],
+      gap: spacing[5],
       paddingVertical: spacing[5],
     },
     header: {
@@ -75,11 +74,10 @@ const createStyles = ({ dark, spacing, palettes }: Theme) =>
       borderRadius: 25,
       borderColor: 'transparent',
       borderWidth: 1,
-      height: '75%',
-      maxHeight: 600,
       alignSelf: 'center',
       aspectRatio: 1080 / 2340,
       elevation: 4,
+      flexGrow: 1,
     },
     loadingVideo: {
       backgroundColor: dark ? palettes.gray[600] : palettes.gray[200],
@@ -91,5 +89,6 @@ const createStyles = ({ dark, spacing, palettes }: Theme) =>
     videoContainer: {
       alignItems: 'center',
       justifyContent: 'center',
+      flexGrow: 1,
     },
   });
