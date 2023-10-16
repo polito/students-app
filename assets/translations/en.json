@@ -6,7 +6,9 @@
     "emptyWeek": "You have no events during this week",
     "refresh": "Refresh",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout"
+    "weeklyLayout": "Weekly layout",
+    "room": "Room {{roomName}}",
+    "rooms": "Rooms {{roomNames}}"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -49,21 +51,33 @@
     "yellow": "Yellow"
   },
   "common": {
+    "other": "Other",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
     },
+    "faculty": "Faculty",
     "agent": "Agent",
     "all": "All",
+    "department": "Department",
+    "location": "Location",
+    "duration": "Duration",
+    "objectives": "Objectives",
+    "notes": "Notes",
+    "cfu": "CFU",
+    "year": "year",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
     "booking": "Booking",
     "booking_plural": "Bookings",
+    "building": "Building",
     "cache": "Cache",
     "cacheMiss": "Come back online to view",
     "camera": "Camera",
+    "campus": "Campus",
     "cancel": "Cancel",
+    "capacity": "Capacity",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
     "close": "Close",
@@ -116,12 +130,16 @@
       "unavailable": "Unavailable"
     },
     "externalLink": "External link. By pressing the link you will be redirected to an external browser",
+    "facilities": "Facilities",
     "file": "File",
     "file_plural": "Files",
+    "floor": "Floor",
     "follow": "Follow",
+    "free": "Free",
     "grade": "Grade",
     "hours": "Hour",
     "icon": "Icon",
+    "inYourAgenda": "in your agenda",
     "it": "Italian",
     "language": "Language",
     "lecture": "Lecture",
@@ -129,12 +147,15 @@
     "loading": "Loading",
     "logout": "Logout",
     "minutes": "Minutes",
+    "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
     "noInternet": "You are offline, some features may not be available",
+    "notFound": "Not found",
     "notice": "Notice",
     "notice_plural": "Notices",
     "notifications": "Notifications",
+    "now": "Now",
     "of": "Of",
     "ok": "Ok",
     "open": "Open",
@@ -156,6 +177,7 @@
     "play": "Play",
     "preferences": "Preferences",
     "profilePic": "Profile picture",
+    "recentlyViewed": "Recently viewed",
     "refresh": "Refresh",
     "remove": "Remove",
     "retract": "Retract",
@@ -169,6 +191,7 @@
     "status": "Status",
     "stop": "Stop",
     "stopFollowing": "Stop following",
+    "structure": "Structure",
     "switchCareerLabel": "Tap to switch career",
     "teacher": "Teacher",
     "theme": "Theme",
@@ -179,6 +202,7 @@
     "tomorrow": "Tomorrow",
     "transcript": "Transcript",
     "unnamedFile": "Unnamed file",
+    "untitled": "Untitled",
     "updatedAt": "Updated at",
     "upload": "Upload",
     "username": "Student ID",
@@ -198,6 +222,38 @@
     "recentSearches": "Recent searches",
     "search": "Search people",
     "title": "Contacts"
+  },
+  "offeringScreen": {
+    "title": "Offering",
+    "bachelor": "Bachelor degree",
+    "master": "Master degree",
+    "emptyMessage": "No course available"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Degree code",
+    "info": "Info",
+    "jobOpportunities": "Job opportunities",
+    "title": "Degree",
+    "tracks": "Tracks"
+  },
+  "offeringBachelorScreen": {
+    "title": "Bachelor degree"
+  },
+  "offeringMasterScreen": {
+    "title": "Master degree"
+  },
+  "degreeCourseScreen": {
+    "title": "Course",
+    "period": "Period",
+    "examMode": "Exam mode",
+    "lecture": "Lecture",
+    "classroomExercise": "Classroom excercise",
+    "tutoring": "Tutoring",
+    "labExercise": "Lab excercise",
+    "staff": "Staff",
+    "hours": "{{hours}} hours",
+    "noStaff": "No teacher is associated to this course"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Add",
@@ -337,6 +393,9 @@
     "title": "Exam calls",
     "total": "There are {{ total }} exam calls"
   },
+  "freeRoomsScreen": {
+    "title": "Free rooms"
+  },
   "grades": {
     "absent": "Abs",
     "fail": "Fail",
@@ -344,6 +403,9 @@
   },
   "guidesScreen": {
     "title": "Guides"
+  },
+  "guideScreen": {
+    "title": "Guide"
   },
   "jobOfferScreen": {
     "application": "Application",
@@ -434,8 +496,29 @@
     "sentEmail": "Send e-mail",
     "totalCourses": "There are {{total}} courses"
   },
+  "placeCategories": {
+    "classrooms": "Classrooms",
+    "libraries": "Libraries",
+    "studyRooms": "Study rooms"
+  },
+  "placeScreen": {
+    "capacity": "{{count}} seat",
+    "capacity_plural": "{{count}} seats",
+    "placeNotFound": "Place not found",
+    "title": "Place"
+  },
   "placesScreen": {
-    "title": "Places"
+    "changeFloor": "Change floor",
+    "goToMyPosition": "Go to my position",
+    "multipleFloors": "Results are on multiple floors",
+    "noCategoriesFound": "No categories found",
+    "noPlacesFound": "No places found",
+    "searchCategories": "Search categories",
+    "title": "Places",
+    "viewWholeCampus": "View the whole campus"
+  },
+  "placesSearchScreen": {
+    "searchPlaceholder": "Try with \"Room 1\""
   },
   "profileScreen": {
     "careerStatus": "Career status:",

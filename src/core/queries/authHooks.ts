@@ -3,12 +3,13 @@ import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
+import { asyncStoragePersister } from '../providers/ApiProvider';
 
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
@@ -59,12 +60,15 @@ export const useLogin = () => {
 
 export const useLogout = () => {
   const authClient = useAuthClient();
+  const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
 
   return useMutation({
     mutationFn: () => authClient.logout(),
     onSuccess: async () => {
       refreshContext();
+      asyncStoragePersister.removeClient();
+      queryClient.invalidateQueries([]);
       await Keychain.resetGenericPassword();
     },
   });
@@ -74,6 +78,7 @@ export const useSwitchCareer = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (dto?: SwitchCareerRequest) =>
@@ -85,7 +90,8 @@ export const useSwitchCareer = () => {
         username,
       });
       updatePreference('username', username);
-
+      asyncStoragePersister.removeClient();
+      queryClient.invalidateQueries([]);
       await Keychain.setGenericPassword(data.clientId, data.token);
     },
   });

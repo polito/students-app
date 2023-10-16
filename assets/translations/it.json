@@ -6,7 +6,9 @@
     "emptyWeek": "Non hai impegni questa settimana",
     "refresh": "Aggiorna",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "room": "Aula {{roomName}}",
+    "rooms": "Aule {{roomNames}}"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -49,24 +51,37 @@
     "yellow": "Giallo"
   },
   "common": {
+    "other": "Altro",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "faculty": "Collegio",
     "agent": "Operatore",
+    "close": "Chiudi",
+    "search": "Cerca",
+    "cfu": "CFU",
     "all": "Tutti",
+    "department": "Dipartimento",
+    "location": "Sede",
+    "duration": "Durata",
+    "objectives": "Obiettivi formativi",
+    "notes": "Note",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
+    "year": "anno",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
+    "building": "Edificio",
     "cache": "Cache",
     "cacheMiss": "Torna online per visualizzare",
     "camera": "Fotocamera",
+    "campus": "Sede",
     "cancel": "Annulla",
+    "capacity": "Capacità",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
-    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -116,12 +131,16 @@
       "unavailable": "Non prenotabile"
     },
     "externalLink": "Link esterno. Premendo il link verrai reindirizzato su un browser esterno",
+    "facilities": "Dotazioni",
     "file": "File",
     "file_plural": "File",
+    "floor": "Piano",
     "follow": "Segui",
+    "free": "Libera",
     "grade": "Voto",
     "hours": "Ore",
     "icon": "Icona",
+    "inYourAgenda": "nella tua agenda",
     "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
@@ -129,12 +148,15 @@
     "loading": "Caricamento",
     "logout": "Logout",
     "minutes": "Minuti",
+    "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
+    "notFound": "Luogo inesistente",
     "notice": "Avviso",
     "notice_plural": "Avvisi",
     "notifications": "Notifiche",
+    "now": "Adesso",
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
@@ -156,12 +178,12 @@
     "play": "Riproduci",
     "preferences": "Preferenze",
     "profilePic": "Immagine di profilo",
+    "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
-    "search": "Cerca",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
@@ -169,7 +191,8 @@
     "status": "Stato",
     "stop": "Stop",
     "stopFollowing": "Non seguire",
-    "switchCareerLabel": "Premi per affettuare un cambio matricola",
+    "structure": "Struttura",
+    "switchCareerLabel": "Premi per effettuare un cambio matricola",
     "teacher": "Docente",
     "theme": "Tema",
     "ticket_plural": "Ticket",
@@ -179,6 +202,7 @@
     "tomorrow": "Domani",
     "transcript": "Libretto",
     "unnamedFile": "File senza nome",
+    "untitled": "Senza titolo",
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",
@@ -198,6 +222,26 @@
     "recentSearches": "Ricerche recenti",
     "search": "Cerca contatti",
     "title": "Contatti"
+  },
+  "offeringScreen": {
+    "title": "Offerta formativa",
+    "bachelor": "Laurea triennale",
+    "master": "Laurea magistrale",
+    "emptyMessage": "Nessun corso disponibile"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Classe di laurea",
+    "info": "Info",
+    "jobOpportunities": "Sbocchi",
+    "title": "Corso di laurea",
+    "tracks": "Piano studi"
+  },
+  "offeringBachelorScreen": {
+    "title": "Lauree triennali"
+  },
+  "offeringMasterScreen": {
+    "title": "Lauree magistrali"
   },
   "courseAssignmentPdfCreationScreen": {
     "ctaAddPage": "Aggiungi",
@@ -274,6 +318,18 @@
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
   },
+  "degreeCourseScreen": {
+    "title": "Corso",
+    "period": "Periodo",
+    "examMode": "Modalità di esame",
+    "lecture": "Lezioni",
+    "classroomExercise": "Esercitazioni in aula",
+    "tutoring": "Tutoraggio",
+    "labExercise": "Esercitazioni in laboratorio",
+    "staff": "Docenti",
+    "hours": "{{hours}} Ore",
+    "noStaff": "Nessun docente associato a questo corso"
+  },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCacheFeedback": "I file sono stati rimossi correttamente",
@@ -337,13 +393,20 @@
     "title": "Appelli",
     "total": "Sono presenti {{ total }} appelli"
   },
+  "freeRoomsScreen": {
+    "title": "Aule libere"
+  },
   "grades": {
     "absent": "Ass",
     "fail": "Ins",
     "pass": "Sup"
   },
   "guidesScreen": {
-    "title": "Guide"
+    "title": "Guide",
+    "total": "Sono presenti {{ total }} guide"
+  },
+  "guideScreen": {
+    "title": "Guida"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
@@ -403,15 +466,15 @@
   },
   "messagingView": {
     "pickFile": "Scegli un file",
-    "pickFileHint": "Dal tuo dispositivio o dal cloud",
+    "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
     "pickPhotoHint": "Dalla tua galleria",
-    "takePhoto": "Acquisci con la fotocamera",
+    "takePhoto": "Acquisisci con la fotocamera",
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "newsScreen": {
     "createdAt": "Pubblicato il ",
-    "eventStartTime": "Inicio evento",
+    "eventStartTime": "Inizio evento",
     "information": "Informazioni",
     "logo": "Logo",
     "title": "Avvisi & News"
@@ -434,8 +497,29 @@
     "sentEmail": "Invia e-mail",
     "totalCourses": "Sono presenti {{total}} corsi"
   },
+  "placeCategories": {
+    "classrooms": "Aule",
+    "libraries": "Biblioteche",
+    "studyRooms": "Aule studio"
+  },
+  "placeScreen": {
+    "capacity": "{{count}} posto",
+    "capacity_plural": "{{count}} posti",
+    "placeNotFound": "Questo luogo non esiste",
+    "title": "Luogo"
+  },
   "placesScreen": {
-    "title": "Luoghi"
+    "changeFloor": "Cambia piano",
+    "goToMyPosition": "Vai alla mia posizione",
+    "multipleFloors": "I risultati sono su più piani",
+    "noCategoriesFound": "Nessuna categoria trovata",
+    "noPlacesFound": "Nessun posto trovato",
+    "searchCategories": "Cerca categorie",
+    "title": "Luoghi",
+    "viewWholeCampus": "Vedi tutta la sede"
+  },
+  "placesSearchScreen": {
+    "searchPlaceholder": "Prova con \"Aula 1\""
   },
   "profileScreen": {
     "careerStatus": "Stato carriera:",
@@ -485,7 +569,7 @@
     "writeTicket": "Scrivi ticket"
   },
   "ticketFaqsScreen": {
-    "emptyState": "Nessun risutato trovato",
+    "emptyState": "Nessun risultato trovato",
     "findFAQ": "Cerca tra le FAQ",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
     "noResultFound": "Non hai trovato quello che cerchi?",

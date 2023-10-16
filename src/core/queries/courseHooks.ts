@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  CourseOverview as ApiCourseOverview,
   CourseDirectory,
   CourseDirectoryContentInner,
   CourseFileOverview,
-  CourseOverview,
   CourseOverviewPreviousEditionsInner,
   CourseVcOtherCoursesInner,
   CoursesApi,
@@ -25,9 +25,9 @@ import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
 import {
   CoursesPreferences,
-  PreferenceKey,
   usePreferencesContext,
 } from '../contexts/PreferencesContext';
+import { CourseOverview } from '../types/api';
 import { useGetExams } from './examHooks';
 
 export const COURSES_QUERY_KEY = ['courses'];
@@ -38,17 +38,26 @@ const useCoursesClient = (): CoursesApi => {
 };
 
 const setupCourses = (
-  courses: CourseOverview[],
+  courses: ApiCourseOverview[],
   coursePreferences: CoursesPreferences,
-  updatePreference: (key: PreferenceKey, value: unknown) => void,
-) => {
+  updatePreference: ReturnType<
+    typeof usePreferencesContext
+  >['updatePreference'],
+): CourseOverview[] => {
   let hasNewPreferences = false;
   // Associate each course with a set of preferences, if missing
+
+  const updatedCourses: CourseOverview[] = [];
+
   courses?.forEach(c => {
     // Skip courses without id (such as thesis)
-    if (!c.id) return;
+    if (!c.id) return c;
 
-    if (!(c.id in coursePreferences)) {
+    const newC = c as CourseOverview;
+
+    newC.uniqueShortcode = c.shortcode + c.moduleNumber;
+
+    if (!(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
         .map(cp => cp.color)
         .filter(notNullish);
@@ -63,19 +72,21 @@ const setupCourses = (
         colorData =
           courseColors[Math.round(Math.random() * (courseColors.length - 1))];
       }
-      coursePreferences[c.id] = {
+      coursePreferences[newC.uniqueShortcode] = {
         color: colorData.color,
         isHidden: false,
       };
       hasNewPreferences = true;
     }
+
+    updatedCourses.push(newC);
   });
 
   if (hasNewPreferences) {
     updatePreference('courses', coursePreferences);
   }
 
-  return courses;
+  return updatedCourses;
 };
 
 export const useGetCourses = () => {
@@ -84,10 +95,11 @@ export const useGetCourses = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     usePreferencesContext();
 
-  return useQuery(COURSES_QUERY_KEY, () =>
+  return useQuery<CourseOverview[]>(COURSES_QUERY_KEY, () =>
     coursesClient
       .getCourses()
       .then(pluckData)
+      .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
       .then(c => setupCourses(c, coursePreferences, updatePreference)),
   );
 };

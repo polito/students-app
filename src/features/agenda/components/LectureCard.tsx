@@ -31,7 +31,11 @@ export const LectureCard = ({ item, compact = false }: Props) => {
       title={item.title}
       type={t('common.lecture')}
       time={`${item.fromTime} - ${item.toTime}`}
-      location={item.place?.name ?? '-'}
+      location={
+        item.place?.name
+          ? t('agendaScreen.room', { roomName: item.place.name })
+          : '-'
+      }
       iconColor={item.color}
       color={colors.agendaLecture}
       isCompact={compact}

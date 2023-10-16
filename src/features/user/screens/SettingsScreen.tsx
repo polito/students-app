@@ -34,7 +34,10 @@ import { Settings } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  PreferencesContextBase,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
@@ -177,7 +180,10 @@ const VisualizationListItem = () => {
         };
       })}
       onPressAction={({ nativeEvent: { event } }) => {
-        updatePreference('colorScheme', event);
+        updatePreference(
+          'colorScheme',
+          event as PreferencesContextBase['colorScheme'],
+        );
       }}
     >
       <ListItem
@@ -245,7 +251,7 @@ const Notifications = () => {
       updatePreference('notifications', {
         ...notifications,
         [notificationType]: value,
-      });
+      } as PreferencesContextBase['notifications']);
     };
 
   return (

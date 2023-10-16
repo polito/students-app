@@ -11,7 +11,7 @@ the [gallium](https://nodejs.org/download/release/v16.16.0/) LTS release).
 [Nvm](https://github.com/nvm-sh/nvm) can be used to automatically select the correct version enforced
 by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/nvm#deeper-shell-integration).
 
-### Adding a GitHub personal access token to pull from package repositories
+### Add a GitHub Personal Access Token
 
 GitHub requires the usage of a personal access token to pull from public registries.
 
@@ -30,6 +30,21 @@ Windows) with the following content:
 @polito:registry=https://npm.pkg.github.com/
 //npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE
 ```
+
+### Add a MapBox token
+
+MapBox requires a token in order to install the `@rnmapbox/maps` npm package and pull native dependencies. Create a
+MapBox account and [create a new token](https://account.mapbox.com/access-tokens/create) with all the public scopes and
+the `DOWNLOADS:READ` scope. Paste the generated token in the following files:
+
+- `.env`
+- `android/local.properties`
+- a `.netrc` file in your home directory with the following content:
+  ```
+  machine api.mapbox.com
+    login mapbox
+    password <TOKEN HERE>
+  ```
 
 ## Project setup
 

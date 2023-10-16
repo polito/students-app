@@ -16,7 +16,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { IS_IOS } from '../../../src/core/constants';
-import { GlobalStyles } from '../../../src/core/styles/globalStyles';
+import { GlobalStyles } from '../../../src/core/styles/GlobalStyles';
 import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { DisclosureIndicator } from './DisclosureIndicator';
@@ -25,6 +25,7 @@ import { Text } from './Text';
 export interface ListItemProps extends TouchableHighlightProps {
   title: string | JSX.Element;
   subtitle?: string | JSX.Element;
+  subtitleProps?: TextProps;
   leadingItem?: JSX.Element;
   trailingItem?: JSX.Element;
   linkTo?: To<any>;
@@ -34,9 +35,10 @@ export interface ListItemProps extends TouchableHighlightProps {
   subtitleStyle?: StyleProp<TextStyle>;
   isAction?: boolean;
   card?: boolean;
-  titleProps?: TextProps;
-  unread?: boolean;
   inverted?: boolean;
+  titleProps?: TextProps;
+  multilineTitle?: boolean;
+  unread?: boolean;
 }
 
 /**
@@ -49,6 +51,7 @@ export const ListItem = ({
   titleStyle,
   subtitle,
   subtitleStyle,
+  subtitleProps,
   leadingItem,
   trailingItem,
   linkTo,
@@ -59,13 +62,64 @@ export const ListItem = ({
   style,
   card,
   children,
+  inverted = false,
+  multilineTitle = false,
   titleProps,
   unread = false,
-  inverted = false,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  const titleElement =
+    typeof title === 'string' ? (
+      <Row align="center" gap={2}>
+        {unread && <Badge />}
+        <Text
+          variant="title"
+          style={[
+            GlobalStyles.grow,
+            {
+              fontSize: fontSizes.md,
+              lineHeight: fontSizes.md * 1.4,
+            },
+            unread && {
+              fontWeight: fontWeights.semibold,
+            },
+            titleStyle,
+          ]}
+          weight="medium"
+          numberOfLines={titleProps?.numberOfLines ?? (card ? 2 : 1)}
+          ellipsizeMode={titleProps?.ellipsizeMode ?? 'tail'}
+          {...titleProps}
+        >
+          {title}
+        </Text>
+      </Row>
+    ) : (
+      title
+    );
+
+  const subtitleElement = subtitle ? (
+    typeof subtitle === 'string' ? (
+      <Text
+        variant="secondaryText"
+        style={[
+          {
+            fontSize: fontSizes.sm,
+            lineHeight: fontSizes.sm * 1.4,
+          },
+          subtitleStyle,
+        ]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {subtitle}
+      </Text>
+    ) : (
+      subtitle
+    )
+  ) : null;
 
   return (
     <TouchableHighlight
@@ -114,53 +168,8 @@ export const ListItem = ({
           </View>
         )}
         <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
-          {typeof title === 'string' ? (
-            <Row align="center" gap={2}>
-              {unread && <Badge />}
-              <Text
-                variant="title"
-                style={[
-                  GlobalStyles.grow,
-                  {
-                    fontSize: fontSizes.md,
-                    lineHeight: fontSizes.md * 1.4,
-                  },
-                  unread && {
-                    fontWeight: fontWeights.semibold,
-                  },
-                  titleStyle,
-                ]}
-                weight="medium"
-                numberOfLines={card ? 2 : 1}
-                ellipsizeMode="tail"
-                {...titleProps}
-              >
-                {title}
-              </Text>
-            </Row>
-          ) : (
-            title
-          )}
-          {subtitle ? (
-            typeof subtitle === 'string' ? (
-              <Text
-                variant="secondaryText"
-                style={[
-                  {
-                    fontSize: fontSizes.sm,
-                    lineHeight: fontSizes.sm * 1.4,
-                  },
-                  subtitleStyle,
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {subtitle}
-              </Text>
-            ) : (
-              subtitle
-            )
-          ) : null}
+          {titleElement}
+          {subtitleElement}
         </Col>
         {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (

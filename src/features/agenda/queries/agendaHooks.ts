@@ -1,4 +1,4 @@
-import { Booking, Deadline, ExamStatusEnum, Lecture } from '@polito/api-client';
+import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration, Interval } from 'luxon';
@@ -21,6 +21,7 @@ import {
 } from '../types/AgendaItem';
 import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
+import { Lecture } from '../types/Lecture';
 import { useGetLectureWeeks } from './lectureHooks';
 
 export const AGENDA_QUERY_PREFIX = 'agenda';
@@ -40,7 +41,7 @@ const groupItemsByDay = (
     ...exams
       .filter(exam => exam.status === ExamStatusEnum.Booked)
       .map(exam => {
-        const coursePreferences = coursesPreferences[exam.courseId];
+        const coursePreferences = coursesPreferences[exam.uniqueShortcode];
 
         const item: ExamItem = {
           id: exam.id,
@@ -82,7 +83,9 @@ const groupItemsByDay = (
 
   agendaItems.push(
     ...lectures.map(lecture => {
-      const coursePreferences = coursesPreferences[lecture.courseId];
+      const coursePreferences = lecture.uniqueShortcode
+        ? coursesPreferences[lecture.uniqueShortcode]
+        : undefined;
       const item: LectureItem = {
         id: lecture.id,
         key: 'lecture' + lecture.id,
@@ -112,6 +115,7 @@ const groupItemsByDay = (
       startDate.setHours(0, 0, 0);
 
       const item: DeadlineItem = {
+        id: deadline.id!,
         key: 'deadline-' + deadline.id,
         start: DateTime.fromJSDate(startDate),
         end: DateTime.fromJSDate(startDate).plus({ hour: 1 }),

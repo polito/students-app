@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AgendaCard } from '@lib/ui/components/AgendaCard';
@@ -17,6 +18,17 @@ export const ExamCard = ({ item, compact = false }: Props) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
+  const location = useMemo(() => {
+    const length = item.places?.length ?? 0;
+
+    if (length === 0) return '-';
+    if (length === 1)
+      return t('agendaScreen.room', { roomName: item.places[0].name });
+
+    return t('agendaScreen.rooms', {
+      rooms: item.places.map(place => place.name).join(', '),
+    });
+  }, []);
   return (
     <AgendaCard
       title={item.title}
@@ -28,7 +40,7 @@ export const ExamCard = ({ item, compact = false }: Props) => {
       time={
         item.isTimeToBeDefined ? t('common.timeToBeDefined') : item.fromTime
       }
-      location={item.places?.map(place => place.name).join(', ')}
+      location={location}
       onPress={() =>
         navigate({
           name: 'Exam',

@@ -10,6 +10,7 @@ export interface Props extends TextProps {
     | 'subHeading'
     | 'title'
     | 'prose'
+    | 'longProse'
     | 'secondaryText'
     | 'caption'
     | 'link';
@@ -27,6 +28,7 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   caption: 'bold',
   link: 'normal',
   prose: 'normal',
+  longProse: 'normal',
   secondaryText: 'normal',
 };
 
@@ -73,15 +75,14 @@ export const Text = ({
   );
 };
 
-const createStyles = ({ fontSizes, spacing }: Theme) =>
+const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
       fontSize: fontSizes.md,
     },
     subHeading: {
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.md,
       textTransform: 'uppercase',
-      marginTop: spacing[1.5],
     },
     title: {
       fontSize: fontSizes.xl,
@@ -93,7 +94,13 @@ const createStyles = ({ fontSizes, spacing }: Theme) =>
       fontSize: fontSizes.sm,
       textTransform: 'uppercase',
     },
-    prose: {},
+    prose: {
+      fontSize: fontSizes.md,
+    },
+    longProse: {
+      fontSize: fontSizes.sm,
+      lineHeight: fontSizes.sm * 1.5,
+    },
     secondaryText: {},
     link: {},
   });

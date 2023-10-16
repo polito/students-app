@@ -22,7 +22,7 @@ import {
   useGetGrades,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
-import { GlobalStyles } from '../../../core/styles/globalStyles';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDate } from '../../../utils/dates';
 import { formatFinalGrade, formatGrade } from '../../../utils/grades';
 import { ProgressChart } from '../components/ProgressChart';

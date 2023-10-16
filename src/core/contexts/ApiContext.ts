@@ -8,6 +8,7 @@ import {
   JobOffersApi,
   LecturesApi,
   NewsApi,
+  OfferingApi,
   PeopleApi,
   PlacesApi,
   StudentApi,
@@ -36,6 +37,7 @@ export interface ApiContextClientsProps {
   tickets: TicketsApi;
   news: NewsApi;
   jobOffers: JobOffersApi;
+  offering: OfferingApi;
 }
 
 export const ApiContext = createContext<ApiContextProps | undefined>(undefined);
