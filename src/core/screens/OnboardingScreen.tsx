@@ -56,21 +56,24 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
         tabBarStyle: { display: 'none' },
       });
       return () => {
-        updatePreference('onboardingStep', currentPageIndex + 1);
         navigation.getParent()!.setOptions({
           tabBarStyle: tabBarStyle,
         });
       };
-    }, [navigation, currentPageIndex]),
+    }, [navigation]),
   );
   const onNextPage = useCallback(() => {
     if (isLastStep) {
-      navigation.navigate({
-        name: 'ServicesTab',
-        params: {
-          name: 'GuidesScreen',
-        },
+      const parent = navigation.getParent()!;
+
+      parent.reset({
+        index: 1,
+        routes: [
+          { name: 'TeachingTab' },
+          { name: 'ServicesTab', params: { screen: 'Guides', initial: false } },
+        ],
       });
+
       return;
     }
     updatePreference('onboardingStep', currentPageIndex + 1);
@@ -93,7 +96,8 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
             contentOffset: { x },
           },
         }) => {
-          setCurrentPageIndex(Math.max(0, Math.round(x / width)));
+          const nextPage = Math.max(0, Math.round(x / width));
+          setCurrentPageIndex(p => (p > nextPage ? p : nextPage));
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
