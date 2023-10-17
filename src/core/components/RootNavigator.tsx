@@ -107,7 +107,7 @@ export const RootNavigator = () => {
   const { onboardingStep } = usePreferencesContext();
 
   useEffect(() => {
-    if (onboardingStep && onboardingStep >= 4) return;
+    if (onboardingStep && onboardingStep >= 3) return;
     navigation.navigate('TeachingTab', {
       screen: 'OnboardingModal',
       params: {
