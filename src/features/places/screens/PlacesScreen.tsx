@@ -103,13 +103,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     debounce(
       (newSearch: string) => setDebouncedSearch(newSearch.trim().toLowerCase()),
       200,
+      { leading: true },
     ),
     [],
   );
 
   useEffect(() => {
     updateDebouncedSearch(search);
-  }, [search, updateDebouncedSearch]);
+  }, [search]);
 
   const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
     search: debouncedSearch,
@@ -216,18 +217,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       },
       mapContent: (
         <>
-          {displayFloorId !== undefined && (
-            <IndoorMapLayer floorId={displayFloorId} />
-          )}
-          {displayFloorId !== undefined && (
-            <MarkersLayer
-              search={debouncedSearch}
-              places={places ?? []}
-              displayFloor={!displayFloorId}
-              categoryId={categoryId}
-              subCategoryId={subCategoryId}
-            />
-          )}
+          <IndoorMapLayer floorId={displayFloorId} />
+          <MarkersLayer
+            search={debouncedSearch}
+            places={places ?? []}
+            displayFloor={!displayFloorId}
+            categoryId={categoryId}
+            subCategoryId={subCategoryId}
+          />
         </>
       ),
     });
@@ -269,7 +266,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       return places?.filter(p => isPlace(p) && p.room.name != null);
     }
     return places;
-  }, [categoryId, places, search, subCategoryId]);
+  }, [categoryId, search, places, subCategoryId]);
 
   const floorSelectorButton = (
     <TranslucentCard>

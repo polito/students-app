@@ -39,6 +39,7 @@ export const MarkersLayer = ({
   displayFloor,
   categoryId,
   subCategoryId,
+  search,
 }: MarkersLayerProps) => {
   const { navigate } =
     useNavigation<MapScreenProps<PlacesStackParamList>['navigation']>();
@@ -46,8 +47,9 @@ export const MarkersLayer = ({
   const { dark, fontSizes, palettes } = useTheme();
   const formatAgendaItem = useFormatAgendaItem();
   const pois = useMemo((): (SearchPlace & CategoryData)[] => {
-    return places
-      ?.filter(p =>
+    let result = places;
+    if (!search) {
+      result = result?.filter(p =>
         selectedPoiId === p.id ||
         (categoryId != null &&
           (p as PlaceOverviewWithMetadata).category?.id === categoryId) ||
@@ -60,39 +62,40 @@ export const MarkersLayer = ({
             SUBCATEGORIES_INITIALLY_SHOWN.includes(
               (p as PlaceOverviewWithMetadata).category?.subCategory.id,
             ),
-      )
-      ?.map(poi => {
-        const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
-          ? CATEGORIES_DATA[
-              (poi as PlaceOverviewWithMetadata).category
-                .id as keyof typeof CATEGORIES_DATA
-            ] ?? CATEGORIES_DATA.default
-          : CATEGORIES_DATA.default;
-        const subcategoryData = (poi as PlaceOverviewWithMetadata).category
-          ?.subCategory?.id
-          ? (categoryData.children[
-              (poi as PlaceOverviewWithMetadata).category.subCategory
-                .id as keyof typeof categoryData.children
-            ] as any) ?? {}
-          : {};
+      );
+    }
+    return result?.map(poi => {
+      const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
+        ? CATEGORIES_DATA[
+            (poi as PlaceOverviewWithMetadata).category
+              .id as keyof typeof CATEGORIES_DATA
+          ] ?? CATEGORIES_DATA.default
+        : CATEGORIES_DATA.default;
+      const subcategoryData = (poi as PlaceOverviewWithMetadata).category
+        ?.subCategory?.id
+        ? (categoryData.children[
+            (poi as PlaceOverviewWithMetadata).category.subCategory
+              .id as keyof typeof categoryData.children
+          ] as any) ?? {}
+        : {};
 
-        const markerData = {
-          ...poi,
-          ...categoryData,
-          ...subcategoryData,
-          priority:
-            selectedPoiId === poi.id ||
-            (poi as PlaceOverviewWithMetadata).agendaItem != null
-              ? 0
-              : subcategoryData?.priority ?? categoryData.priority,
-        };
-        if (!markerData.icon) {
-          markerData.icon = 'pin';
-          markerData.color = 'gray';
-        }
-        return markerData;
-      });
-  }, [categoryId, places, selectedPoiId, subCategoryId]);
+      const markerData = {
+        ...poi,
+        ...categoryData,
+        ...subcategoryData,
+        priority:
+          selectedPoiId === poi.id ||
+          (poi as PlaceOverviewWithMetadata).agendaItem != null
+            ? 0
+            : subcategoryData?.priority ?? categoryData.priority,
+      };
+      if (!markerData.icon) {
+        markerData.icon = 'pin';
+        markerData.color = 'gray';
+      }
+      return markerData;
+    });
+  }, [categoryId, places, search, selectedPoiId, subCategoryId]);
 
   return (
     pois && (
