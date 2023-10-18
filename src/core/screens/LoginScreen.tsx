@@ -123,7 +123,7 @@ export const LoginScreen = () => {
             style={styles.link}
             onPress={() => {
               Linking.openURL(
-                'https://idp.polito.it/Chpass/chpassservlet/main.htm',
+                'https://idp.polito.it/Chpass/chpassservlet/main.htm?p_reset=Y',
               );
             }}
           >
