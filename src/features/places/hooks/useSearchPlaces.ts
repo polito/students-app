@@ -57,7 +57,7 @@ export const useSearchPlaces = ({
 
   const { data: places, fetchStatus: placesFetchStatus } = useGetPlaces({
     siteId: actualSiteId,
-    floorId: search?.length ? null : floorId,
+    floorId: search?.length ? null : floorId ?? null,
     placeCategoryId: categoryId,
     placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });
