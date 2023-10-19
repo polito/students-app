@@ -161,18 +161,12 @@ const VisualizationListItem = () => {
     },
   ];
 
-  const themeLabel = (cc: string) => {
-    return cc === 'system'
-      ? `${t(`theme.${cc}`)} (${t(`theme.${settingsColorScheme}`)})`
-      : t(`theme.${cc}`);
-  };
-
   return (
     <MenuView
       actions={themeColors.map(cc => {
         return {
           id: cc.id,
-          title: themeLabel(cc.id),
+          title: t(`theme.${cc.id}`),
           image: cc.image,
           imageColor: cc.color,
           state: cc.id === colorScheme ? 'on' : undefined,
@@ -186,10 +180,10 @@ const VisualizationListItem = () => {
       }}
     >
       <ListItem
-        title={themeLabel(colorScheme)}
+        title={t(`theme.${colorScheme}`)}
         isAction
-        accessibilityLabel={`${t('common.theme')}: ${themeLabel(
-          colorScheme,
+        accessibilityLabel={`${t('common.theme')}: ${t(
+          `theme.${colorScheme}`,
         )}. ${t('settingsScreen.openThemeMenu')}`}
         leadingItem={<ThemeIcon />}
       />
