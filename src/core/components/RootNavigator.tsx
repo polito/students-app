@@ -14,7 +14,6 @@ import { Icon } from '@lib/ui/components/Icon';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import messaging from '@react-native-firebase/messaging';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 import { useNavigation } from '@react-navigation/native';
@@ -27,14 +26,10 @@ import { TeachingNavigator } from '../../features/teaching/components/TeachingNa
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { usePushNotifications } from '../hooks/usePushNotifications';
-import {
-  useGetModalMessages,
-  useGetStudent,
-  useUpdateDevicePreferences,
-} from '../queries/studentHooks';
+import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
-import { RemoteMessage } from '../types/notifications';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
@@ -45,16 +40,8 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
-  const preferencesQuery = useUpdateDevicePreferences();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
-  const { navigateToUpdate, updateUnreadStatus, getUnreadsCount } =
-    usePushNotifications();
-
-  messaging().onTokenRefresh(fcmRegistrationToken => {
-    preferencesQuery.mutate({
-      updatePreferencesRequest: { fcmRegistrationToken },
-    });
-  });
+  const { getUnreadsCount } = usePushNotifications();
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -66,41 +53,7 @@ export const RootNavigator = () => {
     }
   }, [student]);
 
-  useEffect(() => {
-    (async () => {
-      const authorizationStatus = await messaging().requestPermission({
-        badge: true,
-        alert: true,
-        sound: true,
-      });
-      if (authorizationStatus !== messaging.AuthorizationStatus.DENIED) {
-        const unsubscribeOnNotificationOpenedApp =
-          messaging().onNotificationOpenedApp(remoteMessage => {
-            navigateToUpdate(remoteMessage as RemoteMessage);
-          });
-
-        messaging()
-          .getInitialNotification()
-          .then(remoteMessage => {
-            navigateToUpdate(remoteMessage as RemoteMessage);
-          });
-
-        const unsubscribeOnMessage = messaging().onMessage(remoteMessage =>
-          updateUnreadStatus(remoteMessage as RemoteMessage),
-        );
-
-        messaging().setBackgroundMessageHandler(async remoteMessage => {
-          updateUnreadStatus(remoteMessage as RemoteMessage);
-        });
-
-        return () =>
-          [unsubscribeOnMessage, unsubscribeOnNotificationOpenedApp].forEach(
-            fn => fn(),
-          );
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useInitFirebaseMessaging();
 
   const { data: messages } = useGetModalMessages();
 
