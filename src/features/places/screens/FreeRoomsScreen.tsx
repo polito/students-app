@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -19,10 +19,12 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { last } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { formatTime } from '../../../utils/dates';
 import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
@@ -36,10 +38,32 @@ import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
 
 type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
 
-const isWithinFirstHours = (date: DateTime) =>
-  date.get('hour') <= FREE_ROOMS_TIME_WINDOW_SIZE_HOURS;
-const isWithinLastHours = (date: DateTime) =>
-  (date.get('hour') || 24) >= 24 - FREE_ROOMS_TIME_WINDOW_SIZE_HOURS;
+const slotStartHour = [17, 14, 11, 8];
+
+const findNearestSlotStartHour = (dt: DateTime) => {
+  const nearestStartHour = slotStartHour.find(h => h <= dt.hour);
+
+  if (nearestStartHour && dt.hour < 20) {
+    dt = dt.set({ hour: nearestStartHour });
+  } else {
+    if (dt.hour > slotStartHour[0]) {
+      dt = dt.plus({ day: 1 }).set({
+        hour: last(slotStartHour),
+      });
+    } else {
+      // dt.hour < last(slotStartHour)
+      dt = dt.minus({ day: 1 }).set({
+        hour: slotStartHour[0],
+      });
+    }
+  }
+
+  return dt.set({
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
+};
 
 export const FreeRoomsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
@@ -49,25 +73,20 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const [initialDateTime] = useState(
     DateTime.now().set({ minute: 0, second: 0, millisecond: 0 }),
   );
-  const [selectedTimeSlotIndex, setSelectedTimeSlotIndex] = useState(0);
-  const startDateTime = useMemo(() => {
-    const startDate = initialDateTime.plus({
-      hour: FREE_ROOMS_TIME_WINDOW_SIZE_HOURS * selectedTimeSlotIndex,
-    });
-    if (isWithinFirstHours(startDate)) {
-      return startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    }
-    return startDate;
-  }, [initialDateTime, selectedTimeSlotIndex]);
-  const endDateTime = useMemo(() => {
-    const endDate = startDateTime.plus({
-      hour: FREE_ROOMS_TIME_WINDOW_SIZE_HOURS,
-    });
-    if (isWithinLastHours(endDate)) {
-      return startDateTime.set({ hour: 23, minute: 59, second: 59 });
-    }
-    return endDate;
-  }, [startDateTime]);
+  const [startDateTime, setStartDateTime] = useState(initialDateTime);
+
+  const endDateTime = useMemo(
+    () =>
+      startDateTime.plus({
+        hour: FREE_ROOMS_TIME_WINDOW_SIZE_HOURS,
+      }),
+    [startDateTime],
+  );
+
+  useEffect(() => {
+    setStartDateTime(findNearestSlotStartHour(DateTime.now().startOf('hour')));
+  }, []);
+
   const { places: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
   const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
     siteId: campus?.id,
@@ -117,9 +136,11 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
           <IconButton
             icon={faChevronLeft}
             color={colors.secondaryText}
-            disabled={!freeRooms?.data || !selectedTimeSlotIndex}
+            disabled={!freeRooms?.data}
             onPress={() =>
-              setSelectedTimeSlotIndex(prevIdx => Math.max(0, prevIdx - 1))
+              setStartDateTime(prevDt =>
+                findNearestSlotStartHour(prevDt.minus({ hour: 3 })),
+              )
             }
           />
           <View
@@ -144,9 +165,12 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
           <IconButton
             icon={faChevronRight}
             color={colors.secondaryText}
-            onPress={() => {
-              setSelectedTimeSlotIndex(prevIdx => prevIdx + 1);
-            }}
+            disabled={!freeRooms?.data}
+            onPress={() =>
+              setStartDateTime(prevDt =>
+                findNearestSlotStartHour(prevDt.plus({ hour: 3 })),
+              )
+            }
           />
         </Row>
         <BottomSheetFlatList
@@ -155,9 +179,9 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
               title:
                 (p as PlaceOverviewWithMetadata).room.name ??
                 t('common.untitled'),
-              subtitle: `${t(
-                'common.free',
-              )} ${p.freeFrom.toLocaleTimeString()} - ${p.freeTo.toLocaleTimeString()}`,
+              subtitle: `${t('common.free')} ${formatTime(
+                p.freeFrom,
+              )} - ${formatTime(p.freeTo)}`,
               linkTo: { screen: 'Place', params: { placeId: p.id } },
             })) ?? []
           }
