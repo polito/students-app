@@ -18,22 +18,22 @@ import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopT
 import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../offering/screens/StaffScreen';
-import { PersonScreen } from '../../teaching/screens/PersonScreen';
+import { ContactsScreen } from '../../people/screens/ContactsScreen';
+import { PersonScreen } from '../../people/screens/PersonScreen';
+import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
+import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
+import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
+import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
+import { TicketScreen } from '../../tickets/screens/TicketScreen';
+import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { BookingsScreen } from '../screens/BookingsScreen';
-import { ContactsScreen } from '../screens/ContactsScreen';
-import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewBookingScreen } from '../screens/NewBookingScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
-import { TicketFaqScreen } from '../screens/TicketFaqScreen';
-import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
-import { TicketListScreen } from '../screens/TicketListScreen';
-import { TicketScreen } from '../screens/TicketScreen';
-import { TicketsScreen } from '../screens/TicketsScreen';
 
 export type OfferingStackParamList = {
   Offering: undefined;
@@ -210,7 +210,6 @@ export const ServicesNavigator = () => {
         name="Offering"
         component={OfferingTopTabsNavigator}
         options={{
-          headerLeft: () => <HeaderLogo />,
           headerTitle: t('offeringScreen.title'),
           headerLargeTitle: false,
           headerTransparent: false,

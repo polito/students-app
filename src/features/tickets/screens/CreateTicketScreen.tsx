@@ -23,9 +23,9 @@ import {
 } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from '../components/MessagingView';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
-import { Attachment } from '../types/Attachment';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 
@@ -168,6 +168,7 @@ const createStyles = ({ shapes, spacing }: Theme) =>
   StyleSheet.create({
     bubble: {
       marginTop: spacing[2],
+      paddingRight: spacing[4],
       padding: 0,
       width: '100%',
     },

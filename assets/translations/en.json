@@ -584,6 +584,7 @@
   "ticketScreen": {
     "headerBackTitle": "Tickets",
     "new": "New ticket",
+    "pickFileTitle": "You can include one attachment per message",
     "reply": "Reply",
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",

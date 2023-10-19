@@ -30,8 +30,8 @@ import {
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { ChatMessage } from '../components/ChatMessage';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
 import { TextMessage } from '../components/TextMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';

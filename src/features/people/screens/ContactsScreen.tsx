@@ -2,11 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
@@ -27,14 +24,11 @@ export const ContactsScreen = () => {
   const [search, setSearch] = useState('');
   const debounceSearch = useDebounceValue(search, 400);
   const styles = useStylesheet(createStyles);
-  const { palettes, spacing } = useTheme();
+  const { spacing } = useTheme();
   const { t } = useTranslation();
   const enabled = debounceSearch.length >= 2;
   const { isLoading, data: people } = useGetPeople(debounceSearch, enabled);
-  const { peopleSearched, colorScheme } = usePreferencesContext();
-
-  const infoColor =
-    colorScheme === 'light' ? palettes.gray['500'] : palettes.gray['400'];
+  const { peopleSearched } = usePreferencesContext();
 
   const isInputDisabled = useOfflineDisabled();
 
@@ -42,51 +36,44 @@ export const ContactsScreen = () => {
     <>
       <HeaderAccessory style={styles.searchBar}>
         <Row align="center" style={{ flex: 1 }}>
-          <Icon icon={faSearch} color={infoColor} style={styles.searchIcon} />
           <TranslucentTextField
+            autoFocus
+            autoCorrect={false}
+            leadingIcon={faSearch}
             value={search}
             onChangeText={setSearch}
             style={[GlobalStyles.grow, styles.textField]}
             label={t('contactsScreen.search')}
             editable={!isInputDisabled}
+            isClearable={!!search}
+            onClear={() => setSearch('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
           />
-          {!!search && (
-            <IconButton
-              onPress={() => setSearch('')}
-              icon={faTimesCircle}
-              color={infoColor}
-              accessibilityRole="button"
-              accessibilityLabel={t('contactsScreen.clearSearch')}
-              style={styles.cancelIcon}
-            />
-          )}
         </Row>
       </HeaderAccessory>
-      {!search && peopleSearched?.length > 0 && <RecentSearch />}
-      {!!search && enabled && (
+      {!enabled && peopleSearched?.length > 0 && <RecentSearch />}
+      {enabled && (
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{ paddingBottom: spacing[4] }}
+          keyboardShouldPersistTaps="handled"
         >
           <SafeAreaView>
             <Section>
               <OverviewList
                 loading={isLoading}
                 style={{ marginTop: spacing[4] }}
+                emptyStateText={t('contactsScreen.emptyState')}
               >
-                {people && people?.length > 0 ? (
-                  people?.map((person, index) => (
-                    <PersonOverviewListItem
-                      key={person.id}
-                      person={person}
-                      searchString={debounceSearch}
-                      index={index}
-                      totalData={people?.length || 0}
-                    />
-                  ))
-                ) : (
-                  <EmptyState message={t('contactsScreen.emptyState')} />
-                )}
+                {people?.map((person, index) => (
+                  <PersonOverviewListItem
+                    key={person.id}
+                    person={person}
+                    searchString={debounceSearch}
+                    index={index}
+                    totalData={people?.length || 0}
+                  />
+                ))}
               </OverviewList>
             </Section>
           </SafeAreaView>
@@ -104,16 +91,11 @@ const createStyles = ({ spacing, shapes }: Theme) =>
       marginLeft: spacing[3],
     },
     searchBar: {
-      paddingRight: spacing[2],
       paddingBottom: spacing[2],
       paddingTop: spacing[2],
     },
     searchIcon: {
       position: 'absolute',
       left: spacing[6],
-    },
-    cancelIcon: {
-      position: 'absolute',
-      right: spacing[2],
     },
   });
