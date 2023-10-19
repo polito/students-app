@@ -11,11 +11,13 @@ export const useInitFirebaseMessaging = () => {
   const { navigateToUpdate, updateUnreadStatus } = usePushNotifications();
   const preferencesQuery = useUpdateDevicePreferences();
 
-  messaging().onTokenRefresh(fcmRegistrationToken => {
-    preferencesQuery.mutate({
-      updatePreferencesRequest: { fcmRegistrationToken },
+  if (isEnvProduction) {
+    messaging().onTokenRefresh(fcmRegistrationToken => {
+      preferencesQuery.mutate({
+        updatePreferencesRequest: { fcmRegistrationToken },
+      });
     });
-  });
+  }
 
   useEffect(() => {
     (async () => {

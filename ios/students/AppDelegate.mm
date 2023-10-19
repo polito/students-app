@@ -8,7 +8,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 
-  [FIRApp configure];
+  NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+
+  // configure FIRApp only if bundle id does not end with dev
+  if (![bundleIdentifier hasSuffix:@"dev"]) {
+    [FIRApp configure];
+  }
+
   self.moduleName = @"students";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
