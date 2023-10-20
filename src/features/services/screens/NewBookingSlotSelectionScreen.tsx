@@ -1,8 +1,9 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { faRedo } from '@fortawesome/free-solid-svg-icons';
+import { faChair, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
+import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
@@ -10,6 +11,8 @@ import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
+import { BookingSlot } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -17,6 +20,7 @@ import { DateTime } from 'luxon';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetBookingSlots } from '../../../core/queries/bookingHooks';
+import { getBookingStyle } from '../../../utils/bookings';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -26,31 +30,11 @@ type Props = NativeStackScreenProps<
   'NewBookingSlotSelection'
 >;
 
-type BookingCalendarEvent = {
+export type BookingCalendarEvent = BookingSlot & {
   start: DateTime;
   end: DateTime;
   title: string;
-  slotId: number;
 };
-
-const bookingCalendarEvent: BookingCalendarEvent[] = [
-  {
-    slotId: 123456,
-    start: DateTime.fromObject({
-      year: 2023,
-      month: 10,
-      day: 17,
-      hour: 9,
-    }),
-    end: DateTime.fromObject({
-      year: 2023,
-      month: 10,
-      day: 17,
-      hour: 10,
-    }),
-    title: 'Test',
-  },
-];
 
 export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
@@ -60,10 +44,7 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     DateTime.now().startOf('week'),
   );
-  const { isFetching, ...bookingSlotsQuery } = useGetBookingSlots(
-    topicId,
-    currentWeekStart,
-  );
+  const bookingSlotsQuery = useGetBookingSlots(topicId, currentWeekStart);
 
   console.debug('bookingSlotsQuery', bookingSlotsQuery.data);
 
@@ -96,6 +77,20 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
     });
   }, [navigation, palettes]);
 
+  const calendarEvents = useMemo(() => {
+    if (bookingSlotsQuery.data && bookingSlotsQuery.data.length > 0) {
+      return bookingSlotsQuery.data.map(slot => {
+        return {
+          ...slot,
+          start: DateTime.fromJSDate(slot.startsAt as Date),
+          end: DateTime.fromJSDate(slot.endsAt as Date),
+          title: '',
+        };
+      });
+    }
+    return [];
+  }, [bookingSlotsQuery.data]);
+
   return (
     <>
       <HeaderAccessory justify="space-between">
@@ -106,8 +101,8 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
           current={currentWeekStart}
           getNext={nextWeek}
           getPrev={prevWeek}
-          isNextWeekDisabled={isOffline || isFetching}
-          isPrevWeekDisabled={isOffline || isFetching}
+          isNextWeekDisabled={isOffline}
+          isPrevWeekDisabled={isOffline}
         />
       </HeaderAccessory>
       <View
@@ -120,7 +115,6 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
             weekEndsOn={5}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
-            isEventOrderingEnabled={false}
             showAllDayEventCell={false}
             overlapOffset={10000}
             date={currentWeekStart}
@@ -131,19 +125,35 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
               <CalendarHeader {...props} cellHeight={-1} />
             )}
             onPressEvent={event => {
-              navigation.navigate('NewBookingSeatSelection', {
-                slotId: event.slotId,
-              });
+              event.id &&
+                navigation.navigate('NewBookingSeatSelection', {
+                  slotId: String(event.id),
+                  startHour: event.start.toFormat('HH:mm'),
+                  endHour: event.end.toFormat('HH:mm'),
+                  day: event.start.toFormat('DDDD'),
+                  topicId,
+                });
             }}
-            events={bookingCalendarEvent}
+            events={calendarEvents}
             height={calendarHeight}
             renderEvent={(item, touchableOpacityProps) => {
+              const { color, backgroundColor } = getBookingStyle(
+                item,
+                palettes,
+              );
               return (
                 <TouchableOpacity
                   {...touchableOpacityProps}
-                  style={[touchableOpacityProps.style, styles.event]}
+                  style={[
+                    touchableOpacityProps.style,
+                    styles.event,
+                    { backgroundColor },
+                  ]}
                 >
-                  <Text>{item.slotId}</Text>
+                  <Icon icon={faChair} color={color} />
+                  <Text style={[styles.placesText, { color }]}>
+                    {item.bookedPlaces} / {item.places}
+                  </Text>
                 </TouchableOpacity>
               );
             }}
@@ -154,11 +164,38 @@ export const NewBookingSlotSelectionScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = () =>
+const createStyles = ({
+  fontSizes,
+  palettes,
+  colors,
+  spacing,
+  fontWeights,
+}: Theme) =>
   StyleSheet.create({
     calendarContainer: {
       height: '100%',
       width: '100%',
+    },
+    placesText: {
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.normal,
+      marginTop: spacing[1],
+    },
+    notAvailable: {
+      backgroundColor: palettes.secondary['100'],
+      color: palettes.secondary['700'],
+    },
+    available: {
+      backgroundColor: palettes.primary['100'],
+      color: palettes.primary['600'],
+    },
+    booked: {
+      backgroundColor: palettes.green['100'],
+      color: palettes.green['600'],
+    },
+    full: {
+      backgroundColor: palettes.danger['100'],
+      color: palettes.danger['600'],
     },
     event: {
       backgroundColor: undefined,
@@ -169,6 +206,8 @@ const createStyles = () =>
       elevation: undefined,
       justifyContent: 'center',
       alignItems: 'center',
+      borderColor: colors.divider,
+      borderWidth: StyleSheet.hairlineWidth,
     },
     dayHeader: {
       display: 'flex',

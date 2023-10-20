@@ -12,6 +12,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<
@@ -20,8 +21,11 @@ type Props = NativeStackScreenProps<
 >;
 
 export const NewBookingSeatSelectionScreen = ({ route, navigation }: Props) => {
-  const { slotId } = route.params;
+  const { slotId, topicId } = route.params;
   const { t } = useTranslation();
+  const seats = useGetBookingSeats(topicId, slotId);
+
+  console.debug('seats', seats.data);
 
   useEffect(() => {
     navigation.setOptions({

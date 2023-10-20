@@ -52,6 +52,9 @@ export const useGetBookingSlots = (
           toDate: weekEnd.toJSDate(),
         })
         .then(pluckData),
+    {
+      enabled: true,
+    },
   );
 };
 
@@ -61,10 +64,12 @@ export const useGetBookingSeats = (
 ) => {
   const bookingClient = useBookingClient();
 
-  return useQuery(BOOKINGS_SEATS_QUERY_KEY, () =>
-    bookingClient
-      .getBookingSeats({ bookingTopicId, bookingSlotId })
-      .then(pluckData),
+  return useQuery(
+    [...BOOKINGS_SEATS_QUERY_KEY, bookingTopicId, bookingSlotId],
+    () =>
+      bookingClient
+        .getBookingSeats({ bookingTopicId, bookingSlotId })
+        .then(pluckData),
   );
 };
 

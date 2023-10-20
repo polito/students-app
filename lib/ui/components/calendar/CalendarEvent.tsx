@@ -70,7 +70,7 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
       getStyleForOverlappingEvent(eventOrder, eventCount),
       {
         position: 'absolute',
-        width: `${98 / eventCount}%`,
+        width: `${100 / eventCount}%`,
       },
     ],
   });

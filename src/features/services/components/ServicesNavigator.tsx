@@ -81,7 +81,13 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Booking: { id: number };
   NewBookingTopicSelection: undefined;
   NewBookingSlotSelection: { topicId: string; topicName: string };
-  NewBookingSeatSelection: { slotId: number };
+  NewBookingSeatSelection: {
+    slotId: string;
+    topicId: string;
+    startHour: string;
+    endHour: string;
+    day: string;
+  };
   Guide: { id: string };
   Guides: undefined;
 };
