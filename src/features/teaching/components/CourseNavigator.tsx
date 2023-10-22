@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, View, useWindowDimensions } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -56,48 +57,49 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     if (!course) return;
     navigation.setOptions({
       headerTitle: () => (
-        <View
+        <Row
+          align="center"
+          justify="space-between"
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            left: Platform.select({ android: -20 }),
+            width: Platform.select({ android: width - 50, ios: width - 40 }),
+            left: Platform.select({ android: -25, ios: -15 }),
           }}
         >
-          <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
-          <Text
-            variant="title"
-            style={[
-              {
-                marginLeft: spacing[2],
-                maxWidth: width - 180,
-              },
-              titleStyles.headerTitleStyle,
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {course.name}
-          </Text>
-        </View>
-      ),
-      headerRight: () => (
-        <IconButton
-          icon={faSliders}
-          color={palettes.primary[400]}
-          size={fontSizes.lg}
-          accessibilityRole="button"
-          accessibilityLabel={t('common.preferences')}
-          hitSlop={{
-            left: +spacing[3],
-            right: +spacing[3],
-          }}
-          onPress={() => {
-            navigation.navigate('CoursePreferences', {
-              courseId: id,
-              uniqueShortcode: course.uniqueShortcode,
-            });
-          }}
-        />
+          <Row gap={2} align="center" flexShrink={1}>
+            <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
+            <Text
+              variant="title"
+              style={[
+                titleStyles.headerTitleStyle,
+                {
+                  fontSize: 17,
+                  flexShrink: 1,
+                },
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {course.name}
+            </Text>
+          </Row>
+          <IconButton
+            icon={faSliders}
+            color={palettes.primary[400]}
+            size={fontSizes.lg}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.preferences')}
+            hitSlop={{
+              left: +spacing[3],
+              right: +spacing[3],
+            }}
+            onPress={() => {
+              navigation.navigate('CoursePreferences', {
+                courseId: id,
+                uniqueShortcode: course.uniqueShortcode,
+              });
+            }}
+          />
+        </Row>
       ),
     });
   }, [
