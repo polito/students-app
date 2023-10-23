@@ -88,10 +88,18 @@ export const CourseListItem = ({
   const subtitle = useMemo(() => {
     return (
       `${course.cfu} ${t('common.credits').toLowerCase()}` +
-      (!course.isInPersonalStudyPlan ? ` • ${t('courseListItem.extra')}` : '') +
+      (!course.isInPersonalStudyPlan
+        ? ` • ${t('courseListItem.extra')} • ${course.year}`
+        : '') +
       (course.isOverBooking ? ` • ${t('courseListItem.overbooking')}` : '')
     );
-  }, [course.cfu, course.isInPersonalStudyPlan, course.isOverBooking, t]);
+  }, [
+    course.cfu,
+    course.isInPersonalStudyPlan,
+    course.isOverBooking,
+    course.year,
+    t,
+  ]);
 
   const listItem = (
     <ListItem
