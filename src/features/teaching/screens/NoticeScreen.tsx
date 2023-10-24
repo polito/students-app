@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
-import { sanitizeHtml } from '../../../utils/html';
+import { linkUrls, sanitizeHtml } from '../../../utils/html';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Notice'>;
@@ -19,9 +19,11 @@ export const NoticeScreen = ({ route }: Props) => {
   const noticesQuery = useGetCourseNotices(courseId);
   const html = useMemo(
     () =>
-      sanitizeHtml(
-        noticesQuery.data?.find(notice => notice.id === noticeId)?.content ??
-          '',
+      linkUrls(
+        sanitizeHtml(
+          noticesQuery.data?.find(notice => notice.id === noticeId)?.content ??
+            '',
+        ),
       ),
     [noticesQuery, noticeId],
   );
