@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
 import Pdf from 'react-native-pdf';
 
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { FullWidthPicture } from '@lib/ui/components/FullWidthPicture';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { TextButton } from '@lib/ui/components/TextButton';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
@@ -136,6 +136,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         ]}
       >
         <TranslucentTextField
+          autoFocus={true}
           label={t('courseAssignmentUploadConfirmationScreen.descriptionLabel')}
           autoCorrect={false}
           value={description}
@@ -157,27 +158,22 @@ export const CourseAssignmentUploadConfirmationScreen = ({
       )}
       {/\.jpe?g|gif|png|heic$/i.test(file.uri) && (
         <ScrollView
-          contentContainerStyle={[
-            GlobalStyles.grow,
-            {
-              paddingBottom: tabBarHeight,
-            },
-          ]}
-          centerContent
-          minimumZoomScale={0.5}
+          contentInsetAdjustmentBehavior="automatic"
+          automaticallyAdjustKeyboardInsets
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.imageScrollContainer}
         >
-          <Image
-            source={{ uri: file.uri }}
-            style={GlobalStyles.grow}
-            resizeMode="contain"
-          />
+          <FullWidthPicture source={{ uri: file.uri }} />
         </ScrollView>
       )}
     </>
   );
 };
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
+    imageScrollContainer: {
+      paddingVertical: spacing[5],
+    },
     toolbar: {
       justifyContent: 'space-between',
       backgroundColor: Platform.select({

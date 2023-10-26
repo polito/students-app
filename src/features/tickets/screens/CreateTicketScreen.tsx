@@ -21,11 +21,10 @@ import {
   useCreateTicket,
   useGetTicketTopics,
 } from '../../../core/queries/ticketHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from '../components/MessagingView';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
-import { Attachment } from '../types/Attachment';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 
@@ -145,7 +144,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
               onAttachmentChange={updateTicketBodyField('attachment') as any}
               disabled={!ticketBody.subtopicId}
               numberOfLines={5}
-              style={GlobalStyles.grow}
+              style={styles.bubbleInput}
               textFieldStyle={styles.textField}
             />
           </ThemeContext.Provider>
@@ -173,6 +172,9 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     },
     bubbleContainer: {
       marginHorizontal: spacing[5],
+    },
+    bubbleInput: {
+      paddingRight: 0,
     },
     objectSection: {
       height: 60,

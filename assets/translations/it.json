@@ -586,6 +586,7 @@
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "reply": "Rispondi",
+    "pickFileTitle": "Puoi includere un allegato per messaggio",
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",

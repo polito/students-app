@@ -34,7 +34,7 @@ import { parseDocument } from 'htmlparser2';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
 

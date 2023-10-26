@@ -14,7 +14,7 @@ import { parseDocument } from 'htmlparser2';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaq'>;
 

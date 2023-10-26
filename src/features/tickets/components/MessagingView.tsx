@@ -15,9 +15,8 @@ import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { IS_IOS } from '../../../core/constants';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { Attachment } from '../../services/types/Attachment';
 import { pdfSizes } from '../../teaching/constants';
-import { Attachment } from '../types/Attachment';
 import { AttachmentChip } from './AttachmentChip';
 
 interface Props extends ViewProps {
@@ -128,6 +127,7 @@ export const MessagingView = ({
         )}
         <Row align="flex-end">
           <MenuView
+            title={t('ticketScreen.pickFileTitle')}
             actions={[
               {
                 id: 'pickFile',
@@ -182,7 +182,8 @@ export const MessagingView = ({
             onChangeText={onMessageChange}
             multiline
             editable={!disabled}
-            style={[GlobalStyles.grow, textFieldStyle]}
+            containerStyle={{ flex: 1 }}
+            style={[{ maxHeight: 220 }, { flexGrow: 1 }, textFieldStyle]}
             numberOfLines={numberOfLines}
           />
           {showSendButton && (
@@ -209,10 +210,6 @@ const createStyles = ({ spacing, colors, safeAreaInsets }: Theme) =>
       paddingRight: Math.max(safeAreaInsets.right, spacing[2]),
     },
     translucent: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
       borderColor: colors.divider,
       borderTopWidth: StyleSheet.hairlineWidth,
     },

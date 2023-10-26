@@ -6,7 +6,7 @@ import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useReplyToTicket } from '../../../core/queries/ticketHooks';
-import { Attachment } from '../types/Attachment';
+import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from './MessagingView';
 
 interface Props {

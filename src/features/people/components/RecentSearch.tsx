@@ -67,6 +67,7 @@ export const RecentSearch = () => {
   return (
     <FlatList
       contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
       ListHeaderComponent={
         <Row align="center" justify="space-between" style={styles.header}>
           <Text

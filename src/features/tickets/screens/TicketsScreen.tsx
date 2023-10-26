@@ -19,7 +19,7 @@ import { onlineManager } from '@tanstack/react-query';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
 interface Props {

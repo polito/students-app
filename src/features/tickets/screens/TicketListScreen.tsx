@@ -12,7 +12,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketList'>;
