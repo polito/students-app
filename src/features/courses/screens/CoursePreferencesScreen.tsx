@@ -15,6 +15,7 @@ import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
@@ -23,6 +24,8 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
+import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks';
+import { LECTURES_QUERY_KEY } from '../../agenda/queries/lectureHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
@@ -88,6 +91,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { spacing, fontSizes } = useTheme();
   const { courseId, uniqueShortcode } = route.params;
   const courseQuery = useGetCourse(courseId);
+  const queryClient = useQueryClient();
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
     () => coursesPrefs[uniqueShortcode],
@@ -168,6 +172,11 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         isHidden: !value,
                       },
                     });
+                    queryClient
+                      .invalidateQueries(LECTURES_QUERY_KEY)
+                      .then(() => {
+                        queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
+                      });
                   }}
                 />
               </OverviewList>
