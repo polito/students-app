@@ -17,6 +17,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { CourseIndicator } from '../components/CourseIndicator';
 import { CourseContext } from '../contexts/CourseContext';
 import { FilesCacheProvider } from '../providers/FilesCacheProvider';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
@@ -24,8 +26,6 @@ import { CourseFilesScreen } from '../screens/CourseFilesScreen';
 import { CourseInfoScreen } from '../screens/CourseInfoScreen';
 import { CourseLecturesScreen } from '../screens/CourseLecturesScreen';
 import { CourseNoticesScreen } from '../screens/CourseNoticesScreen';
-import { CourseIndicator } from './CourseIndicator';
-import { TeachingStackParamList } from './TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 

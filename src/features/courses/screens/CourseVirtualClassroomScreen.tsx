@@ -14,7 +14,7 @@ import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatDateWithTimeIfNotNull } from '../../../utils/dates';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { isLiveVC, isRecordedVC } from '../utils/lectures';
 
 type Props = NativeStackScreenProps<

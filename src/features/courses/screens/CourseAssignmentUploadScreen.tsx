@@ -12,7 +12,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { pdfSizes } from '../constants';
 import { Assignment } from '../types/Assignment';
 

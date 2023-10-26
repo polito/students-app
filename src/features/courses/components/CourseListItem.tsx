@@ -71,7 +71,6 @@ export const CourseListItem = ({
 }: Props) => {
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
-  const preferences = usePreferencesContext();
 
   const hasDetails = course.id != null;
   const queryClient = useQueryClient();

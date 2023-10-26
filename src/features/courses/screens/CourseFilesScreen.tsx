@@ -15,10 +15,10 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
-import { CourseTabsParamList } from '../components/CourseNavigator';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { useCourseContext } from '../contexts/CourseContext';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
+import { CourseTabsParamList } from '../navigation/CourseNavigator';
 
 type Props = MaterialTopTabScreenProps<
   CourseTabsParamList,

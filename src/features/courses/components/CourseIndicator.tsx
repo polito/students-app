@@ -15,5 +15,12 @@ export const CourseIndicator = ({ uniqueShortcode }: Props) => {
   if (!coursePrefs) {
     return <CourseIcon color={palettes.primary[500]} />;
   }
-  return <CourseIcon color={coursePrefs.color} icon={coursePrefs.icon} />;
+
+  return (
+    <CourseIcon
+      color={coursePrefs.color}
+      icon={coursePrefs.icon}
+      isHidden={coursePrefs.isHidden}
+    />
+  );
 };

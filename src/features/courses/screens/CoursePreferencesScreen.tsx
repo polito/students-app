@@ -23,8 +23,8 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIcon } from '../components/CourseIcon';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';

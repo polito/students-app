@@ -15,8 +15,8 @@ import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { IS_IOS } from '../../../core/constants';
+import { pdfSizes } from '../../courses/constants';
 import { Attachment } from '../../services/types/Attachment';
-import { pdfSizes } from '../../teaching/constants';
 import { AttachmentChip } from './AttachmentChip';
 
 interface Props extends ViewProps {
