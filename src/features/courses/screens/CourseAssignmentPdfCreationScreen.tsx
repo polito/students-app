@@ -32,7 +32,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { displayTabBar, hideTabBar } from '../../../utils/tab-bar';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { pdfSizes } from '../constants';
 
 type Props = NativeStackScreenProps<

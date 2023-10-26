@@ -17,13 +17,13 @@ import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
 import {
   CourseRecentFile,
   CourseRecentFileListItem,
 } from '../components/CourseRecentFileListItem';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { CourseContext } from '../contexts/CourseContext';
 import { FilesCacheContext } from '../contexts/FilesCacheContext';
 import { FilesCacheProvider } from '../providers/FilesCacheProvider';

@@ -13,8 +13,8 @@ import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseAssignmentListItem } from '../components/CourseAssignmentListItem';
-import { CourseTabsParamList } from '../components/CourseNavigator';
 import { useCourseContext } from '../contexts/CourseContext';
+import { CourseTabsParamList } from '../navigation/CourseNavigator';
 
 type Props = MaterialTopTabScreenProps<
   CourseTabsParamList,

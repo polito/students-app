@@ -18,7 +18,7 @@ import {
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
-import { CourseIcon } from './CourseIcon';
+import { CourseIcon } from '../../courses/components/CourseIcon';
 import { ExamStatusBadge } from './ExamStatusBadge';
 
 interface Props {
@@ -76,6 +76,7 @@ export const ExamListItem = ({
         <CourseIcon
           icon={coursesPreferences[exam.uniqueShortcode]?.icon}
           color={coursesPreferences[exam.uniqueShortcode]?.color}
+          isHidden={coursesPreferences[exam.uniqueShortcode]?.isHidden}
         />
       }
       trailingItem={
