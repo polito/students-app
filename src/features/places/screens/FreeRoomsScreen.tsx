@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -70,10 +70,9 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const { colors } = useTheme();
   const { spacing, fontSizes } = useTheme();
   const campus = useGetCurrentCampus();
-  const [initialDateTime] = useState(
-    DateTime.now().set({ minute: 0, second: 0, millisecond: 0 }),
+  const [startDateTime, setStartDateTime] = useState(
+    findNearestSlotStartHour(DateTime.now().startOf('hour')),
   );
-  const [startDateTime, setStartDateTime] = useState(initialDateTime);
 
   const endDateTime = useMemo(
     () =>
@@ -82,10 +81,6 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
       }),
     [startDateTime],
   );
-
-  useEffect(() => {
-    setStartDateTime(findNearestSlotStartHour(DateTime.now().startOf('hour')));
-  }, []);
 
   const { places: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
   const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
