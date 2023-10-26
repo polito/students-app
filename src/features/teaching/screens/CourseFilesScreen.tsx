@@ -38,7 +38,7 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
     useCallback(() => {
       resetUnread(['teaching', 'courses', courseId.toString(), 'files']);
       refresh();
-    }, [courseId, refresh]),
+    }, [courseId, refresh, resetUnread]),
   );
 
   return (
