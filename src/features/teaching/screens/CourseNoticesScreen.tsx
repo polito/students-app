@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
@@ -43,16 +43,21 @@ export const CourseNoticesScreen = () => {
     [noticesQuery],
   );
 
-  useFocusEffect(() => {
-    resetUnread(['teaching', 'courses', courseId.toString(), 'notices']);
-  });
+  useFocusEffect(
+    useCallback(() => {
+      resetUnread(['teaching', 'courses', courseId.toString(), 'notices']);
+    }, [courseId, resetUnread]),
+  );
 
   return (
     <FlatList
+      contentInsetAdjustmentBehavior="automatic"
+      initialNumToRender={15}
       style={GlobalStyles.grow}
       contentContainerStyle={paddingHorizontal}
-      refreshControl={<RefreshControl queries={[noticesQuery]} />}
+      refreshControl={<RefreshControl manual queries={[noticesQuery]} />}
       data={notices}
+      keyExtractor={item => item.id.toString()}
       renderItem={({ item: notice, index }) => (
         <ListItem
           title={notice.title}

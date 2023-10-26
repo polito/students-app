@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { get, omit, setWith, updateWith } from 'lodash';
+import { get, has, omit, setWith, updateWith } from 'lodash';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { RootParamList } from '../types/navigation';
@@ -61,6 +61,10 @@ export const usePushNotifications = () => {
 
   const resetUnread = useCallback(
     (notificationPath: PathExtractor<UnreadNotifications>) => {
+      if (!has(unreadNotifications, notificationPath!)) {
+        return;
+      }
+
       updatePreference(
         'unreadNotifications',
         omit(unreadNotifications, notificationPath!),
