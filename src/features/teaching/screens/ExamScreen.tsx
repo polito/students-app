@@ -56,7 +56,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     }
   }, [navigation, routes, t]);
 
-  const classrooms = exam?.places?.map(p => p.name).join(', ') ?? '-';
+  const classrooms = useMemo(() => {
+    if (!exam || !exam?.places || exam.places.length === 0) return '-';
+
+    return t('agendaScreen.rooms', {
+      roomNames: exam.places.map(p => p.name).join(', '),
+    });
+  }, [exam, t]);
 
   const examAccessibilityLabel = useMemo(() => {
     if (!exam || !teacherQuery.data) return;

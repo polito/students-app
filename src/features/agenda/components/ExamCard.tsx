@@ -26,9 +26,9 @@ export const ExamCard = ({ item, compact = false }: Props) => {
       return t('agendaScreen.room', { roomName: item.places[0].name });
 
     return t('agendaScreen.rooms', {
-      rooms: item.places.map(place => place.name).join(', '),
+      roomNames: item.places.map(place => place.name).join(', '),
     });
-  }, []);
+  }, [item.places, t]);
   return (
     <AgendaCard
       title={item.title}
