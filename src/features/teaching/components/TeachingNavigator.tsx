@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
-import { OnboardingScreen } from '../../../core/screens/OnboardingScreen';
+import { OnboardingModal } from '../../../core/screens/OnboardingModal';
 import { CourseNavigator } from '../../courses/navigation/CourseNavigator';
 import { CourseAssignmentPdfCreationScreen } from '../../courses/screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../../courses/screens/CourseAssignmentUploadConfirmationScreen';
@@ -63,7 +63,7 @@ export interface TeachingStackParamList extends ParamListBase {
   ExamRequest: { id: number };
   MessagesModal: undefined;
   Transcript: undefined;
-  OnboardingModal: { step: number };
+  OnboardingModal: undefined;
 }
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -275,7 +275,7 @@ export const TeachingNavigator = () => {
       />
       <Stack.Screen
         name="OnboardingModal"
-        component={OnboardingScreen}
+        component={OnboardingModal}
         options={{
           headerTitle: t('onboardingScreen.title'),
           headerLargeTitle: false,

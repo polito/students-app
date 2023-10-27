@@ -1,9 +1,15 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Animated,
-  FlatList,
   Platform,
+  ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
@@ -26,29 +32,27 @@ import { usePreferencesContext } from '../contexts/PreferencesContext';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
 
-export const OnboardingScreen = ({ navigation, route }: Props) => {
+const ONBOARDING_STEPS = 4;
+
+export const OnboardingModal = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  const { step } = route.params;
   const { width } = useWindowDimensions();
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(step);
-  const stepsRef = useRef<FlatList>(null);
+  const stepsRef = useRef<ScrollView>(null);
 
-  const data = useMemo(() => [0, 1, 2, 3], []);
+  // Init data as the memoized array from 0 to ONBOARDING_STEPS
+  const data = useMemo(() => [...Array(ONBOARDING_STEPS).keys()], []);
+
+  const { updatePreference, onboardingStep } = usePreferencesContext();
+
+  const [currentStep, setCurrentStep] = useState<number>(onboardingStep ?? 0);
+
   const isLastStep = useMemo(
-    () => currentPageIndex === data.length - 1,
-    [currentPageIndex, data],
+    () => currentStep === data.length - 1,
+    [currentStep, data],
   );
-  const onPrevPage = () => {
-    stepsRef.current?.scrollToIndex({
-      animated: true,
-      index: currentPageIndex - 1,
-    });
-  };
-
-  const { updatePreference } = usePreferencesContext();
 
   useFocusEffect(
     useCallback(() => {
@@ -62,6 +66,34 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
       };
     }, [navigation]),
   );
+
+  // Update the onboarding step in preferences
+  useEffect(() => {
+    if (onboardingStep !== undefined && currentStep <= onboardingStep) {
+      // Don't update the preference if the user is going back
+      return;
+    }
+    updatePreference('onboardingStep', currentStep);
+  }, [currentStep, onboardingStep, updatePreference]);
+
+  useLayoutEffect(() => {
+    // Workaround for scroll action not working on first render for iOS devices
+    setTimeout(() => {
+      stepsRef.current?.scrollTo({
+        animated: false,
+        x: currentStep * width,
+      });
+    }, 200);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepsRef.current]);
+
+  const onPrevPage = () =>
+    stepsRef.current?.scrollTo({
+      animated: true,
+      x: (currentStep - 1) * width,
+    });
+
   const onNextPage = useCallback(() => {
     if (isLastStep) {
       const parent = navigation.getParent()!;
@@ -76,41 +108,41 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
 
       return;
     }
-    updatePreference('onboardingStep', currentPageIndex + 1);
-
-    stepsRef.current?.scrollToIndex({
+    stepsRef.current?.scrollTo({
       animated: true,
-      index: currentPageIndex + 1,
+      x: (currentStep + 1) * width,
     });
-  }, [currentPageIndex, isLastStep]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep, isLastStep, navigation]);
   return (
     <>
-      <Animated.FlatList
+      <ScrollView
         ref={stepsRef}
-        data={data}
         horizontal
         pagingEnabled
-        keyExtractor={item => item.toString()}
         onScroll={({
           nativeEvent: {
             contentOffset: { x },
           },
         }) => {
-          const nextPage = Math.max(0, Math.round(x / width));
-          setCurrentPageIndex(p => (p > nextPage ? p : nextPage));
+          const currentIndex = Math.max(0, Math.round(x / width));
+          if (currentIndex === currentStep) {
+            return;
+          }
+          setCurrentStep(currentIndex);
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
-        initialNumToRender={2}
-        renderItem={({ item }) => (
-          <OnboardingStep stepNumber={item} width={width} />
-        )}
-      />
+      >
+        {data.map(item => (
+          <OnboardingStep key={item} stepNumber={item} width={width} />
+        ))}
+      </ScrollView>
       <View style={styles.fixedContainer}>
         <View style={styles.dotsContainer}>
           <AnimatedDotsCarousel
             length={4}
-            currentIndex={currentPageIndex}
+            currentIndex={currentStep}
             maxIndicators={4}
             activeIndicatorConfig={{
               color: colors.heading,
@@ -148,7 +180,7 @@ export const OnboardingScreen = ({ navigation, route }: Props) => {
         </View>
         <Row gap={2} ph={4}>
           <Col flex={1}>
-            {currentPageIndex > 0 && (
+            {currentStep > 0 && (
               <CtaButton
                 variant="outlined"
                 absolute={false}
