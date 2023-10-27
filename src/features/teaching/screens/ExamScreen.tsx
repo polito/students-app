@@ -56,14 +56,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     }
   }, [navigation, routes, t]);
 
-  const classrooms = useMemo(() => {
-    if (!exam || !exam?.places || exam.places.length === 0) return '-';
-
-    return t('agendaScreen.rooms', {
-      roomNames: exam.places.map(p => p.name).join(', '),
-    });
-  }, [exam, t]);
-
   const examAccessibilityLabel = useMemo(() => {
     if (!exam || !teacherQuery.data) return;
 
@@ -82,13 +74,12 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       }
     }
 
-    const accessibleClassrooms =
-      classrooms !== '-' ? `${t('examScreen.location')}: ${classrooms}` : '';
+    const classrooms = exam?.places?.map(p => p.name).join(', ');
     const teacher = `${t('common.teacher')}: ${teacherQuery.data.firstName} ${
       teacherQuery.data.lastName
     }`;
 
-    return `${exam.courseName}. ${accessibleDateTime}. ${accessibleClassrooms} ${teacher}`;
+    return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
   return (
@@ -135,21 +126,33 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            <ListItem
-              leadingItem={
-                <Icon icon={faLocationDot} size={fontSizes['2xl']} />
-              }
-              title={classrooms}
-              accessibilityLabel={`${t('examScreen.location')}: ${
-                classrooms !== '-' ? classrooms : t('examScreen.noClassroom')
-              }`}
-              subtitle={t('examScreen.location')}
-            />
+            {exam?.places?.map(p => {
+              const placeId = [p.buildingId, p.floorId, p.roomId].join('-');
+              return (
+                <ListItem
+                  key={placeId}
+                  leadingItem={
+                    <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+                  }
+                  title={p.name}
+                  subtitle={t('examScreen.location')}
+                  isAction
+                  onPress={() => {
+                    navigation.navigate('PlacesTab', {
+                      screen: 'Place',
+                      params: {
+                        placeId,
+                      },
+                      initial: false,
+                    });
+                  }}
+                />
+              );
+            })}
             {teacherQuery.data && (
               <PersonListItem
                 person={teacherQuery.data}
                 subtitle={t('common.teacher')}
-                isCrossNavigation={true}
               />
             )}
             {exam?.notes?.length && (
