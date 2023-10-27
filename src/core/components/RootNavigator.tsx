@@ -63,9 +63,6 @@ export const RootNavigator = () => {
     if (onboardingStep && onboardingStep >= 3) return;
     navigation.navigate('TeachingTab', {
       screen: 'OnboardingModal',
-      params: {
-        step: onboardingStep ?? 0,
-      },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
