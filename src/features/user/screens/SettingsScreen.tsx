@@ -42,7 +42,7 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
+import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();

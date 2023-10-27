@@ -34,7 +34,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
-import { CourseListItem } from '../components/CourseListItem';
+import { CourseListItem } from '../../courses/components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { TeachingStackParamList } from '../components/TeachingNavigator';

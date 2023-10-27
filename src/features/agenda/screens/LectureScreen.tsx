@@ -18,13 +18,13 @@ import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { convertMachineDateToFormatDate } from '../../../utils/dates';
-import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
-import { CourseIcon } from '../../teaching/components/CourseIcon';
+import { CourseIcon } from '../../courses/components/CourseIcon';
 import {
   isLiveVC,
   isRecordedVC,
   isVideoLecture,
-} from '../../teaching/utils/lectures';
+} from '../../courses/utils/lectures';
+import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;

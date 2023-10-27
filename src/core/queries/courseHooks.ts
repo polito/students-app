@@ -18,8 +18,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
-import { CourseLectureSection } from '../../features/teaching/types/CourseLectureSections';
+import { CourseRecentFile } from '../../features/courses/components/CourseRecentFileListItem';
+import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';

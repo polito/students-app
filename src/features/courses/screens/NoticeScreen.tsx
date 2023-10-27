@@ -9,7 +9,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { linkUrls, sanitizeHtml } from '../../../utils/html';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Notice'>;
 

@@ -13,7 +13,7 @@ import {
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
 
 const icons = Object.entries(courseIcons);
