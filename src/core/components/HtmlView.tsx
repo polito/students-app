@@ -30,6 +30,13 @@ export const HtmlView = (props: RenderHTMLProps) => {
         p: styles.paragraph,
         b: styles.bold,
       }}
+      ignoredStyles={[
+        'fontFamily',
+        'color',
+        'backgroundColor',
+        'width',
+        'height',
+      ]}
     />
   );
 };
