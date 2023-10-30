@@ -332,14 +332,6 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Guides"
-        component={GuidesScreen}
-        options={{
-          headerTitle: t('guidesScreen.title'),
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
         name="BookingSlot"
         component={BookingSlotScreen}
         options={({ route }) => ({
@@ -359,7 +351,6 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerBackTitleVisible: false,
-          // presentation: 'modal',
           headerTitle: t('bookingSeatScreen.title'),
         }}
       />
