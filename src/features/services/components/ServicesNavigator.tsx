@@ -96,8 +96,8 @@ export type ServiceStackParamList = OfferingStackParamList & {
     slotId: string;
     seatId: number;
   };
-  Guide: { id: string };
   Guides: undefined;
+  Guide: { id: string };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -329,6 +329,14 @@ export const ServicesNavigator = () => {
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Guides"
+        component={GuidesScreen}
+        options={{
+          headerTitle: t('guidesScreen.title'),
+          headerLargeTitle: false,
         }}
       />
       <Stack.Screen
