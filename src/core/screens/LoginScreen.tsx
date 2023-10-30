@@ -26,6 +26,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
+import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
 import { useLogin } from '../queries/authHooks';
 
 export const LoginScreen = () => {
@@ -38,6 +39,7 @@ export const LoginScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
+  const language = useDeviceLanguage();
 
   const handleLogin = () =>
     login({ username, password, preferences: { language } }).catch(e => {
