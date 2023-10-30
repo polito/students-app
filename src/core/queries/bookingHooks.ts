@@ -3,6 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
+import {
+  AGENDA_QUERY_PREFIX,
+  useGetAgendaTypesFilter,
+} from '../../features/agenda/queries/agendaHooks';
 import { pluckData } from '../../utils/queries';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
@@ -146,11 +150,15 @@ export const useCreateBooking = () => {
 
 export const useDeleteBooking = (bookingId: number) => {
   const bookingClient = useBookingClient();
+  const filtersQuery = useGetAgendaTypesFilter();
   const client = useQueryClient();
 
   return useMutation(() => bookingClient.deleteBookingRaw({ bookingId }), {
     onSuccess() {
-      return client.invalidateQueries(BOOKINGS_QUERY_KEY);
+      return Promise.all([
+        client.invalidateQueries(BOOKINGS_QUERY_KEY),
+        client.invalidateQueries([AGENDA_QUERY_PREFIX, filtersQuery.data]),
+      ]);
     },
   });
 };

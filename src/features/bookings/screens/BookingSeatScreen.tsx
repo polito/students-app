@@ -82,10 +82,13 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
 
   const onPressDelete = async () => {
     if (await confirmCancel()) {
-      setFeedback({ text: t('bookingScreen.cancelFeedback') });
+      navigation.goBack();
+      navigation.goBack();
       return deleteBookingMutation
         .mutateAsync()
-        .then(() => navigation.goBack())
+        .then(() => {
+          setFeedback({ text: t('bookingScreen.cancelFeedback') });
+        })
         .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
     }
   };
@@ -106,6 +109,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
           bindToBorders={true}
+          disablePanOnInitialZoom
           maxZoom={2}
           minZoom={1}
         >
