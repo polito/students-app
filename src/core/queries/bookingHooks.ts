@@ -54,8 +54,6 @@ export const useGetBookingSlots = (
         .then(pluckData),
     {
       enabled: true,
-      staleTime: 0,
-      cacheTime: 0,
     },
   );
 };

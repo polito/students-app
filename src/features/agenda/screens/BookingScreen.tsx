@@ -42,6 +42,7 @@ import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useDeleteBooking,
+  useGetBookingSlots,
   useGetBookings,
   useUpdateBooking,
 } from '../../../core/queries/bookingHooks';
@@ -70,18 +71,25 @@ const BookingDetailSeat = ({
 }) => {
   const { colors, spacing } = useTheme();
   const { t } = useTranslation();
-  // const { data } = useGetBookingSlots(
-  //   booking.topic.id,
-  //   DateTime.fromJSDate(booking.startsAt),
-  //   // DateTime.fromJSDate(booking.endsAt),
-  // );
+  const { data } = useGetBookingSlots(
+    booking.topic.id,
+    DateTime.fromJSDate(booking.startsAt).startOf('week'),
+  );
 
   const onPressSeat = () => {
-    const slotId = 242541;
-    if (booking?.seat?.id) {
+    const slot = data?.find(
+      e =>
+        e?.startsAt &&
+        DateTime.fromJSDate(e.startsAt).toISO() ===
+          DateTime.fromJSDate(booking.startsAt).toISO() &&
+        e?.endsAt &&
+        DateTime.fromJSDate(e.endsAt).toISO() ===
+          DateTime.fromJSDate(booking.endsAt).toISO(),
+    );
+    if (booking?.seat?.id && slot?.id) {
       navigation.navigate('BookingSeat', {
         bookingId: booking.id,
-        slotId: String(slotId),
+        slotId: String(slot?.id),
         seatId: booking?.seat?.id,
         topicId: booking.subtopic?.id || booking.topic.id,
       });
