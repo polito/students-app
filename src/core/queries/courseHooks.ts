@@ -18,8 +18,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import { CourseRecentFile } from '../../features/teaching/components/CourseRecentFileListItem';
-import { CourseLectureSection } from '../../features/teaching/types/CourseLectureSections';
+import { CourseRecentFile } from '../../features/courses/components/CourseRecentFileListItem';
+import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
@@ -131,7 +131,7 @@ export const useGetCourse = (courseId: number) => {
         .then(pluckData)
         .then(course => {
           const { teachingPeriod } = course;
-          const period = teachingPeriod.split('-');
+          const period = teachingPeriod?.split('-');
           if (period.length > 1 && period[0] === period[1]) {
             course.teachingPeriod = period[0];
           }

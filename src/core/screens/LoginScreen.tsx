@@ -25,7 +25,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useLogin } from '../queries/authHooks';
 
@@ -39,10 +38,9 @@ export const LoginScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
-  const { language } = usePreferencesContext();
 
   const handleLogin = () =>
-    login({ username, password, preferences: {} }).catch(e => {
+    login({ username, password, preferences: { language } }).catch(e => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
@@ -123,7 +121,7 @@ export const LoginScreen = () => {
             style={styles.link}
             onPress={() => {
               Linking.openURL(
-                'https://idp.polito.it/Chpass/chpassservlet/main.htm',
+                'https://idp.polito.it/Chpass/chpassservlet/main.htm?p_reset=Y',
               );
             }}
           >

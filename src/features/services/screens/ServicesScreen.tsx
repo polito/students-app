@@ -13,39 +13,36 @@ import {
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
 
-type Props = NativeStackScreenProps<ServiceStackParamList, 'Services'>;
-
-export const ServicesScreen = ({ navigation }: Props) => {
+export const ServicesScreen = () => {
   const { t } = useTranslation();
   const {
     favoriteServices: favoriteServiceIds,
     emailGuideRead,
     updatePreference,
   } = usePreferencesContext();
+  const { getUnreadsCount } = usePushNotifications();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
-
   const queryClient = useQueryClient();
-
   const { peopleSearched } = usePreferencesContext();
-
-  const services = useMemo(
-    () => [
+  const unreadTickets = getUnreadsCount(['services', 'tickets']);
+  const services = useMemo(() => {
+    return [
       {
         id: 'tickets',
         name: t('ticketsScreen.title'),
@@ -54,6 +51,9 @@ export const ServicesScreen = ({ navigation }: Props) => {
           isOffline &&
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
+        additionalContent: unreadTickets && (
+          <Badge text={unreadTickets} style={styles.badge} />
+        ),
       },
       {
         id: 'appFeedback',
@@ -67,6 +67,7 @@ export const ServicesScreen = ({ navigation }: Props) => {
             subtopicId: 2001,
           },
         },
+        additionalContent: <Badge text="BETA" style={styles.badge} />,
       },
       {
         id: 'github',
@@ -121,22 +122,16 @@ export const ServicesScreen = ({ navigation }: Props) => {
           queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Bookings' },
       },
-      {
-        id: 'library',
-        name: t('libraryScreen.title'),
-        icon: faBookBookmark,
-        disabled: true,
-      },
-    ],
-    [
-      emailGuideRead,
-      isOffline,
-      peopleSearched?.length,
-      queryClient,
-      styles.betaBadge,
-      t,
-    ],
-  );
+    ];
+  }, [
+    emailGuideRead,
+    isOffline,
+    peopleSearched?.length,
+    queryClient,
+    styles.badge,
+    t,
+    unreadTickets,
+  ]);
 
   const [favoriteServices, otherServices] = useMemo(
     () =>
@@ -215,7 +210,7 @@ const createStyles = ({ spacing }: Theme) =>
     grid: {
       margin: spacing[5],
     },
-    betaBadge: {
+    badge: {
       position: 'absolute',
       top: -spacing[2.5],
       right: -spacing[2],

@@ -8,12 +8,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { QueryClient, onlineManager } from '@tanstack/react-query';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import {
+  QueryClient,
+  QueryClientProvider,
+  onlineManager,
+} from '@tanstack/react-query';
 
 import SuperJSON from 'superjson';
 
 import { createApiConfiguration } from '../../config/api';
+import { isEnvProduction } from '../../utils/env';
 import {
   ApiContext,
   ApiContextProps,
@@ -113,8 +117,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     }
   }, [apiContext, splashContext]);
 
-  const isEnvProduction = process.env.NODE_ENV === 'production';
-
   const queryClient = useMemo(() => {
     const onError = async (error: ResponseError, client: QueryClient) => {
       if (error.response.status === 401) {
@@ -163,7 +165,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ApiContext.Provider value={apiContext}>
-      {splashContext.isAppLoaded && (
+      <QueryClientProvider client={queryClient}>
+        {splashContext.isAppLoaded && children}
+      </QueryClientProvider>
+      {/* {splashContext.isAppLoaded && (
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{
@@ -173,7 +178,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         >
           {children}
         </PersistQueryClientProvider>
-      )}
+      )}*/}
     </ApiContext.Provider>
   );
 };

@@ -1,5 +1,5 @@
 import { Children, PropsWithChildren } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -9,11 +9,15 @@ import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBar
 
 interface Props {
   absolute: boolean;
+  modal?: boolean;
+  style?: ViewProps['style'];
 }
 
 export const CtaButtonContainer = ({
   absolute = true,
   children,
+  modal = false,
+  style,
 }: PropsWithChildren<Props>) => {
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
@@ -34,9 +38,10 @@ export const CtaButtonContainer = ({
           left: Platform.select({ ios: left }),
           right,
           bottom:
-            bottomBarHeight +
+            (modal ? 0 : bottomBarHeight) +
             (isFeedbackVisible ? spacing[10] * Children.count(children) : 0),
         },
+        style,
       ]}
     >
       {children}

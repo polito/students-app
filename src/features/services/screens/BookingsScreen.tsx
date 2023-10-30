@@ -12,7 +12,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
-import { BookingListItem } from '../components/BookingListItem';
+import { BookingListItem } from '../../bookings/components/BookingListItem';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Bookings'>;
@@ -53,7 +53,7 @@ export const BookingsScreen = ({ navigation }: Props) => {
         <CtaButton
           action={() => {
             navigation.goBack();
-            navigation.navigate('NewBookingTopicSelection');
+            navigation.navigate('BookingTopic');
           }}
           title={t('bookingsScreen.newBooking')}
           icon={faPlus}

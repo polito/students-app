@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import <Firebase.h>
 
 #import <React/RCTBundleURLProvider.h>
 
@@ -6,6 +7,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+  NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+
+  // configure FIRApp only if bundle id does not end with dev
+  if (![bundleIdentifier hasSuffix:@"dev"]) {
+    [FIRApp configure];
+  }
 
   self.moduleName = @"students";
   // You can add your custom initial props in the dictionary below.

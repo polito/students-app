@@ -121,6 +121,8 @@ export const CtaButton = ({
             backgroundColor: colors.background,
           },
           variant === 'filled' && {
+            borderColor: color,
+            borderWidth: 1,
             backgroundColor: color,
           },
           disabled && variant === 'filled' && styles.disabledButton,

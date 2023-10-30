@@ -62,31 +62,33 @@ export const useGetSite = (siteId?: string) => {
   }, [siteId, sites?.data]);
 };
 
-export const useGetPlaces = (params: GetPlacesRequest) => {
+export const useGetPlaces = (
+  params: Omit<GetPlacesRequest, 'floorId'> & {
+    floorId: GetPlacesRequest['floorId'] | null;
+  },
+) => {
   const placesClient = usePlacesClient();
-  const key = [PLACES_QUERY_KEY];
-  if (params.siteId != null) {
-    key.push(params.siteId);
-  }
-  if (params.search != null) {
-    key.push(params.search);
-  }
-  if (params.floorId != null) {
-    key.push(params.floorId);
-  }
-  if (params.buildingId != null) {
-    key.push(params.buildingId);
-  }
-  if (params.placeCategoryId != null) {
-    key.push(params.placeCategoryId);
-  }
-  if (params.placeSubCategoryId != null) {
-    key.push(params.placeSubCategoryId.join());
-  }
+  const key = [
+    PLACES_QUERY_KEY,
+    `siteId:${params.siteId}`,
+    `buildingId:${params.buildingId}`,
+    `floorId:${params.floorId}`,
+    `placeCategoryId:${params.placeCategoryId}`,
+    `placeSubCategoryId:${params.placeSubCategoryId?.join()}`,
+  ];
 
-  return useQuery(key, () => placesClient.getPlaces(params), {
-    enabled: params.siteId != null,
-  });
+  return useQuery(
+    key,
+    () =>
+      placesClient.getPlaces({
+        ...params,
+        floorId: params.floorId !== null ? params.floorId : undefined,
+      } as GetPlacesRequest),
+    {
+      enabled: params.siteId != null && params.floorId !== undefined,
+      staleTime: Infinity,
+    },
+  );
 };
 
 export const useGetFreeRooms = (params: Partial<GetFreeRoomsRequest>) => {

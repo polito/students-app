@@ -54,7 +54,37 @@ export const useGetBookingSlots = (
         .then(pluckData),
     {
       enabled: true,
+      staleTime: 0,
+      cacheTime: 0,
     },
+  );
+};
+
+/**
+ * Get booking slots for a given booking topic id and date range
+ * Used to retrieve slot from a given reservation
+ *
+ * @param bookingTopicId
+ * @param fromDate
+ * @param toDate
+ */
+export const useGetBookingDetailSlots = (
+  bookingTopicId: string,
+  fromDate: DateTime,
+  toDate: DateTime,
+) => {
+  const bookingClient = useBookingClient();
+
+  return useQuery(
+    ['booking-detail', bookingTopicId, fromDate.toISO(), toDate.toISO()],
+    () =>
+      bookingClient
+        .getBookingSlots({
+          bookingTopicId,
+          fromDate: fromDate.toJSDate(),
+          toDate: toDate.toJSDate(),
+        })
+        .then(pluckData),
   );
 };
 

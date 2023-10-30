@@ -10,7 +10,11 @@ import {
 } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
-import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChair,
+  faCheckCircle,
+  faLocation,
+} from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
@@ -43,14 +47,63 @@ import {
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { BookingDateTime } from '../../bookings/components/BookingDateTime';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
-type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
+type Props = NativeStackScreenProps<
+  AgendaStackParamList | ServiceStackParamList,
+  'Booking'
+>;
 
 const bookingLocationHasValidCoordinates = (
   location: Booking['locationCheck'],
 ) => {
   return !!location?.latitude && !!location?.longitude && !!location.radiusInKm;
+};
+
+const BookingDetailSeat = ({
+  booking,
+  navigation,
+}: {
+  navigation: Props['navigation'];
+  booking: Booking;
+}) => {
+  const { colors, spacing } = useTheme();
+  const { t } = useTranslation();
+  // const { data } = useGetBookingSlots(
+  //   booking.topic.id,
+  //   DateTime.fromJSDate(booking.startsAt),
+  //   // DateTime.fromJSDate(booking.endsAt),
+  // );
+
+  const onPressSeat = () => {
+    const slotId = 242541;
+    if (booking?.seat?.id) {
+      navigation.navigate('BookingSeat', {
+        bookingId: booking.id,
+        slotId: String(slotId),
+        seatId: booking?.seat?.id,
+        topicId: booking.subtopic?.id || booking.topic.id,
+      });
+    }
+  };
+
+  return booking?.seat?.id ? (
+    <ListItem
+      leadingItem={
+        <Icon
+          icon={faChair}
+          size={20}
+          color={colors.secondaryText}
+          style={{ marginRight: spacing[2] }}
+        />
+      }
+      title={`${booking.seat.row}${booking.seat.column}`}
+      subtitle={t('common.seat')}
+      onPress={onPressSeat}
+      isAction
+    />
+  ) : null;
 };
 
 export const BookingScreen = ({ navigation, route }: Props) => {
@@ -72,6 +125,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
+  console.debug(booking);
 
   const hasCheckIn = useMemo(
     () =>
@@ -122,6 +176,18 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     }
   };
 
+  const onPressSeat = (seat: Booking['seat']) => {
+    console.debug(booking);
+    // navigation.navigate('BookingSeat', {
+    //   slotId: String(boo.id),
+    //   startHour: event.start.toFormat('HH:mm'),
+    //   endHour: event.end.toFormat('HH:mm'),
+    //   day: event.start.toFormat('d MMMM'),
+    //   hasSeats: event.hasSeats,
+    //   topicId,
+    // });
+  };
+
   const onPressDelete = async () => {
     if (await confirmCancel()) {
       setFeedback({ text: t('bookingScreen.cancelFeedback') });
@@ -148,8 +214,8 @@ export const BookingScreen = ({ navigation, route }: Props) => {
             )}
             <BookingDateTime accessible={true} booking={booking} />
           </View>
-          {booking?.location?.name && (
-            <OverviewList>
+          <OverviewList>
+            {booking?.location?.name && (
               <ListItem
                 leadingItem={
                   <Icon
@@ -165,8 +231,11 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                 )}
                 onPress={() => onPressLocation(booking?.location)}
               />
-            </OverviewList>
-          )}
+            )}
+            {!!booking && !!booking?.seat && (
+              <BookingDetailSeat navigation={navigation} booking={booking} />
+            )}
+          </OverviewList>
           <Section style={{ marginTop: spacing[4] }} mb={0} accessible>
             <SectionHeader
               title={t('bookingScreen.barCodeTitle')}

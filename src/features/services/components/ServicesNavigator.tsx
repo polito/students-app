@@ -11,6 +11,10 @@ import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
+import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
+import { BookingSeatSelectionScreen } from '../../bookings/screens/BookingSeatSelectionScreen';
+import { BookingSlotScreen } from '../../bookings/screens/BookingSlotScreen';
+import { BookingTopicScreen } from '../../bookings/screens/BookingTopicScreen';
 import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
@@ -18,24 +22,21 @@ import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopT
 import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../offering/screens/StaffScreen';
-import { PersonScreen } from '../../teaching/screens/PersonScreen';
+import { ContactsScreen } from '../../people/screens/ContactsScreen';
+import { PersonScreen } from '../../people/screens/PersonScreen';
+import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
+import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
+import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
+import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
+import { TicketScreen } from '../../tickets/screens/TicketScreen';
+import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { BookingsScreen } from '../screens/BookingsScreen';
-import { ContactsScreen } from '../screens/ContactsScreen';
-import { CreateTicketScreen } from '../screens/CreateTicketScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
-import { NewBookingSeatSelectionScreen } from '../screens/NewBookingSeatSelectionScreen';
-import { NewBookingSlotSelectionScreen } from '../screens/NewBookingSlotSelectionScreen';
-import { NewBookingTopicSelectionScreen } from '../screens/NewBookingTopicSelectionScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
-import { TicketFaqScreen } from '../screens/TicketFaqScreen';
-import { TicketFaqsScreen } from '../screens/TicketFaqsScreen';
-import { TicketListScreen } from '../screens/TicketListScreen';
-import { TicketScreen } from '../screens/TicketScreen';
-import { TicketsScreen } from '../screens/TicketsScreen';
 
 export type OfferingStackParamList = {
   Offering: undefined;
@@ -79,14 +80,21 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Person: { id: number; isCrossNavigation?: boolean };
   Bookings: undefined;
   Booking: { id: number };
-  NewBookingTopicSelection: undefined;
-  NewBookingSlotSelection: { topicId: string; topicName: string };
-  NewBookingSeatSelection: {
+  BookingTopic: undefined;
+  BookingSlot: { topicId: string; topicName: string };
+  BookingSeatSelection: {
     slotId: string;
     topicId: string;
     startHour: string;
     endHour: string;
     day: string;
+    hasSeats: boolean | undefined;
+  };
+  BookingSeat: {
+    bookingId: number;
+    topicId: string;
+    slotId: string;
+    seatId: number;
   };
   Guide: { id: string };
   Guides: undefined;
@@ -97,7 +105,7 @@ const Stack = createNativeStackNavigator<ServiceStackParamList>();
 export const ServicesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors, palettes } = theme;
+  const { colors } = theme;
 
   return (
     <Stack.Navigator
@@ -141,7 +149,7 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
-          headerBackTitle: t('ticketScreen.headerBackTitle'),
+          headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
           headerLargeStyle: {
             backgroundColor: 'transparent',
           },
@@ -220,7 +228,6 @@ export const ServicesNavigator = () => {
         name="Offering"
         component={OfferingTopTabsNavigator}
         options={{
-          headerLeft: () => <HeaderLogo />,
           headerTitle: t('offeringScreen.title'),
           headerLargeTitle: false,
           headerTransparent: false,
@@ -316,8 +323,8 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="NewBookingTopicSelection"
-        component={NewBookingTopicSelectionScreen}
+        name="BookingTopic"
+        component={BookingTopicScreen}
         options={{
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
@@ -325,8 +332,8 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="NewBookingSlotSelection"
-        component={NewBookingSlotSelectionScreen}
+        name="BookingSlot"
+        component={BookingSlotScreen}
         options={({ route }) => ({
           headerTitle: route.params.topicName,
           headerLargeTitle: false,
@@ -339,13 +346,30 @@ export const ServicesNavigator = () => {
         })}
       />
       <Stack.Screen
-        name="NewBookingSeatSelection"
-        component={NewBookingSeatSelectionScreen}
+        name="BookingSeatSelection"
+        component={BookingSeatSelectionScreen}
         options={{
           headerLargeTitle: false,
           headerBackTitleVisible: false,
-          presentation: 'modal',
+          // presentation: 'modal',
           headerTitle: t('bookingSeatScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="BookingSeat"
+        component={BookingSeatScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          headerTitle: t('common.seat'),
+        }}
+      />
+      <Stack.Screen
+        name="Guides"
+        component={GuidesScreen}
+        options={{
+          headerTitle: t('guidesScreen.title'),
+          headerLargeTitle: false,
         }}
       />
       <Stack.Screen
@@ -355,14 +379,6 @@ export const ServicesNavigator = () => {
           headerTitle: t('guideScreen.title'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Guides"
-        component={GuidesScreen}
-        options={{
-          headerTitle: t('guidesScreen.title'),
-          headerLargeTitle: false,
         }}
       />
     </Stack.Navigator>

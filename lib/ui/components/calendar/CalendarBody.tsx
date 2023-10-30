@@ -174,7 +174,9 @@ export const CalendarBody = <T extends ICalendarEventBase>({
             ? { x: 0, y: scrollOffsetMinutes }
             : { x: 0, y: 0 }
         }
-        contentContainerStyle={{ paddingBottom: bottomBarHeight + cellHeight }}
+        contentContainerStyle={{
+          paddingBottom: bottomBarHeight + cellHeight,
+        }}
       >
         <SafeAreaView
           style={{

@@ -3,6 +3,8 @@ import { createContext, useContext } from 'react';
 import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
+import { UnreadNotifications } from '../types/notifications';
+
 export const editablePreferenceKeys = [
   'lastInstalledVersion',
   'username',
@@ -13,6 +15,7 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'unreadNotifications',
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
@@ -26,6 +29,7 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'unreadNotifications',
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
@@ -52,6 +56,17 @@ export interface PreferencesContextBase {
   onboardingStep?: number;
   emailGuideRead?: boolean;
   placesSearched: PlaceOverview[];
+  /**
+   * A map whose keys represent a path to an object or area where the update
+   * occurred and leaf values are the number of unread updates
+   *
+   * @example
+   * {
+   *   "teaching": { "courses": { "12345": { "notices": { "12345": 1 } } } },
+   *   "services": { "tickets": { "12345": 2 } },
+   * }
+   */
+  unreadNotifications: UnreadNotifications;
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {

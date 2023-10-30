@@ -25,17 +25,23 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useInitFirebaseMessaging } from '../hooks/messaging';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
+import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
-const TabNavigator = createBottomTabNavigator();
+const TabNavigator = createBottomTabNavigator<RootParamList>();
 
 export const RootNavigator = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
+  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+  const { getUnreadsCount } = usePushNotifications();
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -47,12 +53,32 @@ export const RootNavigator = () => {
     }
   }, [student]);
 
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  useInitFirebaseMessaging();
+
   const { data: messages } = useGetModalMessages();
 
+  const { onboardingStep } = usePreferencesContext();
+
   useEffect(() => {
+    if (onboardingStep && onboardingStep >= 3) return;
+    navigation.navigate('TeachingTab', {
+      screen: 'OnboardingModal',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!onboardingStep || onboardingStep < 4) {
+      return;
+    }
+
     if (!messages || messages.length === 0) return;
-    navigation.navigate('MessagesModal');
+    navigation.navigate('TeachingTab', {
+      screen: 'Home',
+      params: {
+        screen: 'MessagesModal',
+      },
+    });
   }, [messages, navigation]);
 
   const tabBarIconSize = 20;
@@ -88,6 +114,7 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
           ),
+          tabBarBadge: getUnreadsCount(['teaching']),
         }}
       />
       <TabNavigator.Screen
@@ -119,6 +146,7 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
           ),
+          tabBarBadge: getUnreadsCount(['services']),
         }}
       />
       <TabNavigator.Screen

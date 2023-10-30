@@ -90,7 +90,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const [search, setSearch] = useState('');
-  const [floorId, setFloorId] = useState<string>();
+  const [floorId, setFloorId] = useState<string | null>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const formatAgendaItem = useFormatAgendaItem();
   const bottomSheetPosition = useSharedValue(0);
@@ -103,13 +103,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     debounce(
       (newSearch: string) => setDebouncedSearch(newSearch.trim().toLowerCase()),
       200,
+      { leading: true },
     ),
     [],
   );
 
   useEffect(() => {
     updateDebouncedSearch(search);
-  }, [search, updateDebouncedSearch]);
+  }, [search]);
 
   const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
     search: debouncedSearch,
@@ -155,7 +156,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       if (!floorId && campus.floors?.length) {
         setFloorId(
           campus.floors.find(f => f.id === 'XPTE')?.id ??
-            campus.floors.find(f => f.level === 0)?.id,
+            campus.floors.find(f => f.level === 0)?.id ??
+            null,
         );
       }
       centerToCurrentCampus();
@@ -227,20 +229,18 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       ),
     });
   }, [
-    campus,
-    displayFloorId,
-    floorId,
-    headerHeight,
-    navigation,
-    categoryId,
-    route,
-    safeAreaInsets.top,
-    debouncedSearch,
-    spacing,
-    tabsHeight,
-    categoryFilterActive,
     bounds,
+    campus,
+    categoryFilterActive,
+    categoryId,
+    debouncedSearch,
+    displayFloorId,
+    headerHeight,
     places,
+    safeAreaInsets.top,
+    spacing,
+    subCategoryId,
+    tabsHeight,
   ]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
@@ -266,7 +266,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       return places?.filter(p => isPlace(p) && p.room.name != null);
     }
     return places;
-  }, [categoryId, places, search, subCategoryId]);
+  }, [categoryId, search, places, subCategoryId]);
 
   const floorSelectorButton = (
     <TranslucentCard>
@@ -315,7 +315,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:AULA',
                 params: { subCategoryId: 'AULA' },
               })
             }
@@ -327,7 +326,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:S_STUD',
                 params: { subCategoryId: 'S_STUD' },
               })
             }
@@ -339,7 +337,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
-                key: 'Places:BIBLIO',
                 params: { subCategoryId: 'BIBLIO' },
               })
             }

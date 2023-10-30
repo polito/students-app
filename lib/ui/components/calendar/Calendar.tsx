@@ -57,6 +57,8 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   weekDayHeaderHighlightColor?: string;
   bodyContainerStyle?: ViewStyle;
 
+  cellMaxHeight?: number;
+
   // Custom renderer
   renderEvent?: EventRenderer<T>;
   renderHeader?: HeaderRenderer;
@@ -91,6 +93,7 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
 export const Calendar = <T extends ICalendarEventBase>({
   events,
   height,
+  cellMaxHeight = 50,
   ampm = false,
   date,
   eventCellStyle,
@@ -166,8 +169,8 @@ export const Calendar = <T extends ICalendarEventBase>({
   );
 
   const cellHeight = useMemo(() => {
-    return Math.max(50, height / 14);
-  }, [height]);
+    return Math.max(cellMaxHeight, height / 14);
+  }, [height, cellMaxHeight]);
 
   const onSwipeHorizontal = useCallback(
     (direction: HorizontalDirection) => {

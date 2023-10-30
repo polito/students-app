@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { AgendaScreen } from '../screens/AgendaScreen';
@@ -23,6 +24,12 @@ export type AgendaStackParamList = {
   Exam: { id: number };
   Deadline: { item: DeadlineItem };
   Booking: { id: number };
+  BookingSeat: {
+    bookingId: number;
+    topicId: string;
+    slotId: string;
+    seatId: number;
+  };
   Person: { id: number };
   MessagesModal: undefined;
 };
@@ -100,6 +107,15 @@ export const AgendaNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.booking'),
+        }}
+      />
+      <Stack.Screen
+        name="BookingSeat"
+        component={BookingSeatScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          headerTitle: t('common.seat'),
         }}
       />
       <Stack.Screen

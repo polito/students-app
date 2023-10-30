@@ -98,8 +98,8 @@ const createStyles = ({ fontSizes }: Theme) =>
       fontSize: fontSizes.md,
     },
     longProse: {
-      fontSize: fontSizes.sm,
-      lineHeight: fontSizes.sm * 1.5,
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.5,
     },
     secondaryText: {},
     link: {},

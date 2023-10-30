@@ -5,13 +5,13 @@ import semver from 'semver/preload';
 import { version as currentVersion } from '../../../package.json';
 import { PreferencesContextProps } from '../contexts/PreferencesContext';
 import { Migration } from '../types/migrations';
-import { storeCoursePreferencesByShortcode } from './1.4.1/storeCoursePreferencesByShortcode';
+import { storeCoursePreferencesByShortcode } from './1.5.0/storeCoursePreferencesByShortcode';
 import { invalidateCache } from './common';
 
 export class MigrationService {
   private static migrations: Migration[] = [
     {
-      runBeforeVersion: '1.4.1',
+      runBeforeVersion: '1.5.0',
       run: [storeCoursePreferencesByShortcode, invalidateCache],
     },
   ];
