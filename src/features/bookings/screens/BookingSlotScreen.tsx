@@ -2,7 +2,7 @@ import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { faChair, faRedo } from '@fortawesome/free-solid-svg-icons';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { Icon } from '@lib/ui/components/Icon';
@@ -13,6 +13,7 @@ import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { BookingSlot } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -197,7 +198,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                   accessibilityRole="button"
                   accessibilityLabel={t(bookingStatus)}
                 >
-                  {!isMini && <Icon icon={faChair} color={color} />}
+                  {!isMini && <Icon icon={faSeat} color={color} />}
                   <Text
                     style={[
                       styles.placesText,

@@ -10,11 +10,7 @@ import {
 } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
-import {
-  faChair,
-  faCheckCircle,
-  faLocation,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
@@ -28,6 +24,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { isToday } from '@lib/ui/utils/calendar';
 import { Booking } from '@polito/api-client';
@@ -178,7 +175,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                 accessibilityRole="button"
                 leadingItem={
                   <Icon
-                    icon={faChair}
+                    icon={faSeat}
                     size={20}
                     color={colors.secondaryText}
                     style={{ marginRight: spacing[2] }}

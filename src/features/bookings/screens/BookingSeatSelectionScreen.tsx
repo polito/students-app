@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
-import { faChair } from '@fortawesome/free-solid-svg-icons';
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
@@ -162,7 +162,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
       >
         <Row gap={2} style={styles.recapContainer}>
           <BookingField
-            icon={faChair}
+            icon={faSeat}
             label={t('common.seat')}
             value={seat?.label}
             emptyText={t('bookingSeatScreen.noSeatSelected')}

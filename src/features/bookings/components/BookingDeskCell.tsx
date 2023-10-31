@@ -15,8 +15,8 @@ export const BookingDeskCell = ({ seatSize }: BookingDeskCellProps) => {
       accessible={true}
       accessibilityLabel={t('common.desk')}
       style={{
-        width: seatSize * 2 + spacing[2],
-        height: seatSize,
+        width: seatSize * 2 + spacing[4],
+        height: seatSize + spacing[1],
         backgroundColor: palettes.orange['800'],
         borderColor: palettes.orange['900'],
         borderWidth: StyleSheet.hairlineWidth,
