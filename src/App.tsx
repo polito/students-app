@@ -1,8 +1,5 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import Mapbox from '@rnmapbox/maps';
 import * as Sentry from '@sentry/react-native';
 
@@ -13,7 +10,6 @@ import { FeedbackProvider } from './core/providers/FeedbackProvider';
 import { PreferencesProvider } from './core/providers/PreferencesProvider';
 import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
-import { GlobalStyles } from './core/styles/GlobalStyles';
 import { initSentry } from './utils/sentry';
 import { extendSuperJSON } from './utils/superjson';
 
@@ -25,25 +21,21 @@ Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
 export const App = () => {
   return (
     <Sentry.TouchEventBoundary>
-      <GestureHandlerRootView style={GlobalStyles.grow}>
-        <SafeAreaProvider>
-          <SplashProvider>
-            <PreferencesProvider>
-              <UiProvider>
-                <FeedbackProvider>
-                  <ApiProvider>
-                    <DownloadsProvider>
-                      <BottomSheetModalProvider>
-                        <AppContent />
-                      </BottomSheetModalProvider>
-                    </DownloadsProvider>
-                  </ApiProvider>
-                </FeedbackProvider>
-              </UiProvider>
-            </PreferencesProvider>
-          </SplashProvider>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+      <SafeAreaProvider>
+        <SplashProvider>
+          <PreferencesProvider>
+            <UiProvider>
+              <FeedbackProvider>
+                <ApiProvider>
+                  <DownloadsProvider>
+                    <AppContent />
+                  </DownloadsProvider>
+                </ApiProvider>
+              </FeedbackProvider>
+            </UiProvider>
+          </PreferencesProvider>
+        </SplashProvider>
+      </SafeAreaProvider>
     </Sentry.TouchEventBoundary>
   );
 };
