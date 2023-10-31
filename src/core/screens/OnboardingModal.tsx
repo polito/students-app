@@ -16,13 +16,12 @@ import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
-import { tabBarStyle } from '../../utils/tab-bar';
 import { OnboardingStep } from '../components/OnboardingStep';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useHideTabs } from '../hooks/useHideTabs';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
 
@@ -48,18 +47,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
     [currentStep, data],
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.getParent()!.setOptions({
-        tabBarStyle: { display: 'none' },
-      });
-      return () => {
-        navigation.getParent()!.setOptions({
-          tabBarStyle: tabBarStyle,
-        });
-      };
-    }, [navigation]),
-  );
+  useHideTabs();
 
   // Update the onboarding step in preferences
   useEffect(() => {
