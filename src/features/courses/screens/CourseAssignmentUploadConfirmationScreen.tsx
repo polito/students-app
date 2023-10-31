@@ -141,6 +141,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
           autoCorrect={false}
           value={description}
           onChangeText={value => setDescription(value)}
+          autoCapitalize="sentences"
         />
       </View>
 
