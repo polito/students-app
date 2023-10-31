@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
@@ -33,6 +34,9 @@ export const AgendaNavigator = () => {
   const theme = useTheme();
   const { colors } = theme;
   const { t } = useTranslation();
+  const {
+    agendaScreen: { layout },
+  } = usePreferencesContext();
 
   return (
     <Stack.Navigator
@@ -44,6 +48,7 @@ export const AgendaNavigator = () => {
         },
         ...useTitlesStyles(theme),
       }}
+      initialRouteName={layout === 'daily' ? 'Agenda' : 'AgendaWeek'}
     >
       <Stack.Screen
         name="Agenda"

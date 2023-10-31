@@ -3,6 +3,7 @@ import { createContext, useContext } from 'react';
 import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
+import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesFilterState';
 import { UnreadNotifications } from '../types/notifications';
 
 export const editablePreferenceKeys = [
@@ -19,6 +20,7 @@ export const editablePreferenceKeys = [
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
+  'agendaScreen',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
@@ -33,6 +35,7 @@ export const objectPreferenceKeys = [
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
+  'agendaScreen',
 ];
 
 export type CoursesPreferences = {
@@ -67,6 +70,10 @@ export interface PreferencesContextBase {
    * }
    */
   unreadNotifications: UnreadNotifications;
+  agendaScreen: {
+    layout: 'weekly' | 'daily';
+    filters: AgendaTypesFilterState;
+  };
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {

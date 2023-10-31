@@ -2,10 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import {
-  faCalendarDay,
-  faEllipsisVertical,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDay, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -14,7 +11,6 @@ import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -35,7 +31,11 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
 
 export const AgendaWeekScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { courses: coursesPreferences } = usePreferencesContext();
+  const {
+    courses: coursesPreferences,
+    updatePreference,
+    agendaScreen,
+  } = usePreferencesContext();
 
   const { language } = usePreferencesContext();
 
@@ -94,28 +94,13 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
     undefined,
   );
 
-  const screenOptions = [
-    {
-      id: 'refresh',
-      title: t('agendaScreen.refresh'),
-    },
-    {
-      id: 'daily',
-      title: t('agendaScreen.dailyLayout'),
-    },
-  ];
-
   useLayoutEffect(() => {
-    const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      // eslint-disable-next-line default-case
-      switch (event) {
-        case 'daily':
-          navigation.navigate('Agenda');
-          break;
-        case 'refresh':
-          refetch();
-          break;
-      }
+    const switchToDaily = () => {
+      updatePreference('agendaScreen', {
+        ...agendaScreen,
+        layout: 'daily',
+      });
+      navigation.replace('Agenda');
     };
 
     navigation.setOptions({
@@ -127,28 +112,20 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
             size={fontSizes.lg}
             adjustSpacing="left"
             accessibilityLabel={t('agendaScreen.backToToday')}
-            onPress={() => {
-              if (data) {
-                const updatedWeek = DateTime.now().startOf('day');
-
-                setCurrentWeekStart(updatedWeek);
-                setCurrentPageNumber(data.pageParams.indexOf(undefined));
-              }
-            }}
+            onPress={switchToDaily}
           />
-          <MenuView actions={screenOptions} onPressAction={onPressOption}>
-            <IconButton
-              icon={faEllipsisVertical}
-              color={palettes.primary[400]}
-              size={fontSizes.lg}
-              adjustSpacing="right"
-              accessibilityLabel={t('common.options')}
-            />
-          </MenuView>
+          <IconButton
+            icon={faRefresh}
+            color={palettes.primary[400]}
+            size={fontSizes.lg}
+            adjustSpacing="right"
+            accessibilityLabel={t('agendaScreen.refresh')}
+            onPress={() => refetch()}
+          />
         </>
       ),
     });
-  }, [palettes.primary, fontSizes.lg, navigation, screenOptions, t]);
+  }, [palettes.primary, fontSizes.lg, navigation, t, agendaScreen]);
 
   const prevMissingCallback = useCallback(
     () => data?.pages[currentPageNumber - 1] === undefined,

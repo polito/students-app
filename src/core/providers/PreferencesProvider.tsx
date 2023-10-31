@@ -25,6 +25,15 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       peopleSearched: [],
       unreadNotifications: {},
       placesSearched: [],
+      agendaScreen: {
+        layout: 'daily',
+        filters: {
+          booking: false,
+          deadline: false,
+          exam: false,
+          lecture: false,
+        },
+      },
     });
 
   const preferencesInitialized = useRef<boolean>(false);
