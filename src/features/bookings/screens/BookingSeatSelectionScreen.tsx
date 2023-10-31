@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
@@ -15,6 +15,8 @@ import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { isEmpty } from 'lodash';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
@@ -50,10 +52,15 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const currentZoom = useRef(minZoom);
 
   useEffect(() => {
-    if (bookingSeatsQuery.data && viewHeight) {
-      const numberOfRows = bookingSeatsQuery.data.rows.length + 1;
+    if (
+      bookingSeatsQuery.data &&
+      !isEmpty(bookingSeatsQuery.data?.rows) &&
+      viewHeight
+    ) {
+      const numberOfRows = bookingSeatsQuery.data?.rows?.length + 1;
+      const verticalPadding = spacing[2] * 2 * (numberOfRows - 1);
       const minSeatSize = Math.round(
-        (viewHeight - spacing[2] * 2 * numberOfRows) / numberOfRows,
+        (viewHeight - verticalPadding) / numberOfRows,
       );
       setSeatSize(minSeatSize);
     }
@@ -80,7 +87,10 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
   return (
     <View
       style={StyleSheet.compose(styles.screenWrapper, {
-        marginTop: headerHeight,
+        marginTop: Platform.select({
+          ios: headerHeight,
+          android: 0,
+        }),
       })}
     >
       <View
@@ -95,6 +105,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
           bindToBorders={true}
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
+          disablePanOnInitialZoom={true}
           onTransform={zoomableViewEventObject => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
@@ -106,24 +117,30 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
           }}
         >
           <Col
-            gap={2}
             align="flex-start"
             justify="flex-start"
             style={StyleSheet.compose(styles.rowsContainer, {
               height: viewHeight,
+              gap: spacing[2],
             })}
           >
-            <Row
-              align="center"
-              justify="center"
-              key="desk"
-              gap={2}
-              style={{ width: SCREEN_WIDTH }}
-            >
-              <BookingDeskCell seatSize={seatSize} />
-            </Row>
+            {!isEmpty(bookingSeatsQuery.data?.rows) && (
+              <Row
+                align="center"
+                justify="center"
+                key="desk"
+                gap={2}
+                style={{ width: SCREEN_WIDTH }}
+              >
+                <BookingDeskCell seatSize={seatSize} />
+              </Row>
+            )}
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
-              <Row align="center" key={`row-${index}`} gap={2}>
+              <Row
+                align="center"
+                key={`row-${index}`}
+                style={{ gap: spacing[2] }}
+              >
                 {row?.seats?.map(seatCell => (
                   <BookingSeatCell
                     seat={seatCell}

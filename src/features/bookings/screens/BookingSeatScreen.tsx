@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
@@ -18,6 +18,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { isEmpty } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
@@ -43,7 +44,7 @@ type Props = NativeStackScreenProps<
 export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { topicId, slotId, seatId, bookingId } = route.params;
-  const { spacing, palettes, shapes } = useTheme();
+  const { spacing } = useTheme();
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
   const [viewHeight, setViewHeight] = useState<number | undefined>();
@@ -70,7 +71,11 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
     DateTime.fromJSDate(booking?.endsAt).toFormat('d MMMM');
 
   useEffect(() => {
-    if (viewHeight && bookingSeatsQuery.data) {
+    if (
+      bookingSeatsQuery.data &&
+      !isEmpty(bookingSeatsQuery.data?.rows) &&
+      viewHeight
+    ) {
       const numberOfRows = bookingSeatsQuery.data.rows.length + 1;
       const minSeatSize = Math.round(
         (viewHeight - spacing[2] * 2 * numberOfRows) / numberOfRows,
@@ -97,7 +102,10 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
   return (
     <View
       style={StyleSheet.compose(styles.screenWrapper, {
-        marginTop: headerHeight,
+        marginTop: Platform.select({
+          ios: headerHeight,
+          android: 0,
+        }),
       })}
     >
       <View
@@ -122,15 +130,17 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
               height: viewHeight,
             })}
           >
-            <Row
-              align="center"
-              justify="center"
-              key="desk"
-              gap={2}
-              style={{ width: SCREEN_WIDTH }}
-            >
-              <BookingDeskCell seatSize={seatSize} />
-            </Row>
+            {!isEmpty(bookingSeatsQuery.data?.rows) && (
+              <Row
+                align="center"
+                justify="center"
+                key="desk"
+                gap={2}
+                style={{ width: SCREEN_WIDTH }}
+              >
+                <BookingDeskCell seatSize={seatSize} />
+              </Row>
+            )}
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
               <Row align="center" key={`row-${index}`} gap={2}>
                 {row?.seats?.map(seatCell => (
