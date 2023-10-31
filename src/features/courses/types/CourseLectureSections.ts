@@ -6,6 +6,7 @@ export type CourseLecture =
   | VideoLecture;
 
 interface BaseLectureTypeSection {
+  courseId: number;
   title: string;
   type: 'VirtualClassroom' | 'VideoLecture';
   data: CourseLecture[];
