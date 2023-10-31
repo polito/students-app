@@ -19,8 +19,11 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCreateBooking } from '../../../core/queries/bookingHooks';
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type BookingSeatsCtaProps = PropsWithChildren<{
   seatId?: string;
@@ -46,7 +49,8 @@ export const BookingSeatsCta = ({
   const createBookingMutation = useCreateBooking();
   const [informationAcknowledgment, setInformationAcknowledgment] =
     useState(false);
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ServiceStackParamList>>();
   const ctaEnabled = useMemo(() => {
     if (hasSeats) {
       return !!seatId && informationAcknowledgment;
@@ -104,10 +108,15 @@ export const BookingSeatsCta = ({
         variant="filled"
         absolute={false}
         action={() =>
-          createBookingMutation.mutate({
-            seatId: seatId ? Number(seatId) : undefined,
-            slotId: Number(slotId),
-          })
+          createBookingMutation
+            .mutateAsync({
+              seatId: seatId ? Number(seatId) : undefined,
+              slotId: Number(slotId),
+            })
+            .then(() => {
+              navigation.navigate('Services');
+              navigation.navigate('Bookings');
+            })
         }
         disabled={!ctaEnabled}
         loading={createBookingMutation.isLoading}
