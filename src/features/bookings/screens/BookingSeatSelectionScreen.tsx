@@ -28,8 +28,9 @@ type Props = NativeStackScreenProps<
   'BookingSeatSelection'
 >;
 
-const minBookableCellSize = 30;
+const minBookableCellSize = 25;
 const minZoom = 1;
+const maxZoom = 3;
 
 export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const { slotId, topicId, hasSeats, startHour, endHour, day } = route.params;
@@ -68,13 +69,18 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
         onLayout={e => setViewHeight(Math.round(e.nativeEvent.layout.height))}
       >
         <ReactNativeZoomableView
-          maxZoom={2}
+          maxZoom={maxZoom}
           minZoom={minZoom}
           bindToBorders={true}
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
-          disablePanOnInitialZoom
           onTransform={zoomableViewEventObject => {
+            currentZoom.current = zoomableViewEventObject.zoomLevel;
+          }}
+          onDoubleTapAfter={(_, zoomableViewEventObject) => {
+            currentZoom.current = zoomableViewEventObject.zoomLevel;
+          }}
+          onZoomEnd={(_, _g, zoomableViewEventObject) => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
         >
@@ -97,6 +103,11 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
                     disabled={seatCell.status !== 'available'}
                     onPress={() => {
                       const currentSeatSize = seatSize * currentZoom.current;
+                      console.debug(
+                        'currentSeatSize',
+                        currentSeatSize,
+                        currentZoom.current,
+                      );
                       if (currentSeatSize < minBookableCellSize) {
                         setFeedback({
                           text: t(
@@ -124,7 +135,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
         hasSeats={hasSeats}
         style={[styles.ctaButtonContainer, { bottom: bottomTabBarHeight }]}
       >
-        <Row gap={4} style={styles.recapContainer}>
+        <Row gap={2} style={styles.recapContainer}>
           <BookingField
             icon={faChair}
             label={t('common.seat')}

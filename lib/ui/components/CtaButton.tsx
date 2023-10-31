@@ -213,6 +213,7 @@ const createStyles = ({
     },
     disabledButton: {
       backgroundColor: colors.secondaryText,
+      borderColor: colors.secondaryText,
     },
     stack: {
       ...StyleSheet.absoluteFillObject,

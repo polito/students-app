@@ -140,7 +140,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
         absolute={false}
         style={[styles.ctaButtonContainer, { bottom: bottomTabBarHeight }]}
       >
-        <Row gap={4} style={styles.recapContainer}>
+        <Row gap={2} style={styles.recapContainer}>
           <BookingField
             icon={faChair}
             label={t('common.seat')}
