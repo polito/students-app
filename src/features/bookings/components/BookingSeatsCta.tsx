@@ -5,7 +5,6 @@ import {
   Pressable,
   StyleProp,
   StyleSheet,
-  View,
   ViewStyle,
 } from 'react-native';
 
@@ -65,16 +64,28 @@ export const BookingSeatsCta = ({
       style={StyleSheet.compose(styles.ctaButtonContainer, style)}
     >
       {children}
-      <Pressable
-        style={styles.checkboxContainer}
-        accessible
-        onPress={() => setInformationAcknowledgment(!informationAcknowledgment)}
-      >
-        <View style={styles.checkbox}>
+      <Row style={styles.checkboxContainer} align="center">
+        <Pressable
+          accessible
+          accessibilityRole="checkbox"
+          accessibilityLabel={`${t(
+            'bookingSeatScreen.informationAcknowledgment',
+          )} ${t('bookingSeatScreen.informationAcknowledgmentLink')}`}
+          style={styles.checkbox}
+          hitSlop={{
+            top: 10,
+            bottom: 10,
+            left: 10,
+            right: 10,
+          }}
+          onPress={() =>
+            setInformationAcknowledgment(!informationAcknowledgment)
+          }
+        >
           {informationAcknowledgment && (
             <Icon icon={faCheck} size={14} color={palettes.primary['500']} />
           )}
-        </View>
+        </Pressable>
         <Text style={styles.acknowledgmentTextContainer}>
           <Text style={styles.acknowledgmentText}>
             {t('bookingSeatScreen.informationAcknowledgment')}
@@ -102,7 +113,7 @@ export const BookingSeatsCta = ({
             style={styles.icon}
           />
         </Row>
-      </Pressable>
+      </Row>
       <CtaButton
         title={t('bookingSeatScreen.confirm')}
         variant="filled"
@@ -135,9 +146,7 @@ const createStyles = ({
 }: Theme) =>
   StyleSheet.create({
     checkboxContainer: {
-      marginHorizontal: spacing[4],
-      display: 'flex',
-      flexDirection: 'row',
+      paddingHorizontal: spacing[4],
     },
     checkbox: {
       height: 20,

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Pressable, PressableProps, StyleSheet } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -17,12 +18,15 @@ export const BookingSeatCell = ({
   isSelected,
   ...rest
 }: BookingSeatProps) => {
+  const { t } = useTranslation();
   const { palettes, shapes } = useTheme();
+  const seatStatus = t(`bookingSeatScreen.seatStatus.${seat.status}`);
+
   return (
     <Pressable
       accessible
       accessibilityRole="button"
-      accessibilityLabel={seat.label}
+      accessibilityLabel={[seat.label, seatStatus].join(', ')}
       style={{
         height: size,
         width: size,

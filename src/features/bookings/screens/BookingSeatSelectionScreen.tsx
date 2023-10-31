@@ -17,6 +17,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
+import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingField } from '../components/BookingField';
@@ -44,6 +45,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const { setFeedback } = useFeedbackContext();
   const headerHeight = useHeaderHeight();
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const { isEnabled } = useScreenReader();
   const currentZoom = useRef(minZoom);
 
   useEffect(() => {
@@ -55,6 +57,24 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
       setSeatSize(minSeatSize);
     }
   }, [bookingSeatsQuery.data, spacing, viewHeight]);
+
+  useEffect(() => {
+    if (
+      isEnabled &&
+      bookingSeatsQuery.data &&
+      bookingSeatsQuery?.data?.rows?.length > 0
+    ) {
+      const firstAvailableSeat = bookingSeatsQuery.data?.rows?.find(row =>
+        row.seats?.some(seatCell => seatCell.status === 'available'),
+      );
+      if (firstAvailableSeat) {
+        const cell = firstAvailableSeat.seats?.find(
+          seatCell => seatCell.status === 'available',
+        );
+        cell && setSeat(cell);
+      }
+    }
+  }, [isEnabled, bookingSeatsQuery]);
 
   return (
     <View

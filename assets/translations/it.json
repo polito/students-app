@@ -45,6 +45,11 @@
     "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
     "noSeatSelected": "Nessuna",
     "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto"
+    "seatStatus": {
+      "booked": "Prenotato",
+      "available": "Disponibile",
+      "notAvailable": "Non prenotabile"
+    }
   },
   "colors": {
     "amber": "Ambra",

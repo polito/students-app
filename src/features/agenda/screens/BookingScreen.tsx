@@ -61,45 +61,6 @@ const bookingLocationHasValidCoordinates = (
   return !!location?.latitude && !!location?.longitude && !!location.radiusInKm;
 };
 
-const BookingDetailSeat = ({
-  booking,
-  navigation,
-}: {
-  navigation: Props['navigation'];
-  booking: Booking;
-}) => {
-  const { colors, spacing } = useTheme();
-  const { t } = useTranslation();
-
-  const onPressSeat = () => {
-    if (booking?.seat?.id && booking?.id) {
-      navigation.navigate('BookingSeat', {
-        bookingId: booking.id,
-        slotId: String(booking?.id),
-        seatId: booking?.seat?.id,
-        topicId: booking.subtopic?.id || booking.topic.id,
-      });
-    }
-  };
-
-  return booking?.seat?.id ? (
-    <ListItem
-      leadingItem={
-        <Icon
-          icon={faChair}
-          size={20}
-          color={colors.secondaryText}
-          style={{ marginRight: spacing[2] }}
-        />
-      }
-      title={`${booking.seat.row}${booking.seat.column}`}
-      subtitle={t('common.seat')}
-      onPress={onPressSeat}
-      isAction
-    />
-  ) : null;
-};
-
 export const BookingScreen = ({ navigation, route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
@@ -119,7 +80,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
-  console.debug(booking);
 
   const hasCheckIn = useMemo(
     () =>
@@ -170,18 +130,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     }
   };
 
-  const onPressSeat = (seat: Booking['seat']) => {
-    console.debug(booking);
-    // navigation.navigate('BookingSeat', {
-    //   slotId: String(boo.id),
-    //   startHour: event.start.toFormat('HH:mm'),
-    //   endHour: event.end.toFormat('HH:mm'),
-    //   day: event.start.toFormat('d MMMM'),
-    //   hasSeats: event.hasSeats,
-    //   topicId,
-    // });
-  };
-
   const onPressDelete = async () => {
     if (await confirmCancel()) {
       return deleteBookingMutation
@@ -226,7 +174,30 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               />
             )}
             {!!booking && !!booking?.seat && (
-              <BookingDetailSeat navigation={navigation} booking={booking} />
+              <ListItem
+                accessibilityRole="button"
+                leadingItem={
+                  <Icon
+                    icon={faChair}
+                    size={20}
+                    color={colors.secondaryText}
+                    style={{ marginRight: spacing[2] }}
+                  />
+                }
+                title={`${booking.seat.row}${booking.seat.column}`}
+                subtitle={t('common.seat')}
+                onPress={() =>
+                  booking?.seat?.id &&
+                  booking?.id &&
+                  navigation.navigate('BookingSeat', {
+                    bookingId: booking.id,
+                    slotId: String(booking?.id),
+                    seatId: booking?.seat?.id,
+                    topicId: booking.subtopic?.id || booking.topic.id,
+                  })
+                }
+                isAction
+              />
             )}
           </OverviewList>
           <Section style={{ marginTop: spacing[4] }} mb={0} accessible>
