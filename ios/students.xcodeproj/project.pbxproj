@@ -764,7 +764,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = students;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development it.polito.students";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development it.polito.students 1698757427";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -804,7 +804,7 @@
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = students;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore it.polito.students";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore it.polito.students 1698758977";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
