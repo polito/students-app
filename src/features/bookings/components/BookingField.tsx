@@ -27,7 +27,7 @@ export const BookingField = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   return (
-    <Col flex={1} style={styles.container}>
+    <Col flex={1} style={styles.container} accessible>
       <Row align="center">
         <Icon icon={icon} color={palettes.primary['500']} size={14} />
         <Text style={styles.text}>{label}</Text>

@@ -20,6 +20,9 @@ export const BookingSeatCell = ({
   const { palettes, shapes } = useTheme();
   return (
     <Pressable
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={seat.label}
       style={{
         height: size,
         width: size,

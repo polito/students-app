@@ -2,9 +2,10 @@ import { PropsWithChildren, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
+  Pressable,
   StyleProp,
   StyleSheet,
-  TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native';
 
@@ -60,17 +61,16 @@ export const BookingSeatsCta = ({
       style={StyleSheet.compose(styles.ctaButtonContainer, style)}
     >
       {children}
-      <Row style={styles.checkboxContainer} align="center">
-        <TouchableOpacity
-          onPress={() =>
-            setInformationAcknowledgment(!informationAcknowledgment)
-          }
-          style={styles.checkbox}
-        >
+      <Pressable
+        style={styles.checkboxContainer}
+        accessible
+        onPress={() => setInformationAcknowledgment(!informationAcknowledgment)}
+      >
+        <View style={styles.checkbox}>
           {informationAcknowledgment && (
             <Icon icon={faCheck} size={14} color={palettes.primary['500']} />
           )}
-        </TouchableOpacity>
+        </View>
         <Text style={styles.acknowledgmentTextContainer}>
           <Text style={styles.acknowledgmentText}>
             {t('bookingSeatScreen.informationAcknowledgment')}
@@ -98,7 +98,7 @@ export const BookingSeatsCta = ({
             style={styles.icon}
           />
         </Row>
-      </Row>
+      </Pressable>
       <CtaButton
         title={t('bookingSeatScreen.confirm')}
         variant="filled"
@@ -127,6 +127,8 @@ const createStyles = ({
   StyleSheet.create({
     checkboxContainer: {
       marginHorizontal: spacing[4],
+      display: 'flex',
+      flexDirection: 'row',
     },
     checkbox: {
       height: 20,

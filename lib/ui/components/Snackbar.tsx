@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Animated,
   Easing,
@@ -15,6 +15,8 @@ import { Feedback } from '@lib/ui/types/Feedback';
 import { Theme } from '@lib/ui/types/Theme';
 
 import useLatestCallback from 'use-latest-callback';
+
+import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
 
 export type Props = Feedback & {
   /**
@@ -44,6 +46,7 @@ export const Snackbar = ({
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { bottom } = useSafeAreaInsets();
+  const { isEnabled, announce } = useScreenReader();
 
   const { current: opacity } = React.useRef<Animated.Value>(
     new Animated.Value(0.0),
@@ -56,6 +59,10 @@ export const Snackbar = ({
   const hideTimeout = React.useRef<NodeJS.Timeout | undefined>(undefined);
 
   const [hidden, setHidden] = React.useState(!visible);
+
+  useEffect(() => {
+    if (isEnabled && visible) announce(text);
+  }, [isEnabled, announce, visible]);
 
   // useEffect(() => {
   //   if()

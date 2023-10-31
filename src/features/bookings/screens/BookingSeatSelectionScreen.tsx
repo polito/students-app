@@ -103,11 +103,6 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
                     disabled={seatCell.status !== 'available'}
                     onPress={() => {
                       const currentSeatSize = seatSize * currentZoom.current;
-                      console.debug(
-                        'currentSeatSize',
-                        currentSeatSize,
-                        currentZoom.current,
-                      );
                       if (currentSeatSize < minBookableCellSize) {
                         setFeedback({
                           text: t(
