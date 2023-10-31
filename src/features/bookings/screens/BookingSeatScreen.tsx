@@ -31,6 +31,7 @@ import {
 import { canBeCancelled } from '../../../utils/bookings';
 import { AgendaStackParamList } from '../../agenda/components/AgendaNavigator';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
 
@@ -42,7 +43,7 @@ type Props = NativeStackScreenProps<
 export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { topicId, slotId, seatId, bookingId } = route.params;
-  const { spacing } = useTheme();
+  const { spacing, palettes, shapes } = useTheme();
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
   const [viewHeight, setViewHeight] = useState<number | undefined>();
@@ -70,7 +71,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     if (viewHeight && bookingSeatsQuery.data) {
-      const numberOfRows = bookingSeatsQuery.data.rows.length;
+      const numberOfRows = bookingSeatsQuery.data.rows.length + 1;
       const minSeatSize = Math.round(
         (viewHeight - spacing[2] * 2 * numberOfRows) / numberOfRows,
       );
@@ -121,6 +122,15 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
               height: viewHeight,
             })}
           >
+            <Row
+              align="center"
+              justify="center"
+              key="desk"
+              gap={2}
+              style={{ width: SCREEN_WIDTH }}
+            >
+              <BookingDeskCell seatSize={seatSize} />
+            </Row>
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
               <Row align="center" key={`row-${index}`} gap={2}>
                 {row?.seats?.map(seatCell => (

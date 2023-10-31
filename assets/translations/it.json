@@ -44,7 +44,7 @@
     "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
     "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
     "noSeatSelected": "Nessuna",
-    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto"
+    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto",
     "seatStatus": {
       "booked": "Prenotato",
       "available": "Disponibile",
@@ -73,6 +73,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "desk": "Cattedra",
     "back": "Indietro",
     "next": "Avanti",
     "seat": "Postazione",

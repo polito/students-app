@@ -20,6 +20,7 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
 import { BookingSeatsCta } from '../components/BookingSeatsCta';
@@ -50,7 +51,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
 
   useEffect(() => {
     if (bookingSeatsQuery.data && viewHeight) {
-      const numberOfRows = bookingSeatsQuery.data.rows.length;
+      const numberOfRows = bookingSeatsQuery.data.rows.length + 1;
       const minSeatSize = Math.round(
         (viewHeight - spacing[2] * 2 * numberOfRows) / numberOfRows,
       );
@@ -112,6 +113,15 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
               height: viewHeight,
             })}
           >
+            <Row
+              align="center"
+              justify="center"
+              key="desk"
+              gap={2}
+              style={{ width: SCREEN_WIDTH }}
+            >
+              <BookingDeskCell seatSize={seatSize} />
+            </Row>
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
               <Row align="center" key={`row-${index}`} gap={2}>
                 {row?.seats?.map(seatCell => (
