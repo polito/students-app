@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -35,6 +36,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { setCustomBackHandler } from '../../../utils/navigation';
 import { notNullish } from '../../../utils/predicates';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
@@ -57,6 +59,10 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const phoneNumbers = person?.phoneNumbers;
 
   const isOffline = useOfflineDisabled();
+
+  useEffect(() => {
+    setCustomBackHandler(navigation, isCrossNavigation ?? false);
+  }, [isCrossNavigation, navigation]);
 
   const header = (
     <Col ph={5} gap={6} mb={6}>
@@ -160,15 +166,10 @@ export const PersonScreen = ({ route, navigation }: Props) => {
           courses?.length || 0,
         )}. ${course.name}, ${course.year} -${t('common.' + role)}`}
         linkTo={{
-          screen: 'ServicesTab',
+          screen: 'DegreeCourse',
           params: {
-            screen: 'DegreeCourse',
-            params: {
-              courseShortcode: course.shortcode,
-              year: course.year,
-              isCrossNavigation: navigation.getId() !== 'ServicesNavigator',
-            },
-            initial: true,
+            courseShortcode: course.shortcode,
+            year: course.year,
           },
         }}
         disabled={disabled}

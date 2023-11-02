@@ -42,6 +42,7 @@ export type PlacesStackParamList = {
   };
   Place: {
     placeId: string;
+    isCrossNavigation?: boolean;
   };
   Building: {
     buildingId: string;

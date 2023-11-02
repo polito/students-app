@@ -15,6 +15,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
+import { setCustomBackHandler } from '../../../utils/navigation';
 import { getShortYear } from '../../../utils/offerings';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { DegreeContext } from '../contexts/DegreeContext';
@@ -33,11 +34,15 @@ const TopTabs = createMaterialTopTabNavigator<DegreeTabsParamList>();
 export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   const { palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
-  const { id: degreeId, year: initialYear } = route.params;
+  const { id: degreeId, year: initialYear, isCrossNavigation } = route.params;
   const [year, setYear] = useState(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
 
   const isOffline = useOfflineDisabled();
+
+  useEffect(() => {
+    setCustomBackHandler(navigation, isCrossNavigation ?? false);
+  }, [isCrossNavigation, navigation]);
 
   const yearOptions = useMemo(() => {
     if (

@@ -1,7 +1,7 @@
-import { Platform, TouchableOpacity } from 'react-native';
-
-import { faArrowLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
+import {
+  HeaderBackButton,
+  HeaderBackButtonProps,
+} from '@react-navigation/elements';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const isTabNavigatorId = (id: string | undefined) =>
@@ -21,7 +21,6 @@ const findTopStackNavigator = (navigation: NativeStackNavigationProp<any>) => {
     );
   }
   if (!navigator) {
-    console.error('No navigator found');
     return;
   }
   return navigator;
@@ -30,65 +29,81 @@ const findTopStackNavigator = (navigation: NativeStackNavigationProp<any>) => {
 export const onCustomBackPressed = (
   navigation: NativeStackNavigationProp<any>,
 ) => {
-  const navigator = findTopStackNavigator(navigation);
-  const navigatorId = navigator?.getId();
+  const topStackNavigator = findTopStackNavigator(navigation);
+  const navigatorId = topStackNavigator?.getId();
 
-  if (!navigator) {
+  if (!topStackNavigator) {
     return;
   }
 
-  const isFirstScreenInStack = navigator.getState().routes?.length === 1;
+  const tabNavigator = topStackNavigator.getParent()!;
+
+  const isFirstScreenInStack =
+    topStackNavigator.getState().routes?.length === 1;
+
+  // console.debug('TAB', JSON.stringify(tabNavigator.getState()));
+
+  const tabNavigatorState = tabNavigator.getState();
+
+  const nextState = {
+    ...tabNavigatorState,
+    routes: tabNavigatorState.routes.map(tab => {
+      // Ignore other tabs
+      if (!topStackNavigator.getId()!.startsWith(tab.name)) {
+        return tab;
+      }
+
+      let updatedState = undefined;
+
+      if (tab.state) {
+        const updatedStateRoutes = tab.state.routes.slice(0, -1);
+
+        updatedState = {
+          ...tab.state,
+          index: updatedStateRoutes.length - 1,
+          routes: updatedStateRoutes,
+        };
+      }
+
+      return {
+        ...tab,
+        params: undefined,
+        state: updatedState,
+      };
+    }),
+  };
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  tabNavigator.reset(nextState);
+  tabNavigator.goBack();
+
+  // console.debug('TAB2', JSON.stringify(tabNavigator.getState()));
 
   if (isFirstScreenInStack) {
-    let initialScreenName = undefined;
-    switch (navigatorId) {
-      case 'TeachingTabNavigator':
-      case 'ServicesTabNavigator':
-        initialScreenName = 'Home';
-        break;
-      case 'AgendaTabNavigator':
-        initialScreenName = 'Agenda';
-        break;
-      case 'PlacesTabNavigator':
-        initialScreenName = 'Places';
-        break;
-      case 'UserTabNavigator':
-        initialScreenName = 'Profile';
-        break;
-      default:
-        console.error('No initial screen name for navigatorId', navigatorId);
-        return;
-    }
-
-    navigator!.reset({
-      index: 0,
-      routes: [{ name: initialScreenName }],
+    // console.debug('STACK', topStackNavigator.getState());
+    topStackNavigator.reset({
+      ...topStackNavigator.getState(),
+      index: -1,
+      routes: [],
     });
-  } else {
-    navigator!.pop();
+    // console.debug('STACK2', topStackNavigator.getState());
   }
-
-  navigator.getParent()!.goBack();
 };
 
 export const setCustomBackHandler = (
   navigation: NativeStackNavigationProp<any>,
   isCustomBackHandlerEnabled: boolean,
 ) => {
-  const icon = Platform.select({
-    ios: faChevronLeft,
-    android: faArrowLeft,
-  })!;
-
-  if (!isCustomBackHandlerEnabled) {
-    return;
-  }
-
   navigation.setOptions({
-    headerLeft: () => (
-      <TouchableOpacity onPress={() => onCustomBackPressed(navigation)}>
-        <Icon icon={icon} size={18} color="red" />
-      </TouchableOpacity>
+    headerLeft: (props: HeaderBackButtonProps) => (
+      <HeaderBackButton
+        {...props}
+        onPress={
+          isCustomBackHandlerEnabled
+            ? () => onCustomBackPressed(navigation)
+            : props.onPress
+        }
+      />
     ),
   });
 };

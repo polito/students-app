@@ -93,6 +93,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
                   screen: 'Place',
                   params: {
                     placeId: resolvePlaceId(lecture.place!),
+                    isCrossNavigation: true,
                   },
                   initial: false,
                 });

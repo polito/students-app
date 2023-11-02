@@ -32,6 +32,7 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlace } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { setCustomBackHandler } from '../../../utils/navigation';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
@@ -49,7 +50,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { placeId } = route.params;
+  const { placeId, isCrossNavigation } = route.params;
   const {
     data: place,
     isLoading: isLoadingPlace,
@@ -155,6 +156,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     safeAreaInsets.top,
     spacing,
   ]);
+
+  useEffect(() => {
+    setCustomBackHandler(navigation, isCrossNavigation ?? false);
+  }, [isCrossNavigation, navigation]);
 
   if (isLoading) {
     return (

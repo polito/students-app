@@ -142,6 +142,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                       screen: 'Place',
                       params: {
                         placeId,
+                        isCrossNavigation: true,
                       },
                       initial: false,
                     });
@@ -153,6 +154,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               <PersonListItem
                 person={teacherQuery.data}
                 subtitle={t('common.teacher')}
+                isCrossNavigation={true}
               />
             )}
             {exam?.notes?.length && (
