@@ -30,11 +30,12 @@ export const onCustomBackPressed = (
   navigation: NativeStackNavigationProp<any>,
 ) => {
   const topStackNavigator = findTopStackNavigator(navigation);
-  const navigatorId = topStackNavigator?.getId();
 
   if (!topStackNavigator) {
     return;
   }
+
+  const navigatorId = topStackNavigator.getId();
 
   const tabNavigator = topStackNavigator.getParent()!;
 
@@ -49,7 +50,7 @@ export const onCustomBackPressed = (
     ...tabNavigatorState,
     routes: tabNavigatorState.routes.map(tab => {
       // Ignore other tabs
-      if (!topStackNavigator.getId()!.startsWith(tab.name)) {
+      if (!navigatorId?.startsWith(tab.name)) {
         return tab;
       }
 
@@ -72,8 +73,7 @@ export const onCustomBackPressed = (
       };
     }),
   };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  // @ts-expect-error reset fails with type mismatch
   tabNavigator.reset(nextState);
   tabNavigator.goBack();
 
@@ -94,15 +94,15 @@ export const setCustomBackHandler = (
   navigation: NativeStackNavigationProp<any>,
   isCustomBackHandlerEnabled: boolean,
 ) => {
+  if (!isCustomBackHandlerEnabled) {
+    return;
+  }
+
   navigation.setOptions({
     headerLeft: (props: HeaderBackButtonProps) => (
       <HeaderBackButton
         {...props}
-        onPress={
-          isCustomBackHandlerEnabled
-            ? () => onCustomBackPressed(navigation)
-            : props.onPress
-        }
+        onPress={() => onCustomBackPressed(navigation)}
       />
     ),
   });
