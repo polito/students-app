@@ -6,6 +6,12 @@ import {
 } from '@react-navigation/elements';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 
+/**
+ * Hook to enable cross tab back navigation
+ *
+ * @param navigation
+ * @param isEnabled
+ */
 export const useCrossTabBack = (
   navigation: NavigationProp<any>,
   isEnabled: boolean = false,
@@ -23,25 +29,24 @@ export const useCrossTabBack = (
   });
 };
 
-const isTabNavigatorId = (id: string | undefined) =>
-  id?.toString().endsWith('TabNavigator') === true;
-
+/**
+ * Find the nearest tab navigator up the tree
+ *
+ * @param navigation
+ */
 const findTabNavigator = (navigation: NavigationProp<any>) => {
   let navigator = navigation;
-  let navigatorId = navigation.getId();
+  let tabFound = false;
+  do {
+    const parentNavigator = navigator.getParent();
+    tabFound = parentNavigator !== undefined && !parentNavigator.getParent();
 
-  if (!isTabNavigatorId(navigatorId)) {
-    // console.log('NAVIGATOR1', JSON.stringify(navigator));
-    do {
-      navigator = navigator.getParent();
-      navigatorId = navigator?.getId();
-      // console.log('NAVIGATOR', navigatorId);
-    } while (
-      !isTabNavigatorId(navigatorId) ||
-      navigator.getParent() !== undefined
-    );
-  }
-  if (!navigator) {
+    if (!tabFound) {
+      navigator = parentNavigator!;
+    }
+  } while (!tabFound);
+
+  if (!tabFound) {
     return;
   }
   return navigator;
