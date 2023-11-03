@@ -32,7 +32,7 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlace } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { setCustomBackHandler } from '../../../utils/navigation';
+import { useCrossTabBack } from '../../../navigation/hooks/useCrossTabBack';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
@@ -157,9 +157,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     spacing,
   ]);
 
-  useEffect(() => {
-    setCustomBackHandler(navigation, isCrossNavigation ?? false);
-  }, [isCrossNavigation, navigation]);
+  useCrossTabBack(navigation, isCrossNavigation);
 
   if (isLoading) {
     return (

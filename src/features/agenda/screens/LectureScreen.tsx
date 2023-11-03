@@ -113,14 +113,18 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             leadingItem={
               <CourseIcon icon={lecture.icon} color={lecture.color} />
             }
-            disabled
-            // linkTo={{
-            //   screen: 'LectureCourseDirectory',
-            //   params: {
-            //     lectureId: lecture.id,
-            //     courseId: lecture.courseId,
-            //   },
-            // }}
+            linkTo={{
+              screen: 'TeachingTab',
+              params: {
+                screen: 'Course',
+                params: {
+                  screen: 'CourseFilesScreen',
+                  id: lecture.courseId,
+                  isCrossNavigation: true,
+                },
+                initial: false,
+              },
+            }}
           />
         </OverviewList>
         <BottomBarSpacer />

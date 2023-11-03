@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -36,7 +35,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { setCustomBackHandler } from '../../../utils/navigation';
+import { useCrossTabBack } from '../../../navigation/hooks/useCrossTabBack';
 import { notNullish } from '../../../utils/predicates';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
@@ -60,9 +59,7 @@ export const PersonScreen = ({ route, navigation }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
-  useEffect(() => {
-    setCustomBackHandler(navigation, isCrossNavigation ?? false);
-  }, [isCrossNavigation, navigation]);
+  useCrossTabBack(navigation, isCrossNavigation);
 
   const header = (
     <Col ph={5} gap={6} mb={6}>

@@ -33,7 +33,7 @@ import { TranscriptScreen } from '../screens/TranscriptScreen';
 export interface TeachingStackParamList extends ParamListBase {
   Home: undefined;
   Courses: undefined;
-  Course: { id: number };
+  Course: { id: number; isCrossNavigation?: boolean };
   Notice: { noticeId: number; courseId: number };
   Person: { id: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };

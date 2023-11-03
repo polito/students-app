@@ -15,7 +15,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
-import { setCustomBackHandler } from '../../../utils/navigation';
+import { useCrossTabBack } from '../../../navigation/hooks/useCrossTabBack';
 import { getShortYear } from '../../../utils/offerings';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { DegreeContext } from '../contexts/DegreeContext';
@@ -40,9 +40,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
-  useEffect(() => {
-    setCustomBackHandler(navigation, isCrossNavigation ?? false);
-  }, [isCrossNavigation, navigation]);
+  useCrossTabBack(navigation, isCrossNavigation);
 
   const yearOptions = useMemo(() => {
     if (
