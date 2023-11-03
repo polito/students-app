@@ -166,7 +166,7 @@ export const CourseLecturesScreen = () => {
       renderItem={({ section, item: lecture }) => {
         return (
           <CourseLectureListItem
-            courseId={courseId}
+            courseId={section.courseId}
             section={section}
             lecture={lecture}
           />

@@ -3,7 +3,10 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration, Interval } from 'luxon';
 
-import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
+import {
+  CoursesPreferences,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetDeadlineWeeks } from '../../../core/queries/studentHooks';
@@ -180,17 +183,19 @@ export const useGetAgendaWeeks = (
   const lecturesQuery = useGetLectureWeeks(coursesPreferences);
   const deadlinesQuery = useGetDeadlineWeeks();
 
-  const filtersQuery = useGetAgendaTypesFilter();
+  const {
+    agendaScreen: { filters },
+  } = usePreferencesContext();
 
   const oneWeek = Duration.fromDurationLike({ week: 1 });
 
   return useInfiniteQuery<AgendaWeek>(
-    [AGENDA_QUERY_PREFIX, filtersQuery.data],
+    [AGENDA_QUERY_PREFIX, filters],
     async ({ pageParam = startDate }: { pageParam?: DateTime }) => {
       let queryFilters: AgendaTypesFilterState;
 
       // if all filters are set to false, set all query filters to true
-      if (ALL_AGENDA_TYPES.every(type => !filtersQuery.data[type])) {
+      if (ALL_AGENDA_TYPES.every(type => !filters[type])) {
         queryFilters = {
           exam: true,
           booking: true,
@@ -198,7 +203,7 @@ export const useGetAgendaWeeks = (
           deadline: true,
         };
       } else {
-        queryFilters = { ...filtersQuery.data };
+        queryFilters = { ...filters };
       }
 
       const until = pageParam.plus(oneWeek);
