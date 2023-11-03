@@ -1,6 +1,8 @@
 import { Palettes, Theme } from '@lib/ui/types/Theme';
 import { Booking, BookingSeatCell } from '@polito/api-client';
 
+import { DateTime } from 'luxon';
+
 import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotScreen';
 
 export const getBookingStyle = (
@@ -10,10 +12,18 @@ export const getBookingStyle = (
   const isBooked = !!item.isBooked;
   const isFull = item.bookedPlaces === item.places;
   const canBeBooked = !!item.canBeBooked;
+
   if (isBooked) {
     return {
       backgroundColor: palettes.green['100'],
       color: palettes.green['600'],
+    };
+  }
+  if (item.start < DateTime.now()) {
+    return {
+      backgroundColor: palettes.gray['200'],
+      color: palettes.gray['600'],
+      opacity: 0.8,
     };
   }
   if (isFull) {

@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { PillDropdownActivator } from '@lib/ui/components/PillDropdownActivator';
+import { Icon } from '@lib/ui/components/Icon';
+import { PillButton } from '@lib/ui/components/PillButton';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { faSeat } from '@lib/ui/icons/faSeat';
 import { MenuView } from '@react-native-menu/menu';
 
 export const BookingSlotsStatusLegend = () => {
@@ -38,10 +40,7 @@ export const BookingSlotsStatusLegend = () => {
         },
       ]}
     >
-      <PillDropdownActivator
-        variant="neutral"
-        accessibilityLabel={t('common.legend')}
-      >
+      <PillButton variant="neutral" accessibilityLabel={t('common.legend')}>
         <View
           style={{
             display: 'flex',
@@ -50,9 +49,10 @@ export const BookingSlotsStatusLegend = () => {
             alignItems: 'center',
           }}
         >
+          <Icon icon={faSeat} />
           <Text key="events">{t('common.legend')}</Text>
         </View>
-      </PillDropdownActivator>
+      </PillButton>
     </MenuView>
   );
 };

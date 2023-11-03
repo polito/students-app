@@ -1,15 +1,17 @@
 import { PropsWithChildren } from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
+  dismissable?: boolean;
 }>;
 
 export const BottomModal = ({
   children,
   visible,
   onClose,
+  dismissable,
 }: BottomModalProps) => {
   return (
     <Modal
@@ -20,7 +22,10 @@ export const BottomModal = ({
       animationType="fade"
     >
       <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-        <View
+        <Pressable
+          onPress={() => {
+            dismissable && onClose?.();
+          }}
           style={[
             StyleSheet.absoluteFill,
             {

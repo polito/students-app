@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
-import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -84,6 +83,17 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
     }
   }, [isEnabled, bookingSeatsQuery]);
 
+  const isSeatSizeValidForBooking = () => {
+    const currentSeatSize = seatSize * currentZoom.current;
+    if (currentSeatSize < minBookableCellSize) {
+      setFeedback({
+        text: t('bookingSeatScreen.zoomInToEnableSeatSelection'),
+      });
+      return false;
+    }
+    return true;
+  };
+
   return (
     <View
       style={StyleSheet.compose(styles.screenWrapper, {
@@ -116,13 +126,12 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
         >
-          <Col
-            align="flex-start"
-            justify="flex-start"
+          <Pressable
             style={StyleSheet.compose(styles.rowsContainer, {
               height: viewHeight,
               gap: spacing[2],
             })}
+            onPress={() => isSeatSizeValidForBooking()}
           >
             {!isEmpty(bookingSeatsQuery.data?.rows) && (
               <Row
@@ -149,24 +158,17 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
                     key={seatCell.id}
                     disabled={seatCell.status !== 'available'}
                     onPress={() => {
-                      const currentSeatSize = seatSize * currentZoom.current;
-                      if (currentSeatSize < minBookableCellSize) {
-                        setFeedback({
-                          text: t(
-                            'bookingSeatScreen.zoomInToEnableSeatSelection',
-                          ),
-                        });
-                        return;
+                      if (isSeatSizeValidForBooking()) {
+                        seat?.id === seatCell.id
+                          ? setSeat(undefined)
+                          : setSeat(seatCell);
                       }
-                      seat?.id === seatCell.id
-                        ? setSeat(undefined)
-                        : setSeat(seatCell);
                     }}
                   />
                 ))}
               </Row>
             ))}
-          </Col>
+          </Pressable>
         </ReactNativeZoomableView>
       </View>
       <BookingSeatsCta
@@ -210,6 +212,9 @@ const createStyles = ({ spacing, colors }: Theme) =>
       padding: spacing[2],
       width: '100%',
       backgroundColor: colors.surface,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      flexDirection: 'column',
     },
     recapContainer: {
       marginHorizontal: spacing[4],

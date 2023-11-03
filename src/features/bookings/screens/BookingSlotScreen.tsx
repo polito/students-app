@@ -25,7 +25,10 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useGetBookingSlots } from '../../../core/queries/bookingHooks';
+import {
+  useGetBookingSlots,
+  useGetBookings,
+} from '../../../core/queries/bookingHooks';
 import { getBookingSlotStatus, getBookingStyle } from '../../../utils/bookings';
 import { getHtmlTextContent } from '../../../utils/html';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
@@ -52,9 +55,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     DateTime.now().startOf('week'),
   );
+  const { data: myBookings } = useGetBookings();
   const { language } = usePreferencesContext();
   const { open, modal, close } = useBottomModal();
-  const { isLoading, isFetching, isRefetching, ...bookingSlotsQuery } =
+  const { isLoading, isFetching, refetch, isRefetching, ...bookingSlotsQuery } =
     useGetBookingSlots(topicId, currentWeekStart);
 
   const nextWeek = useCallback(() => {
@@ -78,12 +82,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           adjustSpacing="left"
           accessibilityLabel={t('common.reset')}
           onPress={() => {
-            setCurrentWeekStart(DateTime.now().startOf('week'));
+            refetch();
           }}
         />
       ),
     });
-  }, [navigation, palettes, t]);
+  }, [navigation, palettes, t, refetch]);
 
   const calendarEvents = useMemo(() => {
     if (bookingSlotsQuery.data && bookingSlotsQuery.data?.length > 0) {
@@ -112,7 +116,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
 
   return (
     <>
-      <BottomModal {...modal} />
+      <BottomModal dismissable {...modal} />
       <HeaderAccessory justify="space-between">
         <Tabs>
           <BookingSlotsStatusLegend />
@@ -150,14 +154,30 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             )}
             onPressEvent={event => {
               if (event.isBooked) {
-                setFeedback({
-                  text: event.feedback
-                    ? getHtmlTextContent(event.feedback)
-                    : t('common.booked'),
-                });
+                const booking =
+                  myBookings && myBookings?.find(b => b.id === event.id);
+                booking &&
+                  booking.seat &&
+                  booking.seat?.id &&
+                  navigation.navigate('BookingSeat', {
+                    bookingId: booking.id,
+                    slotId: String(booking?.id),
+                    seatId: booking?.seat?.id,
+                    topicId: booking.subtopic?.id || booking.topic.id,
+                  });
+                !booking &&
+                  setFeedback({
+                    text: event.feedback
+                      ? getHtmlTextContent(event.feedback)
+                      : t('common.booked'),
+                  });
                 return;
               }
-              if (event.canBeBooked && event.hasSeats) {
+              if (
+                event.canBeBooked &&
+                event.hasSeats &&
+                event.start > DateTime.now()
+              ) {
                 event.id &&
                   navigation.navigate('BookingSeatSelection', {
                     slotId: String(event.id),
@@ -181,7 +201,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             height={calendarHeight}
             renderEvent={(item, touchableOpacityProps) => {
               const isMini = item.duration <= 15;
-              const { color, backgroundColor } = getBookingStyle(
+              const { color, backgroundColor, opacity } = getBookingStyle(
                 item,
                 palettes,
               );
@@ -193,7 +213,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                   style={[
                     touchableOpacityProps.style,
                     styles.event,
-                    { backgroundColor },
+                    { backgroundColor, opacity },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel={t(bookingStatus)}

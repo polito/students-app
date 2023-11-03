@@ -43,7 +43,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     item?.bookingStartsAt && item?.bookingStartsAt > now
   );
 
-  const canBeBooked = item.canBeBooked;
+  const canBeBooked = item.canBeBooked && item.start > DateTime.now();
   const startHour = item.start.toFormat('HH:mm');
   const endHour = item.end.toFormat('HH:mm');
   const day = item.start.toFormat('d MMMM');
