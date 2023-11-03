@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -10,16 +10,15 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
-import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useHideTabs } from '../../../core/hooks/useHideTabs';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import {
   useGetModalMessages,
   useInvalidateMessages,
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
-import { tabBarStyle } from '../../../utils/tab-bar';
 import { MessageScreenContent } from '../components/MessageScreenContent';
 
 type Props = NativeStackScreenProps<any, 'MessagesModal'>;
@@ -59,22 +58,9 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         total: messagesToReadCount,
       }),
     });
-    navigation.getParent()!.setOptions({
-      tabBarStyle: { display: 'none' },
-    });
   }, [t, messagesToRead, messagesReadCount, navigation, messagesToReadCount]);
 
-  useFocusEffect(
-    useCallback(() => {
-      // Invalidate message list when the modal is closing
-      return () => {
-        invalidateMessages.run();
-        navigation.getParent()!.setOptions({
-          tabBarStyle: tabBarStyle,
-        });
-      };
-    }, []),
-  );
+  useHideTabs(undefined, () => invalidateMessages.run());
 
   const currentMessage = messagesToRead?.[messagesReadCount];
 

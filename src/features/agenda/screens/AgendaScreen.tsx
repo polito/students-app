@@ -9,10 +9,7 @@ import {
 } from 'react-native';
 import useStateRef from 'react-usestateref';
 
-import {
-  faCalendarDay,
-  faEllipsisVertical,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCalendarWeek, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
@@ -20,7 +17,6 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -45,10 +41,13 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const { palettes, fontSizes } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { courses: coursesPreferences } = usePreferencesContext();
+  const {
+    courses: coursesPreferences,
+    updatePreference,
+    agendaScreen,
+  } = usePreferencesContext();
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
-
   const { data, fetchNextPage, isFetchingNextPage, isFetchingPreviousPage } =
     useGetAgendaWeeks(coursesPreferences);
 
@@ -57,17 +56,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const prevPageThreshold = 300;
 
   const isOffline = useOfflineDisabled();
-
-  const screenOptions = [
-    {
-      id: 'refresh',
-      title: t('agendaScreen.refresh'),
-    },
-    {
-      id: 'weekly',
-      title: t('agendaScreen.weeklyLayout'),
-    },
-  ];
 
   const [agendaState, setAgendaState, agendaStateRef] =
     useStateRef<AgendaState>({
@@ -148,38 +136,33 @@ export const AgendaScreen = ({ navigation }: Props) => {
   }, [data, agendaState, fetchNextPage, setAgendaState]);
 
   useLayoutEffect(() => {
-    const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      // eslint-disable-next-line default-case
-      switch (event) {
-        case 'weekly':
-          navigation.navigate('AgendaWeek');
-          break;
-        case 'refresh':
-          refreshQueries();
-          break;
-      }
+    const switchToWeekly = () => {
+      updatePreference('agendaScreen', {
+        ...agendaScreen,
+        layout: 'weekly',
+      });
+      navigation.replace('AgendaWeek');
     };
 
     navigation.setOptions({
       headerRight: () => (
         <>
           <IconButton
-            icon={faCalendarDay}
+            icon={faCalendarWeek}
             color={palettes.primary[400]}
             size={fontSizes.lg}
             adjustSpacing="left"
             accessibilityLabel={t('agendaScreen.backToToday')}
-            onPress={() => scrollToToday(true)}
+            onPress={switchToWeekly}
           />
-          <MenuView actions={screenOptions} onPressAction={onPressOption}>
-            <IconButton
-              icon={faEllipsisVertical}
-              color={palettes.primary[400]}
-              size={fontSizes.lg}
-              adjustSpacing="right"
-              accessibilityLabel={t('common.options')}
-            />
-          </MenuView>
+          <IconButton
+            icon={faRefresh}
+            color={palettes.primary[400]}
+            size={fontSizes.lg}
+            adjustSpacing="right"
+            accessibilityLabel={t('agendaScreen.refresh')}
+            onPress={() => refreshQueries()}
+          />
         </>
       ),
     });
@@ -187,9 +170,9 @@ export const AgendaScreen = ({ navigation }: Props) => {
     palettes.primary,
     fontSizes.lg,
     navigation,
-    screenOptions,
     scrollToToday,
     t,
+    agendaScreen,
   ]);
 
   return (

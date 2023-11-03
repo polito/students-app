@@ -410,6 +410,7 @@ export const useGetCourseLectures = (courseId: number) => {
 
       virtualClassroomsQuery.data?.length &&
         lectureSections.push({
+          courseId,
           title: t('common.virtualClassroom_plural'),
           type: 'VirtualClassroom',
           data: virtualClassroomsQuery.data,
@@ -417,6 +418,7 @@ export const useGetCourseLectures = (courseId: number) => {
 
       videoLecturesQuery.data?.length &&
         lectureSections.push({
+          courseId,
           title: t('common.videoLecture_plural'),
           type: 'VideoLecture',
           data: videoLecturesQuery.data,
@@ -426,6 +428,7 @@ export const useGetCourseLectures = (courseId: number) => {
         const relatedVCs = relatedVCQueries.queries[index].data;
         relatedVCs?.length &&
           lectureSections.push({
+            courseId: d.id,
             title:
               'name' in d
                 ? `${d.name} ${d.year}`
