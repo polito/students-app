@@ -31,6 +31,7 @@ import {
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
+import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -126,29 +127,35 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            {exam?.places?.map(p => {
-              const placeId = [p.buildingId, p.floorId, p.roomId].join('-');
-              return (
-                <ListItem
-                  key={placeId}
-                  leadingItem={
-                    <Icon icon={faLocationDot} size={fontSizes['2xl']} />
-                  }
-                  title={p.name}
-                  subtitle={t('examScreen.location')}
-                  isAction
-                  onPress={() => {
-                    navigation.navigate('PlacesTab', {
-                      screen: 'Place',
-                      params: {
-                        placeId,
-                      },
-                      initial: false,
-                    });
-                  }}
-                />
-              );
-            })}
+            {exam?.places && exam.places.length > 0 && (
+              <ListItem
+                leadingItem={
+                  <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+                }
+                title={exam.places.map(place => place.name).join(', ')}
+                subtitle={t('examScreen.location')}
+                isAction
+                onPress={() => {
+                  navigation.navigate('PlacesTab', {
+                    screen: exam.places!.length > 1 ? 'EventPlaces' : 'Place',
+                    params:
+                      exam.places!.length > 1
+                        ? {
+                            placeIds: exam.places!.map(place =>
+                              resolvePlaceId(place),
+                            ),
+                            eventName: `${exam.courseName} ${t(
+                              'common.examCall',
+                            )}`,
+                          }
+                        : {
+                            placeId: resolvePlaceId(exam.places![0]),
+                          },
+                    initial: false,
+                  });
+                }}
+              />
+            )}
             {teacherQuery.data && (
               <PersonListItem
                 person={teacherQuery.data}

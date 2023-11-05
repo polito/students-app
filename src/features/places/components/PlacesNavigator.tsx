@@ -22,6 +22,7 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { MAX_ZOOM } from '../constants';
 import { BuildingScreen } from '../screens/BuildingScreen';
+import { EventPlacesScreen } from '../screens/EventPlacesScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
@@ -42,6 +43,10 @@ export type PlacesStackParamList = {
   };
   Place: {
     placeId: string;
+  };
+  EventPlaces: {
+    placeIds: string[];
+    eventName?: string;
   };
   Building: {
     buildingId: string;
@@ -151,6 +156,13 @@ export const PlacesNavigator = () => {
         component={PlaceScreen}
         options={{
           title: t('placeScreen.title'),
+        }}
+      />
+      <Map.Screen
+        name="EventPlaces"
+        component={EventPlacesScreen}
+        options={{
+          title: t('eventPlacesScreen.title'),
         }}
       />
       <Map.Screen

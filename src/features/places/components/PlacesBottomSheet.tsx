@@ -21,6 +21,7 @@ export interface PlacesBottomSheetProps
   listProps?: Partial<BottomSheetFlatListProps<ListItemProps>>;
   isLoading?: boolean;
   search?: string;
+  showSearchBar?: boolean;
   onSearchChange?: (newSearch: string) => void;
 }
 
@@ -36,6 +37,7 @@ export const PlacesBottomSheet = forwardRef<
       isLoading = false,
       search,
       onSearchChange,
+      showSearchBar = true,
       ...props
     },
     ref,
@@ -55,20 +57,22 @@ export const PlacesBottomSheet = forwardRef<
         android_keyboardInputMode="adjustResize"
         {...props}
       >
-        <BottomSheetTextField
-          label={searchFieldLabel ?? t('common.search')}
-          onFocus={() => {
-            setTyping(true);
-            innerRef.current?.expand();
-          }}
-          onBlur={() => {
-            setTyping(false);
-            innerRef.current?.snapToIndex(1);
-          }}
-          value={search}
-          onChangeText={onSearchChange}
-          {...textFieldProps}
-        />
+        {showSearchBar && (
+          <BottomSheetTextField
+            label={searchFieldLabel ?? t('common.search')}
+            onFocus={() => {
+              setTyping(true);
+              innerRef.current?.expand();
+            }}
+            onBlur={() => {
+              setTyping(false);
+              innerRef.current?.snapToIndex(1);
+            }}
+            value={search}
+            onChangeText={onSearchChange}
+            {...textFieldProps}
+          />
+        )}
         <BottomSheetFlatList
           renderItem={({ item }) => (
             <ListItem

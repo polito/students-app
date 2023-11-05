@@ -171,7 +171,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           ?.filter(p => isPlace(p))
           .map(p => (p as PlaceOverviewWithMetadata).floor.id),
       );
-      return floorIds.size === 1 ? [...floorIds.values()][0] : undefined;
+      return floorIds.size === 1 ? [...floorIds][0] : undefined;
     }
     return floorId;
   }, [debouncedSearch, floorId, places]);

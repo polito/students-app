@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 
 import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
 import { GetFreeRoomsRequest } from '@polito/api-client/apis/PlacesApi';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { noop } from 'lodash';
+
+import { pluckData } from '../../utils/queries';
 
 export const SITES_QUERY_KEY = 'sites';
 export const BUILDINGS_QUERY_KEY = 'buildings';
@@ -157,4 +159,19 @@ export const useGetPlace = (placeId?: string) => {
       onError: noop,
     },
   );
+};
+
+export const useGetMultiplePlaces = (placeIds?: string[]) => {
+  const placesClient = usePlacesClient();
+
+  return useQueries({
+    queries:
+      placeIds?.map(placeId => ({
+        queryKey: [PLACE_QUERY_KEY, placeId],
+        queryFn: () => placesClient.getPlace({ placeId }).then(pluckData),
+        enabled: placeId != null,
+        staleTime: Infinity,
+        onError: noop,
+      })) ?? [],
+  });
 };
