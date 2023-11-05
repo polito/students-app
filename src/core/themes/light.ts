@@ -109,6 +109,19 @@ const lightBlue = {
   900: '#0C4A6E',
 };
 
+const violet = {
+  50: '#f5f3ff',
+  100: '#ede9fe',
+  200: '#ddd6fe',
+  300: '#c4b5fd',
+  400: '#a78bfa',
+  500: '#8b5cf6',
+  600: '#7c3aed',
+  700: '#6d28d9',
+  800: '#5b21b6',
+  900: '#4c1d95',
+};
+
 const backgroundColor = '#F0F3F5';
 
 export const lightTheme: Theme = {
@@ -146,6 +159,7 @@ export const lightTheme: Theme = {
     green,
     darkOrange,
     lightBlue,
+    violet,
     text: gray,
     primary: navy,
     secondary: orange,

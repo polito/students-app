@@ -85,7 +85,7 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
       },
       INGRESSO: {
         icon: 'microscope',
-        color: 'gray',
+        color: 'violet',
         priority: 60,
         children: {},
         showInitially: true,
