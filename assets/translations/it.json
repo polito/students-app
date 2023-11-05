@@ -552,6 +552,7 @@
     "title": "Servizi"
   },
   "settingsScreen": {
+    "appVersion": "Versione {{version}}",
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
@@ -586,6 +587,7 @@
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "reply": "Rispondi",
+    "pickFileTitle": "Puoi includere un allegato per messaggio",
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",

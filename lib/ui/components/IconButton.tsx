@@ -10,12 +10,14 @@ type Props = Omit<FAProps, 'style'> &
     iconStyle?: FAProps['style'];
     adjustSpacing?: 'left' | 'right';
     loading?: boolean;
+    noPadding?: boolean;
   };
 
 export const IconButton = ({
   iconStyle,
   loading,
   adjustSpacing,
+  noPadding = false,
   ...rest
 }: Props) => {
   const { spacing } = useTheme();
@@ -55,7 +57,7 @@ export const IconButton = ({
         right: adjustSpacing === 'right' ? padding : undefined,
       }}
       {...otherButtonProps}
-      style={[{ padding }, style]}
+      style={[!noPadding && { padding }, style]}
     >
       {loading ? (
         <ActivityIndicator />

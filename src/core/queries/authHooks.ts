@@ -6,6 +6,7 @@ import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { isEnvProduction } from '../../utils/env';
 import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -29,7 +30,7 @@ export const useLogin = () => {
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
-        messaging().getToken(),
+        isEnvProduction ? messaging().getToken() : undefined,
       ])
         .then(([name, model, manufacturer, fcmRegistrationToken]) => {
           dto.device = {

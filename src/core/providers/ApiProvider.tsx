@@ -17,6 +17,7 @@ import {
 import SuperJSON from 'superjson';
 
 import { createApiConfiguration } from '../../config/api';
+import { isEnvProduction } from '../../utils/env';
 import {
   ApiContext,
   ApiContextProps,
@@ -115,8 +116,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       splashContext.setIsAppLoaded(true);
     }
   }, [apiContext, splashContext]);
-
-  const isEnvProduction = process.env.NODE_ENV === 'production';
 
   const queryClient = useMemo(() => {
     const onError = async (error: ResponseError, client: QueryClient) => {

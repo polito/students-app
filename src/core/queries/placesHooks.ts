@@ -70,16 +70,20 @@ export const useGetPlaces = (
   const placesClient = usePlacesClient();
   const key = [
     PLACES_QUERY_KEY,
-    params.siteId,
-    params.buildingId,
-    params.floorId,
-    params.placeCategoryId,
-    params.placeSubCategoryId?.join(),
+    `siteId:${params.siteId}`,
+    `buildingId:${params.buildingId}`,
+    `floorId:${params.floorId}`,
+    `placeCategoryId:${params.placeCategoryId}`,
+    `placeSubCategoryId:${params.placeSubCategoryId?.join()}`,
   ];
 
   return useQuery(
     key,
-    () => placesClient.getPlaces(params as GetPlacesRequest),
+    () =>
+      placesClient.getPlaces({
+        ...params,
+        floorId: params.floorId !== null ? params.floorId : undefined,
+      } as GetPlacesRequest),
     {
       enabled: params.siteId != null && params.floorId !== undefined,
       staleTime: Infinity,

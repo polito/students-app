@@ -17,12 +17,14 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
 } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -31,6 +33,7 @@ import { MenuView } from '@react-native-menu/menu';
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
+import { version } from '../../../../package.json';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import {
@@ -42,7 +45,7 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCachePath } from '../../teaching/hooks/useCourseFilesCachePath';
+import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
@@ -161,18 +164,12 @@ const VisualizationListItem = () => {
     },
   ];
 
-  const themeLabel = (cc: string) => {
-    return cc === 'system'
-      ? `${t(`theme.${cc}`)} (${t(`theme.${settingsColorScheme}`)})`
-      : t(`theme.${cc}`);
-  };
-
   return (
     <MenuView
       actions={themeColors.map(cc => {
         return {
           id: cc.id,
-          title: themeLabel(cc.id),
+          title: t(`theme.${cc.id}`),
           image: cc.image,
           imageColor: cc.color,
           state: cc.id === colorScheme ? 'on' : undefined,
@@ -186,10 +183,10 @@ const VisualizationListItem = () => {
       }}
     >
       <ListItem
-        title={themeLabel(colorScheme)}
+        title={t(`theme.${colorScheme}`)}
         isAction
-        accessibilityLabel={`${t('common.theme')}: ${themeLabel(
-          colorScheme,
+        accessibilityLabel={`${t('common.theme')}: ${t(
+          `theme.${colorScheme}`,
         )}. ${t('settingsScreen.openThemeMenu')}`}
         leadingItem={<ThemeIcon />}
       />
@@ -330,6 +327,9 @@ export const SettingsScreen = () => {
               <CleanCacheListItem />
             </OverviewList>
           </Section>
+          <Col ph={4}>
+            <Text>{t('settingsScreen.appVersion', { version })}</Text>
+          </Col>
         </View>
         <BottomBarSpacer />
       </SafeAreaView>

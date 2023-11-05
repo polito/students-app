@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { NativeSyntheticEvent } from 'react-native';
 
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useBottomSheetInternal } from '@gorhom/bottom-sheet';
 import {
   TranslucentTextField,
@@ -35,6 +36,8 @@ const BottomSheetTextFieldComponent = ({
 
   return (
     <TranslucentTextField
+      autoCorrect={false}
+      leadingIcon={faSearch}
       onFocus={handleOnFocus}
       onBlur={handleOnBlur}
       {...rest}

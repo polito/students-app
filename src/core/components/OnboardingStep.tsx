@@ -41,13 +41,14 @@ export const OnboardingStep = ({ stepNumber, width }: Props) => {
         </View>
         <View style={styles.videoContainer}>
           <Video
-            onReadyForDisplay={() => {
-              setIsLoading(false);
+            onBuffer={data => {
+              if (data.isBuffering) setIsLoading(true);
+              else setIsLoading(false);
             }}
             source={{
               uri: videoUrl,
             }}
-            style={[styles.video, isLoading && styles.loadingVideo]}
+            style={[styles.video, styles.loadingVideo]}
             resizeMode="contain"
             repeat={true}
           />
@@ -72,12 +73,15 @@ const createStyles = ({ dark, spacing, palettes }: Theme) =>
     },
     video: {
       borderRadius: 25,
-      borderColor: 'transparent',
       borderWidth: 1,
       alignSelf: 'center',
       aspectRatio: 1080 / 2340,
       elevation: 4,
       flexGrow: 1,
+      borderColor: Platform.select({
+        ios: dark ? palettes.gray[800] : palettes.gray[400],
+        android: 'transparent',
+      }),
     },
     loadingVideo: {
       backgroundColor: dark ? palettes.gray[600] : palettes.gray[200],

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { courseIcons } from '../../teaching/constants';
+import { courseIcons } from '../../courses/constants';
 
 interface Props {
   color: string;

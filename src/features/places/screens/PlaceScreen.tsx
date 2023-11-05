@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -55,6 +55,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     isLoading: isLoadingPlace,
     error: getPlaceError,
   } = useGetPlace(placeId);
+  const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
   const siteId = place?.data.site.id;
   const floorId = place?.data.floor.id;
   const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
@@ -73,76 +74,87 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       : capitalize(placeName),
   );
 
-  useLayoutEffect(
-    () => {
-      if (place?.data) {
-        updatePreference('placesSearched', [
-          place.data,
-          ...placesSearched
-            .filter(p => p.id !== place.data.id)
-            .slice(0, MAX_RECENT_SEARCHES - 1),
-        ]);
-        const { latitude, longitude } = place.data;
-        navigation.setOptions({
-          mapOptions: {
-            compassPosition: IS_IOS
-              ? {
-                  top: headerHeight - safeAreaInsets.top + spacing[2],
-                  right: spacing[3],
-                }
-              : undefined,
-            camera: {
-              centerCoordinate: [longitude, latitude],
-              padding: {
-                paddingTop: 0,
-                paddingLeft: 0,
-                paddingRight: 0,
-                paddingBottom:
-                  Dimensions.get('window').height / 2 - headerHeight,
-              },
-              zoomLevel: 19,
+  useEffect(() => {
+    if (place?.data && !updatedRecentPlaces) {
+      updatePreference('placesSearched', [
+        place.data,
+        ...placesSearched
+          .filter(p => p.id !== place.data.id)
+          .slice(0, MAX_RECENT_SEARCHES - 1),
+      ]);
+      setUpdatedRecentPlaces(true);
+    }
+  }, [place?.data, placesSearched, updatePreference, updatedRecentPlaces]);
+
+  useLayoutEffect(() => {
+    if (place?.data) {
+      const { latitude, longitude } = place.data;
+      navigation.setOptions({
+        mapOptions: {
+          compassPosition: IS_IOS
+            ? {
+                top: headerHeight - safeAreaInsets.top + spacing[2],
+                right: spacing[3],
+              }
+            : undefined,
+          camera: {
+            centerCoordinate: [longitude, latitude],
+            padding: {
+              paddingTop: 0,
+              paddingLeft: 0,
+              paddingRight: 0,
+              paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
             },
+            zoomLevel: 19,
           },
-          mapContent: (
-            <>
-              <IndoorMapLayer floorId={floorId} />
-              <MarkersLayer
-                selectedPoiId={placeId}
-                places={places}
-                categoryId={place.data?.category?.id}
-                subCategoryId={place.data?.category?.subCategory?.id}
-              />
-              {place.data.geoJson != null && (
-                <ShapeSource
-                  id="placeHighlightSource"
-                  shape={place.data.geoJson as any} // TODO fix incompatible types
-                  existing={false}
-                >
-                  <LineLayer
-                    id="placeHighlightLine"
-                    aboveLayerID="indoor"
-                    style={{
-                      lineColor: palettes.secondary[600],
-                      lineWidth: 2,
-                    }}
-                  />
-                  <FillLayer
-                    id="placeHighlightFill"
-                    aboveLayerID="indoor"
-                    style={{
-                      fillColor: `${palettes.secondary[600]}33`,
-                    }}
-                  />
-                </ShapeSource>
-              )}
-            </>
-          ),
-        });
-      }
-    },
-    // eslint-disable-next-line
-    [place?.data],
-  );
+        },
+        mapContent: (
+          <>
+            <IndoorMapLayer floorId={floorId} />
+            <MarkersLayer
+              selectedPoiId={placeId}
+              places={places}
+              categoryId={place.data?.category?.id}
+              subCategoryId={place.data?.category?.subCategory?.id}
+            />
+            {place.data.geoJson != null && (
+              <ShapeSource
+                id="placeHighlightSource"
+                shape={place.data.geoJson as any} // TODO fix incompatible types
+                existing={false}
+              >
+                <LineLayer
+                  id="placeHighlightLine"
+                  aboveLayerID="indoor"
+                  style={{
+                    lineColor: palettes.secondary[600],
+                    lineWidth: 2,
+                  }}
+                />
+                <FillLayer
+                  id="placeHighlightFill"
+                  aboveLayerID="indoor"
+                  style={{
+                    fillColor: `${palettes.secondary[600]}33`,
+                  }}
+                />
+              </ShapeSource>
+            )}
+          </>
+        ),
+      });
+    }
+  }, [
+    floorId,
+    headerHeight,
+    navigation,
+    palettes.secondary,
+    place?.data,
+    placeId,
+    places,
+    safeAreaInsets.top,
+    spacing,
+  ]);
 
   if (isLoading) {
     return (

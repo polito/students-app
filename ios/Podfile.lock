@@ -410,7 +410,7 @@ PODS:
     - React-Core
   - react-native-html-to-pdf (0.12.0):
     - React-Core
-  - react-native-menu (0.8.0):
+  - react-native-menu (0.9.1):
     - React
   - react-native-netinfo (9.3.4):
     - React-Core
@@ -888,7 +888,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
   react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
-  react-native-menu: 5b9b82dabcc779cebde15d292ccbcba4469ff311
+  react-native-menu: 9728f90160c36b9a75481fc76e05354b99d54c59
   react-native-netinfo: 6ac9bcc7c88dc51717bda3484eb99093acb755e0
   react-native-override-color-scheme: 3badbbee9a4ea2a9c3e5b4a5d9fd9eaba8761870
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df

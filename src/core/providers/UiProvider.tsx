@@ -33,21 +33,23 @@ i18n.use(initReactI18next).init({
 export const UiProvider = ({ children }: PropsWithChildren) => {
   // eslint-disable-next-line prefer-const
   let { colorScheme, language } = usePreferencesContext();
-  const systemColorScheme = useColorScheme();
   const safeAreaInsets = useSafeAreaInsets();
+  const theme = useColorScheme();
 
-  if (colorScheme === 'system') {
-    colorScheme = systemColorScheme ?? 'light';
-  } else if (colorScheme !== systemColorScheme) {
-    overrideColorScheme.setScheme(colorScheme);
-  }
+  useEffect(() => {
+    if (colorScheme === 'dark' || colorScheme === 'light') {
+      overrideColorScheme.setScheme(colorScheme);
+    } else {
+      overrideColorScheme.setScheme();
+    }
+  }, [colorScheme]);
 
   const uiTheme = useMemo(
     () => ({
-      ...(colorScheme === 'light' ? lightTheme : darkTheme),
+      ...(theme === 'light' ? lightTheme : darkTheme),
       safeAreaInsets,
     }),
-    [colorScheme, safeAreaInsets],
+    [theme, safeAreaInsets],
   );
   const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 
@@ -64,7 +66,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
         })}
         barStyle={Platform.select({
           android: 'light-content',
-          ios: colorScheme === 'dark' ? 'light-content' : 'dark-content',
+          ios: theme === 'dark' ? 'light-content' : 'dark-content',
         })}
       />
       <NavigationContainer theme={navigationTheme}>
