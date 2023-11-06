@@ -110,6 +110,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
           onZoomEnd={(_, _g, zoomableViewEventObject) => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
+          onSingleTap={() => isSeatSizeValidForBooking()}
         >
           <View
             style={StyleSheet.compose(styles.rowsContainer, {

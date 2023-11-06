@@ -114,8 +114,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [calendarEvents],
   );
 
-  console.debug(isFetching || isLoading || isRefetching);
-
   return (
     <>
       <BottomModal dismissable {...modal} />
