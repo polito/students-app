@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
@@ -9,7 +9,6 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
@@ -29,7 +28,7 @@ import {
   useGetBookingSeats,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
-import { canBeCancelled } from '../../../utils/bookings';
+import { canBeCancelled, useCalculateSeatSize } from '../../../utils/bookings';
 import { AgendaStackParamList } from '../../agenda/components/AgendaNavigator';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
@@ -44,11 +43,10 @@ type Props = NativeStackScreenProps<
 export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { topicId, slotId, seatId, bookingId } = route.params;
-  const { spacing } = useTheme();
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
   const [viewHeight, setViewHeight] = useState<number | undefined>();
-  const [seatSize, setSeatSize] = useState(0);
+  // const [seatSize, setSeatSize] = useState(0);
   const bookingsQuery = useGetBookings();
   const headerHeight = useHeaderHeight();
   const bottomTabBarHeight = useBottomTabBarHeight();
@@ -60,6 +58,10 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
   });
   const isDisabled = useOfflineDisabled();
   const { setFeedback } = useFeedbackContext();
+  const { seatSize, gap } = useCalculateSeatSize(
+    bookingSeatsQuery.data,
+    viewHeight,
+  );
 
   const bookingStartAtTime =
     booking?.startsAt &&
@@ -69,20 +71,6 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const bookingDay =
     booking?.startsAt &&
     DateTime.fromJSDate(booking?.endsAt).toFormat('d MMMM');
-
-  useEffect(() => {
-    if (
-      bookingSeatsQuery.data &&
-      !isEmpty(bookingSeatsQuery.data?.rows) &&
-      viewHeight
-    ) {
-      const numberOfRows = bookingSeatsQuery.data.rows.length + 1;
-      const minSeatSize = Math.round(
-        (viewHeight - spacing[2] * 2 * numberOfRows) / numberOfRows,
-      );
-      setSeatSize(minSeatSize);
-    }
-  }, [bookingSeatsQuery.data, spacing, viewHeight]);
 
   const cancelEnabled = useMemo(() => canBeCancelled(booking), [booking]);
 
@@ -123,11 +111,11 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
           minZoom={1}
         >
           <Col
-            gap={2}
             align="flex-start"
             justify="flex-start"
             style={StyleSheet.compose(styles.rowsContainer, {
               height: viewHeight,
+              gap,
             })}
           >
             {!isEmpty(bookingSeatsQuery.data?.rows) && (
@@ -135,14 +123,13 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
                 align="center"
                 justify="center"
                 key="desk"
-                gap={2}
-                style={{ width: SCREEN_WIDTH }}
+                style={{ width: SCREEN_WIDTH, gap }}
               >
                 <BookingDeskCell seatSize={seatSize} />
               </Row>
             )}
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
-              <Row align="center" key={`row-${index}`} gap={2}>
+              <Row align="center" key={`row-${index}`} style={{ gap }}>
                 {row?.seats?.map(seatCell => (
                   <BookingSeatCell
                     seat={seatCell}

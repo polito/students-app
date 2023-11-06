@@ -6,103 +6,47 @@ import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import {
-  BookingSeatCell as BookingSeatCellType,
-  BookingSeats,
-} from '@polito/api-client';
+import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { isEmpty, times } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
-// import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
+import { useCalculateSeatSize } from '../../../utils/bookings';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
 import { BookingSeatsCta } from '../components/BookingSeatsCta';
+import { maxSeatZoom, minBookableCellSize, minSeatZoom } from '../constant';
 
 type Props = NativeStackScreenProps<
   ServiceStackParamList,
   'BookingSeatSelection'
 >;
-
-const minBookableCellSize = 25;
-const minZoom = 1;
-const maxZoom = 5;
-
-const mockSeats = (): BookingSeats => {
-  const rowsNumber = 2;
-  const seatsNumber = 10;
-  return {
-    totalCount: 180,
-    availableCount: 100,
-    rows: times(rowsNumber, rowIndex => {
-      return {
-        id: rowIndex,
-        label: String(rowIndex),
-        seats: times(seatsNumber, index => {
-          return {
-            id: rowIndex * seatsNumber + index,
-            label: String(`${rowIndex}-${index}`),
-            status: 'available',
-          };
-        }),
-      };
-    }),
-  };
-};
-
 export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const { slotId, topicId, hasSeats, startHour, endHour, day } = route.params;
   const { t } = useTranslation();
-  const { spacing } = useTheme();
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
   const [seat, setSeat] = useState<BookingSeatCellType | undefined>(undefined);
   const [viewHeight, setViewHeight] = useState<number | undefined>();
-  const [seatSize, setSeatSize] = useState(0);
   const { setFeedback } = useFeedbackContext();
   const headerHeight = useHeaderHeight();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { isEnabled } = useScreenReader();
-  const currentZoom = useRef(minZoom);
-  const [gap, setGap] = useState(spacing[1.5]);
-
-  useEffect(() => {
-    if (
-      bookingSeatsQuery.data &&
-      !isEmpty(bookingSeatsQuery.data?.rows) &&
-      viewHeight
-    ) {
-      const numberOfRows = bookingSeatsQuery.data?.rows?.length + 1;
-      const maxSeatsPerRows = Math.max(
-        ...(bookingSeatsQuery || []).data.rows.map(row => row.seats.length),
-      );
-      const maxRowsOrSeats = Math.max(numberOfRows, maxSeatsPerRows);
-      const rowMultiplier =
-        numberOfRows > 25 ? 1.6 : numberOfRows > 20 ? 1.8 : 2;
-      const colMultiplier =
-        maxSeatsPerRows > 25 ? 1.1 : maxSeatsPerRows > 20 ? 1.8 : 1.2;
-      const calculatedGap = maxRowsOrSeats > 30 ? spacing[1] : spacing[1.5];
-      const totalGapHeight = gap * rowMultiplier * numberOfRows;
-      const totalGapWidth = gap * colMultiplier * maxSeatsPerRows;
-      const realViewHeight = viewHeight - totalGapHeight;
-      const realViewWidth = SCREEN_WIDTH - totalGapWidth;
-      const minHeight = realViewHeight / numberOfRows;
-      const minWidth = realViewWidth / maxSeatsPerRows;
-      setGap(calculatedGap);
-      setSeatSize(Math.min(minHeight, minWidth, minBookableCellSize));
-    }
-  }, [bookingSeatsQuery, bookingSeatsQuery.data, spacing, viewHeight]);
+  const currentZoom = useRef(minSeatZoom);
+  const { seatSize, gap } = useCalculateSeatSize(
+    bookingSeatsQuery.data,
+    viewHeight,
+  );
 
   useEffect(() => {
     if (
@@ -149,8 +93,8 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
         onLayout={e => setViewHeight(Math.round(e.nativeEvent.layout.height))}
       >
         <ReactNativeZoomableView
-          maxZoom={maxZoom}
-          minZoom={minZoom}
+          maxZoom={maxSeatZoom}
+          minZoom={minSeatZoom}
           bindToBorders={true}
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
