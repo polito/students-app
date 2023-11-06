@@ -19,7 +19,7 @@ export const BookingSeatCell = ({
   ...rest
 }: BookingSeatProps) => {
   const { t } = useTranslation();
-  const { palettes, shapes } = useTheme();
+  const { palettes, spacing, shapes } = useTheme();
   const seatStatus = t(`bookingSeatScreen.seatStatus.${seat.status}`);
 
   return (

@@ -10,16 +10,20 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
+import {
+  BookingSeatCell as BookingSeatCellType,
+  BookingSeats,
+} from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { isEmpty } from 'lodash';
+import { isEmpty, times } from 'lodash';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
+// import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
@@ -33,7 +37,29 @@ type Props = NativeStackScreenProps<
 
 const minBookableCellSize = 25;
 const minZoom = 1;
-const maxZoom = 3;
+const maxZoom = 5;
+
+const mockSeats = (): BookingSeats => {
+  const rowsNumber = 2;
+  const seatsNumber = 10;
+  return {
+    totalCount: 180,
+    availableCount: 100,
+    rows: times(rowsNumber, rowIndex => {
+      return {
+        id: rowIndex,
+        label: String(rowIndex),
+        seats: times(seatsNumber, index => {
+          return {
+            id: rowIndex * seatsNumber + index,
+            label: String(`${rowIndex}-${index}`),
+            status: 'available',
+          };
+        }),
+      };
+    }),
+  };
+};
 
 export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const { slotId, topicId, hasSeats, startHour, endHour, day } = route.params;
@@ -49,6 +75,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { isEnabled } = useScreenReader();
   const currentZoom = useRef(minZoom);
+  const [gap, setGap] = useState(spacing[1.5]);
 
   useEffect(() => {
     if (
@@ -57,13 +84,25 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
       viewHeight
     ) {
       const numberOfRows = bookingSeatsQuery.data?.rows?.length + 1;
-      const verticalPadding = spacing[2] * 2 * (numberOfRows - 1);
-      const minSeatSize = Math.round(
-        (viewHeight - verticalPadding) / numberOfRows,
+      const maxSeatsPerRows = Math.max(
+        ...(bookingSeatsQuery || []).data.rows.map(row => row.seats.length),
       );
-      setSeatSize(minSeatSize);
+      const maxRowsOrSeats = Math.max(numberOfRows, maxSeatsPerRows);
+      const rowMultiplier =
+        numberOfRows > 25 ? 1.6 : numberOfRows > 20 ? 1.8 : 2;
+      const colMultiplier =
+        maxSeatsPerRows > 25 ? 1.1 : maxSeatsPerRows > 20 ? 1.8 : 1.2;
+      const calculatedGap = maxRowsOrSeats > 30 ? spacing[1] : spacing[1.5];
+      const totalGapHeight = gap * rowMultiplier * numberOfRows;
+      const totalGapWidth = gap * colMultiplier * maxSeatsPerRows;
+      const realViewHeight = viewHeight - totalGapHeight;
+      const realViewWidth = SCREEN_WIDTH - totalGapWidth;
+      const minHeight = realViewHeight / numberOfRows;
+      const minWidth = realViewWidth / maxSeatsPerRows;
+      setGap(calculatedGap);
+      setSeatSize(Math.min(minHeight, minWidth, minBookableCellSize));
     }
-  }, [bookingSeatsQuery.data, spacing, viewHeight]);
+  }, [bookingSeatsQuery, bookingSeatsQuery.data, spacing, viewHeight]);
 
   useEffect(() => {
     if (
@@ -131,7 +170,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
           <View
             style={StyleSheet.compose(styles.rowsContainer, {
               height: viewHeight,
-              gap: spacing[2],
+              gap,
             })}
           >
             {!isEmpty(bookingSeatsQuery.data?.rows) && (
@@ -139,18 +178,13 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
                 align="center"
                 justify="center"
                 key="desk"
-                gap={2}
-                style={{ width: SCREEN_WIDTH }}
+                style={{ width: SCREEN_WIDTH, gap }}
               >
                 <BookingDeskCell seatSize={seatSize} />
               </Row>
             )}
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
-              <Row
-                align="center"
-                key={`row-${index}`}
-                style={{ gap: spacing[2] }}
-              >
+              <Row align="center" key={`row-${index}`} style={{ gap: gap }}>
                 {row?.seats?.map(seatCell => (
                   <BookingSeatCell
                     seat={seatCell}

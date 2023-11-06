@@ -15,15 +15,6 @@ export const BookingSlotsStatusLegend = () => {
     <MenuView
       actions={[
         {
-          title: t('bookingScreen.bookingStatus.notAvailable'),
-          id: 'notAvailable',
-          image: Platform.select({
-            ios: 'circle.fill',
-            android: 'circle',
-          }),
-          imageColor: palettes.secondary['400'],
-        },
-        {
           title: t('bookingScreen.bookingStatus.available'),
           id: 'available',
           image: Platform.select({
@@ -40,6 +31,15 @@ export const BookingSlotsStatusLegend = () => {
             android: 'circle',
           }),
           imageColor: palettes.green['500'],
+        },
+        {
+          title: t('bookingScreen.bookingStatus.notAvailable'),
+          id: 'notAvailable',
+          image: Platform.select({
+            ios: 'circle.fill',
+            android: 'circle',
+          }),
+          imageColor: palettes.secondary['400'],
         },
         {
           title: t('bookingScreen.bookingStatus.full'),

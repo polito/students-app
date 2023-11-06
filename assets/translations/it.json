@@ -23,10 +23,10 @@
       "virtualPlace": "Link sportello virtuale"
     },
     "bookingStatus": {
-      "notAvailable": "Non prenotabile",
+      "notAvailable": "Non ancora prenotabile",
       "available": "Prenotabile",
       "booked": "Prenotato",
-      "full": "Pieno"
+      "full": "Non prenotabile"
     }
   },
   "bookingsScreen": {
