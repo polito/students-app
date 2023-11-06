@@ -28,12 +28,13 @@ import {
   useGetBookingSeats,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
-import { canBeCancelled, useCalculateSeatSize } from '../../../utils/bookings';
+import { canBeCancelled } from '../../../utils/bookings';
 import { AgendaStackParamList } from '../../agenda/components/AgendaNavigator';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
+import { useCalculateSeatsDimension } from '../hooks/useCalculateSeatsDimension';
 
 type Props = NativeStackScreenProps<
   AgendaStackParamList | ServiceStackParamList,
@@ -46,7 +47,6 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
   const [viewHeight, setViewHeight] = useState<number | undefined>();
-  // const [seatSize, setSeatSize] = useState(0);
   const bookingsQuery = useGetBookings();
   const headerHeight = useHeaderHeight();
   const bottomTabBarHeight = useBottomTabBarHeight();
@@ -58,7 +58,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
   });
   const isDisabled = useOfflineDisabled();
   const { setFeedback } = useFeedbackContext();
-  const { seatSize, gap } = useCalculateSeatSize(
+  const { seatSize, gap } = useCalculateSeatsDimension(
     bookingSeatsQuery.data,
     viewHeight,
   );
@@ -203,9 +203,5 @@ const createStyles = ({ spacing, colors }: Theme) =>
       paddingBottom: 0,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: colors.divider,
-    },
-    container: {
-      backgroundColor: colors.surface,
-      paddingTop: spacing[2],
     },
   });

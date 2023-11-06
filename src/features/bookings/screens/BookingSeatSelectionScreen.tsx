@@ -19,13 +19,13 @@ import { isEmpty } from 'lodash';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
-import { useCalculateSeatSize } from '../../../utils/bookings';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
 import { BookingSeatsCta } from '../components/BookingSeatsCta';
 import { maxSeatZoom, minBookableCellSize, minSeatZoom } from '../constant';
+import { useCalculateSeatsDimension } from '../hooks/useCalculateSeatsDimension';
 
 type Props = NativeStackScreenProps<
   ServiceStackParamList,
@@ -43,7 +43,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { isEnabled } = useScreenReader();
   const currentZoom = useRef(minSeatZoom);
-  const { seatSize, gap } = useCalculateSeatSize(
+  const { seatSize, gap } = useCalculateSeatsDimension(
     bookingSeatsQuery.data,
     viewHeight,
   );
@@ -204,9 +204,5 @@ const createStyles = ({ spacing, colors }: Theme) =>
       paddingBottom: 0,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: colors.divider,
-    },
-    container: {
-      backgroundColor: colors.surface,
-      paddingTop: spacing[2],
     },
   });
