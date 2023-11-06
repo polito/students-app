@@ -20,6 +20,7 @@ import { BookingSubtopic } from '@polito/api-client/models';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';
+import { sanitizeHtml } from '../../../utils/html';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type TopicSection = {
@@ -122,7 +123,7 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
                 }}
               >
                 <SectionHeader
-                  title={title}
+                  title={sanitizeHtml(title || topicId)}
                   titleStyle={{
                     fontWeight: fontWeights.medium,
                   }}
@@ -167,7 +168,7 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
                     borderBottomLeftRadius: isLastItem ? shapes.lg : 0,
                   }}
                 >
-                  <Text variant="prose">{subtopic.title}</Text>
+                  <Text variant="prose">{sanitizeHtml(subtopic.title)}</Text>
                   <Icon icon={faChevronRight} color={colors.secondaryText} />
                 </Row>
               </Pressable>

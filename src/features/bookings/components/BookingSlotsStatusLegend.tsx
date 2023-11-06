@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { Icon } from '@lib/ui/components/Icon';
 import { PillButton } from '@lib/ui/components/PillButton';
@@ -17,25 +17,37 @@ export const BookingSlotsStatusLegend = () => {
         {
           title: t('bookingScreen.bookingStatus.notAvailable'),
           id: 'notAvailable',
-          image: 'circle.fill',
+          image: Platform.select({
+            ios: 'circle.fill',
+            android: 'circle',
+          }),
           imageColor: palettes.secondary['400'],
         },
         {
           title: t('bookingScreen.bookingStatus.available'),
           id: 'available',
-          image: 'circle.fill',
+          image: Platform.select({
+            ios: 'circle.fill',
+            android: 'circle',
+          }),
           imageColor: palettes.primary['400'],
         },
         {
           title: t('bookingScreen.bookingStatus.booked'),
           id: 'booked',
-          image: 'circle.fill',
+          image: Platform.select({
+            ios: 'circle.fill',
+            android: 'circle',
+          }),
           imageColor: palettes.green['500'],
         },
         {
           title: t('bookingScreen.bookingStatus.full'),
           id: 'full',
-          image: 'circle.fill',
+          image: Platform.select({
+            ios: 'circle.fill',
+            android: 'circle',
+          }),
           imageColor: palettes.danger['500'],
         },
       ]}

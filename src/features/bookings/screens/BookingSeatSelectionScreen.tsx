@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
@@ -119,6 +119,8 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
           onTransform={zoomableViewEventObject => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
+          doubleTapZoomToCenter={true}
+          visualTouchFeedbackEnabled={true}
           onDoubleTapAfter={(_, zoomableViewEventObject) => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
@@ -126,12 +128,11 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
             currentZoom.current = zoomableViewEventObject.zoomLevel;
           }}
         >
-          <Pressable
+          <View
             style={StyleSheet.compose(styles.rowsContainer, {
               height: viewHeight,
               gap: spacing[2],
             })}
-            onPress={() => isSeatSizeValidForBooking()}
           >
             {!isEmpty(bookingSeatsQuery.data?.rows) && (
               <Row
@@ -168,7 +169,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
                 ))}
               </Row>
             ))}
-          </Pressable>
+          </View>
         </ReactNativeZoomableView>
       </View>
       <BookingSeatsCta
