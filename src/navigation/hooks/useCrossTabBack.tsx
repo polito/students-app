@@ -1,4 +1,4 @@
-import { BackHandler } from 'react-native';
+import { BackHandler, Platform } from 'react-native';
 
 import {
   HeaderBackButton,
@@ -107,20 +107,20 @@ const setCustomBackHandler = (
   }
 
   navigation.setOptions({
+    headerBackVisible: false,
     headerTitleAlign: 'left',
     headerLeft: (props: HeaderBackButtonProps) => (
       <HeaderBackButton
         {...props}
-        onPress={() => onCustomBackPressed(navigation)}
         labelVisible={false}
-        style={
-          {
-            // height: 20,
-            // width: 20,
-            // margin: 0,
-            // resizeMode: 'contain',
-          }
-        }
+        onPress={() => onCustomBackPressed(navigation)}
+        style={Platform.select({
+          ios: {
+            marginHorizontal: -9.5,
+            left: -7,
+          },
+          android: { left: -15, marginHorizontal: 14 },
+        })}
       />
     ),
   });
