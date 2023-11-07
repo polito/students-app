@@ -175,6 +175,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               }
               if (
                 event.canBeBooked &&
+                event.hasSeatSelection &&
                 event.hasSeats &&
                 event.start > DateTime.now()
               ) {
@@ -204,6 +205,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               const { color, backgroundColor, opacity } = getBookingStyle(
                 item,
                 palettes,
+                colors,
               );
               const bookingStatus = getBookingSlotStatus(item);
 

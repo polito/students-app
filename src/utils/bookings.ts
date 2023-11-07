@@ -8,10 +8,11 @@ import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotSc
 export const getBookingStyle = (
   item: BookingCalendarEvent,
   palettes: Theme['palettes'],
+  colors: Theme['colors'],
 ) => {
-  const isBooked = !!item.isBooked;
+  const isBooked = item.isBooked;
   const isFull = item.bookedPlaces === item.places;
-  const canBeBooked = !!item.canBeBooked;
+  const canBeBooked = item.canBeBooked;
   const notYetBookable = item.start > DateTime.now();
   const isPast = item.start < DateTime.now();
 
@@ -23,39 +24,39 @@ export const getBookingStyle = (
   }
   if (canBeBooked) {
     return {
-      backgroundColor: palettes.primary['100'],
-      color: palettes.primary['600'],
+      backgroundColor: palettes.navy['50'],
+      color: palettes.navy['600'],
     };
   }
   if (isPast) {
     return {
-      backgroundColor: palettes.gray['200'],
+      backgroundColor: colors.background,
       color: palettes.gray['600'],
-      opacity: 0.8,
+      opacity: 0.7,
     };
   }
   if (isFull) {
     return {
-      backgroundColor: palettes.danger['100'],
-      color: palettes.danger['600'],
+      backgroundColor: palettes.rose['200'],
+      color: palettes.rose['600'],
     };
   }
   if (notYetBookable) {
     return {
-      backgroundColor: palettes.secondary['100'],
-      color: palettes.secondary['700'],
+      backgroundColor: palettes.orange['100'],
+      color: palettes.orange['700'],
     };
   }
   return {
-    backgroundColor: palettes.danger['100'],
-    color: palettes.danger['700'],
+    backgroundColor: palettes.rose['200'],
+    color: palettes.rose['600'],
   };
 };
 
 export const getBookingSlotStatus = (item: BookingCalendarEvent) => {
-  const isBooked = !!item.isBooked;
+  const isBooked = item.isBooked;
   const isFull = item.bookedPlaces === item.places;
-  const canBeBooked = !!item.canBeBooked;
+  const canBeBooked = item.canBeBooked;
   if (isBooked) {
     return 'bookingScreen.bookingStatus.booked';
   }
