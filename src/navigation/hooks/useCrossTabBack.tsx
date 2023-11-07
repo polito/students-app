@@ -6,6 +6,8 @@ import {
 } from '@react-navigation/elements';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 
+import { findTabNavigator } from '../../utils/navigation';
+
 /**
  * Hook to enable cross tab back navigation
  *
@@ -34,23 +36,6 @@ export const useCrossTabBack = (
  *
  * @param navigation
  */
-const findTabNavigator = (navigation: NavigationProp<any>) => {
-  let navigator = navigation;
-  let tabFound = false;
-  do {
-    const parentNavigator = navigator.getParent();
-    tabFound = parentNavigator !== undefined && !parentNavigator.getParent();
-
-    if (!tabFound) {
-      navigator = parentNavigator!;
-    }
-  } while (!tabFound);
-
-  if (!tabFound) {
-    return;
-  }
-  return navigator;
-};
 
 const onCustomBackPressed = (navigation: NavigationProp<any>) => {
   const tabNavigator = findTabNavigator(navigation);
@@ -64,8 +49,6 @@ const onCustomBackPressed = (navigation: NavigationProp<any>) => {
   const tabsNavigator = tabNavigator.getParent()!;
 
   const isFirstScreenInStack = tabNavigator.getState().routes?.length === 1;
-
-  console.debug('TAB', JSON.stringify(tabsNavigator.getState()));
 
   const tabNavigatorState = tabsNavigator.getState();
 

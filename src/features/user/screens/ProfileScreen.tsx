@@ -39,6 +39,7 @@ import {
   MESSAGES_QUERY_KEY,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
+import { useCleanupCrossTabNavigation } from '../../../navigation/hooks/useCleanupCrossTabNavigation';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
@@ -129,6 +130,8 @@ export const ProfileScreen = ({ navigation }: Props) => {
       ),
     });
   }, [isOffline, navigation, student]);
+
+  useCleanupCrossTabNavigation(navigation);
 
   return (
     <ScrollView

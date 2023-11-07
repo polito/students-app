@@ -27,6 +27,7 @@ import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
+import { useCleanupCrossTabNavigation } from '../../../navigation/hooks/useCleanupCrossTabNavigation';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
@@ -174,6 +175,8 @@ export const AgendaScreen = ({ navigation }: Props) => {
     t,
     agendaScreen,
   ]);
+
+  useCleanupCrossTabNavigation(navigation);
 
   return (
     <View style={styles.container}>

@@ -26,6 +26,7 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
+import { useCleanupCrossTabNavigation } from '../../../navigation/hooks/useCleanupCrossTabNavigation';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -45,6 +46,9 @@ export const ServicesScreen = ({ navigation }: Props) => {
   const queryClient = useQueryClient();
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
+
+  useCleanupCrossTabNavigation(navigation);
+
   const services = useMemo(() => {
     return [
       {

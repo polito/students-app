@@ -33,6 +33,7 @@ import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { useCleanupCrossTabNavigation } from '../../../navigation/hooks/useCleanupCrossTabNavigation';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
@@ -52,6 +53,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
   const transcriptBadge = null;
+
+  useCleanupCrossTabNavigation(navigation);
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
