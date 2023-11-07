@@ -20,8 +20,10 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { inRange } from 'lodash';
 import { DateTime } from 'luxon';
 
+import { isSlotFull } from '../../../utils/bookings';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
 import { BookingField } from './BookingField';
 import { BookingSeatsCta } from './BookingSeatsCta';
@@ -38,7 +40,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   const { fontSizes } = useTheme();
   const now = DateTime.now().toJSDate();
 
-  const isFull = item.places === item.bookedPlaces;
+  const isFull = isSlotFull(item);
   const bookingNotYetOpen = !!(
     item?.bookingStartsAt && item?.bookingStartsAt > now
   );
@@ -49,6 +51,23 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   const day = item.start.toFormat('d MMMM');
 
   const NotBookableMessage = () => {
+    if (
+      !item.canBeBooked &&
+      inRange(
+        DateTime.now().valueOf(),
+        item.bookingStartsAt.valueOf(),
+        item.bookingEndsAt.valueOf(),
+      ) &&
+      !isFull
+    ) {
+      return (
+        <EmptyState
+          icon={faHourglassEnd}
+          iconSize={fontSizes['4xl']}
+          message={item.feedback}
+        />
+      );
+    }
     return isFull ? (
       <EmptyState
         icon={faFrown}

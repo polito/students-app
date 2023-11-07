@@ -29,8 +29,12 @@ import {
   useGetBookingSlots,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
-import { getBookingSlotStatus, getBookingStyle } from '../../../utils/bookings';
-import { getHtmlTextContent } from '../../../utils/html';
+import {
+  canBeBookedWithSeatSelection,
+  getBookingSlotStatus,
+  getBookingStyle,
+  isPastSlot,
+} from '../../../utils/bookings';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
@@ -114,6 +118,38 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [calendarEvents],
   );
 
+  const onPressEvent = (event: BookingCalendarEvent) => {
+    if (isPastSlot(event)) {
+      return;
+    }
+    if (event.isBooked) {
+      const booking = myBookings && myBookings?.find(b => b.id === event.id);
+      booking &&
+        booking.seat &&
+        booking.seat?.id &&
+        navigation.navigate('BookingSeat', {
+          bookingId: booking.id,
+          slotId: String(booking?.id),
+          seatId: booking?.seat?.id,
+          topicId: booking.subtopic?.id || booking.topic.id,
+        });
+      return;
+    }
+    if (canBeBookedWithSeatSelection(event)) {
+      event.id &&
+        navigation.navigate('BookingSeatSelection', {
+          slotId: String(event.id),
+          startHour: event.start.toFormat('HH:mm'),
+          endHour: event.end.toFormat('HH:mm'),
+          day: event.start.toFormat('d MMMM'),
+          hasSeats: event.hasSeats,
+          topicId,
+        });
+    } else {
+      open(<BookingSlotModal topicId={topicId} item={event} close={close} />);
+    }
+  };
+
   return (
     <>
       <BottomModal dismissable {...modal} />
@@ -144,6 +180,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             weekDayHeaderHighlightColor={colors.background}
             showAllDayEventCell={false}
             overlapOffset={10000}
+            calendarCellStyle={styles.eventCellStyle}
             cellMaxHeight={calendarHasMiniEvents ? 150 : 50}
             date={currentWeekStart}
             locale={language}
@@ -152,52 +189,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             renderHeader={props => (
               <CalendarHeader {...props} cellHeight={-1} />
             )}
-            onPressEvent={event => {
-              if (event.isBooked) {
-                const booking =
-                  myBookings && myBookings?.find(b => b.id === event.id);
-                booking &&
-                  booking.seat &&
-                  booking.seat?.id &&
-                  navigation.navigate('BookingSeat', {
-                    bookingId: booking.id,
-                    slotId: String(booking?.id),
-                    seatId: booking?.seat?.id,
-                    topicId: booking.subtopic?.id || booking.topic.id,
-                  });
-                !booking &&
-                  setFeedback({
-                    text: event.feedback
-                      ? getHtmlTextContent(event.feedback)
-                      : t('common.booked'),
-                  });
-                return;
-              }
-              if (
-                event.canBeBooked &&
-                event.hasSeatSelection &&
-                event.hasSeats &&
-                event.start > DateTime.now()
-              ) {
-                event.id &&
-                  navigation.navigate('BookingSeatSelection', {
-                    slotId: String(event.id),
-                    startHour: event.start.toFormat('HH:mm'),
-                    endHour: event.end.toFormat('HH:mm'),
-                    day: event.start.toFormat('d MMMM'),
-                    hasSeats: event.hasSeats,
-                    topicId,
-                  });
-              } else {
-                open(
-                  <BookingSlotModal
-                    topicId={topicId}
-                    item={event}
-                    close={close}
-                  />,
-                );
-              }
-            }}
+            onPressEvent={onPressEvent}
             events={calendarEvents}
             height={calendarHeight}
             renderEvent={(item, touchableOpacityProps) => {
@@ -262,21 +254,9 @@ const createStyles = ({
       fontWeight: fontWeights.normal,
       marginTop: spacing[1],
     },
-    notAvailable: {
-      backgroundColor: palettes.secondary['100'],
-      color: palettes.secondary['700'],
-    },
-    available: {
-      backgroundColor: palettes.primary['100'],
-      color: palettes.primary['600'],
-    },
-    booked: {
-      backgroundColor: palettes.green['100'],
-      color: palettes.green['600'],
-    },
-    full: {
-      backgroundColor: palettes.danger['100'],
-      color: palettes.danger['600'],
+    eventCellStyle: {
+      borderColor: palettes.gray['400'],
+      borderWidth: StyleSheet.hairlineWidth,
     },
     event: {
       backgroundColor: undefined,
@@ -287,7 +267,7 @@ const createStyles = ({
       elevation: undefined,
       justifyContent: 'center',
       alignItems: 'center',
-      borderColor: colors.divider,
+      borderColor: palettes.gray['400'],
       borderWidth: StyleSheet.hairlineWidth,
     },
     dayHeader: {

@@ -5,18 +5,39 @@ import { DateTime } from 'luxon';
 
 import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotScreen';
 
+const isSlotBookable = (item: BookingCalendarEvent) => {
+  return item.canBeBooked && item.start > DateTime.now();
+};
+
+export const isSlotFull = (item: BookingCalendarEvent) => {
+  return item.bookedPlaces === item.places;
+};
+
+export const isPastSlot = (item: BookingCalendarEvent) => {
+  return item.start < DateTime.now();
+};
+
+export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
+  return (
+    slot.canBeBooked &&
+    slot.hasSeatSelection &&
+    slot.hasSeats &&
+    slot.start > DateTime.now()
+  );
+};
+
 export const getBookingStyle = (
   item: BookingCalendarEvent,
   palettes: Theme['palettes'],
   colors: Theme['colors'],
 ) => {
   const isBooked = item.isBooked;
-  const isFull = item.bookedPlaces === item.places;
-  const canBeBooked = item.canBeBooked;
+  const isFull = isSlotFull(item);
+  const canBeBooked = isSlotBookable(item);
   const notYetBookable = item.start > DateTime.now();
   const isPast = item.start < DateTime.now();
 
-  if (isBooked) {
+  if (isBooked && !isPast) {
     return {
       backgroundColor: palettes.green['100'],
       color: palettes.green['600'],
@@ -30,7 +51,7 @@ export const getBookingStyle = (
   }
   if (isPast) {
     return {
-      backgroundColor: colors.background,
+      backgroundColor: palettes.gray['200'],
       color: palettes.gray['600'],
       opacity: 0.7,
     };
