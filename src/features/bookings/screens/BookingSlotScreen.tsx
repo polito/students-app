@@ -71,8 +71,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { data: myBookings } = useGetBookings();
   const { data: topics } = useGetBookingTopics();
   const { language } = usePreferencesContext();
-  const { open, modal, close } = useBottomModal();
-  const [weekStartsOn, setWeekStartsOn] = useState<WeekNum>(1);
+  const {
+    open: showBottomModal,
+    modal: bottomModal,
+    close: closeBottomModal,
+  } = useBottomModal();
   const [weekEndsOn, setWeeksEndOn] = useState<WeekNum>(5);
   const [daysPerWeek, setDaysPerWeek] = useState(7);
   const { isLoading, isFetching, refetch, isRefetching, ...bookingSlotsQuery } =
@@ -156,7 +159,13 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           topicId,
         });
     } else {
-      open(<BookingSlotModal topicId={topicId} item={event} close={close} />);
+      showBottomModal(
+        <BookingSlotModal
+          topicId={topicId}
+          item={event}
+          close={closeBottomModal}
+        />,
+      );
     }
   };
 
@@ -169,10 +178,8 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     const newStartDate = currentTopic?.startDate
       ? DateTime.fromJSDate(currentTopic?.startDate)
       : START_DATE;
-    const startsOn = newStartDate.weekday as WeekNum;
     const newDaysPerWeek = currentTopic?.daysPerWeek as WeekNum;
     setCurrentWeekStart(newStartDate);
-    setWeekStartsOn(startsOn);
     setWeeksEndOn(
       newStartDate.plus({ days: newDaysPerWeek - 1 }).weekday as WeekNum,
     );
@@ -188,22 +195,9 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     );
   }, [isOffline, currentTopic, currentWeekStart]);
 
-  console.debug('currentTopic', currentTopic);
-  // console.debug('hours', hours);
-  // console.debug(
-  //   'slots',
-  //   calendarEvents
-  //     .filter(c => c.start.day === DateTime.now().plus({ days: 1 }).day)
-  //     .map(s => ({
-  //       start: s.start.toISO(),
-  //       end: s.end.toISO(),
-  //       duration: s.duration,
-  //     })),
-  // );
-
   return (
     <>
-      <BottomModal dismissable {...modal} />
+      <BottomModal dismissable {...bottomModal} />
       <HeaderAccessory justify="space-between">
         <Tabs>
           <BookingSlotsStatusLegend />
@@ -226,7 +220,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         )}
         {calendarHeight && (
           <Calendar<BookingCalendarEvent>
-            weekStartsOn={weekStartsOn}
+            weekStartsOn={currentWeekStart.weekday as WeekNum}
             weekEndsOn={weekEndsOn}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}

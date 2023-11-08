@@ -117,6 +117,7 @@ export const getCalendarPropsFromTopic = (
   topics?: BookingTopic[],
   topicId?: string,
 ) => {
+  // TODO: handle topic or subtopic
   const topicWithSubtopics = topics?.find(topic =>
     topic.subtopics?.find(subtopic => subtopic.id === topicId),
   );
@@ -125,7 +126,5 @@ export const getCalendarPropsFromTopic = (
   );
   return {
     ...topic,
-    // startDate: DateTime.now().plus({ days: 1 }).toJSDate(),
-    // daysPerWeek: 2,
   };
 };

@@ -62,7 +62,6 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
         hours,
         startHour,
       );
-      // console.debug(start.toFormat('HH:mm'));
       return {
         height: `${relativeHeight}%`,
         top: `${relativeTop}%`,
