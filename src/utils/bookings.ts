@@ -39,8 +39,8 @@ export const getBookingStyle = (
 
   if (isBooked && !isPast) {
     return {
-      backgroundColor: palettes.green['100'],
-      color: palettes.green['600'],
+      backgroundColor: palettes.tertiary['100'],
+      color: palettes.tertiary['700'],
     };
   }
   if (canBeBooked) {

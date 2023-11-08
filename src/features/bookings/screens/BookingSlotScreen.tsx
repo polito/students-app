@@ -1,4 +1,10 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -14,6 +20,7 @@ import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { faSeat } from '@lib/ui/icons/faSeat';
+import { WeekNum } from '@lib/ui/types/Calendar';
 import { Theme } from '@lib/ui/types/Theme';
 import { BookingSlot } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,12 +28,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { BottomModal } from '../../../core/components/BottomModal';
-import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useGetBookingSlots,
+  useGetBookingTopics,
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import {
@@ -52,7 +59,6 @@ export type BookingCalendarEvent = BookingSlot & {
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
   const { palettes, colors } = useTheme();
-  const { setFeedback } = useFeedbackContext();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
@@ -60,8 +66,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     DateTime.now().startOf('week'),
   );
   const { data: myBookings } = useGetBookings();
+  const { data: topics } = useGetBookingTopics();
   const { language } = usePreferencesContext();
   const { open, modal, close } = useBottomModal();
+  const [weekStartsOn, setWeekStartsOn] = useState<WeekNum>(1);
+  const [weekEndsOn, setWeeksEndOn] = useState<WeekNum>(5);
   const { isLoading, isFetching, refetch, isRefetching, ...bookingSlotsQuery } =
     useGetBookingSlots(topicId, currentWeekStart);
 
@@ -76,6 +85,24 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
   );
+
+  // console.debug('bookingSlotsQuery', bookingSlotsQuery.data);
+  // console.debug('topics', topics);
+  const currentTopic = useMemo(() => {
+    // const topicIndex = topics?.findIndex(topic => topic.id === topicId);
+    // if (topics && topicIndex && topicIndex > -1) {
+    //   return topics[topicIndex];
+    // }
+    const topicWithSubtopics = topics?.find(topic =>
+      topic.subtopics?.find(subtopic => subtopic.id === topicId),
+    );
+    // console.debug('topicWithSubtopics', topicWithSubtopics);
+    return topicWithSubtopics?.subtopics?.find(
+      subtopic => subtopic.id === topicId,
+    );
+  }, [topics, topicId]);
+
+  // console.debug('currentTopics', currentTopics);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -150,6 +177,49 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     }
   };
 
+  const hours = useMemo(() => {
+    const startHour = currentTopic?.startHour ?? 8;
+    const endHour = currentTopic?.endHour ?? 19;
+    return Array.from(
+      { length: endHour - startHour + 1 },
+      (_, i) => i + startHour,
+    );
+  }, [currentTopic]);
+
+  const slotLength = currentTopic?.slotLength || 60;
+  useEffect(() => {
+    const newStartDate = currentTopic?.startDate
+      ? DateTime.fromJSDate(currentTopic?.startDate)
+      : DateTime.now().startOf('week');
+    setCurrentWeekStart(newStartDate);
+    const startsOn = newStartDate.weekday as WeekNum;
+    console.debug('startsOn', startsOn);
+    console.debug('currentTopic?.daysPerWeek', currentTopic?.daysPerWeek);
+    const endsOn = currentTopic?.daysPerWeek as WeekNum;
+    setWeekStartsOn(startsOn);
+    setWeeksEndOn(endsOn);
+  }, [currentTopic]);
+
+  console.debug('hours', currentTopic);
+  console.debug(
+    'slots',
+    calendarEvents
+      .filter(c => c.start.day === DateTime.now().day)
+      .map(s => ({
+        start: s.start.toISO(),
+        end: s.end.toISO(),
+        duration: s.duration,
+      })),
+  );
+  console.debug('hours', hours.length);
+
+  const isPrevWeekDisabled = useMemo(() => {
+    const currentTopicStartDate = currentTopic?.startDate
+      ? DateTime.fromJSDate(currentTopic?.startDate)
+      : null;
+    return currentTopicStartDate === currentWeekStart || isOffline;
+  }, [isOffline, currentTopic, currentWeekStart]);
+
   return (
     <>
       <BottomModal dismissable {...modal} />
@@ -162,7 +232,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           getNext={nextWeek}
           getPrev={prevWeek}
           isNextWeekDisabled={isOffline}
-          isPrevWeekDisabled={isOffline}
+          isPrevWeekDisabled={isPrevWeekDisabled}
         />
       </HeaderAccessory>
       <View
@@ -174,17 +244,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         )}
         {calendarHeight && (
           <Calendar<BookingCalendarEvent>
-            weekStartsOn={1}
-            weekEndsOn={5}
+            weekStartsOn={weekStartsOn}
+            weekEndsOn={weekEndsOn}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
-            showAllDayEventCell={false}
-            overlapOffset={10000}
             calendarCellStyle={styles.eventCellStyle}
-            cellMaxHeight={calendarHasMiniEvents ? 150 : 50}
             date={currentWeekStart}
             locale={language}
+            hours={hours}
+            cellMaxHeight={slotLength}
             mode="custom"
+            showAllDayEventCell={false}
             swipeEnabled={false}
             renderHeader={props => (
               <CalendarHeader {...props} cellHeight={-1} />

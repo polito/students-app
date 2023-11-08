@@ -19,7 +19,7 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: palettes.navy['400'],
+          imageColor: palettes.primary['400'],
         },
         {
           title: t('bookingScreen.bookingStatus.booked'),
@@ -28,16 +28,7 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: '#10B981',
-        },
-        {
-          title: t('bookingScreen.bookingStatus.notAvailable'),
-          id: 'notAvailable',
-          image: Platform.select({
-            ios: 'circle.fill',
-            android: 'circle',
-          }),
-          imageColor: palettes.orange['400'],
+          imageColor: palettes.tertiary['500'],
         },
         {
           title: t('bookingScreen.bookingStatus.full'),
@@ -46,7 +37,16 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: palettes.rose['500'],
+          imageColor: palettes.danger['500'],
+        },
+        {
+          title: t('bookingScreen.bookingStatus.notAvailable'),
+          id: 'notAvailable',
+          image: Platform.select({
+            ios: 'circle.fill',
+            android: 'circle',
+          }),
+          imageColor: palettes.secondary['400'],
         },
       ]}
     >

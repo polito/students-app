@@ -24,9 +24,9 @@ import {
   ICalendarEventBase,
 } from '../../types/Calendar';
 import {
+  HOURS,
   getMaxOverlappingEventsCount,
   getRelativeTopInDay,
-  hours,
   isToday,
 } from '../../utils/calendar';
 import { CalendarEvent } from './CalendarEvent';
@@ -55,6 +55,7 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   showAllDayEventCell: boolean;
   showTime: boolean;
   style?: ViewStyle;
+  hours?: number[];
 }
 
 export const CalendarBody = <T extends ICalendarEventBase>({
@@ -79,6 +80,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   headerComponentStyle = {},
   hideHours = false,
   isEventOrderingEnabled = true,
+  hours = HOURS,
 }: CalendarBodyProps<T>) => {
   const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
@@ -143,6 +145,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           overlapOffset={overlapOffset}
           renderEvent={renderEvent}
           ampm={ampm}
+          hours={hours}
           showAllDayEventCell={showAllDayEventCell}
         />
       );
@@ -155,6 +158,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
       renderEvent,
       showAllDayEventCell,
       showTime,
+      hours,
     ],
   );
 
@@ -175,7 +179,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
             : { x: 0, y: 0 }
         }
         contentContainerStyle={{
-          paddingBottom: bottomBarHeight + cellHeight,
+          paddingBottom: bottomBarHeight,
         }}
       >
         <SafeAreaView
@@ -260,6 +264,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                         top: `${getRelativeTopInDay(
                           now,
                           showAllDayEventCell,
+                          hours,
                         )}%`,
                       },
                     ]}

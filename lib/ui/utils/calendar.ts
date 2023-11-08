@@ -45,7 +45,7 @@ export function getDatesInNextOneDay(date: DateTime = DateTime.now()) {
   return [date];
 }
 
-export const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+export const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
 
 export function formatHour(hour: number, ampm = false) {
   if (ampm) {
@@ -67,12 +67,17 @@ export function isToday(date: DateTime) {
   return date.toISODate() === DateTime.now().toISODate();
 }
 
-export function getRelativeTopInDay(date: DateTime, hasAllDay = false) {
+export function getRelativeTopInDay(
+  date: DateTime,
+  hasAllDay = false,
+  hours: number[] = HOURS,
+) {
   let offsetInMinutes = 0;
+  const dayMinutes = hours.length * 60;
   if (date.hour > 0) {
     offsetInMinutes = (date.hour - (hasAllDay ? 7 : 8)) * 60 + date.minute;
   }
-  const minutesInDay = hasAllDay ? DAY_MINUTES + 60 : DAY_MINUTES;
+  const minutesInDay = hasAllDay ? dayMinutes + 60 : dayMinutes;
 
   return (100 * offsetInMinutes) / minutesInDay;
 }
