@@ -2,7 +2,7 @@ import { DateTime, Duration, Interval } from 'luxon';
 
 import { ICalendarEventBase, Mode, WeekNum } from '../types/Calendar';
 
-export const DAY_MINUTES = 720;
+export const CALENDAR_CELL_HEIGHT = 60;
 
 export function getDatesInMonth(date: DateTime = DateTime.now()): DateTime[] {
   return Array(date.daysInMonth! - 1)
@@ -71,11 +71,13 @@ export function getRelativeTopInDay(
   date: DateTime,
   hasAllDay = false,
   hours: number[] = HOURS,
+  startHour = 8,
 ) {
-  let offsetInMinutes = 0;
+  let offsetInMinutes = 60;
   const dayMinutes = hours.length * 60;
   if (date.hour > 0) {
-    offsetInMinutes = (date.hour - (hasAllDay ? 7 : 8)) * 60 + date.minute;
+    offsetInMinutes =
+      (date.hour - (hasAllDay ? startHour - 1 : startHour)) * 60 + date.minute;
   }
   const minutesInDay = hasAllDay ? dayMinutes + 60 : dayMinutes;
 

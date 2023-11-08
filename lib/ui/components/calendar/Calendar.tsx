@@ -89,6 +89,7 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   moreLabel?: string;
   isEventOrderingEnabled?: boolean;
   hours: number[];
+  startHour?: number;
 }
 
 export const Calendar = <T extends ICalendarEventBase>({
@@ -129,6 +130,7 @@ export const Calendar = <T extends ICalendarEventBase>({
   sortedMonthView = true,
   isEventOrderingEnabled,
   hours,
+  startHour = 6,
 }: CalendarContainerProps<T>) => {
   const [targetDate, setTargetDate] = useState(date);
 
@@ -287,6 +289,7 @@ export const Calendar = <T extends ICalendarEventBase>({
         headerComponentStyle={headerComponentStyle}
         isEventOrderingEnabled={isEventOrderingEnabled}
         hours={hours}
+        startHour={startHour}
       />
     </>
   );

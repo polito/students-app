@@ -39,21 +39,22 @@ export const useGetBookingSlots = (
   weekStart: DateTime,
 ) => {
   const bookingClient = useBookingClient();
-  const weekEnd = weekStart.endOf('week');
+  const fromDate = weekStart.startOf('week');
+  const toDate = weekStart.endOf('week');
 
   return useQuery(
     [
       ...BOOKINGS_SLOTS_QUERY_KEY,
       bookingTopicId,
-      weekStart.toISODate(),
-      weekEnd.toISODate(),
+      fromDate.toISODate(),
+      toDate.toISODate(),
     ],
     () =>
       bookingClient
         .getBookingSlots({
           bookingTopicId,
-          fromDate: weekStart.toJSDate(),
-          toDate: weekEnd.toJSDate(),
+          fromDate: fromDate.toJSDate(),
+          toDate: toDate.toJSDate(),
         })
         .then(pluckData),
     {

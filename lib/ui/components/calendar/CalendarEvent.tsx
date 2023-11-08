@@ -25,6 +25,7 @@ interface CalendarEventProps<T extends ICalendarEventBase> {
   renderEvent?: EventRenderer<T>;
   ampm: boolean;
   hours: number[];
+  startHour?: number;
   showAllDayEventCell?: boolean;
 }
 
@@ -38,6 +39,7 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
   renderEvent,
   ampm,
   hours,
+  startHour = 8,
   showAllDayEventCell = false,
 }: CalendarEventProps<T>) => {
   const getEventCellPositionStyle = useCallback(
@@ -58,13 +60,15 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
         start,
         showAllDayEventCell,
         hours,
+        startHour,
       );
+      // console.debug(start.toFormat('HH:mm'));
       return {
         height: `${relativeHeight}%`,
         top: `${relativeTop}%`,
       };
     },
-    [showAllDayEventCell],
+    [hours, showAllDayEventCell, event.start.hour, startHour],
   );
 
   const touchableOpacityProps = useCalendarTouchableOpacityProps({

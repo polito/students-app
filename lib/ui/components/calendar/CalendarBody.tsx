@@ -56,6 +56,7 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   showTime: boolean;
   style?: ViewStyle;
   hours?: number[];
+  startHour?: number;
 }
 
 export const CalendarBody = <T extends ICalendarEventBase>({
@@ -81,6 +82,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   hideHours = false,
   isEventOrderingEnabled = true,
   hours = HOURS,
+  startHour = 8,
 }: CalendarBodyProps<T>) => {
   const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
@@ -146,6 +148,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           renderEvent={renderEvent}
           ampm={ampm}
           hours={hours}
+          startHour={startHour}
           showAllDayEventCell={showAllDayEventCell}
         />
       );
@@ -159,6 +162,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
       showAllDayEventCell,
       showTime,
       hours,
+      startHour,
     ],
   );
 
@@ -253,7 +257,10 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                 ))}
 
                 {events
-                  .filter(({ end }) => end.hasSame(date, 'day'))
+                  .filter(
+                    ({ end, start }) =>
+                      start.hasSame(date, 'day') && end.hasSame(date, 'day'),
+                  )
                   .map(_renderMappedEvent)}
 
                 {isToday(date) && !hideNowIndicator && (

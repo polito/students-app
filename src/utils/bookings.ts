@@ -1,5 +1,5 @@
 import { Palettes, Theme } from '@lib/ui/types/Theme';
-import { Booking, BookingSeatCell } from '@polito/api-client';
+import { Booking, BookingSeatCell, BookingTopic } from '@polito/api-client';
 
 import { DateTime } from 'luxon';
 
@@ -104,4 +104,28 @@ export const canBeCancelled = (booking?: Booking) => {
     !!booking?.cancelableUntil &&
     booking?.cancelableUntil.getTime() > Date.now()
   );
+};
+
+export const getCalendarHours = (startHour = 8, endHour = 19) => {
+  return Array.from(
+    { length: endHour - startHour + 1 },
+    (_, i) => i + startHour,
+  );
+};
+
+export const getCalendarPropsFromTopic = (
+  topics?: BookingTopic[],
+  topicId?: string,
+) => {
+  const topicWithSubtopics = topics?.find(topic =>
+    topic.subtopics?.find(subtopic => subtopic.id === topicId),
+  );
+  const topic = topicWithSubtopics?.subtopics?.find(
+    subtopic => subtopic.id === topicId,
+  );
+  return {
+    ...topic,
+    // startDate: DateTime.now().plus({ days: 1 }).toJSDate(),
+    // daysPerWeek: 2,
+  };
 };
