@@ -11,6 +11,7 @@ import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { HOURS } from '@lib/ui/utils/calendar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -172,6 +173,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
             date={currentWeekStart}
             mode="custom"
             height={calendarHeight}
+            hours={HOURS}
             locale={language}
             swipeEnabled={false}
             renderHeader={props => (
