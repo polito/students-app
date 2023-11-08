@@ -32,7 +32,8 @@ type Props = NativeStackScreenProps<
   'BookingSeatSelection'
 >;
 export const BookingSeatSelectionScreen = ({ route }: Props) => {
-  const { slotId, topicId, hasSeats, startHour, endHour, day } = route.params;
+  const { slotId, topicId, hasSeatSelection, startHour, endHour, day } =
+    route.params;
   const { t } = useTranslation();
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
@@ -156,7 +157,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
         slotId={slotId}
         absolute={false}
         modal={false}
-        hasSeats={hasSeats}
+        hasSeatSelection={hasSeatSelection}
         style={[styles.ctaButtonContainer, { bottom: bottomTabBarHeight }]}
       >
         <Row gap={2} style={styles.recapContainer}>

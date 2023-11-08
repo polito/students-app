@@ -110,7 +110,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
           <View style={styles.spacer} />
           <BookingSeatsCta
             slotId={item.id?.toString()}
-            hasSeats={item.hasSeats}
+            hasSeatSelection={item.hasSeatSelection}
             absolute={false}
             modal={true}
           >

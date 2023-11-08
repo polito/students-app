@@ -142,7 +142,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           startHour: event.start.toFormat('HH:mm'),
           endHour: event.end.toFormat('HH:mm'),
           day: event.start.toFormat('d MMMM'),
-          hasSeats: event.hasSeats,
+          hasSeatSelection: event.hasSeatSelection,
           topicId,
         });
     } else {
@@ -194,7 +194,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             height={calendarHeight}
             renderEvent={(item, touchableOpacityProps) => {
               const isMini = item.duration <= 15;
-              const { color, backgroundColor, opacity } = getBookingStyle(
+              const { color, backgroundColor } = getBookingStyle(
                 item,
                 palettes,
                 colors,
@@ -207,7 +207,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                   style={[
                     touchableOpacityProps.style,
                     styles.event,
-                    { backgroundColor, opacity },
+                    { backgroundColor },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel={t(bookingStatus)}

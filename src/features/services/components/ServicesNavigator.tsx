@@ -88,7 +88,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
     startHour: string;
     endHour: string;
     day: string;
-    hasSeats: boolean | undefined;
+    hasSeatSelection: boolean | undefined;
   };
   BookingSeat: {
     bookingId: number;

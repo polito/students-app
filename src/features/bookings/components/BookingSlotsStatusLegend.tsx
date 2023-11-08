@@ -1,11 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, View } from 'react-native';
 
-import { Icon } from '@lib/ui/components/Icon';
 import { PillButton } from '@lib/ui/components/PillButton';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { faSeat } from '@lib/ui/icons/faSeat';
 import { MenuView } from '@react-native-menu/menu';
 
 export const BookingSlotsStatusLegend = () => {
@@ -21,7 +19,7 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: palettes.primary['400'],
+          imageColor: palettes.navy['400'],
         },
         {
           title: t('bookingScreen.bookingStatus.booked'),
@@ -30,7 +28,7 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: palettes.green['500'],
+          imageColor: '#10B981',
         },
         {
           title: t('bookingScreen.bookingStatus.notAvailable'),
@@ -39,7 +37,7 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: palettes.secondary['400'],
+          imageColor: palettes.orange['400'],
         },
         {
           title: t('bookingScreen.bookingStatus.full'),
@@ -48,7 +46,7 @@ export const BookingSlotsStatusLegend = () => {
             ios: 'circle.fill',
             android: 'circle',
           }),
-          imageColor: palettes.danger['500'],
+          imageColor: palettes.rose['500'],
         },
       ]}
     >
@@ -61,7 +59,6 @@ export const BookingSlotsStatusLegend = () => {
             alignItems: 'center',
           }}
         >
-          <Icon icon={faSeat} />
           <Text key="events">{t('common.legend')}</Text>
         </View>
       </PillButton>

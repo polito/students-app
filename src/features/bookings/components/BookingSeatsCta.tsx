@@ -26,7 +26,7 @@ import { ServiceStackParamList } from '../../services/components/ServicesNavigat
 
 type BookingSeatsCtaProps = PropsWithChildren<{
   seatId?: string;
-  hasSeats?: boolean;
+  hasSeatSelection?: boolean;
   slotId: string;
   absolute: boolean;
   modal: boolean;
@@ -39,7 +39,7 @@ export const BookingSeatsCta = ({
   slotId,
   modal,
   children,
-  hasSeats,
+  hasSeatSelection,
   style,
 }: BookingSeatsCtaProps) => {
   const styles = useStylesheet(createStyles);
@@ -51,11 +51,11 @@ export const BookingSeatsCta = ({
   const navigation =
     useNavigation<NativeStackNavigationProp<ServiceStackParamList>>();
   const ctaEnabled = useMemo(() => {
-    if (hasSeats) {
+    if (hasSeatSelection) {
       return !!seatId && informationAcknowledgment;
     }
     return informationAcknowledgment;
-  }, [hasSeats, informationAcknowledgment, seatId]);
+  }, [hasSeatSelection, informationAcknowledgment, seatId]);
 
   return (
     <CtaButtonContainer

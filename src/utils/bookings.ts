@@ -51,9 +51,8 @@ export const getBookingStyle = (
   }
   if (isPast) {
     return {
-      backgroundColor: palettes.gray['200'],
-      color: palettes.gray['600'],
-      opacity: 0.7,
+      backgroundColor: colors.background,
+      color: palettes.gray['400'],
     };
   }
   if (isFull) {

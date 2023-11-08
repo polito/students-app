@@ -1,5 +1,8 @@
 import { PropsWithChildren } from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
+import Modal from 'react-native-modal';
+
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
@@ -13,28 +16,33 @@ export const BottomModal = ({
   onClose,
   dismissable,
 }: BottomModalProps) => {
+  const handleCloseModal = () => {
+    dismissable && onClose?.();
+  };
+
   return (
     <Modal
-      visible={visible}
-      transparent={true}
-      onRequestClose={onClose}
-      statusBarTranslucent={true}
-      animationType="fade"
+      {...Modal.defaultProps}
+      onBackButtonPress={handleCloseModal}
+      style={{ margin: 0, justifyContent: 'flex-end' }}
+      animationOutTiming={400}
+      animationInTiming={300}
+      isVisible={visible}
+      backdropOpacity={0.4}
+      avoidKeyboard={true}
+      animationIn="slideInUp"
+      animationOut="slideOutUp"
+      backdropColor="black"
+      deviceHeight={SCREEN_HEIGHT}
+      deviceWidth={SCREEN_WIDTH}
+      swipeDirection="down"
+      backdropTransitionInTiming={400}
+      backdropTransitionOutTiming={400}
+      useNativeDriver
+      supportedOrientations={['landscape', 'portrait']}
+      onBackdropPress={handleCloseModal}
     >
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-        <Pressable
-          onPress={() => {
-            dismissable && onClose?.();
-          }}
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              backgroundColor: 'rgba(0,0,0,0.4)',
-            },
-          ]}
-        />
-        {children}
-      </View>
+      <View>{children}</View>
     </Modal>
   );
 };

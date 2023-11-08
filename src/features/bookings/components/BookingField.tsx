@@ -29,7 +29,7 @@ export const BookingField = ({
   return (
     <Col flex={1} style={styles.container} accessible>
       <Row align="center">
-        <Icon icon={icon} color={palettes.primary['500']} size={14} />
+        <Icon icon={icon} color={palettes.primary['500']} size={16} />
         <Text style={styles.text}>{label}</Text>
       </Row>
       <Row mt={0.5}>
