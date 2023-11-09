@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { TextWithLinks } from '../../../core/components/TextWithLinks';
 import { getHtmlTextContent } from '../../../utils/html';
 
 export interface TextMessageProps {
@@ -18,7 +18,7 @@ export const TextMessage = ({ message }: TextMessageProps) => {
     return getHtmlTextContent(message);
   }, [message]);
 
-  return <Text style={styles.text}>{textMessage}</Text>;
+  return <TextWithLinks style={styles.text}>{textMessage}</TextWithLinks>;
 };
 
 const createStyles = ({ fontSizes, colors }: Theme) =>
@@ -26,6 +26,7 @@ const createStyles = ({ fontSizes, colors }: Theme) =>
     text: {
       fontSize: fontSizes.sm,
       color: colors.white,
+      textDecorationColor: colors.white,
       justifyContent: 'center',
     },
   });

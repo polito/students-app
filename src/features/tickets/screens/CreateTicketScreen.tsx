@@ -155,7 +155,12 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         absolute={false}
         disabled={!createTopicEnabled}
         title={t('createTicketScreen.sendTicket')}
-        action={() => handleCreateTicket(ticketBody as CreateTicketRequest)}
+        action={() =>
+          handleCreateTicket({
+            ...ticketBody,
+            message: ticketBody?.message?.trim().replace(/\n/g, '<br>'),
+          } as CreateTicketRequest)
+        }
         loading={isLoading}
         icon={faPaperPlane}
       />
