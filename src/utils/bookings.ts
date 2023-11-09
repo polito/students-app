@@ -1,5 +1,5 @@
-import { Palettes, Theme } from '@lib/ui/types/Theme';
-import { Booking, BookingSeatCell, BookingTopic } from '@polito/api-client';
+import { Theme } from '@lib/ui/types/Theme';
+import { Booking, BookingTopic } from '@polito/api-client';
 
 import { DateTime } from 'luxon';
 
@@ -87,16 +87,6 @@ export const getBookingSlotStatus = (item: BookingCalendarEvent) => {
     return 'bookingScreen.bookingStatus.available';
   }
   return 'bookingScreen.bookingStatus.notAvailable';
-};
-
-export const getSeatColorPaletteKey = (
-  seatCell: BookingSeatCell,
-): keyof Palettes => {
-  return seatCell?.status === 'available'
-    ? 'primary'
-    : seatCell.status === 'booked'
-    ? 'red'
-    : 'red';
 };
 
 export const canBeCancelled = (booking?: Booking) => {

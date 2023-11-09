@@ -113,6 +113,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
             hasSeatSelection={item.hasSeatSelection}
             absolute={false}
             modal={true}
+            onCloseModal={close}
           >
             <Row gap={4} style={styles.recapContainer}>
               <BookingField

@@ -1,10 +1,9 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, PressableProps, StyleSheet } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
-
-import { getSeatColorPaletteKey } from '../../../utils/bookings';
 
 export type BookingSeatProps = PressableProps & {
   seat: BookingSeatCellType;
@@ -22,6 +21,31 @@ export const BookingSeatCell = ({
   const { palettes, shapes } = useTheme();
   const seatStatus = t(`bookingSeatScreen.seatStatus.${seat.status}`);
 
+  const colors = useMemo(() => {
+    if (isSelected) {
+      return {
+        backgroundColor: palettes.tertiary['100'],
+        borderColor: palettes.tertiary['300'],
+      };
+    }
+    if (seat.status === 'available') {
+      return {
+        backgroundColor: palettes.primary['50'],
+        borderColor: palettes.primary['300'],
+      };
+    }
+    if (seat.status === 'booked') {
+      return {
+        backgroundColor: palettes.danger['200'],
+        borderColor: palettes.danger['400'],
+      };
+    }
+    return {
+      backgroundColor: palettes.danger['200'],
+      borderColor: palettes.danger['400'],
+    };
+  }, [seat, palettes, isSelected]);
+
   return (
     <Pressable
       accessible
@@ -30,14 +54,10 @@ export const BookingSeatCell = ({
       style={{
         height: size,
         width: size,
-        backgroundColor: isSelected
-          ? palettes.green['100']
-          : palettes[getSeatColorPaletteKey(seat)]['100'],
+        backgroundColor: colors.backgroundColor,
         borderRadius: shapes.sm / 2,
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: isSelected
-          ? palettes.green['300']
-          : palettes[getSeatColorPaletteKey(seat)]['300'],
+        borderColor: colors.borderColor,
       }}
       {...rest}
     />

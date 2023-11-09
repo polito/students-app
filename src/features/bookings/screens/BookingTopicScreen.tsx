@@ -60,6 +60,8 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
     }
   }, [topicsQuery?.data]);
 
+  console.debug('topicsQuery', topicsQuery.data);
+
   const toggleSection = (toggleIndex: number) => {
     setSections(oldSections =>
       oldSections.map((section, index) => ({

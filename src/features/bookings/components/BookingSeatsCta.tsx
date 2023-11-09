@@ -31,6 +31,7 @@ type BookingSeatsCtaProps = PropsWithChildren<{
   absolute: boolean;
   modal: boolean;
   style?: StyleProp<ViewStyle>;
+  onCloseModal?: () => void;
 }>;
 
 export const BookingSeatsCta = ({
@@ -41,6 +42,7 @@ export const BookingSeatsCta = ({
   children,
   hasSeatSelection,
   style,
+  onCloseModal,
 }: BookingSeatsCtaProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -125,8 +127,11 @@ export const BookingSeatsCta = ({
               slotId: Number(slotId),
             })
             .then(() => {
-              navigation.navigate('Services');
-              navigation.navigate('Bookings');
+              onCloseModal?.();
+              setTimeout(() => {
+                navigation.navigate('Services');
+                navigation.navigate('Bookings');
+              }, 0);
             })
         }
         disabled={!ctaEnabled}
