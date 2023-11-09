@@ -46,7 +46,6 @@ import {
   getCalendarPropsFromTopic,
   isPastSlot,
 } from '../../../utils/bookings';
-import { getHtmlTextContent } from '../../../utils/html';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
@@ -135,25 +134,23 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   }, [bookingSlotsQuery.data]);
 
   const onPressEvent = (event: BookingCalendarEvent) => {
-    console.debug('event', event);
     if (isPastSlot(event)) {
-      console.debug('pastEvent');
       return;
     }
     if (event.isBooked) {
       const booking = myBookings && myBookings?.find(b => b.id === event.id);
-      booking && booking.seat && booking.seat?.id
-        ? navigation.navigate('BookingSeat', {
-            bookingId: booking.id,
-            slotId: String(booking?.id),
-            seatId: booking?.seat?.id,
-            topicId: booking.subtopic?.id || booking.topic.id,
-          })
-        : setFeedback({
-            text: event.feedback
-              ? getHtmlTextContent(event.feedback)
-              : t('common.booked'),
-          });
+      booking &&
+        booking.seat &&
+        booking.seat?.id &&
+        navigation.navigate('BookingSeat', {
+          bookingId: booking.id,
+          slotId: String(booking?.id),
+          seatId: booking?.seat?.id,
+          topicId: booking.subtopic?.id || booking.topic.id,
+        });
+      booking &&
+        !booking?.seat &&
+        navigation.navigate('Booking', { id: booking.id });
       return;
     }
     if (canBeBookedWithSeatSelection(event)) {
