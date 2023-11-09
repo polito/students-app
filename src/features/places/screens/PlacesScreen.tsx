@@ -220,15 +220,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           {displayFloorId !== undefined && (
             <IndoorMapLayer floorId={displayFloorId} />
           )}
-          {displayFloorId !== undefined && (
-            <MarkersLayer
-              search={debouncedSearch}
-              places={places ?? []}
-              displayFloor={!displayFloorId}
-              categoryId={categoryId}
-              subCategoryId={subCategoryId}
-            />
-          )}
+          <MarkersLayer
+            search={debouncedSearch}
+            places={places ?? []}
+            displayFloor={!displayFloorId}
+            categoryId={categoryId}
+            subCategoryId={subCategoryId}
+          />
         </>
       ),
     });
