@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetPlaces } from '../../../core/queries/placesHooks';
-import { useGetAgendaWeeks } from '../../agenda/queries/agendaHooks';
+import { useGetAgendaWeek } from '../../agenda/queries/agendaHooks';
 import { LectureItem } from '../../agenda/types/AgendaItem';
 import { UPCOMING_COMMITMENT_HOURS_OFFSET } from '../constants';
 import {
@@ -37,10 +37,10 @@ export const useSearchPlaces = ({
   const actualSiteId = siteId ?? campus?.id;
 
   const [now] = useState(DateTime.now());
-  const { data: agendaPages } = useGetAgendaWeeks(coursesPreferences, now);
+  const { data: agendaPage } = useGetAgendaWeek(coursesPreferences, now);
   const upcomingCommitments = useMemo(
     () =>
-      agendaPages?.pages?.[0]?.data
+      agendaPage?.data
         .flatMap(i => i.items)
         .filter(
           i =>
@@ -52,7 +52,7 @@ export const useSearchPlaces = ({
         ) as
         | (LectureItem & { place: Exclude<LectureItem['place'], null> })[]
         | undefined,
-    [agendaPages?.pages, now],
+    [agendaPage, now],
   );
 
   const { data: places, fetchStatus: placesFetchStatus } = useGetPlaces({

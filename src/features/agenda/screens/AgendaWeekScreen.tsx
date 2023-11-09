@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { faCalendarDay, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Calendar } from '@lib/ui/components/calendar/Calendar';
@@ -25,7 +24,7 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
-import { useGetAgendaWeeks } from '../queries/agendaHooks';
+import { useGetAgendaWeek } from '../queries/agendaHooks';
 import { AgendaItem } from '../types/AgendaItem';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
@@ -51,11 +50,11 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
 
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(0);
 
-  const { data, isFetching, fetchPreviousPage, fetchNextPage, refetch } =
-    useGetAgendaWeeks(coursesPreferences);
+  const { data, isFetching /* , fetchPreviousPage, fetchNextPage*/, refetch } =
+    useGetAgendaWeek(coursesPreferences);
 
   const nextWeek = useCallback(() => {
-    const updatedWeek = currentWeekStart.plus({ days: 7 });
+    /*    const updatedWeek = currentWeekStart.plus({ days: 7 });
     setCurrentWeekStart(updatedWeek);
 
     if (data?.pages[currentPageNumber + 1] !== undefined) {
@@ -64,8 +63,8 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
       fetchNextPage({ cancelRefetch: false }).then(() => {
         setCurrentPageNumber(currentPageNumber + 1);
       });
-    }
-  }, [currentPageNumber, currentWeekStart, data?.pages, fetchNextPage]);
+    }*/
+  }, [currentPageNumber, currentWeekStart /* , data?.pages, fetchNextPage*/]);
 
   const prevWeek = useCallback(() => {
     const updatedWeek = currentWeekStart.minus({ days: 7 });
@@ -74,22 +73,11 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
     if (currentPageNumber > 0) {
       setCurrentPageNumber(currentPageNumber - 1);
     } else {
-      fetchPreviousPage({ cancelRefetch: false }).then(() => {
+      /* fetchPreviousPage({ cancelRefetch: false }).then(() => {
         setCurrentPageNumber(currentPageNumber);
-      });
+      });*/
     }
-  }, [currentWeekStart, currentPageNumber, fetchPreviousPage]);
-
-  const [weeklyEvents, setWeeklyEvents] = useState<AgendaItem[]>([]);
-
-  useEffect(() => {
-    const agendaWeek = data?.pages[currentPageNumber];
-    setWeeklyEvents(
-      agendaWeek?.data.flatMap(day => {
-        return day.items;
-      }) ?? [],
-    );
-  }, [data?.pages, currentPageNumber]);
+  }, [currentWeekStart, currentPageNumber /* , fetchPreviousPage*/]);
 
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
@@ -129,13 +117,13 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
   }, [palettes.primary, fontSizes.lg, navigation, t, agendaScreen]);
 
   const prevMissingCallback = useCallback(
-    () => data?.pages[currentPageNumber - 1] === undefined,
-    [data?.pages, currentPageNumber],
+    () => /* data?.pages[currentPageNumber - 1] === undefined*/ false,
+    [/* data?.pages,*/ currentPageNumber],
   );
 
   const nextMissingCallback = useCallback(
-    () => data?.pages[currentPageNumber + 1] === undefined,
-    [data?.pages, currentPageNumber],
+    () => /* data?.pages[currentPageNumber + 1] === undefined*/ false,
+    [/* data?.pages, */ currentPageNumber],
   );
   const isOffline = useOfflineDisabled();
 
@@ -161,13 +149,13 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           setCalendarHeight(height);
         }}
       >
-        {!calendarHeight ||
+        {/*      {!calendarHeight ||
           (isFetching && !data?.pages[currentPageNumber] && (
             <ActivityIndicator size="large" style={styles.loader} />
-          ))}
+          ))}*/}
         {calendarHeight && (
           <Calendar<AgendaItem>
-            events={weeklyEvents}
+            events={(data ?? []) as AgendaItem[]}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
             date={currentWeekStart}

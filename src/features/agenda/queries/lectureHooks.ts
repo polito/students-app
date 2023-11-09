@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { DateTime, Duration } from 'luxon';
 
@@ -10,13 +10,16 @@ import { useGetCourses } from '../../../core/queries/courseHooks';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 
-export const LECTURES_QUERY_KEY = ['lectures'];
+export const LECTURES_QUERY_PREFIX = 'lectures';
 
 const useLectureClient = (): LecturesApi => {
   return new LecturesApi();
 };
 
-export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
+export const useGetLectureWeek = (
+  coursesPreferences: CoursesPreferences,
+  since: DateTime = DateTime.now().startOf('week'),
+) => {
   const lectureClient = useLectureClient();
   const { data: courses } = useGetCourses();
 
@@ -50,9 +53,9 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
     }));
   };
 
-  return useInfiniteQuery<Lecture[]>(
-    LECTURES_QUERY_KEY,
-    async ({ pageParam: since = DateTime.now().startOf('week') }) => {
+  return useQuery<Lecture[]>(
+    [LECTURES_QUERY_PREFIX, since],
+    async () => {
       const until = since.plus(oneWeek);
 
       return lectureClient
@@ -66,7 +69,7 @@ export const useGetLectureWeeks = (coursesPreferences: CoursesPreferences) => {
     },
     {
       enabled: Array.isArray(visibleCourseIds),
-      staleTime: Infinity, // TODO handle manual refetch of last page only
+      staleTime: Infinity,
     },
   );
 };

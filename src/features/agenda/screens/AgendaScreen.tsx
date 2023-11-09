@@ -26,12 +26,12 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
-import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
+import { DEADLINES_QUERY_PREFIX } from '../../../core/queries/studentHooks';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
-import { AGENDA_QUERY_PREFIX, useGetAgendaWeeks } from '../queries/agendaHooks';
-import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
+import { AGENDA_QUERY_PREFIX, useGetAgendaWeek } from '../queries/agendaHooks';
+import { LECTURES_QUERY_PREFIX } from '../queries/lectureHooks';
 import { AgendaState } from '../types/AgendaState';
 import { AgendaWeek } from '../types/AgendaWeek';
 
@@ -48,8 +48,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
   } = usePreferencesContext();
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
-  const { data, fetchNextPage, isFetchingNextPage, isFetchingPreviousPage } =
-    useGetAgendaWeeks(coursesPreferences);
+  const { data } = useGetAgendaWeek(coursesPreferences);
 
   const flatListRef = useRef<FlatList<AgendaWeek>>(null);
 
@@ -72,8 +71,8 @@ export const AgendaScreen = ({ navigation }: Props) => {
     const dependingQueryKeys = [
       EXAMS_QUERY_KEY,
       BOOKINGS_QUERY_KEY,
-      LECTURES_QUERY_KEY,
-      DEADLINES_QUERY_KEY,
+      [LECTURES_QUERY_PREFIX],
+      [DEADLINES_QUERY_PREFIX],
     ];
 
     setAgendaState(prev => ({ ...prev, isRefreshing: true }));
@@ -129,11 +128,11 @@ export const AgendaScreen = ({ navigation }: Props) => {
       // );
     }
     if (agendaState.shouldLoadNext) {
-      fetchNextPage({ cancelRefetch: false }).then(() =>
+      /*      fetchNextPage({ cancelRefetch: false }).then(() =>
         setAgendaState(prev => ({ ...prev, shouldLoadNext: false })),
-      );
+      );*/
     }
-  }, [data, agendaState, fetchNextPage, setAgendaState]);
+  }, [data, agendaState /* , fetchNextPage*/, setAgendaState]);
 
   useLayoutEffect(() => {
     const switchToWeekly = () => {
@@ -189,26 +188,26 @@ export const AgendaScreen = ({ navigation }: Props) => {
       ) : (
         <FlatList
           ref={flatListRef}
-          data={data?.pages ?? []}
+          data={data ? [data] : undefined}
           initialNumToRender={1}
           keyExtractor={item => item.key}
-          extraData={[isFetchingPreviousPage, isFetchingNextPage]}
+          // extraData={[isFetchingPreviousPage, isFetchingNextPage]}
           contentContainerStyle={[styles.listContainer, marginHorizontal]}
           renderItem={({ item }) => (
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
-          ListHeaderComponent={
+          /*          ListHeaderComponent={
             isFetchingPreviousPage ? (
               <ActivityIndicator size="small" />
             ) : undefined
-          }
+          }*/
           ListFooterComponent={
-            <>
+            /* <>
               {isFetchingNextPage ? (
                 <ActivityIndicator size="small" />
-              ) : undefined}
-              <BottomBarSpacer />
-            </>
+              ) : undefined}*/
+            <BottomBarSpacer />
+            // </>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}

@@ -16,7 +16,7 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks';
-import { LECTURES_QUERY_KEY } from '../../agenda/queries/lectureHooks';
+import { LECTURES_QUERY_PREFIX } from '../../agenda/queries/lectureHooks';
 import { CourseIndicator } from './CourseIndicator';
 
 interface Props {
@@ -60,7 +60,7 @@ const Menu = ({
             isHidden: !isHidden,
           },
         });
-        queryClient.invalidateQueries(LECTURES_QUERY_KEY).then(() => {
+        queryClient.invalidateQueries([LECTURES_QUERY_PREFIX]).then(() => {
           queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
         });
       }}
