@@ -37,7 +37,7 @@ import { ServicesScreen } from '../screens/ServicesScreen';
 
 export type OfferingStackParamList = {
   Offering: undefined;
-  Degree: { id: string; year?: string; isCrossNavigation?: boolean };
+  Degree: { id: string; year?: string };
   DegreeCourse: {
     courseShortcode: string;
     year?: string;
@@ -74,7 +74,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   NewsItem: { id: number };
   MessagesModal: undefined;
   Contacts: undefined;
-  Person: { id: number; isCrossNavigation?: boolean };
+  Person: { id: number };
   Bookings: undefined;
   Booking: { id: number };
   NewBooking: undefined;

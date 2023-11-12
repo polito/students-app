@@ -88,14 +88,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               }
               isAction
               onPress={() => {
-                // @ts-expect-error Top-level navigation type
-                navigation.navigate('PlacesTab', {
+                navigation.navigate('PlacesStack', {
                   screen: 'Place',
                   params: {
                     placeId: resolvePlaceId(lecture.place!),
                     isCrossNavigation: true,
                   },
-                  initial: false,
                 });
               }}
             />
@@ -104,7 +102,6 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             <PersonListItem
               person={teacherQuery.data}
               subtitle={t('common.teacher')}
-              isCrossNavigation={true}
             />
           )}
           <ListItem
@@ -114,15 +111,10 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               <CourseIcon icon={lecture.icon} color={lecture.color} />
             }
             linkTo={{
-              screen: 'TeachingTab',
+              screen: 'Course',
               params: {
-                screen: 'Course',
-                params: {
-                  screen: 'CourseFilesScreen',
-                  id: lecture.courseId,
-                  isCrossNavigation: true,
-                },
-                initial: false,
+                screen: 'CourseFilesScreen',
+                id: lecture.courseId,
               },
             }}
           />

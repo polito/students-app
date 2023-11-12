@@ -17,7 +17,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
-import { useCrossTabBack } from '../../../navigation/hooks/useCrossTabBack';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIndicator } from '../components/CourseIndicator';
 import { CourseContext } from '../contexts/CourseContext';
@@ -48,9 +47,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const { getUnreadsCount } = usePushNotifications();
   const titleStyles = useTitlesStyles(theme);
 
-  const { id, isCrossNavigation } = route.params;
-
-  useCrossTabBack(navigation, isCrossNavigation);
+  const { id } = route.params;
 
   const coursesQuery = useGetCourses();
 

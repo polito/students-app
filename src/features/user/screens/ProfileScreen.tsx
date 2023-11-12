@@ -39,7 +39,6 @@ import {
   MESSAGES_QUERY_KEY,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
-import { useCleanupCrossTabNavigation } from '../../../navigation/hooks/useCleanupCrossTabNavigation';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
@@ -131,8 +130,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
     });
   }, [isOffline, navigation, student]);
 
-  useCleanupCrossTabNavigation(navigation);
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -178,15 +175,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
               title={student?.degreeName ?? ''}
               subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
               linkTo={{
-                screen: 'ServicesTab',
+                screen: 'Degree',
                 params: {
-                  screen: 'Degree',
-                  params: {
-                    id: student?.degreeId,
-                    year: student?.firstEnrollmentYear,
-                    isCrossNavigation: true,
-                  },
-                  initial: false,
+                  id: student?.degreeId,
+                  year: student?.firstEnrollmentYear,
                 },
               }}
             />

@@ -32,7 +32,6 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlace } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { useCrossTabBack } from '../../../navigation/hooks/useCrossTabBack';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
@@ -74,6 +73,15 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       ? t('common.notFound')
       : capitalize(placeName),
   );
+
+  useEffect(() => {
+    if (isCrossNavigation) {
+      navigation.setOptions({ headerShown: false });
+      navigation.getParent()?.setOptions({
+        title: place ? place.data.room.name : t('placeScreen.title'),
+      });
+    }
+  }, [isCrossNavigation, place, navigation, t]);
 
   useEffect(() => {
     if (place?.data && !updatedRecentPlaces) {
@@ -156,8 +164,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     safeAreaInsets.top,
     spacing,
   ]);
-
-  useCrossTabBack(navigation, isCrossNavigation);
 
   if (isLoading) {
     return (

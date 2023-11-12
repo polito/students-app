@@ -7,6 +7,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
+import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
+import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
+import { StaffScreen } from '../../offering/screens/StaffScreen';
+import { PersonScreen } from '../../people/screens/PersonScreen';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
@@ -85,6 +90,61 @@ export const UserNavigator = () => {
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
         }}
+      />
+      <Stack.Screen
+        name="Degree"
+        component={DegreeTopTabsNavigator}
+        getId={({ params: { id, year } }) => id + (year ?? '0')}
+        options={{
+          headerTitle: t('degreeScreen.title'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="DegreeCourse"
+        component={DegreeCourseScreen}
+        getId={({ params: { courseShortcode, year } }) =>
+          courseShortcode + (year ?? '0')
+        }
+        options={{
+          headerTitle: t('degreeCourseScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="DegreeCourseGuide"
+        component={DegreeCourseGuideScreen}
+        getId={({ params: { courseShortcode, year } }) =>
+          courseShortcode + (year ?? '0')
+        }
+        options={{
+          headerTitle: t('courseGuideScreen.title'),
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Staff"
+        component={StaffScreen}
+        getId={({ params: { courseShortcode, year } }) =>
+          courseShortcode + (year ?? '0')
+        }
       />
     </Stack.Navigator>
   );

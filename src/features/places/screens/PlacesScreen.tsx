@@ -58,7 +58,6 @@ import {
 } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
-import { useCleanupCrossTabNavigation } from '../../../navigation/hooks/useCleanupCrossTabNavigation';
 import { CampusSelector } from '../components/CampusSelector';
 import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -283,8 +282,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       </TouchableOpacity>
     </TranslucentCard>
   );
-
-  useCleanupCrossTabNavigation(navigation);
 
   return (
     <View

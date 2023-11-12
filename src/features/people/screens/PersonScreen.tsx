@@ -35,7 +35,6 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { useCrossTabBack } from '../../../navigation/hooks/useCrossTabBack';
 import { notNullish } from '../../../utils/predicates';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
@@ -43,8 +42,8 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Person'>;
 
 const profileImageSize = 120;
 
-export const PersonScreen = ({ route, navigation }: Props) => {
-  const { id, isCrossNavigation } = route.params;
+export const PersonScreen = ({ route }: Props) => {
+  const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -58,8 +57,6 @@ export const PersonScreen = ({ route, navigation }: Props) => {
   const phoneNumbers = person?.phoneNumbers;
 
   const isOffline = useOfflineDisabled();
-
-  useCrossTabBack(navigation, isCrossNavigation);
 
   const header = (
     <Col ph={5} gap={6} mb={6}>

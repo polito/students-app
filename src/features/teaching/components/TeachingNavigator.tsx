@@ -22,6 +22,7 @@ import { CourseVirtualClassroomScreen } from '../../courses/screens/CourseVirtua
 import { CoursesScreen } from '../../courses/screens/CoursesScreen';
 import { NoticeScreen } from '../../courses/screens/NoticeScreen';
 import { Assignment } from '../../courses/types/Assignment';
+import { PersonScreen } from '../../people/screens/PersonScreen';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
 import { ExamRequestScreen } from '../screens/ExamRequestScreen';
@@ -33,7 +34,7 @@ import { TranscriptScreen } from '../screens/TranscriptScreen';
 export interface TeachingStackParamList extends ParamListBase {
   Home: undefined;
   Courses: undefined;
-  Course: { id: number; isCrossNavigation?: boolean };
+  Course: { id: number };
   Notice: { noticeId: number; courseId: number };
   Person: { id: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
@@ -282,6 +283,16 @@ export const TeachingNavigator = () => {
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.contact'),
+          headerBackTitleVisible: false,
         }}
       />
     </Stack.Navigator>

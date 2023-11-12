@@ -40,7 +40,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 export const ExamScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
+  const { fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
@@ -138,11 +138,10 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   subtitle={t('examScreen.location')}
                   isAction
                   onPress={() => {
-                    navigation.navigate('PlacesTab', {
+                    navigation.navigate('Places', {
                       screen: 'Place',
                       params: {
                         placeId,
-                        isCrossNavigation: true,
                       },
                       initial: false,
                     });
@@ -154,7 +153,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               <PersonListItem
                 person={teacherQuery.data}
                 subtitle={t('common.teacher')}
-                isCrossNavigation={true}
               />
             )}
             {exam?.notes?.length && (

@@ -133,7 +133,6 @@ export const CourseInfoScreen = () => {
                 key={`${member.id}`}
                 person={member}
                 subtitle={t(`common.${member.courseRole}`)}
-                isCrossNavigation={true}
               />
             ))}
           </OverviewList>
