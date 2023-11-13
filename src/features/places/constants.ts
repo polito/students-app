@@ -83,9 +83,15 @@ export const CATEGORIES_DATA: Record<string, CategoryData> = {
         shade: 600,
         showInitially: true,
       },
+      WC_F_H: {
+        icon: 'restroom',
+        color: 'green',
+        shade: 600,
+        showInitially: true,
+      },
       INGRESSO: {
         icon: 'microscope',
-        color: 'gray',
+        color: 'violet',
         priority: 60,
         children: {},
         showInitially: true,

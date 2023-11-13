@@ -171,7 +171,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           ?.filter(p => isPlace(p))
           .map(p => (p as PlaceOverviewWithMetadata).floor.id),
       );
-      return floorIds.size === 1 ? [...floorIds.values()][0] : undefined;
+      return floorIds.size === 1 ? [...floorIds][0] : undefined;
     }
     return floorId;
   }, [debouncedSearch, floorId, places]);
@@ -217,7 +217,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       },
       mapContent: (
         <>
-          <IndoorMapLayer floorId={displayFloorId} />
+          {displayFloorId !== undefined && (
+            <IndoorMapLayer floorId={displayFloorId} />
+          )}
           <MarkersLayer
             search={debouncedSearch}
             places={places ?? []}
