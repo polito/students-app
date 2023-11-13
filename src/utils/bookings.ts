@@ -107,7 +107,10 @@ export const getCalendarPropsFromTopic = (
   topics?: BookingTopic[],
   topicId?: string,
 ) => {
-  // TODO: handle topic or subtopic
+  const topicIndex = topics?.findIndex(topic => topic.id === topicId);
+  if (!!topicIndex && topicIndex > -1 && topics) {
+    return topics[topicIndex];
+  }
   const topicWithSubtopics = topics?.find(topic =>
     topic.subtopics?.find(subtopic => subtopic.id === topicId),
   );
