@@ -171,7 +171,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
 
   if (
     getPlaceError &&
-    (getPlaceError as ResponseError).response.status === 404
+    (getPlaceError as ResponseError)?.response?.status === 404
   ) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
