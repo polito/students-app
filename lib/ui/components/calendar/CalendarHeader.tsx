@@ -101,6 +101,7 @@ export const CalendarHeader = ({
                 weight="semibold"
                 style={[
                   {
+                    fontSize: theme.fontSizes.sm,
                     textAlign: 'center',
                   },
                   shouldHighlight && {
