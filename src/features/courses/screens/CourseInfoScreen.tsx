@@ -83,7 +83,7 @@ export const CourseInfoScreen = () => {
 
   return (
     <ScrollView
-      style={GlobalStyles.grow}
+      contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <RefreshControl
           queries={[courseQuery, courseExamsQuery, ...staffQueries]}
