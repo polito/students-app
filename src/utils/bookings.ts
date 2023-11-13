@@ -30,6 +30,7 @@ export const getBookingStyle = (
   item: BookingCalendarEvent,
   palettes: Theme['palettes'],
   colors: Theme['colors'],
+  dark: boolean,
 ) => {
   const isBooked = item.isBooked;
   const isFull = isSlotFull(item);
@@ -39,37 +40,39 @@ export const getBookingStyle = (
 
   if (isBooked && !isPast) {
     return {
-      backgroundColor: palettes.tertiary['100'],
-      color: palettes.tertiary['700'],
+      backgroundColor: palettes.tertiary[dark ? '700' : '100'],
+      color: palettes.tertiary[dark ? '100' : '700'],
     };
   }
   if (canBeBooked) {
     return {
-      backgroundColor: palettes.navy['50'],
-      color: palettes.navy['600'],
+      backgroundColor: dark ? palettes.navy[500] + '99' : palettes.navy[50],
+      color: palettes.navy[dark ? '50' : '600'],
     };
   }
   if (isPast) {
     return {
       backgroundColor: colors.background,
-      color: palettes.gray['400'],
+      color: palettes.gray[dark ? 500 : 400],
     };
   }
   if (isFull) {
     return {
-      backgroundColor: palettes.rose['200'],
-      color: palettes.rose['600'],
+      backgroundColor: dark ? palettes.rose[800] + 'CC' : palettes.rose['200'],
+      color: palettes.rose[dark ? '200' : '600'],
     };
   }
   if (notYetBookable) {
     return {
-      backgroundColor: palettes.orange['100'],
-      color: palettes.orange['700'],
+      backgroundColor: dark
+        ? palettes.darkOrange[800] + 'CC'
+        : palettes.orange['100'],
+      color: palettes.orange[dark ? '200' : '700'],
     };
   }
   return {
-    backgroundColor: palettes.rose['200'],
-    color: palettes.rose['600'],
+    backgroundColor: palettes.rose[dark ? '600' : '200'],
+    color: palettes.rose[dark ? '200' : '600'],
   };
 };
 

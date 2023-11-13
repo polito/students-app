@@ -18,33 +18,36 @@ export const BookingSeatCell = ({
   ...rest
 }: BookingSeatProps) => {
   const { t } = useTranslation();
-  const { palettes, shapes } = useTheme();
+  const { palettes, shapes, dark } = useTheme();
   const seatStatus = t(`bookingSeatScreen.seatStatus.${seat.status}`);
 
   const colors = useMemo(() => {
     if (isSelected) {
       return {
-        backgroundColor: palettes.tertiary['100'],
-        borderColor: palettes.tertiary['300'],
+        backgroundColor: palettes.tertiary[dark ? 700 : 100],
+        borderColor: palettes.tertiary[dark ? 500 : 300],
       };
     }
     if (seat.status === 'available') {
       return {
-        backgroundColor: palettes.primary['50'],
-        borderColor: palettes.primary['300'],
-      };
-    }
-    if (seat.status === 'booked') {
-      return {
-        backgroundColor: palettes.danger['200'],
-        borderColor: palettes.danger['400'],
+        backgroundColor: palettes.primary[dark ? 500 : 50],
+        borderColor: palettes.primary[dark ? 400 : 300],
       };
     }
     return {
-      backgroundColor: palettes.danger['200'],
-      borderColor: palettes.danger['400'],
+      backgroundColor: dark
+        ? palettes.danger[800] + 'CC'
+        : palettes.danger[200],
+      borderColor: palettes.danger[dark ? 600 : 400],
     };
-  }, [seat, palettes, isSelected]);
+  }, [
+    isSelected,
+    seat.status,
+    palettes.danger,
+    palettes.tertiary,
+    palettes.primary,
+    dark,
+  ]);
 
   return (
     <Pressable

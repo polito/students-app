@@ -17,7 +17,7 @@ export const BookingDeskCell = ({ seatSize }: BookingDeskCellProps) => {
       style={{
         width: seatSize * 2 + spacing[4],
         height: seatSize + spacing[1],
-        backgroundColor: '#7F410099',
+        backgroundColor: palettes.orange[800] + '99',
         borderColor: palettes.orange['900'],
         borderWidth: StyleSheet.hairlineWidth,
         borderRadius: shapes.sm / 2,
