@@ -19,6 +19,7 @@ interface Props {
   getPrev: () => void;
   isPrevWeekDisabled: boolean;
   isNextWeekDisabled: boolean;
+  daysPerWeek?: number;
 }
 export const WeekFilter = ({
   current,
@@ -26,13 +27,14 @@ export const WeekFilter = ({
   getPrev,
   isPrevWeekDisabled = false,
   isNextWeekDisabled = false,
+  daysPerWeek = 7,
 }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
   const endOfWeek = useMemo(() => {
-    return current.plus({ days: 6 });
-  }, [current]);
+    return current.plus({ days: daysPerWeek });
+  }, [current, daysPerWeek]);
 
   return (
     <Row align="center">

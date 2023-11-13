@@ -112,6 +112,7 @@ export interface Palettes {
   text: Palette;
   primary: Palette;
   secondary: Palette;
+  tertiary: Palette;
   danger: Palette;
   success: Palette;
   error: Palette;

@@ -10,6 +10,7 @@ import { Theme } from '@lib/ui/types/Theme';
 interface Props {
   icon?: IconDefinition;
   iconColor?: string;
+  iconSize?: number;
   message: string;
   spacing?: number;
 }
@@ -19,6 +20,7 @@ export const EmptyState = ({
   iconColor,
   message,
   spacing = 12,
+  iconSize,
 }: Props) => {
   const { colors, fontSizes, spacing: _spacing } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -34,7 +36,7 @@ export const EmptyState = ({
         <Icon
           icon={icon}
           color={iconColor ?? colors.secondaryText}
-          size={fontSizes['3xl']}
+          size={iconSize || fontSizes['3xl']}
           style={styles.icon}
         />
       )}

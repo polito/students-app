@@ -1,3 +1,5 @@
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import {
   ComponentProps,
   ReactNode,
@@ -9,6 +11,7 @@ import {
 import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
@@ -146,112 +149,120 @@ export const MapNavigator = ({
 
   return (
     <NavigationContent>
-      <Screen
-        focused={true}
-        navigation={currentRoute.navigation}
-        route={currentRoute.route}
-        headerShown={headerShown}
-        headerTransparent={headerTransparent}
-        header={
-          header !== undefined ? (
-            header({
-              back: headerBack,
-              options: currentRoute.options,
-              route: currentRoute.route,
-              navigation: currentRoute.navigation,
-            })
-          ) : (
-            <Header
-              title={title}
-              headerTintColor={headerTintColor}
-              headerLeft={
-                headerBackVisible !== false
-                  ? typeof headerLeft === 'function'
-                    ? ({ tintColor }) =>
-                        headerLeft({
-                          tintColor,
-                          canGoBack,
-                          label: headerBackTitle,
-                        })
-                    : headerLeft === undefined && canGoBack
-                    ? ({ tintColor }) => (
-                        <HeaderBackButton
-                          tintColor={tintColor}
-                          backImage={
-                            headerBackImageSource !== undefined
-                              ? () => (
-                                  <Image
-                                    source={headerBackImageSource}
-                                    style={[styles.backImage, { tintColor }]}
-                                  />
-                                )
-                              : undefined
-                          }
-                          onPress={navigation.goBack}
-                          canGoBack={canGoBack}
-                          label={
-                            headerBackTitle ?? previousDescriptor?.options.title
-                          }
-                          labelVisible={IS_IOS && headerBackTitleVisible}
-                          labelStyle={headerBackTitleStyle}
-                        />
-                      )
-                    : headerLeft
-                  : undefined
-              }
-              headerRight={
-                typeof headerRight === 'function'
-                  ? ({ tintColor }) => headerRight({ tintColor, canGoBack })
-                  : headerRight
-              }
-              headerTitle={
-                typeof headerTitle === 'function'
-                  ? ({ children: titleChildren, tintColor }) =>
-                      headerTitle({ children: titleChildren, tintColor })
-                  : headerTitle
-              }
-              headerTitleAlign={headerTitleAlign}
-              headerTitleStyle={headerTitleStyle}
-              headerTransparent={headerTransparent}
-              headerShadowVisible={headerShadowVisible}
-              headerBackground={headerBackground}
-              headerStyle={headerStyle}
-            />
-          )
-        }
-      >
-        <HeaderBackContext.Provider value={headerBack}>
-          <MapView
-            ref={mapRef}
-            style={[GlobalStyles.grow, rotating && { display: 'none' }]}
-            {...mapDefaultOptions}
-            {...mapOptions}
+      <GestureHandlerRootView style={GlobalStyles.grow}>
+        <BottomSheetModalProvider>
+          <Screen
+            focused={true}
+            navigation={currentRoute.navigation}
+            route={currentRoute.route}
+            headerShown={headerShown}
+            headerTransparent={headerTransparent}
+            header={
+              header !== undefined ? (
+                header({
+                  back: headerBack,
+                  options: currentRoute.options,
+                  route: currentRoute.route,
+                  navigation: currentRoute.navigation,
+                })
+              ) : (
+                <Header
+                  title={title}
+                  headerTintColor={headerTintColor}
+                  headerLeft={
+                    headerBackVisible !== false
+                      ? typeof headerLeft === 'function'
+                        ? ({ tintColor }) =>
+                            headerLeft({
+                              tintColor,
+                              canGoBack,
+                              label: headerBackTitle,
+                            })
+                        : headerLeft === undefined && canGoBack
+                        ? ({ tintColor }) => (
+                            <HeaderBackButton
+                              tintColor={tintColor}
+                              backImage={
+                                headerBackImageSource !== undefined
+                                  ? () => (
+                                      <Image
+                                        source={headerBackImageSource}
+                                        style={[
+                                          styles.backImage,
+                                          { tintColor },
+                                        ]}
+                                      />
+                                    )
+                                  : undefined
+                              }
+                              onPress={navigation.goBack}
+                              canGoBack={canGoBack}
+                              label={
+                                headerBackTitle ??
+                                previousDescriptor?.options.title
+                              }
+                              labelVisible={IS_IOS && headerBackTitleVisible}
+                              labelStyle={headerBackTitleStyle}
+                            />
+                          )
+                        : headerLeft
+                      : undefined
+                  }
+                  headerRight={
+                    typeof headerRight === 'function'
+                      ? ({ tintColor }) => headerRight({ tintColor, canGoBack })
+                      : headerRight
+                  }
+                  headerTitle={
+                    typeof headerTitle === 'function'
+                      ? ({ children: titleChildren, tintColor }) =>
+                          headerTitle({ children: titleChildren, tintColor })
+                      : headerTitle
+                  }
+                  headerTitleAlign={headerTitleAlign}
+                  headerTitleStyle={headerTitleStyle}
+                  headerTransparent={headerTransparent}
+                  headerShadowVisible={headerShadowVisible}
+                  headerBackground={headerBackground}
+                  headerStyle={headerStyle}
+                />
+              )
+            }
           >
-            <Camera
-              ref={cameraRef}
-              {...(mapDefaultOptions?.camera ?? {})}
-              {...(mapOptions?.camera ?? {})}
-            />
-            {currentRoute.options?.mapDefaultContent}
-            {currentRoute.options?.mapContent}
-          </MapView>
-
-          <MapNavigatorContext.Provider value={{ mapRef, cameraRef }}>
-            {!rotating ? (
-              <Route renderRoute={currentRoute.render} />
-            ) : (
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { alignItems: 'center', justifyContent: 'center' },
-                ]}
+            <HeaderBackContext.Provider value={headerBack}>
+              <MapView
+                ref={mapRef}
+                style={[GlobalStyles.grow, rotating && { display: 'none' }]}
+                {...mapDefaultOptions}
+                {...mapOptions}
               >
-                <ActivityIndicator />
-              </View>
-            )}
-          </MapNavigatorContext.Provider>
-        </HeaderBackContext.Provider>
-      </Screen>
+                <Camera
+                  ref={cameraRef}
+                  {...(mapDefaultOptions?.camera ?? {})}
+                  {...(mapOptions?.camera ?? {})}
+                />
+                {currentRoute.options?.mapDefaultContent}
+                {currentRoute.options?.mapContent}
+              </MapView>
+
+              <MapNavigatorContext.Provider value={{ mapRef, cameraRef }}>
+                {!rotating ? (
+                  <Route renderRoute={currentRoute.render} />
+                ) : (
+                  <View
+                    style={[
+                      StyleSheet.absoluteFill,
+                      { alignItems: 'center', justifyContent: 'center' },
+                    ]}
+                  >
+                    <ActivityIndicator />
+                  </View>
+                )}
+              </MapNavigatorContext.Provider>
+            </HeaderBackContext.Provider>
+          </Screen>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </NavigationContent>
   );
 };
