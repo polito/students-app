@@ -57,6 +57,8 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   weekDayHeaderHighlightColor?: string;
   bodyContainerStyle?: ViewStyle;
 
+  cellMaxHeight?: number;
+
   // Custom renderer
   renderEvent?: EventRenderer<T>;
   renderHeader?: HeaderRenderer;
@@ -86,11 +88,14 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   sortedMonthView?: boolean;
   moreLabel?: string;
   isEventOrderingEnabled?: boolean;
+  hours: number[];
+  startHour?: number;
 }
 
 export const Calendar = <T extends ICalendarEventBase>({
   events,
   height,
+  cellMaxHeight = 50,
   ampm = false,
   date,
   eventCellStyle,
@@ -124,6 +129,8 @@ export const Calendar = <T extends ICalendarEventBase>({
   showAdjacentMonths = true,
   sortedMonthView = true,
   isEventOrderingEnabled,
+  hours,
+  startHour = 6,
 }: CalendarContainerProps<T>) => {
   const [targetDate, setTargetDate] = useState(date);
 
@@ -166,8 +173,8 @@ export const Calendar = <T extends ICalendarEventBase>({
   );
 
   const cellHeight = useMemo(() => {
-    return Math.max(50, height / 14);
-  }, [height]);
+    return Math.max(cellMaxHeight, height / hours?.length);
+  }, [height, cellMaxHeight, hours]);
 
   const onSwipeHorizontal = useCallback(
     (direction: HorizontalDirection) => {
@@ -281,6 +288,8 @@ export const Calendar = <T extends ICalendarEventBase>({
         headerComponent={headerComponent}
         headerComponentStyle={headerComponentStyle}
         isEventOrderingEnabled={isEventOrderingEnabled}
+        hours={hours}
+        startHour={startHour}
       />
     </>
   );

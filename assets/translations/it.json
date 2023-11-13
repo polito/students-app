@@ -14,13 +14,19 @@
     "barCodeTitle": "Barcode",
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
-    "cancelFeedback": "Prenoazione annullata",
+    "cancelFeedback": "Prenotazione annullata",
     "checkIn": "Check-in",
     "checkInFeedback": "Check in eseguito!",
     "checkLocationErrorFeedback": "Sei troppo distante per effettuare il check-in della prenotazione",
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
+    },
+    "bookingStatus": {
+      "notAvailable": "Non ancora prenotabile",
+      "available": "Prenotabile",
+      "booked": "Prenotato",
+      "full": "Non prenotabile"
     }
   },
   "bookingsScreen": {
@@ -28,6 +34,22 @@
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
+  },
+  "bookingSeatScreen": {
+    "title": "Scegli il posto",
+    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
+    "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
+    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal ",
+    "confirm": "Conferma prenotazione",
+    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
+    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
+    "noSeatSelected": "Nessuna",
+    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto",
+    "seatStatus": {
+      "booked": "Prenotato",
+      "available": "Disponibile",
+      "notAvailable": "Non prenotabile"
+    }
   },
   "colors": {
     "amber": "Ambra",
@@ -51,12 +73,23 @@
     "yellow": "Giallo"
   },
   "common": {
+    "desk": "Cattedra",
+    "seat": "Postazione",
+    "reset": "Reimposta",
+    "hour": "Orario",
+    "day": "Giorno",
+    "other": "Altro",
+    "noValue": "Nessun valore",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "legend": "Legenda",
+    "close": "Chiudi",
+    "search": "Cerca",
+    "cfu": "CFU",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -70,10 +103,8 @@
     "campus": "Sede",
     "cancel": "Annulla",
     "capacity": "Capacità",
-    "cfu": "CFU",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
-    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -170,7 +201,6 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
-    "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
     "phone": "Telefono",
@@ -184,7 +214,6 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
-    "search": "Cerca",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",

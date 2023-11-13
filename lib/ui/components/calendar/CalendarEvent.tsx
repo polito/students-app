@@ -9,7 +9,6 @@ import {
   ICalendarEventBase,
 } from '../../types/Calendar';
 import {
-  DAY_MINUTES,
   getRelativeTopInDay,
   getStyleForOverlappingEvent,
 } from '../../utils/calendar';
@@ -25,6 +24,8 @@ interface CalendarEventProps<T extends ICalendarEventBase> {
   overlapOffset?: number;
   renderEvent?: EventRenderer<T>;
   ampm: boolean;
+  hours: number[];
+  startHour?: number;
   showAllDayEventCell?: boolean;
 }
 
@@ -37,11 +38,14 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
   eventOrder = 0,
   renderEvent,
   ampm,
+  hours,
+  startHour = 8,
   showAllDayEventCell = false,
 }: CalendarEventProps<T>) => {
   const getEventCellPositionStyle = useCallback(
     (start: DateTime, end: DateTime) => {
-      const minutesInDay = showAllDayEventCell ? DAY_MINUTES + 60 : DAY_MINUTES;
+      const dayMinutes = hours.length * 60;
+      const minutesInDay = showAllDayEventCell ? dayMinutes + 60 : dayMinutes;
       if (showAllDayEventCell && event.start.hour === 0) {
         return {
           height: '100%',
@@ -52,13 +56,18 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
       const relativeHeight =
         100 * (1 / minutesInDay) * end.diff(start).as('minutes');
 
-      const relativeTop = getRelativeTopInDay(start, showAllDayEventCell);
+      const relativeTop = getRelativeTopInDay(
+        start,
+        showAllDayEventCell,
+        hours,
+        startHour,
+      );
       return {
         height: `${relativeHeight}%`,
         top: `${relativeTop}%`,
       };
     },
-    [showAllDayEventCell],
+    [hours, showAllDayEventCell, event.start.hour, startHour],
   );
 
   const touchableOpacityProps = useCalendarTouchableOpacityProps({
@@ -70,7 +79,7 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
       getStyleForOverlappingEvent(eventOrder, eventCount),
       {
         position: 'absolute',
-        width: `${98 / eventCount}%`,
+        width: `${100 / eventCount}%`,
       },
     ],
   });

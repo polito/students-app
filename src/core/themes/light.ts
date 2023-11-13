@@ -83,6 +83,19 @@ const green = {
   900: '#14532D',
 };
 
+const tertiary = {
+  50: '#F0FDF4',
+  100: '#D1FAE5',
+  200: '#BBF7D0',
+  300: '#6EE7B7',
+  400: '#4ADE80',
+  500: '#10B981',
+  600: '#16A34A',
+  700: '#047857',
+  800: '#166534',
+  900: '#14532D',
+};
+
 const darkOrange = {
   50: '#FFF7ED',
   100: '#FFEDD5',
@@ -169,6 +182,7 @@ export const lightTheme: Theme = {
     warning: orange,
     muted: gray,
     info: lightBlue,
+    tertiary: tertiary,
   },
   fontFamilies: {
     heading: 'Montserrat',

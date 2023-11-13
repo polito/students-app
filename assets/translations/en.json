@@ -21,6 +21,12 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
+    },
+    "bookingStatus": {
+      "notAvailable": "Not available",
+      "available": "Available",
+      "booked": "Booked",
+      "full": "Full"
     }
   },
   "bookingsScreen": {
@@ -28,6 +34,22 @@
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
+  },
+  "bookingSeatScreen": {
+    "title": "Select a seat",
+    "noSeatsAvailable": "We're sorry,\nthere are no places available",
+    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
+    "slotBookableFrom": "This slot will be bookable starting from ",
+    "confirm": "Confirm booking",
+    "informationAcknowledgment": "I declare that I have read it\nof the ",
+    "informationAcknowledgmentLink": "COVID 19 emergency information",
+    "noSeatSelected": "No seat",
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
+    "seatStatus": {
+      "booked": "Booked",
+      "available": "Available",
+      "notAvailable": "Non bookable"
+    }
   },
   "colors": {
     "amber": "Amber",
@@ -51,16 +73,25 @@
     "yellow": "Yellow"
   },
   "common": {
+    "back": "Back",
+    "desk": "Desk",
+    "seat": "Seat",
+    "reset": "Reset",
+    "hour": "Hour",
+    "day": "Day",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
     },
     "agent": "Agent",
+    "legend": "Legend",
+    "close": "Close",
+    "search": "Search",
+    "cfu": "CFU",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
-    "back": "Back",
     "booking": "Booking",
     "booking_plural": "Bookings",
     "building": "Building",
@@ -70,10 +101,8 @@
     "campus": "Campus",
     "cancel": "Cancel",
     "capacity": "Capacity",
-    "cfu": "CFU",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
-    "close": "Close",
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -184,7 +213,6 @@
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
-    "search": "Search",
     "selectAnOption": "Please select an option",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",

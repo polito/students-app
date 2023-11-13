@@ -50,14 +50,11 @@ const setupCourses = (
   const updatedCourses: CourseOverview[] = [];
 
   courses?.forEach(c => {
-    // Skip courses without id (such as thesis)
-    if (!c.id) return c;
-
     const newC = c as CourseOverview;
 
     newC.uniqueShortcode = c.shortcode + c.moduleNumber;
 
-    if (!(newC.uniqueShortcode in coursePreferences)) {
+    if (c.id && !(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
         .map(cp => cp.color)
         .filter(notNullish);
