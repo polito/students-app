@@ -22,7 +22,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { CourseOverview, ExamStatusEnum } from '@polito/api-client';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -56,16 +56,12 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
 
-    return coursesQuery.data
-      .filter(
-        c =>
-          c.uniqueShortcode && !coursePreferences[c.uniqueShortcode]?.isHidden,
-      )
-      .sort(
-        (a: CourseOverview, b) =>
-          (coursePreferences[a.id!]?.order ?? 0) -
-          (coursePreferences[b.id!]?.order ?? 0),
-      );
+    return coursesQuery.data.filter(
+      c =>
+        c.id &&
+        c.uniqueShortcode &&
+        !coursePreferences[c.uniqueShortcode]?.isHidden,
+    );
   }, [coursesQuery, coursePreferences]);
 
   const exams = useMemo(() => {
@@ -123,13 +119,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
-                badge={getUnreadsCount([
-                  // @ts-expect-error TODO fix path typing
-                  'teaching',
-                  // @ts-expect-error TODO fix path typing
-                  'courses',
-                  course.id!.toString(),
-                ])}
+                badge={
+                  course.id
+                    ? getUnreadsCount([
+                        // @ts-expect-error TODO fix path typing
+                        'teaching',
+                        // @ts-expect-error TODO fix path typing
+                        'courses',
+                        course.id!.toString(),
+                      ])
+                    : undefined
+                }
               />
             ))}
           </OverviewList>
