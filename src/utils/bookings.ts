@@ -5,6 +5,8 @@ import { DateTime } from 'luxon';
 
 import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotScreen';
 
+export const MIN_CELL_HEIGHT = 20;
+
 const isSlotBookable = (item: BookingCalendarEvent) => {
   return item.canBeBooked && item.start > DateTime.now();
 };
@@ -99,11 +101,8 @@ export const canBeCancelled = (booking?: Booking) => {
   );
 };
 
-export const getCalendarHours = (startHour = 8, endHour = 19) => {
-  return Array.from(
-    { length: endHour - startHour + 1 },
-    (_, i) => i + startHour,
-  );
+export const getCalendarHours = (startHour = 8, endHour = 20) => {
+  return Array.from({ length: endHour - startHour }, (_, i) => i + startHour);
 };
 
 export const getCalendarPropsFromTopic = (

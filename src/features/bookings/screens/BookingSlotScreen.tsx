@@ -28,6 +28,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -39,6 +40,7 @@ import {
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import {
+  MIN_CELL_HEIGHT,
   canBeBookedWithSeatSelection,
   getBookingSlotStatus,
   getBookingStyle,
@@ -64,7 +66,7 @@ const START_DATE = DateTime.now().startOf('week');
 
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
-  const { palettes, colors } = useTheme();
+  const { palettes, colors, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
@@ -174,10 +176,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     }
   };
 
-  const hours = useMemo(
-    () => getCalendarHours(currentTopic?.startHour, currentTopic?.endHour),
-    [currentTopic],
-  );
+  const hours = useMemo(() => {
+    if (!currentTopic) return [];
+    return getCalendarHours(currentTopic?.startHour, currentTopic?.endHour);
+  }, [currentTopic]);
 
   useEffect(() => {
     const newStartDate = currentTopic?.startDate
@@ -200,6 +202,24 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     );
   }, [isOffline, currentTopic, currentWeekStart]);
 
+  const onContainerSizeChanged = useCallback(
+    (height: number) => {
+      if (!currentTopic) return;
+
+      const slotsPerDay =
+        currentTopic.slotsPerHour! * (currentTopic.endHour ?? 20) -
+        (currentTopic.startHour ?? 8);
+      const heightPerSlot = height / slotsPerDay;
+
+      if (heightPerSlot >= MIN_CELL_HEIGHT) {
+        setCalendarHeight(height);
+      } else {
+        setCalendarHeight(MIN_CELL_HEIGHT * slotsPerDay);
+      }
+    },
+    [currentTopic],
+  );
+
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
@@ -218,7 +238,9 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       </HeaderAccessory>
       <View
         style={styles.calendarContainer}
-        onLayout={e => setCalendarHeight(e.nativeEvent.layout.height)}
+        onLayout={e => {
+          onContainerSizeChanged(e.nativeEvent.layout.height);
+        }}
       >
         {(isFetching || isLoading || isRefetching) && (
           <ActivityIndicator size="large" style={styles.loader} />
@@ -233,6 +255,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             date={currentWeekStart}
             locale={language}
             hours={hours}
+            bodyContainerStyle={{ backgroundColor: 'yellow' }}
             cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
             mode="custom"
             showAllDayEventCell={false}
@@ -250,6 +273,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 item,
                 palettes,
                 colors,
+                dark,
               );
               const bookingStatus = getBookingSlotStatus(item);
 
@@ -279,6 +303,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             }}
           />
         )}
+        <BottomBarSpacer />
       </View>
     </>
   );
