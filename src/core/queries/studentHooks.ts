@@ -1,9 +1,16 @@
+import { useMemo } from 'react';
+
 import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import * as Sentry from '@sentry/react-native';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { unreadMessages } from '../../utils/messages';
 import { pluckData } from '../../utils/queries';
@@ -69,28 +76,59 @@ export const useGetGrades = () => {
   );
 };
 
+const getDeadlineWeekQueryKey = (since: DateTime) => [
+  DEADLINES_QUERY_PREFIX,
+  since,
+];
+
+const getDeadlineWeekQueryFn = async (
+  studentClient: StudentApi,
+  since: DateTime,
+) => {
+  const until = since.plus({ week: 1 });
+
+  return studentClient
+    .getDeadlines({
+      fromDate: since.toJSDate(),
+      toDate: until.toJSDate(),
+    })
+    .then(pluckData);
+};
+
 export const useGetDeadlineWeek = (
   since: DateTime = DateTime.now().startOf('week'),
 ) => {
   const studentClient = useStudentClient();
 
-  const oneWeek = Duration.fromDurationLike({ week: 1 });
-
   return useQuery(
-    [DEADLINES_QUERY_PREFIX, since],
-    async () => {
-      const until = since.plus(oneWeek);
-
-      const response = await studentClient.getDeadlines({
-        fromDate: since.toJSDate(),
-        toDate: until.toJSDate(),
-      });
-      return pluckData(response);
-    },
+    getDeadlineWeekQueryKey(since),
+    async () => getDeadlineWeekQueryFn(studentClient, since),
     {
       staleTime: Infinity,
     },
   );
+};
+
+export const useGetDeadlineWeeks = (
+  mondays: DateTime[] = [DateTime.now().startOf('week')],
+) => {
+  const studentClient = useStudentClient();
+
+  const queries = useQueries({
+    queries: (mondays ?? []).map(monday => ({
+      queryKey: getDeadlineWeekQueryKey(monday),
+      queryFn: async () => getDeadlineWeekQueryFn(studentClient, monday),
+    })),
+  });
+
+  const isLoading = useMemo(() => {
+    return queries.some(query => query.isLoading);
+  }, [queries]);
+
+  return {
+    data: queries.map(query => query.data!),
+    isLoading,
+  };
 };
 
 export const useUpdateDevicePreferences = () => {

@@ -30,14 +30,13 @@ export const useSearchPlaces = ({
   categoryId,
   subCategoryId,
 }: UseSearchPlacesOptions) => {
-  const { courses: coursesPreferences, placesSearched } =
-    usePreferencesContext();
+  const { placesSearched } = usePreferencesContext();
 
   const campus = useGetCurrentCampus();
   const actualSiteId = siteId ?? campus?.id;
 
   const [now] = useState(DateTime.now());
-  const { data: agendaPage } = useGetAgendaWeek(coursesPreferences, now);
+  const { data: agendaPage } = useGetAgendaWeek(now.startOf('week'));
   const upcomingCommitments = useMemo(
     () =>
       agendaPage?.data
