@@ -24,6 +24,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { isToday } from '@lib/ui/utils/calendar';
 import { Booking } from '@polito/api-client';
@@ -133,7 +134,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
 
   const onPressDelete = async () => {
     if (await confirmCancel()) {
-      setFeedback({ text: t('bookingScreen.cancelFeedback') });
       return deleteBookingMutation
         .mutateAsync()
         .then(() => navigation.goBack())
@@ -157,8 +157,8 @@ export const BookingScreen = ({ navigation, route }: Props) => {
             )}
             <BookingDateTime accessible={true} booking={booking} />
           </View>
-          {booking?.location?.name && (
-            <OverviewList>
+          <OverviewList>
+            {booking?.location?.name && (
               <ListItem
                 leadingItem={
                   <Icon
@@ -175,8 +175,34 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                 )}
                 onPress={() => onPressLocation(booking?.location)}
               />
-            </OverviewList>
-          )}
+            )}
+            {!!booking && !!booking?.seat && (
+              <ListItem
+                accessibilityRole="button"
+                leadingItem={
+                  <Icon
+                    icon={faSeat}
+                    size={20}
+                    color={colors.secondaryText}
+                    style={{ marginRight: spacing[2] }}
+                  />
+                }
+                title={`${booking.seat.row}${booking.seat.column}`}
+                subtitle={t('common.seat')}
+                onPress={() =>
+                  booking?.seat?.id &&
+                  booking?.id &&
+                  navigation.navigate('BookingSeat', {
+                    bookingId: booking.id,
+                    slotId: String(booking?.id),
+                    seatId: booking?.seat?.id,
+                    topicId: booking.subtopic?.id || booking.topic.id,
+                  })
+                }
+                isAction
+              />
+            )}
+          </OverviewList>
           <Section style={{ marginTop: spacing[4] }} mb={0} accessible>
             <SectionHeader
               title={t('bookingScreen.barCodeTitle')}

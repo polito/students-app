@@ -31,8 +31,7 @@ i18n.use(initReactI18next).init({
 });
 
 export const UiProvider = ({ children }: PropsWithChildren) => {
-  // eslint-disable-next-line prefer-const
-  let { colorScheme, language } = usePreferencesContext();
+  const { colorScheme, language } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useColorScheme();
 
@@ -44,13 +43,15 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
     }
   }, [colorScheme]);
 
-  const uiTheme = useMemo(
-    () => ({
-      ...(theme === 'light' ? lightTheme : darkTheme),
+  const uiTheme = useMemo(() => {
+    const effectiveTheme = colorScheme === 'system' ? theme : colorScheme;
+
+    return {
+      ...(effectiveTheme === 'light' ? lightTheme : darkTheme),
       safeAreaInsets,
-    }),
-    [theme, safeAreaInsets],
-  );
+    };
+  }, [colorScheme, theme, safeAreaInsets]);
+
   const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 
   useEffect(() => {

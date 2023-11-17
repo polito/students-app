@@ -83,6 +83,19 @@ const green = {
   900: '#14532D',
 };
 
+const tertiary = {
+  50: '#F0FDF4',
+  100: '#D1FAE5',
+  200: '#BBF7D0',
+  300: '#6EE7B7',
+  400: '#4ADE80',
+  500: '#10B981',
+  600: '#16A34A',
+  700: '#047857',
+  800: '#166534',
+  900: '#14532D',
+};
+
 const darkOrange = {
   50: '#FFF7ED',
   100: '#FFEDD5',
@@ -107,6 +120,19 @@ const lightBlue = {
   700: '#0369A1',
   800: '#075985',
   900: '#0C4A6E',
+};
+
+const violet = {
+  50: '#f5f3ff',
+  100: '#ede9fe',
+  200: '#ddd6fe',
+  300: '#c4b5fd',
+  400: '#a78bfa',
+  500: '#8b5cf6',
+  600: '#7c3aed',
+  700: '#6d28d9',
+  800: '#5b21b6',
+  900: '#4c1d95',
 };
 
 const backgroundColor = '#F0F3F5';
@@ -146,6 +172,7 @@ export const lightTheme: Theme = {
     green,
     darkOrange,
     lightBlue,
+    violet,
     text: gray,
     primary: navy,
     secondary: orange,
@@ -155,6 +182,7 @@ export const lightTheme: Theme = {
     warning: orange,
     muted: gray,
     info: lightBlue,
+    tertiary: tertiary,
   },
   fontFamilies: {
     heading: 'Montserrat',

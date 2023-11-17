@@ -179,7 +179,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
 
   if (
     getPlaceError &&
-    (getPlaceError as ResponseError).response.status === 404
+    (getPlaceError as ResponseError)?.response?.status === 404
   ) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -216,21 +216,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               {formatPlaceCategory(place.data.category.name)}
             </Text>
           </Col>
-
-          {/* {(place.data.category.id === 'AULA' ||*/}
-          {/*  place.data.category.id === 'LAB') && (*/}
-          {/*  <Section>*/}
-          {/*    <SectionHeader*/}
-          {/*      title={`${placeName} ${t('common.inYourAgenda')}`}*/}
-          {/*      separator={false}*/}
-          {/*    />*/}
-          {/*    <OverviewList translucent>*/}
-          {/*      <Col p={5}>*/}
-          {/*        <Text>Coming soon</Text>*/}
-          {/*      </Col>*/}
-          {/*    </OverviewList>*/}
-          {/*  </Section>*/}
-          {/* )}*/}
 
           <Section>
             <SectionHeader title="Location" separator={false} />
@@ -283,16 +268,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                   subtitle={t('common.structure')}
                 />
               )}
-              {/* <ListItem*/}
-              {/*  inverted*/}
-              {/*  isAction*/}
-              {/*  titleProps={{*/}
-              {/*    numberOfLines: undefined,*/}
-              {/*    ellipsizeMode: undefined,*/}
-              {/*  }}*/}
-              {/*  title="Sede Centrale - Cittadella Politecnica"*/}
-              {/*  subtitle="Campus"*/}
-              {/*/ >*/}
             </OverviewList>
           </Section>
 

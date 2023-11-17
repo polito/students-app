@@ -21,6 +21,12 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
+    },
+    "bookingStatus": {
+      "notAvailable": "Not available",
+      "available": "Available",
+      "booked": "Booked",
+      "full": "Full"
     }
   },
   "bookingsScreen": {
@@ -28,6 +34,22 @@
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
+  },
+  "bookingSeatScreen": {
+    "title": "Select a seat",
+    "noSeatsAvailable": "We're sorry,\nthere are no places available",
+    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
+    "slotBookableFrom": "This slot will be bookable starting from ",
+    "confirm": "Confirm booking",
+    "informationAcknowledgment": "I declare that I have read it\nof the ",
+    "informationAcknowledgmentLink": "COVID 19 emergency information",
+    "noSeatSelected": "No seat",
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
+    "seatStatus": {
+      "booked": "Booked",
+      "available": "Available",
+      "notAvailable": "Non bookable"
+    }
   },
   "colors": {
     "amber": "Amber",
@@ -52,14 +74,21 @@
   },
   "common": {
     "back": "Back",
-    "next": "Next",
-    "other": "Other",
+    "desk": "Desk",
+    "seat": "Seat",
+    "reset": "Reset",
+    "hour": "Hour",
+    "day": "Day",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
     },
     "agent": "Agent",
+    "legend": "Legend",
+    "close": "Close",
+    "search": "Search",
+    "cfu": "CFU",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
@@ -72,10 +101,8 @@
     "campus": "Campus",
     "cancel": "Cancel",
     "capacity": "Capacity",
-    "cfu": "CFU",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
-    "close": "Close",
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -149,6 +176,7 @@
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
+    "next": "Next",
     "noInternet": "You are offline, some features may not be available",
     "notFound": "Not found",
     "notes": "Notes",
@@ -171,6 +199,7 @@
       "true": "Double tap to close"
     },
     "options": "Options",
+    "other": "Other",
     "pause": "Pause",
     "period": "Period",
     "phone": "Phone",
@@ -184,7 +213,6 @@
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
-    "search": "Search",
     "selectAnOption": "Please select an option",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
@@ -360,6 +388,9 @@
     "title": "Degree",
     "tracks": "Tracks"
   },
+  "eventPlacesScreen": {
+    "title": "Event locations"
+  },
   "examRequestScreen": {
     "error": "Fill in the text field before proceeding with the request",
     "placeholder": "Explain why you need to take the exam early",
@@ -490,6 +521,27 @@
     "master": "Master degree",
     "title": "Offering"
   },
+  "onboardingScreen": {
+    "steps": {
+      "0": {
+        "content": "You can customize what you see and make your agenda more organized by choosing the courses to view, the colors and the icons.",
+        "title": "What has changed?"
+      },
+      "1": {
+        "content": "You will find your way around the Polytechnic more easily thanks to the new system of maps and filters to find what you are looking for.",
+        "title": "What has changed?"
+      },
+      "2": {
+        "content": "Your comments help us improve: you can send feedback on the new app by opening a ticket that will go directly to the development team.",
+        "title": "How to give feedback?"
+      },
+      "3": {
+        "content": "To have access to your Polito email, follow the “Configure your email” guide in the new “Guides” section.",
+        "title": "How to configure email?"
+      }
+    },
+    "title": "What's new"
+  },
   "personScreen": {
     "call": "Call",
     "contacts": "Contacts",
@@ -551,6 +603,7 @@
     "title": "Services"
   },
   "settingsScreen": {
+    "appVersion": "Version {{version}}",
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "openLanguageMenu": "Tap twice to open the language selection menu",
     "openThemeMenu": "Tap twice to open the theme selection menu",
@@ -634,26 +687,5 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
-  },
-  "onboardingScreen": {
-    "title": "What's new",
-    "steps": {
-      "0": {
-        "title": "What has changed?",
-        "content": "You can customize what you see and make your agenda more organized by choosing the courses to view, the colors and the icons."
-      },
-      "1": {
-        "title": "What has changed?",
-        "content": "You will find your way around the Polytechnic more easily thanks to the new system of maps and filters to find what you are looking for."
-      },
-      "2": {
-        "title": "How to give feedback?",
-        "content": "Your comments help us improve: you can send feedback on the new app by opening a ticket that will go directly to the development team."
-      },
-      "3": {
-        "title": "How to configure email?",
-        "content": "To have access to your Polito email, follow the “Configure your email” guide in the new “Guides” section."
-      }
-    }
   }
 }

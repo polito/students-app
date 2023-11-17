@@ -14,13 +14,19 @@
     "barCodeTitle": "Barcode",
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
-    "cancelFeedback": "Prenoazione annullata",
+    "cancelFeedback": "Prenotazione annullata",
     "checkIn": "Check-in",
     "checkInFeedback": "Check in eseguito!",
     "checkLocationErrorFeedback": "Sei troppo distante per effettuare il check-in della prenotazione",
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
+    },
+    "bookingStatus": {
+      "notAvailable": "Non ancora prenotabile",
+      "available": "Prenotabile",
+      "booked": "Prenotato",
+      "full": "Non prenotabile"
     }
   },
   "bookingsScreen": {
@@ -28,6 +34,22 @@
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
+  },
+  "bookingSeatScreen": {
+    "title": "Scegli il posto",
+    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
+    "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
+    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal ",
+    "confirm": "Conferma prenotazione",
+    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
+    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
+    "noSeatSelected": "Nessuna",
+    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto",
+    "seatStatus": {
+      "booked": "Prenotato",
+      "available": "Disponibile",
+      "notAvailable": "Non prenotabile"
+    }
   },
   "colors": {
     "amber": "Ambra",
@@ -51,17 +73,27 @@
     "yellow": "Giallo"
   },
   "common": {
-    "back": "Indietro",
-    "next": "Avanti",
+    "desk": "Cattedra",
+    "seat": "Postazione",
+    "reset": "Reimposta",
+    "hour": "Orario",
+    "day": "Giorno",
+    "other": "Altro",
+    "noValue": "Nessun valore",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
     "agent": "Operatore",
+    "legend": "Legenda",
+    "close": "Chiudi",
+    "search": "Cerca",
+    "cfu": "CFU",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
+    "back": "Indietro",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
     "building": "Edificio",
@@ -71,10 +103,8 @@
     "campus": "Sede",
     "cancel": "Annulla",
     "capacity": "Capacità",
-    "cfu": "CFU",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
-    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -148,6 +178,7 @@
     "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
+    "next": "Avanti",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "notFound": "Luogo inesistente",
     "notes": "Note",
@@ -170,7 +201,6 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
-    "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
     "phone": "Telefono",
@@ -184,7 +214,6 @@
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
-    "search": "Cerca",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
@@ -360,6 +389,9 @@
     "title": "Corso di laurea",
     "tracks": "Piano studi"
   },
+  "eventPlacesScreen": {
+    "title": "Luoghi evento"
+  },
   "examRequestScreen": {
     "error": "Compila il campo di testo prima di procedere con la richiesta",
     "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
@@ -491,6 +523,27 @@
     "master": "Laurea magistrale",
     "title": "Offerta formativa"
   },
+  "onboardingScreen": {
+    "steps": {
+      "0": {
+        "content": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone.",
+        "title": "Cosa è cambiato?"
+      },
+      "1": {
+        "content": "Ti orienterai con più facilità all'interno del Politecnico grazie al nuovo sistema di mappe e filtri per trovare ciò che cerchi.",
+        "title": "Cosa è cambiato?"
+      },
+      "2": {
+        "content": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo.",
+        "title": "Come dare un feedback?"
+      },
+      "3": {
+        "content": "Per avere accesso alla tua email Polito segui la guida “Configura la tua email” nella nuova sezione “Guide”.",
+        "title": "Come configurare l’email?"
+      }
+    },
+    "title": "Novità"
+  },
   "personScreen": {
     "call": "Chiama",
     "contacts": "Contatti",
@@ -552,6 +605,7 @@
     "title": "Servizi"
   },
   "settingsScreen": {
+    "appVersion": "Versione {{version}}",
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
@@ -585,8 +639,8 @@
   "ticketScreen": {
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
-    "reply": "Rispondi",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
+    "reply": "Rispondi",
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
@@ -635,26 +689,5 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
-  },
-  "onboardingScreen": {
-    "title" : "Novità",
-    "steps": {
-      "0": {
-        "title" : "Cosa è cambiato?",
-        "content": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone."
-      },
-      "1": {
-        "title" : "Cosa è cambiato?",
-        "content": "Ti orienterai con più facilità all'interno del Politecnico grazie al nuovo sistema di mappe e filtri per trovare ciò che cerchi."
-      },
-      "2":{
-        "title" : "Come dare un feedback?",
-        "content": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo."
-      },
-      "3":{
-        "title" : "Come configurare l’email?",
-        "content": "Per avere accesso alla tua email Polito segui la guida “Configura la tua email” nella nuova sezione “Guide”."
-      }
-    }
   }
 }

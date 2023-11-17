@@ -1,4 +1,4 @@
-import { Children, PropsWithChildren } from 'react';
+import { Children, PropsWithChildren, isValidElement } from 'react';
 import { Platform } from 'react-native';
 
 import { Divider } from '@lib/ui/components/Divider';
@@ -26,6 +26,9 @@ export const List = ({
     <>
       {dividers
         ? Children.map(children, (c, i) => {
+            if (!isValidElement(c)) {
+              return null;
+            }
             return (
               <>
                 {c}

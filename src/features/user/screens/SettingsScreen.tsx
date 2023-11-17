@@ -17,12 +17,14 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
 } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -31,6 +33,7 @@ import { MenuView } from '@react-native-menu/menu';
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
+import { version } from '../../../../package.json';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import {
@@ -324,6 +327,9 @@ export const SettingsScreen = () => {
               <CleanCacheListItem />
             </OverviewList>
           </Section>
+          <Col ph={4}>
+            <Text>{t('settingsScreen.appVersion', { version })}</Text>
+          </Col>
         </View>
         <BottomBarSpacer />
       </SafeAreaView>

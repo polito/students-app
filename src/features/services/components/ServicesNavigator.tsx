@@ -13,6 +13,10 @@ import {
   SharedScreensParamList,
 } from '../../../shared/navigation/SharedScreens';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
+import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
+import { BookingSeatSelectionScreen } from '../../bookings/screens/BookingSeatSelectionScreen';
+import { BookingSlotScreen } from '../../bookings/screens/BookingSlotScreen';
+import { BookingTopicScreen } from '../../bookings/screens/BookingTopicScreen';
 import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
@@ -27,7 +31,6 @@ import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
 import { BookingsScreen } from '../screens/BookingsScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
-import { NewBookingScreen } from '../screens/NewBookingScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
@@ -59,7 +62,22 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Contacts: undefined;
   Bookings: undefined;
   Booking: { id: number };
-  NewBooking: undefined;
+  BookingTopic: undefined;
+  BookingSlot: { topicId: string; topicName: string };
+  BookingSeatSelection: {
+    slotId: string;
+    topicId: string;
+    startHour: string;
+    endHour: string;
+    day: string;
+    hasSeatSelection: boolean | undefined;
+  };
+  BookingSeat: {
+    bookingId: number;
+    topicId: string;
+    slotId: string;
+    seatId: number;
+  };
   Guides: undefined;
   Guide: { id: string };
 };
@@ -236,12 +254,44 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="NewBooking"
-        component={NewBookingScreen}
+        name="BookingTopic"
+        component={BookingTopicScreen}
         options={{
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="BookingSlot"
+        component={BookingSlotScreen}
+        options={({ route }) => ({
+          headerTitle: route.params.topicName,
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="BookingSeatSelection"
+        component={BookingSeatSelectionScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          headerTitle: t('bookingSeatScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="BookingSeat"
+        component={BookingSeatScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          headerTitle: t('common.seat'),
         }}
       />
       <Stack.Screen

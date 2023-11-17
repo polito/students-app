@@ -48,19 +48,20 @@ export const MarkersLayer = ({
   const pois = useMemo((): (SearchPlace & CategoryData)[] => {
     let result = places;
     if (!search) {
-      result = result?.filter(p =>
-        selectedPoiId === p.id ||
-        (categoryId != null &&
-          (p as PlaceOverviewWithMetadata).category?.id === categoryId) ||
-        (subCategoryId != null &&
-          (p as PlaceOverviewWithMetadata).category?.subCategory.id ===
-            subCategoryId) ||
-        p.category.id === 'UFF'
-          ? (p as PlaceOverviewWithMetadata).room?.name
-          : (p as PlaceOverviewWithMetadata).category?.subCategory.id &&
-            SUBCATEGORIES_INITIALLY_SHOWN.includes(
-              (p as PlaceOverviewWithMetadata).category?.subCategory.id,
-            ),
+      result = result?.filter(
+        p =>
+          selectedPoiId === p.id ||
+          (categoryId != null &&
+            (p as PlaceOverviewWithMetadata).category?.id === categoryId) ||
+          (subCategoryId != null &&
+            (p as PlaceOverviewWithMetadata).category?.subCategory.id ===
+              subCategoryId) ||
+          (p.category.id === 'UFF'
+            ? !!(p as PlaceOverviewWithMetadata).room?.name
+            : (p as PlaceOverviewWithMetadata).category?.subCategory.id &&
+              SUBCATEGORIES_INITIALLY_SHOWN.includes(
+                (p as PlaceOverviewWithMetadata).category?.subCategory.id,
+              )),
       );
     }
     return result?.map(poi => {

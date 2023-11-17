@@ -30,25 +30,60 @@ export const useGetBookingTopics = () => {
   );
 };
 
-export const useGetBookingSlots = (bookingTopicId: string) => {
+export const useGetBookingSlots = (
+  bookingTopicId: string,
+  weekStart: DateTime,
+) => {
+  const bookingClient = useBookingClient();
+  const fromDate = weekStart.startOf('week');
+  const toDate = weekStart.endOf('week');
+
+  return useQuery(
+    [
+      ...BOOKINGS_SLOTS_QUERY_KEY,
+      bookingTopicId,
+      fromDate.toISODate(),
+      toDate.toISODate(),
+    ],
+    () =>
+      bookingClient
+        .getBookingSlots({
+          bookingTopicId,
+          fromDate: fromDate.toJSDate(),
+          toDate: toDate.toJSDate(),
+        })
+        .then(pluckData),
+    {
+      enabled: true,
+    },
+  );
+};
+
+/**
+ * Get booking slots for a given booking topic id and date range
+ * Used to retrieve slot from a given reservation
+ *
+ * @param bookingTopicId
+ * @param fromDate
+ * @param toDate
+ */
+export const useGetBookingDetailSlots = (
+  bookingTopicId: string,
+  fromDate: DateTime,
+  toDate: DateTime,
+) => {
   const bookingClient = useBookingClient();
 
-  return useQuery(BOOKINGS_SLOTS_QUERY_KEY, () =>
-    bookingClient
-      .getBookingSlots({
-        bookingTopicId,
-        fromDate: DateTime.fromObject({
-          day: 1,
-          month: 11,
-          year: 2023,
-        }).toJSDate(),
-        toDate: DateTime.fromObject({
-          day: 3,
-          month: 11,
-          year: 2023,
-        }).toJSDate(),
-      })
-      .then(pluckData),
+  return useQuery(
+    ['booking-detail', bookingTopicId, fromDate.toISO(), toDate.toISO()],
+    () =>
+      bookingClient
+        .getBookingSlots({
+          bookingTopicId,
+          fromDate: fromDate.toJSDate(),
+          toDate: toDate.toJSDate(),
+        })
+        .then(pluckData),
   );
 };
 
@@ -58,10 +93,12 @@ export const useGetBookingSeats = (
 ) => {
   const bookingClient = useBookingClient();
 
-  return useQuery(BOOKINGS_SEATS_QUERY_KEY, () =>
-    bookingClient
-      .getBookingSeats({ bookingTopicId, bookingSlotId })
-      .then(pluckData),
+  return useQuery(
+    [...BOOKINGS_SEATS_QUERY_KEY, bookingTopicId, bookingSlotId],
+    () =>
+      bookingClient
+        .getBookingSeats({ bookingTopicId, bookingSlotId })
+        .then(pluckData),
   );
 };
 
@@ -114,7 +151,10 @@ export const useDeleteBooking = (bookingId: number) => {
 
   return useMutation(() => bookingClient.deleteBookingRaw({ bookingId }), {
     onSuccess() {
-      return client.invalidateQueries(BOOKINGS_QUERY_KEY);
+      return Promise.all([
+        client.invalidateQueries(BOOKINGS_QUERY_KEY),
+        client.invalidateQueries(['agenda']),
+      ]);
     },
   });
 };

@@ -7,13 +7,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 
 import { Col } from '@lib/ui/components/Col';
@@ -22,13 +16,12 @@ import { Row } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
-import { tabBarStyle } from '../../utils/tab-bar';
 import { OnboardingStep } from '../components/OnboardingStep';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useHideTabs } from '../hooks/useHideTabs';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
 
@@ -39,7 +32,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  const { width } = useWindowDimensions();
+  const [width, setWidth] = useState<number>(0);
   const stepsRef = useRef<ScrollView>(null);
 
   // Init data as the memoized array from 0 to ONBOARDING_STEPS
@@ -54,18 +47,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
     [currentStep, data],
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.getParent()!.setOptions({
-        tabBarStyle: { display: 'none' },
-      });
-      return () => {
-        navigation.getParent()!.setOptions({
-          tabBarStyle: tabBarStyle,
-        });
-      };
-    }, [navigation]),
-  );
+  useHideTabs();
 
   // Update the onboarding step in preferences
   useEffect(() => {
@@ -77,6 +59,9 @@ export const OnboardingModal = ({ navigation }: Props) => {
   }, [currentStep, onboardingStep, updatePreference]);
 
   useLayoutEffect(() => {
+    if (width === 0) {
+      return;
+    }
     // Workaround for scroll action not working on first render for iOS devices
     setTimeout(() => {
       stepsRef.current?.scrollTo({
@@ -86,7 +71,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
     }, 200);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stepsRef.current]);
+  }, [stepsRef.current, width]);
 
   const onPrevPage = () =>
     stepsRef.current?.scrollTo({
@@ -112,8 +97,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
       animated: true,
       x: (currentStep + 1) * width,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep, isLastStep, navigation]);
+  }, [currentStep, isLastStep, navigation, width]);
   return (
     <>
       <ScrollView
@@ -133,6 +117,10 @@ export const OnboardingModal = ({ navigation }: Props) => {
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
+        onLayout={e => {
+          const { width: scrollViewWidth } = e.nativeEvent.layout;
+          setWidth(scrollViewWidth);
+        }}
       >
         {data.map(item => (
           <OnboardingStep key={item} stepNumber={item} width={width} />

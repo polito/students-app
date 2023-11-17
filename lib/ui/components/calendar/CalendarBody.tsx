@@ -10,6 +10,7 @@ import {
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { DateTime, Interval } from 'luxon';
 
@@ -23,9 +24,9 @@ import {
   ICalendarEventBase,
 } from '../../types/Calendar';
 import {
+  HOURS,
   getMaxOverlappingEventsCount,
   getRelativeTopInDay,
-  hours,
   isToday,
 } from '../../utils/calendar';
 import { CalendarEvent } from './CalendarEvent';
@@ -54,6 +55,8 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   showAllDayEventCell: boolean;
   showTime: boolean;
   style?: ViewStyle;
+  hours?: number[];
+  startHour?: number;
 }
 
 export const CalendarBody = <T extends ICalendarEventBase>({
@@ -78,9 +81,12 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   headerComponentStyle = {},
   hideHours = false,
   isEventOrderingEnabled = true,
+  hours = HOURS,
+  startHour = 8,
 }: CalendarBodyProps<T>) => {
   const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
+  const bottomBarHeight = useBottomTabBarHeight();
 
   const styles = useStylesheet(createStyles);
 
@@ -141,6 +147,8 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           overlapOffset={overlapOffset}
           renderEvent={renderEvent}
           ampm={ampm}
+          hours={hours}
+          startHour={startHour}
           showAllDayEventCell={showAllDayEventCell}
         />
       );
@@ -153,6 +161,8 @@ export const CalendarBody = <T extends ICalendarEventBase>({
       renderEvent,
       showAllDayEventCell,
       showTime,
+      hours,
+      startHour,
     ],
   );
 
@@ -172,7 +182,9 @@ export const CalendarBody = <T extends ICalendarEventBase>({
             ? { x: 0, y: scrollOffsetMinutes }
             : { x: 0, y: 0 }
         }
-        contentContainerStyle={{ paddingBottom: 150 }}
+        contentContainerStyle={{
+          paddingBottom: bottomBarHeight,
+        }}
       >
         <SafeAreaView
           style={{
@@ -195,12 +207,13 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                   centerVertically={false}
                 />
               )}
-              {hours.map(hour => (
+              {hours.map((hour, index) => (
                 <HourGuideColumn
                   key={hour}
                   cellHeight={cellHeight}
                   hour={hour}
                   ampm={ampm}
+                  centerVertically={!(!showAllDayEventCell && index === 0)}
                 />
               ))}
             </View>
@@ -244,7 +257,10 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                 ))}
 
                 {events
-                  .filter(({ end }) => end.hasSame(date, 'day'))
+                  .filter(
+                    ({ end, start }) =>
+                      start.hasSame(date, 'day') && end.hasSame(date, 'day'),
+                  )
                   .map(_renderMappedEvent)}
 
                 {isToday(date) && !hideNowIndicator && (
@@ -255,6 +271,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                         top: `${getRelativeTopInDay(
                           now,
                           showAllDayEventCell,
+                          hours,
                         )}%`,
                       },
                     ]}
