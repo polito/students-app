@@ -12,6 +12,7 @@ import {
   SharedScreens,
   SharedScreensParamList,
 } from '../../../shared/navigation/SharedScreens';
+import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import {
   CourseSharedScreens,
   CourseSharedScreensParamList,
@@ -34,6 +35,12 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
     Exam: { id: number };
     Deadline: { item: DeadlineItem };
     Booking: { id: number };
+    BookingSeat: {
+      bookingId: number;
+      topicId: string;
+      slotId: string;
+      seatId: number;
+    };
     PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
   };
 
@@ -114,6 +121,15 @@ export const AgendaNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.booking'),
+        }}
+      />
+      <Stack.Screen
+        name="BookingSeat"
+        component={BookingSeatScreen}
+        options={{
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+          headerTitle: t('common.seat'),
         }}
       />
       <Stack.Screen
