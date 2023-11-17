@@ -42,8 +42,8 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Person'>;
 
 const profileImageSize = 120;
 
-export const PersonScreen = ({ route, navigation }: Props) => {
-  const { id, isCrossNavigation } = route.params;
+export const PersonScreen = ({ route }: Props) => {
+  const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -160,15 +160,10 @@ export const PersonScreen = ({ route, navigation }: Props) => {
           courses?.length || 0,
         )}. ${course.name}, ${course.year} -${t('common.' + role)}`}
         linkTo={{
-          screen: 'ServicesTab',
+          screen: 'DegreeCourse',
           params: {
-            screen: 'DegreeCourse',
-            params: {
-              courseShortcode: course.shortcode,
-              year: course.year,
-              isCrossNavigation: navigation.getId() !== 'ServicesNavigator',
-            },
-            initial: true,
+            courseShortcode: course.shortcode,
+            year: course.year,
           },
         }}
         disabled={disabled}

@@ -21,8 +21,6 @@ import {
   isPlace,
 } from '../types';
 import { useFormatAgendaItem } from '../utils/formatAgendaItem';
-import { MapScreenProps } from './MapNavigator';
-import { PlacesStackParamList } from './PlacesNavigator';
 
 export interface MarkersLayerProps {
   selectedPoiId?: string;
@@ -31,6 +29,7 @@ export interface MarkersLayerProps {
   displayFloor?: boolean;
   categoryId?: string;
   subCategoryId?: string;
+  isCrossNavigation?: boolean;
 }
 
 export const MarkersLayer = ({
@@ -40,9 +39,9 @@ export const MarkersLayer = ({
   categoryId,
   subCategoryId,
   search,
+  isCrossNavigation = false,
 }: MarkersLayerProps) => {
-  const { navigate } =
-    useNavigation<MapScreenProps<PlacesStackParamList>['navigation']>();
+  const navigation = useNavigation<any>();
   const { t } = useTranslation();
   const { dark, fontSizes, palettes } = useTheme();
   const formatAgendaItem = useFormatAgendaItem();
@@ -142,10 +141,24 @@ export const MarkersLayer = ({
             ? pois?.[features[0].properties?.index]
             : null;
           if (selectedPoi) {
-            navigate({
-              name: 'Place',
-              params: { placeId: selectedPoi.id },
-            });
+            if (isCrossNavigation) {
+              if (navigation.getId() === 'AgendaTabNavigator') {
+                navigation.navigate('PlacesAgendaStack', {
+                  screen: 'Place',
+                  params: { placeId: selectedPoi.id, isCrossNavigation: true },
+                });
+              } else if (navigation.getId() === 'TeachingTabNavigator') {
+                navigation.navigate('PlacesTeachingStack', {
+                  screen: 'Place',
+                  params: { placeId: selectedPoi.id, isCrossNavigation: true },
+                });
+              }
+            } else {
+              navigation.navigate('PlacesTab', {
+                screen: 'Place',
+                params: { placeId: selectedPoi.id },
+              });
+            }
           }
         }}
       >

@@ -43,6 +43,7 @@ export type PlacesStackParamList = {
   };
   Place: {
     placeId: string;
+    isCrossNavigation?: boolean;
   };
   EventPlaces: {
     placeIds: string[];
@@ -85,6 +86,7 @@ export const PlacesNavigator = () => {
           </View>
         ),
         mapDefaultOptions: {
+          scaleBarEnabled: false,
           camera: {
             animationDuration: 2000,
             animationMode: 'flyTo',

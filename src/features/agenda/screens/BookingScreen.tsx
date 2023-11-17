@@ -44,13 +44,10 @@ import {
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { BookingDateTime } from '../../bookings/components/BookingDateTime';
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
-type Props = NativeStackScreenProps<
-  AgendaStackParamList | ServiceStackParamList,
-  'Booking'
->;
+type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
 
 const bookingLocationHasValidCoordinates = (
   location: Booking['locationCheck'],
@@ -124,6 +121,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const onPressLocation = async (location: Booking['location']) => {
     if (location.type === 'virtualPlace') {
       await Linking.openURL(location.url);
+    } else if (location.type === 'place') {
+      navigation.navigate('PlacesAgendaStack', {
+        screen: 'Place',
+        params: {
+          placeId: resolvePlaceId(location),
+          isCrossNavigation: true,
+        },
+      });
     }
   };
 
@@ -163,6 +168,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                     style={{ marginRight: spacing[2] }}
                   />
                 }
+                isAction
                 title={booking.location.name}
                 subtitle={t(
                   `bookingScreen.locationType.${booking.location?.type}`,

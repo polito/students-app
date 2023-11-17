@@ -2,15 +2,24 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import {
+  SharedScreens,
+  SharedScreensParamList,
+} from '../../../shared/navigation/SharedScreens';
 import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
+import {
+  CourseSharedScreens,
+  CourseSharedScreensParamList,
+} from '../../courses/navigation/CourseSharedScreens';
+import { PlacesNavigator } from '../../places/components/PlacesNavigator';
+import { PlacesStackParamList } from '../../places/components/PlacesNavigator';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
-import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { AgendaWeekScreen } from '../screens/AgendaWeekScreen';
 import { BookingScreen } from '../screens/BookingScreen';
@@ -18,22 +27,22 @@ import { DeadlineScreen } from '../screens/DeadlineScreen';
 import { LectureScreen } from '../screens/LectureScreen';
 import { DeadlineItem, LectureItem } from '../types/AgendaItem';
 
-export type AgendaStackParamList = {
-  Agenda: undefined;
-  AgendaWeek: undefined;
-  Lecture: { item: LectureItem };
-  Exam: { id: number };
-  Deadline: { item: DeadlineItem };
-  Booking: { id: number };
-  BookingSeat: {
-    bookingId: number;
-    topicId: string;
-    slotId: string;
-    seatId: number;
+export type AgendaStackParamList = CourseSharedScreensParamList &
+  SharedScreensParamList & {
+    Agenda: undefined;
+    AgendaWeek: undefined;
+    Lecture: { item: LectureItem };
+    Exam: { id: number };
+    Deadline: { item: DeadlineItem };
+    Booking: { id: number };
+    BookingSeat: {
+      bookingId: number;
+      topicId: string;
+      slotId: string;
+      seatId: number;
+    };
+    PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
   };
-  Person: { id: number };
-  MessagesModal: undefined;
-};
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
@@ -133,16 +142,17 @@ export const AgendaNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="MessagesModal"
-        component={UnreadMessagesModal}
+        name="PlacesAgendaStack"
+        component={PlacesNavigator}
         options={{
-          headerTitle: t('messagesScreen.title'),
+          title: t('placeScreen.title'),
           headerLargeTitle: false,
-          presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
         }}
       />
+      {CourseSharedScreens(Stack as any)}
+      {SharedScreens(Stack as any)}
     </Stack.Navigator>
   );
 };

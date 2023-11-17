@@ -55,6 +55,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     if (!coursesQuery.data) return;
     const course = coursesQuery.data.find(c => c.id === id);
     if (!course) return;
+
     navigation.setOptions({
       headerTitle: () => (
         <Row

@@ -31,7 +31,6 @@ import {
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
-import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -41,7 +40,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 export const ExamScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
-  const { colors, fontSizes, spacing } = useTheme();
+  const { fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
@@ -127,35 +126,39 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            {exam?.places && exam.places.length > 0 && (
-              <ListItem
-                leadingItem={
-                  <Icon icon={faLocationDot} size={fontSizes['2xl']} />
-                }
-                title={exam.places.map(place => place.name).join(', ')}
-                subtitle={t('examScreen.location')}
-                isAction
-                onPress={() => {
-                  navigation.navigate('PlacesTab', {
-                    screen: exam.places!.length > 1 ? 'EventPlaces' : 'Place',
-                    params:
-                      exam.places!.length > 1
-                        ? {
-                            placeIds: exam.places!.map(place =>
-                              resolvePlaceId(place),
-                            ),
-                            eventName: `${exam.courseName} ${t(
-                              'common.examCall',
-                            )}`,
-                          }
-                        : {
-                            placeId: resolvePlaceId(exam.places![0]),
-                          },
-                    initial: false,
-                  });
-                }}
-              />
-            )}
+            {exam?.places?.map(p => {
+              const placeId = [p.buildingId, p.floorId, p.roomId].join('-');
+              return (
+                <ListItem
+                  key={placeId}
+                  leadingItem={
+                    <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+                  }
+                  title={p.name}
+                  subtitle={t('examScreen.location')}
+                  isAction
+                  onPress={() => {
+                    if (navigation.getId() === 'AgendaTabNavigator') {
+                      navigation.navigate('PlacesAgendaStack', {
+                        screen: 'Place',
+                        params: {
+                          placeId,
+                          isCrossNavigation: true,
+                        },
+                      });
+                    } else if (navigation.getId() === 'TeachingTabNavigator') {
+                      navigation.navigate('PlacesTeachingStack', {
+                        screen: 'Place',
+                        params: {
+                          placeId,
+                          isCrossNavigation: true,
+                        },
+                      });
+                    }
+                  }}
+                />
+              );
+            })}
             {teacherQuery.data && (
               <PersonListItem
                 person={teacherQuery.data}

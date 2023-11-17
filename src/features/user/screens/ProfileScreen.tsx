@@ -175,15 +175,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
               title={student?.degreeName ?? ''}
               subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
               linkTo={{
-                screen: 'ServicesTab',
+                screen: 'Degree',
                 params: {
-                  screen: 'Degree',
-                  params: {
-                    id: student?.degreeId,
-                    year: student?.firstEnrollmentYear,
-                    isCrossNavigation: true,
-                  },
-                  initial: false,
+                  id: student?.degreeId,
+                  year: student?.firstEnrollmentYear,
                 },
               }}
             />

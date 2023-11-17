@@ -3,13 +3,15 @@ import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { TicketStatus } from '@polito/api-client';
-import { OfferingCourseStaff } from '@polito/api-client/models';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import {
+  SharedScreens,
+  SharedScreensParamList,
+} from '../../../shared/navigation/SharedScreens';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
 import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import { BookingSeatSelectionScreen } from '../../bookings/screens/BookingSeatSelectionScreen';
@@ -19,18 +21,13 @@ import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
-import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
-import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
-import { StaffScreen } from '../../offering/screens/StaffScreen';
 import { ContactsScreen } from '../../people/screens/ContactsScreen';
-import { PersonScreen } from '../../people/screens/PersonScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
 import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
-import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { BookingsScreen } from '../screens/BookingsScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -38,22 +35,9 @@ import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 
-export type OfferingStackParamList = {
+export type OfferingStackParamList = SharedScreensParamList & {
   Offering: undefined;
-  Degree: { id: string; year?: string; isCrossNavigation?: boolean };
-  DegreeCourse: {
-    courseShortcode: string;
-    year?: string;
-  };
-  DegreeCourseGuide: {
-    courseShortcode: string;
-    year?: string;
-  };
-  Staff: {
-    courseShortcode: string;
-    year?: string;
-    staff: OfferingCourseStaff[];
-  };
+  Degree: { id: string; year?: string };
 };
 
 export type ServiceStackParamList = OfferingStackParamList & {
@@ -75,9 +59,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   };
   News: undefined;
   NewsItem: { id: number };
-  MessagesModal: undefined;
   Contacts: undefined;
-  Person: { id: number; isCrossNavigation?: boolean };
   Bookings: undefined;
   Booking: { id: number };
   BookingTopic: undefined;
@@ -214,17 +196,6 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="MessagesModal"
-        component={UnreadMessagesModal}
-        options={{
-          headerTitle: t('messagesScreen.title'),
-          headerLargeTitle: false,
-          presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
-        }}
-      />
-      <Stack.Screen
         name="Offering"
         component={OfferingTopTabsNavigator}
         options={{
@@ -253,36 +224,6 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="DegreeCourse"
-        component={DegreeCourseScreen}
-        getId={({ params: { courseShortcode, year } }) =>
-          courseShortcode + (year ?? '0')
-        }
-        options={{
-          headerTitle: t('degreeCourseScreen.title'),
-          headerLargeTitle: false,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="DegreeCourseGuide"
-        component={DegreeCourseGuideScreen}
-        getId={({ params: { courseShortcode, year } }) =>
-          courseShortcode + (year ?? '0')
-        }
-        options={{
-          headerTitle: t('courseGuideScreen.title'),
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Staff"
-        component={StaffScreen}
-        getId={({ params: { courseShortcode, year } }) =>
-          courseShortcode + (year ?? '0')
-        }
-      />
-      <Stack.Screen
         name="Contacts"
         component={ContactsScreen}
         options={{
@@ -293,16 +234,6 @@ export const ServicesNavigator = () => {
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Person"
-        component={PersonScreen}
-        getId={({ params: { id } }) => id.toString()}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('common.contact'),
-          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -380,6 +311,7 @@ export const ServicesNavigator = () => {
           headerBackTitleVisible: false,
         }}
       />
+      {SharedScreens(Stack as any)}
     </Stack.Navigator>
   );
 };

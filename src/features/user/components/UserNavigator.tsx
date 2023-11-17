@@ -4,15 +4,15 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { SharedScreens } from '../../../shared/navigation/SharedScreens';
+import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { UnreadMessagesModal } from '../screens/UnreadMessagesModal';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: undefined;
@@ -76,16 +76,21 @@ export const UserNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="MessagesModal"
-        component={UnreadMessagesModal}
+        name="Degree"
+        component={DegreeTopTabsNavigator}
+        getId={({ params: { id, year } }) => id + (year ?? '0')}
         options={{
-          headerTitle: t('messagesScreen.title'),
+          headerTitle: t('degreeScreen.title'),
           headerLargeTitle: false,
-          presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
         }}
       />
+      {SharedScreens(Stack as any)}
     </Stack.Navigator>
   );
 };

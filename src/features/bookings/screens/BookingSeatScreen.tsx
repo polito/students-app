@@ -29,17 +29,13 @@ import {
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import { canBeCancelled } from '../../../utils/bookings';
-import { AgendaStackParamList } from '../../agenda/components/AgendaNavigator';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
 import { useCalculateSeatsDimension } from '../hooks/useCalculateSeatsDimension';
 
-type Props = NativeStackScreenProps<
-  AgendaStackParamList | ServiceStackParamList,
-  'BookingSeat'
->;
+type Props = NativeStackScreenProps<ServiceStackParamList, 'BookingSeat'>;
 
 export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();

@@ -10,14 +10,12 @@ interface Props {
   person: Person | undefined;
   subtitle?: string | JSX.Element;
   navigateEnabled?: boolean;
-  isCrossNavigation?: boolean;
 }
 
 export const PersonListItem = ({
   person,
   subtitle,
   navigateEnabled = true,
-  isCrossNavigation = false,
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
 
@@ -39,12 +37,8 @@ export const PersonListItem = ({
       linkTo={
         person?.id && navigateEnabled
           ? {
-              screen: 'ServicesTab',
-              params: {
-                screen: 'Person',
-                params: { id: person.id, isCrossNavigation },
-                initial: false,
-              },
+              screen: 'Person',
+              params: { id: person.id },
             }
           : undefined
       }

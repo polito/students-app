@@ -49,7 +49,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { placeId } = route.params;
+  const { placeId, isCrossNavigation } = route.params;
   const {
     data: place,
     isLoading: isLoadingPlace,
@@ -73,6 +73,13 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       ? t('common.notFound')
       : capitalize(placeName),
   );
+
+  useEffect(() => {
+    if (isCrossNavigation) {
+      navigation.setOptions({ headerShown: false });
+      navigation.getParent()?.setOptions({ title: placeName });
+    }
+  }, [navigation, t, placeName, isCrossNavigation]);
 
   useEffect(() => {
     if (place?.data && !updatedRecentPlaces) {
@@ -116,6 +123,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               places={places}
               categoryId={place.data?.category?.id}
               subCategoryId={place.data?.category?.subCategory?.id}
+              isCrossNavigation={isCrossNavigation}
             />
             {place.data.geoJson != null && (
               <ShapeSource
