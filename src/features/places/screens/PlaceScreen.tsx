@@ -77,11 +77,9 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   useEffect(() => {
     if (isCrossNavigation) {
       navigation.setOptions({ headerShown: false });
-      navigation.getParent()?.setOptions({
-        title: place ? place.data.room.name : t('placeScreen.title'),
-      });
+      navigation.getParent()?.setOptions({ title: placeName });
     }
-  }, [isCrossNavigation, place, navigation, t]);
+  }, [navigation, t, placeName, isCrossNavigation]);
 
   useEffect(() => {
     if (place?.data && !updatedRecentPlaces) {
@@ -125,6 +123,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               places={places}
               categoryId={place.data?.category?.id}
               subCategoryId={place.data?.category?.subCategory?.id}
+              isCrossNavigation={isCrossNavigation}
             />
             {place.data.geoJson != null && (
               <ShapeSource

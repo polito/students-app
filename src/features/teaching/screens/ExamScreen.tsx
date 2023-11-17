@@ -138,13 +138,23 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   subtitle={t('examScreen.location')}
                   isAction
                   onPress={() => {
-                    navigation.navigate('Places', {
-                      screen: 'Place',
-                      params: {
-                        placeId,
-                      },
-                      initial: false,
-                    });
+                    if (navigation.getId() === 'AgendaTabNavigator') {
+                      navigation.navigate('PlacesAgendaStack', {
+                        screen: 'Place',
+                        params: {
+                          placeId,
+                          isCrossNavigation: true,
+                        },
+                      });
+                    } else if (navigation.getId() === 'TeachingTabNavigator') {
+                      navigation.navigate('PlacesTeachingStack', {
+                        screen: 'Place',
+                        params: {
+                          placeId,
+                          isCrossNavigation: true,
+                        },
+                      });
+                    }
                   }}
                 />
               );

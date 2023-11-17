@@ -4,20 +4,15 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
-import { DegreeCourseGuideScreen } from '../../offering/screens/DegreeCourseGuideScreen';
-import { DegreeCourseScreen } from '../../offering/screens/DegreeCourseScreen';
-import { StaffScreen } from '../../offering/screens/StaffScreen';
-import { PersonScreen } from '../../people/screens/PersonScreen';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { UnreadMessagesModal } from '../screens/UnreadMessagesModal';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: undefined;
@@ -81,17 +76,6 @@ export const UserNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="MessagesModal"
-        component={UnreadMessagesModal}
-        options={{
-          headerTitle: t('messagesScreen.title'),
-          headerLargeTitle: false,
-          presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
-        }}
-      />
-      <Stack.Screen
         name="Degree"
         component={DegreeTopTabsNavigator}
         getId={({ params: { id, year } }) => id + (year ?? '0')}
@@ -106,46 +90,7 @@ export const UserNavigator = () => {
           },
         }}
       />
-      <Stack.Screen
-        name="DegreeCourse"
-        component={DegreeCourseScreen}
-        getId={({ params: { courseShortcode, year } }) =>
-          courseShortcode + (year ?? '0')
-        }
-        options={{
-          headerTitle: t('degreeCourseScreen.title'),
-          headerLargeTitle: false,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="DegreeCourseGuide"
-        component={DegreeCourseGuideScreen}
-        getId={({ params: { courseShortcode, year } }) =>
-          courseShortcode + (year ?? '0')
-        }
-        options={{
-          headerTitle: t('courseGuideScreen.title'),
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Person"
-        component={PersonScreen}
-        getId={({ params: { id } }) => id.toString()}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('common.contact'),
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="Staff"
-        component={StaffScreen}
-        getId={({ params: { courseShortcode, year } }) =>
-          courseShortcode + (year ?? '0')
-        }
-      />
+      {SharedScreens(Stack as any)}
     </Stack.Navigator>
   );
 };

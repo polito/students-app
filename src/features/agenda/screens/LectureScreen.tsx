@@ -88,7 +88,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               }
               isAction
               onPress={() => {
-                navigation.navigate('PlacesStack', {
+                navigation.navigate('PlacesAgendaStack', {
                   screen: 'Place',
                   params: {
                     placeId: resolvePlaceId(lecture.place!),

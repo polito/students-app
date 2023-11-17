@@ -43,6 +43,7 @@ import {
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { BookingDateTime } from '../../bookings/components/BookingDateTime';
+import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
@@ -119,6 +120,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const onPressLocation = async (location: Booking['location']) => {
     if (location.type === 'virtualPlace') {
       await Linking.openURL(location.url);
+    } else if (location.type === 'place') {
+      navigation.navigate('PlacesAgendaStack', {
+        screen: 'Place',
+        params: {
+          placeId: resolvePlaceId(location),
+          isCrossNavigation: true,
+        },
+      });
     }
   };
 
@@ -159,6 +168,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                     style={{ marginRight: spacing[2] }}
                   />
                 }
+                isAction
                 title={booking.location.name}
                 subtitle={t(
                   `bookingScreen.locationType.${booking.location?.type}`,
