@@ -12,6 +12,12 @@
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
+    "bookingStatus": {
+      "available": "Prenotabile",
+      "booked": "Prenotato",
+      "full": "Non prenotabile",
+      "notAvailable": "Non ancora prenotabile"
+    },
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
     "cancelFeedback": "Prenotazione annullata",
@@ -21,35 +27,29 @@
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
-    },
-    "bookingStatus": {
-      "notAvailable": "Non ancora prenotabile",
-      "available": "Prenotabile",
-      "booked": "Prenotato",
-      "full": "Non prenotabile"
     }
+  },
+  "bookingSeatScreen": {
+    "confirm": "Conferma prenotazione",
+    "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
+    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
+    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
+    "noSeatSelected": "Nessuna",
+    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
+    "seatStatus": {
+      "available": "Disponibile",
+      "booked": "Prenotato",
+      "notAvailable": "Non prenotabile"
+    },
+    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal ",
+    "title": "Scegli il posto",
+    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto"
   },
   "bookingsScreen": {
     "emptyState": "Non hai prenotazioni attive",
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
-  },
-  "bookingSeatScreen": {
-    "title": "Scegli il posto",
-    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
-    "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
-    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal ",
-    "confirm": "Conferma prenotazione",
-    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
-    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
-    "noSeatSelected": "Nessuna",
-    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto",
-    "seatStatus": {
-      "booked": "Prenotato",
-      "available": "Disponibile",
-      "notAvailable": "Non prenotabile"
-    }
   },
   "colors": {
     "amber": "Ambra",
@@ -73,23 +73,12 @@
     "yellow": "Giallo"
   },
   "common": {
-    "desk": "Cattedra",
-    "seat": "Postazione",
-    "reset": "Reimposta",
-    "hour": "Orario",
-    "day": "Giorno",
-    "other": "Altro",
-    "noValue": "Nessun valore",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
     "agent": "Operatore",
-    "legend": "Legenda",
-    "close": "Chiudi",
-    "search": "Cerca",
-    "cfu": "CFU",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -103,8 +92,10 @@
     "campus": "Sede",
     "cancel": "Annulla",
     "capacity": "Capacità",
+    "cfu": "CFU",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
+    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -117,10 +108,12 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Data e ora",
     "dateToBeDefined": "Data da definire",
+    "day": "Giorno",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
     "department": "Dipartimento",
+    "desk": "Cattedra",
     "done": "Fatto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
@@ -164,6 +157,7 @@
     "follow": "Segui",
     "free": "Libera",
     "grade": "Voto",
+    "hour": "Orario",
     "hours": "Ore",
     "icon": "Icona",
     "inYourAgenda": "nella tua agenda",
@@ -171,6 +165,7 @@
     "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
+    "legend": "Legenda",
     "loading": "Caricamento",
     "location": "Sede",
     "logout": "Logout",
@@ -180,6 +175,7 @@
     "newItems_plural": "Nuovi elementi",
     "next": "Avanti",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
+    "noValue": "Nessun valore",
     "notFound": "Luogo inesistente",
     "notes": "Note",
     "notice": "Avviso",
@@ -201,6 +197,7 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
     "phone": "Telefono",
@@ -211,9 +208,12 @@
     "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
     "remove": "Rimuovi",
+    "reset": "Reimposta",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "search": "Cerca",
+    "seat": "Postazione",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
