@@ -175,6 +175,7 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
             height={calendarHeight}
             hours={HOURS}
             locale={language}
+            startHour={8}
             swipeEnabled={false}
             renderHeader={props => (
               <CalendarHeader {...props} cellHeight={-1} />
