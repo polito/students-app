@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
@@ -20,18 +20,20 @@ import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
-import { DEADLINES_QUERY_KEY } from '../../../core/queries/studentHooks';
+import { DEADLINES_QUERY_PREFIX } from '../../../core/queries/studentHooks';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
 import { AGENDA_QUERY_PREFIX, useGetAgendaWeeks } from '../queries/agendaHooks';
-import { LECTURES_QUERY_KEY } from '../queries/lectureHooks';
+import { LECTURES_QUERY_PREFIX } from '../queries/lectureHooks';
 import { AgendaState } from '../types/AgendaState';
 import { AgendaWeek } from '../types/AgendaWeek';
 
@@ -41,15 +43,15 @@ export const AgendaScreen = ({ navigation }: Props) => {
   const { palettes, fontSizes } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const {
-    courses: coursesPreferences,
-    updatePreference,
-    agendaScreen,
-  } = usePreferencesContext();
+  const { updatePreference, agendaScreen } = usePreferencesContext();
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
-  const { data, fetchNextPage, isFetchingNextPage, isFetchingPreviousPage } =
-    useGetAgendaWeeks(coursesPreferences);
+
+  const [weeks, setWeeks] = useState<DateTime[]>([
+    DateTime.now().startOf('week'),
+  ]);
+
+  const { isLoading, data } = useGetAgendaWeeks(weeks);
 
   const flatListRef = useRef<FlatList<AgendaWeek>>(null);
 
@@ -72,8 +74,8 @@ export const AgendaScreen = ({ navigation }: Props) => {
     const dependingQueryKeys = [
       EXAMS_QUERY_KEY,
       BOOKINGS_QUERY_KEY,
-      LECTURES_QUERY_KEY,
-      DEADLINES_QUERY_KEY,
+      [LECTURES_QUERY_PREFIX],
+      [DEADLINES_QUERY_PREFIX],
     ];
 
     setAgendaState(prev => ({ ...prev, isRefreshing: true }));
@@ -90,13 +92,16 @@ export const AgendaScreen = ({ navigation }: Props) => {
     }));
   };
 
-  const scrollToToday = (isAnimated = false) => {
-    agendaStateRef.current.todayOffsetOverall > 0 &&
-      flatListRef.current?.scrollToOffset({
-        offset: agendaStateRef.current.todayOffsetOverall,
-        animated: isAnimated,
-      });
-  };
+  const scrollToToday = useCallback(
+    (isAnimated = false) => {
+      agendaStateRef.current.todayOffsetOverall > 0 &&
+        flatListRef.current?.scrollToOffset({
+          offset: agendaStateRef.current.todayOffsetOverall,
+          animated: isAnimated,
+        });
+    },
+    [agendaStateRef],
+  );
 
   const scrollToLastOffset = () => {
     flatListRef.current?.scrollToOffset({
@@ -113,27 +118,6 @@ export const AgendaScreen = ({ navigation }: Props) => {
         prev.todayOffsetOverall + (height - prev.contentHeight),
     }));
   };
-
-  // Handle asynchronous retrieval of previous/next page
-  useEffect(() => {
-    if (!agendaState || !data) return;
-    if (agendaState.shouldLoadPrevious) {
-      // fetchPreviousPage({ cancelRefetch: false }).then(() => {
-      //     console.debug(`Fetched prev`);
-      //     // sectionListRef.current.getScrollResponder().scrollTo({ y: agendaState.currentOffset, animated: false });
-      //     setAgendaState(prev => ({
-      //       ...prev,
-      //       shouldLoadPrevious: false
-      //     }));
-      //   }
-      // );
-    }
-    if (agendaState.shouldLoadNext) {
-      fetchNextPage({ cancelRefetch: false }).then(() =>
-        setAgendaState(prev => ({ ...prev, shouldLoadNext: false })),
-      );
-    }
-  }, [data, agendaState, fetchNextPage, setAgendaState]);
 
   useLayoutEffect(() => {
     const switchToWeekly = () => {
@@ -173,6 +157,8 @@ export const AgendaScreen = ({ navigation }: Props) => {
     scrollToToday,
     t,
     agendaScreen,
+    updatePreference,
+    refreshQueries,
   ]);
 
   return (
@@ -180,33 +166,31 @@ export const AgendaScreen = ({ navigation }: Props) => {
       <HeaderAccessory>
         <AgendaFilters />
       </HeaderAccessory>
-      {!data ? (
-        isOffline ? (
-          <EmptyState message={t('common.cacheMiss')} />
-        ) : (
+      {!data.length && isOffline && (
+        <EmptyState message={t('common.cacheMiss')} />
+      )}
+
+      {(!data.length && isLoading) ||
+        (agendaState.isRefreshing && (
           <ActivityIndicator style={styles.activityIndicator} size="large" />
-        )
-      ) : (
+        ))}
+      {!!data.length && !agendaState.isRefreshing && (
         <FlatList
           ref={flatListRef}
-          data={data?.pages ?? []}
+          data={data}
           initialNumToRender={1}
           keyExtractor={item => item.key}
-          extraData={[isFetchingPreviousPage, isFetchingNextPage]}
+          // extraData={[isFetchingPreviousPage, isFetchingNextPage]}
           contentContainerStyle={[styles.listContainer, marginHorizontal]}
           renderItem={({ item }) => (
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
           ListHeaderComponent={
-            isFetchingPreviousPage ? (
-              <ActivityIndicator size="small" />
-            ) : undefined
+            isLoading ? <ActivityIndicator size="small" /> : undefined
           }
           ListFooterComponent={
             <>
-              {isFetchingNextPage ? (
-                <ActivityIndicator size="small" />
-              ) : undefined}
+              {isLoading ? <ActivityIndicator size="small" /> : undefined}
               <BottomBarSpacer />
             </>
           }
@@ -215,22 +199,24 @@ export const AgendaScreen = ({ navigation }: Props) => {
           // onContentSizeChange={(contentWidth, contentHeight) => onContentHeightChange(contentHeight)}
           onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
             const offsetY = event.nativeEvent.contentOffset.y;
-            setAgendaState(prev => {
-              return {
-                ...prev,
-                shouldLoadPrevious:
-                  prev.shouldLoadPrevious || offsetY < prevPageThreshold,
-                currentOffset: offsetY,
-              };
-            });
+
+            if (!isLoading && offsetY < prevPageThreshold) {
+              setWeeks(prev => {
+                const firstWeek = prev[0];
+
+                return [firstWeek.minus({ week: 1 }), ...prev];
+              });
+            }
           }}
           onEndReachedThreshold={0.3}
-          onEndReached={() =>
-            setAgendaState(prev => ({
-              ...prev,
-              shouldLoadNext: true,
-            }))
-          }
+          onEndReached={() => {
+            if (isLoading) return;
+            setWeeks(prev => {
+              const lastWeek = prev[prev.length - 1];
+
+              return [...prev, lastWeek.plus({ week: 1 })];
+            });
+          }}
           onLayout={() => scrollToToday()}
         />
       )}
