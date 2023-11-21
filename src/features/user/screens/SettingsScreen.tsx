@@ -327,6 +327,17 @@ export const SettingsScreen = () => {
               <CleanCacheListItem />
             </OverviewList>
           </Section>
+          <Section>
+            <SectionHeader title={t('common.accessibility')} />
+            <OverviewList indented>
+              <ListItem
+                isAction
+                title={t('accessibilitySettingsScreen.title')}
+                accessibilityRole="button"
+                linkTo={{ screen: 'AccessibilitySettings' }}
+              />
+            </OverviewList>
+          </Section>
           <Col ph={4}>
             <Text>{t('settingsScreen.appVersion', { version })}</Text>
           </Col>

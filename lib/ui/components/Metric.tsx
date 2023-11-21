@@ -2,7 +2,7 @@ import { View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { CardProps } from './Card';
-import { Text, Props as TextProps } from './Text';
+import { Text, TextProps } from './Text';
 
 type Props = ViewProps & {
   title: string;

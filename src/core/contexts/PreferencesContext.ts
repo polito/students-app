@@ -7,35 +7,37 @@ import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesF
 import { UnreadNotifications } from '../types/notifications';
 
 export const editablePreferenceKeys = [
-  'lastInstalledVersion',
-  'username',
+  'accessibility',
+  'agendaScreen',
   'campusId',
   'colorScheme',
   'courses',
-  'language',
-  'notifications',
-  'favoriteServices',
-  'peopleSearched',
-  'unreadNotifications',
-  'onboardingStep',
   'emailGuideRead',
+  'favoriteServices',
+  'language',
+  'lastInstalledVersion',
+  'notifications',
+  'onboardingStep',
+  'peopleSearched',
   'placesSearched',
-  'agendaScreen',
+  'unreadNotifications',
+  'username',
 ] as const;
 
 export type PreferenceKey = typeof editablePreferenceKeys[number];
 
 // Specify here complex keys, that require serialization/deserialization
 export const objectPreferenceKeys = [
-  'courses',
-  'notifications',
-  'favoriteServices',
-  'peopleSearched',
-  'unreadNotifications',
-  'onboardingStep',
-  'emailGuideRead',
-  'placesSearched',
+  'accessibility',
   'agendaScreen',
+  'courses',
+  'emailGuideRead',
+  'favoriteServices',
+  'notifications',
+  'onboardingStep',
+  'peopleSearched',
+  'placesSearched',
+  'unreadNotifications',
 ];
 
 export type CoursesPreferences = {
@@ -73,6 +75,12 @@ export interface PreferencesContextBase {
   agendaScreen: {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
+  };
+  accessibility?: {
+    fontFamily?: 'default' | 'open-dyslexic';
+    fontPlacement?: 'default' | 'bottom';
+    highContrast?: boolean;
+    grayscale?: boolean;
   };
 }
 

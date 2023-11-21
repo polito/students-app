@@ -1,4 +1,15 @@
 {
+  "accessibilitySettingsScreen": {
+    "title": "Impostazioni di accessibilità",
+    "customFontTitle": "Font personalizzato",
+    "customFontDefault": "No custom font",
+    "customFontAction": "Seleziona un font",
+    "customFontPlacement": "Usalo per",
+    "customFontSectionTitle": "Font accessibile",
+    "customThemeSectionTitle": "Tema accessibile",
+    "highContrastTitle": "Alto contrasto",
+    "greyscaleTitle": "Scala di grigi"
+  },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
     "dailyLayout": "Layout giornaliero",
@@ -73,6 +84,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "accessibility": "Accessibilità",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",

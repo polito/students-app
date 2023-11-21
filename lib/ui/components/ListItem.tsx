@@ -1,6 +1,5 @@
 import {
   StyleProp,
-  TextProps,
   TextStyle,
   TouchableHighlight,
   TouchableHighlightProps,
@@ -20,7 +19,7 @@ import { GlobalStyles } from '../../../src/core/styles/GlobalStyles';
 import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
 import { DisclosureIndicator } from './DisclosureIndicator';
-import { Text } from './Text';
+import { Text, TextProps } from './Text';
 
 export interface ListItemProps extends TouchableHighlightProps {
   title: string | JSX.Element;
