@@ -42,8 +42,8 @@ export type CoursesPreferences = {
   [courseId: number | string]: CoursePreferencesProps;
 };
 
-export interface PreferencesContextBase {
-  lastInstalledVersion: string | null;
+export interface EditablePreferences {
+  lastInstalledVersion?: string;
   username: string;
   campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';
@@ -76,10 +76,27 @@ export interface PreferencesContextBase {
   };
 }
 
-export interface PreferencesContextProps extends PreferencesContextBase {
-  updatePreference: <T extends PreferenceKey>(
-    key: T,
-    value: PreferencesContextBase[T],
+/**
+ * A callback that receives the previous value of the preference and returns the next one
+ */
+type UpdatePreferenceCallback<
+  K extends PreferenceKey,
+  V extends EditablePreferences[K],
+> = (prev: V | undefined) => V | undefined;
+
+/**
+ * The value of a preference can be:
+ * - a value of the type of the preference
+ * - a callback that receives the previous value of the preference and returns the next one
+ */
+export type UpdatePreferenceValue<K extends PreferenceKey> =
+  | EditablePreferences[K]
+  | UpdatePreferenceCallback<K, EditablePreferences[K]>;
+
+export interface PreferencesContextProps extends EditablePreferences {
+  updatePreference: <K extends PreferenceKey>(
+    key: K,
+    value: UpdatePreferenceValue<K>,
   ) => void;
 }
 
