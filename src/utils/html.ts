@@ -13,7 +13,7 @@ export const getHtmlTextContent = (text: string) => {
 
 export const linkUrls = (html: string) => {
   const regex =
-    /(?:https?:\/\/|www\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])/gi;
+    /(?!<a[^>]*>[^<])(?:https?:\/\/|www\.)(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#/%=~_|$?!:,.]*\)|[A-Z0-9+&@#/%=~_|$])(?![^<]*<\/a>)/gi;
   return html.replace(regex, match => {
     if (!match.startsWith('http')) match = `https://${match}`;
     return `<a href="${match}">${match}</a>`;
