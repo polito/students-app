@@ -1,25 +1,26 @@
+import { useMemo } from 'react';
+
 import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import * as Sentry from '@sentry/react-native';
 import {
-  useInfiniteQuery,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { unreadMessages } from '../../utils/messages';
 import { pluckData } from '../../utils/queries';
-
-export const DEADLINES_QUERY_KEY = ['deadlines'];
 
 export const STUDENT_QUERY_KEY = ['student'];
 export const GRADES_QUERY_KEY = ['grades'];
 export const MESSAGES_QUERY_PREFIX = 'messages';
 export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
 export const GUIDES_QUERY_KEY = ['guides'];
+export const DEADLINES_QUERY_PREFIX = 'deadlines';
 
 const useStudentClient = (): StudentApi => {
   return new StudentApi();
@@ -75,27 +76,59 @@ export const useGetGrades = () => {
   );
 };
 
-export const useGetDeadlineWeeks = () => {
+const getDeadlineWeekQueryKey = (since: DateTime) => [
+  DEADLINES_QUERY_PREFIX,
+  since,
+];
+
+const getDeadlineWeekQueryFn = async (
+  studentClient: StudentApi,
+  since: DateTime,
+) => {
+  const until = since.plus({ week: 1 });
+
+  return studentClient
+    .getDeadlines({
+      fromDate: since.toJSDate(),
+      toDate: until.toJSDate(),
+    })
+    .then(pluckData);
+};
+
+export const useGetDeadlineWeek = (
+  since: DateTime = DateTime.now().startOf('week'),
+) => {
   const studentClient = useStudentClient();
 
-  const oneWeek = Duration.fromDurationLike({ week: 1 });
-
-  return useInfiniteQuery(
-    DEADLINES_QUERY_KEY,
-    ({ pageParam: since = DateTime.now().startOf('week') }) => {
-      const until = since.plus(oneWeek);
-
-      return studentClient
-        .getDeadlines({
-          fromDate: since.toJSDate(),
-          toDate: until.toJSDate(),
-        })
-        .then(pluckData);
-    },
+  return useQuery(
+    getDeadlineWeekQueryKey(since),
+    async () => getDeadlineWeekQueryFn(studentClient, since),
     {
       staleTime: Infinity,
     },
   );
+};
+
+export const useGetDeadlineWeeks = (
+  mondays: DateTime[] = [DateTime.now().startOf('week')],
+) => {
+  const studentClient = useStudentClient();
+
+  const queries = useQueries({
+    queries: (mondays ?? []).map(monday => ({
+      queryKey: getDeadlineWeekQueryKey(monday),
+      queryFn: async () => getDeadlineWeekQueryFn(studentClient, monday),
+    })),
+  });
+
+  const isLoading = useMemo(() => {
+    return queries.some(query => query.isLoading);
+  }, [queries]);
+
+  return {
+    data: queries.map(query => query.data!),
+    isLoading,
+  };
 };
 
 export const useUpdateDevicePreferences = () => {

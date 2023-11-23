@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -13,6 +13,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { HOURS } from '@lib/ui/utils/calendar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
@@ -25,18 +26,20 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
-import { useGetAgendaWeeks } from '../queries/agendaHooks';
+import {
+  getAgendaWeekQueryKey,
+  useGetAgendaWeek,
+} from '../queries/agendaHooks';
 import { AgendaItem } from '../types/AgendaItem';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
 
 export const AgendaWeekScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
-  const {
-    courses: coursesPreferences,
-    updatePreference,
-    agendaScreen,
-  } = usePreferencesContext();
+
+  const queryClient = useQueryClient();
+
+  const { updatePreference, agendaScreen } = usePreferencesContext();
 
   const { language } = usePreferencesContext();
 
@@ -45,51 +48,27 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
 
   const { colors } = useTheme();
 
-  const [currentWeekStart, setCurrentWeekStart] = useState<DateTime>(
+  const [currentWeek, setCurrentWeek] = useState<DateTime>(
     DateTime.now().startOf('week'),
   );
 
-  const [currentPageNumber, setCurrentPageNumber] = useState<number>(0);
+  const {
+    data: weekData,
+    isFetching /* , fetchPreviousPage, fetchNextPage*/,
+    refetch,
+  } = useGetAgendaWeek(currentWeek);
 
-  const { data, isFetching, fetchPreviousPage, fetchNextPage, refetch } =
-    useGetAgendaWeeks(coursesPreferences);
+  const calendarData = useMemo(() => {
+    return weekData?.data?.flatMap(week => week.items) ?? [];
+  }, [weekData?.data]);
 
-  const nextWeek = useCallback(() => {
-    const updatedWeek = currentWeekStart.plus({ days: 7 });
-    setCurrentWeekStart(updatedWeek);
+  const getNextWeek = useCallback(() => {
+    setCurrentWeek(w => w.plus({ days: 7 }));
+  }, []);
 
-    if (data?.pages[currentPageNumber + 1] !== undefined) {
-      setCurrentPageNumber(currentPageNumber + 1);
-    } else {
-      fetchNextPage({ cancelRefetch: false }).then(() => {
-        setCurrentPageNumber(currentPageNumber + 1);
-      });
-    }
-  }, [currentPageNumber, currentWeekStart, data?.pages, fetchNextPage]);
-
-  const prevWeek = useCallback(() => {
-    const updatedWeek = currentWeekStart.minus({ days: 7 });
-    setCurrentWeekStart(updatedWeek);
-
-    if (currentPageNumber > 0) {
-      setCurrentPageNumber(currentPageNumber - 1);
-    } else {
-      fetchPreviousPage({ cancelRefetch: false }).then(() => {
-        setCurrentPageNumber(currentPageNumber);
-      });
-    }
-  }, [currentWeekStart, currentPageNumber, fetchPreviousPage]);
-
-  const [weeklyEvents, setWeeklyEvents] = useState<AgendaItem[]>([]);
-
-  useEffect(() => {
-    const agendaWeek = data?.pages[currentPageNumber];
-    setWeeklyEvents(
-      agendaWeek?.data.flatMap(day => {
-        return day.items;
-      }) ?? [],
-    );
-  }, [data?.pages, currentPageNumber]);
+  const getPrevWeek = useCallback(() => {
+    setCurrentWeek(w => w.minus({ days: 7 }));
+  }, []);
 
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
@@ -128,28 +107,39 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
     });
   }, [palettes.primary, fontSizes.lg, navigation, t, agendaScreen]);
 
-  const prevMissingCallback = useCallback(
-    () => data?.pages[currentPageNumber - 1] === undefined,
-    [data?.pages, currentPageNumber],
+  const isPrevMissing = useCallback(
+    () =>
+      queryClient.getQueryData(
+        getAgendaWeekQueryKey(
+          agendaScreen.filters,
+          currentWeek.minus({ week: 1 }),
+        ),
+      ) === undefined,
+    [agendaScreen.filters, currentWeek, queryClient],
   );
 
-  const nextMissingCallback = useCallback(
-    () => data?.pages[currentPageNumber + 1] === undefined,
-    [data?.pages, currentPageNumber],
+  const isNextMissing = useCallback(
+    () =>
+      queryClient.getQueryData(
+        getAgendaWeekQueryKey(
+          agendaScreen.filters,
+          currentWeek.plus({ week: 1 }),
+        ),
+      ) === undefined,
+    [agendaScreen.filters, currentWeek, queryClient],
   );
-  const isOffline = useOfflineDisabled();
 
-  const isPrevWeekDisabled = isOffline ? prevMissingCallback() : isFetching;
-  const isNextWeekDisabled = isOffline ? nextMissingCallback() : isFetching;
+  const isPrevWeekDisabled = useOfflineDisabled(isPrevMissing);
+  const isNextWeekDisabled = useOfflineDisabled(isNextMissing);
 
   return (
     <>
       <HeaderAccessory justify="space-between">
         <AgendaFilters />
         <WeekFilter
-          current={currentWeekStart}
-          getNext={nextWeek}
-          getPrev={prevWeek}
+          current={currentWeek}
+          getNext={getNextWeek}
+          getPrev={getPrevWeek}
           isNextWeekDisabled={isNextWeekDisabled}
           isPrevWeekDisabled={isPrevWeekDisabled}
         ></WeekFilter>
@@ -162,15 +152,15 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
         }}
       >
         {!calendarHeight ||
-          (isFetching && !data?.pages[currentPageNumber] && (
+          (isFetching && (
             <ActivityIndicator size="large" style={styles.loader} />
           ))}
         {calendarHeight && (
           <Calendar<AgendaItem>
-            events={weeklyEvents}
+            events={calendarData}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
-            date={currentWeekStart}
+            date={currentWeek}
             mode="custom"
             height={calendarHeight}
             hours={HOURS}

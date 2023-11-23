@@ -25,7 +25,7 @@ import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog
 import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks';
-import { LECTURES_QUERY_KEY } from '../../agenda/queries/lectureHooks';
+import { LECTURES_QUERY_PREFIX } from '../../agenda/queries/lectureHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
@@ -173,7 +173,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       },
                     });
                     queryClient
-                      .invalidateQueries(LECTURES_QUERY_KEY)
+                      .invalidateQueries([LECTURES_QUERY_PREFIX])
                       .then(() => {
                         queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
                       });

@@ -1,18 +1,23 @@
-import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
-import { DateTime, Duration, Interval } from 'luxon';
+import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
+import { UseQueryResult, useQueries, useQuery } from '@tanstack/react-query';
+
+import { DateTime, Interval } from 'luxon';
 
 import {
   CoursesPreferences,
+  PreferencesContextProps,
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
-import { useGetDeadlineWeeks } from '../../../core/queries/studentHooks';
+import {
+  useGetDeadlineWeek,
+  useGetDeadlineWeeks,
+} from '../../../core/queries/studentHooks';
 import { Exam } from '../../../core/types/api';
 import { formatMachineDate, formatTime } from '../../../utils/dates';
-import { getPageByPageParam } from '../../../utils/queries';
 import { AgendaDay } from '../types/AgendaDay';
 import {
   ALL_AGENDA_TYPES,
@@ -25,10 +30,9 @@ import {
 import { AgendaTypesFilterState } from '../types/AgendaTypesFilterState';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { Lecture } from '../types/Lecture';
-import { useGetLectureWeeks } from './lectureHooks';
+import { useGetLectureWeek, useGetLectureWeeks } from './lectureHooks';
 
 export const AGENDA_QUERY_PREFIX = 'agenda';
-export const AGENDA_FILTERS_KEY = ['agendaFilters'];
 
 const groupItemsByDay = (
   coursesPreferences: CoursesPreferences,
@@ -174,87 +178,107 @@ const groupItemsByDay = (
 
 const thisMonday = DateTime.now().startOf('week');
 
-export const useGetAgendaWeeks = (
-  coursesPreferences: CoursesPreferences,
-  startDate: DateTime = thisMonday,
-) => {
+interface AgendaWeekQueryFnParams {
+  preferences: PreferencesContextProps;
+  startDate: DateTime;
+  examsData: Exam[];
+  bookingsData: Booking[];
+  lecturesData: Lecture[];
+  deadlinesData: Deadline[];
+}
+
+export const getAgendaWeekQueryKey = (
+  filters: AgendaTypesFilterState,
+  startDate: DateTime,
+) => [AGENDA_QUERY_PREFIX, filters, startDate];
+
+const getAgendaWeekQueryFn = async ({
+  preferences,
+  startDate,
+  examsData,
+  bookingsData,
+  lecturesData,
+  deadlinesData,
+}: AgendaWeekQueryFnParams): Promise<AgendaWeek> => {
+  let queryFilters: AgendaTypesFilterState;
+
+  // if all filters are set to false, set all query filters to true
+  if (ALL_AGENDA_TYPES.every(type => !preferences.agendaScreen.filters[type])) {
+    queryFilters = {
+      exam: true,
+      booking: true,
+      lecture: true,
+      deadline: true,
+    };
+  } else {
+    queryFilters = { ...preferences.agendaScreen.filters };
+  }
+
+  const until = startDate.plus({ week: 1 });
+
+  const jsSince = startDate.toJSDate();
+  const jsUntil = until.toJSDate();
+
+  let bookings: Booking[] = [],
+    deadlines: Deadline[] = [],
+    exams: Exam[] = [],
+    lectures: Lecture[] = [];
+  if (queryFilters.booking) {
+    bookings = bookingsData.filter(
+      b => b.startsAt && b.startsAt > jsSince && b.startsAt < jsUntil,
+    );
+  }
+
+  if (queryFilters.deadline) {
+    deadlines = deadlinesData;
+  }
+
+  if (queryFilters.exam) {
+    exams = examsData.filter(
+      e =>
+        e.examStartsAt && e.examStartsAt > jsSince && e.examStartsAt < jsUntil,
+    );
+  }
+
+  if (queryFilters.lecture) {
+    lectures = lecturesData;
+  }
+
+  const days = groupItemsByDay(
+    preferences.courses,
+    exams,
+    bookings,
+    lectures,
+    deadlines,
+    startDate === thisMonday,
+  );
+
+  return {
+    key: startDate.toSQLDate()!,
+    dateRange: Interval.fromDateTimes(startDate, until),
+    data: days,
+  };
+};
+
+export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
+  const preferences = usePreferencesContext();
+
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
-  const lecturesQuery = useGetLectureWeeks(coursesPreferences);
-  const deadlinesQuery = useGetDeadlineWeeks();
+  const lecturesQuery = useGetLectureWeek(preferences.courses, startDate);
+  const deadlinesQuery = useGetDeadlineWeek(startDate);
 
-  const {
-    agendaScreen: { filters },
-  } = usePreferencesContext();
-
-  const oneWeek = Duration.fromDurationLike({ week: 1 });
-
-  return useInfiniteQuery<AgendaWeek>(
-    [AGENDA_QUERY_PREFIX, filters],
-    async ({ pageParam = startDate }: { pageParam?: DateTime }) => {
-      let queryFilters: AgendaTypesFilterState;
-
-      // if all filters are set to false, set all query filters to true
-      if (ALL_AGENDA_TYPES.every(type => !filters[type])) {
-        queryFilters = {
-          exam: true,
-          booking: true,
-          lecture: true,
-          deadline: true,
-        };
-      } else {
-        queryFilters = { ...filters };
-      }
-
-      const until = pageParam.plus(oneWeek);
-
-      const jsSince = pageParam.toJSDate();
-      const jsUntil = until.toJSDate();
-
-      let exams: Exam[] = [],
-        bookings: Booking[] = [];
-
-      if (queryFilters.exam) {
-        exams = examsQuery.data!.filter(
-          e =>
-            e.examStartsAt &&
-            e.examStartsAt > jsSince &&
-            e.examStartsAt < jsUntil,
-        );
-      }
-
-      if (queryFilters.booking) {
-        bookings = bookingsQuery.data!.filter(
-          b => b.startsAt && b.startsAt > jsSince && b.startsAt < jsUntil,
-        );
-      }
-
-      const key = pageParam.toSQLDate()!;
-
-      const [lectures, deadlines] = await Promise.all([
-        queryFilters.lecture
-          ? getPageByPageParam(lecturesQuery, pageParam)
-          : Promise.resolve([]),
-        queryFilters.deadline
-          ? getPageByPageParam(deadlinesQuery, pageParam)
-          : Promise.resolve([]),
-      ]);
-
-      const days = groupItemsByDay(
-        coursesPreferences,
-        exams,
-        bookings,
-        lectures,
-        deadlines,
-        pageParam === thisMonday,
-      );
-
-      return {
-        key,
-        dateRange: Interval.fromDateTimes(pageParam, until),
-        data: days,
-      };
-    },
+  return useQuery<AgendaWeek>(
+    getAgendaWeekQueryKey(preferences.agendaScreen.filters, startDate),
+    async () =>
+      getAgendaWeekQueryFn({
+        preferences,
+        startDate,
+        examsData: examsQuery.data!,
+        bookingsData: bookingsQuery.data!,
+        lecturesData: lecturesQuery.data!,
+        deadlinesData: deadlinesQuery.data!,
+      }),
     {
       enabled:
         !!lecturesQuery.data &&
@@ -262,36 +286,49 @@ export const useGetAgendaWeeks = (
         !!bookingsQuery.data &&
         !!deadlinesQuery.data,
       networkMode: 'always',
-      getNextPageParam: lastPage => {
-        return lastPage.dateRange.start?.plus(oneWeek) ?? startDate;
-      },
-      getPreviousPageParam: firstPage => {
-        return firstPage.dateRange.start?.minus(oneWeek);
-      },
       staleTime: 300000, // TODO define
     },
   );
 };
 
-export const useGetAgendaTypesFilter = () => {
-  return useQuery<AgendaTypesFilterState>(
-    AGENDA_FILTERS_KEY,
-    () => {
-      return {
-        exam: false,
-        booking: false,
-        lecture: false,
-        deadline: false,
-      };
-    },
-    {
+export const useGetAgendaWeeks = (mondays: DateTime[]) => {
+  const preferences = usePreferencesContext();
+
+  const examsQuery = useGetExams();
+  const bookingsQuery = useGetBookings();
+  const lecturesQueries = useGetLectureWeeks(preferences.courses, mondays);
+  const deadlinesQueries = useGetDeadlineWeeks(mondays);
+
+  const queries = useQueries<AgendaWeek[]>({
+    queries: mondays.map((monday, index) => ({
+      queryKey: getAgendaWeekQueryKey(preferences.agendaScreen.filters, monday),
+      queryFn: () =>
+        getAgendaWeekQueryFn({
+          preferences,
+          startDate: monday,
+          examsData: examsQuery.data!,
+          bookingsData: bookingsQuery.data!,
+          lecturesData: lecturesQueries.data[index],
+          deadlinesData: deadlinesQueries.data[index],
+        }),
+      enabled:
+        !!examsQuery.data &&
+        !!bookingsQuery.data &&
+        !!lecturesQueries.data[index] &&
+        !!deadlinesQueries.data[index],
       staleTime: Infinity,
-      initialData: {
-        exam: false,
-        booking: false,
-        lecture: false,
-        deadline: false,
-      },
-    },
-  );
+    })),
+  });
+
+  const isLoading = useMemo(() => {
+    if (!mondays?.length) return true;
+    return queries.some(q => q.isLoading);
+  }, [mondays, queries]);
+
+  return {
+    isLoading,
+    data: (queries as UseQueryResult<AgendaWeek>[])
+      .filter(q => q.data)
+      .map(q => q.data!),
+  };
 };
