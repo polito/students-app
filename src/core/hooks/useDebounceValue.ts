@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from 'react';
 
-export const useDebounceValue = (value: string, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+export const useDebounceValue = <T>(value: T, delay: number): T => {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useLayoutEffect(() => {
     const handler = setTimeout(() => {

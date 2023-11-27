@@ -1,12 +1,12 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  View,
-} from 'react-native';
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, StyleSheet, View } from 'react-native';
 import useStateRef from 'react-usestateref';
 
 import { faCalendarWeek, faRefresh } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +22,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
+import { BidirectionalFlatList } from '../../../core/components/BidirectionalFlatList';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -51,11 +52,17 @@ export const AgendaScreen = ({ navigation }: Props) => {
     DateTime.now().startOf('week'),
   ]);
 
+  const onWeekLoaded = useRef<(value: void | PromiseLike<void>) => void>();
+
+  useEffect(() => {
+    if (!onWeekLoaded.current) return;
+    onWeekLoaded?.current!();
+    onWeekLoaded.current = undefined;
+  }, [weeks]);
+
   const { isLoading, data } = useGetAgendaWeeks(weeks);
 
   const flatListRef = useRef<FlatList<AgendaWeek>>(null);
-
-  const prevPageThreshold = 300;
 
   const isOffline = useOfflineDisabled();
 
@@ -94,6 +101,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
 
   const scrollToToday = useCallback(
     (isAnimated = false) => {
+      console.debug('ScrollToToday');
       agendaStateRef.current.todayOffsetOverall > 0 &&
         flatListRef.current?.scrollToOffset({
           offset: agendaStateRef.current.todayOffsetOverall,
@@ -175,7 +183,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           <ActivityIndicator style={styles.activityIndicator} size="large" />
         ))}
       {!!data.length && !agendaState.isRefreshing && (
-        <FlatList
+        <BidirectionalFlatList
           ref={flatListRef}
           data={data}
           initialNumToRender={1}
@@ -186,37 +194,51 @@ export const AgendaScreen = ({ navigation }: Props) => {
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
           ListHeaderComponent={
-            isLoading ? <ActivityIndicator size="small" /> : undefined
+            <ActivityIndicator
+              size="small"
+              style={{ opacity: isLoading ? 1 : 0 }}
+            />
           }
           ListFooterComponent={
             <>
-              {isLoading ? <ActivityIndicator size="small" /> : undefined}
+              <ActivityIndicator
+                size="small"
+                style={{ opacity: isLoading ? 1 : 0 }}
+              />
               <BottomBarSpacer />
             </>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}
           // onContentSizeChange={(contentWidth, contentHeight) => onContentHeightChange(contentHeight)}
-          onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
-            const offsetY = event.nativeEvent.contentOffset.y;
+          onStartReached={async () => {
+            if (onWeekLoaded.current) return;
+            setWeeks(prev => {
+              const firstWeek = prev[0];
 
-            if (!isLoading && offsetY < prevPageThreshold) {
-              setWeeks(prev => {
-                const firstWeek = prev[0];
-
-                return [firstWeek.minus({ week: 1 }), ...prev];
-              });
-            }
+              return [firstWeek.minus({ week: 1 }), ...prev];
+            });
+            return new Promise(resolve => {
+              onWeekLoaded.current = resolve;
+            });
           }}
-          onEndReachedThreshold={0.3}
-          onEndReached={() => {
-            if (isLoading) return;
+          onEndReached={async () => {
+            if (onWeekLoaded.current) return;
             setWeeks(prev => {
               const lastWeek = prev[prev.length - 1];
 
               return [...prev, lastWeek.plus({ week: 1 })];
             });
+            return new Promise(resolve => {
+              onWeekLoaded.current = resolve;
+            });
           }}
+          // onEndReachedThreshold={0.3}
+          // onEndReached={() => {
+          //   if (isDelayedLoading) return;
+          //   console.debug("onEndReachedThreshold'");
+
+          // }}
           onLayout={() => scrollToToday()}
         />
       )}
