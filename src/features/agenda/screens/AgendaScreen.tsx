@@ -1,12 +1,6 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import useStateRef from 'react-usestateref';
 
 import { faCalendarWeek, faRefresh } from '@fortawesome/free-solid-svg-icons';
@@ -185,9 +179,9 @@ export const AgendaScreen = ({ navigation }: Props) => {
           renderItem={({ item }) => (
             <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
           )}
-          ListHeaderComponent={
+          /* ListHeaderComponent={
             isLoading ? <ActivityIndicator size="small" /> : undefined
-          }
+          }*/
           ListFooterComponent={
             <>
               {isLoading ? <ActivityIndicator size="small" /> : undefined}
@@ -197,7 +191,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}
           // onContentSizeChange={(contentWidth, contentHeight) => onContentHeightChange(contentHeight)}
-          onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          /* onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
             const offsetY = event.nativeEvent.contentOffset.y;
 
             if (!isLoading && offsetY < prevPageThreshold) {
@@ -207,7 +201,7 @@ export const AgendaScreen = ({ navigation }: Props) => {
                 return [firstWeek.minus({ week: 1 }), ...prev];
               });
             }
-          }}
+          }}*/
           onEndReachedThreshold={0.3}
           onEndReached={() => {
             if (isLoading) return;
