@@ -1,11 +1,14 @@
 name: Fastlane
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  pull_request_target:
     types:
       - opened
       - reopened
@@ -68,7 +71,7 @@ jobs:
       id: configure
       run: |
         VERSION=""
-        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+        if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "pull_request_target" ]]; then
           # On pull_request event, no need to publish
           PUSH_TESTFLIGHT=false
           PUSH_PLAYSTORE=false
