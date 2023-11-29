@@ -1,11 +1,9 @@
 name: Fastlane
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - reopened
