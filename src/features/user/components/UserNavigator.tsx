@@ -9,6 +9,7 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
+import { AccessibilitySettingsScreen } from '../screens/AccessibilitySettingsScreen';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -17,6 +18,7 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 export type UserStackParamList = OfferingStackParamList & {
   Profile: undefined;
   Settings: undefined;
+  AccessibilitySettings: undefined;
   Messages: undefined;
   Message: {
     id: number;
@@ -57,6 +59,14 @@ export const UserNavigator = () => {
         component={SettingsScreen}
         options={{
           headerTitle: t('settingsScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="AccessibilitySettings"
+        component={AccessibilitySettingsScreen}
+        options={{
+          headerTitle: t('accessibilitySettingsScreen.title'),
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
