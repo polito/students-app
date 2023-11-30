@@ -240,7 +240,8 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
-    "year": "year"
+    "year": "year",
+    "yesterday": "Yesterday"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
