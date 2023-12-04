@@ -1,91 +1,47 @@
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { StyleSheet, TextProps } from 'react-native';
-
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
-import { VisuallyHidden } from '@lib/ui/components/VisuallyHidden';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 
-import { isNumber } from 'lodash';
+type Props = {
+  text: string;
+  icon?: IconDefinition;
+  backgroundColor: string;
+  foregroundColor: string;
+};
 
-import { Text } from './Text';
-
-interface Props {
-  text?: string | number;
-  style?: TextProps['style'];
-  variant?: 'outlined' | 'filled';
-}
-
-export const Badge = ({ text, style, variant = 'filled' }: Props) => {
-  const { t } = useTranslation();
-  const { colors, palettes } = useTheme();
-  const styles = useStylesheet(createStyles);
-  const isOutlined = useMemo(() => variant === 'outlined', [variant]);
-  const isNumeric = isNumber(text);
+export const Badge = ({
+  text,
+  icon,
+  backgroundColor,
+  foregroundColor,
+}: Props) => {
+  const { spacing, shapes, fontSizes } = useTheme();
 
   return (
     <Row
-      ph={1}
-      align="center"
-      justify="center"
-      flexShrink={0}
+      gap={2}
       style={[
-        styles.badge,
         {
-          backgroundColor: isNumeric
-            ? palettes.rose[600]
-            : palettes.orange[600],
+          backgroundColor: backgroundColor,
+          paddingLeft: spacing[1.5],
+          paddingRight: spacing[2],
+          paddingVertical: spacing[1],
+          borderRadius: shapes.xl,
         },
-        !text && styles.dotBadge,
-        isOutlined && {
-          backgroundColor: colors.surface,
-          borderColor: isNumeric ? palettes.rose[600] : palettes.orange[600],
-
-          borderWidth: 2,
+        !icon && {
+          paddingRight: spacing[1.5],
         },
-        style,
       ]}
     >
-      {text && (
-        <Text
-          style={[
-            styles.badgeText,
-            isOutlined && { color: palettes.orange[600] },
-          ]}
-        >
-          {text}
-          {isNumeric && (
-            <VisuallyHidden>
-              {t('common.newItems', { count: Number(text) })}
-            </VisuallyHidden>
-          )}
-        </Text>
-      )}
+      {icon && <Icon icon={icon} size={fontSizes.md} color={foregroundColor} />}
+      <Text
+        style={{ color: foregroundColor, fontSize: fontSizes.xs }}
+        weight="medium"
+      >
+        {text}
+      </Text>
     </Row>
   );
 };
-
-const createStyles = ({ fontSizes, fontWeights, shapes, palettes }: Theme) =>
-  StyleSheet.create({
-    badge: {
-      borderRadius: shapes.xl,
-      minWidth: 19,
-      minHeight: 19,
-    },
-    dotBadge: {
-      minWidth: 12,
-      minHeight: 12,
-      backgroundColor: palettes.rose[600],
-    },
-    badgeNumber: {
-      backgroundColor: palettes.rose[600],
-    },
-    badgeText: {
-      color: 'white',
-      fontWeight: fontWeights.semibold,
-      fontSize: fontSizes.sm,
-      textTransform: 'uppercase',
-    },
-  });

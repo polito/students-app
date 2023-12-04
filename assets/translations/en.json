@@ -12,6 +12,12 @@
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
+    "bookingStatus": {
+      "available": "Available",
+      "booked": "Booked",
+      "full": "Full",
+      "notAvailable": "Not available"
+    },
     "cancelBooking": "Cancel booking",
     "cancelBookingText": "Are you sure you want to cancel this booking?",
     "cancelFeedback": "Booking canceled",
@@ -21,35 +27,29 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
-    },
-    "bookingStatus": {
-      "notAvailable": "Not available",
+    }
+  },
+  "bookingSeatScreen": {
+    "confirm": "Confirm booking",
+    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
+    "informationAcknowledgment": "I declare that I have read it\nof the ",
+    "informationAcknowledgmentLink": "COVID 19 emergency information",
+    "noSeatSelected": "No seat",
+    "noSeatsAvailable": "We're sorry,\nthere are no places available",
+    "seatStatus": {
       "available": "Available",
       "booked": "Booked",
-      "full": "Full"
-    }
+      "notAvailable": "Non bookable"
+    },
+    "slotBookableFrom": "This slot will be bookable starting from ",
+    "title": "Select a seat",
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection"
   },
   "bookingsScreen": {
     "emptyState": "You have no active bookings",
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
-  },
-  "bookingSeatScreen": {
-    "title": "Select a seat",
-    "noSeatsAvailable": "We're sorry,\nthere are no places available",
-    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
-    "slotBookableFrom": "This slot will be bookable starting from ",
-    "confirm": "Confirm booking",
-    "informationAcknowledgment": "I declare that I have read it\nof the ",
-    "informationAcknowledgmentLink": "COVID 19 emergency information",
-    "noSeatSelected": "No seat",
-    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
-    "seatStatus": {
-      "booked": "Booked",
-      "available": "Available",
-      "notAvailable": "Non bookable"
-    }
   },
   "colors": {
     "amber": "Amber",
@@ -73,25 +73,16 @@
     "yellow": "Yellow"
   },
   "common": {
-    "back": "Back",
-    "desk": "Desk",
-    "seat": "Seat",
-    "reset": "Reset",
-    "hour": "Hour",
-    "day": "Day",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
     },
     "agent": "Agent",
-    "legend": "Legend",
-    "close": "Close",
-    "search": "Search",
-    "cfu": "CFU",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
+    "back": "Back",
     "booking": "Booking",
     "booking_plural": "Bookings",
     "building": "Building",
@@ -101,8 +92,10 @@
     "campus": "Campus",
     "cancel": "Cancel",
     "capacity": "Capacity",
+    "cfu": "CFU",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
+    "close": "Close",
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -115,10 +108,12 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
+    "day": "Day",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
     "department": "Department",
+    "desk": "Desk",
     "done": "Done",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
@@ -162,6 +157,7 @@
     "follow": "Follow",
     "free": "Free",
     "grade": "Grade",
+    "hour": "Hour",
     "hours": "Hour",
     "icon": "Icon",
     "inYourAgenda": "in your agenda",
@@ -169,6 +165,7 @@
     "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
@@ -178,6 +175,7 @@
     "newItems_plural": "New items",
     "next": "Next",
     "noInternet": "You are offline, some features may not be available",
+    "noValue": "No value",
     "notFound": "Not found",
     "notes": "Notes",
     "notice": "Notice",
@@ -209,10 +207,14 @@
     "profilePic": "Profile picture",
     "recentlyViewed": "Recently viewed",
     "refresh": "Refresh",
+    "remaining": "{{value}} remaining",
     "remove": "Remove",
+    "reset": "Reset",
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
+    "search": "Search",
+    "seat": "Seat",
     "selectAnOption": "Please select an option",
     "services": "Services",
     "somethingWentWrong": "Something went wrong, try again later",
@@ -354,6 +356,10 @@
     "title": "Courses",
     "total": "There are {{total}} courses"
   },
+  "cpdSurveysScreen": {
+    "emptyState": "There are no surveys",
+    "total": "There are {{ total }} surveys"
+  },
   "createTicketScreen": {
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
@@ -429,7 +435,8 @@
     "title": "Guide"
   },
   "guidesScreen": {
-    "title": "Guides"
+    "title": "Guides",
+    "total": "There are {{ total }} guides"
   },
   "jobOfferScreen": {
     "application": "Application",

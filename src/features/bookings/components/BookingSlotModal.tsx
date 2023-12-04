@@ -9,13 +9,10 @@ import {
 import {
   faHourglassEnd,
   faHourglassStart,
-  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { IconButton } from '@lib/ui/components/IconButton';
+import { ModalContent } from '@lib/ui/components/ModalContent';
 import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -95,16 +92,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <HeaderAccessory
-        justify="space-between"
-        align="center"
-        style={styles.header}
-      >
-        <View style={styles.headerLeft} />
-        <Text style={styles.modalTitle}>{t('common.booking')}</Text>
-        <IconButton icon={faTimes} onPress={close} adjustSpacing="left" />
-      </HeaderAccessory>
+    <ModalContent close={close} title={t('common.booking')}>
       {canBeBooked && item.id ? (
         <>
           <View style={styles.spacer} />
@@ -132,38 +120,16 @@ export const BookingSlotModal = ({ close, item }: Props) => {
       ) : (
         <NotBookableMessage />
       )}
-    </View>
+    </ModalContent>
   );
 };
 
-const createStyles = ({
-  colors,
-  fontSizes,
-  fontWeights,
-  spacing,
-  shapes,
-}: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     spacer: {
       height: spacing[6],
     },
     recapContainer: {
       marginHorizontal: spacing[4],
-    },
-    container: {
-      backgroundColor: colors.surface,
-      borderTopRightRadius: shapes.md,
-      borderTopLeftRadius: shapes.md,
-    },
-    header: {
-      borderTopRightRadius: shapes.md,
-      borderTopLeftRadius: shapes.md,
-      paddingVertical: spacing[1],
-    },
-    headerLeft: { padding: spacing[3] },
-    modalTitle: {
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      color: colors.prose,
     },
   });
