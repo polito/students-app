@@ -53,7 +53,9 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     if (!coursesQuery.data) return;
-    const course = coursesQuery.data.find(c => c.id === id);
+    const course = coursesQuery.data.find(
+      c => c.id === id || c.previousEditions.some(e => e.id === id),
+    );
     if (!course) return;
 
     navigation.setOptions({
