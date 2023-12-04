@@ -13,8 +13,8 @@ import {
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useQueryClient } from '@tanstack/react-query';
@@ -52,7 +52,7 @@ export const ServicesScreen = () => {
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
         additionalContent: unreadTickets && (
-          <Badge text={unreadTickets} style={styles.badge} />
+          <UnreadBadge text={unreadTickets} style={styles.badge} />
         ),
       },
       {
@@ -67,7 +67,7 @@ export const ServicesScreen = () => {
             subtopicId: 2001,
           },
         },
-        additionalContent: <Badge text="BETA" style={styles.badge} />,
+        additionalContent: <UnreadBadge text="BETA" style={styles.badge} />,
       },
       {
         id: 'github',

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 
-import { Badge } from '@lib/ui/components/Badge';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 
 import color from 'color';
 
@@ -77,7 +77,7 @@ export const Tab = ({
           {children}
         </Text>
         {badge && (
-          <Badge
+          <UnreadBadge
             text={badge}
             style={{
               position: 'absolute',
