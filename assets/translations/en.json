@@ -398,6 +398,10 @@
   "eventPlacesScreen": {
     "title": "Event locations"
   },
+  "examCpdModalContent": {
+    "message": " Before proceeding with booking this exam, you must complete the following surveys:",
+    "title": "CPD survey"
+  },
   "examRequestScreen": {
     "error": "Fill in the text field before proceeding with the request",
     "placeholder": "Explain why you need to take the exam early",

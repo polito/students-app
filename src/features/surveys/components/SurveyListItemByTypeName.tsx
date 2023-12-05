@@ -7,12 +7,11 @@ type Props = {
   survey: Survey;
 } & Omit<ListItemProps, 'title'>;
 
-export const SurveyListItem = ({ survey, ...props }: Props) => {
+export const SurveyListItemByTypeName = ({ survey, ...props }: Props) => {
   return (
     <ListItem
       {...props}
-      title={survey.title}
-      subtitle={survey.subtitle}
+      title={survey.type.name}
       onPress={() => Linking.openURL(survey.url)}
       isAction
     />

@@ -398,6 +398,10 @@
   "eventPlacesScreen": {
     "title": "Luoghi evento"
   },
+  "examCpdModalContent": {
+    "message": "Prima di procedere alla prenotazione di questo appello, è necessario compilare i seguenti questionari:",
+    "title": "Questionario CPD"
+  },
   "examRequestScreen": {
     "error": "Compila il campo di testo prima di procedere con la richiesta",
     "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
@@ -695,9 +699,5 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
-  },
-  "examCpdModalContent": {
-    "title": "Questionario CPD",
-    "message": "Prima di procedere alla prenotazione di questo appello, è necessario compilare i seguenti questionari:"
   }
 }

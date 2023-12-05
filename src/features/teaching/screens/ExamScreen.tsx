@@ -97,10 +97,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
 
     const requirements = cpdSurveysQuery.data.filter(
       s =>
-        s.type.id === 'CPDPERIODO' ||
-        (s.type.id === 'Didattica' &&
-          s.course?.id === exam.courseId &&
-          !s.isCompiled),
+        (s.type.id === 'CPDPERIODO' ||
+          (s.type.id === 'STUDENTE' && s.course?.id === exam.courseId)) &&
+        !s.isCompiled,
     );
     if (!requirements.length) return;
     showBottomModal(
