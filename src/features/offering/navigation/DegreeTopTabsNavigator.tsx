@@ -8,7 +8,7 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuAction, MenuView } from '@react-native-menu/menu';
+import { MenuView } from '@react-native-menu/menu';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -47,24 +47,16 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
     )
       return [];
 
-    return degreeQuery.data.editions?.map(
-      edition =>
-        ({
-          id: edition,
-          title: edition,
-          state: edition === year ? 'on' : undefined,
-        } as MenuAction),
-    );
-  }, [degreeQuery?.data?.editions, isOffline, year]);
+    return degreeQuery.data.editions;
+  }, [degreeQuery.data?.editions, isOffline]);
 
   useEffect(() => {
     if (!degreeQuery.data) return;
-    const degreeYear = degreeQuery.data.year;
-    const nextDegreeYear = Number(degreeYear) + 1;
-    // setYear(degreeYear);
+    const degreeYear = Number(degreeQuery.data.year);
+    const previousDegreeYear = degreeYear - 1;
     const accessibilityLabel = [
       t('profileScreen.enrollmentYear', {
-        enrollmentYear: `${degreeYear}/${getShortYear(nextDegreeYear)}`,
+        enrollmentYear: `${previousDegreeYear}/${getShortYear(degreeYear)}`,
       }),
     ].join(' ');
     navigation.setOptions({
@@ -79,13 +71,11 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
             title={t('degreeScreen.cohort')}
             style={{ padding: spacing[1] }}
             actions={yearOptions}
-            onPressAction={async ({ nativeEvent: { event } }) => {
-              setYear(() => event);
-            }}
+            onPressAction={({ nativeEvent: { event } }) => setYear(event)}
           >
             <Row align="center">
               <Text variant="prose">
-                {degreeYear}/{getShortYear(nextDegreeYear)}
+                {previousDegreeYear}/{getShortYear(degreeYear)}
               </Text>
               {yearOptions.length > 0 && (
                 <Icon
