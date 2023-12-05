@@ -57,7 +57,7 @@ export const RootNavigator = () => {
 
   const { data: messages } = useGetModalMessages();
 
-  const { onboardingStep } = usePreferencesContext();
+  const { onboardingStep, updatePreference } = usePreferencesContext();
 
   useEffect(() => {
     if (onboardingStep && onboardingStep >= 3) return;
