@@ -89,35 +89,36 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
               categoryId={places[0]?.category?.id}
               subCategoryId={places[0]?.category?.subCategory?.id}
             />
-            {places.map(place => {
-              if (!place.geoJson) {
-                return null;
-              }
-              return (
-                <ShapeSource
-                  key={`placeOutline:${place.id}`}
-                  id={`placeOutline:${place.id}`}
-                  shape={place.geoJson as any} // TODO fix incompatible types
-                  existing={false}
-                >
-                  <LineLayer
-                    id={`placeHighlightLine:${place.id}`}
-                    aboveLayerID="indoor"
-                    style={{
-                      lineColor: palettes.secondary[600],
-                      lineWidth: 2,
-                    }}
-                  />
-                  <FillLayer
-                    id={`placeHighlightFill:${place.id}`}
-                    aboveLayerID="indoor"
-                    style={{
-                      fillColor: `${palettes.secondary[600]}33`,
-                    }}
-                  />
-                </ShapeSource>
-              );
-            })}
+            {floorId != null &&
+              places.map(place => {
+                if (!place.geoJson) {
+                  return null;
+                }
+                return (
+                  <ShapeSource
+                    key={`placeOutline:${place.id}`}
+                    id={`placeOutline:${place.id}`}
+                    shape={place.geoJson as any} // TODO fix incompatible types
+                    existing={false}
+                  >
+                    <LineLayer
+                      id={`placeHighlightLine:${place.id}`}
+                      aboveLayerID="indoor"
+                      style={{
+                        lineColor: palettes.secondary[600],
+                        lineWidth: 2,
+                      }}
+                    />
+                    <FillLayer
+                      id={`placeHighlightFill:${place.id}`}
+                      aboveLayerID="indoor"
+                      style={{
+                        fillColor: `${palettes.secondary[600]}33`,
+                      }}
+                    />
+                  </ShapeSource>
+                );
+              })}
           </>
         ),
       });

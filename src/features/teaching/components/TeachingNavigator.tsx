@@ -132,9 +132,7 @@ export const TeachingNavigator = () => {
         component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),
-          headerLargeTitle: false,
-          headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerShown: false,
         }}
       />
       {CourseSharedScreens(Stack as any)}

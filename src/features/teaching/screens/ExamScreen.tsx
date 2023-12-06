@@ -31,6 +31,7 @@ import {
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
+import { notNullish } from '../../../utils/predicates';
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -81,6 +82,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
 
     return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
+  const placeIds = exam?.places
+    ?.map(p => {
+      return p.buildingId && p.floorId && p.roomId
+        ? [p.buildingId, p.floorId, p.roomId].join('-')
+        : null;
+    })
+    .filter(notNullish) as string[] | null;
 
   return (
     <>
@@ -126,47 +134,37 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            {exam?.places?.map((p, i) => {
-              const placeId =
-                p.buildingId && p.floorId && p.roomId
-                  ? [p.buildingId, p.floorId, p.roomId].join('-')
-                  : null;
-              return (
-                <ListItem
-                  key={placeId ?? i}
-                  leadingItem={
-                    <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+            {placeIds?.length && (
+              <ListItem
+                leadingItem={
+                  <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+                }
+                title={exam?.places?.map(p => p.name).join(', ') ?? '--'}
+                subtitle={t('examScreen.location')}
+                isAction
+                onPress={() => {
+                  if (navigation.getId() === 'AgendaTabNavigator') {
+                    navigation.navigate('PlacesAgendaStack', {
+                      screen: 'EventPlaces',
+                      params: {
+                        placeIds,
+                        eventName: exam?.courseName,
+                        isCrossNavigation: true,
+                      },
+                    });
+                  } else if (navigation.getId() === 'TeachingTabNavigator') {
+                    navigation.navigate('PlacesTeachingStack', {
+                      screen: 'EventPlaces',
+                      params: {
+                        placeIds,
+                        eventName: exam?.courseName,
+                        isCrossNavigation: true,
+                      },
+                    });
                   }
-                  title={p.name}
-                  subtitle={t('examScreen.location')}
-                  isAction
-                  disabled={!placeId}
-                  onPress={() => {
-                    if (placeId != null) {
-                      if (navigation.getId() === 'AgendaTabNavigator') {
-                        navigation.navigate('PlacesAgendaStack', {
-                          screen: 'Place',
-                          params: {
-                            placeId,
-                            isCrossNavigation: true,
-                          },
-                        });
-                      } else if (
-                        navigation.getId() === 'TeachingTabNavigator'
-                      ) {
-                        navigation.navigate('PlacesTeachingStack', {
-                          screen: 'Place',
-                          params: {
-                            placeId,
-                            isCrossNavigation: true,
-                          },
-                        });
-                      }
-                    }
-                  }}
-                />
-              );
-            })}
+                }}
+              />
+            )}
             {teacherQuery.data && (
               <PersonListItem
                 person={teacherQuery.data}
