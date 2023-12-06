@@ -20,7 +20,28 @@ type PathExtractor<T, Paths extends any[] = []> = T extends object
     }[keyof T]
   : Paths;
 
-const messageNotificationTransactionIds = [
+type CourseTransactionId =
+  | 'avvisidoc'
+  | 'videolezioni'
+  | 'virtualclassroom'
+  | 'matdid';
+
+type MessageTransactionId =
+  | 'emergenze'
+  | 'eventi'
+  | 'esitiesami'
+  | 'individuale'
+  | 'messaggidoc'
+  | 'segreteria';
+
+type TransactionId =
+  | MessageTransactionId
+  | CourseTransactionId
+  | 'ticket'
+  | 'booking'
+  | 'avvisi';
+
+const messageTransactionIds: MessageTransactionId[] = [
   'emergenze',
   'eventi',
   'esitiesami',
@@ -30,8 +51,11 @@ const messageNotificationTransactionIds = [
 ];
 
 const courseTransactionsMapping: Record<
-  string,
-  { section: string; screen: keyof CourseTabsParamList }
+  CourseTransactionId,
+  {
+    section: 'notices' | 'lectures' | 'files';
+    screen: keyof CourseTabsParamList;
+  }
 > = {
   avvisidoc: { section: 'notices', screen: 'CourseNoticesScreen' },
   videolezioni: { section: 'lectures', screen: 'CourseLecturesScreen' },
@@ -112,20 +136,24 @@ export const usePushNotifications = () => {
       const payload: PushNotificationPayload = JSON.parse(
         notification.data?.payload ?? 'null',
       );
-      if (!payload) {
-        return;
+      const transaction = notification.data.polito_transazione as TransactionId;
+      // Course
+      if (courseTransactionsMapping[transaction as CourseTransactionId]) {
+        if (payload.inc) {
+          navigation.navigate('TeachingTab', {
+            screen: 'Course',
+            params: {
+              id: payload.inc,
+              screen:
+                courseTransactionsMapping[transaction as CourseTransactionId]
+                  .screen,
+            },
+            initial: false,
+          });
+        }
       }
-      const transaction = notification.data.polito_transazione;
-      if (payload.inc) {
-        navigation.navigate('TeachingTab', {
-          screen: 'Course',
-          params: {
-            id: payload.inc,
-            screen: courseTransactionsMapping[transaction]?.screen,
-          },
-          initial: false,
-        });
-      } else if (payload.idTicket) {
+      // Tickets
+      if (transaction === 'ticket' && payload.idTicket) {
         navigation.navigate('ServicesTab', {
           screen: 'Ticket',
           params: {
@@ -133,12 +161,28 @@ export const usePushNotifications = () => {
           },
           initial: false,
         });
-      } else if (
-        messageNotificationTransactionIds.includes(transaction) ||
+      }
+      // Messages
+      if (
+        messageTransactionIds.includes(transaction as MessageTransactionId) ||
         (transaction === 'avvisi' && payload.origine === 'personali')
       ) {
         navigation.navigate('TeachingTab', {
           screen: 'MessagesModal',
+          initial: false,
+        });
+      }
+      // News
+      if (
+        transaction === 'avvisi' &&
+        payload.origine !== 'personali' &&
+        payload.idAvviso
+      ) {
+        navigation.navigate('ServicesTab', {
+          screen: 'NewsItem',
+          params: {
+            id: payload.idAvviso,
+          },
           initial: false,
         });
       }
@@ -154,27 +198,37 @@ export const usePushNotifications = () => {
       const payload: PushNotificationPayload = JSON.parse(
         notification.data?.payload ?? 'null',
       );
-      if (!payload) {
-        return;
+      const transaction = notification.data.polito_transazione as TransactionId;
+      // Course
+      if (courseTransactionsMapping[transaction as CourseTransactionId]) {
+        if (payload.inc) {
+          incrementUnread([
+            'teaching',
+            'courses',
+            payload.inc,
+            courseTransactionsMapping[transaction as CourseTransactionId]
+              .section,
+          ]);
+        }
       }
-      const transaction = notification.data.polito_transazione;
-      if (payload.inc) {
-        incrementUnread([
-          'teaching',
-          'courses',
-          payload.inc,
-          // @ts-expect-error TODO fix path typing
-          courseTransactionsMapping[transaction]?.section,
-        ]);
-      } else if (payload.idTicket) {
-        // @ts-expect-error TODO fix path typing
-        incrementUnread(['services', 'tickets', payload.idTicket]);
-      } else if (
-        messageNotificationTransactionIds.includes(transaction) ||
+      // Tickets
+      if (transaction === 'ticket' && payload.idTicket) {
+        incrementUnread(['services', 'tickets', payload.idTicket.toString()]);
+      }
+      // Messages
+      if (
+        messageTransactionIds.includes(transaction as MessageTransactionId) ||
         (transaction === 'avvisi' && payload.origine === 'personali')
       ) {
-        // @ts-expect-error TODO fix path typing
-        incrementUnread(['messages', payload.idAvviso]);
+        incrementUnread(['messages']);
+      }
+      // News
+      if (
+        transaction === 'avvisi' &&
+        payload.origine !== 'personali' &&
+        payload.idAvviso
+      ) {
+        incrementUnread(['services', 'news', payload.idAvviso.toString()]);
       }
     },
     [incrementUnread],

@@ -9,6 +9,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { NewsItemOverview } from '@polito/api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 
@@ -22,6 +23,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { accessibilityListLabel } = useAccessibility();
+  const { getUnreadsCount } = usePushNotifications();
 
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(newsItem?.title);
@@ -49,6 +51,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
           style={styles.icon}
         />
       }
+      unread={!!getUnreadsCount(['services', 'news', newsItem?.id.toString()])}
     />
   );
 };

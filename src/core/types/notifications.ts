@@ -46,6 +46,9 @@ export interface UnreadNotifications {
     tickets?: {
       [ticketId: string]: number;
     };
+    news?: {
+      [newsId: string]: number;
+    };
   };
 
   messages?: {
