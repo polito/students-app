@@ -37,6 +37,7 @@ export interface UnreadNotifications {
       [courseId: string]: {
         files?: number;
         notices?: number;
+        lectures?: number;
       };
     };
   };
