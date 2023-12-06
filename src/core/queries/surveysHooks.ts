@@ -24,7 +24,6 @@ const filterCpdSurveys = (surveys: Survey[]): Survey[] => {
   return surveys.filter(
     survey =>
       (survey.category.id === 'CPD' || survey.category.id === 'questionari') &&
-      // TODO add condition to type for PHd survey, after exam
       !survey.isCompiled,
   );
 };
