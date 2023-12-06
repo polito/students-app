@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
@@ -23,14 +23,18 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { BottomModal } from '../../../core/components/BottomModal';
+import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
+import { useGetCpdSurveys } from '../../../core/queries/surveysHooks';
 import {
   formatDate,
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
+import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -42,10 +46,16 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
+  const cpdSurveysQuery = useGetCpdSurveys();
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
 
+  const {
+    open: showBottomModal,
+    modal: bottomModal,
+    close: closeBottomModal,
+  } = useBottomModal();
   const isOffline = useOfflineDisabled();
 
   useEffect(() => {
@@ -82,8 +92,24 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
 
+  useLayoutEffect(() => {
+    if (!cpdSurveysQuery.data || !exam) return;
+
+    const requirements = cpdSurveysQuery.data.filter(
+      s =>
+        (s.type.id === 'CPDPERIODO' ||
+          (s.type.id === 'STUDENTE' && s.course?.id === exam.courseId)) &&
+        !s.isCompiled,
+    );
+    if (!requirements.length) return;
+    showBottomModal(
+      <ExamCpdModalContent surveys={requirements} close={closeBottomModal} />,
+    );
+  }, [cpdSurveysQuery.data, exam]);
+
   return (
     <>
+      <BottomModal dismissable {...bottomModal} />
       <ScrollView
         refreshControl={<RefreshControl queries={[examsQuery]} manual />}
         contentInsetAdjustmentBehavior="automatic"
