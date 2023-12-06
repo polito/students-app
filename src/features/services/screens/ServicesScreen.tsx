@@ -7,6 +7,7 @@ import {
   faBookBookmark,
   faBriefcase,
   faBullhorn,
+  faClipboardQuestion,
   faComments,
   faIdCard,
   faMobileScreenButton,
@@ -125,7 +126,7 @@ export const ServicesScreen = () => {
       {
         id: 'surveys',
         name: t('surveysScreen.title'),
-        icon: faComments,
+        icon: faClipboardQuestion,
         disabled: isOffline,
         linkTo: { screen: 'Surveys' },
       },
