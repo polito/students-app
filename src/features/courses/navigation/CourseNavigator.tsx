@@ -159,6 +159,12 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseLecturesScreen}
             options={{
               title: t('courseLecturesTab.title'),
+              tabBarBadge: getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'lectures',
+              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
             }}
           />
           <TopTabs.Screen
