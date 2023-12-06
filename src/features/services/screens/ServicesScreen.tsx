@@ -51,9 +51,7 @@ export const ServicesScreen = () => {
           isOffline &&
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
-        additionalContent: unreadTickets && (
-          <Badge text={unreadTickets} style={styles.badge} />
-        ),
+        unReadCount: unreadTickets,
       },
       {
         id: 'appFeedback',
@@ -84,6 +82,7 @@ export const ServicesScreen = () => {
         linkTo: {
           screen: 'News',
         },
+        unReadCount: getUnreadsCount(['services', 'news']),
       },
       {
         id: 'jobOffers',

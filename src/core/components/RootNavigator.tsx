@@ -181,7 +181,7 @@ const createStyles = ({
       paddingVertical: 3,
     },
     tabBarBadgeStyle: {
-      backgroundColor: palettes.secondary[600],
+      backgroundColor: palettes.rose[600],
       color: 'white',
       top: -2,
       fontFamily: fontFamilies.body,
