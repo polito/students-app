@@ -42,7 +42,7 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
-  const { updatePreference } = usePreferencesContext();
+  const { onboardingStep, updatePreference } = usePreferencesContext();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const { getUnreadsCount } = usePushNotifications();
   const campus = useGetCurrentCampus();
@@ -68,8 +68,6 @@ export const RootNavigator = () => {
   }, [campus, sites?.data, student, updatePreference]);
 
   const { data: messages } = useGetModalMessages();
-
-  const { onboardingStep } = usePreferencesContext();
 
   useEffect(() => {
     if (onboardingStep && onboardingStep >= 3) return;

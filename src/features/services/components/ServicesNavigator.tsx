@@ -51,7 +51,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
   TicketList: {
-    statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
+    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
   };
   JobOffers: undefined;
   JobOffer: {

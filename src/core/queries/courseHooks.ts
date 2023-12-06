@@ -11,6 +11,7 @@ import {
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
+import { MenuAction } from '@react-native-menu/menu';
 import {
   useMutation,
   useQueries,
@@ -58,7 +59,7 @@ const setupCourses = (
       const usedColors = Object.values(coursePreferences)
         .map(cp => cp.color)
         .filter(notNullish);
-      let colorData: typeof courseColors[0] | undefined;
+      let colorData: (typeof courseColors)[0] | undefined;
       for (const currentColor of courseColors) {
         if (!usedColors.includes(currentColor.color)) {
           colorData = currentColor;
@@ -103,18 +104,19 @@ export const useGetCourses = () => {
 
 export const CourseSectionEnum = {
   Overview: 'overview',
+  Editions: 'editions',
   Guide: 'guide',
   Exams: 'exams',
   Notices: 'notices',
   Files: 'files',
   Assignments: 'assignments',
 } as const;
-export type CourseSectionEnum =
-  typeof CourseSectionEnum[keyof typeof CourseSectionEnum];
+export type CourseQueryEnum =
+  (typeof CourseSectionEnum)[keyof typeof CourseSectionEnum];
 
 export const getCourseKey = (
   courseId: number,
-  section: CourseSectionEnum = CourseSectionEnum.Overview,
+  section: CourseQueryEnum = CourseSectionEnum.Overview,
 ) => [COURSE_QUERY_PREFIX, courseId, section];
 
 export const useGetCourse = (courseId: number) => {
@@ -137,6 +139,44 @@ export const useGetCourse = (courseId: number) => {
     },
     {
       staleTime: Infinity,
+    },
+  );
+};
+
+export const useGetCourseEditions = (courseId: number) => {
+  const coursesQuery = useGetCourses();
+
+  return useQuery(
+    getCourseKey(courseId, CourseSectionEnum.Editions),
+    () => {
+      const course = coursesQuery.data?.find(
+        c =>
+          c.id === courseId || c.previousEditions.some(e => e.id === courseId),
+      );
+      const editions: MenuAction[] = [];
+
+      if (!course || !course.previousEditions.length) return editions;
+
+      editions.push(
+        {
+          id: `${course.id}`,
+          title: course.year,
+          state: courseId === course?.id ? 'on' : undefined,
+        },
+        ...course.previousEditions.map(
+          e =>
+            ({
+              id: `${e.id}`,
+              title: e.year,
+              state: courseId === e.id ? 'on' : undefined,
+            } as MenuAction),
+        ),
+      );
+
+      return editions;
+    },
+    {
+      enabled: !!coursesQuery.data,
     },
   );
 };

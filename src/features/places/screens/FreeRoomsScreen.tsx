@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -38,28 +38,39 @@ import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
 
 type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
 
-const slotStartHour = [17, 14, 11, 8];
+const slotStartHour = [19, 17, 16, 14, 13, 11, 10, 8];
 
 const findNearestSlotStartHour = (dt: DateTime) => {
-  const nearestStartHour = slotStartHour.find(h => h <= dt.hour);
+  // Skip Sundays
+  if (dt.weekday === 7) dt = dt.plus({ day: 1 }).startOf('day');
 
-  if (nearestStartHour && dt.hour < 20) {
-    dt = dt.set({ hour: nearestStartHour });
+  const nearestStartHourIndex = slotStartHour.findIndex(h => h <= dt.hour);
+  if (nearestStartHourIndex >= 0 && dt.hour < 20) {
+    const nearestStartHour = slotStartHour[nearestStartHourIndex];
+
+    dt = dt.set({
+      hour: nearestStartHour,
+      minute: nearestStartHourIndex % 2 ? 30 : 0,
+    });
   } else {
     if (dt.hour > slotStartHour[0]) {
-      dt = dt.plus({ day: 1 }).set({
+      // dt.hour > last(slotStartHour)
+      // When going forward from a saturday, we need to go forward to the next monday
+      dt = dt.plus({ day: dt.weekday === 6 ? 2 : 1 }).set({
         hour: last(slotStartHour),
+        minute: 30,
       });
     } else {
       // dt.hour < last(slotStartHour)
-      dt = dt.minus({ day: 1 }).set({
+      // When going back from a monday, we need to go back to the previous saturday
+      dt = dt.minus({ day: dt.weekday === 1 ? 2 : 1 }).set({
         hour: slotStartHour[0],
+        minute: 0,
       });
     }
   }
 
   return dt.set({
-    minute: 0,
     second: 0,
     millisecond: 0,
   });
@@ -70,8 +81,11 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const { colors } = useTheme();
   const { spacing, fontSizes } = useTheme();
   const campus = useGetCurrentCampus();
+
+  const today = useMemo(() => DateTime.now().startOf('day'), []);
+
   const [startDateTime, setStartDateTime] = useState(
-    findNearestSlotStartHour(DateTime.now().startOf('hour')),
+    findNearestSlotStartHour(DateTime.now()),
   );
 
   const endDateTime = useMemo(
@@ -80,6 +94,27 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
         hour: FREE_ROOMS_TIME_WINDOW_SIZE_HOURS,
       }),
     [startDateTime],
+  );
+
+  const printDate = useCallback(
+    (dt: DateTime) => {
+      const diffInDays = Math.floor(dt.diff(today, 'days').days);
+
+      switch (diffInDays) {
+        case 0:
+          return t('common.today');
+        case 1:
+          return t('common.tomorrow');
+        case -1:
+          return t('common.yesterday');
+        default:
+          if (diffInDays > 0 && diffInDays < 7) {
+            return dt.toFormat('EEEE');
+          }
+          return dt.toFormat('d/M');
+      }
+    },
+    [t, today],
   );
 
   const { places: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
@@ -134,7 +169,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
             disabled={!freeRooms?.data}
             onPress={() =>
               setStartDateTime(prevDt =>
-                findNearestSlotStartHour(prevDt.minus({ hour: 3 })),
+                findNearestSlotStartHour(prevDt.minus({ hour: 1, minute: 30 })),
               )
             }
           />
@@ -152,8 +187,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
                 marginVertical: spacing[2],
               }}
             >
-              {startDateTime.toRelativeCalendar()}{' '}
-              {startDateTime.toFormat('HH:mm')} -{' '}
+              {printDate(startDateTime)} {startDateTime.toFormat('HH:mm')} -{' '}
               {endDateTime.toFormat('HH:mm')}
             </Text>
           </View>
@@ -163,7 +197,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
             disabled={!freeRooms?.data}
             onPress={() =>
               setStartDateTime(prevDt =>
-                findNearestSlotStartHour(prevDt.plus({ hour: 3 })),
+                findNearestSlotStartHour(prevDt.plus({ hour: 1, minute: 30 })),
               )
             }
           />

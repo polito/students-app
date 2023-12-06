@@ -46,7 +46,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
       return [];
     }
     return placesQueries.map(q => q.data).filter(notNullish) as Exclude<
-      typeof placesQueries[number]['data'],
+      (typeof placesQueries)[number]['data'],
       undefined
     >[];
   }, [isLoading, placesQueries]);

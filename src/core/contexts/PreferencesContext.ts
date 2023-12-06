@@ -23,7 +23,7 @@ export const editablePreferenceKeys = [
   'agendaScreen',
 ] as const;
 
-export type PreferenceKey = typeof editablePreferenceKeys[number];
+export type PreferenceKey = (typeof editablePreferenceKeys)[number];
 
 // Specify here complex keys, that require serialization/deserialization
 export const objectPreferenceKeys = [
