@@ -621,6 +621,13 @@
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings"
   },
+  "surveysScreen": {
+    "compiledEmptyState": "There are no compiled surveys",
+    "compiledTitle": "Compiled surveys",
+    "title": "Surveys",
+    "toBeCompiledEmptyState": "There are no surveys to be compiled",
+    "toBeCompiledTitle": "Surveys to be compiled"
+  },
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
     "title": "Teaching"
