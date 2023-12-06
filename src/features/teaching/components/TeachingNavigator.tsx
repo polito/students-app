@@ -143,6 +143,7 @@ export const TeachingNavigator = () => {
         name="CpdSurveys"
         component={CpdSurveysScreen}
         options={{
+          title: t('teachingScreen.cpdTitle'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}

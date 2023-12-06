@@ -20,20 +20,20 @@ export const useGetSurveys = () => {
   );
 };
 
-const filterCpdSurveys = (surveys: Survey[]): Survey[] => {
-  return surveys.filter(
-    survey =>
-      (survey.category.id === 'CPD' || survey.category.id === 'questionari') &&
-      !survey.isCompiled,
-  );
+const filterMandatorySurveys = (surveys: Survey[]): Survey[] => {
+  return surveys.filter(survey => survey.isMandatory && !survey.isCompiled);
 };
 
 export const useGetCpdSurveys = () => {
   const surveysQuery = useGetSurveys();
 
-  return useQuery(CPD_QUERY_KEY, () => filterCpdSurveys(surveysQuery.data!), {
-    enabled: surveysQuery.data !== undefined,
-  });
+  return useQuery(
+    CPD_QUERY_KEY,
+    () => filterMandatorySurveys(surveysQuery.data!),
+    {
+      enabled: surveysQuery.data !== undefined,
+    },
+  );
 };
 
 const groupSurveysIntoTypes = (surveys: Survey[]): SurveyType[] => {
