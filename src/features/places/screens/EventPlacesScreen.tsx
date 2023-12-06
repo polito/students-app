@@ -1,13 +1,12 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
@@ -50,13 +49,12 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
       undefined
     >[];
   }, [isLoading, placesQueries]);
-  const siteId = placesQueries[0]?.data?.site.id;
   const floorId = useMemo(() => {
     if (isLoading) {
-      return null;
+      return undefined;
     }
     const floorIds = new Set(placesQueries.map(p => p.data?.floor.id));
-    return floorIds.size === 1 ? [...floorIds][0] : null;
+    return floorIds.size === 1 ? [...floorIds][0] : undefined;
   }, [isLoading, placesQueries]);
 
   useScreenTitle(eventName);
@@ -170,11 +168,3 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     </View>
   );
 };
-
-const createStyles = ({ fontSizes }: Theme) =>
-  StyleSheet.create({
-    title: {
-      fontSize: fontSizes['2xl'],
-      textTransform: 'capitalize',
-    },
-  });

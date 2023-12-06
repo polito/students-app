@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -36,6 +36,7 @@ import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
 
@@ -62,10 +63,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     siteId,
     floorId,
   });
-  const places = useMemo(
-    () => searchResult?.hits.map(h => h.document) ?? [],
-    [searchResult?.hits],
-  );
+  const places = useGetPlacesFromSearchResult(searchResult);
+
   const isLoading = isLoadingPlace || isLoadingPlaces;
   const placeName =
     place?.data.room.name ??

@@ -47,7 +47,6 @@ export const RootNavigator = () => {
   const { getUnreadsCount } = usePushNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
-  // useSearchPlaces({ siteId: campus?.id });
 
   useEffect(() => {
     if (student?.smartCardPicture) {

@@ -68,6 +68,7 @@ import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { SearchPlace, isPlace } from '../types';
 import { formatPlaceCategory } from '../utils/category';
@@ -110,10 +111,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     subCategoryId,
   });
 
-  const places = useMemo(
-    () => searchResult?.hits.map(h => h.document) ?? [],
-    [searchResult?.hits],
-  );
+  const places = useGetPlacesFromSearchResult(searchResult);
 
   const categoryFilterName = useMemo(
     () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
