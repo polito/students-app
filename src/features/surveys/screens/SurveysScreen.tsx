@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faComments } from '@fortawesome/free-regular-svg-icons';
+import { faClipboardQuestion } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -49,7 +49,7 @@ export const SurveysScreen = ({ navigation }: Props) => {
             <OverviewList>
               <EmptyState
                 message={t('surveysScreen.toBeCompiledEmptyState')}
-                icon={faComments}
+                icon={faClipboardQuestion}
               />
             </OverviewList>
           ))}
@@ -94,7 +94,7 @@ export const SurveysScreen = ({ navigation }: Props) => {
             <OverviewList>
               <EmptyState
                 message={t('surveysScreen.compiledEmptyState')}
-                icon={faComments}
+                icon={faClipboardQuestion}
               />
             </OverviewList>
           ))}

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardQuestion } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -58,7 +58,10 @@ export const SurveyListScreen = ({ route }: Props) => {
       ListFooterComponent={<BottomBarSpacer />}
       ListEmptyComponent={
         !surveysQuery.isLoading ? (
-          <EmptyState message={t('courseFilesTab.empty')} icon={faCheck} />
+          <EmptyState
+            message={t('surveysScreen.compiledEmptyState')}
+            icon={faClipboardQuestion}
+          />
         ) : null
       }
     />
