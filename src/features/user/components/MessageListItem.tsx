@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useMarkMessageAsRead } from '../../../core/queries/studentHooks';
 import { formatDateTime } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
@@ -26,10 +27,12 @@ export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(messageItem?.title);
   const sentAt = formatDateTime(messageItem.sentAt);
+  const { decrementUnread } = usePushNotifications();
 
   const onPressItem = () => {
     if (!messageItem.isRead) {
       markAsRead(messageItem.id);
+      decrementUnread(['messages']);
     }
     navigation.navigate('Message', {
       id: messageItem.id,

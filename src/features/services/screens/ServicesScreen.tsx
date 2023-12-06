@@ -85,6 +85,7 @@ export const ServicesScreen = () => {
         linkTo: {
           screen: 'News',
         },
+        unReadCount: getUnreadsCount(['services', 'news']),
       },
       {
         id: 'jobOffers',
