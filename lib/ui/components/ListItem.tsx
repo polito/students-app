@@ -8,9 +8,9 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
 import { Row } from '@lib/ui/components/Row';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
@@ -74,7 +74,7 @@ export const ListItem = ({
   const titleElement =
     typeof title === 'string' ? (
       <Row align="center" gap={2}>
-        {unread && <Badge />}
+        {unread && <UnreadBadge />}
         <Text
           variant="title"
           style={[

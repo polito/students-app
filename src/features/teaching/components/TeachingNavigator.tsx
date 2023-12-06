@@ -20,6 +20,7 @@ import {
 import { CoursesScreen } from '../../courses/screens/CoursesScreen';
 import { PlacesNavigator } from '../../places/components/PlacesNavigator';
 import { PlacesStackParamList } from '../../places/components/PlacesNavigator';
+import { CpdSurveysScreen } from '../../surveys/screens/CpdSurveysScreen';
 import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
 import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamScreen } from '../screens/ExamScreen';
@@ -39,6 +40,7 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     Transcript: undefined;
     OnboardingModal: undefined;
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
+    CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -133,6 +135,15 @@ export const TeachingNavigator = () => {
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CpdSurveys"
+        component={CpdSurveysScreen}
+        options={{
+          title: t('teachingScreen.cpdTitle'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
       {CourseSharedScreens(Stack as any)}

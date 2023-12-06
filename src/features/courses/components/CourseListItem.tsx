@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { useQueryClient } from '@tanstack/react-query';
@@ -136,7 +136,7 @@ export const CourseListItem = ({
       leadingItem={<CourseIndicator uniqueShortcode={course.uniqueShortcode} />}
       trailingItem={
         <>
-          {badge && <Badge text={badge} />}
+          {badge && <UnreadBadge text={badge} />}
           {hasDetails ? (
             Platform.select({
               android: (

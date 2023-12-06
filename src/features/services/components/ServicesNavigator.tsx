@@ -22,6 +22,8 @@ import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
 import { ContactsScreen } from '../../people/screens/ContactsScreen';
+import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
+import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
@@ -80,6 +82,8 @@ export type ServiceStackParamList = OfferingStackParamList & {
   };
   Guides: undefined;
   Guide: { id: string };
+  Surveys: undefined;
+  SurveyList: { isCompiled: boolean };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -307,6 +311,23 @@ export const ServicesNavigator = () => {
         component={GuideScreen}
         options={{
           headerTitle: t('guideScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Surveys"
+        component={SurveysScreen}
+        options={{
+          headerTitle: t('surveysScreen.title'),
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="SurveyList"
+        component={SurveyListScreen}
+        options={{
+          headerTitle: t('surveysScreen.compiledTitle'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
