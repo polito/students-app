@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { get, has, omit, setWith, updateWith } from 'lodash';
 
+import { CourseTabsParamList } from '../../features/courses/navigation/CourseNavigator';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { RootParamList } from '../types/navigation';
 import {
@@ -18,6 +19,25 @@ type PathExtractor<T, Paths extends any[] = []> = T extends object
       [K in keyof T]: PathExtractor<T[K], [...Paths, K]>;
     }[keyof T]
   : Paths;
+
+const messageNotificationTransactionIds = [
+  'emergenze',
+  'eventi',
+  'esitiesami',
+  'individuale',
+  'messaggidoc',
+  'segreteria',
+];
+
+const courseTransactionsMapping: Record<
+  string,
+  { section: string; screen: keyof CourseTabsParamList }
+> = {
+  avvisidoc: { section: 'notices', screen: 'CourseNoticesScreen' },
+  videolezioni: { section: 'lectures', screen: 'CourseLecturesScreen' },
+  virtualclassroom: { section: 'lectures', screen: 'CourseLecturesScreen' },
+  matdid: { section: 'files', screen: 'CourseFilesScreen' },
+};
 
 export const usePushNotifications = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
@@ -95,15 +115,13 @@ export const usePushNotifications = () => {
       if (!payload) {
         return;
       }
+      const transaction = notification.data.polito_transazione;
       if (payload.inc) {
-        const transaction = notification.data.polito_transazione;
         navigation.navigate('TeachingTab', {
           screen: 'Course',
           params: {
             id: payload.inc,
-            screen: `Course${
-              transaction === 'matdid' ? 'FilesScreen' : 'NoticesScreen'
-            }`,
+            screen: courseTransactionsMapping[transaction]?.screen,
           },
           initial: false,
         });
@@ -115,7 +133,10 @@ export const usePushNotifications = () => {
           },
           initial: false,
         });
-      } else if (payload.idAvviso && payload.origine === 'personali') {
+      } else if (
+        messageNotificationTransactionIds.includes(transaction) ||
+        (transaction === 'avvisi' && payload.origine === 'personali')
+      ) {
         navigation.navigate('TeachingTab', {
           screen: 'MessagesModal',
           initial: false,
@@ -136,18 +157,22 @@ export const usePushNotifications = () => {
       if (!payload) {
         return;
       }
+      const transaction = notification.data.polito_transazione;
       if (payload.inc) {
-        const transaction = notification.data.polito_transazione;
         incrementUnread([
           'teaching',
           'courses',
           payload.inc,
-          transaction === 'matdid' ? 'files' : 'notices',
+          // @ts-expect-error TODO fix path typing
+          courseTransactionsMapping[transaction]?.section,
         ]);
       } else if (payload.idTicket) {
         // @ts-expect-error TODO fix path typing
         incrementUnread(['services', 'tickets', payload.idTicket]);
-      } else if (payload.idAvviso && payload.origine === 'personali') {
+      } else if (
+        messageNotificationTransactionIds.includes(transaction) ||
+        (transaction === 'avvisi' && payload.origine === 'personali')
+      ) {
         // @ts-expect-error TODO fix path typing
         incrementUnread(['messages', payload.idAvviso]);
       }

@@ -166,6 +166,7 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
+          tabBarBadge: getUnreadsCount(['messages']),
         }}
       />
     </TabNavigator.Navigator>
