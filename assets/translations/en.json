@@ -630,6 +630,7 @@
   },
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
+    "cpdTitle": "CPD Surveys",
     "title": "Teaching"
   },
   "theme": {

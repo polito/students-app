@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -9,11 +11,10 @@ type Props = {
   types: SurveyType[];
 };
 export const SurveyTypesSection = ({ types }: Props) => {
+  const { t } = useTranslation();
   return (
     <Section>
-      <SectionHeader
-        title="CPD da compilare" // TODO translate
-      />
+      <SectionHeader title={t('teachingScreen.cpdTitle')} />
       <OverviewList indented>
         {types.map(type => (
           <SurveyCategoryListItem key={type.id} type={type} />
