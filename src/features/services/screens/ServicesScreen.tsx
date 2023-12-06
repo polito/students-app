@@ -122,6 +122,13 @@ export const ServicesScreen = () => {
           queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Bookings' },
       },
+      {
+        id: 'surveys',
+        name: t('surveysScreen.title'),
+        icon: faComments,
+        disabled: isOffline,
+        linkTo: { screen: 'Surveys' },
+      },
     ];
   }, [
     emailGuideRead,

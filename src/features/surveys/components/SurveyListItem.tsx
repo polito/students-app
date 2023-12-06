@@ -12,7 +12,7 @@ export const SurveyListItem = ({ survey, ...props }: Props) => {
     <ListItem
       {...props}
       title={survey.title}
-      subtitle={survey.subtitle}
+      subtitle={survey.subtitle ?? undefined}
       onPress={() => Linking.openURL(survey.url)}
       isAction
     />

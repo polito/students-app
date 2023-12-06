@@ -621,6 +621,13 @@
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni"
   },
+  "surveysScreen": {
+    "compiledEmptyState": "Non ci sono questionari compilati",
+    "compiledTitle": "Questionari compilati",
+    "title": "Questionari",
+    "toBeCompiledEmptyState": "Non ci sono questionari da compilare",
+    "toBeCompiledTitle": "Questionari da compilare"
+  },
   "teachingScreen": {
     "allCoursesHidden": "Hai nascosto tutti i tuoi corsi",
     "title": "Didattica"
