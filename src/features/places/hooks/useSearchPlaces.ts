@@ -1,19 +1,25 @@
-import { useMemo, useState } from 'react';
+/* eslint-disable */
+import { useState } from 'react';
+
+import {
+  FacetDefinition,
+  Results,
+  StringFacetDefinition,
+  create,
+  search as fullTextSearch,
+  insertMultiple,
+} from '@orama/orama';
+import { useQuery } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetPlaces } from '../../../core/queries/placesHooks';
-import { useGetAgendaWeek } from '../../agenda/queries/agendaHooks';
-import { LectureItem } from '../../agenda/types/AgendaItem';
+import { useGetAgendaWeeks } from '../../agenda/queries/agendaHooks';
+import { AgendaItem } from '../../agenda/types/AgendaItem';
 import { UPCOMING_COMMITMENT_HOURS_OFFSET } from '../constants';
-import {
-  BuildingWithMetadata,
-  PlaceOverviewWithMetadata,
-  isPlace,
-} from '../types';
+import { PlaceOverviewWithMetadata } from '../types';
 import { resolvePlaceId } from '../utils/resolvePlaceId';
-import { useGetCurrentCampus } from './useGetCurrentCampus';
 
 interface UseSearchPlacesOptions {
   search?: string;
@@ -23,6 +29,123 @@ interface UseSearchPlacesOptions {
   subCategoryId?: string;
 }
 
+type PlacesDb = Awaited<ReturnType<typeof createDb>>;
+// TODO should be <PlacesDb>
+type FullTextQuery = Parameters<typeof fullTextSearch<any>>['1'];
+
+const createDb = () =>
+  create({
+    schema: {
+      id: 'string',
+      latitude: 'number',
+      longitude: 'number',
+      site: {
+        id: 'string',
+        name: 'string',
+      },
+      building: {
+        id: 'string',
+        name: 'string',
+        siteId: 'string',
+      },
+      floor: {
+        id: 'string',
+        name: 'string',
+        level: 'number',
+      },
+      room: {
+        id: 'string',
+        name: 'string',
+      },
+      category: {
+        id: 'string',
+        name: 'string',
+        subCategory: {
+          id: 'string',
+          name: 'string',
+        },
+      },
+      agendaItem: {
+        id: 'number',
+        type: 'string',
+        fromTime: 'string',
+        toTime: 'string',
+      },
+    },
+  });
+
+const PLACES_SEARCH_DB_QUERY_KEY = 'places-search-db';
+
+const useGetPlacesSearchDb = ({ siteId }: { siteId?: string }) => {
+  const { placesSearched } = usePreferencesContext();
+  const { data: places, isFetched: fetchedPlaces } = useGetPlaces({ siteId });
+  const [commitmentsFrom] = useState(DateTime.now());
+  const [startOfWeek] = useState(commitmentsFrom.startOf('week'));
+  const { data: agendaWeeks } = useGetAgendaWeeks([startOfWeek]);
+
+  return useQuery(
+    [
+      PLACES_SEARCH_DB_QUERY_KEY,
+      siteId,
+      startOfWeek.toISO(),
+      placesSearched.map(({ id }) => id).join(),
+    ],
+    async () => {
+      const db = await createDb();
+      const commitmentsByPlaceId = agendaWeeks
+        .flatMap(({ data }) => data.flatMap(({ items }) => items))
+        .reduce((acc, agendaItem) => {
+          if (agendaItem.type === 'lecture' && agendaItem.place != null) {
+            const placeId = resolvePlaceId(agendaItem.place);
+            if (
+              !acc[placeId] &&
+              ((agendaItem.start >= commitmentsFrom &&
+                agendaItem.start.diff(commitmentsFrom).milliseconds <
+                  UPCOMING_COMMITMENT_HOURS_OFFSET * 60 * 60 * 1000) ||
+                (agendaItem.start <= commitmentsFrom &&
+                  agendaItem.end >= commitmentsFrom))
+            ) {
+              acc[placeId] = agendaItem;
+            }
+          }
+          return acc;
+        }, {} as Record<string, AgendaItem>);
+      const recentPlacesByPlaceId = placesSearched.reduce((acc, val, index) => {
+        acc[val.id] = index;
+        return acc;
+      }, {} as Record<string, number>);
+      await insertMultiple(
+        db,
+        // @ts-expect-error Orama not recognizing elements type
+        places?.data?.map(place => {
+          const placeWithMetadata: PlaceOverviewWithMetadata = {
+            ...place,
+            type: 'place',
+          };
+          if (placeWithMetadata.room.name === null) {
+            (placeWithMetadata.room.name as string | undefined) = undefined;
+          }
+          const agendaItem = commitmentsByPlaceId[place.id];
+          if (agendaItem) {
+            placeWithMetadata.agendaItem = agendaItem;
+          }
+          const recentlyVisited = recentPlacesByPlaceId[place.id];
+          if (recentlyVisited != null) {
+            placeWithMetadata.recentlyVisited = recentlyVisited;
+          }
+          return placeWithMetadata;
+        }) ?? [],
+      );
+      return db;
+    },
+    {
+      enabled: siteId != null && fetchedPlaces,
+    },
+  );
+};
+
+const PLACES_SEARCH_QUERY_KEY = 'places-search';
+
 export const useSearchPlaces = ({
   siteId,
   search,
@@ -30,91 +153,51 @@ export const useSearchPlaces = ({
   categoryId,
   subCategoryId,
 }: UseSearchPlacesOptions) => {
-  const { placesSearched } = usePreferencesContext();
-
-  const campus = useGetCurrentCampus();
-  const actualSiteId = siteId ?? campus?.id;
-
-  const [now] = useState(DateTime.now());
-  const { data: agendaPage } = useGetAgendaWeek(now.startOf('week'));
-  const upcomingCommitments = useMemo(
-    () =>
-      agendaPage?.data
-        .flatMap(i => i.items)
-        .filter(
-          i =>
-            (i as LectureItem).place != null &&
-            ((i.start >= now &&
-              i.start.diff(now).milliseconds <
-                UPCOMING_COMMITMENT_HOURS_OFFSET * 60 * 60 * 1000) ||
-              (i.start <= now && i.end >= now)),
-        ) as
-        | (LectureItem & { place: Exclude<LectureItem['place'], null> })[]
-        | undefined,
-    [agendaPage, now],
-  );
-
-  const { data: places, fetchStatus: placesFetchStatus } = useGetPlaces({
-    siteId: actualSiteId,
-    floorId: search?.length ? null : floorId ?? null,
-    placeCategoryId: categoryId,
-    placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
+  const { data: placesDb, isFetched: siteIndexed } = useGetPlacesSearchDb({
+    siteId,
   });
 
-  // const { data: buildings, fetchStatus: buildingFetchStatus } =
-  //   useGetBuildings(actualSiteId);
-
-  const combinedPlaces = useMemo(() => {
-    if (!places?.data?.length) {
-      return [];
-    }
-    let result = places?.data
-      ?.map(p => ({ ...p, type: 'place' }))
-      ?.sort(a => (placesSearched.some(p => a.id === p.id) ? -1 : 1)) as
-      | (PlaceOverviewWithMetadata | BuildingWithMetadata)[]
-      | undefined;
-    if (upcomingCommitments?.length) {
-      for (const commitment of upcomingCommitments.reverse()) {
-        const placeIndex = result!.findIndex(
-          p => p.id === resolvePlaceId(commitment.place),
-        );
-        if (placeIndex !== -1) {
-          const place = result!.splice(
-            placeIndex,
-            1,
-          )[0] as PlaceOverviewWithMetadata;
-          place.agendaItem = commitment;
-          result!.unshift(place);
-        }
+  const query = useQuery(
+    [
+      PLACES_SEARCH_QUERY_KEY,
+      siteId,
+      floorId,
+      categoryId,
+      subCategoryId,
+      search,
+    ],
+    async () => {
+      const query: FullTextQuery & {
+        where: Exclude<FullTextQuery['where'], undefined>;
+      } = {
+        where: { 'site.id': siteId },
+        limit: 10000,
+      };
+      if (floorId && !search) {
+        query.where['floor.id'] = floorId;
       }
-    }
-    // if (buildings?.data?.length) {
-    //   result = result?.concat(
-    //     buildings.data.map(b => ({
-    //       ...b,
-    //       type: 'building',
-    //     })),
-    //   );
-    // }
-    if (search) {
-      result = result?.filter(p => {
-        if (isPlace(p)) {
-          return (
-            p.room.name?.toLowerCase().includes(search) ||
-            p.category.name.toLowerCase().includes(search) ||
-            p.category.subCategory?.name.toLowerCase().includes(search)
-          );
-        }
-        return p.name.toLowerCase().includes(search);
-      });
-    }
-    return result;
-  }, [places?.data, placesSearched, search, upcomingCommitments]);
+      if (categoryId) {
+        query.where['category.id'] = categoryId;
+      }
+      if (subCategoryId) {
+        query.where['category.subCategory.id'] = subCategoryId;
+      }
+      if (search) {
+        query.term = search;
+      }
+      console.log('Query', JSON.stringify(query, null, '  '));
+      const results = await fullTextSearch(placesDb!, query);
+      console.log('Results', results.hits.length);
+      return results as Results<PlaceOverviewWithMetadata>;
+    },
+    {
+      enabled: placesDb != null && siteId != null && siteIndexed,
+      staleTime: 30 * 1000,
+    },
+  );
 
-  return {
-    places: combinedPlaces,
-    isLoading:
-      placesFetchStatus ===
-      'fetching' /* || buildingFetchStatus === 'fetching'*/,
-  };
+  const extendedQuery = query as typeof query & { siteIndexed: boolean };
+  extendedQuery.siteIndexed = siteIndexed;
+
+  return extendedQuery;
 };

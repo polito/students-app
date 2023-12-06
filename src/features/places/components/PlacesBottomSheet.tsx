@@ -22,6 +22,7 @@ export interface PlacesBottomSheetProps
   isLoading?: boolean;
   search?: string;
   showSearchBar?: boolean;
+  onTriggerSearch?: () => void;
   onSearchChange?: (newSearch: string) => void;
 }
 
@@ -37,6 +38,7 @@ export const PlacesBottomSheet = forwardRef<
       isLoading = false,
       search,
       onSearchChange,
+      onTriggerSearch,
       showSearchBar = true,
       ...props
     },
@@ -66,10 +68,14 @@ export const PlacesBottomSheet = forwardRef<
             }}
             onBlur={() => {
               setTyping(false);
+              onTriggerSearch?.();
               innerRef.current?.snapToIndex(1);
             }}
+            returnKeyType="search"
+            onSubmitEditing={onTriggerSearch}
             value={search}
             onChangeText={onSearchChange}
+            clearButtonMode="always"
             {...textFieldProps}
           />
         )}

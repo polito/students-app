@@ -126,34 +126,42 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            {exam?.places?.map(p => {
-              const placeId = [p.buildingId, p.floorId, p.roomId].join('-');
+            {exam?.places?.map((p, i) => {
+              const placeId =
+                p.buildingId && p.floorId && p.roomId
+                  ? [p.buildingId, p.floorId, p.roomId].join('-')
+                  : null;
               return (
                 <ListItem
-                  key={placeId}
+                  key={placeId ?? i}
                   leadingItem={
                     <Icon icon={faLocationDot} size={fontSizes['2xl']} />
                   }
                   title={p.name}
                   subtitle={t('examScreen.location')}
                   isAction
+                  disabled={!placeId}
                   onPress={() => {
-                    if (navigation.getId() === 'AgendaTabNavigator') {
-                      navigation.navigate('PlacesAgendaStack', {
-                        screen: 'Place',
-                        params: {
-                          placeId,
-                          isCrossNavigation: true,
-                        },
-                      });
-                    } else if (navigation.getId() === 'TeachingTabNavigator') {
-                      navigation.navigate('PlacesTeachingStack', {
-                        screen: 'Place',
-                        params: {
-                          placeId,
-                          isCrossNavigation: true,
-                        },
-                      });
+                    if (placeId != null) {
+                      if (navigation.getId() === 'AgendaTabNavigator') {
+                        navigation.navigate('PlacesAgendaStack', {
+                          screen: 'Place',
+                          params: {
+                            placeId,
+                            isCrossNavigation: true,
+                          },
+                        });
+                      } else if (
+                        navigation.getId() === 'TeachingTabNavigator'
+                      ) {
+                        navigation.navigate('PlacesTeachingStack', {
+                          screen: 'Place',
+                          params: {
+                            placeId,
+                            isCrossNavigation: true,
+                          },
+                        });
+                      }
                     }
                   }}
                 />

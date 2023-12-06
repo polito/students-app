@@ -2,6 +2,7 @@ import { Platform, StyleSheet, ViewStyle } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
@@ -15,6 +16,7 @@ export interface TranslucentTextFieldProps extends TextFieldProps {
   onClear?: () => void;
   onClearLabel?: string;
   containerStyle?: ViewStyle;
+  isLoading?: boolean;
 }
 
 export const TranslucentTextField = ({
@@ -25,6 +27,7 @@ export const TranslucentTextField = ({
   isClearable,
   onClear,
   onClearLabel,
+  isLoading,
   ...props
 }: TranslucentTextFieldProps) => {
   const styles = useStylesheet(createStyles);
@@ -36,7 +39,11 @@ export const TranslucentTextField = ({
       mh={3}
       ph={3}
     >
-      {leadingIcon && <Icon icon={leadingIcon} style={styles.icon} />}
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        leadingIcon && <Icon icon={leadingIcon} style={styles.icon} />
+      )}
       <TextField
         clearButtonMode="never"
         {...props}
@@ -69,6 +76,7 @@ const createStyles = ({ colors, dark, palettes, spacing }: Theme) =>
     },
     icon: {
       opacity: 0.8,
+      marginRight: spacing[1],
     },
     input: {
       margin: 0,

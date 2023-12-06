@@ -4,8 +4,6 @@ import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
 import { GetFreeRoomsRequest } from '@polito/api-client/apis/PlacesApi';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { noop } from 'lodash';
-
 import { pluckData } from '../../utils/queries';
 
 export const SITES_QUERY_KEY = 'sites';
@@ -14,6 +12,7 @@ export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
+export const PLACES_SEARCH_DB_QUERY_KEY = 'places-search-db';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -64,33 +63,14 @@ export const useGetSite = (siteId?: string) => {
   }, [siteId, sites?.data]);
 };
 
-export const useGetPlaces = (
-  params: Omit<GetPlacesRequest, 'floorId'> & {
-    floorId: GetPlacesRequest['floorId'] | null;
-  },
-) => {
+export const useGetPlaces = (params: GetPlacesRequest) => {
   const placesClient = usePlacesClient();
-  const key = [
-    PLACES_QUERY_KEY,
-    `siteId:${params.siteId}`,
-    `buildingId:${params.buildingId}`,
-    `floorId:${params.floorId}`,
-    `placeCategoryId:${params.placeCategoryId}`,
-    `placeSubCategoryId:${params.placeSubCategoryId?.join()}`,
-  ];
+  const key = [PLACES_QUERY_KEY, params.siteId];
 
-  return useQuery(
-    key,
-    () =>
-      placesClient.getPlaces({
-        ...params,
-        floorId: params.floorId !== null ? params.floorId : undefined,
-      } as GetPlacesRequest),
-    {
-      enabled: params.siteId != null && params.floorId !== undefined,
-      staleTime: Infinity,
-    },
-  );
+  return useQuery(key, () => placesClient.getPlaces(params), {
+    enabled: params.siteId != null,
+    staleTime: Infinity,
+  });
 };
 
 export const useGetFreeRooms = (params: Partial<GetFreeRoomsRequest>) => {
@@ -156,7 +136,7 @@ export const useGetPlace = (placeId?: string) => {
     {
       enabled: placeId != null,
       staleTime: Infinity,
-      onError: noop,
+      // onError: noop,
     },
   );
 };
@@ -171,7 +151,7 @@ export const useGetMultiplePlaces = (placeIds?: string[]) => {
         queryFn: () => placesClient.getPlace({ placeId }).then(pluckData),
         enabled: placeId != null,
         staleTime: Infinity,
-        onError: noop,
+        // onError: noop,
       })) ?? [],
   });
 };

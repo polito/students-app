@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -58,10 +58,14 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
   const siteId = place?.data.site.id;
   const floorId = place?.data.floor.id;
-  const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
+  const { data: searchResult, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
     floorId,
   });
+  const places = useMemo(
+    () => searchResult?.hits.map(h => h.document) ?? [],
+    [searchResult?.hits],
+  );
   const isLoading = isLoadingPlace || isLoadingPlaces;
   const placeName =
     place?.data.room.name ??
@@ -152,6 +156,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         ),
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     floorId,
     headerHeight,

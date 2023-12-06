@@ -9,11 +9,7 @@ import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { capitalize } from 'lodash';
 
-import {
-  CATEGORIES_DATA,
-  MARKERS_MIN_ZOOM,
-  SUBCATEGORIES_INITIALLY_SHOWN,
-} from '../constants';
+import { CATEGORIES_DATA, SUBCATEGORIES_INITIALLY_SHOWN } from '../constants';
 import {
   CategoryData,
   PlaceOverviewWithMetadata,
@@ -135,7 +131,6 @@ export const MarkersLayer = ({
             };
           }),
         }}
-        // existing={false}
         onPress={({ features }) => {
           const selectedPoi = features?.[0]
             ? pois?.[features[0].properties?.index]
@@ -178,8 +173,6 @@ export const MarkersLayer = ({
             textHaloColor: 'white',
             textHaloWidth: dark ? 0 : 0.8,
           }}
-          minZoomLevel={MARKERS_MIN_ZOOM}
-          aboveLayerID="indoor"
         />
       </ShapeSource>
     )
