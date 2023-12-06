@@ -160,35 +160,41 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            {placeIds?.length && (
+            {exam?.places?.length && (
               <ListItem
                 leadingItem={
                   <Icon icon={faLocationDot} size={fontSizes['2xl']} />
                 }
                 title={exam?.places?.map(p => p.name).join(', ') ?? '--'}
                 subtitle={t('examScreen.location')}
-                isAction
-                onPress={() => {
-                  if (navigation.getId() === 'AgendaTabNavigator') {
-                    navigation.navigate('PlacesAgendaStack', {
-                      screen: 'EventPlaces',
-                      params: {
-                        placeIds,
-                        eventName: exam?.courseName,
-                        isCrossNavigation: true,
-                      },
-                    });
-                  } else if (navigation.getId() === 'TeachingTabNavigator') {
-                    navigation.navigate('PlacesTeachingStack', {
-                      screen: 'EventPlaces',
-                      params: {
-                        placeIds,
-                        eventName: exam?.courseName,
-                        isCrossNavigation: true,
-                      },
-                    });
-                  }
-                }}
+                isAction={!!placeIds?.length}
+                onPress={
+                  placeIds?.length
+                    ? () => {
+                        if (navigation.getId() === 'AgendaTabNavigator') {
+                          navigation.navigate('PlacesAgendaStack', {
+                            screen: 'EventPlaces',
+                            params: {
+                              placeIds,
+                              eventName: exam?.courseName,
+                              isCrossNavigation: true,
+                            },
+                          });
+                        } else if (
+                          navigation.getId() === 'TeachingTabNavigator'
+                        ) {
+                          navigation.navigate('PlacesTeachingStack', {
+                            screen: 'EventPlaces',
+                            params: {
+                              placeIds,
+                              eventName: exam?.courseName,
+                              isCrossNavigation: true,
+                            },
+                          });
+                        }
+                      }
+                    : undefined
+                }
               />
             )}
             {teacherQuery.data && (

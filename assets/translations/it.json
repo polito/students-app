@@ -169,6 +169,7 @@
     "loading": "Caricamento",
     "location": "Sede",
     "logout": "Logout",
+    "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",
     "navigate": "Naviga",
     "newItems": "Nuovo elemento",
@@ -583,6 +584,7 @@
     "noPlacesFound": "Nessun posto trovato",
     "searchCategories": "Cerca categorie",
     "title": "Luoghi",
+    "unwrappingMap": "Aprendo la mappa",
     "viewWholeCampus": "Vedi tutta la sede"
   },
   "placesSearchScreen": {

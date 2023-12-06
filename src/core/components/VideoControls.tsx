@@ -123,12 +123,16 @@ export const VideoControls = ({
     }
   }, [paused, buffering, sliding]);
 
+  // TODO
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const reverse10Secs = () => {
     let newTime = currentTime.minus({ second: 10 }).toSeconds();
     newTime = Math.max(newTime, 0);
     onProgressChange(newTime / duration);
   };
 
+  // TODO
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const advance10Secs = () => {
     let newTime = currentTime.plus({ second: 10 }).toSeconds();
     newTime = Math.min(newTime, duration);
@@ -212,6 +216,8 @@ export const VideoControls = ({
               <Slider
                 value={progress * 100}
                 containerStyle={styles.slider}
+                // Theme-independent hardcoded color
+                // eslint-disable-next-line react-native/no-color-literals
                 trackStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.6)' }}
                 maximumTrackTintColor="white"
                 minimumTrackTintColor="white"
@@ -238,7 +244,7 @@ export const VideoControls = ({
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights }: Theme) =>
+const createStyles = ({ fontWeights }: Theme) =>
   StyleSheet.create({
     slider: {
       flexGrow: 1,

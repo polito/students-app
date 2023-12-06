@@ -57,8 +57,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     error: getPlaceError,
   } = useGetPlace(placeId);
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
-  const siteId = place?.data.site.id;
-  const floorId = place?.data.floor.id;
+  const siteId = place?.site.id;
+  const floorId = place?.floor.id;
   const { data: searchResult, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
     floorId,
@@ -67,8 +67,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
 
   const isLoading = isLoadingPlace || isLoadingPlaces;
   const placeName =
-    place?.data.room.name ??
-    place?.data.category.subCategory.name ??
+    place?.room.name ??
+    place?.category.subCategory.name ??
     t('common.untitled');
 
   useScreenTitle(
@@ -85,20 +85,20 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   }, [navigation, t, placeName, isCrossNavigation]);
 
   useEffect(() => {
-    if (place?.data && !updatedRecentPlaces) {
+    if (place && !updatedRecentPlaces) {
       updatePreference('placesSearched', [
-        place.data,
+        place,
         ...placesSearched
-          .filter(p => p.id !== place.data.id)
+          .filter(p => p.id !== place.id)
           .slice(0, MAX_RECENT_SEARCHES - 1),
       ]);
       setUpdatedRecentPlaces(true);
     }
-  }, [place?.data, placesSearched, updatePreference, updatedRecentPlaces]);
+  }, [place, placesSearched, updatePreference, updatedRecentPlaces]);
 
   useLayoutEffect(() => {
-    if (place?.data) {
-      const { latitude, longitude } = place.data;
+    if (place) {
+      const { latitude, longitude } = place;
       navigation.setOptions({
         mapOptions: {
           compassPosition: IS_IOS
@@ -124,14 +124,14 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
             <MarkersLayer
               selectedPoiId={placeId}
               places={places}
-              categoryId={place.data?.category?.id}
-              subCategoryId={place.data?.category?.subCategory?.id}
+              categoryId={place?.category?.id}
+              subCategoryId={place?.category?.subCategory?.id}
               isCrossNavigation={isCrossNavigation}
             />
-            {place.data.geoJson != null && (
+            {place.geoJson != null && (
               <ShapeSource
                 id="placeHighlightSource"
-                shape={place.data.geoJson as any} // TODO fix incompatible types
+                shape={place.geoJson as any} // TODO fix incompatible types
                 existing={false}
               >
                 <LineLayer
@@ -161,7 +161,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     headerHeight,
     navigation,
     palettes.secondary,
-    place?.data,
+    place,
     placeId,
     places,
     safeAreaInsets.top,
@@ -182,8 +182,9 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   }
 
   if (
-    getPlaceError &&
-    (getPlaceError as ResponseError)?.response?.status === 404
+    !place ||
+    (getPlaceError &&
+      (getPlaceError as ResponseError)?.response?.status === 404)
   ) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -200,10 +201,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     );
   }
 
-  if (!place) {
-    return null;
-  }
-
   return (
     <View style={GlobalStyles.grow} pointerEvents="box-none">
       <BottomSheet
@@ -215,9 +212,9 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
             <Text variant="title" style={styles.title}>
               {placeName}
             </Text>
-            <Text>{place.data.site.name}</Text>
+            <Text>{place.site.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
-              {formatPlaceCategory(place.data.category.name)}
+              {formatPlaceCategory(place.category.name)}
             </Text>
           </Col>
 
@@ -227,7 +224,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
-                title={place.data.site.name}
+                title={place.site.name}
                 subtitle={t('common.campus')}
                 trailingItem={
                   <IconButton
@@ -240,11 +237,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                         ios: 'maps://0,0?q=',
                         android: 'geo:0,0?q=',
                       });
-                      const latLng = [
-                        place?.data.latitude,
-                        place?.data.longitude,
-                      ].join(',');
-                      const label = place?.data.room.name;
+                      const latLng = [place?.latitude, place?.longitude].join(
+                        ',',
+                      );
+                      const label = place?.room.name;
                       const url = Platform.select({
                         ios: `${scheme}${label}@${latLng}`,
                         android: `${scheme}${latLng}(${label})`,
@@ -256,39 +252,39 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               />
               <ListItem
                 inverted
-                title={place.data.building.name}
+                title={place.building.name}
                 subtitle={t('common.building')}
               />
               <ListItem
                 inverted
-                title={`${place.data.floor.level} - ${place.data.floor.name}`}
+                title={`${place.floor.level} - ${place.floor.name}`}
                 subtitle={t('common.floor')}
               />
-              {place.data.structure && (
+              {place.structure && (
                 <ListItem
                   inverted
                   multilineTitle
-                  title={place.data.structure?.name}
+                  title={place.structure?.name}
                   subtitle={t('common.structure')}
                 />
               )}
             </OverviewList>
           </Section>
 
-          {(place.data.capacity > 0 || place.data.resources?.length > 0) && (
+          {(place.capacity > 0 || place.resources?.length > 0) && (
             <Section>
               <SectionHeader title={t('common.facilities')} separator={false} />
               <OverviewList translucent>
-                {place.data.capacity > 0 && (
+                {place.capacity > 0 && (
                   <ListItem
                     inverted
                     title={t('placeScreen.capacity', {
-                      count: place.data.capacity,
+                      count: place.capacity,
                     })}
                     subtitle={t('common.capacity')}
                   />
                 )}
-                {place.data.resources?.map(r => (
+                {place.resources?.map(r => (
                   <ListItem
                     key={r.name}
                     inverted

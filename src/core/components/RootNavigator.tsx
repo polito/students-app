@@ -188,6 +188,8 @@ const createStyles = ({
     tabBarItemStyle: {
       paddingVertical: 3,
     },
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     tabBarBadgeStyle: {
       backgroundColor: palettes.secondary[600],
       color: 'white',

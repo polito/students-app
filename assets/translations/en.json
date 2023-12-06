@@ -169,6 +169,7 @@
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
+    "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
     "navigate": "Navigate",
     "newItems": "New item",
@@ -583,6 +584,7 @@
     "noPlacesFound": "No places found",
     "searchCategories": "Search categories",
     "title": "Places",
+    "unwrappingMap": "Unwrapping the map",
     "viewWholeCampus": "View the whole campus"
   },
   "placesSearchScreen": {

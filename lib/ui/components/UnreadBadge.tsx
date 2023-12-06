@@ -82,6 +82,8 @@ const createStyles = ({ fontSizes, fontWeights, shapes, palettes }: Theme) =>
     badgeNumber: {
       backgroundColor: palettes.rose[600],
     },
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     badgeText: {
       color: 'white',
       fontWeight: fontWeights.semibold,

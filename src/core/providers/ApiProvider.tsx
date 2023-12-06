@@ -149,7 +149,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
             if (error instanceof ResponseError) {
               onError(error, queryClient);
             }
-            throw error;
           },
         },
         mutations: {
@@ -158,7 +157,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
             if (error instanceof ResponseError) {
               onError(error, queryClient);
             }
-            throw error;
           },
         },
       },

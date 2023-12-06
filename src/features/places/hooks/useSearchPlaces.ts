@@ -1,10 +1,8 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useState } from 'react';
 
 import {
-  FacetDefinition,
   Results,
-  StringFacetDefinition,
   create,
   search as fullTextSearch,
   insertMultiple,
@@ -29,6 +27,8 @@ interface UseSearchPlacesOptions {
   subCategoryId?: string;
 }
 
+// TODO use once types work with Orama
+// eslint-disable-next-line unused-imports/no-unused-vars
 type PlacesDb = Awaited<ReturnType<typeof createDb>>;
 // TODO should be <PlacesDb>
 type FullTextQuery = Parameters<typeof fullTextSearch<any>>['1'];
@@ -167,27 +167,25 @@ export const useSearchPlaces = ({
       search,
     ],
     async () => {
-      const query: FullTextQuery & {
+      const fullTextQuery: FullTextQuery & {
         where: Exclude<FullTextQuery['where'], undefined>;
       } = {
         where: { 'site.id': siteId },
         limit: 10000,
       };
       if (floorId && !search) {
-        query.where['floor.id'] = floorId;
+        fullTextQuery.where['floor.id'] = floorId;
       }
       if (categoryId) {
-        query.where['category.id'] = categoryId;
+        fullTextQuery.where['category.id'] = categoryId;
       }
       if (subCategoryId) {
-        query.where['category.subCategory.id'] = subCategoryId;
+        fullTextQuery.where['category.subCategory.id'] = subCategoryId;
       }
       if (search) {
-        query.term = search;
+        fullTextQuery.term = search;
       }
-      console.log('Query', JSON.stringify(query, null, '  '));
-      const results = await fullTextSearch(placesDb!, query);
-      console.log('Results', results.hits.length);
+      const results = await fullTextSearch(placesDb!, fullTextQuery);
       return results as Results<PlaceOverviewWithMetadata>;
     },
     {

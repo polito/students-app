@@ -159,6 +159,8 @@ export const MarkersLayer = ({
       >
         <SymbolLayer
           id="markers"
+          // Theme-independent hardcoded color
+          // eslint-disable-next-line react-native/no-color-literals
           style={{
             iconImage: ['get', 'icon'],
             iconSize: 0.35,

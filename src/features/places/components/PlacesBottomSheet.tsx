@@ -48,7 +48,7 @@ export const PlacesBottomSheet = forwardRef<
     const { fontSizes, spacing } = useTheme();
     const innerRef = useRef<BottomSheetMethods>(null);
     const [typing, setTyping] = useState(false);
-    const [recentSearches, setRecentSearches] = useState([]);
+    const [recentSearches] = useState([]);
 
     useImperativeHandle(ref, () => innerRef.current!);
 
