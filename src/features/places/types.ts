@@ -15,6 +15,7 @@ export interface CategoryData {
 export type PlaceOverviewWithMetadata = PlaceOverview & {
   type: 'place';
   agendaItem?: AgendaItem;
+  recentlyVisited?: number;
 };
 
 export type BuildingWithMetadata = Building & {

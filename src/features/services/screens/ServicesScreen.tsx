@@ -151,7 +151,7 @@ export const ServicesScreen = () => {
   );
 
   const updateFavorite =
-    (service: typeof services[number]) => (favorite: boolean) => {
+    (service: (typeof services)[number]) => (favorite: boolean) => {
       const newVal = favorite
         ? [...new Set([...favoriteServiceIds, service.id])]
         : favoriteServiceIds.filter(fs => fs !== service.id);

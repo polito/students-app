@@ -21,6 +21,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
+import { useGetCurrentCampus } from '../../features/places/hooks/useGetCurrentCampus';
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
@@ -28,6 +29,7 @@ import { tabBarStyle } from '../../utils/tab-bar';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { usePushNotifications } from '../hooks/usePushNotifications';
+import { useGetSites } from '../queries/placesHooks';
 import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
@@ -40,8 +42,11 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
+  const { onboardingStep, updatePreference } = usePreferencesContext();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const { getUnreadsCount } = usePushNotifications();
+  const campus = useGetCurrentCampus();
+  const { data: sites } = useGetSites();
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -55,9 +60,13 @@ export const RootNavigator = () => {
 
   useInitFirebaseMessaging();
 
-  const { data: messages } = useGetModalMessages();
+  useEffect(() => {
+    if (student && !campus && sites?.data?.length) {
+      updatePreference('campusId', sites?.data[0].id);
+    }
+  }, [campus, sites?.data, student, updatePreference]);
 
-  const { onboardingStep, updatePreference } = usePreferencesContext();
+  const { data: messages } = useGetModalMessages();
 
   useEffect(() => {
     if (onboardingStep && onboardingStep >= 3) return;
@@ -79,7 +88,7 @@ export const RootNavigator = () => {
         screen: 'MessagesModal',
       },
     });
-  }, [messages, navigation]);
+  }, [messages, navigation, onboardingStep]);
 
   const tabBarIconSize = 20;
 
@@ -179,6 +188,8 @@ const createStyles = ({
     tabBarItemStyle: {
       paddingVertical: 3,
     },
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     tabBarBadgeStyle: {
       backgroundColor: palettes.secondary[600],
       color: 'white',

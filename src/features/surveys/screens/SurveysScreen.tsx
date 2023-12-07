@@ -21,7 +21,7 @@ interface Props {
   navigation: NativeStackNavigationProp<ServiceStackParamList, 'Surveys'>;
 }
 
-export const SurveysScreen = ({ navigation }: Props) => {
+export const SurveysScreen = (_: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const surveysQuery = useGetSurveys();

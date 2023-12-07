@@ -1,6 +1,7 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -12,6 +13,7 @@ interface Props {
   iconColor?: string;
   iconSize?: number;
   message: string;
+  caption?: string;
   spacing?: number;
 }
 
@@ -19,6 +21,7 @@ export const EmptyState = ({
   icon,
   iconColor,
   message,
+  caption,
   spacing = 12,
   iconSize,
 }: Props) => {
@@ -26,11 +29,11 @@ export const EmptyState = ({
   const styles = useStylesheet(createStyles);
 
   return (
-    <View
-      style={[
-        { padding: _spacing[spacing as unknown as keyof Theme['spacing']] },
-        styles.container,
-      ]}
+    <Col
+      align="center"
+      style={{
+        padding: _spacing[spacing as unknown as keyof Theme['spacing']],
+      }}
     >
       {icon && (
         <Icon
@@ -43,15 +46,20 @@ export const EmptyState = ({
       <Text style={{ textAlign: 'center' }} variant="secondaryText">
         {message}
       </Text>
-    </View>
+      {caption && (
+        <Text
+          style={{ textAlign: 'center', fontSize: fontSizes.xs }}
+          variant="secondaryText"
+        >
+          {caption}
+        </Text>
+      )}
+    </Col>
   );
 };
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    container: {
-      alignItems: 'center',
-    },
     icon: {
       marginBottom: spacing[4],
     },
