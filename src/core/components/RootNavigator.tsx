@@ -31,6 +31,7 @@ import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import { useGetSites } from '../queries/placesHooks';
 import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
+import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
@@ -69,7 +70,7 @@ export const RootNavigator = () => {
   const { data: messages } = useGetModalMessages();
 
   useEffect(() => {
-    if (onboardingStep && onboardingStep >= 3) return;
+    if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
     navigation.navigate('TeachingTab', {
       screen: 'OnboardingModal',
     });
@@ -77,7 +78,7 @@ export const RootNavigator = () => {
   }, []);
 
   useEffect(() => {
-    if (!onboardingStep || onboardingStep < 4) {
+    if (!onboardingStep || onboardingStep < ONBOARDING_STEPS - 1) {
       return;
     }
 
