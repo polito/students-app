@@ -83,10 +83,8 @@ export const RootNavigator = () => {
 
     if (!messages || messages.length === 0) return;
     navigation.navigate('TeachingTab', {
-      screen: 'Home',
-      params: {
-        screen: 'MessagesModal',
-      },
+      screen: 'MessagesModal',
+      initial: false,
     });
   }, [messages, navigation, onboardingStep]);
 
