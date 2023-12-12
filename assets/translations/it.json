@@ -418,6 +418,7 @@
     "ctaRequest": "Richiedi",
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
+    "noLocation": "Aula da definire",
     "notes": "Note",
     "title": "Appello"
   },
