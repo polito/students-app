@@ -95,17 +95,19 @@ export const ExamListItem = ({
                 : t('common.dateToBeDefined')}
             </Text>
           </Row>
-          <Row gap={1} flexShrink={1}>
-            <Icon icon={faLocationDot} color={colors.secondaryText} />
-            <Text
-              variant="secondaryText"
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={{ flexShrink: 1 }}
-            >
-              {exam.places?.map(place => place.name).join(', ')}
-            </Text>
-          </Row>
+          {(exam.places?.length ?? 0) > 0 && (
+            <Row gap={1} flexShrink={1}>
+              <Icon icon={faLocationDot} color={colors.secondaryText} />
+              <Text
+                variant="secondaryText"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ flexShrink: 1 }}
+              >
+                {exam.places?.map(place => place.name).join(', ')}
+              </Text>
+            </Row>
+          )}
         </Row>
       }
       {...listItemProps}

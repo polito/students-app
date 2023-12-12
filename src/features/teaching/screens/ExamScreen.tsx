@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
-import {
-  faHourglassEnd,
-  faLocationDot,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons';
+import { faHourglassEnd, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
@@ -34,7 +30,7 @@ import {
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
-import { notNullish } from '../../../utils/predicates';
+import { PlacesListItem } from '../../places/components/PlacesListItem';
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
@@ -92,13 +88,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
 
     return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
   }, [exam, t, teacherQuery]);
-  const placeIds = exam?.places
-    ?.map(p => {
-      return p.buildingId && p.floorId && p.roomId
-        ? [p.buildingId, p.floorId, p.roomId].join('-')
-        : null;
-    })
-    .filter(notNullish) as string[] | null;
 
   useLayoutEffect(() => {
     if (!cpdSurveysQuery.data || !exam) return;
@@ -145,58 +134,29 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               <ScreenDateTime
                 accessible={true}
                 date={
-                  exam?.examStartsAt
-                    ? formatReadableDate(exam?.examStartsAt)
-                    : t('common.dateToBeDefined')
+                  exam
+                    ? exam.examStartsAt
+                      ? formatReadableDate(exam.examStartsAt)
+                      : t('common.dateToBeDefined')
+                    : ''
                 }
                 time={
-                  exam?.examStartsAt
-                    ? `${formatTime(exam.examStartsAt)} - ${formatTime(
-                        exam.examEndsAt!,
-                      )}`
-                    : t('common.timeToBeDefined')
+                  exam
+                    ? exam?.examStartsAt
+                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                          exam.examEndsAt!,
+                        )}`
+                      : t('common.timeToBeDefined')
+                    : ''
                 }
               />
             </Col>
           </View>
           <OverviewList loading={!isOffline && teacherQuery.isLoading} indented>
-            {exam?.places?.length && (
-              <ListItem
-                leadingItem={
-                  <Icon icon={faLocationDot} size={fontSizes['2xl']} />
-                }
-                title={exam?.places?.map(p => p.name).join(', ') ?? '--'}
-                subtitle={t('examScreen.location')}
-                isAction={!!placeIds?.length}
-                onPress={
-                  placeIds?.length
-                    ? () => {
-                        if (navigation.getId() === 'AgendaTabNavigator') {
-                          navigation.navigate('PlacesAgendaStack', {
-                            screen: 'EventPlaces',
-                            params: {
-                              placeIds,
-                              eventName: exam?.courseName,
-                              isCrossNavigation: true,
-                            },
-                          });
-                        } else if (
-                          navigation.getId() === 'TeachingTabNavigator'
-                        ) {
-                          navigation.navigate('PlacesTeachingStack', {
-                            screen: 'EventPlaces',
-                            params: {
-                              placeIds,
-                              eventName: exam?.courseName,
-                              isCrossNavigation: true,
-                            },
-                          });
-                        }
-                      }
-                    : undefined
-                }
-              />
-            )}
+            <PlacesListItem
+              eventName={exam?.courseName ?? ''}
+              places={exam?.places}
+            />
             {teacherQuery.data && (
               <PersonListItem
                 person={teacherQuery.data}
