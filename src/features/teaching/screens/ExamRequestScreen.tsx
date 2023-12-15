@@ -36,7 +36,7 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
   });
 
   const onSubmit = async () => {
-    if (state.value?.length ?? 0 === 0) {
+    if ((state.value?.length ?? 0) === 0) {
       setState({ ...state, isError: true });
       return;
     }
