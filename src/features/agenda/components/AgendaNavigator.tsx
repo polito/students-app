@@ -5,6 +5,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
@@ -29,8 +31,8 @@ import { DeadlineItem, LectureItem } from '../types/AgendaItem';
 
 export type AgendaStackParamList = CourseSharedScreensParamList &
   SharedScreensParamList & {
-    Agenda: undefined;
-    AgendaWeek: undefined;
+    Agenda: { date?: DateTime };
+    AgendaWeek: { date?: DateTime };
     Lecture: { item: LectureItem };
     Exam: { id: number };
     Deadline: { item: DeadlineItem };

@@ -8,7 +8,8 @@
     "room": "Room {{roomName}}",
     "rooms": "Rooms {{roomNames}}",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout"
+    "weeklyLayout": "Weekly layout",
+    "selectDate": "Select date"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
