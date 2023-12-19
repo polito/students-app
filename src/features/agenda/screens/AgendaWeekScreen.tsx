@@ -57,9 +57,14 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const { params } = route;
   const date = params?.date;
   const today = useMemo(() => new Date(), []);
+  const todayDateTime = useMemo(() => DateTime.fromJSDate(today), [today]);
 
   const [currentWeek, setCurrentWeek] = useState<DateTime>(
     date ? date.startOf('week') : DateTime.now().startOf('week'),
+  );
+
+  const [selectedDate, setSelectedDate] = useState<DateTime>(
+    date ?? DateTime.now(),
   );
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
@@ -77,21 +82,33 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {
       const nextWeek = w.plus({ days: 7 });
+      if (nextWeek.startOf('week').equals(todayDateTime.startOf('week'))) {
+        setSelectedDate(todayDateTime);
+      } else {
+        setSelectedDate(nextWeek);
+      }
       return nextWeek;
     });
-  }, []);
+  }, [todayDateTime]);
 
   const getPrevWeek = useCallback(() => {
     setCurrentWeek(w => {
       const prevWeek = w.minus({ days: 7 });
+      if (prevWeek.startOf('week').equals(todayDateTime.startOf('week'))) {
+        setSelectedDate(todayDateTime);
+      } else {
+        setSelectedDate(prevWeek);
+      }
       return prevWeek;
     });
-  }, []);
+  }, [todayDateTime]);
 
-  const getSelectedWeek = useCallback((newDate: Date) => {
+  const getSelectedWeek = useCallback((newDateJS: Date) => {
     setDataPickerIsOpened(false);
-    const selectedWeek = DateTime.fromJSDate(newDate).startOf('week');
+    const newDate = DateTime.fromJSDate(newDateJS);
+    const selectedWeek = newDate.startOf('week');
     setCurrentWeek(selectedWeek);
+    setSelectedDate(newDate);
   }, []);
 
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
@@ -119,7 +136,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         layout: 'daily',
       });
       navigation.replace('Agenda', {
-        date: currentWeek,
+        date: selectedDate,
       });
     };
 
@@ -164,7 +181,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     navigation,
     t,
     agendaScreen,
-    currentWeek,
+    selectedDate,
   ]);
 
   const isPrevMissing = useCallback(

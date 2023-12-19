@@ -1,4 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View, ViewToken } from 'react-native';
 import DatePicker from 'react-native-date-picker';
@@ -53,7 +60,8 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
   const selectedDate = params?.date ?? DateTime.now();
 
-  const [visibleDate, setVisibleDate] = useState<DateTime>(selectedDate);
+  const [nextDate, setNextDate, nextDateRef] =
+    useStateRef<DateTime>(selectedDate);
 
   const [weeks, setWeeks] = useState<DateTime[]>([
     selectedDate.startOf('week'),
@@ -62,6 +70,8 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   const { isLoading, data } = useGetAgendaWeeks(weeks);
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
+
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   const viewabilityConfig = useRef({
     minimumViewTime: 10,
@@ -81,8 +91,8 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       isRefreshing: false, // is refreshing all agenda data
       shouldLoadNext: false, // should retrieve the previous page of data
       shouldLoadPrevious: true, // should retrieve the next page of data
-      todayOffsetInWeek: 0, // the offset of today inside its week
-      todayOffsetOverall: 0, // the offset of today, based on contentHeight
+      dayOffsetInWeek: 0, // the offset of day inside its week
+      dayOffsetOverall: 0, // the offset of day, based on contentHeight
     });
 
   const refreshQueries = useCallback(() => {
@@ -99,12 +109,13 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
   }, [client, setAgendaState]);
 
-  const setTodayOffset = (offsetY: number) => {
+  const setCurrentDayOffset = (offsetY: number) => {
     setAgendaState(prev => ({
       ...prev,
-      todayOffsetInWeek: offsetY,
-      todayOffsetOverall: prev.contentHeight + offsetY,
+      dayOffsetInWeek: offsetY,
+      dayOffsetOverall: prev.contentHeight + offsetY,
     }));
+    setIsScrolling(true);
   };
 
   const onViewableItemsChanged = useCallback(
@@ -112,7 +123,9 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       if (!viewableItems.length) return;
       const startDate = (viewableItems[0].item as AgendaWeek).dateRange.start;
       if (startDate === null) return;
-      setVisibleDate(startDate);
+      if (startDate.startOf('week').equals(nextDateRef.current.startOf('week')))
+        return;
+      setNextDate(startDate);
     },
     [],
   );
@@ -124,19 +137,18 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       navigation as NativeStackNavigationProp<AgendaStackParamList, 'Agenda'>
     ).replace('Agenda', {
       date: newDate,
+      animated: false,
     });
   }, []);
 
-  const scrollToToday = useCallback(
-    (isAnimated = false) => {
-      agendaStateRef.current.todayOffsetOverall > 0 &&
-        flatListRef.current?.scrollToOffset({
-          offset: agendaStateRef.current.todayOffsetOverall,
-          animated: isAnimated,
-        });
-    },
-    [agendaStateRef],
-  );
+  const scrollToSelectedDay = useCallback(() => {
+    agendaStateRef.current.dayOffsetOverall > 0 &&
+      flatListRef.current?.scrollToOffset({
+        offset: agendaStateRef.current.dayOffsetOverall,
+        animated: true,
+      });
+    setIsScrolling(false);
+  }, [agendaStateRef]);
 
   const scrollToLastOffset = () => {
     flatListRef.current?.scrollToOffset({
@@ -149,8 +161,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     setAgendaState(prev => ({
       ...prev,
       contentHeight: height,
-      todayOffsetOverall:
-        prev.todayOffsetOverall + (height - prev.contentHeight),
+      todayOffsetOverall: prev.dayOffsetOverall + (height - prev.contentHeight),
     }));
   };
 
@@ -168,6 +179,12 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     [],
   );
 
+  useEffect(() => {
+    if (isScrolling) {
+      scrollToSelectedDay();
+    }
+  }, [isScrolling]);
+
   useLayoutEffect(() => {
     const switchToWeekly = () => {
       updatePreference('agendaScreen', {
@@ -175,7 +192,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         layout: 'weekly',
       });
       navigation.replace('AgendaWeek', {
-        date: visibleDate,
+        date: nextDate,
       });
     };
 
@@ -218,13 +235,11 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     palettes.primary,
     fontSizes.lg,
     navigation,
-    scrollToToday,
     t,
     agendaScreen,
     updatePreference,
     refreshQueries,
-    selectedDate,
-    visibleDate,
+    nextDate,
     screenOptions,
   ]);
 
@@ -262,7 +277,11 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
           // extraData={[isFetchingPreviousPage, isFetchingNextPage]}
           contentContainerStyle={[styles.listContainer, marginHorizontal]}
           renderItem={({ item }) => (
-            <WeeklyAgenda agendaWeek={item} setTodayOffset={setTodayOffset} />
+            <WeeklyAgenda
+              agendaWeek={item}
+              setCurrentDayOffset={setCurrentDayOffset}
+              currentDay={selectedDate}
+            />
           )}
           /* ListHeaderComponent={
             isLoading ? <ActivityIndicator size="small" /> : undefined
@@ -275,6 +294,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           scrollEventThrottle={100}
+          scrollEnabled={!isScrolling}
           // onContentSizeChange={(contentWidth, contentHeight) => onContentHeightChange(contentHeight)}
           /* onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
             const offsetY = event.nativeEvent.contentOffset.y;
@@ -296,7 +316,6 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
               return [...prev, lastWeek.plus({ week: 1 })];
             });
           }}
-          onLayout={() => scrollToToday()}
           viewabilityConfig={viewabilityConfig}
           onViewableItemsChanged={onViewableItemsChanged}
         />

@@ -31,7 +31,7 @@ import { DeadlineItem, LectureItem } from '../types/AgendaItem';
 
 export type AgendaStackParamList = CourseSharedScreensParamList &
   SharedScreensParamList & {
-    Agenda: { date?: DateTime };
+    Agenda: { date?: DateTime; animated?: boolean };
     AgendaWeek: { date?: DateTime };
     Lecture: { item: LectureItem };
     Exam: { id: number };
@@ -71,7 +71,7 @@ export const AgendaNavigator = () => {
       <Stack.Screen
         name="Agenda"
         component={AgendaScreen}
-        options={{
+        options={({ route: { params } }) => ({
           headerLargeTitle: false,
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('agendaScreen.title'),
@@ -81,7 +81,8 @@ export const AgendaNavigator = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
-        }}
+          animation: params?.animated ?? true ? 'default' : 'none',
+        })}
       />
       <Stack.Screen
         name="AgendaWeek"
