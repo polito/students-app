@@ -40,18 +40,17 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
       setState({ ...state, isError: true });
       return;
     }
-    bookExam({ requestReason: state.value })
-      .catch(() => {
-        // TODO handle failure
-      })
-      .then(() => {
-        // reset navigation to TeachingScreen
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
-      })
-      .then(() => setFeedback({ text: t('examScreen.ctaBookSuccess') }));
+    bookExam({
+      courseShortcode: exam!.courseShortcode,
+      requestReason: state.value,
+    }).then(() => {
+      setFeedback({ text: t('examScreen.ctaBookSuccess') });
+      // reset navigation to TeachingScreen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    });
   };
 
   return (
