@@ -5,6 +5,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
@@ -29,8 +31,8 @@ import { DeadlineItem, LectureItem } from '../types/AgendaItem';
 
 export type AgendaStackParamList = CourseSharedScreensParamList &
   SharedScreensParamList & {
-    Agenda: undefined;
-    AgendaWeek: undefined;
+    Agenda: { date?: DateTime; animated?: boolean };
+    AgendaWeek: { date?: DateTime };
     Lecture: { item: LectureItem };
     Exam: { id: number };
     Deadline: { item: DeadlineItem };
@@ -69,7 +71,7 @@ export const AgendaNavigator = () => {
       <Stack.Screen
         name="Agenda"
         component={AgendaScreen}
-        options={{
+        options={({ route: { params } }) => ({
           headerLargeTitle: false,
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('agendaScreen.title'),
@@ -79,7 +81,8 @@ export const AgendaNavigator = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
-        }}
+          animation: params?.animated ?? true ? 'default' : 'none',
+        })}
       />
       <Stack.Screen
         name="AgendaWeek"

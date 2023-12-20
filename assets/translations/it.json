@@ -8,7 +8,8 @@
     "room": "Aula {{roomName}}",
     "rooms": "Aule {{roomNames}}",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "selectDate": "Seleziona data"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
