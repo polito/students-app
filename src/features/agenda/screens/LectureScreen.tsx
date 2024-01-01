@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
+import Swiper from 'react-native-swiper';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -31,21 +33,21 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route, navigation }: Props) => {
   const { item: lecture } = route.params;
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const associatedVirtualClassrooms = lecture.virtualClassrooms;
   const { t } = useTranslation();
-  const { fontSizes } = useTheme();
+  const { fontSizes, spacing } = useTheme();
   const teacherQuery = useGetPerson(lecture.teacherId);
-  const { data: virtualClassrooms } = useGetCourseVirtualClassrooms(
+  const { data: virtualClassroomsQuery } = useGetCourseVirtualClassrooms(
     lecture.courseId,
   );
-  const virtualClassroom = useMemo(() => {
-    if (lecture.virtualClassrooms.length > 0 || !virtualClassrooms) return;
 
-    // Temporary behaviour until multiple videos in 1 screen are managed
-    const vc = [...lecture.virtualClassrooms].shift();
-    if (!vc) return;
-
-    return virtualClassrooms.find(vcs => vcs.id === vc.id);
-  }, [lecture.virtualClassrooms, virtualClassrooms]);
+  const virtualClassroomRet = useMemo(() => {
+    if (associatedVirtualClassrooms.length === 0) return [];
+    return associatedVirtualClassrooms.map(vc =>
+      virtualClassroomsQuery?.find(vcs => vcs.id === vc.id),
+    );
+  }, [associatedVirtualClassrooms, virtualClassroomsQuery]);
 
   return (
     <ScrollView
@@ -53,22 +55,45 @@ export const LectureScreen = ({ route, navigation }: Props) => {
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       <SafeAreaView>
-        {lecture &&
-          (isRecordedVC(lecture) || isVideoLecture(lecture)) &&
-          lecture.videoUrl && (
-            <VideoPlayer
-              source={{ uri: lecture.videoUrl }}
-              poster={lecture?.coverUrl ?? undefined}
-            />
-          )}
-        {lecture && isLiveVC(lecture) && (
+        {virtualClassroomRet && virtualClassroomRet.length > 0 && (
+          <Swiper
+            style={{ height: spacing[72] }}
+            showsPagination={true}
+            loop={false}
+            index={currentVideoIndex}
+            onIndexChanged={index => {
+              setCurrentVideoIndex(index);
+            }}
+          >
+            {virtualClassroomRet.map(vc => {
+              if (
+                vc &&
+                (isRecordedVC(vc) || isVideoLecture(vc)) &&
+                vc.videoUrl
+              ) {
+                return (
+                  <View key={vc.id}>
+                    <VideoPlayer
+                      source={{ uri: vc.videoUrl }}
+                      poster={vc.coverUrl ?? undefined}
+                    />
+                  </View>
+                );
+              }
+            })}
+          </Swiper>
+        )}
+
+        {virtualClassroomRet && isLiveVC(virtualClassroomRet) && (
           <View></View>
           // TODO handle live VC
           // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
         )}
         <Row justify="space-between" align="center">
           <EventDetails
-            title={virtualClassroom?.title ?? lecture.title}
+            title={
+              virtualClassroomRet[currentVideoIndex]?.title ?? lecture.title
+            }
             type={t('common.lecture')}
             time={`${convertMachineDateToFormatDate(lecture.date)} ${
               lecture.fromTime
