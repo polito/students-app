@@ -34,6 +34,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import {
   MESSAGES_QUERY_KEY,
@@ -106,6 +107,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
   const queryClient = useQueryClient();
+  const { getUnreadsCount } = usePushNotifications();
 
   const styles = useStylesheet(createStyles);
 
@@ -194,6 +196,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}
+              unread={!!getUnreadsCount(['messages'])}
             />
           </OverviewList>
           <CtaButton

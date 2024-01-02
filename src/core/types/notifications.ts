@@ -37,6 +37,7 @@ export interface UnreadNotifications {
       [courseId: string]: {
         files?: number;
         notices?: number;
+        lectures?: number;
       };
     };
   };
@@ -44,6 +45,9 @@ export interface UnreadNotifications {
   services?: {
     tickets?: {
       [ticketId: string]: number;
+    };
+    news?: {
+      [newsId: string]: number;
     };
   };
 

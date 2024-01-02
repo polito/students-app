@@ -47,33 +47,27 @@ export const ExamCTA = ({ exam }: Props) => {
       if (exam.question) {
         return navigate('ExamQuestion', { id: exam.id });
       } else {
-        return bookExam({})
-          .catch(() => {
-            // TODO handle failure
-          })
-          .then(() => {
-            // reset navigation to TeachingScreen
-            reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            });
-          })
-          .then(() => setFeedback({ text: t('examScreen.ctaBookSuccess') }));
-      }
-    }
-    if (await confirm()) {
-      return cancelBooking()
-        .catch(() => {
-          // TODO handle failure
-        })
-        .then(() => {
+        return bookExam({
+          courseShortcode: exam.courseShortcode,
+        }).then(() => {
+          setFeedback({ text: t('examScreen.ctaBookSuccess') });
           // reset navigation to TeachingScreen
           reset({
             index: 0,
             routes: [{ name: 'Home' }],
           });
-        })
-        .then(() => setFeedback({ text: t('examScreen.ctaCancelSuccess') }));
+        });
+      }
+    }
+    if (await confirm()) {
+      return cancelBooking().then(() => {
+        setFeedback({ text: t('examScreen.ctaCancelSuccess') });
+        // reset navigation to TeachingScreen
+        reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      });
     }
     return Promise.reject();
   };

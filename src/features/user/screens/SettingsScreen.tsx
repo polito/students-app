@@ -237,6 +237,8 @@ const LanguageListItem = () => {
   );
 };
 
+// TODO temporarily removed
+// eslint-disable-next-line unused-imports/no-unused-vars
 const Notifications = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();

@@ -14,6 +14,7 @@ export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
+export const PLACES_SEARCH_DB_QUERY_KEY = 'places-search-db';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -64,33 +65,14 @@ export const useGetSite = (siteId?: string) => {
   }, [siteId, sites?.data]);
 };
 
-export const useGetPlaces = (
-  params: Omit<GetPlacesRequest, 'floorId'> & {
-    floorId: GetPlacesRequest['floorId'] | null;
-  },
-) => {
+export const useGetPlaces = (params: GetPlacesRequest) => {
   const placesClient = usePlacesClient();
-  const key = [
-    PLACES_QUERY_KEY,
-    `siteId:${params.siteId}`,
-    `buildingId:${params.buildingId}`,
-    `floorId:${params.floorId}`,
-    `placeCategoryId:${params.placeCategoryId}`,
-    `placeSubCategoryId:${params.placeSubCategoryId?.join()}`,
-  ];
+  const key = [PLACES_QUERY_KEY, params.siteId];
 
-  return useQuery(
-    key,
-    () =>
-      placesClient.getPlaces({
-        ...params,
-        floorId: params.floorId !== null ? params.floorId : undefined,
-      } as GetPlacesRequest),
-    {
-      enabled: params.siteId != null && params.floorId !== undefined,
-      staleTime: Infinity,
-    },
-  );
+  return useQuery(key, () => placesClient.getPlaces(params), {
+    enabled: params.siteId != null,
+    staleTime: Infinity,
+  });
 };
 
 export const useGetFreeRooms = (params: Partial<GetFreeRoomsRequest>) => {
@@ -152,7 +134,7 @@ export const useGetPlace = (placeId?: string) => {
 
   return useQuery(
     [PLACE_QUERY_KEY, placeId],
-    () => placesClient.getPlace({ placeId: placeId! }),
+    () => placesClient.getPlace({ placeId: placeId! }).then(pluckData),
     {
       enabled: placeId != null,
       staleTime: Infinity,

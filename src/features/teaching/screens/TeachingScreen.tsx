@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Badge } from '@lib/ui/components/Badge';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -19,6 +18,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -32,11 +32,13 @@ import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
+import { SurveyTypesSection } from '../components/SurveyTypesSection';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
@@ -48,6 +50,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { courses: coursePreferences } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
   const { getUnreadsCount } = usePushNotifications();
+  const surveyCategoriesQuery = useGetSurveyCategories();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -88,12 +91,20 @@ export const TeachingScreen = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <RefreshControl
-          queries={[coursesQuery, examsQuery, studentQuery]}
+          queries={[
+            coursesQuery,
+            examsQuery,
+            studentQuery,
+            surveyCategoriesQuery,
+          ]}
           manual
         />
       }
     >
       <SafeAreaView style={styles.container}>
+        {surveyCategoriesQuery.data?.length ? (
+          <SurveyTypesSection types={surveyCategoriesQuery.data} />
+        ) : undefined}
         <Section>
           <SectionHeader
             title={t('coursesScreen.title')}
@@ -239,7 +250,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
               )}
             </Card>
             {transcriptBadge && (
-              <Badge text={transcriptBadge} style={styles.badge} />
+              <UnreadBadge text={transcriptBadge} style={styles.badge} />
             )}
           </View>
         </Section>

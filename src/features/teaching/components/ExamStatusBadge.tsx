@@ -7,9 +7,7 @@ import {
   faCircleXmark,
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
+import { Badge } from '@lib/ui/components/Badge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 
@@ -23,7 +21,7 @@ interface Props {
 
 export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
   const { t } = useTranslation();
-  const { fontSizes, dark, palettes, shapes, spacing } = useTheme();
+  const { dark, palettes } = useTheme();
 
   const statusIcon = useMemo(() => {
     switch (exam.status) {
@@ -81,30 +79,11 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
     palettes.primary,
   ]);
   return (
-    <Row
-      gap={2}
-      style={[
-        {
-          backgroundColor: backgroundColor,
-          paddingLeft: spacing[1.5],
-          paddingRight: spacing[2],
-          paddingVertical: spacing[1],
-          borderRadius: shapes.xl,
-        },
-        textOnly && {
-          paddingRight: spacing[1.5],
-        },
-      ]}
-    >
-      {!textOnly && (
-        <Icon icon={statusIcon} size={fontSizes.md} color={foregroundColor} />
-      )}
-      <Text
-        style={{ color: foregroundColor, fontSize: fontSizes.xs }}
-        weight="medium"
-      >
-        {t(`common.examStatus.${exam.status}`)}
-      </Text>
-    </Row>
+    <Badge
+      text={t(`common.examStatus.${exam.status}`)}
+      backgroundColor={backgroundColor}
+      foregroundColor={foregroundColor}
+      icon={textOnly ? undefined : statusIcon}
+    />
   );
 };

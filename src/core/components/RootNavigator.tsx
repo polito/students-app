@@ -21,6 +21,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
+import { useGetCurrentCampus } from '../../features/places/hooks/useGetCurrentCampus';
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
@@ -28,7 +29,9 @@ import { tabBarStyle } from '../../utils/tab-bar';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { usePushNotifications } from '../hooks/usePushNotifications';
+import { useGetSites } from '../queries/placesHooks';
 import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
+import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
@@ -40,8 +43,11 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
+  const { onboardingStep, updatePreference } = usePreferencesContext();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const { getUnreadsCount } = usePushNotifications();
+  const campus = useGetCurrentCampus();
+  const { data: sites } = useGetSites();
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -55,12 +61,16 @@ export const RootNavigator = () => {
 
   useInitFirebaseMessaging();
 
+  useEffect(() => {
+    if (student && !campus && sites?.data?.length) {
+      updatePreference('campusId', sites?.data[0].id);
+    }
+  }, [campus, sites?.data, student, updatePreference]);
+
   const { data: messages } = useGetModalMessages();
 
-  const { onboardingStep } = usePreferencesContext();
-
   useEffect(() => {
-    if (onboardingStep && onboardingStep >= 3) return;
+    if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
     navigation.navigate('TeachingTab', {
       screen: 'OnboardingModal',
     });
@@ -68,18 +78,16 @@ export const RootNavigator = () => {
   }, []);
 
   useEffect(() => {
-    if (!onboardingStep || onboardingStep < 4) {
+    if (!onboardingStep || onboardingStep < ONBOARDING_STEPS - 1) {
       return;
     }
 
     if (!messages || messages.length === 0) return;
     navigation.navigate('TeachingTab', {
-      screen: 'Home',
-      params: {
-        screen: 'MessagesModal',
-      },
+      screen: 'MessagesModal',
+      initial: false,
     });
-  }, [messages, navigation]);
+  }, [messages, navigation, onboardingStep]);
 
   const tabBarIconSize = 20;
 
@@ -157,6 +165,7 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
+          tabBarBadge: getUnreadsCount(['messages']),
         }}
       />
     </TabNavigator.Navigator>
@@ -179,8 +188,10 @@ const createStyles = ({
     tabBarItemStyle: {
       paddingVertical: 3,
     },
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     tabBarBadgeStyle: {
-      backgroundColor: palettes.secondary[600],
+      backgroundColor: palettes.rose[600],
       color: 'white',
       top: -2,
       fontFamily: fontFamilies.body,

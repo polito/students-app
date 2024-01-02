@@ -52,20 +52,17 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
       return;
     }
     bookExam({
+      courseShortcode: exam!.courseShortcode,
       questionId: exam!.question!.id,
       questionOption: state.value + 1,
-    })
-      .catch(() => {
-        // TODO handle failure
-      })
-      .then(() => {
-        // reset navigation to TeachingScreen
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
-      })
-      .then(() => setFeedback({ text: t('examScreen.ctaBookSuccess') }));
+    }).then(() => {
+      setFeedback({ text: t('examScreen.ctaBookSuccess') });
+      // reset navigation to TeachingScreen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    });
   };
 
   return (

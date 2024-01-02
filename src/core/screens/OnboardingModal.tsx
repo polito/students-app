@@ -25,7 +25,7 @@ import { useHideTabs } from '../hooks/useHideTabs';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
 
-const ONBOARDING_STEPS = 4;
+export const ONBOARDING_STEPS = 4;
 
 export const OnboardingModal = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);

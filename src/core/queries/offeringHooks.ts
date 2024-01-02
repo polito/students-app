@@ -1,8 +1,11 @@
-import { OfferingApi } from '@polito/api-client';
+import { Degree as ApiDegree, OfferingApi } from '@polito/api-client';
+import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 
 import { compact } from 'lodash';
 
+import { Degree } from '../../features/offering/types/Degree';
+import { getShortYear } from '../../utils/offerings';
 import { pluckData } from '../../utils/queries';
 
 export const OFFERING_QUERY_KEY = ['offering'];
@@ -20,6 +23,20 @@ export const useGetOffering = () => {
   );
 };
 
+const mapDegreeToOfferingDegree = (degree: ApiDegree): Degree => ({
+  ...degree,
+  editions: degree.editions.map(edition => {
+    const degreeYear = Number(edition);
+    const previousDegreeYear = degreeYear - 1;
+
+    return {
+      id: edition,
+      title: `${previousDegreeYear}/${getShortYear(degreeYear)}`,
+      state: degreeYear === degree.year ? 'on' : undefined,
+    } as MenuAction;
+  }),
+});
+
 export const useGetOfferingDegree = ({
   degreeId,
   year,
@@ -30,7 +47,10 @@ export const useGetOfferingDegree = ({
   const offeringClient = useOfferingClient();
 
   return useQuery(compact([DEGREES_QUERY_PREFIX, degreeId, year]), () =>
-    offeringClient.getOfferingDegree({ degreeId, year }).then(pluckData),
+    offeringClient
+      .getOfferingDegree({ degreeId, year })
+      .then(pluckData)
+      .then(mapDegreeToOfferingDegree),
   );
 };
 

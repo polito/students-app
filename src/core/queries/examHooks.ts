@@ -41,7 +41,7 @@ export const useBookExam = (examId: number) => {
   const client = useQueryClient();
 
   return useMutation(
-    (dto?: BookExamRequest) =>
+    (dto: BookExamRequest) =>
       examsClient.bookExam({ examId: examId, bookExamRequest: dto }),
     {
       onSuccess() {

@@ -25,7 +25,7 @@ import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
-  Course: { id: number };
+  Course: { id: number; animated?: boolean };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseDirectory: {
@@ -68,7 +68,7 @@ export const CourseSharedScreens = (
         name="Course"
         component={CourseNavigator}
         getId={({ params }) => `${params.id}`}
-        options={{
+        options={({ route: { params } }) => ({
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -76,7 +76,8 @@ export const CourseSharedScreens = (
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
-        }}
+          animation: params?.animated ?? true ? 'default' : 'none',
+        })}
       />
       <Stack.Screen
         name="Notice"

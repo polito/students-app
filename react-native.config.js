@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   project: {
-    ios:{
+    ios: {
       sourceDir: './ios',
     },
-    android:{}
+    android: {},
   },
-  assets:['./assets/fonts/'],
-}
+  assets: ['./assets/fonts/'],
+};

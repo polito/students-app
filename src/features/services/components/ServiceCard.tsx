@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarFilled } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Row } from '@lib/ui/components/Row';
@@ -13,6 +12,7 @@ import {
   TouchableCard,
   TouchableCardProps,
 } from '@lib/ui/components/TouchableCard';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -81,7 +81,7 @@ export const ServiceCard = ({
         <Text variant="title" style={styles.title}>
           {name}
         </Text>
-        {unReadCount > 0 && !disabled && <Badge text={unReadCount} />}
+        {unReadCount > 0 && !disabled && <UnreadBadge text={unReadCount} />}
       </Row>
       {children}
     </TouchableCard>
