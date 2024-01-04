@@ -105,7 +105,7 @@
     "course_plural": "Courses",
     "createdAt": "Created at",
     "credits": "Credits",
-    "creditsWithUnit": "{{credits}} ECTS",
+    "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
