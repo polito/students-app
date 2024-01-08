@@ -5,7 +5,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Booking } from '@polito/api-client';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { getHtmlTextContent } from '../../../utils/html';
@@ -20,9 +20,15 @@ interface Props {
 export const BookingListItem = ({ booking, index, totalData }: Props) => {
   const styles = useStylesheet(createStyles);
   const { accessibilityListLabel } = useAccessibility();
-  const date = DateTime.fromJSDate(booking?.startsAt).toFormat('dd MMMM');
-  const startsAtTime = DateTime.fromJSDate(booking?.startsAt).toFormat('HH:mm');
-  const endAtTime = DateTime.fromJSDate(booking?.endsAt).toFormat('HH:mm');
+  const date = DateTime.fromJSDate(booking?.startsAt, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).toFormat('dd MMMM');
+  const startsAtTime = DateTime.fromJSDate(booking?.startsAt, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).toFormat('HH:mm');
+  const endAtTime = DateTime.fromJSDate(booking?.endsAt, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).toFormat('HH:mm');
 
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(booking?.topic?.title ?? '');

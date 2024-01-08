@@ -10,7 +10,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
@@ -63,9 +63,9 @@ export const CourseNoticesScreen = () => {
           title={notice.title}
           accessibilityLabel={`${t(
             accessibilityListLabel(index, notices?.length || 0),
-          )}. ${DateTime.fromJSDate(notice.publishedAt).toFormat(
-            'dd/MM/yyyy',
-          )}, ${notice.title}`}
+          )}. ${DateTime.fromJSDate(notice.publishedAt, {
+            zone: IANAZone.create('Europe/Rome'),
+          }).toFormat('dd/MM/yyyy')}, ${notice.title}`}
           subtitle={formatDate(notice.publishedAt)}
           linkTo={{
             screen: 'Notice',
