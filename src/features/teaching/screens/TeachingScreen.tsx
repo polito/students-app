@@ -167,7 +167,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
             }
           >
             {exams.map(exam => (
-              <ExamListItem key={exam.id} exam={exam} />
+              <ExamListItem
+                key={`${exam.id}` + exam.moduleNumber}
+                exam={exam}
+              />
             ))}
           </OverviewList>
         </Section>
