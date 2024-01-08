@@ -26,7 +26,7 @@ import { CALENDAR_CELL_HEIGHT } from '@lib/ui/utils/calendar';
 import { BookingSlot } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
@@ -119,8 +119,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const calendarEvents = useMemo(() => {
     if (bookingSlotsQuery.data && bookingSlotsQuery.data?.length > 0) {
       return bookingSlotsQuery.data.map(slot => {
-        const start = DateTime.fromJSDate(slot.startsAt as Date);
-        const end = DateTime.fromJSDate(slot.endsAt as Date);
+        const start = DateTime.fromJSDate(slot.startsAt as Date, {
+          zone: IANAZone.create('Europe/Rome'),
+        });
+        const end = DateTime.fromJSDate(slot.endsAt as Date, {
+          zone: IANAZone.create('Europe/Rome'),
+        });
         return {
           ...slot,
           start,
@@ -181,7 +185,9 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     const newStartDate = currentTopic?.startDate
-      ? DateTime.fromJSDate(currentTopic?.startDate)
+      ? DateTime.fromJSDate(currentTopic?.startDate, {
+          zone: IANAZone.create('Europe/Rome'),
+        })
       : START_DATE;
     const newDaysPerWeek = currentTopic?.daysPerWeek as WeekNum;
     setCurrentWeekStart(newStartDate);
@@ -195,8 +201,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     return !!(
       isOffline ||
       (currentTopic?.startDate &&
-        DateTime.fromJSDate(currentTopic?.startDate)?.toISODate() ===
-          currentWeekStart.toISODate())
+        currentTopic?.startDate.toISOString() === currentWeekStart.toISODate())
     );
   }, [isOffline, currentTopic, currentWeekStart]);
 

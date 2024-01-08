@@ -20,7 +20,7 @@ import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -57,7 +57,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const { params } = route;
   const date = params?.date;
   const today = useMemo(() => new Date(), []);
-  const todayDateTime = useMemo(() => DateTime.fromJSDate(today), [today]);
+  const todayDateTime = useMemo(
+    () => DateTime.fromJSDate(today, { zone: IANAZone.create('Europe/Rome') }),
+    [today],
+  );
 
   const [currentWeek, setCurrentWeek] = useState<DateTime>(
     date ? date.startOf('week') : DateTime.now().startOf('week'),
@@ -105,7 +108,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const getSelectedWeek = useCallback((newDateJS: Date) => {
     setDataPickerIsOpened(false);
-    const newDate = DateTime.fromJSDate(newDateJS);
+    const newDate = DateTime.fromJSDate(newDateJS, {
+      zone: IANAZone.create('Europe/Rome'),
+    });
     const selectedWeek = newDate.startOf('week');
     setCurrentWeek(selectedWeek);
     setSelectedDate(newDate);

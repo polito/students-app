@@ -18,7 +18,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { inRange } from 'lodash';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { isSlotFull } from '../../../utils/bookings';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
@@ -78,7 +78,9 @@ export const BookingSlotModal = ({ close, item }: Props) => {
         message={[
           t('bookingSeatScreen.slotBookableFrom'),
           item?.bookingStartsAt
-            ? DateTime.fromJSDate(item?.bookingStartsAt).toFormat('d MMMM yyyy')
+            ? DateTime.fromJSDate(item?.bookingStartsAt, {
+                zone: IANAZone.create('Europe/Rome'),
+              }).toFormat('d MMMM yyyy')
             : ' - ',
         ].join(' ')}
       />
