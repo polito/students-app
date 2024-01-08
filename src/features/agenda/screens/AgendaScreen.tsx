@@ -27,7 +27,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -132,7 +132,9 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
   const getSelectedWeek = useCallback((newJSDate: Date) => {
     setDataPickerIsOpened(false);
-    const newDate = DateTime.fromJSDate(newJSDate);
+    const newDate = DateTime.fromJSDate(newJSDate, {
+      zone: IANAZone.create('Europe/Rome'),
+    });
     (
       navigation as NativeStackNavigationProp<AgendaStackParamList, 'Agenda'>
     ).replace('Agenda', {
