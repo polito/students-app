@@ -133,9 +133,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 badge={
                   course.id
                     ? getUnreadsCount([
-                        // @ts-expect-error TODO fix path typing
                         'teaching',
-                        // @ts-expect-error TODO fix path typing
                         'courses',
                         course.id!.toString(),
                       ])
