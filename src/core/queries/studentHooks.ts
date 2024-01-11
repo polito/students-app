@@ -179,6 +179,7 @@ export const useGetMessages = () => {
     {
       staleTime: 300000, // 5 minutes
       refetchInterval: 300000, // 5 minutes
+      refetchOnWindowFocus: 'always',
     },
   );
 };

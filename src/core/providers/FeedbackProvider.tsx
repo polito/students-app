@@ -14,14 +14,26 @@ export const FeedbackProvider = ({ children }: PropsWithChildren) => {
       // A snackbar is already visible, so we need to hide it and then show the new one
       setIsSnackbarVisible(false);
       setTimeout(() => {
-        setFeedback(nextFeedback);
-        if (nextFeedback !== null) {
+        if (nextFeedback === null) {
+          setFeedback(null);
+        } else {
+          setFeedback({
+            isPersistent: false,
+            isError: false,
+            ...nextFeedback,
+          });
           setIsSnackbarVisible(true);
         }
       }, Snackbar.ANIMATION);
     } else {
-      setFeedback(nextFeedback);
-      if (nextFeedback !== null) {
+      if (nextFeedback === null) {
+        setFeedback(null);
+      } else {
+        setFeedback({
+          isPersistent: false,
+          isError: false,
+          ...nextFeedback,
+        });
         setIsSnackbarVisible(true);
       }
     }

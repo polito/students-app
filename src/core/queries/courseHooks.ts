@@ -496,12 +496,11 @@ export const useGetCourseExams = (
   return useQuery(
     getCourseKey(courseId, CourseSectionEnum.Exams),
     () =>
-      (exams ?? []).filter(exam => {
+      exams!.filter(exam => {
         return exam.courseShortcode === courseShortcode;
       }),
     {
       enabled: courseShortcode !== undefined && exams !== undefined,
-      initialData: [],
     },
   );
 };

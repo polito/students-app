@@ -1,8 +1,12 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 
-import { faCalendarDay, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCalendarDay,
+  faEllipsisVertical,
+} from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -12,10 +16,11 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { HOURS } from '@lib/ui/utils/calendar';
+import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -31,10 +36,11 @@ import {
   useGetAgendaWeek,
 } from '../queries/agendaHooks';
 import { AgendaItem } from '../types/AgendaItem';
+import { AgendaOption } from '../types/AgendaOption';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
 
-export const AgendaWeekScreen = ({ navigation }: Props) => {
+export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
 
   const queryClient = useQueryClient();
@@ -48,9 +54,23 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
 
   const { colors } = useTheme();
 
-  const [currentWeek, setCurrentWeek] = useState<DateTime>(
-    DateTime.now().startOf('week'),
+  const { params } = route;
+  const date = params?.date;
+  const today = useMemo(() => new Date(), []);
+  const todayDateTime = useMemo(
+    () => DateTime.fromJSDate(today, { zone: IANAZone.create('Europe/Rome') }),
+    [today],
   );
+
+  const [currentWeek, setCurrentWeek] = useState<DateTime>(
+    date ? date.startOf('week') : DateTime.now().startOf('week'),
+  );
+
+  const [selectedDate, setSelectedDate] = useState<DateTime>(
+    date ?? DateTime.now(),
+  );
+
+  const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
 
   const {
     data: weekData,
@@ -63,15 +83,55 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
   }, [weekData?.data]);
 
   const getNextWeek = useCallback(() => {
-    setCurrentWeek(w => w.plus({ days: 7 }));
-  }, []);
+    setCurrentWeek(w => {
+      const nextWeek = w.plus({ days: 7 });
+      if (nextWeek.startOf('week').equals(todayDateTime.startOf('week'))) {
+        setSelectedDate(todayDateTime);
+      } else {
+        setSelectedDate(nextWeek);
+      }
+      return nextWeek;
+    });
+  }, [todayDateTime]);
 
   const getPrevWeek = useCallback(() => {
-    setCurrentWeek(w => w.minus({ days: 7 }));
+    setCurrentWeek(w => {
+      const prevWeek = w.minus({ days: 7 });
+      if (prevWeek.startOf('week').equals(todayDateTime.startOf('week'))) {
+        setSelectedDate(todayDateTime);
+      } else {
+        setSelectedDate(prevWeek);
+      }
+      return prevWeek;
+    });
+  }, [todayDateTime]);
+
+  const getSelectedWeek = useCallback((newDateJS: Date) => {
+    setDataPickerIsOpened(false);
+    const newDate = DateTime.fromJSDate(newDateJS, {
+      zone: IANAZone.create('Europe/Rome'),
+    });
+    const selectedWeek = newDate.startOf('week');
+    setCurrentWeek(selectedWeek);
+    setSelectedDate(newDate);
   }, []);
 
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
+  );
+
+  const screenOptions = useMemo<AgendaOption[]>(
+    () => [
+      {
+        id: 'refresh',
+        title: t('agendaScreen.refresh'),
+      },
+      {
+        id: 'daily',
+        title: t('agendaScreen.dailyLayout'),
+      },
+    ],
+    [],
   );
 
   useLayoutEffect(() => {
@@ -80,7 +140,21 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
         ...agendaScreen,
         layout: 'daily',
       });
-      navigation.replace('Agenda');
+      navigation.replace('Agenda', {
+        date: selectedDate,
+      });
+    };
+
+    const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
+      // eslint-disable-next-line default-case
+      switch (event) {
+        case 'daily':
+          switchToDaily();
+          break;
+        case 'refresh':
+          refetch();
+          break;
+      }
     };
 
     navigation.setOptions({
@@ -91,21 +165,29 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
             color={palettes.primary[400]}
             size={fontSizes.lg}
             adjustSpacing="left"
-            accessibilityLabel={t('agendaScreen.backToToday')}
-            onPress={switchToDaily}
+            accessibilityLabel={t('agendaScreen.selectDate')}
+            onPress={() => setDataPickerIsOpened(true)}
           />
-          <IconButton
-            icon={faRefresh}
-            color={palettes.primary[400]}
-            size={fontSizes.lg}
-            adjustSpacing="right"
-            accessibilityLabel={t('agendaScreen.refresh')}
-            onPress={() => refetch()}
-          />
+          <MenuView actions={screenOptions} onPressAction={onPressOption}>
+            <IconButton
+              icon={faEllipsisVertical}
+              color={palettes.primary[400]}
+              size={fontSizes.lg}
+              adjustSpacing="right"
+              accessibilityLabel={t('common.options')}
+            />
+          </MenuView>
         </>
       ),
     });
-  }, [palettes.primary, fontSizes.lg, navigation, t, agendaScreen]);
+  }, [
+    palettes.primary,
+    fontSizes.lg,
+    navigation,
+    t,
+    agendaScreen,
+    selectedDate,
+  ]);
 
   const isPrevMissing = useCallback(
     () =>
@@ -144,6 +226,18 @@ export const AgendaWeekScreen = ({ navigation }: Props) => {
           isPrevWeekDisabled={isPrevWeekDisabled}
         ></WeekFilter>
       </HeaderAccessory>
+      <DatePicker
+        modal
+        locale={language}
+        date={today}
+        mode="date"
+        open={dataPickerIsOpened}
+        onConfirm={getSelectedWeek}
+        onCancel={() => setDataPickerIsOpened(false)}
+        title={t('agendaScreen.selectDate')}
+        confirmText={t('common.confirm')}
+        cancelText={t('common.cancel')}
+      />
       <View
         style={styles.calendarContainer}
         onLayout={e => {

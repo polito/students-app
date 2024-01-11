@@ -6,7 +6,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import i18n from 'i18next';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 interface TimeWidgetProps {
   right?: boolean;
@@ -14,7 +14,9 @@ interface TimeWidgetProps {
 }
 
 export const MessageTime = ({ right, time }: TimeWidgetProps) => {
-  const createdAt = DateTime.fromJSDate(time);
+  const createdAt = DateTime.fromJSDate(time, {
+    zone: IANAZone.create('Europe/Rome'),
+  });
   const now = DateTime.now();
   const locale = i18n.language;
   const { t } = useTranslation();

@@ -25,6 +25,7 @@ export const useHideTabs = (
         });
         onFocusOut && onFocusOut();
       };
-    }, [navigation, onFocusIn, onFocusOut]),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigation]),
   );
 };

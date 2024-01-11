@@ -18,7 +18,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { isEmpty } from 'lodash';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -59,14 +59,19 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
     viewHeight,
   );
 
+  const timeOptions = {
+    zone: IANAZone.create('Europe/Rome'),
+  };
+
   const bookingStartAtTime =
     booking?.startsAt &&
-    DateTime.fromJSDate(booking?.startsAt).toFormat('HH:mm');
+    DateTime.fromJSDate(booking?.startsAt, timeOptions).toFormat('HH:mm');
   const bookingEndsAtTime =
-    booking?.endsAt && DateTime.fromJSDate(booking?.endsAt).toFormat('HH:mm');
+    booking?.endsAt &&
+    DateTime.fromJSDate(booking?.endsAt, timeOptions).toFormat('HH:mm');
   const bookingDay =
     booking?.startsAt &&
-    DateTime.fromJSDate(booking?.endsAt).toFormat('d MMMM');
+    DateTime.fromJSDate(booking?.endsAt, timeOptions).toFormat('d MMMM');
 
   const cancelEnabled = useMemo(() => canBeCancelled(booking), [booking]);
 

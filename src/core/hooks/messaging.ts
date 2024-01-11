@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 
 import messaging from '@react-native-firebase/messaging';
 import { useQueryClient } from '@tanstack/react-query';
@@ -10,6 +11,16 @@ import {
 } from '../queries/studentHooks';
 import { RemoteMessage } from '../types/notifications';
 import { useNotifications } from './useNotifications';
+
+const requestNotificationPermission = async () => {
+  return await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+};
+
+const isNotificationPermissionGranted = async () => {
+  return (
+    (await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)) === RESULTS.GRANTED
+  );
+};
 
 export const useInitFirebaseMessaging = () => {
   const queryClient = useQueryClient();
@@ -27,6 +38,11 @@ export const useInitFirebaseMessaging = () => {
   useEffect(() => {
     (async () => {
       if (!isEnvProduction) return;
+
+      if (!(await isNotificationPermissionGranted())) {
+        await requestNotificationPermission();
+      }
+
       const authorizationStatus = await messaging().requestPermission({
         badge: true,
         alert: true,

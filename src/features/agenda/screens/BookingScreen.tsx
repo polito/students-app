@@ -30,7 +30,7 @@ import { isToday } from '@lib/ui/utils/calendar';
 import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
@@ -78,7 +78,11 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const hasCheckIn = useMemo(
     () =>
       booking?.startsAt &&
-      isToday(DateTime.fromJSDate(booking?.startsAt)) &&
+      isToday(
+        DateTime.fromJSDate(booking?.startsAt, {
+          zone: IANAZone.create('Europe/Rome'),
+        }),
+      ) &&
       booking?.locationCheck?.enabled &&
       bookingLocationHasValidCoordinates(booking?.locationCheck),
     [booking],

@@ -179,16 +179,6 @@ export const useNotifications = () => {
           initial: false,
         });
       }
-      // Messages
-      if (
-        messageTransactionIds.includes(transaction as MessageTransactionId) ||
-        (transaction === 'avvisi' && payload.origine === 'personali')
-      ) {
-        navigation.navigate('TeachingTab', {
-          screen: 'MessagesModal',
-          initial: false,
-        });
-      }
       // News
       if (
         transaction === 'avvisi' &&
