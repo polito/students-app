@@ -27,8 +27,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
@@ -49,7 +49,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
   const surveyCategoriesQuery = useGetSurveyCategories();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();

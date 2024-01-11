@@ -12,7 +12,6 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
@@ -32,13 +31,12 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
   const courseId = useCourseContext();
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { resetUnread } = usePushNotifications();
 
   useFocusEffect(
     useCallback(() => {
-      resetUnread(['teaching', 'courses', courseId.toString(), 'files']);
       refresh();
-    }, [courseId, refresh, resetUnread]),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
   );
 
   return (

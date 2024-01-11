@@ -22,8 +22,8 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { split } from '../../../utils/reducers';
@@ -36,7 +36,7 @@ export const ServicesScreen = () => {
     emailGuideRead,
     updatePreference,
   } = usePreferencesContext();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
   const queryClient = useQueryClient();

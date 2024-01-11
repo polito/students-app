@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
@@ -24,9 +24,11 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { TranslucentView } from '../../../core/components/TranslucentView';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
@@ -46,11 +48,24 @@ export const CourseLecturesScreen = () => {
   const { spacing, colors } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
+  const { clearNotificationScope } = useNotifications();
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =
     useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
   const isCacheMissing = useOfflineDisabled(
     () => courseLecturesQuery.data === undefined,
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      clearNotificationScope([
+        'teaching',
+        'courses',
+        courseId.toString(),
+        'lectures',
+      ]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
   );
 
   useEffect(() => {

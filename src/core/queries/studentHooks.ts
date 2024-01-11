@@ -19,6 +19,7 @@ export const STUDENT_QUERY_KEY = ['student'];
 export const GRADES_QUERY_KEY = ['grades'];
 export const MESSAGES_QUERY_PREFIX = 'messages';
 export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
+export const NOTIFICATIONS_QUERY_KEY = ['notifications'];
 export const GUIDES_QUERY_KEY = ['guides'];
 export const DEADLINES_QUERY_PREFIX = 'deadlines';
 
@@ -218,5 +219,33 @@ export const useGetGuides = () => {
 
   return useQuery(GUIDES_QUERY_KEY, () =>
     studentClient.getGuides().then(pluckData),
+  );
+};
+
+export const useGetNotifications = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery(
+    NOTIFICATIONS_QUERY_KEY,
+    () => studentClient.getNotifications(),
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: true,
+    },
+  );
+};
+
+export const useMarkNotificationAsRead = (invalidate: boolean = true) => {
+  const studentClient = useStudentClient();
+  const client = useQueryClient();
+
+  return useMutation(
+    (notificationId: number) =>
+      studentClient.markNotificationAsRead({ notificationId }),
+    {
+      onSuccess() {
+        return invalidate && client.invalidateQueries(NOTIFICATIONS_QUERY_KEY);
+      },
+    },
   );
 };

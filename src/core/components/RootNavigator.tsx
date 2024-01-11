@@ -28,7 +28,7 @@ import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
-import { usePushNotifications } from '../hooks/usePushNotifications';
+import { useNotifications } from '../hooks/useNotifications';
 import { useGetSites } from '../queries/placesHooks';
 import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
@@ -44,7 +44,7 @@ export const RootNavigator = () => {
   const { data: student } = useGetStudent();
   const { onboardingStep, updatePreference } = usePreferencesContext();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
 

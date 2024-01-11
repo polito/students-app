@@ -17,6 +17,7 @@ import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 
 import { IS_IOS } from '../../../core/constants';
 import { useDownload } from '../../../core/hooks/useDownload';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
@@ -101,6 +102,14 @@ export const CourseFileListItem = ({
   );
   const courseId = useCourseContext();
   const courseFilesCache = useCourseFilesCachePath();
+  const { getUnreadsCount, clearNotificationScope } = useNotifications();
+  const fileNotificationScope = [
+    'teaching',
+    'courses',
+    courseId.toString(),
+    'files',
+    item.id,
+  ];
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
     let ext: string | null = extension(item.mimeType!);
@@ -141,6 +150,7 @@ export const CourseFileListItem = ({
         await startDownload();
       }
       openDownloadedFile();
+      clearNotificationScope(fileNotificationScope);
     }
   };
 
@@ -218,6 +228,7 @@ export const CourseFileListItem = ({
       subtitle={metrics}
       trailingItem={trailingItem}
       mimeType={item.mimeType}
+      unread={!!getUnreadsCount(fileNotificationScope)}
       {...rest}
     />
   );

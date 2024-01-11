@@ -7,6 +7,7 @@ import {
   CourseDirectoryContentInner,
   CourseFileOverview,
   CourseOverviewPreviousEditionsInner,
+  CoursePreferencesRequest,
   CourseVcOtherCoursesInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
@@ -501,6 +502,24 @@ export const useGetCourseExams = (
     {
       enabled: courseShortcode !== undefined && exams !== undefined,
       initialData: [],
+    },
+  );
+};
+
+export const useUpdateCoursePreferences = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (preferences: CoursePreferencesRequest) =>
+      coursesClient.updateCoursePreferences({
+        courseId,
+        coursePreferencesRequest: preferences,
+      }),
+    {
+      onSuccess() {
+        return queryClient.invalidateQueries(getCourseKey(courseId));
+      },
     },
   );
 };

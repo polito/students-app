@@ -4,7 +4,6 @@ import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
 import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesFilterState';
-import { UnreadNotifications } from '../types/notifications';
 
 export const editablePreferenceKeys = [
   'lastInstalledVersion',
@@ -16,7 +15,6 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
-  'unreadNotifications',
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
@@ -31,7 +29,6 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
-  'unreadNotifications',
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
@@ -59,17 +56,6 @@ export interface PreferencesContextBase {
   onboardingStep?: number;
   emailGuideRead?: boolean;
   placesSearched: PlaceOverview[];
-  /**
-   * A map whose keys represent a path to an object or area where the update
-   * occurred and leaf values are the number of unread updates
-   *
-   * @example
-   * {
-   *   "teaching": { "courses": { "12345": { "notices": { "12345": 1 } } } },
-   *   "services": { "tickets": { "12345": 2 } },
-   * }
-   */
-  unreadNotifications: UnreadNotifications;
   agendaScreen: {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;

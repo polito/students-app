@@ -33,8 +33,8 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import {
   MESSAGES_QUERY_KEY,
@@ -107,7 +107,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
   const queryClient = useQueryClient();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
 
   const styles = useStylesheet(createStyles);
 

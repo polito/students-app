@@ -1,20 +1,28 @@
 import { useCallback } from 'react';
 
+import { Notification } from '@polito/api-client/models/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { get, has, omit, setWith, updateWith } from 'lodash';
+import { get, has, setWith } from 'lodash';
 
 import { CourseTabsParamList } from '../../features/courses/navigation/CourseNavigator';
-import { usePreferencesContext } from '../contexts/PreferencesContext';
+import {
+  NOTIFICATIONS_QUERY_KEY,
+  useGetNotifications,
+  useMarkNotificationAsRead,
+} from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import {
   PushNotificationPayload,
   RemoteMessage,
-  UnreadNotifications,
+  UnreadNotificationsByScope,
 } from '../types/notifications';
 
-type PathExtractor<T, Paths extends any[] = []> = T extends object
+type PathExtractor<T, Paths extends any[] = []> = T extends Array<Notification>
+  ? never
+  : T extends object
   ? {
       [K in keyof T]: PathExtractor<T[K], [...Paths, K]>;
     }[keyof T]
@@ -63,65 +71,74 @@ const courseTransactionsMapping: Record<
   matdid: { section: 'files', screen: 'CourseFilesScreen' },
 };
 
-export const usePushNotifications = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
-  const { unreadNotifications, updatePreference } = usePreferencesContext();
-
-  const incrementUnread = useCallback(
-    (notificationPath: PathExtractor<UnreadNotifications>) => {
-      const newUnreads = unreadNotifications
-        ? {
-            ...unreadNotifications,
-          }
-        : {};
-      updateWith(
-        newUnreads,
-        notificationPath!,
-        unreadCount => (unreadCount ?? 0) + 1,
-        Object,
-      );
-      updatePreference('unreadNotifications', newUnreads);
-    },
-    [unreadNotifications, updatePreference],
-  );
-
-  const decrementUnread = useCallback(
-    (notificationPath: PathExtractor<UnreadNotifications>) => {
-      let newUnreads = unreadNotifications
-        ? {
-            ...unreadNotifications,
-          }
-        : {};
-      const unreadCount = get(newUnreads, notificationPath!);
-      if (unreadCount > 1) {
-        setWith(newUnreads, notificationPath!, unreadCount - 1, Object);
-      } else {
-        newUnreads = omit(newUnreads, notificationPath!);
+const useUnreadNotificationsByScope = () => {
+  const { data: notifications } = useGetNotifications();
+  return (notifications?.data
+    ?.filter(n => !n.isRead)
+    ?.reduce((byScope, notif) => {
+      if (notif.scope) {
+        const existingNotifications = get(byScope, notif.scope);
+        setWith(
+          byScope,
+          notif.scope,
+          // Important to avoid picking up objects with numeric keys
+          (Array.isArray(existingNotifications)
+            ? existingNotifications
+            : []
+          ).concat(notif),
+          Object,
+        );
       }
-      updatePreference('unreadNotifications', newUnreads);
-    },
-    [unreadNotifications, updatePreference],
-  );
+      return byScope;
+    }, {}) ?? {}) as UnreadNotificationsByScope;
+};
 
-  const resetUnread = useCallback(
-    (notificationPath: PathExtractor<UnreadNotifications>) => {
-      if (!has(unreadNotifications, notificationPath!)) {
+const extractSubtreeNotifications = (root: any) => {
+  const notifications: Notification[] = [];
+  const exploreNode = (node: any) => {
+    if (Array.isArray(node)) {
+      notifications.push(...node);
+    } else if (typeof node === 'object') {
+      Object.values(node).forEach(exploreNode);
+    }
+  };
+  exploreNode(root);
+  return notifications;
+};
+
+export const useNotifications = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+  const unreadNotifications = useUnreadNotificationsByScope();
+  const { mutateAsync: markNotificationAsRead } =
+    useMarkNotificationAsRead(false);
+  const queryClient = useQueryClient();
+
+  const clearNotificationScope = useCallback(
+    (notificationScope: Array<string | number>) => {
+      if (!has(unreadNotifications, notificationScope!)) {
+        return;
+      }
+      const notificationsToClear = extractSubtreeNotifications(
+        get(unreadNotifications, notificationScope!),
+      );
+
+      if (!Array.isArray(notificationsToClear)) {
         return;
       }
 
-      updatePreference(
-        'unreadNotifications',
-        omit(unreadNotifications, notificationPath!),
-      );
+      return Promise.all(
+        notificationsToClear.map(n => markNotificationAsRead(n.id)),
+      ).then(() => queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY));
     },
-    [unreadNotifications, updatePreference],
+    [markNotificationAsRead, queryClient, unreadNotifications],
   );
 
   const getUnreadsCount = useCallback(
-    (path: PathExtractor<UnreadNotifications>) => {
+    (path: Array<string | number>) => {
+      // TODO PathExtractor<UnreadNotificationsByScope>
       const node = get(unreadNotifications, path!);
-      if (typeof node === 'number') {
-        return node || undefined;
+      if (Array.isArray(node)) {
+        return node.length || undefined;
       }
       return Object.keys(node ?? {}).length || undefined;
     },
@@ -190,55 +207,9 @@ export const usePushNotifications = () => {
     [navigation],
   );
 
-  const updateUnreadStatus = useCallback(
-    (notification?: RemoteMessage) => {
-      if (!notification || !notification.data?.polito_transazione) {
-        return;
-      }
-      const payload: PushNotificationPayload = JSON.parse(
-        notification.data?.payload ?? 'null',
-      );
-      const transaction = notification.data.polito_transazione as TransactionId;
-      // Course
-      if (courseTransactionsMapping[transaction as CourseTransactionId]) {
-        if (payload.inc) {
-          incrementUnread([
-            'teaching',
-            'courses',
-            payload.inc,
-            courseTransactionsMapping[transaction as CourseTransactionId]
-              .section,
-          ]);
-        }
-      }
-      // Tickets
-      if (transaction === 'ticket' && payload.idTicket) {
-        incrementUnread(['services', 'tickets', payload.idTicket.toString()]);
-      }
-      // Messages
-      if (
-        messageTransactionIds.includes(transaction as MessageTransactionId) ||
-        (transaction === 'avvisi' && payload.origine === 'personali')
-      ) {
-        incrementUnread(['messages']);
-      }
-      // News
-      if (
-        transaction === 'avvisi' &&
-        payload.origine !== 'personali' &&
-        payload.idAvviso
-      ) {
-        incrementUnread(['services', 'news', payload.idAvviso.toString()]);
-      }
-    },
-    [incrementUnread],
-  );
-
   return {
     navigateToUpdate,
-    updateUnreadStatus,
-    decrementUnread,
-    resetUnread,
+    clearNotificationScope,
     getUnreadsCount,
   };
 };

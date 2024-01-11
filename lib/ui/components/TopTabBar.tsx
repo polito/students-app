@@ -54,6 +54,7 @@ export const TopTabBar = ({
               testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
+              badge={options.tabBarBadge?.() as string | number}
             >
               {label as string}
             </Tab>

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { Notification } from '@polito/api-client/models/Notification';
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 export interface RemoteMessage extends FirebaseMessagingTypes.RemoteMessage {
@@ -31,31 +32,31 @@ export interface PushNotificationPayload {
   origine?: string;
 }
 
-export interface UnreadNotifications {
+export interface UnreadNotificationsByScope {
   teaching?: {
     courses?: {
       [courseId: string]: {
-        files?: number;
-        notices?: number;
-        lectures?: number;
+        files?: {
+          [fileId: number]: Notification[];
+        };
+        notices?: {
+          [noticeId: number]: Notification[];
+        };
+        lectures?: Notification[];
       };
     };
   };
 
   services?: {
     tickets?: {
-      [ticketId: string]: number;
+      [ticketId: string]: Notification[];
     };
     news?: {
-      [newsId: string]: number;
+      [newsId: string]: Notification[];
     };
   };
 
   messages?: {
-    [messageId: string]: number;
+    [messageId: string]: Notification[];
   };
-}
-
-export interface UnreadNotificationsNode {
-  [key: string]: UnreadNotificationsNode | number;
 }
