@@ -89,6 +89,8 @@ const createStyles = ({ colors, palettes, dark }: Theme) =>
     tabTextDisabled: {
       color: palettes.text[dark ? 400 : 500],
     },
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     tabDisabled: {
       backgroundColor: 'transparent',
       borderColor: palettes.text[dark ? 400 : 500],

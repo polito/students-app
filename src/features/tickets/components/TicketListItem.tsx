@@ -166,6 +166,8 @@ const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
       borderRadius: 22 / 2,
       backgroundColor: palettes.error[500],
     },
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     unreadCountText: { color: 'white' },
     listItemSubtitle: {
       fontSize: fontSizes.xs,

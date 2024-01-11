@@ -41,7 +41,7 @@ export const TicketListScreen = ({ route }: Props) => {
         ? t('ticketsScreen.closedEmptyState')
         : t('ticketsScreen.openEmptyState'),
     };
-  }, []);
+  }, [statuses, t]);
 
   useScreenTitle(labels.title);
 

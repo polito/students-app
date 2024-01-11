@@ -59,7 +59,7 @@ const setupCourses = (
       const usedColors = Object.values(coursePreferences)
         .map(cp => cp.color)
         .filter(notNullish);
-      let colorData: typeof courseColors[0] | undefined;
+      let colorData: (typeof courseColors)[0] | undefined;
       for (const currentColor of courseColors) {
         if (!usedColors.includes(currentColor.color)) {
           colorData = currentColor;
@@ -112,7 +112,7 @@ export const CourseSectionEnum = {
   Assignments: 'assignments',
 } as const;
 export type CourseQueryEnum =
-  typeof CourseSectionEnum[keyof typeof CourseSectionEnum];
+  (typeof CourseSectionEnum)[keyof typeof CourseSectionEnum];
 
 export const getCourseKey = (
   courseId: number,

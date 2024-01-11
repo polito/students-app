@@ -64,6 +64,8 @@ export const ChatMessage = ({
 
 const createStyles = ({ fontWeights, spacing }: Theme) =>
   StyleSheet.create({
+    // Theme-independent hardcoded color
+    // eslint-disable-next-line react-native/no-color-literals
     agentText: {
       color: 'white',
       fontWeight: fontWeights.semibold,

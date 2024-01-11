@@ -21,7 +21,7 @@ interface Props {
 
 export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
   const { t } = useTranslation();
-  const { fontSizes, dark, palettes, shapes, spacing } = useTheme();
+  const { dark, palettes } = useTheme();
 
   const statusIcon = useMemo(() => {
     switch (exam.status) {

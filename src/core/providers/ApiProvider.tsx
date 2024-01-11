@@ -161,7 +161,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         },
       },
     });
-  }, [isEnvProduction, t]);
+  }, [t]);
 
   return (
     <ApiContext.Provider value={apiContext}>

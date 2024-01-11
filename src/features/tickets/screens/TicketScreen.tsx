@@ -119,12 +119,12 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     if (!ticket) {
       return;
     }
-    resetUnread(['services', 'tickets', ticket?.id.toString()]);
+    resetUnread(['services', 'tickets', ticket.id.toString()]);
     if (ticket.unreadCount === 0) {
       return;
     }
     markAsRead();
-  }, [markAsRead, ticket]);
+  }, [markAsRead, resetUnread, ticket]);
 
   useEffect(() => {
     navigation.setOptions({

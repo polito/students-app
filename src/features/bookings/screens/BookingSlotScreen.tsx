@@ -30,7 +30,6 @@ import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
-import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -74,7 +73,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { data: myBookings } = useGetBookings();
   const { data: topics } = useGetBookingTopics();
   const { language } = usePreferencesContext();
-  const { setFeedback } = useFeedbackContext();
   const {
     open: showBottomModal,
     modal: bottomModal,

@@ -33,6 +33,7 @@ import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { FREE_ROOMS_TIME_WINDOW_SIZE_HOURS } from '../constants';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
 
@@ -117,12 +118,14 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     [t, today],
   );
 
-  const { places: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
+  const { data: searchResult } = useSearchPlaces({ siteId: campus?.id });
+  const sitePlaces = useGetPlacesFromSearchResult(searchResult);
+
   const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
     siteId: campus?.id,
-    date: startDateTime.toISO().split('T')[0],
-    timeFrom: startDateTime.toISOTime(),
-    timeTo: endDateTime.toISOTime(),
+    date: startDateTime.toISO()!.split('T')[0],
+    timeFrom: startDateTime.toISOTime()!,
+    timeTo: endDateTime.toISOTime()!,
   });
   const places = useMemo(
     () =>
