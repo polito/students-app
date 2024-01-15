@@ -7,9 +7,9 @@
     "refresh": "Aggiorna",
     "room": "Aula {{roomName}}",
     "rooms": "Aule {{roomNames}}",
+    "selectDate": "Seleziona data",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale",
-    "selectDate": "Seleziona data"
+    "weeklyLayout": "Layout settimanale"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -686,19 +686,31 @@
     "opened": "Ticket aperti",
     "title": "Ticket"
   },
-  "transcriptScreen": {
+  "transcriptGradeScreen": {
+    "title": "Valutazione"
+  },
+  "transcriptGradesScreen": {
+    "emptyState": "Non hai sostenuto nessun esame",
+    "provisionalEmptyState": "Non ci sono valutazioni provvisorie",
+    "provisionalTitle": "Provvisorie",
+    "recordedTitle": "Registrate",
+    "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
+    "rejectionCountdown": "Rifiutabile entro:",
+    "expiredCountdown": "Scaduto",
+    "title": "Valutazioni",
+    "total": "Sono presenti {{total}} valutazioni"
+  },
+  "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
-    "emptyState": "Non hai sostenuto nessun esame",
     "estimatedFinalGrade": "Voto di laurea",
     "estimatedFinalGradePurged": "Voto di laurea depurato",
     "finalAverageLabel": "Media depurata",
     "masterAdmissionAverage": "Media di ammissione al secondo livello",
-    "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",
-    "total": "Sono presenti {{total}} appelli",
+    "title": "Carriera",
     "weightedAverageLabel": "Media ponderata",
     "yourCareer": "La tua carriera"
   },

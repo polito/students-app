@@ -195,8 +195,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                       <Metric
                         title={
                           studentQuery.data?.averageGradePurged != null
-                            ? t('transcriptScreen.finalAverageLabel')
-                            : t('transcriptScreen.weightedAverageLabel')
+                            ? t('transcriptMetricsScreen.finalAverageLabel')
+                            : t('transcriptMetricsScreen.weightedAverageLabel')
                         }
                         value={
                           studentQuery.data?.averageGradePurged ??
@@ -208,7 +208,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                       {studentQuery.data?.estimatedFinalGradePurged ? (
                         <Metric
                           title={t(
-                            'transcriptScreen.estimatedFinalGradePurged',
+                            'transcriptMetricsScreen.estimatedFinalGradePurged',
                           )}
                           value={formatFinalGrade(
                             studentQuery.data?.estimatedFinalGradePurged,
@@ -217,7 +217,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                         />
                       ) : (
                         <Metric
-                          title={t('transcriptScreen.estimatedFinalGrade')}
+                          title={t(
+                            'transcriptMetricsScreen.estimatedFinalGrade',
+                          )}
                           value={formatFinalGrade(
                             studentQuery.data?.estimatedFinalGrade,
                           )}
