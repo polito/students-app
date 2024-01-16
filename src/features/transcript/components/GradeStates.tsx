@@ -97,7 +97,7 @@ const createStyles = ({
       position: 'absolute',
       top: 0,
       left: 26,
-      borderColor: palettes.gray[dark ? 800 : 200],
+      borderColor: palettes.gray[dark ? 500 : 200],
     },
     dot: {
       width: 18,
@@ -123,7 +123,7 @@ const createStyles = ({
       fontWeight: fontWeights.medium,
     },
     stateTitleInactive: {
-      color: palettes.text[dark ? 600 : 400],
+      color: colors.caption,
     },
     stateDescription: {
       fontSize: fontSizes.sm,
@@ -131,6 +131,6 @@ const createStyles = ({
       color: colors.secondaryText,
     },
     stateDescriptionInactive: {
-      color: palettes.gray[dark ? 600 : 400],
+      color: colors.caption,
     },
   });

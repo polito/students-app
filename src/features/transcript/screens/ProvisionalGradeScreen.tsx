@@ -118,7 +118,11 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
         <CtaButtonContainer absolute={true}>
           <CtaButton
             title={t('provisionalGradeScreen.acceptGradeCta')}
-            action={() => Promise.resolve().then(() => provideFeedback(true))}
+            action={() =>
+              acceptGradeQuery
+                .mutateAsync(grade.id)
+                .then(() => provideFeedback(true))
+            }
             variant="outlined"
             absolute={false}
             loading={acceptGradeQuery.isLoading}
@@ -131,7 +135,11 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           />
           <CtaButton
             title={t('provisionalGradeScreen.rejectGradeCta')}
-            action={() => Promise.resolve().then(() => provideFeedback(false))}
+            action={() =>
+              rejectGradeQuery
+                .mutateAsync(grade.id)
+                .then(() => provideFeedback(false))
+            }
             absolute={false}
             loading={rejectGradeQuery.isLoading}
             disabled={
@@ -148,6 +156,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
 };
 
 const createStyles = ({
+  colors,
   dark,
   fontSizes,
   palettes,
@@ -177,7 +186,7 @@ const createStyles = ({
     grade: {
       width: 60,
       height: 60,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: colors.surface,
       borderRadius: 12,
     },
     gradeText: {
