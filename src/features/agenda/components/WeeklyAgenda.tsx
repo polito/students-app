@@ -15,13 +15,22 @@ import { EmptyWeek } from './EmptyWeek';
 
 interface Props {
   agendaWeek: AgendaWeek;
-  setTodayOffset?: (offset: number) => void;
+  setCurrentDayOffset?: (offset: number) => void;
+  currentDay?: DateTime;
 }
 
-export const WeeklyAgenda = ({ agendaWeek, setTodayOffset }: Props) => {
+export const WeeklyAgenda = ({
+  agendaWeek,
+  setCurrentDayOffset,
+  currentDay,
+}: Props) => {
   const styles = useStylesheet(createStyles);
 
-  const today = useMemo(() => DateTime.now().startOf('day'), []);
+  const newDay = useMemo(
+    () =>
+      currentDay ? currentDay.startOf('day') : DateTime.now().startOf('day'),
+    [currentDay],
+  );
 
   return (
     <View>
@@ -35,11 +44,12 @@ export const WeeklyAgenda = ({ agendaWeek, setTodayOffset }: Props) => {
           key={day.key}
           agendaDay={day}
           isEmptyWeek={agendaWeek.data.length === 1 && !day.items.length}
-          onLayout={e =>
-            day.date.equals(today) &&
-            setTodayOffset &&
-            setTodayOffset(e.nativeEvent.layout.y)
-          }
+          onLayout={e => {
+            day.date.weekday !== 1 &&
+              day.date.equals(newDay) &&
+              setCurrentDayOffset &&
+              setCurrentDayOffset(e.nativeEvent.layout.y);
+          }}
         />
       ))}
       {!agendaWeek.data.length && (

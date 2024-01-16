@@ -464,6 +464,8 @@ PODS:
     - React-Core
   - react-native-blur (4.3.2):
     - React-Core
+  - react-native-date-picker (4.3.5):
+    - React-Core
   - react-native-document-picker (8.2.1):
     - React-Core
   - react-native-geolocation (3.1.0):
@@ -723,6 +725,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
@@ -851,6 +854,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-blob-util"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-geolocation:
@@ -989,6 +994,7 @@ SPEC CHECKSUMS:
   React-logger: 97987f46779d8dd24656474ad0c43a5b459f31d6
   react-native-blob-util: 60453b777610c87a22b3524032c0214e8db555db
   react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
+  react-native-date-picker: 90d1d60802a20085125657940b944f2bb4e5c113
   react-native-document-picker: 69ca2094d8780cfc1e7e613894d15290fdc54bba
   react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265

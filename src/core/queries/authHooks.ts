@@ -72,7 +72,7 @@ export const useLogout = () => {
     onSuccess: async () => {
       refreshContext();
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
+      queryClient.removeQueries();
       await Keychain.resetGenericPassword();
     },
   });

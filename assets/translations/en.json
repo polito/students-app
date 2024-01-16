@@ -8,7 +8,8 @@
     "room": "Room {{roomName}}",
     "rooms": "Rooms {{roomNames}}",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout"
+    "weeklyLayout": "Weekly layout",
+    "selectDate": "Select date"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -104,7 +105,7 @@
     "course_plural": "Courses",
     "createdAt": "Created at",
     "credits": "Credits",
-    "creditsWithUnit": "{{credits}} ECTS",
+    "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
@@ -126,7 +127,7 @@
     },
     "duration": "Duration",
     "earnedCredits": "Earned credits",
-    "ects": "ECTS",
+    "ects": "CFU",
     "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
@@ -407,7 +408,7 @@
   "examRequestScreen": {
     "error": "Fill in the text field before proceeding with the request",
     "placeholder": "Explain why you need to take the exam early",
-    "title": "You can ask the college chairman to take the exam before the actual delivery of the course"
+    "title": "You can request the course holder to take the exam without having attended the classes"
   },
   "examScreen": {
     "bookedCount": "Booked students",
@@ -419,6 +420,7 @@
     "ctaRequest": "Request",
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
+    "noLocation": "Room to be defined",
     "notes": "Notes",
     "title": "Exam call"
   },

@@ -37,7 +37,7 @@ export const ExamsScreen = () => {
           >
             {examsQuery.data?.map((exam, index) => (
               <ExamListItem
-                key={exam.id}
+                key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
                 accessible={true}
                 accessibilityLabel={accessibilityListLabel(

@@ -1,4 +1,4 @@
-# PoliTO Students App - Public beta
+# PoliTO Students App
 
 Politecnico di Torino's official mobile application for students.
 
@@ -8,12 +8,10 @@ Politecnico di Torino's official mobile application for students.
 
 ## Install
 
-⚠️ Disclaimer: The application is in public beta: some features may not work as expected. Please report any issue you find.
-
 ### From app stores
 
 [Google Play Store](https://play.google.com/store/apps/details?id=it.polito.students)  
-[Apple App Store](https://testflight.apple.com/join/7e7wafnF)
+[Apple App Store](https://apps.apple.com/us/app/polito-students/id6443913305)
 
 ### Start from source
 

@@ -1,0 +1,100 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - online-booking
+  - appointment-scheduling
+  - data-visualization
+  - remote-support
+description:
+  it:
+    apiDocumentation: 'https://github.com/polito/api-spec'
+    features:
+      - 'Courses with notices, files and videolectures'
+      - Agenda
+      - Booking exams
+      - Transcript
+      - Politecnico's Map
+      - Ticket
+    genericName: Mobile App
+    longDescription: |2
+       
+
+      The new PoliTO Students App, born in 2023 thanks to a **collaborative
+      design approach**, is characterized by a **user experience designed on the
+      students needs**, who was involved from the early stages of development,
+      through interviews and focus groups. Furthermore, the development team
+      included two Computer Engineering students, who worked in synergy with the
+      University staff.
+
+
+      Now the students can have everything they need for life at the University.
+
+
+      - The main section, "**Teaching**", presents the courses, an extract of
+      the available exams and the booklet with your career in a single screen.
+      The display of courses is customizable: you can select which ones to see
+      and customize their appearance with colors and icons.
+
+      - The "**Agenda**" section, completely renewed, presents the daily and
+      weekly commitments at the University, aggregating lessons, exams,
+      reservations and deadlines.
+
+      - The "**Places**" section has been redesigned with a view to facilitating
+      movement within the University and searching for places. The plans of the
+      different floors of the city offices have been integrated into a
+      geo-database to be able to be used on top of the cartographic base
+      provided by _Open Street Map_. A marker system presents the main
+      categories of places the students are interested in, allowing immediate
+      orientation within the buildings. You can search for a place by name or by
+      category.
+
+
+      The application is available on the Google Play store for Android devices
+      and in the Apple store.
+    shortDescription: Politecnico di Torino's official mobile application for students
+developmentStatus: stable
+intendedAudience:
+  scope:
+    - education
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: pt
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Politecnico di Torino
+  repoOwner: Politecnico di Torino
+localisation:
+  availableLanguages:
+    - it
+    - en
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: Politecnico di Torino
+      email: cristina.ferrian@polito.it
+      name: Cristina Ferrian
+      phone: '+390110905770'
+  type: internal
+name: PoliTO Students App
+platforms:
+  - android
+  - ios
+releaseDate: '2023-12-20'
+roadmap: 'https://github.com/orgs/polito/projects/2'
+softwareType: standalone/mobile
+softwareVersion: 1.5.0
+url: 'https://github.com/polito/students-app'
