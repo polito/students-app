@@ -1,7 +1,9 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet } from 'react-native';
 
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Text } from '@lib/ui/components/Text';
@@ -12,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useFullTextSearch } from '../../../core/hooks/useFullTextSearch';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetCourseDirectory,
@@ -108,25 +111,29 @@ interface SearchProps {
   searchFilter: string;
 }
 
+const schema = {
+  name: 'string',
+  mimeType: 'string',
+  location: 'string',
+} as const;
+
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const query = useMemo(() => ({ term: searchFilter }), [searchFilter]);
+  const { result, isSearching } = useFullTextSearch(
+    schema,
+    query,
+    recentFilesQuery?.data,
+  );
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { paddingHorizontal } = useSafeAreaSpacing();
-
-  useEffect(() => {
-    if (!recentFilesQuery.data) return;
-    setSearchResults(
-      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
-    );
-  }, [recentFilesQuery.data, searchFilter]);
 
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
-      data={searchResults}
+      data={result?.documents}
       scrollEnabled={scrollEnabled}
       contentContainerStyle={paddingHorizontal}
       keyExtractor={(item: CourseRecentFile) => item.id}
@@ -142,9 +149,16 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
         ios: () => <IndentedDivider />,
       })}
       ListEmptyComponent={
-        <Text style={styles.noResultText}>
-          {t('courseDirectoryScreen.noResult')}
-        </Text>
+        isSearching ? (
+          <EmptyState
+            message={t('common.searching')}
+            icon={faMagnifyingGlass}
+          />
+        ) : (
+          <Text style={styles.noResultText}>
+            {t('courseDirectoryScreen.noResult')}
+          </Text>
+        )
       }
     />
   );
