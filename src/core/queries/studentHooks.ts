@@ -153,6 +153,39 @@ export const useGetProvisionalGrades = () => {
   // ?() => studentClient.getStudentProvisionalGrades().then(pluckData),);
 };
 
+export const useAcceptProvisionalGrade = () => {
+  const queryClient = useQueryClient();
+  const studentClient = useStudentClient();
+
+  return useMutation(
+    (id: number) =>
+      studentClient.acceptProvisionalGrade({ provisionalGradeId: id }),
+    {
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries(PROVISIONAL_GRADES_QUERY_KEY),
+          queryClient.invalidateQueries(GRADES_QUERY_KEY),
+        ]),
+    },
+  );
+};
+
+export const useRejectProvisionalGrade = () => {
+  const queryClient = useQueryClient();
+  const studentClient = useStudentClient();
+
+  return useMutation(
+    (id: number) =>
+      studentClient.rejectProvisionalGrade({ provisionalGradeId: id }),
+    {
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries(PROVISIONAL_GRADES_QUERY_KEY),
+        ]),
+    },
+  );
+};
+
 const getDeadlineWeekQueryKey = (since: DateTime) => [
   DEADLINES_QUERY_PREFIX,
   since,
