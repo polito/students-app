@@ -125,7 +125,7 @@ export const useGetProvisionalGrades = () => {
           canBeRejected: true,
           confirmedAt: new Date('2024-01-15T10:47:21.231Z'),
           rejectedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectingExpiresAt: new Date('2024-01-15T16:47:21.231Z'),
+          rejectingExpiresAt: new Date('2024-01-17T16:47:21.231Z'),
         },
         {
           id: 5817525,

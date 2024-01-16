@@ -24,7 +24,7 @@ export const ProvisionalGradeStatusBadge = ({ grade }: Props) => {
           : [palettes.primary[100], palettes.primary[600]];
       case ProvisionalGradeStateEnum.Rejected:
         return dark
-          ? [palettes.gray[600], palettes.gray[200]]
+          ? [palettes.gray[600], palettes.gray[100]]
           : [palettes.gray[200], palettes.gray[600]];
       default:
         return dark
