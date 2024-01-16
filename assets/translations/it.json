@@ -609,6 +609,20 @@
     "title": "Profilo",
     "trainingOffer": "Offerta formativa"
   },
+  "provisionalGradeScreen": {
+    "title": "Valutazione",
+    "contactProfessorCta": "Contatta il docente",
+    "rejectGradeCta": "Rifiuta la valutazione",
+    "acceptGradeCta": "Richiedi la registrazione immediata",
+    "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
+    "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
+    "pendingState": "In fase di valutazione",
+    "pendingStateDescription": "La valutazione è in fase di valutazione da parte del docente",
+    "publishedState": "Pubblicato",
+    "publishedStateDescription": "La valutazione è stata pubblicata dal docente, ma è ancora modificabile - stato opzionale",
+    "confirmedState": "Consolidato",
+    "confirmedStateDescription": "La valutazione non è più modificabile - hai 24 ore per rifiutarla"
+  },
   "sectionHeader": {
     "cta": "Vedi tutti",
     "ctaMoreSuffix": "(altri {{- count}})"
