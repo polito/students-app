@@ -621,7 +621,7 @@
     "publishedState": "Pubblicato",
     "publishedStateDescription": "La valutazione è stata pubblicata dal docente, ma è ancora modificabile - stato opzionale",
     "confirmedState": "Consolidato",
-    "confirmedStateDescription": "La valutazione non è più modificabile - hai 24 ore per rifiutarla"
+    "confirmedStateDescription": "La valutazione non è più modificabile - hai 48 ore per rifiutarla"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",

@@ -110,12 +110,12 @@ const createStyles = ({
       backgroundColor: palettes.warning[dark ? 700 : 300],
     },
     dotConfirmed: {
-      borderColor: palettes.primary[dark ? 600 : 400],
-      backgroundColor: palettes.primary[dark ? 800 : 200],
+      borderColor: palettes.primary[dark ? 300 : 400],
+      backgroundColor: palettes.primary[dark ? 500 : 200],
     },
     dotInactive: {
-      borderColor: palettes.gray[dark ? 600 : 400],
-      backgroundColor: palettes.gray[dark ? 900 : 100],
+      borderColor: palettes.gray[dark ? 500 : 400],
+      backgroundColor: dark ? colors.background : palettes.gray[100],
     },
     stateTitle: {
       fontSize: fontSizes.md,
