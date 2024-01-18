@@ -615,13 +615,7 @@
     "rejectGradeCta": "Rifiuta la valutazione",
     "acceptGradeCta": "Richiedi la registrazione immediata",
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
-    "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
-    "pendingState": "In fase di valutazione",
-    "pendingStateDescription": "La valutazione è in fase di valutazione da parte del docente",
-    "publishedState": "Pubblicato",
-    "publishedStateDescription": "La valutazione è stata pubblicata dal docente, ma è ancora modificabile - stato opzionale",
-    "confirmedState": "Consolidato",
-    "confirmedStateDescription": "La valutazione non è più modificabile - hai 48 ore per rifiutarla"
+    "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",

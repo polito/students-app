@@ -9,9 +9,12 @@ import { VerticalDashedLine } from '@lib/ui/components/VerticalDashedLine';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
+import { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
+
+import { useGetProvisionalGradeStates } from '../../../core/queries/studentHooks';
 
 type RowProps = {
-  state: ProvisionalGradeStateEnum | 'pending';
+  state: ProvisionalGradeState;
   isActive?: boolean;
 };
 
@@ -27,10 +30,10 @@ const GradeStateRow = ({ state, isActive = false }: RowProps) => {
             styles.dot,
             !isActive && styles.dotInactive,
             isActive &&
-              state === ProvisionalGradeStateEnum.Published &&
+              state.id === ProvisionalGradeStateEnum.Published &&
               styles.dotPublished,
             isActive &&
-              state === ProvisionalGradeStateEnum.Confirmed &&
+              state.id === ProvisionalGradeStateEnum.Confirmed &&
               styles.dotConfirmed,
           ]}
         ></View>
@@ -39,7 +42,7 @@ const GradeStateRow = ({ state, isActive = false }: RowProps) => {
         <Text
           style={[styles.stateTitle, !isActive && styles.stateTitleInactive]}
         >
-          {t(`provisionalGradeScreen.${state}State`)}
+          {state.name}
         </Text>
         <Text
           style={[
@@ -47,7 +50,7 @@ const GradeStateRow = ({ state, isActive = false }: RowProps) => {
             !isActive && styles.stateDescriptionInactive,
           ]}
         >
-          {t(`provisionalGradeScreen.${state}StateDescription`)}
+          {state.description}
         </Text>
       </Col>
     </Row>
@@ -60,6 +63,7 @@ type Props = {
 
 export const GradeStates = ({ state }: Props) => {
   const styles = useStylesheet(createStyles);
+  const { data: gradeStates } = useGetProvisionalGradeStates();
 
   return (
     <Card>
@@ -71,15 +75,13 @@ export const GradeStates = ({ state }: Props) => {
       />
       <View style={styles.dashedLine} />
       <Col pb={5}>
-        <GradeStateRow state="pending" />
-        <GradeStateRow
-          state={ProvisionalGradeStateEnum.Published}
-          isActive={state === ProvisionalGradeStateEnum.Published}
-        />
-        <GradeStateRow
-          state={ProvisionalGradeStateEnum.Confirmed}
-          isActive={state === ProvisionalGradeStateEnum.Confirmed}
-        />
+        {gradeStates?.map((gradeState, index) => (
+          <GradeStateRow
+            key={index}
+            state={gradeState}
+            isActive={gradeState.id === state}
+          />
+        ))}
       </Col>
     </Card>
   );

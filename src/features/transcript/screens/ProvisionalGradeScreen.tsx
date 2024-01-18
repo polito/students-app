@@ -81,7 +81,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           <ActivityIndicator />
         ) : (
           <SafeAreaView>
-            <Row p={5}>
+            <Row p={5} gap={2}>
               <Col flexGrow={1} flexShrink={1} gap={2}>
                 <ScreenTitle title={grade.courseName} />
                 <Text>{`${formatDate(grade.date)} - ${t(
@@ -184,10 +184,11 @@ const createStyles = ({
     },
     // eslint-disable-next-line react-native/no-color-literals
     grade: {
-      width: 60,
+      minWidth: 60,
       height: 60,
       backgroundColor: colors.surface,
       borderRadius: 12,
+      padding: spacing[2],
     },
     gradeText: {
       fontSize: fontSizes['2xl'],
