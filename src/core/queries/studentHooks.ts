@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
-import { ProvisionalGrade } from '@polito/api-client/models/ProvisionalGrade';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,
@@ -79,78 +78,11 @@ export const useGetGrades = () => {
 };
 
 export const useGetProvisionalGrades = () => {
-  // const studentClient = useStudentClient();
+  const studentClient = useStudentClient();
 
-  return useQuery(
-    PROVISIONAL_GRADES_QUERY_KEY,
-    () =>
-      [
-        {
-          id: 5817523,
-          examId: 903380,
-          courseShortcode: '02JSKOV',
-          courseName: 'Human Computer Interaction',
-          teacherId: 2154,
-          credits: 6,
-          grade: '27',
-          date: new Date('2022-05-15'),
-          state: 'published',
-          stateDescription: 'Provvisorio',
-          teacherMessage:
-            "sono disponibili aggiornamenti dei risultati relativi all'appello del 26/06/2023 per l'insegnamento Il processo logistico (02TGJRY). Alstom mi ha appena trasmesso la valutazione della parte di formazione svolta in azienda (Flusso fisico e contabile di materiale) e, alla luce dell'ottimo giudizio che avete ricevuto, ho ritenuto opportuno confermare i voti conseguiti durante lo svolgimento del case study in aula e già comunicati al termine del mio corso. La registrazione di questi voti verrà consolidata la prossima settimana.",
-          isWithdrawn: false,
-          isFailure: false,
-          canBeAccepted: true,
-          canBeRejected: true,
-          confirmedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectingExpiresAt: new Date('2024-01-15T10:47:21.231Z'),
-        },
-        {
-          id: 5817524,
-          examId: 903380,
-          courseShortcode: '02JSKOV',
-          courseName: 'Software Engineering 2',
-          teacherId: 2154,
-          credits: 6,
-          grade: '27',
-          date: new Date('2022-05-15'),
-          state: 'confirmed',
-          stateDescription: 'Consolidato',
-          teacherMessage:
-            "sono disponibili aggiornamenti dei risultati relativi all'appello del 26/06/2023 per l'insegnamento Il processo logistico (02TGJRY). Alstom mi ha appena trasmesso la valutazione della parte di formazione svolta in azienda (Flusso fisico e contabile di materiale) e, alla luce dell'ottimo giudizio che avete ricevuto, ho ritenuto opportuno confermare i voti conseguiti durante lo svolgimento del case study in aula e già comunicati al termine del mio corso. La registrazione di questi voti verrà consolidata la prossima settimana.",
-          isWithdrawn: false,
-          isFailure: false,
-          canBeAccepted: true,
-          canBeRejected: true,
-          confirmedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectingExpiresAt: new Date('2024-01-17T16:47:21.231Z'),
-        },
-        {
-          id: 5817525,
-          examId: 903380,
-          courseShortcode: '02JSKOV',
-          courseName: 'Software Engineering 2',
-          teacherId: 2154,
-          credits: 6,
-          grade: '27',
-          date: new Date('2022-05-15'),
-          state: 'rejected',
-          stateDescription: 'Rifiutato',
-          teacherMessage:
-            "sono disponibili aggiornamenti dei risultati relativi all'appello del 26/06/2023 per l'insegnamento Il processo logistico (02TGJRY). Alstom mi ha appena trasmesso la valutazione della parte di formazione svolta in azienda (Flusso fisico e contabile di materiale) e, alla luce dell'ottimo giudizio che avete ricevuto, ho ritenuto opportuno confermare i voti conseguiti durante lo svolgimento del case study in aula e già comunicati al termine del mio corso. La registrazione di questi voti verrà consolidata la prossima settimana.",
-          isWithdrawn: false,
-          isFailure: false,
-          canBeAccepted: true,
-          canBeRejected: true,
-          confirmedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectedAt: new Date('2024-01-15T10:47:21.231Z'),
-          rejectingExpiresAt: new Date('2024-01-15T10:47:21.231Z'),
-        },
-      ] as ProvisionalGrade[],
+  return useQuery(PROVISIONAL_GRADES_QUERY_KEY, () =>
+    studentClient.getStudentProvisionalGrades().then(pluckData),
   );
-  // ?() => studentClient.getStudentProvisionalGrades().then(pluckData),);
 };
 
 export const useAcceptProvisionalGrade = () => {
