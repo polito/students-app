@@ -610,12 +610,12 @@
     "trainingOffer": "Offerta formativa"
   },
   "provisionalGradeScreen": {
-    "title": "Valutazione",
-    "contactProfessorCta": "Contatta il docente",
-    "rejectGradeCta": "Rifiuta la valutazione",
     "acceptGradeCta": "Richiedi la registrazione immediata",
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
-    "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore"
+    "contactProfessorCta": "Contatta il docente",
+    "rejectGradeCta": "Rifiuta la valutazione",
+    "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
+    "title": "Valutazione"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",
@@ -699,12 +699,12 @@
   },
   "transcriptGradesScreen": {
     "emptyState": "Non hai sostenuto nessun esame",
+    "expiredCountdown": "Scaduto",
     "provisionalEmptyState": "Non ci sono valutazioni provvisorie",
     "provisionalTitle": "Provvisorie",
     "recordedTitle": "Registrate",
     "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
     "rejectionCountdown": "Rifiutabile entro:",
-    "expiredCountdown": "Scaduto",
     "title": "Valutazioni",
     "total": "Sono presenti {{total}} valutazioni"
   },
