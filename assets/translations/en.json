@@ -609,6 +609,14 @@
     "title": "Profile",
     "trainingOffer": "Training offer"
   },
+  "provisionalGradeScreen": {
+    "acceptGradeCta": "Request immediate registration",
+    "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
+    "contactProfessorCta": "Contact the teacher",
+    "rejectGradeCta": "Reject the evaluation",
+    "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "title": "Evaluation"
+  },
   "sectionHeader": {
     "cta": "See all",
     "ctaMoreSuffix": "({{- count}} more)"
@@ -686,12 +694,17 @@
     "opened": "Open tickets",
     "title": "Ticket"
   },
+  "transcriptGradeScreen": {
+    "title": "Evakyatuib"
+  },
   "transcriptGradesScreen": {
     "emptyState": "You haven't taken any exams",
+    "expiredCountdown": "Expired",
     "provisionalEmptyState": "There are no provisional grades",
     "provisionalTitle": "Provisional",
     "recordedTitle": "Recorded",
-    "rejectedSubtitle": "",
+    "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
+    "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
     "total": "There are {{total}} grades"
   },
