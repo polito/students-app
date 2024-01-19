@@ -10,6 +10,7 @@ import {
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { Tabs } from '@lib/ui/components/Tabs';
 import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -24,8 +25,8 @@ import { DateTime, IANAZone } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { AgendaTypeFilter } from '../components/AgendaTypeFilter';
 import { BookingCard } from '../components/BookingCard';
 import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
@@ -217,14 +218,16 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   return (
     <>
       <HeaderAccessory justify="space-between">
-        <AgendaFilters />
-        <WeekFilter
-          current={currentWeek}
-          getNext={getNextWeek}
-          getPrev={getPrevWeek}
-          isNextWeekDisabled={isNextWeekDisabled}
-          isPrevWeekDisabled={isPrevWeekDisabled}
-        ></WeekFilter>
+        <Tabs contentContainerStyle={styles.tabs}>
+          <AgendaTypeFilter />
+          <WeekFilter
+            current={currentWeek}
+            getNext={getNextWeek}
+            getPrev={getPrevWeek}
+            isNextWeekDisabled={isNextWeekDisabled}
+            isPrevWeekDisabled={isPrevWeekDisabled}
+          />
+        </Tabs>
       </HeaderAccessory>
       <DatePicker
         modal
@@ -298,6 +301,11 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
+    tabs: {
+      alignItems: 'center',
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[1],
+    },
     headerContainer: {
       display: 'flex',
       flexDirection: 'row',

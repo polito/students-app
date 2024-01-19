@@ -34,11 +34,14 @@ export const Tabs = ({
       accessible={Platform.select({ android: true, ios: false })}
       accessibilityRole="tablist"
       horizontal
-      contentContainerStyle={{
-        paddingHorizontal: spacing[4],
-        paddingVertical: spacing[2],
-        gap: spacing[2],
-      }}
+      contentContainerStyle={[
+        {
+          paddingHorizontal: spacing[4],
+          paddingVertical: spacing[2],
+          gap: spacing[2],
+        },
+        rest.contentContainerStyle,
+      ]}
       style={[{ flexGrow: 0, flexShrink: 0 }, style]}
       {...rest}
     >
