@@ -7,9 +7,9 @@
     "refresh": "Refresh",
     "room": "Room {{roomName}}",
     "rooms": "Rooms {{roomNames}}",
+    "selectDate": "Select date",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout",
-    "selectDate": "Select date"
+    "weeklyLayout": "Weekly layout"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -609,6 +609,14 @@
     "title": "Profile",
     "trainingOffer": "Training offer"
   },
+  "provisionalGradeScreen": {
+    "acceptGradeCta": "Request immediate registration",
+    "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
+    "contactProfessorCta": "Contact the teacher",
+    "rejectGradeCta": "Reject the evaluation",
+    "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "title": "Evaluation"
+  },
   "sectionHeader": {
     "cta": "See all",
     "ctaMoreSuffix": "({{- count}} more)"
@@ -686,19 +694,31 @@
     "opened": "Open tickets",
     "title": "Ticket"
   },
-  "transcriptScreen": {
+  "transcriptGradeScreen": {
+    "title": "Evakyatuib"
+  },
+  "transcriptGradesScreen": {
+    "emptyState": "You haven't taken any exams",
+    "expiredCountdown": "Expired",
+    "provisionalEmptyState": "There are no provisional grades",
+    "provisionalTitle": "Provisional",
+    "recordedTitle": "Recorded",
+    "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
+    "rejectionCountdown": "Rejectable by:",
+    "title": "Grades",
+    "total": "There are {{total}} grades"
+  },
+  "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
-    "emptyState": "You have not taken any exams",
     "estimatedFinalGrade": "Final grade",
     "estimatedFinalGradePurged": "Estimated final grade",
     "finalAverageLabel": "Final average",
     "masterAdmissionAverage": "Master admission average",
-    "provisionalGradesSectionTitle": "Provisional grades",
     "thisYear": "This academic year",
-    "total": "There are {{total}} grades",
+    "title": "Career",
     "weightedAverageLabel": "Weighted average",
     "yourCareer": "Your career"
   },

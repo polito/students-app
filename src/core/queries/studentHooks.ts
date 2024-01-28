@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
+import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,
@@ -17,6 +18,8 @@ import { pluckData } from '../../utils/queries';
 
 export const STUDENT_QUERY_KEY = ['student'];
 export const GRADES_QUERY_KEY = ['grades'];
+export const PROVISIONAL_GRADES_QUERY_KEY = ['provisionalGrades'];
+export const PROVISIONAL_GRADE_STATES_QUERY_KEY = ['provisionalGradeStates'];
 export const MESSAGES_QUERY_PREFIX = 'messages';
 export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
 export const NOTIFICATIONS_QUERY_KEY = ['notifications'];
@@ -74,6 +77,67 @@ export const useGetGrades = () => {
 
   return useQuery(GRADES_QUERY_KEY, () =>
     studentClient.getStudentGrades().then(pluckData).then(sortGrades),
+  );
+};
+
+export const useGetProvisionalGrades = () => {
+  const studentClient = useStudentClient();
+  const queryClient = useQueryClient();
+
+  return useQuery(PROVISIONAL_GRADES_QUERY_KEY, () =>
+    studentClient
+      .getStudentProvisionalGrades()
+      .then(r => {
+        queryClient.setQueryData(PROVISIONAL_GRADE_STATES_QUERY_KEY, r.states);
+        return r;
+      })
+      .then(pluckData),
+  );
+};
+
+export const useGetProvisionalGradeStates = () => {
+  const provisionalGrades = useGetProvisionalGrades();
+
+  return useQuery<ProvisionalGradeState[]>(
+    PROVISIONAL_GRADE_STATES_QUERY_KEY,
+    () => [],
+    {
+      enabled: !!provisionalGrades.data,
+      staleTime: Infinity,
+    },
+  );
+};
+
+export const useAcceptProvisionalGrade = () => {
+  const queryClient = useQueryClient();
+  const studentClient = useStudentClient();
+
+  return useMutation(
+    (id: number) =>
+      studentClient.acceptProvisionalGrade({ provisionalGradeId: id }),
+    {
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries(PROVISIONAL_GRADES_QUERY_KEY),
+          queryClient.invalidateQueries(GRADES_QUERY_KEY),
+        ]),
+    },
+  );
+};
+
+export const useRejectProvisionalGrade = () => {
+  const queryClient = useQueryClient();
+  const studentClient = useStudentClient();
+
+  return useMutation(
+    (id: number) =>
+      studentClient.rejectProvisionalGrade({ provisionalGradeId: id }),
+    {
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries(PROVISIONAL_GRADES_QUERY_KEY),
+        ]),
+    },
   );
 };
 
