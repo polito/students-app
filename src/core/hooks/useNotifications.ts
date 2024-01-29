@@ -134,13 +134,28 @@ export const useNotifications = () => {
   );
 
   const getUnreadsCount = useCallback(
-    (path: Array<string | number>) => {
+    (
+      path: Array<string | number>,
+      /**
+       * Only count direct children
+       */
+      summarize = false,
+    ) => {
       // TODO PathExtractor<UnreadNotificationsByScope>
-      const node = get(unreadNotifications, path!);
-      if (Array.isArray(node)) {
-        return node.length || undefined;
-      }
-      return Object.keys(node ?? {}).length || undefined;
+      const root = get(unreadNotifications, path!);
+      const visitNode = (node: object | Notification[]): number => {
+        if (Array.isArray(node)) {
+          return node.length ?? 0;
+        }
+        if (summarize) {
+          return Object.keys(node ?? {}).length ?? 0;
+        }
+        return Object.values(node ?? {}).reduce(
+          (acc, val) => acc + visitNode(val),
+          0,
+        );
+      };
+      return visitNode(root) || undefined;
     },
     [unreadNotifications],
   );

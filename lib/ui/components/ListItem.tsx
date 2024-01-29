@@ -39,6 +39,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   titleProps?: TextProps;
   multilineTitle?: boolean;
   unread?: boolean;
+  isInVisibleRange?: boolean;
 }
 
 /**
