@@ -15,6 +15,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -41,12 +42,14 @@ export const CourseNoticesScreen = () => {
       })) ?? [],
     [noticesQuery],
   );
-  const noticesNotificationScope = [
-    'teaching',
-    'courses',
-    courseId.toString(),
-    'notices',
-  ];
+  const noticesNotificationScope = useMemo(
+    () => ['teaching', 'courses', courseId.toString(), 'notices'],
+    [courseId],
+  );
+
+  useOnLeaveScreen(() => {
+    clearNotificationScope(noticesNotificationScope);
+  });
 
   return (
     <FlatList

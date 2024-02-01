@@ -12,6 +12,8 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useNotifications } from '../../../core/hooks/useNotifications';
+import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListItems';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
@@ -34,12 +36,16 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { visibleItemsIndexes, ...visibleItemsFlatListProps } =
     useVisibleFlatListItems();
+  const { clearNotificationScope } = useNotifications();
+
+  useOnLeaveScreen(() => {
+    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+  });
 
   useFocusEffect(
     useCallback(() => {
       refresh();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
+    }, [refresh]),
   );
 
   return (

@@ -60,7 +60,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
         onChangeText: e => setSearchFilter(e.nativeEvent.text),
       },
     });
-  }, [directoryName]);
+  }, [directoryName, navigation, t]);
 
   return (
     <CourseContext.Provider value={courseId}>
