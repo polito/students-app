@@ -1,8 +1,6 @@
 name: Fastlane
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
   pull_request:
