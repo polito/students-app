@@ -93,6 +93,7 @@
     "campus": "Campus",
     "cancel": "Cancel",
     "capacity": "Capacity",
+    "career": "Career",
     "cfu": "CFU",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
@@ -522,7 +523,10 @@
     "reservationPresence": "Reservations"
   },
   "notificationsScreen": {
-    "title": "Notifications archive"
+    "title": "Notifications",
+    "perCourseTitle": "Courses",
+    "globalTitle": "Global",
+    "globalSubtitle": "Important notifications are always active"
   },
   "offeringBachelorScreen": {
     "title": "Bachelor degree"

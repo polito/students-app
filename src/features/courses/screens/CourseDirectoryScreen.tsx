@@ -13,6 +13,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
+import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListItems';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
@@ -59,7 +60,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
         onChangeText: e => setSearchFilter(e.nativeEvent.text),
       },
     });
-  }, [directoryName]);
+  }, [directoryName, navigation, t]);
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -115,6 +116,8 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { paddingHorizontal } = useSafeAreaSpacing();
+  const { visibleItemsIndexes, ...visibleItemsFlatListProps } =
+    useVisibleFlatListItems();
 
   useEffect(() => {
     if (!recentFilesQuery.data) return;
@@ -130,11 +133,12 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
       scrollEnabled={scrollEnabled}
       contentContainerStyle={paddingHorizontal}
       keyExtractor={(item: CourseRecentFile) => item.id}
-      renderItem={({ item }) => (
+      renderItem={({ item, index }) => (
         <CourseRecentFileListItem
           item={item}
           onSwipeStart={() => setScrollEnabled(false)}
           onSwipeEnd={() => setScrollEnabled(true)}
+          isInVisibleRange={!!visibleItemsIndexes[index]}
         />
       )}
       refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
@@ -146,6 +150,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           {t('courseDirectoryScreen.noResult')}
         </Text>
       }
+      {...visibleItemsFlatListProps}
     />
   );
 };

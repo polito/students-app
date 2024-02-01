@@ -8,13 +8,10 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import {
-  MaterialTopTabNavigationOptions,
-  createMaterialTopTabNavigator,
-} from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -44,7 +41,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
   const titleStyles = useTitlesStyles(theme);
 
   const { id } = route.params;
@@ -133,12 +130,13 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseNoticesScreen}
             options={{
               title: t('courseNoticesTab.title'),
-              tabBarBadge: getUnreadsCount([
-                'teaching',
-                'courses',
-                id.toString(),
-                'notices',
-              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
+              tabBarBadge: () =>
+                getUnreadsCount([
+                  'teaching',
+                  'courses',
+                  id.toString(),
+                  'notices',
+                ]),
             }}
           />
           <TopTabs.Screen
@@ -146,12 +144,13 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseFilesScreen}
             options={{
               title: t('courseFilesTab.title'),
-              tabBarBadge: getUnreadsCount([
-                'teaching',
-                'courses',
-                id.toString(),
-                'files',
-              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
+              tabBarBadge: () =>
+                getUnreadsCount([
+                  'teaching',
+                  'courses',
+                  id.toString(),
+                  'files',
+                ]),
             }}
           />
           <TopTabs.Screen
@@ -159,12 +158,13 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseLecturesScreen}
             options={{
               title: t('courseLecturesTab.title'),
-              tabBarBadge: getUnreadsCount([
-                'teaching',
-                'courses',
-                id.toString(),
-                'lectures',
-              ]) as unknown as MaterialTopTabNavigationOptions['tabBarBadge'],
+              tabBarBadge: () =>
+                getUnreadsCount([
+                  'teaching',
+                  'courses',
+                  id.toString(),
+                  'lectures',
+                ]),
             }}
           />
           <TopTabs.Screen

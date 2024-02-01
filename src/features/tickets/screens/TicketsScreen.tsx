@@ -17,7 +17,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
@@ -27,7 +27,7 @@ interface Props {
 }
 
 const ListItem = ({ ticket }: { ticket: TicketOverview }) => {
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
   const unread = useMemo(
     () => !!getUnreadsCount(['services', 'tickets', ticket.id.toString()]),
     [getUnreadsCount, ticket.id],

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import { extension } from 'react-native-mime-types';
@@ -10,13 +10,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { IS_IOS } from '../../../core/constants';
 import { useDownload } from '../../../core/hooks/useDownload';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
@@ -28,7 +31,7 @@ export type CourseRecentFile = CourseFileOverview & {
   location?: string;
 };
 
-export interface Props {
+export interface Props extends Partial<ListItemProps> {
   item: CourseRecentFile;
   showSize?: boolean;
   showLocation?: boolean;
@@ -88,6 +91,7 @@ export const CourseFileListItem = ({
   showSize = true,
   showLocation = false,
   showCreatedDate = true,
+  isInVisibleRange = false,
   ...rest
 }: Props) => {
   const { t } = useTranslation();
@@ -99,8 +103,15 @@ export const CourseFileListItem = ({
     }),
     [colors, fontSizes],
   );
+  const [notificationClearRequested, setNotificationClearRequested] =
+    useState(false);
   const courseId = useCourseContext();
   const courseFilesCache = useCourseFilesCachePath();
+  const { getUnreadsCount, clearNotificationScope } = useNotifications();
+  const fileNotificationScope = useMemo(
+    () => ['teaching', 'courses', courseId.toString(), 'files', item.id],
+    [courseId, item.id],
+  );
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
     let ext: string | null = extension(item.mimeType!);
@@ -120,6 +131,25 @@ export const CourseFileListItem = ({
     removeDownload,
     openFile,
   } = useDownload(fileUrl, cachedFilePath);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (
+        !notificationClearRequested &&
+        isInVisibleRange &&
+        clearNotificationScope &&
+        fileNotificationScope
+      ) {
+        setNotificationClearRequested(true);
+        clearNotificationScope(fileNotificationScope);
+      }
+    }, [
+      notificationClearRequested,
+      isInVisibleRange,
+      clearNotificationScope,
+      fileNotificationScope,
+    ]),
+  );
 
   const metrics = useMemo(
     () =>
@@ -204,6 +234,7 @@ export const CourseFileListItem = ({
 
   const listItem = (
     <FileListItem
+      {...rest}
       accessibilityLabel={
         !isDownloaded
           ? downloadProgress == null
@@ -214,11 +245,11 @@ export const CourseFileListItem = ({
       onPress={downloadFile}
       isDownloaded={isDownloaded}
       downloadProgress={downloadProgress}
-      title={item.name ?? t('common.unnamedFile')}
+      title={`#${item.id} ` + item.name ?? t('common.unnamedFile')}
       subtitle={metrics}
       trailingItem={trailingItem}
       mimeType={item.mimeType}
-      {...rest}
+      unread={!!getUnreadsCount(fileNotificationScope)}
     />
   );
 

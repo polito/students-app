@@ -2,11 +2,15 @@ import { useEffect } from 'react';
 import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 
 import messaging from '@react-native-firebase/messaging';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { isEnvProduction } from '../../utils/env';
-import { useUpdateDevicePreferences } from '../queries/studentHooks';
+import {
+  NOTIFICATIONS_QUERY_KEY,
+  useUpdateDevicePreferences,
+} from '../queries/studentHooks';
 import { RemoteMessage } from '../types/notifications';
-import { usePushNotifications } from './usePushNotifications';
+import { useNotifications } from './useNotifications';
 
 const requestNotificationPermission = async () => {
   return await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
@@ -19,7 +23,8 @@ const isNotificationPermissionGranted = async () => {
 };
 
 export const useInitFirebaseMessaging = () => {
-  const { navigateToUpdate, updateUnreadStatus } = usePushNotifications();
+  const queryClient = useQueryClient();
+  const { navigateToUpdate } = useNotifications();
   const preferencesQuery = useUpdateDevicePreferences();
 
   if (isEnvProduction) {
@@ -56,11 +61,11 @@ export const useInitFirebaseMessaging = () => {
           });
 
         const unsubscribeOnMessage = messaging().onMessage(remoteMessage =>
-          updateUnreadStatus(remoteMessage as RemoteMessage),
+          queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY),
         );
 
         messaging().setBackgroundMessageHandler(async remoteMessage => {
-          updateUnreadStatus(remoteMessage as RemoteMessage);
+          queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY);
         });
 
         return () =>

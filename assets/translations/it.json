@@ -93,6 +93,7 @@
     "campus": "Sede",
     "cancel": "Annulla",
     "capacity": "Capacità",
+    "career": "Carriera",
     "cfu": "CFU",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
@@ -514,7 +515,7 @@
     "eventStartTime": "Inizio evento",
     "information": "Informazioni",
     "logo": "Logo",
-    "title": "Avvisi & News"
+    "title": "News & Eventi"
   },
   "notifications": {
     "events": "Eventi e iniziative",
@@ -522,7 +523,10 @@
     "reservationPresence": "Prenotazione presenza"
   },
   "notificationsScreen": {
-    "title": "Archivio notifiche"
+    "title": "Notifiche",
+    "perCourseTitle": "Corsi",
+    "globalTitle": "Globali",
+    "globalSubtitle": "Le notifiche importanti sono sempre attive"
   },
   "offeringBachelorScreen": {
     "title": "Lauree triennali"

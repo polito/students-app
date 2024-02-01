@@ -12,8 +12,10 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
+import { useNotifications } from '../../../core/hooks/useNotifications';
+import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
+import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListItems';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { useCourseContext } from '../contexts/CourseContext';
@@ -32,13 +34,18 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
   const courseId = useCourseContext();
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { resetUnread } = usePushNotifications();
+  const { visibleItemsIndexes, ...visibleItemsFlatListProps } =
+    useVisibleFlatListItems();
+  const { clearNotificationScope } = useNotifications();
+
+  useOnLeaveScreen(() => {
+    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+  });
 
   useFocusEffect(
     useCallback(() => {
-      resetUnread(['teaching', 'courses', courseId.toString(), 'files']);
       refresh();
-    }, [courseId, refresh, resetUnread]),
+    }, [refresh]),
   );
 
   return (
@@ -50,12 +57,13 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
         initialNumToRender={15}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
             <CourseRecentFileListItem
               item={item}
               onSwipeStart={() => setScrollEnabled(false)}
               onSwipeEnd={() => setScrollEnabled(true)}
+              isInVisibleRange={!!visibleItemsIndexes[index]}
             />
           );
         }}
@@ -77,6 +85,7 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
             />
           ) : null
         }
+        {...visibleItemsFlatListProps}
       />
       {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (
         <CtaButton
