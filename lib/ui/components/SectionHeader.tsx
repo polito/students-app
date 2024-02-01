@@ -20,6 +20,8 @@ import { Text } from './Text';
 interface Props {
   title: string;
   titleStyle?: StyleProp<TextStyle>;
+  subtitle?: string;
+  subtitleStyle?: StyleProp<TextStyle>;
   ellipsizeTitle?: boolean;
   linkTo?: To<any>;
   linkToMoreCount?: number;
@@ -35,6 +37,8 @@ interface Props {
 export const SectionHeader = ({
   title,
   titleStyle,
+  subtitle,
+  subtitleStyle,
   ellipsizeTitle = true,
   accessibilityLabel = undefined,
   linkTo,
@@ -67,6 +71,17 @@ export const SectionHeader = ({
           >
             {title}
           </Text>
+          {subtitle && (
+            <Text
+              accessible={false}
+              variant="secondaryText"
+              style={subtitleStyle}
+              accessibilityRole="header"
+              {...ellipsis}
+            >
+              {subtitle}
+            </Text>
+          )}
         </View>
         {trailingItem
           ? trailingItem

@@ -6,11 +6,11 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
-  faBullhorn,
   faClipboardQuestion,
   faComments,
   faIdCard,
   faMobileScreenButton,
+  faNewspaper,
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
@@ -78,7 +78,7 @@ export const ServicesScreen = () => {
       {
         id: 'news',
         name: t('newsScreen.title'),
-        icon: faBullhorn,
+        icon: faNewspaper,
         disabled: isOffline,
         linkTo: {
           screen: 'News',
