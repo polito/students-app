@@ -11,6 +11,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
 
 import { HtmlView } from '../../../core/components/HtmlView';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { linkUrls } from '../../../utils/html';
 
@@ -21,10 +22,22 @@ export type Props = {
 
 export const MessageScreenContent = ({ message, modal }: Props) => {
   const { t } = useTranslation();
+  const { language } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const hasSender = !!message?.senderId;
+  const hasDate = !isNaN(message?.sentAt.getDate());
   const title = message?.title;
   const text = message?.message;
+  const date = message?.sentAt.toLocaleDateString(
+    language === 'it' ? 'it-IT' : 'en-GB',
+    {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour12: false,
+    },
+  );
   const personQuery = useGetPerson(message?.senderId || undefined);
 
   // replace every url in string with a link
@@ -39,6 +52,11 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
         <Text variant="title" role="heading" style={styles.heading}>
           {title ?? ''}
         </Text>
+        {!!hasDate && (
+          <Text variant="secondaryText" role="contentinfo" style={styles.date}>
+            {date}
+          </Text>
+        )}
         {!!text && (
           <View style={styles.textMessage}>
             <HtmlView source={{ html }} baseStyle={{ padding: 0 }} />
@@ -71,6 +89,10 @@ const createStyles = ({ spacing, fontWeights }: Theme) =>
       paddingHorizontal: spacing[5],
       paddingTop: spacing[3],
       fontWeight: fontWeights.bold,
+    },
+    date: {
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[1],
     },
     textMessage: {
       paddingHorizontal: spacing[5],
