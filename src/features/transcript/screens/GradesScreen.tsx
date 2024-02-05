@@ -11,6 +11,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
@@ -27,6 +28,7 @@ export const GradesScreen = () => {
   const gradesQuery = useGetGrades();
   const provisionalGradesQuery = useGetProvisionalGrades();
   const { accessibilityListLabel } = useAccessibility();
+  const { hideGrades } = usePreferencesContext();
 
   const isOffline = useOfflineDisabled();
 
@@ -100,7 +102,7 @@ export const GradesScreen = () => {
                     style={styles.grade}
                     accessibilityLabel={`${t('common.grade')}: ${grade?.grade}`}
                   >
-                    {t(formatGrade(grade.grade))}
+                    {t(!hideGrades ? formatGrade(grade.grade) : '--')}
                   </Text>
                 }
               />

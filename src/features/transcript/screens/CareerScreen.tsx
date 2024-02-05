@@ -10,8 +10,10 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import type { Student } from '@polito/api-client';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import {
   useGetGrades,
   useGetStudent,
@@ -23,6 +25,7 @@ import { ProgressChart } from '../../teaching/components/ProgressChart';
 export const CareerScreen = () => {
   const { t } = useTranslation();
   const { palettes } = useTheme();
+  const { hideGrades } = usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
@@ -33,7 +36,12 @@ export const CareerScreen = () => {
     totalAttendedCredits,
     totalAcquiredCredits,
     totalCredits,
-  } = studentQuery.data ?? {};
+    averageGrade,
+    averageGradePurged,
+    estimatedFinalGrade,
+    estimatedFinalGradePurged,
+    mastersAdmissionAverageGrade,
+  } = !hideGrades ? studentQuery.data ?? {} : ({} as Student);
 
   return (
     <ScrollView
@@ -134,41 +142,39 @@ export const CareerScreen = () => {
             <Grid>
               <Metric
                 title={t('transcriptMetricsScreen.weightedAverageLabel')}
-                value={studentQuery.data?.averageGrade ?? '--'}
+                value={averageGrade ?? '--'}
                 style={GlobalStyles.grow}
               />
 
               <Metric
                 title={t('transcriptMetricsScreen.estimatedFinalGrade')}
-                value={formatFinalGrade(studentQuery.data?.estimatedFinalGrade)}
+                value={formatFinalGrade(estimatedFinalGrade)}
                 color={palettes.primary[400]}
                 style={GlobalStyles.grow}
               />
 
-              {studentQuery.data?.averageGradePurged && (
+              {averageGradePurged && (
                 <Metric
                   title={t('transcriptMetricsScreen.finalAverageLabel')}
-                  value={studentQuery.data.averageGradePurged ?? '--'}
+                  value={averageGradePurged ?? '--'}
                   style={GlobalStyles.grow}
                 />
               )}
 
-              {studentQuery.data?.estimatedFinalGradePurged && (
+              {estimatedFinalGradePurged && (
                 <Metric
                   title={t('transcriptMetricsScreen.estimatedFinalGradePurged')}
-                  value={formatFinalGrade(
-                    studentQuery.data.estimatedFinalGradePurged,
-                  )}
+                  value={formatFinalGrade(estimatedFinalGradePurged)}
                   color={palettes.primary[400]}
                   style={GlobalStyles.grow}
                 />
               )}
             </Grid>
 
-            {studentQuery.data?.mastersAdmissionAverageGrade && (
+            {mastersAdmissionAverageGrade && (
               <Metric
                 title={t('transcriptMetricsScreen.masterAdmissionAverage')}
-                value={studentQuery.data.mastersAdmissionAverageGrade ?? '--'}
+                value={mastersAdmissionAverageGrade ?? '--'}
                 style={[GlobalStyles.grow, styles.additionalMetric]}
               />
             )}

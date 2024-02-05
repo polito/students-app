@@ -22,7 +22,7 @@ import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { ExamStatusEnum } from '@polito/api-client';
+import { ExamStatusEnum, type Student } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -47,7 +47,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { courses: coursePreferences } = usePreferencesContext();
+  const { courses: coursePreferences, hideGrades } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
   const { getUnreadsCount } = useNotifications();
   const surveyCategoriesQuery = useGetSurveyCategories();
@@ -55,6 +55,16 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
   const transcriptBadge = null;
+
+  const {
+    totalAttendedCredits,
+    totalAcquiredCredits,
+    totalCredits,
+    averageGrade,
+    averageGradePurged,
+    estimatedFinalGrade,
+    estimatedFinalGradePurged,
+  } = !hideGrades ? studentQuery.data ?? {} : ({} as Student);
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
@@ -192,25 +202,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     <Col justify="space-between">
                       <Metric
                         title={
-                          studentQuery.data?.averageGradePurged != null
+                          averageGradePurged != null
                             ? t('transcriptMetricsScreen.finalAverageLabel')
                             : t('transcriptMetricsScreen.weightedAverageLabel')
                         }
-                        value={
-                          studentQuery.data?.averageGradePurged ??
-                          studentQuery.data?.averageGrade ??
-                          '--'
-                        }
+                        value={averageGradePurged ?? averageGrade ?? '--'}
                         color={colors.title}
                       />
-                      {studentQuery.data?.estimatedFinalGradePurged ? (
+                      {estimatedFinalGradePurged ? (
                         <Metric
                           title={t(
                             'transcriptMetricsScreen.estimatedFinalGradePurged',
                           )}
-                          value={formatFinalGrade(
-                            studentQuery.data?.estimatedFinalGradePurged,
-                          )}
+                          value={formatFinalGrade(estimatedFinalGradePurged)}
                           color={colors.title}
                         />
                       ) : (
@@ -218,28 +222,24 @@ export const TeachingScreen = ({ navigation }: Props) => {
                           title={t(
                             'transcriptMetricsScreen.estimatedFinalGrade',
                           )}
-                          value={formatFinalGrade(
-                            studentQuery.data?.estimatedFinalGrade,
-                          )}
+                          value={formatFinalGrade(estimatedFinalGrade)}
                           color={colors.title}
                         />
                       )}
                     </Col>
                     <ProgressChart
                       label={
-                        studentQuery.data?.totalCredits
-                          ? `${studentQuery.data?.totalAcquiredCredits}/${
-                              studentQuery.data?.totalCredits
-                            }\n${t('common.ects')}`
+                        totalCredits
+                          ? `${totalAcquiredCredits}/${totalCredits}\n${t(
+                              'common.ects',
+                            )}`
                           : undefined
                       }
                       data={
-                        studentQuery.data && studentQuery.data.totalCredits
+                        totalCredits
                           ? [
-                              (studentQuery.data?.totalAttendedCredits ?? 0) /
-                                studentQuery.data?.totalCredits,
-                              (studentQuery.data?.totalAcquiredCredits ?? 0) /
-                                studentQuery.data?.totalCredits,
+                              (totalAttendedCredits ?? 0) / totalCredits,
+                              (totalAcquiredCredits ?? 0) / totalCredits,
                             ]
                           : []
                       }
