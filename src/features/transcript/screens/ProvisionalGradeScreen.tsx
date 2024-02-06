@@ -17,6 +17,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useAcceptProvisionalGrade,
@@ -34,6 +35,16 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
+
+  const confirmAcceptance = useConfirmationDialog({
+    title: t('common.areYouSure?'),
+    message: t('provisionalGradeScreen.acceptGradeConfirmMessage'),
+  });
+
+  const confirmRejection = useConfirmationDialog({
+    title: t('common.areYouSure?'),
+    message: t('provisionalGradeScreen.rejectGradeConfirmMessage'),
+  });
 
   const { id } = route.params;
 
@@ -119,9 +130,11 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           <CtaButton
             title={t('provisionalGradeScreen.acceptGradeCta')}
             action={() =>
-              acceptGradeQuery
-                .mutateAsync(grade.id)
-                .then(() => provideFeedback(true))
+              confirmAcceptance().then(() =>
+                acceptGradeQuery
+                  .mutateAsync(grade.id)
+                  .then(() => provideFeedback(true)),
+              )
             }
             variant="outlined"
             absolute={false}
@@ -136,9 +149,11 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           <CtaButton
             title={t('provisionalGradeScreen.rejectGradeCta')}
             action={() =>
-              rejectGradeQuery
-                .mutateAsync(grade.id)
-                .then(() => provideFeedback(false))
+              confirmRejection().then(() =>
+                rejectGradeQuery
+                  .mutateAsync(grade.id)
+                  .then(() => provideFeedback(false)),
+              )
             }
             absolute={false}
             loading={rejectGradeQuery.isLoading}
