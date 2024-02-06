@@ -130,11 +130,13 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           <CtaButton
             title={t('provisionalGradeScreen.acceptGradeCta')}
             action={() =>
-              confirmAcceptance().then(() =>
-                acceptGradeQuery
-                  .mutateAsync(grade.id)
-                  .then(() => provideFeedback(true)),
-              )
+              confirmAcceptance().then(ok => {
+                if (ok) {
+                  acceptGradeQuery
+                    .mutateAsync(grade.id)
+                    .then(() => provideFeedback(true));
+                }
+              })
             }
             variant="outlined"
             absolute={false}
@@ -149,11 +151,13 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           <CtaButton
             title={t('provisionalGradeScreen.rejectGradeCta')}
             action={() =>
-              confirmRejection().then(() =>
-                rejectGradeQuery
-                  .mutateAsync(grade.id)
-                  .then(() => provideFeedback(false)),
-              )
+              confirmRejection().then(ok => {
+                if (ok) {
+                  rejectGradeQuery
+                    .mutateAsync(grade.id)
+                    .then(() => provideFeedback(false));
+                }
+              })
             }
             absolute={false}
             loading={rejectGradeQuery.isLoading}
