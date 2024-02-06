@@ -16,9 +16,9 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuView } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -119,7 +119,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
             <Section>
               <SectionHeader title={t('common.visualization')} />
               <OverviewList loading={courseQuery.isLoading} indented>
-                <MenuView
+                <StatefulMenuView
                   actions={courseColors.map(cc => {
                     return {
                       id: cc.color,
@@ -147,7 +147,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     isAction
                     leadingItem={<CourseIcon color={coursePrefs?.color} />}
                   />
-                </MenuView>
+                </StatefulMenuView>
                 <ListItem
                   title={t('common.icon')}
                   isAction

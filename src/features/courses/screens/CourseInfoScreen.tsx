@@ -15,11 +15,11 @@ import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
-import { MenuView } from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -116,7 +116,7 @@ export const CourseInfoScreen = () => {
               accessibilityRole="button"
               accessible={true}
             >
-              <MenuView
+              <StatefulMenuView
                 actions={editions ?? []}
                 onPressAction={async ({ nativeEvent: { event } }) => {
                   // replace current screen with same screen with event id as param
@@ -150,7 +150,7 @@ export const CourseInfoScreen = () => {
                     />
                   )}
                 </Row>
-              </MenuView>
+              </StatefulMenuView>
             </View>
             <Metric
               title={t('courseInfoTab.creditsLabel')}
