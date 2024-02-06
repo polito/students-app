@@ -615,9 +615,11 @@
     "trainingOffer": "Training offer"
   },
   "provisionalGradeScreen": {
+    "acceptGradeConfirmMessage": "By accepting this evaluation you will no longer be able to change your decision",
     "acceptGradeCta": "Request immediate registration",
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
+    "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
     "rejectGradeCta": "Reject the evaluation",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "title": "Evaluation"
@@ -700,7 +702,7 @@
     "title": "Ticket"
   },
   "transcriptGradeScreen": {
-    "title": "Evakyatuib"
+    "title": "Evaluation"
   },
   "transcriptGradesScreen": {
     "emptyState": "You haven't taken any exams",
