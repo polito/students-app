@@ -12,7 +12,7 @@ import { Message } from '@polito/api-client';
 
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { formatReadableDate } from '../../../utils/dates';
+import { formatDateTime } from '../../../utils/dates';
 import { linkUrls } from '../../../utils/html';
 
 export type Props = {
@@ -27,7 +27,7 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
   const hasDate = !isNaN(message?.sentAt.getDate());
   const title = message?.title;
   const text = message?.message;
-  const date = formatReadableDate(message?.sentAt);
+  const date = formatDateTime(message?.sentAt);
   const personQuery = useGetPerson(message?.senderId || undefined);
 
   // replace every url in string with a link
