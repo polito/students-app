@@ -59,16 +59,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const studentQuery = useGetStudent();
   const transcriptBadge = null;
 
-  const {
-    totalAttendedCredits,
-    totalAcquiredCredits,
-    totalCredits,
-    averageGrade,
-    averageGradePurged,
-    estimatedFinalGrade,
-    estimatedFinalGradePurged,
-  } = studentQuery.data ?? {};
-
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
 
@@ -208,24 +198,28 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     <Col justify="space-between">
                       <Metric
                         title={
-                          averageGradePurged != null
+                          studentQuery.data?.averageGradePurged != null
                             ? t('transcriptMetricsScreen.finalAverageLabel')
                             : t('transcriptMetricsScreen.weightedAverageLabel')
                         }
                         value={
                           hideGrades
                             ? '--'
-                            : averageGradePurged ?? averageGrade ?? '--'
+                            : studentQuery.data?.averageGradePurged ??
+                              studentQuery.data?.averageGrade ??
+                              '--'
                         }
                         color={colors.title}
                       />
-                      {estimatedFinalGradePurged ? (
+                      {studentQuery.data?.estimatedFinalGradePurged ? (
                         <Metric
                           title={t(
                             'transcriptMetricsScreen.estimatedFinalGradePurged',
                           )}
                           value={formatFinalGrade(
-                            hideGrades ? null : estimatedFinalGradePurged,
+                            hideGrades
+                              ? null
+                              : studentQuery.data?.estimatedFinalGradePurged,
                           )}
                           color={colors.title}
                         />
@@ -235,7 +229,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                             'transcriptMetricsScreen.estimatedFinalGrade',
                           )}
                           value={formatFinalGrade(
-                            hideGrades ? null : estimatedFinalGrade,
+                            hideGrades
+                              ? null
+                              : studentQuery.data?.estimatedFinalGrade,
                           )}
                           color={colors.title}
                         />
@@ -243,19 +239,25 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     </Col>
                     <ProgressChart
                       label={
-                        totalCredits
+                        studentQuery.data?.totalCredits
                           ? `${
-                              hideGrades ? '--' : totalAcquiredCredits
-                            }/${totalCredits}\n${t('common.ects')}`
+                              hideGrades
+                                ? '--'
+                                : studentQuery.data?.totalAcquiredCredits
+                            }/${studentQuery.data?.totalCredits}\n${t(
+                              'common.ects',
+                            )}`
                           : undefined
                       }
                       data={
                         hideGrades
                           ? []
-                          : totalCredits
+                          : studentQuery.data?.totalCredits
                           ? [
-                              (totalAttendedCredits ?? 0) / totalCredits,
-                              (totalAcquiredCredits ?? 0) / totalCredits,
+                              (studentQuery.data?.totalAttendedCredits ?? 0) /
+                                studentQuery.data?.totalCredits,
+                              (studentQuery.data?.totalAcquiredCredits ?? 0) /
+                                studentQuery.data?.totalCredits,
                             ]
                           : []
                       }
