@@ -10,10 +10,7 @@ import {
 } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import {
-  faCalendarCheck,
-  faEyeSlash,
-} from '@fortawesome/free-regular-svg-icons';
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import {
   faBroom,
   faCalendarDay,
@@ -299,29 +296,6 @@ const Notifications = () => {
   );
 };
 
-const HideGradesListItem = () => {
-  const { t } = useTranslation();
-  const { fontSizes } = useTheme();
-  const { hideGrades, updatePreference } = usePreferencesContext();
-
-  const onChangeHide = (value: boolean) =>
-    updatePreference('hideGrades', value);
-
-  return (
-    <SwitchListItem
-      accessible={true}
-      accessibilityLabel={`${t('common.hideGrades')}. ${t(
-        `common.activeStatus.${hideGrades}`,
-      )} `}
-      accessibilityRole="switch"
-      title={t('common.hideGrades')}
-      onChange={onChangeHide}
-      value={hideGrades}
-      leadingItem={<Icon icon={faEyeSlash} size={fontSizes['2xl']} />}
-    />
-  );
-};
-
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -340,12 +314,6 @@ export const SettingsScreen = () => {
             <SectionHeader title={t('common.language')} />
             <OverviewList indented>
               <LanguageListItem />
-            </OverviewList>
-          </Section>
-          <Section>
-            <SectionHeader title={t('common.career')} />
-            <OverviewList indented>
-              <HideGradesListItem />
             </OverviewList>
           </Section>
           {/* <Section>

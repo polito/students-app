@@ -8,21 +8,24 @@ import {
   View,
 } from 'react-native';
 
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { Icon } from '@lib/ui/components/Icon';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { Text } from '@lib/ui/components/Text';
 import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { ExamStatusEnum, type Student } from '@polito/api-client';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -64,7 +67,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
     averageGradePurged,
     estimatedFinalGrade,
     estimatedFinalGradePurged,
-  } = !hideGrades ? studentQuery.data ?? {} : ({} as Student);
+  } = studentQuery.data ?? {};
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
@@ -183,7 +186,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
           </OverviewList>
         </Section>
         <Section>
-          <SectionHeader title={t('common.transcript')} />
+          <SectionHeader
+            title={t('common.transcript')}
+            trailingItem={<HideGrades />}
+          />
 
           <View style={GlobalStyles.relative}>
             <Card style={styles.transcriptCard}>
@@ -206,7 +212,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
                             ? t('transcriptMetricsScreen.finalAverageLabel')
                             : t('transcriptMetricsScreen.weightedAverageLabel')
                         }
-                        value={averageGradePurged ?? averageGrade ?? '--'}
+                        value={
+                          hideGrades
+                            ? '--'
+                            : averageGradePurged ?? averageGrade ?? '--'
+                        }
                         color={colors.title}
                       />
                       {estimatedFinalGradePurged ? (
@@ -214,7 +224,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                           title={t(
                             'transcriptMetricsScreen.estimatedFinalGradePurged',
                           )}
-                          value={formatFinalGrade(estimatedFinalGradePurged)}
+                          value={formatFinalGrade(
+                            hideGrades ? null : estimatedFinalGradePurged,
+                          )}
                           color={colors.title}
                         />
                       ) : (
@@ -222,7 +234,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                           title={t(
                             'transcriptMetricsScreen.estimatedFinalGrade',
                           )}
-                          value={formatFinalGrade(estimatedFinalGrade)}
+                          value={formatFinalGrade(
+                            hideGrades ? null : estimatedFinalGrade,
+                          )}
                           color={colors.title}
                         />
                       )}
@@ -230,13 +244,15 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     <ProgressChart
                       label={
                         totalCredits
-                          ? `${totalAcquiredCredits}/${totalCredits}\n${t(
-                              'common.ects',
-                            )}`
+                          ? `${
+                              hideGrades ? '--' : totalAcquiredCredits
+                            }/${totalCredits}\n${t('common.ects')}`
                           : undefined
                       }
                       data={
-                        totalCredits
+                        hideGrades
+                          ? []
+                          : totalCredits
                           ? [
                               (totalAttendedCredits ?? 0) / totalCredits,
                               (totalAcquiredCredits ?? 0) / totalCredits,
@@ -263,6 +279,34 @@ export const TeachingScreen = ({ navigation }: Props) => {
   );
 };
 
+const HideGrades = () => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = useStylesheet(createStyles);
+  const { hideGrades, updatePreference } = usePreferencesContext();
+
+  const label = hideGrades ? t('common.show') : t('common.hide');
+  const icon = hideGrades ? faEye : faEyeSlash;
+
+  const onHide = (value: boolean) => updatePreference('hideGrades', value);
+
+  return (
+    <View
+      style={styles.hideGradesSwitch}
+      accessibilityLabel={`${label}. ${t(
+        `common.activeStatus.${hideGrades}`,
+      )} `}
+      accessibilityRole="switch"
+      accessible={true}
+    >
+      <Icon icon={icon} color={colors.link} />
+      <Text variant="link" onPress={() => onHide(!hideGrades)}>
+        {label}
+      </Text>
+    </View>
+  );
+};
+
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
@@ -278,5 +322,11 @@ const createStyles = ({ spacing }: Theme) =>
       position: 'absolute',
       top: 0,
       right: 10,
+    },
+    hideGradesSwitch: {
+      display: 'flex',
+      flexDirection: 'row',
+      gap: spacing[1],
+      alignItems: 'center',
     },
   });
