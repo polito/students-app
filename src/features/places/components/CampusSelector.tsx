@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { faChevronDown, faSchool } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuView } from '@react-native-menu/menu';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetSite, useGetSites } from '../../../core/queries/placesHooks';
@@ -18,7 +18,7 @@ export const CampusSelector = () => {
   const campus = useGetSite(campusId);
 
   return (
-    <MenuView
+    <StatefulMenuView
       title={t('common.campus')}
       onPressAction={({ nativeEvent: { event: newCampusId } }) => {
         updatePreference(
@@ -46,6 +46,6 @@ export const CampusSelector = () => {
         </Text>
         <Icon icon={faChevronDown} color={colors.link} size={fontSizes.xs} />
       </Row>
-    </MenuView>
+    </StatefulMenuView>
   );
 };

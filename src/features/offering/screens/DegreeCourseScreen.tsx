@@ -27,11 +27,12 @@ import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuAction, MenuView } from '@react-native-menu/menu';
+import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -111,7 +112,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   accessibilityRole="button"
                   accessible={true}
                 >
-                  <MenuView
+                  <StatefulMenuView
                     actions={yearOptions}
                     onPressAction={async ({ nativeEvent: { event } }) => {
                       setSelectedYear(() => event);
@@ -142,7 +143,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                         />
                       )}
                     </Row>
-                  </MenuView>
+                  </StatefulMenuView>
                 </View>
 
                 <Metric

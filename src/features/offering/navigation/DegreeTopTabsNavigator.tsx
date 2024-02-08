@@ -5,10 +5,10 @@ import { View } from 'react-native';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuView } from '@react-native-menu/menu';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -67,7 +67,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
           accessibilityRole="button"
           accessible={true}
         >
-          <MenuView
+          <StatefulMenuView
             title={t('degreeScreen.cohort')}
             style={{ padding: spacing[1] }}
             actions={yearOptions}
@@ -86,7 +86,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
                 />
               )}
             </Row>
-          </MenuView>
+          </StatefulMenuView>
         </View>
       ),
     });
