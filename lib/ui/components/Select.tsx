@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
-import { MenuView } from '@react-native-menu/menu';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 
 import { IS_ANDROID } from '../../../src/core/constants';
 
@@ -37,7 +37,7 @@ export const Select = ({
   }, [options, value]);
 
   return (
-    <MenuView
+    <StatefulMenuView
       style={{ width: '100%' }}
       title={label}
       actions={!disabled ? options : []}
@@ -52,6 +52,6 @@ export const Select = ({
         subtitle={description}
         trailingItem={IS_ANDROID ? <Icon icon={faChevronDown} /> : undefined}
       />
-    </MenuView>
+    </StatefulMenuView>
   );
 };

@@ -19,16 +19,13 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Student } from '@polito/api-client';
-import {
-  MenuAction,
-  MenuView,
-  NativeActionEvent,
-} from '@react-native-menu/menu';
+import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -88,7 +85,7 @@ const HeaderRightDropdown = ({
         canSwitchCareer ? t('common.switchCareerLabel') : ''
       }`}
     >
-      <MenuView actions={actions} onPressAction={onPressAction}>
+      <StatefulMenuView actions={actions} onPressAction={onPressAction}>
         <Row>
           <Text variant="link" style={{ marginRight: 5 }}>
             {username}
@@ -97,7 +94,7 @@ const HeaderRightDropdown = ({
             <Icon icon={faAngleDown} color={palettes.primary[500]} />
           )}
         </Row>
-      </MenuView>
+      </StatefulMenuView>
     </View>
   );
 };

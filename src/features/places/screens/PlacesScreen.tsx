@@ -36,6 +36,7 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { PillButton } from '@lib/ui/components/PillButton';
 import { PillIconButton } from '@lib/ui/components/PillIconButton';
 import { Row } from '@lib/ui/components/Row';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
 import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
@@ -43,7 +44,6 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
@@ -416,7 +416,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
           {campus?.floors?.length ? (
             !debouncedSearch ? (
-              <MenuView
+              <StatefulMenuView
                 onPressAction={({
                   nativeEvent: { event: selectedFloorId },
                 }) => {
@@ -431,7 +431,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   }))}
               >
                 {floorSelectorButton}
-              </MenuView>
+              </StatefulMenuView>
             ) : displayFloorId ? (
               floorSelectorButton
             ) : (
