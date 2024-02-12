@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
+import { stat } from 'react-native-fs';
 import { extension } from 'react-native-mime-types';
 
 import {
@@ -108,6 +109,7 @@ export const CourseFileListItem = ({
   const courseId = useCourseContext();
   const courseFilesCache = useCourseFilesCachePath();
   const { getUnreadsCount, clearNotificationScope } = useNotifications();
+  const [isCorrupted, setIsCorrupted] = useState(false);
   const fileNotificationScope = useMemo(
     () => ['teaching', 'courses', courseId.toString(), 'files', item.id],
     [courseId, item.id],
@@ -131,6 +133,21 @@ export const CourseFileListItem = ({
     removeDownload,
     openFile,
   } = useDownload(fileUrl, cachedFilePath);
+
+  useEffect(() => {
+    (async () => {
+      if (!isDownloaded) {
+        setIsCorrupted(false);
+        return;
+      }
+      const fileStats = await stat(cachedFilePath);
+      setIsCorrupted(
+        Math.abs(fileStats.size - item.sizeInKiloBytes * 1024) /
+          Math.max(fileStats.size, item.sizeInKiloBytes * 1024) >
+          0.1,
+      );
+    })();
+  }, [cachedFilePath, isDownloaded, item.sizeInKiloBytes]);
 
   useFocusEffect(
     useCallback(() => {
@@ -165,14 +182,33 @@ export const CourseFileListItem = ({
     [showCreatedDate, item, showSize, showLocation],
   );
 
-  const downloadFile = async () => {
+  const openDownloadedFile = useCallback(() => {
+    openFile().catch(e => {
+      if (e instanceof UnsupportedFileTypeError) {
+        Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
+      }
+    });
+  }, [openFile, t]);
+
+  const downloadFile = useCallback(async () => {
     if (downloadProgress == null) {
+      if (isCorrupted) {
+        await refreshDownload();
+        return;
+      }
       if (!isDownloaded) {
         await startDownload();
       }
       openDownloadedFile();
     }
-  };
+  }, [
+    downloadProgress,
+    isCorrupted,
+    isDownloaded,
+    openDownloadedFile,
+    refreshDownload,
+    startDownload,
+  ]);
 
   const trailingItem = useMemo(
     () =>
@@ -221,16 +257,18 @@ export const CourseFileListItem = ({
           ),
         })
       ),
-    [isDownloaded, downloadProgress],
+    [
+      isDownloaded,
+      downloadProgress,
+      t,
+      downloadFile,
+      iconProps,
+      spacing,
+      refreshDownload,
+      removeDownload,
+      stopDownload,
+    ],
   );
-
-  const openDownloadedFile = () => {
-    openFile().catch(e => {
-      if (e instanceof UnsupportedFileTypeError) {
-        Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
-      }
-    });
-  };
 
   const listItem = (
     <FileListItem
@@ -250,6 +288,7 @@ export const CourseFileListItem = ({
       trailingItem={trailingItem}
       mimeType={item.mimeType}
       unread={!!getUnreadsCount(fileNotificationScope)}
+      isCorrupted={isCorrupted}
     />
   );
 
