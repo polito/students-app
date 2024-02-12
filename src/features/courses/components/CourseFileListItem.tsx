@@ -121,6 +121,7 @@ export const CourseFileListItem = ({
     }
     return [
       courseFilesCache,
+      item.location?.substring(1),
       [filename ? `${filename} (${item.id})` : item.id, ext]
         .filter(notNullish)
         .join('.'),

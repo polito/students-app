@@ -64,6 +64,7 @@ export const useDownloadCourseFile = (
             updateDownload({ isDownloaded: true });
           } else {
             // Update the name when changed
+            await mkdir(dirname(toFile));
             await moveFile(cachedFilePath, toFile);
             refresh();
           }
@@ -78,9 +79,7 @@ export const useDownloadCourseFile = (
     if (!download.isDownloaded && download.downloadProgress == null) {
       updateDownload({ downloadProgress: 0 });
       try {
-        await mkdir(dirname(toFile), {
-          NSURLIsExcludedFromBackupKey: true,
-        });
+        await mkdir(dirname(toFile));
         const { jobId, promise } = downloadFile({
           fromUrl,
           toFile,

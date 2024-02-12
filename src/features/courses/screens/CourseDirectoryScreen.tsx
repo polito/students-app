@@ -18,13 +18,11 @@ import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
+import { CourseFileOverviewWithLocation } from '../../../core/types/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
-import {
-  CourseRecentFile,
-  CourseRecentFileListItem,
-} from '../components/CourseRecentFileListItem';
+import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
@@ -112,7 +110,9 @@ interface SearchProps {
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    CourseFileOverviewWithLocation[]
+  >([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { paddingHorizontal } = useSafeAreaSpacing();
@@ -132,7 +132,7 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
       data={searchResults}
       scrollEnabled={scrollEnabled}
       contentContainerStyle={paddingHorizontal}
-      keyExtractor={(item: CourseRecentFile) => item.id}
+      keyExtractor={(item: CourseFileOverviewWithLocation) => item.id}
       renderItem={({ item, index }) => (
         <CourseRecentFileListItem
           item={item}

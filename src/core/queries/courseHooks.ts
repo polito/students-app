@@ -20,7 +20,6 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import { CourseRecentFile } from '../../features/courses/components/CourseRecentFileListItem';
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
@@ -30,6 +29,10 @@ import {
   usePreferencesContext,
 } from '../contexts/PreferencesContext';
 import { CourseOverview } from '../types/api';
+import {
+  CourseDirectoryContentWithLocations,
+  CourseFileOverviewWithLocation,
+} from '../types/files';
 import { useGetExams } from './examHooks';
 
 export const COURSES_QUERY_KEY = ['courses'];
@@ -193,7 +196,8 @@ export const useGetCourseFiles = (courseId: number) => {
     () => {
       return coursesClient
         .getCourseFiles({ courseId: courseId })
-        .then(pluckData);
+        .then(pluckData)
+        .then(computeFileLocations);
     },
     {
       staleTime: courseFilesStaleTime,
@@ -233,24 +237,57 @@ export const useGetCourseFilesRecent = (courseId: number) => {
   };
 };
 
+const isFile = (
+  item: CourseDirectoryContentInner,
+): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
+
+/**
+ * Assigns a location to each file
+ */
+const computeFileLocations = (
+  directoryContent: CourseDirectoryContentInner[],
+  location: string = '/',
+): CourseDirectoryContentWithLocations[] => {
+  const result: CourseDirectoryContentWithLocations[] = [];
+  directoryContent?.forEach(item => {
+    if (isFile(item)) {
+      result.push({ ...item, location });
+    } else {
+      result.push({
+        ...item,
+        files: computeFileLocations(
+          item.files,
+          location.length === 1
+            ? location + item.name
+            : location + '/' + item.name,
+        ),
+      });
+    }
+  });
+  return result;
+};
+
 /**
  * Extract a flat array of files contained into the given directory tree
  */
 const flattenFiles = (
-  directoryContent: CourseDirectoryContentInner[] | CourseFileOverview[],
-  location: string = '/',
-): CourseRecentFile[] => {
-  const result: CourseRecentFile[] = [];
+  directoryContent:
+    | CourseDirectoryContentWithLocations[]
+    | CourseFileOverviewWithLocation[],
+): CourseFileOverviewWithLocation[] => {
+  const result: CourseFileOverviewWithLocation[] = [];
   directoryContent?.forEach(item => {
     if (item.type === 'file') {
-      result.push({ ...item, location });
+      result.push(item);
     } else {
       result.push(
         ...flattenFiles(
-          (item as CourseDirectory).files,
-          location.length === 1
-            ? location + item.name
-            : location + '/' + item.name,
+          (
+            item as Extract<
+              CourseDirectoryContentWithLocations,
+              { type: 'directory' }
+            >
+          ).files,
         ),
       );
     }
@@ -262,8 +299,8 @@ const flattenFiles = (
  * Extract files from folders and sort them by decreasing createdAt
  */
 const sortRecentFiles = (
-  directoryContent: CourseDirectoryContentInner[],
-): CourseRecentFile[] => {
+  directoryContent: CourseDirectoryContentWithLocations[],
+): CourseFileOverviewWithLocation[] => {
   const flatFiles = flattenFiles(directoryContent);
   return flatFiles.sort(
     (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
