@@ -8,21 +8,29 @@ import {
   downloadFile,
   stopDownload as fsStopDownload,
   mkdir,
+  moveFile,
   unlink,
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
-import { FilesCacheContext } from '../../features/courses/contexts/FilesCacheContext';
+import { CourseFilesCacheContext } from '../../features/courses/contexts/CourseFilesCacheContext';
 import { UnsupportedFileTypeError } from '../../features/courses/errors/UnsupportedFileTypeError';
 import { useApiContext } from '../contexts/ApiContext';
 import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
 
-export const useDownload = (fromUrl: string, toFile: string) => {
+export const useDownloadCourseFile = (
+  fromUrl: string,
+  toFile: string,
+  fileId: string,
+) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
   const { downloadsRef, setDownloads } = useDownloadsContext();
-  const { cache, isRefreshing: isCacheRefreshing } =
-    useContext(FilesCacheContext);
+  const {
+    cache,
+    isRefreshing: isCacheRefreshing,
+    refresh,
+  } = useContext(CourseFilesCacheContext);
   const key = `${fromUrl}:${toFile}`;
   const download = useMemo(
     () =>
@@ -30,6 +38,7 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         isDownloaded: false,
         downloadProgress: undefined,
       },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [downloadsRef.current?.[key], key],
   );
 
@@ -47,10 +56,23 @@ export const useDownload = (fromUrl: string, toFile: string) => {
   );
 
   useEffect(() => {
-    if (toFile && !isCacheRefreshing) {
-      updateDownload({ isDownloaded: Boolean(cache[toFile]) });
-    }
-  }, [cache, isCacheRefreshing, toFile, updateDownload]);
+    (async () => {
+      if (toFile && !isCacheRefreshing) {
+        const cachedFilePath = cache[fileId];
+        if (cachedFilePath) {
+          if (cachedFilePath === toFile) {
+            updateDownload({ isDownloaded: true });
+          } else {
+            // Update the name when changed
+            await moveFile(cachedFilePath, toFile);
+            refresh();
+          }
+        } else {
+          updateDownload({ isDownloaded: false });
+        }
+      }
+    })();
+  }, [cache, fileId, isCacheRefreshing, refresh, toFile, updateDownload]);
 
   const startDownload = useCallback(async () => {
     if (!download.isDownloaded && download.downloadProgress == null) {

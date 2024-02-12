@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
-import { extension } from 'react-native-mime-types';
+import { extension, lookup } from 'react-native-mime-types';
 
 import {
   faCloudArrowDown,
@@ -18,10 +18,10 @@ import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { IS_IOS } from '../../../core/constants';
-import { useDownload } from '../../../core/hooks/useDownload';
+import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
-import { formatFileSize } from '../../../utils/files';
+import { formatFileSize, splitNameAndExtension } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
 import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
@@ -115,13 +115,15 @@ export const CourseFileListItem = ({
   const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
   const cachedFilePath = useMemo(() => {
     let ext: string | null = extension(item.mimeType!);
-    if (!ext) {
-      ext = item.name?.match(/\.(.+)$/)?.[1] ?? null;
+    const [filename, extensionFromName] = splitNameAndExtension(item.name);
+    if (!ext && extensionFromName && lookup(extensionFromName)) {
+      ext = extensionFromName;
     }
-    // item.name already contains the extension
     return [
       courseFilesCache,
-      item.name ?? [item.id, ext].filter(notNullish).join('.'),
+      [filename ? `${filename} (${item.id})` : item.id, ext]
+        .filter(notNullish)
+        .join('.'),
     ].join('/');
   }, [courseFilesCache, item]);
   const {
@@ -132,7 +134,7 @@ export const CourseFileListItem = ({
     refreshDownload,
     removeDownload,
     openFile,
-  } = useDownload(fileUrl, cachedFilePath);
+  } = useDownloadCourseFile(fileUrl, cachedFilePath, item.id);
 
   useFocusEffect(
     useCallback(() => {
@@ -247,7 +249,7 @@ export const CourseFileListItem = ({
       onPress={downloadFile}
       isDownloaded={isDownloaded}
       downloadProgress={downloadProgress}
-      title={`#${item.id} ` + item.name ?? t('common.unnamedFile')}
+      title={item.name ?? t('common.unnamedFile')}
       subtitle={metrics}
       trailingItem={trailingItem}
       mimeType={item.mimeType}
