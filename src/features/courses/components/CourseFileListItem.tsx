@@ -118,9 +118,11 @@ export const CourseFileListItem = ({
     if (!ext) {
       ext = item.name?.match(/\.(.+)$/)?.[1] ?? null;
     }
-    return [courseFilesCache, [item.id, ext].filter(notNullish).join('.')].join(
-      '/',
-    );
+    // item.name already contains the extension
+    return [
+      courseFilesCache,
+      item.name ?? [item.id, ext].filter(notNullish).join('.'),
+    ].join('/');
   }, [courseFilesCache, item]);
   const {
     isDownloaded,
