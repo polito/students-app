@@ -1,6 +1,7 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { ReadDirItem, readDir } from 'react-native-fs';
+import { ReadDirItem } from 'react-native-fs';
 
+import { readDirRecursively } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
 import {
   CourseFilesCacheContext,
@@ -30,7 +31,7 @@ export const CourseFilesCacheProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (filesCacheContext.isRefreshing) {
       let cache: ReadDirItem[];
-      readDir(courseFilesCachePath)
+      readDirRecursively(courseFilesCachePath)
         .then(c => (cache = c))
         .catch(() => (cache = []))
         .finally(() => {
