@@ -26,14 +26,14 @@ import {
   CourseRecentFileListItem,
 } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
-import { FilesCacheContext } from '../contexts/FilesCacheContext';
-import { FilesCacheProvider } from '../providers/FilesCacheProvider';
+import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
+import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
 const FileCacheChecker = () => {
-  const { refresh } = useContext(FilesCacheContext);
+  const { refresh } = useContext(CourseFilesCacheContext);
 
   useFocusEffect(
     useCallback(() => {
@@ -64,7 +64,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 
   return (
     <CourseContext.Provider value={courseId}>
-      <FilesCacheProvider>
+      <CourseFilesCacheProvider>
         <FileCacheChecker />
         {searchFilter ? (
           <CourseFileSearchFlatList
@@ -99,7 +99,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             ListFooterComponent={<BottomBarSpacer />}
           />
         )}
-      </FilesCacheProvider>
+      </CourseFilesCacheProvider>
     </CourseContext.Provider>
   );
 };

@@ -17,7 +17,7 @@ import { useGetCourses } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIndicator } from '../components/CourseIndicator';
 import { CourseContext } from '../contexts/CourseContext';
-import { FilesCacheProvider } from '../providers/FilesCacheProvider';
+import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
 import { CourseFilesScreen } from '../screens/CourseFilesScreen';
 import { CourseInfoScreen } from '../screens/CourseInfoScreen';
@@ -116,7 +116,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
 
   return (
     <CourseContext.Provider value={id}>
-      <FilesCacheProvider>
+      <CourseFilesCacheProvider>
         <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
           <TopTabs.Screen
             name="CourseInfoScreen"
@@ -175,7 +175,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             }}
           />
         </TopTabs.Navigator>
-      </FilesCacheProvider>
+      </CourseFilesCacheProvider>
     </CourseContext.Provider>
   );
 };

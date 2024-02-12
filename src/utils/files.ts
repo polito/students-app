@@ -10,3 +10,8 @@ export const formatFileSize = (
   }
   return `${Math.round(sizeInKiloBytes / 1000000)} GB`;
 };
+
+export const splitNameAndExtension = (filePath?: string) => {
+  const [_, name, extension] = filePath?.match(/(.+)\.(.+)$/) ?? [];
+  return [name, extension] as [string | null, string | null];
+};

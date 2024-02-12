@@ -19,7 +19,7 @@ import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListI
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { useCourseContext } from '../contexts/CourseContext';
-import { FilesCacheContext } from '../contexts/FilesCacheContext';
+import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
 import { CourseTabsParamList } from '../navigation/CourseNavigator';
 
 type Props = MaterialTopTabScreenProps<
@@ -30,7 +30,7 @@ type Props = MaterialTopTabScreenProps<
 export const CourseFilesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const { refresh } = useContext(FilesCacheContext);
+  const { refresh } = useContext(CourseFilesCacheContext);
   const courseId = useCourseContext();
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
