@@ -1,5 +1,4 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { ReadDirItem } from 'react-native-fs';
 
 import { readDirRecursively } from '../../../utils/files';
 import { notNullish } from '../../../utils/predicates';
@@ -10,7 +9,7 @@ import {
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 export const CourseFilesCacheProvider = ({ children }: PropsWithChildren) => {
-  const courseFilesCachePath = useCourseFilesCachePath();
+  const [principalCache, alternativeCaches] = useCourseFilesCachePath();
 
   const [filesCacheContext, setFilesCacheContext] =
     useState<FilesCacheContextProps>({
@@ -30,11 +29,13 @@ export const CourseFilesCacheProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (filesCacheContext.isRefreshing) {
-      let cache: ReadDirItem[];
-      readDirRecursively(courseFilesCachePath)
-        .then(c => (cache = c))
-        .catch(() => (cache = []))
-        .finally(() => {
+      Promise.all(
+        [principalCache, ...alternativeCaches].map(cachePath =>
+          readDirRecursively(cachePath).catch(() => []),
+        ),
+      )
+        .then(caches => caches.flat())
+        .then(cache => {
           setFilesCacheContext(oldC => ({
             ...oldC,
             refresh,
@@ -53,7 +54,12 @@ export const CourseFilesCacheProvider = ({ children }: PropsWithChildren) => {
           }));
         });
     }
-  }, [courseFilesCachePath, filesCacheContext.isRefreshing, refresh]);
+  }, [
+    principalCache,
+    filesCacheContext.isRefreshing,
+    refresh,
+    alternativeCaches,
+  ]);
 
   return (
     <CourseFilesCacheContext.Provider value={filesCacheContext}>

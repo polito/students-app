@@ -1,4 +1,4 @@
-import { ReadDirItem, readDir } from 'react-native-fs';
+import { ReadDirItem, readDir, unlink } from 'react-native-fs';
 
 export const formatFileSize = (
   sizeInKiloBytes: number,
@@ -24,15 +24,31 @@ export const splitNameAndExtension = (filePath?: string) => {
 export const readDirRecursively = async (rootPath: string) => {
   const files: ReadDirItem[] = [];
   const visitNode = async (path: string) => {
-    const children = await readDir(path);
-    for (const child of children) {
-      if (child.isFile()) {
-        files.push(child);
+    for (const item of await readDir(path)) {
+      if (item.isFile()) {
+        files.push(item);
       } else {
-        await visitNode(child.path);
+        await visitNode(item.path);
       }
     }
   };
   await visitNode(rootPath);
   return files;
+};
+
+/**
+ * Cleans up folders that don't contain at least one file in their subtree
+ */
+export const cleanupEmptyFolders = async (rootPath: string) => {
+  const deleteIfEmpty = async (folderPath: string, skip = false) => {
+    for (const item of await readDir(folderPath)) {
+      if (item.isDirectory()) {
+        await deleteIfEmpty(item.path);
+      }
+    }
+    if (!skip && !(await readDir(folderPath)).length) {
+      await unlink(folderPath);
+    }
+  };
+  await deleteIfEmpty(rootPath, true);
 };
