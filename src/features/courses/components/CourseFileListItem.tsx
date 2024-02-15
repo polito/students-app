@@ -106,7 +106,7 @@ export const CourseFileListItem = ({
   const [notificationClearRequested, setNotificationClearRequested] =
     useState(false);
   const courseId = useCourseContext();
-  const courseFilesCache = useCourseFilesCachePath();
+  const [courseFilesCache] = useCourseFilesCachePath();
   const { getUnreadsCount, clearNotificationScope } = useNotifications();
   const fileNotificationScope = useMemo(
     () => ['teaching', 'courses', courseId.toString(), 'files', item.id],

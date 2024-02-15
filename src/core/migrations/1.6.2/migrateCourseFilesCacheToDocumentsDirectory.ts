@@ -1,6 +1,5 @@
 import {
   CachesDirectoryPath,
-  DocumentDirectoryPath,
   mkdir,
   moveFile,
   readDir,
@@ -8,6 +7,7 @@ import {
 } from 'react-native-fs';
 
 import { splitNameAndExtension } from '../../../utils/files';
+import { PUBLIC_APP_DIRECTORY_PATH } from '../../constants';
 import { PreferencesContextProps } from '../../contexts/PreferencesContext';
 
 export const migrateCourseFilesCacheToDocumentsDirectory = async (
@@ -26,7 +26,7 @@ export const migrateCourseFilesCacheToDocumentsDirectory = async (
     for (const courseCache of courseCaches) {
       if (courseCache.isDirectory()) {
         const newCourseCachePath = [
-          DocumentDirectoryPath,
+          PUBLIC_APP_DIRECTORY_PATH,
           username,
           'Courses',
           courseCache.name,

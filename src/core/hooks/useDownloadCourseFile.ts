@@ -15,6 +15,8 @@ import { dirname } from 'react-native-path';
 
 import { CourseFilesCacheContext } from '../../features/courses/contexts/CourseFilesCacheContext';
 import { UnsupportedFileTypeError } from '../../features/courses/errors/UnsupportedFileTypeError';
+import { useCoursesFilesCachePath } from '../../features/courses/hooks/useCourseFilesCachePath';
+import { cleanupEmptyFolders } from '../../utils/files';
 import { useApiContext } from '../contexts/ApiContext';
 import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
 
@@ -25,6 +27,7 @@ export const useDownloadCourseFile = (
 ) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
+  const coursesFilesCachePath = useCoursesFilesCachePath();
   const { downloadsRef, setDownloads } = useDownloadsContext();
   const {
     cache,
@@ -66,6 +69,7 @@ export const useDownloadCourseFile = (
             // Update the name when changed
             await mkdir(dirname(toFile));
             await moveFile(cachedFilePath, toFile);
+            await cleanupEmptyFolders(coursesFilesCachePath);
             refresh();
           }
         } else {
@@ -73,7 +77,15 @@ export const useDownloadCourseFile = (
         }
       }
     })();
-  }, [cache, fileId, isCacheRefreshing, refresh, toFile, updateDownload]);
+  }, [
+    cache,
+    coursesFilesCachePath,
+    fileId,
+    isCacheRefreshing,
+    refresh,
+    toFile,
+    updateDownload,
+  ]);
 
   const startDownload = useCallback(async () => {
     if (!download.isDownloaded && download.downloadProgress == null) {
