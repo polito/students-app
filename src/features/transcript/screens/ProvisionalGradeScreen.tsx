@@ -53,7 +53,6 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
     () => gradesQuery.data?.find(g => g.id === id),
     [gradesQuery.data, id],
   );
-
   const rejectionTime = useGetRejectionTime({
     rejectingExpiresAt: grade?.rejectingExpiresAt,
   });
@@ -106,8 +105,8 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                     <Text style={styles.rejectionTime}>{rejectionTime}</Text>
                   )}
               </Col>
-              <Col align="center" justify="center" mt={2} style={styles.grade}>
-                <Text style={styles.gradeText}>{grade.grade}</Text>
+              <Col align="center" justify="center" mt={2} flexShrink={0} style={styles.grade}>
+                <Text style={grade.grade.length<3?styles.gradeText:styles.longGradeText} numberOfLines={1}>{grade.grade} </Text>
               </Col>
             </Row>
             <GradeStates state={grade?.state} />
@@ -211,6 +210,10 @@ const createStyles = ({
     },
     gradeText: {
       fontSize: fontSizes['2xl'],
+      fontWeight: fontWeights.semibold,
+    },
+    longGradeText: {
+      fontSize: fontSizes['md'],
       fontWeight: fontWeights.semibold,
     },
     rejectionTime: {
