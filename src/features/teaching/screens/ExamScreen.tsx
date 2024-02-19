@@ -26,6 +26,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useGetCpdSurveys } from '../../../core/queries/surveysHooks';
 import {
+  formatDateTime,
   formatDate,
   formatReadableDate,
   formatTime,
@@ -182,7 +183,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               inverted
               title={
                 exam?.bookingEndsAt
-                  ? formatReadableDate(exam?.bookingEndsAt)
+                  ? formatDateTime(exam?.bookingEndsAt)
                   : t('common.dateToBeDefined')
               }
               subtitle={t('examScreen.bookingEndsAt')}
