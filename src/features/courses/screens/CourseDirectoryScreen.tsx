@@ -13,7 +13,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListItems';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
@@ -116,8 +115,6 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { visibleItemsIndexes, ...visibleItemsFlatListProps } =
-    useVisibleFlatListItems();
 
   useEffect(() => {
     if (!recentFilesQuery.data) return;
@@ -126,19 +123,24 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
     );
   }, [recentFilesQuery.data, searchFilter]);
 
+  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
+  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
+
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       scrollEnabled={scrollEnabled}
+      initialNumToRender={15}
+      maxToRenderPerBatch={15}
+      windowSize={4}
       contentContainerStyle={paddingHorizontal}
       keyExtractor={(item: CourseFileOverviewWithLocation) => item.id}
-      renderItem={({ item, index }) => (
+      renderItem={({ item }) => (
         <CourseRecentFileListItem
           item={item}
-          onSwipeStart={() => setScrollEnabled(false)}
-          onSwipeEnd={() => setScrollEnabled(true)}
-          isInVisibleRange={!!visibleItemsIndexes[index]}
+          onSwipeStart={onSwipeStart}
+          onSwipeEnd={onSwipeEnd}
         />
       )}
       refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
@@ -150,7 +152,6 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           {t('courseDirectoryScreen.noResult')}
         </Text>
       }
-      {...visibleItemsFlatListProps}
     />
   );
 };

@@ -34,6 +34,9 @@ export const useCourseFilesCachePath = () => {
       )
       .then(alternativeCaches => {
         setAlternativeCachePaths(alternativeCaches.map(i => i.path) ?? []);
+      })
+      .catch(() => {
+        // noop
       });
   }, [cacheFolderName, courseId, coursesFilesCachePath]);
 
