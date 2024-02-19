@@ -105,8 +105,23 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                     <Text style={styles.rejectionTime}>{rejectionTime}</Text>
                   )}
               </Col>
-              <Col align="center" justify="center" mt={2} flexShrink={0} style={styles.grade}>
-                <Text style={grade.grade.length<3?styles.gradeText:styles.longGradeText} numberOfLines={1}>{grade.grade} </Text>
+              <Col
+                align="center"
+                justify="center"
+                mt={2}
+                flexShrink={0}
+                style={styles.grade}
+              >
+                <Text
+                  style={
+                    grade.grade.length < 3
+                      ? styles.gradeText
+                      : styles.longGradeText
+                  }
+                  numberOfLines={1}
+                >
+                  {grade.grade}{' '}
+                </Text>
               </Col>
             </Row>
             <GradeStates state={grade?.state} />
