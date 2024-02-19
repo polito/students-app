@@ -26,8 +26,8 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useGetCpdSurveys } from '../../../core/queries/surveysHooks';
 import {
-  formatDateTime,
   formatDate,
+  formatDateTime,
   formatReadableDate,
   formatTime,
 } from '../../../utils/dates';
