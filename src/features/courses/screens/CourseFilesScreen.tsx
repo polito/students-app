@@ -15,7 +15,6 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListItems';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { useCourseContext } from '../contexts/CourseContext';
@@ -34,8 +33,6 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
   const courseId = useCourseContext();
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { visibleItemsIndexes, ...visibleItemsFlatListProps } =
-    useVisibleFlatListItems();
   const { clearNotificationScope } = useNotifications();
 
   useOnLeaveScreen(() => {
@@ -48,6 +45,9 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
     }, [refresh]),
   );
 
+  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
+  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
+
   return (
     <>
       <FlatList
@@ -57,13 +57,14 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
         initialNumToRender={15}
-        renderItem={({ item, index }) => {
+        maxToRenderPerBatch={15}
+        windowSize={4}
+        renderItem={({ item }) => {
           return (
             <CourseRecentFileListItem
               item={item}
-              onSwipeStart={() => setScrollEnabled(false)}
-              onSwipeEnd={() => setScrollEnabled(true)}
-              isInVisibleRange={!!visibleItemsIndexes[index]}
+              onSwipeStart={onSwipeStart}
+              onSwipeEnd={onSwipeEnd}
             />
           );
         }}
@@ -85,7 +86,6 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
             />
           ) : null
         }
-        {...visibleItemsFlatListProps}
       />
       {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (
         <CtaButton

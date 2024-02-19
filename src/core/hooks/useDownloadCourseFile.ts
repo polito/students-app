@@ -58,10 +58,11 @@ export const useDownloadCourseFile = (
     [key, setDownloads],
   );
 
+  const cachedFilePath = cache[fileId];
+
   useEffect(() => {
     (async () => {
       if (toFile && !isCacheRefreshing) {
-        const cachedFilePath = cache[fileId];
         if (cachedFilePath) {
           if (cachedFilePath === toFile) {
             updateDownload({ isDownloaded: true });
@@ -78,7 +79,7 @@ export const useDownloadCourseFile = (
       }
     })();
   }, [
-    cache,
+    cachedFilePath,
     coursesFilesCachePath,
     fileId,
     isCacheRefreshing,
