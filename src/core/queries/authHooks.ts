@@ -24,24 +24,40 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
-      dto.client = { name: 'Students app' };
+      const client = { name: 'Students app' };
 
       return Promise.all([
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
+        DeviceInfo.getBuildNumber(),
+        DeviceInfo.getVersion(),
         isEnvProduction ? messaging().getToken() : undefined,
       ])
-        .then(([name, model, manufacturer, fcmRegistrationToken]) => {
-          dto.device = {
+        .then(
+          ([
             name,
-            platform: Platform.OS,
-            version: `${Platform.Version}`,
             model,
             manufacturer,
-          };
-          dto.preferences = { ...dto.preferences, fcmRegistrationToken };
-        })
+            buildNumber,
+            appVersion,
+            fcmRegistrationToken,
+          ]) => {
+            dto.device = {
+              name,
+              platform: Platform.OS,
+              version: `${Platform.Version}`,
+              model,
+              manufacturer,
+            };
+            dto.client = {
+              ...client,
+              buildNumber,
+              appVersion,
+            };
+            dto.preferences = { ...dto.preferences, fcmRegistrationToken };
+          },
+        )
         .then(() => authClient.login({ loginRequest: dto }))
         .then(pluckData)
         .then(res => {
