@@ -118,12 +118,15 @@ export const CourseFileListItem = memo(
       }
       return [
         courseFilesCache,
-        item.location?.substring(1),
+        item.location?.substring(1), // Files in the top-level directory have an empty location, hence the `filter(Boolean)` below
         [filename ? `${filename} (${item.id})` : item.id, ext]
           .filter(notNullish)
           .join('.'),
-      ].join('/');
+      ]
+        .filter(Boolean)
+        .join('/');
     }, [courseFilesCache, item]);
+
     const {
       isDownloaded,
       downloadProgress,
