@@ -19,6 +19,7 @@ export const editablePreferenceKeys = [
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
+  'hideGrades',
 ] as const;
 
 export type PreferenceKey = (typeof editablePreferenceKeys)[number];
@@ -33,6 +34,7 @@ export const objectPreferenceKeys = [
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
+  'hideGrades',
 ];
 
 export type CoursesPreferences = {
@@ -60,6 +62,7 @@ export interface PreferencesContextBase {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
   };
+  hideGrades?: boolean;
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {
