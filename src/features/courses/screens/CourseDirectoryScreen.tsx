@@ -13,27 +13,24 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { useVisibleFlatListItems } from '../../../core/hooks/useVisibleFlatListItems';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
+import { CourseFileOverviewWithLocation } from '../../../core/types/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
-import {
-  CourseRecentFile,
-  CourseRecentFileListItem,
-} from '../components/CourseRecentFileListItem';
+import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
-import { FilesCacheContext } from '../contexts/FilesCacheContext';
-import { FilesCacheProvider } from '../providers/FilesCacheProvider';
+import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
+import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
 const FileCacheChecker = () => {
-  const { refresh } = useContext(FilesCacheContext);
+  const { refresh } = useContext(CourseFilesCacheContext);
 
   useFocusEffect(
     useCallback(() => {
@@ -64,7 +61,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 
   return (
     <CourseContext.Provider value={courseId}>
-      <FilesCacheProvider>
+      <CourseFilesCacheProvider>
         <FileCacheChecker />
         {searchFilter ? (
           <CourseFileSearchFlatList
@@ -99,7 +96,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             ListFooterComponent={<BottomBarSpacer />}
           />
         )}
-      </FilesCacheProvider>
+      </CourseFilesCacheProvider>
     </CourseContext.Provider>
   );
 };
@@ -112,12 +109,12 @@ interface SearchProps {
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    CourseFileOverviewWithLocation[]
+  >([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { visibleItemsIndexes, ...visibleItemsFlatListProps } =
-    useVisibleFlatListItems();
 
   useEffect(() => {
     if (!recentFilesQuery.data) return;
@@ -126,19 +123,24 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
     );
   }, [recentFilesQuery.data, searchFilter]);
 
+  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
+  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
+
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       scrollEnabled={scrollEnabled}
+      initialNumToRender={15}
+      maxToRenderPerBatch={15}
+      windowSize={4}
       contentContainerStyle={paddingHorizontal}
-      keyExtractor={(item: CourseRecentFile) => item.id}
-      renderItem={({ item, index }) => (
+      keyExtractor={(item: CourseFileOverviewWithLocation) => item.id}
+      renderItem={({ item }) => (
         <CourseRecentFileListItem
           item={item}
-          onSwipeStart={() => setScrollEnabled(false)}
-          onSwipeEnd={() => setScrollEnabled(true)}
-          isInVisibleRange={!!visibleItemsIndexes[index]}
+          onSwipeStart={onSwipeStart}
+          onSwipeEnd={onSwipeEnd}
         />
       )}
       refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
@@ -150,7 +152,6 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
           {t('courseDirectoryScreen.noResult')}
         </Text>
       }
-      {...visibleItemsFlatListProps}
     />
   );
 };
