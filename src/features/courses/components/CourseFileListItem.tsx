@@ -16,6 +16,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
+import { useNavigation } from '@react-navigation/native';
 
 import { IS_IOS } from '../../../core/constants';
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
@@ -95,6 +96,7 @@ export const CourseFileListItem = memo(
     ...rest
   }: Props) => {
     const { t } = useTranslation();
+    const navigation = useNavigation();
     const { colors, fontSizes, spacing } = useTheme();
     const iconProps = useMemo(
       () => ({
@@ -185,12 +187,15 @@ export const CourseFileListItem = memo(
         if (!isDownloaded) {
           await startDownload();
         }
-        openDownloadedFile();
+        if (navigation.isFocused()) {
+          openDownloadedFile();
+        }
       }
     }, [
       downloadProgress,
       isCorrupted,
       isDownloaded,
+      navigation,
       openDownloadedFile,
       refreshDownload,
       startDownload,

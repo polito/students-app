@@ -125,12 +125,16 @@ export const useDownloadCourseFile = (
             downloadProgress: undefined,
           });
         } catch (e) {
-          Alert.alert(t('common.error'), t('courseScreen.fileDownloadFailed'));
+          if (!(e as Error).message?.includes('aborted')) {
+            Alert.alert(
+              t('common.error'),
+              t('courseScreen.fileDownloadFailed'),
+            );
+          }
           updateDownload({
             isDownloaded: false,
             downloadProgress: undefined,
           });
-          throw e;
         }
       }
     },
