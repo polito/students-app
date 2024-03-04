@@ -8,21 +8,32 @@ import {
   downloadFile,
   stopDownload as fsStopDownload,
   mkdir,
+  moveFile,
   unlink,
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
-import { FilesCacheContext } from '../../features/courses/contexts/FilesCacheContext';
+import { CourseFilesCacheContext } from '../../features/courses/contexts/CourseFilesCacheContext';
 import { UnsupportedFileTypeError } from '../../features/courses/errors/UnsupportedFileTypeError';
+import { useCoursesFilesCachePath } from '../../features/courses/hooks/useCourseFilesCachePath';
+import { cleanupEmptyFolders } from '../../utils/files';
 import { useApiContext } from '../contexts/ApiContext';
 import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
 
-export const useDownload = (fromUrl: string, toFile: string) => {
+export const useDownloadCourseFile = (
+  fromUrl: string,
+  toFile: string,
+  fileId: string,
+) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
+  const coursesFilesCachePath = useCoursesFilesCachePath();
   const { downloadsRef, setDownloads } = useDownloadsContext();
-  const { cache, isRefreshing: isCacheRefreshing } =
-    useContext(FilesCacheContext);
+  const {
+    cache,
+    isRefreshing: isCacheRefreshing,
+    refresh,
+  } = useContext(CourseFilesCacheContext);
   const key = `${fromUrl}:${toFile}`;
   const download = useMemo(
     () =>
@@ -30,6 +41,7 @@ export const useDownload = (fromUrl: string, toFile: string) => {
         isDownloaded: false,
         downloadProgress: undefined,
       },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [downloadsRef.current?.[key], key],
   );
 
@@ -46,11 +58,35 @@ export const useDownload = (fromUrl: string, toFile: string) => {
     [key, setDownloads],
   );
 
+  const cachedFilePath = cache[fileId];
+
   useEffect(() => {
-    if (toFile && !isCacheRefreshing) {
-      updateDownload({ isDownloaded: Boolean(cache[toFile]) });
-    }
-  }, [cache, isCacheRefreshing, toFile, updateDownload]);
+    (async () => {
+      if (toFile && !isCacheRefreshing) {
+        if (cachedFilePath) {
+          if (cachedFilePath === toFile) {
+            updateDownload({ isDownloaded: true });
+          } else {
+            // Update the name when changed
+            await mkdir(dirname(toFile));
+            await moveFile(cachedFilePath, toFile);
+            await cleanupEmptyFolders(coursesFilesCachePath);
+            refresh();
+          }
+        } else {
+          updateDownload({ isDownloaded: false });
+        }
+      }
+    })();
+  }, [
+    cachedFilePath,
+    coursesFilesCachePath,
+    fileId,
+    isCacheRefreshing,
+    refresh,
+    toFile,
+    updateDownload,
+  ]);
 
   const startDownload = useCallback(
     async (force = false) => {
@@ -60,9 +96,8 @@ export const useDownload = (fromUrl: string, toFile: string) => {
       ) {
         updateDownload({ downloadProgress: 0 });
         try {
-          await mkdir(dirname(toFile), {
-            NSURLIsExcludedFromBackupKey: true,
-          });
+          await mkdir(dirname(toFile));
+
           const { jobId, promise } = downloadFile({
             fromUrl,
             toFile,

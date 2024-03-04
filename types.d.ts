@@ -1,5 +1,6 @@
 declare module 'react-native-mime-types' {
   function extension(type: string): string;
+  function lookup(path: string): string | false;
 }
 
 declare module 'react-native-path' {

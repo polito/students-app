@@ -45,7 +45,7 @@ const CleanCourseFilesListItem = () => {
   const { setFeedback } = useFeedbackContext();
 
   const { fontSizes } = useTheme();
-  const courseFilesCache = useCourseFilesCachePath();
+  const [courseFilesCache] = useCourseFilesCachePath();
   const [cacheSize, setCacheSize] = useState<number>(0);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
