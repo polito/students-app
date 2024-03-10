@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
+import NotificationBadge from '@msml/react-native-notification-badge';
 import { Notification } from '@polito/api-client/models/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -73,24 +74,28 @@ const courseTransactionsMapping: Record<
 
 const useUnreadNotificationsByScope = () => {
   const { data: notifications } = useGetNotifications();
-  return (notifications?.data
-    ?.filter(n => !n.isRead)
-    ?.reduce((byScope, notif) => {
-      if (notif.scope) {
-        const existingNotifications = get(byScope, notif.scope);
-        setWith(
-          byScope,
-          notif.scope,
-          // Important to avoid picking up objects with numeric keys
-          (Array.isArray(existingNotifications)
-            ? existingNotifications
-            : []
-          ).concat(notif),
-          Object,
-        );
-      }
-      return byScope;
-    }, {}) ?? {}) as UnreadNotificationsByScope;
+  return useMemo(
+    () =>
+      (notifications?.data
+        ?.filter(n => !n.isRead)
+        ?.reduce((byScope, notif) => {
+          if (notif.scope) {
+            const existingNotifications = get(byScope, notif.scope);
+            setWith(
+              byScope,
+              notif.scope,
+              // Important to avoid picking up objects with numeric keys
+              (Array.isArray(existingNotifications)
+                ? existingNotifications
+                : []
+              ).concat(notif),
+              Object,
+            );
+          }
+          return byScope;
+        }, {}) ?? {}) as UnreadNotificationsByScope,
+    [notifications?.data],
+  );
 };
 
 const extractSubtreeNotifications = (root: any) => {
@@ -142,7 +147,9 @@ export const useNotifications = () => {
       summarize = false,
     ) => {
       // TODO PathExtractor<UnreadNotificationsByScope>
-      const root = get(unreadNotifications, path!);
+      const root = !path.length
+        ? unreadNotifications
+        : get(unreadNotifications, path!);
       const visitNode = (node: object | Notification[]): number => {
         if (Array.isArray(node)) {
           return node.length ?? 0;
@@ -211,6 +218,11 @@ export const useNotifications = () => {
     },
     [navigation],
   );
+
+  useEffect(() => {
+    const count = getUnreadsCount([]);
+    NotificationBadge.setNumber(count ?? 0);
+  }, [getUnreadsCount, unreadNotifications]);
 
   return {
     navigateToUpdate,

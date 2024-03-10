@@ -60,12 +60,14 @@ export const useInitFirebaseMessaging = () => {
             navigateToUpdate(remoteMessage as RemoteMessage);
           });
 
-        const unsubscribeOnMessage = messaging().onMessage(remoteMessage =>
-          queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY),
-        );
+        const unsubscribeOnMessage = messaging().onMessage(() => {
+          queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY);
+          queryClient.prefetchQuery(NOTIFICATIONS_QUERY_KEY);
+        });
 
         messaging().setBackgroundMessageHandler(async remoteMessage => {
           queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY);
+          queryClient.prefetchQuery(NOTIFICATIONS_QUERY_KEY);
         });
 
         return () =>
