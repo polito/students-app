@@ -88,53 +88,58 @@ export const useDownloadCourseFile = (
     updateDownload,
   ]);
 
-  const startDownload = useCallback(async () => {
-    if (!download.isDownloaded && download.downloadProgress == null) {
-      updateDownload({ downloadProgress: 0 });
-      try {
-        await mkdir(dirname(toFile));
-        const { jobId, promise } = downloadFile({
-          fromUrl,
-          toFile,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          progressInterval: 200,
-          begin: () => {
-            /* Needed for progress updates to work */
-          },
-          progress: ({ bytesWritten, contentLength }) => {
-            updateDownload({ downloadProgress: bytesWritten / contentLength });
-          },
-        });
-        updateDownload({ jobId });
-        const result = await promise;
-        if (result.statusCode !== 200) {
-          // noinspection ExceptionCaughtLocallyJS
-          throw new Error(t('common.downloadError'));
+  const startDownload = useCallback(
+    async (force = false) => {
+      if (
+        force ||
+        (!download.isDownloaded && download.downloadProgress == null)
+      ) {
+        updateDownload({ downloadProgress: 0 });
+        try {
+          await mkdir(dirname(toFile));
+
+          const { jobId, promise } = downloadFile({
+            fromUrl,
+            toFile,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            progressInterval: 200,
+            begin: () => {
+              /* Needed for progress updates to work */
+            },
+            progress: ({ bytesWritten, contentLength }) => {
+              updateDownload({
+                downloadProgress: bytesWritten / contentLength,
+              });
+            },
+          });
+          updateDownload({ jobId });
+          const result = await promise;
+          if (result.statusCode !== 200) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error(t('common.downloadError'));
+          }
+          updateDownload({
+            isDownloaded: true,
+            downloadProgress: undefined,
+          });
+        } catch (e) {
+          if (!(e as Error).message?.includes('aborted')) {
+            Alert.alert(
+              t('common.error'),
+              t('courseScreen.fileDownloadFailed'),
+            );
+          }
+          updateDownload({
+            isDownloaded: false,
+            downloadProgress: undefined,
+          });
         }
-        updateDownload({
-          isDownloaded: true,
-          downloadProgress: undefined,
-        });
-      } catch (e) {
-        Alert.alert(t('common.error'), t('courseScreen.fileDownloadFailed'));
-        updateDownload({
-          isDownloaded: false,
-          downloadProgress: undefined,
-        });
-        throw e;
       }
-    }
-  }, [
-    download.downloadProgress,
-    download.isDownloaded,
-    fromUrl,
-    t,
-    toFile,
-    token,
-    updateDownload,
-  ]);
+    },
+    [download, fromUrl, t, toFile, token, updateDownload],
+  );
 
   const stopDownload = useCallback(() => {
     const jobId = download.jobId;
@@ -157,7 +162,7 @@ export const useDownloadCourseFile = (
       isDownloaded: false,
       downloadProgress: undefined,
     });
-    return startDownload();
+    return startDownload(true);
   }, [download.isDownloaded, startDownload, toFile, updateDownload]);
 
   const removeDownload = useCallback(async () => {
@@ -169,13 +174,15 @@ export const useDownloadCourseFile = (
     });
   }, [toFile, updateDownload]);
 
-  const openFile = useCallback(() => {
-    return open(toFile).catch(async e => {
-      if (e.message === 'No app associated with this mime type') {
-        throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
-      }
-    });
-  }, [fromUrl, toFile]);
+  const openFile = useCallback(
+    () =>
+      open(toFile).catch(async e => {
+        if (e.message === 'No app associated with this mime type') {
+          throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
+        }
+      }),
+    [fromUrl, toFile],
+  );
 
   return {
     ...(download ?? {}),

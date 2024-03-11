@@ -228,7 +228,7 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
     },
     longGradeText: {
-      fontSize: fontSizes['md'],
+      fontSize: fontSizes.md,
       fontWeight: fontWeights.semibold,
     },
     rejectionTime: {

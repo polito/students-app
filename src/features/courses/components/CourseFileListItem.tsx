@@ -1,6 +1,7 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
+import { stat } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
 
 import {
@@ -15,6 +16,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
+import { useNavigation } from '@react-navigation/native';
 
 import { IS_IOS } from '../../../core/constants';
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
@@ -94,6 +96,7 @@ export const CourseFileListItem = memo(
     ...rest
   }: Props) => {
     const { t } = useTranslation();
+    const navigation = useNavigation();
     const { colors, fontSizes, spacing } = useTheme();
     const iconProps = useMemo(
       () => ({
@@ -109,6 +112,7 @@ export const CourseFileListItem = memo(
       () => ['teaching', 'courses', courseId.toString(), 'files', item.id],
       [courseId, item.id],
     );
+    const [isCorrupted, setIsCorrupted] = useState(false);
     const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
     const cachedFilePath = useMemo(() => {
       let ext: string | null = extension(item.mimeType!);
@@ -137,6 +141,21 @@ export const CourseFileListItem = memo(
       openFile,
     } = useDownloadCourseFile(fileUrl, cachedFilePath, item.id);
 
+    useEffect(() => {
+      (async () => {
+        if (!isDownloaded) {
+          setIsCorrupted(false);
+          return;
+        }
+        const fileStats = await stat(cachedFilePath);
+        setIsCorrupted(
+          Math.abs(fileStats.size - item.sizeInKiloBytes * 1024) /
+            Math.max(fileStats.size, item.sizeInKiloBytes * 1024) >
+            0.1,
+        );
+      })();
+    }, [cachedFilePath, isDownloaded, item.sizeInKiloBytes]);
+
     const metrics = useMemo(
       () =>
         [
@@ -161,12 +180,26 @@ export const CourseFileListItem = memo(
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
+        if (isCorrupted) {
+          await refreshDownload();
+          return;
+        }
         if (!isDownloaded) {
           await startDownload();
         }
-        openDownloadedFile();
+        if (navigation.isFocused()) {
+          openDownloadedFile();
+        }
       }
-    }, [downloadProgress, isDownloaded, openDownloadedFile, startDownload]);
+    }, [
+      downloadProgress,
+      isCorrupted,
+      isDownloaded,
+      navigation,
+      openDownloadedFile,
+      refreshDownload,
+      startDownload,
+    ]);
 
     const trailingItem = useMemo(
       () =>
@@ -246,6 +279,7 @@ export const CourseFileListItem = memo(
         trailingItem={trailingItem}
         mimeType={item.mimeType}
         unread={!!getUnreadsCount(fileNotificationScope)}
+        isCorrupted={isCorrupted}
       />
     );
 
