@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SafeAreaView, SectionList, View } from 'react-native';
+import {
+  Pressable,
+  SafeAreaView,
+  SectionList,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -149,29 +155,32 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
             const isFirstItem = index === 0;
             const isLastItem = index === section.data.length - 1;
             return section?.isExpanded ? (
-              <Pressable
+              <TouchableHighlight
+                underlayColor={colors.touchableHighlight}
                 onPress={() => onSelectTopic(subtopic.id, subtopic.title)}
+                style={{
+                  marginHorizontal: spacing[4],
+                  marginBottom: isLastItem ? spacing[2] : 0,
+                  backgroundColor: colors.background,
+                  paddingVertical: spacing[2.5],
+                  borderTopLeftRadius: isFirstItem ? shapes.lg : 0,
+                  borderTopRightRadius: isFirstItem ? shapes.lg : 0,
+                  borderBottomRightRadius: isLastItem ? shapes.lg : 0,
+                  borderBottomLeftRadius: isLastItem ? shapes.lg : 0,
+                }}
               >
                 <Row
                   justify="space-between"
                   align="center"
                   key={subtopic.id}
-                  mh={4}
                   ph={3}
-                  mb={isLastItem ? 2 : 0}
-                  style={{
-                    backgroundColor: colors.background,
-                    paddingVertical: spacing[2.5],
-                    borderTopLeftRadius: isFirstItem ? shapes.lg : 0,
-                    borderTopRightRadius: isFirstItem ? shapes.lg : 0,
-                    borderBottomRightRadius: isLastItem ? shapes.lg : 0,
-                    borderBottomLeftRadius: isLastItem ? shapes.lg : 0,
-                  }}
                 >
-                  <Text variant="prose">{sanitizeHtml(subtopic.title)}</Text>
+                  <Text variant="prose" style={{ flexShrink: 1 }}>
+                    {sanitizeHtml(subtopic.title)}
+                  </Text>
                   <Icon icon={faChevronRight} color={colors.secondaryText} />
                 </Row>
-              </Pressable>
+              </TouchableHighlight>
             ) : null;
           }}
         />
