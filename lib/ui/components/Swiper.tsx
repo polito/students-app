@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -16,25 +16,19 @@ type SwiperProps<T> = {
   items: readonly T[];
   renderItem: (item: ListRenderItemInfo<T>) => ReactElement;
   keyExtractor: (item: T) => string;
-  index: number;
-  onIndexChanged: (newIndex: number) => void;
+  onIndexChanged: (newIndex: number, oldIndex: number) => void;
 };
 
 export const Swiper = <T,>({
   items,
   renderItem,
   keyExtractor,
-  index,
   onIndexChanged,
 }: SwiperProps<T>) => {
   const styles = useStylesheet(createStyles);
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(index);
-  const pageSliderRef = useRef<FlatList>(null);
+  const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const { bottom: marginBottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  useEffect(() => {
-    setCurrentPageIndex(index);
-  }, [index]);
 
   return (
     <View
@@ -46,7 +40,6 @@ export const Swiper = <T,>({
       ]}
     >
       <FlatList
-        ref={pageSliderRef}
         data={items}
         horizontal
         pagingEnabled
@@ -57,8 +50,11 @@ export const Swiper = <T,>({
           },
         }) => {
           const newIndex = Math.max(0, Math.round(x / width));
-          setCurrentPageIndex(newIndex);
-          onIndexChanged(newIndex);
+          setCurrentPageIndex(oldIndex => {
+            if (oldIndex === newIndex) return oldIndex;
+            onIndexChanged(newIndex, oldIndex);
+            return newIndex;
+          });
         }}
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
