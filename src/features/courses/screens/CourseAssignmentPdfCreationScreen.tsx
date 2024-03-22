@@ -210,6 +210,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       <Swiper
         index={currentPageIndex}
         items={imageUris}
+        keyExtractor={item => item}
         renderItem={renderImage}
         onIndexChanged={handleSetCurrentPageIndex}
       />
