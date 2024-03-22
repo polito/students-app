@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Animated,
   FlatList,
   Image,
   Platform,
@@ -21,9 +20,9 @@ import {
   faPrint,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { CarouselDots } from '@lib/ui/components/CarouselDots';
 import { Divider } from '@lib/ui/components/Divider';
 import { Icon } from '@lib/ui/components/Icon';
+import { Swiper } from '@lib/ui/components/Swiper';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -39,7 +38,9 @@ type Props = NativeStackScreenProps<
   TeachingStackParamList,
   'CourseAssignmentPdfCreation'
 >;
-
+interface RenderItemImageProps {
+  item: string;
+}
 const A4_ASPECT_RATIO = 1.414;
 
 export const CourseAssignmentPdfCreationScreen = ({
@@ -47,10 +48,8 @@ export const CourseAssignmentPdfCreationScreen = ({
   route,
 }: Props) => {
   const { courseId, firstImageUri } = route.params;
-
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-
   const styles = useStylesheet(createStyles);
   const { bottom: marginBottom } = useSafeAreaInsets();
   const [imageUris, setImageUris] = useState<string[]>([firstImageUri]);
@@ -163,6 +162,42 @@ export const CourseAssignmentPdfCreationScreen = ({
       .finally(() => setIsCreatingPDF(false));
   };
 
+  const renderImage = ({ item }: RenderItemImageProps) => (
+    <View
+      style={[
+        {
+          width,
+        },
+        styles.pageContainer,
+      ]}
+      onLayout={({ nativeEvent }) => {
+        setPageContainerAspectRatio(
+          nativeEvent.layout.height / nativeEvent.layout.width,
+        );
+      }}
+    >
+      <View
+        style={[
+          {
+            ...(pageContainerAspectRatio < A4_ASPECT_RATIO
+              ? { height: '100%' }
+              : { width: '100%' }),
+          },
+          styles.page,
+        ]}
+      >
+        <Image
+          resizeMode="contain"
+          source={{ uri: item }}
+          style={styles.pageImage}
+        />
+      </View>
+    </View>
+  );
+  const handleSetCurrentPageIndex = (newIndex: number) => {
+    setCurrentPageIndex(newIndex);
+  };
+
   return (
     <View
       style={[
@@ -172,63 +207,12 @@ export const CourseAssignmentPdfCreationScreen = ({
         },
       ]}
     >
-      <Animated.FlatList
-        ref={pageSliderRef}
-        data={imageUris}
-        horizontal
-        pagingEnabled
-        keyExtractor={item => item}
-        onScroll={({
-          nativeEvent: {
-            contentOffset: { x },
-          },
-        }) => {
-          setCurrentPageIndex(Math.max(0, Math.round(x / width)));
-        }}
-        scrollEventThrottle={100}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              {
-                width,
-              },
-              styles.pageContainer,
-            ]}
-            onLayout={({ nativeEvent }) => {
-              setPageContainerAspectRatio(
-                nativeEvent.layout.height / nativeEvent.layout.width,
-              );
-            }}
-          >
-            <View
-              style={[
-                {
-                  ...(pageContainerAspectRatio < A4_ASPECT_RATIO
-                    ? { height: '100%' }
-                    : { width: '100%' }),
-                },
-                styles.page,
-              ]}
-            >
-              <Image
-                resizeMode="contain"
-                source={{ uri: item }}
-                style={styles.pageImage}
-              />
-            </View>
-          </View>
-        )}
-        extraData={imageUris}
+      <Swiper
+        index={currentPageIndex}
+        items={imageUris}
+        renderItem={renderImage}
+        onIndexChanged={handleSetCurrentPageIndex}
       />
-      <View style={styles.dotsContainer}>
-        <CarouselDots
-          carouselLength={imageUris.length ?? 0}
-          carouselIndex={currentPageIndex}
-          expandedDotsCounts={4}
-        />
-      </View>
-
       <Divider />
       <View style={styles.actionsContainer}>
         <Action
@@ -302,6 +286,7 @@ const createStyles = ({ spacing }: Theme) =>
       flex: 1,
     },
     pageContainer: {
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -312,14 +297,6 @@ const createStyles = ({ spacing }: Theme) =>
     },
     pageImage: {
       flexGrow: 1,
-    },
-    dotsContainer: {
-      alignItems: 'center',
-      height: 6,
-      marginVertical: spacing[4],
-    },
-    dot: {
-      marginHorizontal: spacing[1],
     },
     actionsContainer: {
       display: 'flex',
