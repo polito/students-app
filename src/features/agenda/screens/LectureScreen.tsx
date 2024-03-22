@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -60,29 +60,44 @@ export const LectureScreen = ({ route, navigation }: Props) => {
 
   const { width } = useWindowDimensions();
 
-  const handleSetCurrentPageIndex = (newIndex: number) => {
-    setCurrentVideoIndex(newIndex);
+  const handleSetCurrentPageIndex = (newIndex: number, oldIndex: number) => {
+    // setCurrentVideoIndex(newIndex);
+    setPlayingVC(oldVC => [
+      ...oldVC.map((v, i) => {
+        if (i === newIndex) v.isPaused = false;
+        if (i === oldIndex) v.isPaused = true;
+        return v;
+      }),
+    ]);
   };
-  const renderItem = ({ item }: ListRenderItemInfo<VirtualClassroom>) => {
+  const renderItem = ({ item }: ListRenderItemInfo<PlayingVC>) => {
     return (
       <View style={{ width }}>
         <VideoPlayer
           source={{ uri: item.videoUrl }}
           poster={item.coverUrl ?? undefined}
+          paused={item.isPaused}
         />
       </View>
     );
   };
-  const virtualClassroomRet = useMemo(() => {
-    if (!associatedVirtualClassrooms || !virtualClassroomsQuery) return [];
-    return associatedVirtualClassrooms
-      .map(
-        vc =>
-          virtualClassroomsQuery.find(
-            vcs => vcs.id === vc.id,
-          ) as VirtualClassroom,
-      )
-      .filter(vc => vc && vc?.videoUrl);
+
+  type PlayingVC = VirtualClassroom & { isPaused: boolean };
+
+  const [playingVC, setPlayingVC] = useState<PlayingVC[]>([]);
+
+  useEffect(() => {
+    if (!associatedVirtualClassrooms || !virtualClassroomsQuery) return;
+
+    setPlayingVC(
+      associatedVirtualClassrooms
+        .map((vc, index) => {
+          const apiVC = virtualClassroomsQuery.find(vcs => vcs.id === vc.id);
+
+          return { ...apiVC, isPaused: index > 0 } as PlayingVC;
+        })
+        .filter(vc => vc && vc?.videoUrl),
+    );
   }, [associatedVirtualClassrooms, virtualClassroomsQuery]);
 
   const hideEvent = () => {
@@ -138,34 +153,31 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         contentContainerStyle={GlobalStyles.fillHeight}
       >
         <SafeAreaView>
-          {virtualClassroomRet[0] &&
-            virtualClassroomRet.length === 1 &&
-            isRecordedVC(virtualClassroomRet[0]) && (
+          {playingVC[0] &&
+            playingVC.length === 1 &&
+            isRecordedVC(playingVC[0]) && (
               <VideoPlayer
-                source={{ uri: virtualClassroomRet[0]?.videoUrl }}
-                poster={virtualClassroomRet[0]?.coverUrl ?? undefined}
+                source={{ uri: playingVC[0]?.videoUrl }}
+                poster={playingVC[0]?.coverUrl ?? undefined}
               />
             )}
-          {virtualClassroomRet && virtualClassroomRet.length > 1 && (
+          {playingVC && playingVC.length > 1 && (
             <Swiper
-              items={virtualClassroomRet}
+              items={playingVC}
               renderItem={renderItem}
               keyExtractor={item => item.id.toString()}
-              index={currentVideoIndex}
               onIndexChanged={handleSetCurrentPageIndex}
             />
           )}
 
-          {virtualClassroomRet && isLiveVC(virtualClassroomRet) && (
+          {playingVC && isLiveVC(playingVC) && (
             <View></View>
             // TODO handle live VC
             // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
           )}
           <Row justify="space-between" align="center">
             <EventDetails
-              title={
-                virtualClassroomRet[currentVideoIndex]?.title ?? lecture.title
-              }
+              title={playingVC[currentVideoIndex]?.title ?? lecture.title}
               type={`${t('common.lecture')} ${lecture.description ? '- ' + lecture.description : ''}`}
               time={`${convertMachineDateToFormatDate(lecture.date)} ${
                 lecture.fromTime
