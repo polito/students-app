@@ -194,7 +194,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       </View>
     </View>
   );
-  const handleSetCurrentPageIndex = (newIndex: number) => {
+  const handleSetCurrentPageIndex = (newIndex: number, oldIndex: number) => {
     setCurrentPageIndex(newIndex);
   };
 
@@ -208,7 +208,6 @@ export const CourseAssignmentPdfCreationScreen = ({
       ]}
     >
       <Swiper
-        index={currentPageIndex}
         items={imageUris}
         keyExtractor={item => item}
         renderItem={renderImage}
