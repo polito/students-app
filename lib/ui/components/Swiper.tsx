@@ -15,7 +15,7 @@ import { Theme } from '@lib/ui/types/Theme';
 type SwiperProps<T> = {
   items: readonly T[];
   renderItem: (item: ListRenderItemInfo<T>) => ReactElement;
-  keyExtractor?: (item: T) => string;
+  keyExtractor: (item: T) => string;
   index: number;
   onIndexChanged: (newIndex: number) => void;
 };
