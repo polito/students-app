@@ -23,6 +23,7 @@ import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { IS_IOS } from '../../../core/constants';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { pdfSizes } from '../../courses/constants';
 import { Attachment } from '../../services/types/Attachment';
 import { AttachmentChip } from './AttachmentChip';
@@ -57,10 +58,27 @@ export const MessagingView = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-
+  const types = [
+    DocumentPicker.types.pdf,
+    DocumentPicker.types.images,
+    DocumentPicker.types.zip,
+    DocumentPicker.types.doc,
+    DocumentPicker.types.docx,
+    DocumentPicker.types.xlsx,
+    DocumentPicker.types.xls,
+  ];
+  const { setFeedback } = useFeedbackContext();
   const pickFile = async () => {
-    DocumentPicker.pickSingle().then(res => {
+    DocumentPicker.pickSingle({ type: types }).then(res => {
       if (!res.name || !res.size || !res.type) return;
+      if (res.size > 32 * 1000000) {
+        setFeedback({
+          text: t('common.sizeExc'),
+          isError: true,
+          isPersistent: false,
+        });
+        return;
+      }
 
       onAttachmentChange({
         uri: res.uri,
