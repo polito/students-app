@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ListRenderItemInfo,
   SafeAreaView,
   ScrollView,
   View,
   useWindowDimensions,
 } from 'react-native';
-import { ListRenderItemInfo } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { Row } from '@lib/ui/components/Row';
 import { Swiper } from '@lib/ui/components/Swiper';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
@@ -35,7 +34,6 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route, navigation }: Props) => {
   const { item: lecture } = route.params;
-  const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const associatedVirtualClassrooms = lecture.virtualClassrooms;
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
@@ -45,16 +43,23 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   );
   const { width } = useWindowDimensions();
 
+  const [currentVideoTitle, setCurrentVideoTitle] = useState<string>();
+
   const handleSetCurrentPageIndex = (newIndex: number, oldIndex: number) => {
     // setCurrentVideoIndex(newIndex);
     setPlayingVC(oldVC => [
       ...oldVC.map((v, i) => {
-        if (i === newIndex) v.isPaused = false;
+        if (i === newIndex) {
+          setCurrentVideoTitle(v.title);
+          v.isPaused = false;
+        }
         if (i === oldIndex) v.isPaused = true;
+
         return v;
       }),
     ]);
   };
+
   const renderItem = ({ item }: ListRenderItemInfo<PlayingVC>) => {
     return (
       <View style={{ width }}>
@@ -74,6 +79,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     if (!associatedVirtualClassrooms || !virtualClassroomsQuery) return;
 
+    setCurrentVideoTitle(associatedVirtualClassrooms[0]?.title);
     setPlayingVC(
       associatedVirtualClassrooms
         .map((vc, index) => {
@@ -91,15 +97,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
       contentContainerStyle={GlobalStyles.fillHeight}
     >
       <SafeAreaView>
-        {playingVC[0] &&
-          playingVC.length === 1 &&
-          isRecordedVC(playingVC[0]) && (
-            <VideoPlayer
-              source={{ uri: playingVC[0]?.videoUrl }}
-              poster={playingVC[0]?.coverUrl ?? undefined}
-            />
-          )}
-        {playingVC && playingVC.length > 1 && (
+        {playingVC.length === 1 && isRecordedVC(playingVC[0]) && (
+          <VideoPlayer
+            source={{ uri: playingVC[0]?.videoUrl }}
+            poster={playingVC[0]?.coverUrl ?? undefined}
+          />
+        )}
+        {playingVC.length > 1 && (
           <Swiper
             items={playingVC}
             renderItem={renderItem}
@@ -108,20 +112,18 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           />
         )}
 
-        {playingVC && isLiveVC(playingVC) && (
+        {isLiveVC(playingVC) && (
           <View></View>
           // TODO handle live VC
           // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
         )}
-        <Row justify="space-between" align="center">
-          <EventDetails
-            title={playingVC[currentVideoIndex]?.title ?? lecture.title}
-            type={t('common.lecture')}
-            time={`${convertMachineDateToFormatDate(lecture.date)} ${
-              lecture.fromTime
-            } - ${lecture.toTime}`}
-          />
-        </Row>
+        <EventDetails
+          title={currentVideoTitle ?? lecture.title}
+          type={t('common.lecture')}
+          time={`${convertMachineDateToFormatDate(lecture.date)} ${
+            lecture.fromTime
+          } - ${lecture.toTime}`}
+        />
         <OverviewList indented>
           {lecture?.place && (
             <ListItem
