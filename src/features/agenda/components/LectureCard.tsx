@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
@@ -24,20 +25,23 @@ export const LectureCard = ({ item, compact = false }: Props) => {
   const { navigate } = useNavigation<NavigationProp<AgendaStack, 'Lecture'>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { colors, fontSizes } = useTheme();
+  const { colors, fontSizes, dark } = useTheme();
+
+  const location = useMemo(() => {
+    if (!item.place?.name) return '-';
+
+    if (compact) return item.place.name;
+
+    return t('agendaScreen.room', { roomName: item.place.name });
+  }, [compact, item.place?.name, t]);
 
   return (
     <AgendaCard
       title={item.title}
       type={t('common.lecture')}
       time={`${item.fromTime} - ${item.toTime}`}
-      location={
-        item.place?.name
-          ? t('agendaScreen.room', { roomName: item.place.name })
-          : '-'
-      }
+      location={location}
       iconColor={item.color}
-      color={colors.agendaLecture}
       isCompact={compact}
       icon={item.icon}
       onPress={() =>
@@ -48,6 +52,10 @@ export const LectureCard = ({ item, compact = false }: Props) => {
           },
         })
       }
+      style={[
+        styles.card,
+        { backgroundColor: item.color + (dark ? '80' : '30') },
+      ]}
     >
       {item.virtualClassrooms?.map(vc => (
         <Row key={vc.id} align="center" style={styles.vcRow}>
@@ -71,12 +79,18 @@ export const LectureCard = ({ item, compact = false }: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
+    card: {
+      borderWidth: 0,
+      elevation: 0,
+    },
     description: {
+      color: colors.lectureCardSecondary,
       marginTop: spacing[1.5],
     },
     vcTitle: {
+      color: colors.lectureCardSecondary,
       marginLeft: spacing[1.5],
     },
     vcRow: {
