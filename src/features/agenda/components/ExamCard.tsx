@@ -33,7 +33,7 @@ export const ExamCard = ({ item, compact = false }: Props) => {
     <AgendaCard
       title={item.title}
       type={t('common.examCall')}
-      color={colors.agendaExam}
+      color={colors.examCardBorder}
       isCompact={compact}
       iconColor={item.color}
       icon={item.icon}

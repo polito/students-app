@@ -21,7 +21,7 @@ export const BookingCard = ({ item, compact = false }: Props) => {
     <AgendaCard
       title={item.title}
       type={t('common.booking')}
-      color={colors.agendaBooking}
+      color={colors.bookingCardBorder}
       isCompact={compact}
       time={`${item.fromTime} - ${item.toTime}`}
       onPress={() =>

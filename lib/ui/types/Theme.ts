@@ -92,10 +92,10 @@ export interface Colors {
   tabBarInactive: string;
   title: string;
   touchableHighlight: string;
-  agendaBooking: string;
-  agendaDeadline: string;
-  agendaExam: string;
-  agendaLecture: string;
+  bookingCardBorder: string;
+  deadlineCardBorder: string;
+  examCardBorder: string;
+  lectureCardSecondary: string;
   translucentSurface: string;
   white: string;
 }
