@@ -6,7 +6,6 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CarouselDots } from '@lib/ui/components/CarouselDots';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -27,18 +26,10 @@ export const Swiper = <T,>({
 }: SwiperProps<T>) => {
   const styles = useStylesheet(createStyles);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
-  const { bottom: marginBottom } = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
   return (
-    <View
-      style={[
-        styles.screen,
-        {
-          marginBottom,
-        },
-      ]}
-    >
+    <>
       <FlatList
         data={items}
         horizontal
@@ -69,17 +60,13 @@ export const Swiper = <T,>({
           expandedDotsCounts={4}
         />
       </View>
-    </View>
+    </>
   );
 };
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    screen: {
-      flex: 1,
-    },
     dotsContainer: {
       alignItems: 'center',
-      height: 6,
       marginVertical: spacing[4],
     },
     dot: {

@@ -16,7 +16,6 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { Row } from '@lib/ui/components/Row';
 import { Swiper } from '@lib/ui/components/Swiper';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
@@ -41,7 +40,6 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
 export const LectureScreen = ({ route, navigation }: Props) => {
   const { item: lecture } = route.params;
-  const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const associatedVirtualClassrooms = lecture.virtualClassrooms;
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
@@ -60,16 +58,23 @@ export const LectureScreen = ({ route, navigation }: Props) => {
 
   const { width } = useWindowDimensions();
 
+  const [currentVideoTitle, setCurrentVideoTitle] = useState<string>();
+
   const handleSetCurrentPageIndex = (newIndex: number, oldIndex: number) => {
     // setCurrentVideoIndex(newIndex);
     setPlayingVC(oldVC => [
       ...oldVC.map((v, i) => {
-        if (i === newIndex) v.isPaused = false;
+        if (i === newIndex) {
+          setCurrentVideoTitle(v.title);
+          v.isPaused = false;
+        }
         if (i === oldIndex) v.isPaused = true;
+
         return v;
       }),
     ]);
   };
+
   const renderItem = ({ item }: ListRenderItemInfo<PlayingVC>) => {
     return (
       <View style={{ width }}>
@@ -89,6 +94,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     if (!associatedVirtualClassrooms || !virtualClassroomsQuery) return;
 
+    setCurrentVideoTitle(associatedVirtualClassrooms[0]?.title);
     setPlayingVC(
       associatedVirtualClassrooms
         .map((vc, index) => {
@@ -153,8 +159,9 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         contentContainerStyle={GlobalStyles.fillHeight}
       >
         <SafeAreaView>
-          {playingVC[0] &&
+          {playingVC &&
             playingVC.length === 1 &&
+            playingVC[0] &&
             isRecordedVC(playingVC[0]) && (
               <VideoPlayer
                 source={{ uri: playingVC[0]?.videoUrl }}
