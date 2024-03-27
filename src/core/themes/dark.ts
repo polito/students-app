@@ -29,7 +29,7 @@ export const darkTheme: Theme = {
     })!,
     divider: lightTheme.palettes.gray[500],
     touchableHighlight: 'rgba(255, 255, 255, .08)',
-    agendaLecture: lightTheme.palettes.navy[100],
+    lectureCardSecondary: lightTheme.palettes.gray[300],
     tabBarInactive: lightTheme.palettes.gray[400],
   },
 };

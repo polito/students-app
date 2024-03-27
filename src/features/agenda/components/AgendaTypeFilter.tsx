@@ -41,18 +41,17 @@ export const AgendaTypeFilter = () => {
 
   const { colors } = useTheme();
 
-  const colorsMap: Record<AgendaItemType, string> = useMemo(() => {
+  const colorsMap: Record<AgendaItemType, string | null> = useMemo(() => {
     return {
-      booking: colors.agendaBooking,
-      deadline: colors.agendaDeadline,
-      exam: colors.agendaExam,
-      lecture: colors.agendaLecture,
+      booking: colors.bookingCardBorder,
+      deadline: colors.deadlineCardBorder,
+      exam: colors.examCardBorder,
+      lecture: null,
     };
   }, [
-    colors.agendaBooking,
-    colors.agendaDeadline,
-    colors.agendaExam,
-    colors.agendaLecture,
+    colors.bookingCardBorder,
+    colors.deadlineCardBorder,
+    colors.examCardBorder,
   ]);
 
   const styles = useStylesheet(createStyles);
@@ -69,7 +68,7 @@ export const AgendaTypeFilter = () => {
     } else {
       return selectedTypes.map(type => (
         <View key={type} style={styles.buttonType}>
-          <Icon icon={faCircle} color={colorsMap[type]} />
+          <Icon icon={faCircle} color={colorsMap[type] ?? undefined} />
           <Text>{getLocalizedType(type)}</Text>
         </View>
       ));
@@ -85,7 +84,7 @@ export const AgendaTypeFilter = () => {
         id: eventType,
         title,
         state: (filters[typedEventType] ? 'on' : 'off') as MenuAction['state'],
-        imageColor: colorsMap[typedEventType],
+        imageColor: colorsMap[typedEventType] ?? undefined,
         image: Platform.select({
           ios: 'circle',
           android: 'circle',
@@ -127,15 +126,12 @@ const createStyles = ({ colors, spacing }: Theme) =>
       alignItems: 'center',
     },
     tabBooking: {
-      borderColor: colors.agendaBooking,
+      borderColor: colors.bookingCardBorder,
     },
     tabDeadline: {
-      borderColor: colors.agendaDeadline,
+      borderColor: colors.deadlineCardBorder,
     },
     tabExam: {
-      borderColor: colors.agendaExam,
-    },
-    tabLecture: {
-      borderColor: colors.agendaLecture,
+      borderColor: colors.examCardBorder,
     },
   });
