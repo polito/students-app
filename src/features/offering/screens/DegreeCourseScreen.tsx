@@ -160,10 +160,10 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             </Row>
           </Card>
           {offeringCourse?.hours &&
-            offeringCourse.hours?.lecture &&
-            offeringCourse.hours?.classroomExercise &&
-            offeringCourse.hours?.labExercise &&
-            offeringCourse.hours?.tutoring && (
+            (offeringCourse.hours?.lecture ||
+              offeringCourse.hours?.classroomExercise ||
+              offeringCourse.hours?.labExercise ||
+              offeringCourse.hours?.tutoring) && (
               <OverviewList>
                 {!!offeringCourse?.hours?.lecture && (
                   <ListItem
