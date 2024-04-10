@@ -7,7 +7,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketReply } from '@polito/api-client/models/TicketReply';
 
-import { TextMessage } from './TextMessage';
+import { HtmlMessage } from './HtmlMessage';
 import { TicketAttachmentChip } from './TicketAttachmentChip';
 
 interface ChatMessageProps {
@@ -56,13 +56,16 @@ export const ChatMessage = ({
           {t('common.agent')} {message.agentId}
         </Text>
       )}
-      <TextMessage message={message.message?.trim() ?? ''} />
+      <HtmlMessage
+        message={message.message?.trim() ?? ''}
+        baseStyle={styles.text}
+      />
       <Attachments />
     </ChatBubble>
   );
 };
 
-const createStyles = ({ fontWeights, spacing }: Theme) =>
+const createStyles = ({ fontWeights, spacing, fontSizes, colors }: Theme) =>
   StyleSheet.create({
     // Theme-independent hardcoded color
     // eslint-disable-next-line react-native/no-color-literals
@@ -77,5 +80,11 @@ const createStyles = ({ fontWeights, spacing }: Theme) =>
     },
     bubbleContainer: {
       marginHorizontal: spacing[5],
+    },
+    text: {
+      padding: 0,
+      fontSize: fontSizes.sm,
+      color: colors.white,
+      textDecorationColor: colors.white,
     },
   });
