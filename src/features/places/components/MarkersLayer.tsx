@@ -167,7 +167,7 @@ export const MarkersLayer = ({
             symbolSortKey: ['get', 'priority'],
             textField: ['get', 'name'],
             textSize: fontSizes['2xs'],
-            textFont: ['Open Sans Semibold', 'Arial Unicode MS Regular'],
+            textFont: ['Open Sans Semibold'],
             textColor: ['get', 'color'],
             textOffset: [0, 1.2],
             textAnchor: 'top',
