@@ -12,7 +12,7 @@ import Barcode from 'react-native-barcode-svg';
 
 import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -225,43 +225,47 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               )}
             </Card>
           </Section>
-          {hasCheckIn && <CtaButtonSpacer />}
-          {canBeCancelled && <CtaButtonSpacer />}
-          <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      <CtaButtonContainer absolute={true}>
-        {hasCheckIn && (
-          <CtaButton
-            title={
-              completedCheckIn
-                ? t('bookingScreen.checkInFeedback')
-                : t('bookingScreen.checkIn')
-            }
-            action={onPressCheckIn}
-            loading={updateBookingMutation.isLoading}
-            variant="outlined"
-            icon={completedCheckIn ? faCheckCircle : undefined}
-            absolute={false}
-            success={completedCheckIn}
-            disabled={
-              isDisabled || updateBookingMutation.isLoading || completedCheckIn
-            }
-            containerStyle={{ paddingVertical: 0 }}
-          />
-        )}
-        {canBeCancelled && (
-          <CtaButton
-            title={t('bookingScreen.cancelBooking')}
-            action={onPressDelete}
-            loading={deleteBookingMutation.isLoading}
-            absolute={false}
-            disabled={isDisabled || deleteBookingMutation.isLoading}
-            destructive={true}
-            containerStyle={{ paddingVertical: 0 }}
-          />
-        )}
-      </CtaButtonContainer>
+      {(hasCheckIn || canBeCancelled) && (
+        <>
+          <CtaButtonContainer absolute={false}>
+            {hasCheckIn && (
+              <CtaButton
+                title={
+                  completedCheckIn
+                    ? t('bookingScreen.checkInFeedback')
+                    : t('bookingScreen.checkIn')
+                }
+                action={onPressCheckIn}
+                loading={updateBookingMutation.isLoading}
+                variant="outlined"
+                icon={completedCheckIn ? faCheckCircle : undefined}
+                absolute={false}
+                success={completedCheckIn}
+                disabled={
+                  isDisabled ||
+                  updateBookingMutation.isLoading ||
+                  completedCheckIn
+                }
+                containerStyle={{ paddingVertical: 0 }}
+              />
+            )}
+            {canBeCancelled && (
+              <CtaButton
+                title={t('bookingScreen.cancelBooking')}
+                action={onPressDelete}
+                loading={deleteBookingMutation.isLoading}
+                absolute={false}
+                disabled={isDisabled || deleteBookingMutation.isLoading}
+                destructive={true}
+                containerStyle={{ paddingVertical: 0 }}
+              />
+            )}
+          </CtaButtonContainer>
+          <BottomBarSpacer />
+        </>
+      )}
     </>
   );
 };

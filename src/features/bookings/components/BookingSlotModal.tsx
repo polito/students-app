@@ -20,7 +20,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { inRange } from 'lodash';
 import { DateTime, IANAZone } from 'luxon';
 
-import { isSlotFull } from '../../../utils/bookings';
+import { isSlotBookable, isSlotFull } from '../../../utils/bookings';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
 import { BookingField } from './BookingField';
 import { BookingSeatsCta } from './BookingSeatsCta';
@@ -42,14 +42,14 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     item?.bookingStartsAt && item?.bookingStartsAt > now
   );
 
-  const canBeBooked = item.canBeBooked && item.start > DateTime.now();
+  const canBeBooked = isSlotBookable(item);
   const startHour = item.start.toFormat('HH:mm');
   const endHour = item.end.toFormat('HH:mm');
   const day = item.start.toFormat('d MMMM');
 
   const NotBookableMessage = () => {
     if (
-      !item.canBeBooked &&
+      !canBeBooked &&
       inRange(
         DateTime.now().valueOf(),
         item.bookingStartsAt.valueOf(),
@@ -95,7 +95,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
 
   return (
     <ModalContent close={close} title={t('common.booking')}>
-      {canBeBooked && item.id ? (
+      {item && canBeBooked && item.id ? (
         <>
           <View style={styles.spacer} />
           <BookingSeatsCta
