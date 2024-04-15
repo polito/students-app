@@ -136,6 +136,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           })
           .then(() => {
             setFeedback({ text: t('bookingScreen.checkInFeedback') });
+            bookingsQuery.refetch();
           });
       } else {
         setFeedback({ text: t('bookingScreen.checkLocationErrorFeedback') });
