@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
+import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
@@ -22,6 +23,10 @@ import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
 import { ContactsScreen } from '../../people/screens/ContactsScreen';
+import {
+  PlacesNavigator,
+  PlacesStackParamList,
+} from '../../places/components/PlacesNavigator';
 import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
 import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
@@ -84,6 +89,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Guide: { id: string };
   Surveys: undefined;
   SurveyList: { isCompiled: boolean };
+  PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -330,6 +336,14 @@ export const ServicesNavigator = () => {
           headerTitle: t('surveysScreen.compiledTitle'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="PlacesAgendaStack"
+        component={PlacesNavigator}
+        options={{
+          title: t('placeScreen.title'),
+          headerShown: false,
         }}
       />
       {SharedScreens(Stack as any)}

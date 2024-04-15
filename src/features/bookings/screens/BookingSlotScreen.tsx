@@ -85,19 +85,34 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
   );
-  const nextWeek = useCallback(
-    () => setCurrentWeekStart(odlW => odlW.plus({ week: 1 })),
-    [],
-  );
-
-  const prevWeek = useCallback(
-    () => setCurrentWeekStart(odlW => odlW.minus({ week: 1 })),
-    [],
-  );
 
   const currentTopic = useMemo(
     () => getCalendarPropsFromTopic(topics, topicId),
     [topics, topicId],
+  );
+
+  const mode = currentTopic.agendaView ? 'day' : 'custom';
+
+  const nextWeek = useCallback(
+    () =>
+      setCurrentWeekStart(oldW => {
+        if (currentTopic.agendaView) {
+          return oldW.plus({ days: 1 });
+        }
+        return oldW.plus({ week: 1 });
+      }),
+    [],
+  );
+
+  const prevWeek = useCallback(
+    () =>
+      setCurrentWeekStart(oldW => {
+        if (currentTopic.agendaView) {
+          return oldW.minus({ days: 1 });
+        }
+        return oldW.minus({ week: 1 });
+      }),
+    [],
   );
 
   useLayoutEffect(() => {
@@ -251,6 +266,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         {calendarHeight && (
           <Calendar<BookingCalendarEvent>
             weekStartsOn={currentWeekStart.weekday as WeekNum}
+            mode={mode}
             weekEndsOn={weekEndsOn}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
@@ -260,7 +276,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             hours={hours}
             bodyContainerStyle={{ backgroundColor: 'yellow' }}
             cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
-            mode="custom"
             showAllDayEventCell={false}
             swipeEnabled={false}
             renderHeader={props => (

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
 
@@ -18,6 +19,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -30,6 +32,7 @@ import { isToday } from '@lib/ui/utils/calendar';
 import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { inRange } from 'lodash';
 import { DateTime, IANAZone } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -37,6 +40,7 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -61,6 +65,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const { setFeedback } = useFeedbackContext();
   const { getCurrentPosition, computeDistance } = useGeolocation();
   const { colors, palettes, spacing } = useTheme();
+  const theme = useTheme();
   const bookingsQuery = useGetBookings();
   const deleteBookingMutation = useDeleteBooking(id);
   const updateBookingMutation = useUpdateBooking();
@@ -74,6 +79,42 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
+  const titleStyles = useTitlesStyles(theme);
+  const { width } = useWindowDimensions();
+  const description = booking?.description;
+  const screenTitle = description ? description : title;
+  useEffect(() => {
+    if (!bookingsQuery.data) return;
+    if (description) {
+      navigation.setOptions({
+        headerTitle: () => (
+          <Row
+            align="center"
+            justify="space-between"
+            style={{
+              width: Platform.select({ android: width - 50, ios: width - 40 }),
+              left: Platform.select({ android: -25, ios: -15 }),
+            }}
+          >
+            <Text
+              variant="title"
+              style={[
+                titleStyles.headerTitleStyle,
+                {
+                  fontSize: 17,
+                  flexShrink: 1,
+                },
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {title}
+            </Text>
+          </Row>
+        ),
+      });
+    }
+  }, [bookingsQuery, titleStyles.headerStyle, width, description, title]);
 
   const hasCheckIn = useMemo(
     () =>
@@ -82,6 +123,15 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         DateTime.fromJSDate(booking?.startsAt, {
           zone: IANAZone.create('Europe/Rome'),
         }),
+      ) &&
+      inRange(
+        DateTime.now().valueOf(),
+        DateTime.fromJSDate(booking?.endsAt, {
+          zone: IANAZone.create('Europe/Rome'),
+        }).valueOf(),
+        DateTime.fromJSDate(booking?.endsAt, {
+          zone: IANAZone.create('Europe/Rome'),
+        }).valueOf(),
       ) &&
       booking?.locationCheck?.enabled &&
       bookingLocationHasValidCoordinates(booking?.locationCheck),
@@ -153,7 +203,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
       >
         <SafeAreaView>
           <View style={{ padding: spacing[5] }} accessible>
-            <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
+            <ScreenTitle
+              style={{ marginBottom: spacing[2] }}
+              title={screenTitle}
+            />
             {subTopicTitle && (
               <Text variant="caption" style={{ marginBottom: spacing[1] }}>
                 {subTopicTitle}
