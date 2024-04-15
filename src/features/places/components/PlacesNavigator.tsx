@@ -95,8 +95,13 @@ export const PlacesNavigator = () => {
           attributionEnabled: false,
           compassEnabled: true,
           compassFadeWhenNorth: true,
-          styleJSON:
-            '{"version":8,"sources":{},"layers":[],"glyphs":"mapbox://fonts/mapbox/{fontstack}/{range}.pbf"}',
+          styleJSON: JSON.stringify({
+            version: 8,
+            glyphs:
+              'https://app.didattica.polito.it/maps_fonts/{fontstack}/{range}.pbf',
+            sources: {},
+            layers: [],
+          }),
         },
         mapDefaultContent: (
           <>

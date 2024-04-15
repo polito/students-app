@@ -397,7 +397,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       )}
 
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
-        <Row gap={3} align="center" justify="space-between">
+        <Row gap={3} align="stretch" justify="space-between">
           <TranslucentCard>
             <IconButton
               icon={faCrosshairs}
@@ -527,7 +527,7 @@ const createStyles = ({ spacing }: Theme) =>
       marginBottom: spacing[2],
     },
     icon: {
+      alignItems: 'center',
       paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2.5],
     },
   });
