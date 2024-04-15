@@ -125,13 +125,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         }),
       ) &&
       inRange(
-        DateTime.now().valueOf(),
-        DateTime.fromJSDate(booking?.endsAt, {
-          zone: IANAZone.create('Europe/Rome'),
-        }).valueOf(),
-        DateTime.fromJSDate(booking?.endsAt, {
-          zone: IANAZone.create('Europe/Rome'),
-        }).valueOf(),
+        Date.now(),
+        booking?.startsAt.getTime(),
+        booking?.endsAt.getTime(),
       ) &&
       booking?.locationCheck?.enabled &&
       bookingLocationHasValidCoordinates(booking?.locationCheck),

@@ -33,8 +33,6 @@
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
     "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
-    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
-    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
     "noSeatSelected": "Nessuna",
     "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
     "seatStatus": {

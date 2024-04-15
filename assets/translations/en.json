@@ -33,8 +33,6 @@
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
     "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
-    "informationAcknowledgment": "I declare that I have read it\nof the ",
-    "informationAcknowledgmentLink": "COVID 19 emergency information",
     "noSeatSelected": "No seat",
     "noSeatsAvailable": "We're sorry,\nthere are no places available",
     "seatStatus": {
