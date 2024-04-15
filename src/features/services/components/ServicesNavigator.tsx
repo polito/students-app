@@ -261,6 +261,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: '',
           headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen

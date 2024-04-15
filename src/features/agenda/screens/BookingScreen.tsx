@@ -19,7 +19,6 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -87,31 +86,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     if (!bookingsQuery.data) return;
     if (description) {
       navigation.setOptions({
-        headerTitle: () => (
-          <Row
-            align="center"
-            justify="space-between"
-            style={{
-              width: Platform.select({ android: width - 50, ios: width - 40 }),
-              left: Platform.select({ android: -25, ios: -15 }),
-            }}
-          >
-            <Text
-              variant="title"
-              style={[
-                titleStyles.headerTitleStyle,
-                {
-                  fontSize: 17,
-                  flexShrink: 1,
-                },
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {title}
-            </Text>
-          </Row>
-        ),
+        headerTitle: title,
       });
     }
   }, [bookingsQuery, titleStyles.headerStyle, width, description, title]);
