@@ -128,10 +128,7 @@ export const BookingSeatsCta = ({
             })
             .then(() => {
               onCloseModal?.();
-              setTimeout(() => {
-                navigation.navigate('Services');
-                navigation.navigate('Bookings');
-              }, 0);
+              navigation.pop(2);
             })
         }
         disabled={!ctaEnabled}
