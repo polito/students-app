@@ -174,7 +174,7 @@ export const AgendaCard = ({
           {/* Extra children are only shown if the card is not compact */}
           {!isCompact && children}
 
-          {location && (
+          {!isCompact && location && (
             <Row gap={1} mt={1.5} align="center">
               <Icon
                 icon={faLocationDot}
@@ -189,6 +189,23 @@ export const AgendaCard = ({
               >
                 {location}
               </Text>
+            </Row>
+          )}
+          {isCompact && location && (
+            <Row gap={1} mt={1.5} align="center">
+              <Text
+                variant="secondaryText"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ color: palettes.gray[dark ? 100 : 700] }}
+              >
+                {location}
+              </Text>
+              <Icon
+                icon={faLocationDot}
+                color={palettes.gray[dark ? 300 : 600]}
+                size={!isTablet ? fontSizes.xs : undefined}
+              />
             </Row>
           )}
         </Col>
