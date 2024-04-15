@@ -52,7 +52,6 @@ export const BookingsScreen = ({ navigation }: Props) => {
       {createBookingEnabled && (
         <CtaButton
           action={() => {
-            navigation.goBack();
             navigation.navigate('BookingTopic');
           }}
           title={t('bookingsScreen.newBooking')}
