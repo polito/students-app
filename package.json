@@ -1,6 +1,6 @@
 {
   "name": "@polito/students-app",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "private": true,
   "scripts": {
     "android": "react-native run-android --active-arch-only --appIdSuffix=dev",
