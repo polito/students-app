@@ -120,7 +120,7 @@ export const getCalendarPropsFromTopic = (
   topicId?: string,
 ) => {
   const topicIndex = topics?.findIndex(topic => topic.id === topicId);
-  if (!!topicIndex && topicIndex > -1 && topics) {
+  if (topicIndex !== undefined && topicIndex > -1 && topics) {
     return topics[topicIndex];
   }
   const topicWithSubtopics = topics?.find(topic =>
