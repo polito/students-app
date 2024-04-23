@@ -205,6 +205,30 @@ export const CourseInfoScreen = () => {
             ))}
           </OverviewList>
         </Section>
+
+        <Section>
+          <SectionHeader title="links" />
+          <OverviewList
+            indented
+            loading={
+              !courseQuery?.data || (courseQuery.data?.links?.length ?? 0) > 0
+            }
+            emptyStateText={
+              isOffline && courseQuery.isLoading
+                ? t('common.cacheMiss')
+                : 'Non ci sono link relativi al corso'
+            }
+          >
+            {courseQuery.data?.links.map(link => (
+              <ListItem
+                key={courseQuery.data?.links.indexOf(link)}
+                title={link.description ?? ''}
+                linkTo={link.url}
+              />
+            ))}
+          </OverviewList>
+        </Section>
+
         <Section>
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
