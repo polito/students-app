@@ -3,15 +3,16 @@ import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { Card } from '@lib/ui/components/Card';
-import { Grid } from '@lib/ui/components/Grid';
+import { Col } from '@lib/ui/components/Col';
 import { Metric } from '@lib/ui/components/Metric';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
@@ -21,16 +22,11 @@ import {
   useGetStudent,
 } from '../../../core/queries/studentHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { formatFinalGrade } from '../../../utils/grades';
+import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { ProgressChart } from '../../teaching/components/ProgressChart';
-import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CareerScreenModal } from '../components/CareerScreenModal';
 
-interface Props {
-  navigation: NativeStackNavigationProp<TeachingStackParamList, 'Transcript'>;
-}
-
-export const CareerScreen = (_: Props) => {
+export const CareerScreen = () => {
   const { t } = useTranslation();
   const { palettes, colors } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -175,56 +171,65 @@ export const CareerScreen = (_: Props) => {
               title={t('transcriptMetricsScreen.averagesAndGrades')}
               trailingIcon={{
                 onPress: onPressEvent,
-                accessibilityLabel: t(
-                  'courseStatisticsScreen.enrolledExamInfo',
-                ),
                 icon: faQuestionCircle,
                 color: colors.link,
               }}
             />
             <Card style={styles.metricsCard} accessible={true}>
-              <Grid>
-                <Metric
-                  title={t('transcriptMetricsScreen.weightedAverageLabel')}
-                  value={studentQuery.data?.averageGrade ?? '--'}
-                  style={GlobalStyles.grow}
-                />
-
-                <Metric
-                  title={t('transcriptMetricsScreen.estimatedFinalGrade')}
-                  value={formatFinalGrade(
-                    studentQuery.data?.estimatedFinalGrade,
-                  )}
-                  color={palettes.primary[400]}
-                  style={GlobalStyles.grow}
-                />
-
-                {studentQuery.data?.averageGradePurged && (
+              <Col>
+                <Row>
+                  <Text style={styles.title}>
+                    {t('transcriptMetricsScreen.weightedAverageLabel')}
+                  </Text>
+                </Row>
+                <Row style={styles.row}>
                   <Metric
-                    title={t('transcriptMetricsScreen.finalAverageLabel')}
-                    value={studentQuery.data.averageGradePurged ?? '--'}
+                    value={formatThirtiethsGrade(
+                      studentQuery.data?.averageGrade,
+                    )}
                     style={GlobalStyles.grow}
                   />
-                )}
-
-                {studentQuery.data?.estimatedFinalGradePurged && (
                   <Metric
-                    title={t(
-                      'transcriptMetricsScreen.estimatedFinalGradePurged',
-                    )}
                     value={formatFinalGrade(
-                      studentQuery.data.estimatedFinalGradePurged,
+                      studentQuery.data?.estimatedFinalGrade,
                     )}
                     color={palettes.primary[400]}
                     style={GlobalStyles.grow}
                   />
-                )}
-              </Grid>
+                </Row>
+                <Row>
+                  <Text style={styles.title}>
+                    {t('transcriptMetricsScreen.finalAverageLabel')}
+                  </Text>
+                </Row>
+                <Row>
+                  {studentQuery.data?.averageGradePurged && (
+                    <Metric
+                      value={formatThirtiethsGrade(
+                        studentQuery.data.averageGradePurged,
+                      )}
+                      style={GlobalStyles.grow}
+                    />
+                  )}
+
+                  {studentQuery.data?.estimatedFinalGradePurged && (
+                    <Metric
+                      value={formatFinalGrade(
+                        studentQuery.data.estimatedFinalGradePurged,
+                      )}
+                      color={palettes.primary[400]}
+                      style={GlobalStyles.grow}
+                    />
+                  )}
+                </Row>
+              </Col>
 
               {studentQuery.data?.mastersAdmissionAverageGrade && (
                 <Metric
                   title={t('transcriptMetricsScreen.masterAdmissionAverage')}
-                  value={studentQuery.data.mastersAdmissionAverageGrade ?? '--'}
+                  value={formatThirtiethsGrade(
+                    studentQuery.data.mastersAdmissionAverageGrade,
+                  )}
                   style={[GlobalStyles.grow, styles.additionalMetric]}
                 />
               )}
@@ -237,7 +242,7 @@ export const CareerScreen = (_: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
       paddingVertical: spacing[5],
@@ -262,5 +267,12 @@ const createStyles = ({ spacing }: Theme) =>
     },
     grade: {
       marginLeft: spacing[2],
+    },
+    row: {
+      marginBottom: spacing[4],
+    },
+    title: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.medium,
     },
   });

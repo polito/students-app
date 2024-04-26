@@ -8,3 +8,6 @@ export const formatGrade = (grade: string) =>
 
 export const formatFinalGrade = (grade?: number | null) =>
   [grade ?? '--', 110].join('/');
+
+export const formatThirtiethsGrade = (grade?: number | null) =>
+  [grade ?? '--', 30].join('/');
