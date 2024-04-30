@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Linking,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
@@ -207,23 +213,21 @@ export const CourseInfoScreen = () => {
         </Section>
 
         <Section>
-          <SectionHeader title="links" />
+          <SectionHeader title={t('courseLinkScreen.title')} />
           <OverviewList
             indented
-            loading={
-              !courseQuery?.data || (courseQuery.data?.links?.length ?? 0) > 0
-            }
+            loading={!courseQuery?.data}
             emptyStateText={
               isOffline && courseQuery.isLoading
                 ? t('common.cacheMiss')
-                : 'Non ci sono link relativi al corso'
+                : t('courseLinkScreen.empty')
             }
           >
             {courseQuery.data?.links.map(link => (
               <ListItem
                 key={courseQuery.data?.links.indexOf(link)}
-                title={link.description ?? ''}
-                linkTo={link.url}
+                title={link.description ?? link.url}
+                onPress={() => Linking.openURL(link.url)}
               />
             ))}
           </OverviewList>

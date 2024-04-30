@@ -307,6 +307,10 @@
   "courseGuideScreen": {
     "title": "Course guide"
   },
+  "courseLinkScreen": {
+    "title": "Course links",
+    "empty": "There are no links related to the course"
+  },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
   },
