@@ -308,8 +308,9 @@
     "title": "Course guide"
   },
   "courseLinkScreen": {
-    "title": "Course links",
-    "empty": "There are no links related to the course"
+    "title": "Useful links",
+    "empty": "There are no links related to the course",
+    "noDescription": "link to"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"

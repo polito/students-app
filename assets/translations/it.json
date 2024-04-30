@@ -308,8 +308,9 @@
     "title": "Guida del corso"
   },
   "courseLinkScreen": {
-    "title": "Link del corso",
-    "empty": "Non ci sono link relativi al corso"
+    "title": "Link utili",
+    "empty": "Non ci sono link relativi al corso",
+    "noDescription": "Collegamento a"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"

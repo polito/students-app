@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
@@ -24,6 +25,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
 import { useNavigation } from '@react-navigation/native';
@@ -96,7 +98,7 @@ export const CourseInfoScreen = () => {
       ) === undefined,
     [courseId, queryClient],
   );
-
+  const { fontSizes } = useTheme();
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
 
   return (
@@ -226,7 +228,9 @@ export const CourseInfoScreen = () => {
             {courseQuery.data?.links.map(link => (
               <ListItem
                 key={courseQuery.data?.links.indexOf(link)}
-                title={link.description ?? link.url}
+                leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
+                title={link.description ?? t('courseLinkScreen.noDescription')}
+                subtitle={link.url}
                 onPress={() => Linking.openURL(link.url)}
               />
             ))}
