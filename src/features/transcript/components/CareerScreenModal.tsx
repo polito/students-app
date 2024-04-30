@@ -12,7 +12,7 @@ export const CareerScreenModal = ({
   onDismiss,
 }: {
   title: string;
-  content: string;
+  content?: string;
   itemList: { title: string; content: string }[];
   onDismiss: () => void;
 }) => {
@@ -21,22 +21,25 @@ export const CareerScreenModal = ({
   return (
     <ModalContent close={onDismiss} title={title}>
       <View style={styles.content} accessible>
-        <Text accessibilityLabel={content}>{content}</Text>
         {itemList.map((item, index) => {
-          return (
-            <View style={styles.listItem} key={index}>
-              <Text>{`\u2022`} </Text>
-              <View style={styles.listItem}>
-                <Text>
-                  <Text
-                    style={styles.listItemTitle}
-                    accessibilityLabel={item.title}
-                  >{`${item.title}:`}</Text>{' '}
-                  <Text accessibilityLabel={item.content}>{item.content}</Text>
-                </Text>
+          if (item.title && item.content) {
+            return (
+              <View style={styles.listItem} key={index}>
+                <Text>{`\u2022`} </Text>
+                <View style={styles.listItem}>
+                  <Text style={styles.text}>
+                    <Text
+                      style={styles.listItemTitle}
+                      accessibilityLabel={item.title}
+                    >{`${item.title}:`}</Text>{' '}
+                    <Text accessibilityLabel={item.content}>
+                      {item.content}
+                    </Text>
+                  </Text>
+                </View>
               </View>
-            </View>
-          );
+            );
+          }
         })}
       </View>
     </ModalContent>
@@ -61,13 +64,16 @@ const createStyles = ({ dark, fontSizes, colors, spacing }: Theme) =>
       textAlign: 'center',
     },
     content: {
-      padding: spacing[4],
-      gap: spacing[4],
+      padding: spacing[7],
+      gap: spacing[2],
     },
     listItem: {
       flexDirection: 'row',
     },
     listItemTitle: {
       fontWeight: 'bold',
+    },
+    text: {
+      textAlign: 'justify',
     },
   });

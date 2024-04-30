@@ -39,6 +39,8 @@ export const CareerScreen = () => {
     totalAttendedCredits,
     totalAcquiredCredits,
     totalCredits,
+    mastersAdmissionAverageGrade,
+    excludedCreditsNumber,
   } = studentQuery.data ?? {};
 
   const {
@@ -50,20 +52,28 @@ export const CareerScreen = () => {
   const onPressEvent = () => {
     showBottomModal(
       <CareerScreenModal
-        title="Medie"
+        title={t('transcriptMetricsScreen.averagesAndGrades')}
         itemList={[
           {
-            title: 'Media ponderata',
-            content:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Non enim praesent elementum facilisis leo vel fringilla. Leo integer malesuada nunc vel risus commodo viverra maecenas accumsan.',
+            title: t('transcriptMetricsScreen.weightedAverageLabel'),
+            content: t(
+              'transcriptMetricsScreen.weightedAverageLabelDescription',
+            ),
           },
           {
-            title: 'Media depurata',
-            content:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Non enim praesent elementum facilisis leo vel fringilla. Leo integer malesuada nunc vel risus commodo viverra maecenas accumsan.',
+            title: t('transcriptMetricsScreen.finalAverageLabel'),
+            content: t('transcriptMetricsScreen.finalAverageLabelDescription', {
+              separation: excludedCreditsNumber,
+            }),
           },
+          !mastersAdmissionAverageGrade
+            ? {
+                title: t('transcriptMetricsScreen.masterAdmissionAverage'),
+                content:
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+              }
+            : { title: '', content: '' },
         ]}
-        content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         onDismiss={closeBottomModal}
       />,
     );
