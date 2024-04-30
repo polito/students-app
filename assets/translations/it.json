@@ -726,7 +726,9 @@
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
     "weightedAverageLabel": "Media ponderata",
-    "yourCareer": "La tua carriera"
+    "yourCareer": "La tua carriera",
+    "finalAverageLabelDescription": "Media complessiva depurata dei {{-separation}} crediti peggiori",
+    "weightedAverageLabelDescription":"È la media pesata in funzione dei crediti relativi ad ogni esame con voto (le lodi non concorrono al calcolo) \nMedia ponderata = sommatoria (voto * crediti)/sommatoria crediti"
   },
   "videoControls": {
     "changePlaybackRate": "Cambia velocità di riproduzione",

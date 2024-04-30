@@ -726,7 +726,9 @@
     "thisYear": "This academic year",
     "title": "Career",
     "weightedAverageLabel": "Weighted average",
-    "yourCareer": "Your career"
+    "yourCareer": "Your career",
+    "finalAverageLabelDescription": "Adjusted total average of {{-separation}} worst",
+    "weightedAverageLabelDescription":"It is the average weighted according to the credits for each exam with a grade (the praise does not contribute to the calculation) \nWeighted average = summation (rating * credits) / summation credits"
   },
   "videoControls": {
     "changePlaybackRate": "Change playback rate",
