@@ -25,7 +25,7 @@ export const CareerScreenModal = ({
           if (item.title && item.content) {
             return (
               <View style={styles.listItem} key={index}>
-                <Text>{`\u2022`} </Text>
+                <Text style={styles.dot}>{`\u2022`} </Text>
                 <View style={styles.listItem}>
                   <Text style={styles.text}>
                     <Text
@@ -75,5 +75,8 @@ const createStyles = ({ dark, fontSizes, colors, spacing }: Theme) =>
     },
     text: {
       textAlign: 'justify',
+    },
+    dot: {
+      fontSize: fontSizes.xl,
     },
   });
