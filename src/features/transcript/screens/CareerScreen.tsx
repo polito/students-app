@@ -66,7 +66,7 @@ export const CareerScreen = () => {
               separation: excludedCreditsNumber,
             }),
           },
-          !mastersAdmissionAverageGrade
+          mastersAdmissionAverageGrade
             ? {
                 title: t('transcriptMetricsScreen.masterAdmissionAverage'),
                 content:
