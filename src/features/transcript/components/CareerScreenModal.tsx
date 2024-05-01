@@ -7,12 +7,10 @@ import { Theme } from '@lib/ui/types/Theme';
 
 export const CareerScreenModal = ({
   title,
-  content,
   itemList,
   onDismiss,
 }: {
   title: string;
-  content?: string;
   itemList: { title: string; content: string }[];
   onDismiss: () => void;
 }) => {
@@ -25,7 +23,7 @@ export const CareerScreenModal = ({
           if (item.title && item.content) {
             return (
               <View style={styles.listItem} key={index}>
-                <Text style={styles.dot}>{`\u2022`} </Text>
+                <Text>{`\u2022`} </Text>
                 <View style={styles.listItem}>
                   <Text style={styles.text}>
                     <Text
@@ -71,12 +69,9 @@ const createStyles = ({ dark, fontSizes, colors, spacing }: Theme) =>
       flexDirection: 'row',
     },
     listItemTitle: {
-      fontWeight: 'bold',
+      fontWeight: '600',
     },
     text: {
       textAlign: 'justify',
-    },
-    dot: {
-      fontSize: fontSizes.xl,
     },
   });
