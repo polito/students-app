@@ -8,6 +8,7 @@ import {
   faBriefcase,
   faClipboardQuestion,
   faComments,
+  faEnvelope,
   faIdCard,
   faMobileScreenButton,
   faNewspaper,
@@ -26,6 +27,10 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
+import {
+  useGetUnreadWebmail,
+  useGetWebmail,
+} from '../../../core/queries/webMailHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
 
@@ -42,6 +47,8 @@ export const ServicesScreen = () => {
   const queryClient = useQueryClient();
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
+  const unreadWebMail = useGetUnreadWebmail();
+  const webmail = useGetWebmail();
   const services = useMemo(() => {
     return [
       {
@@ -129,15 +136,29 @@ export const ServicesScreen = () => {
         disabled: isOffline,
         linkTo: { screen: 'Surveys' },
       },
+      {
+        id: 'mail',
+        name: 'WebMail',
+        icon: faEnvelope,
+        disabled: isOffline,
+        unReadCount: unreadWebMail.data
+          ? parseInt(unreadWebMail.data.unreadEmails, 10)
+          : 0,
+        onPress: () =>
+          webmail.data?.url ? Linking.openURL(webmail.data.url) : '',
+      },
     ];
   }, [
     emailGuideRead,
+    getUnreadsCount,
     isOffline,
     peopleSearched?.length,
     queryClient,
     styles.badge,
     t,
     unreadTickets,
+    unreadWebMail.data,
+    webmail.data?.url,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(
