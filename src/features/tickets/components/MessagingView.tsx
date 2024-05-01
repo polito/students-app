@@ -61,6 +61,7 @@ export const MessagingView = ({
   const types = [
     DocumentPicker.types.pdf,
     DocumentPicker.types.images,
+    DocumentPicker.types.video,
     DocumentPicker.types.zip,
     DocumentPicker.types.doc,
     DocumentPicker.types.docx,
@@ -79,7 +80,6 @@ export const MessagingView = ({
         });
         return;
       }
-
       onAttachmentChange({
         uri: res.uri,
         name: res.name,
