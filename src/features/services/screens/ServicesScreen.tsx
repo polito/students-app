@@ -28,8 +28,9 @@ import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import {
-  useGetUnreadWebmail,
-  useGetWebmail,
+  GetWebmailLink,
+  WEBMAIL_LINK_QUERY_KEY,
+  useGetUnreadEmails,
 } from '../../../core/queries/webMailHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
@@ -47,8 +48,8 @@ export const ServicesScreen = () => {
   const queryClient = useQueryClient();
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
-  const unreadWebMail = useGetUnreadWebmail();
-  const webmail = useGetWebmail();
+  const unreadEmailsQuery = useGetUnreadEmails();
+
   const services = useMemo(() => {
     return [
       {
@@ -141,11 +142,17 @@ export const ServicesScreen = () => {
         name: 'WebMail',
         icon: faEnvelope,
         disabled: isOffline,
-        unReadCount: unreadWebMail.data
-          ? parseInt(unreadWebMail.data.unreadEmails, 10)
+        unReadCount: unreadEmailsQuery.data
+          ? parseInt(unreadEmailsQuery.data.unreadEmails, 10)
           : 0,
-        onPress: () =>
-          webmail.data?.url ? Linking.openURL(webmail.data.url) : '',
+        onPress: () => {
+          queryClient
+            .fetchQuery(WEBMAIL_LINK_QUERY_KEY, GetWebmailLink, {
+              staleTime: 55 * 1000, // 55 seconds
+              cacheTime: 55 * 1000, // 55 seconds
+            })
+            .then(res => Linking.openURL(res.url ?? ''));
+        },
       },
     ];
   }, [
@@ -157,8 +164,7 @@ export const ServicesScreen = () => {
     styles.badge,
     t,
     unreadTickets,
-    unreadWebMail.data,
-    webmail.data?.url,
+    unreadEmailsQuery.data,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(
