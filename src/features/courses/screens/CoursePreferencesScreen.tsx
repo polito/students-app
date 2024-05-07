@@ -19,6 +19,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { CourseNotifications } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -108,6 +109,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     [uniqueShortcode, coursesPrefs],
   );
 
+  const [notifications, setNotifications] = useState<
+    CourseNotifications | undefined
+  >(courseQuery.data?.notifications);
+
   return (
     <CourseContext.Provider value={courseId}>
       <ScrollView
@@ -182,6 +187,14 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         isHidden: !value,
                       },
                     });
+                    setNotifications(prevNotifications => {
+                      if (!prevNotifications) return prevNotifications;
+                      return {
+                        notices: value,
+                        lectures: value,
+                        files: value,
+                      };
+                    });
                     updateCoursePreferences({
                       notifications: {
                         notices: value,
@@ -206,9 +219,16 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('common.notice_plural')}
                   subtitle={t('coursePreferencesScreen.noticesSubtitle')}
                   disabled={!courseQuery.data}
-                  value={courseQuery.data?.notifications.notices}
+                  value={notifications?.notices}
                   leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
                   onChange={() => {
+                    setNotifications(prevNotifications => {
+                      if (!prevNotifications) return prevNotifications;
+                      return {
+                        ...prevNotifications,
+                        notices: !prevNotifications.notices,
+                      };
+                    });
                     updateCoursePreferences({
                       notifications: {
                         notices: !courseQuery.data?.notifications.notices,
@@ -221,9 +241,16 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('common.file_plural')}
                   subtitle={t('coursePreferencesScreen.filesSubtitle')}
                   disabled={!courseQuery.data}
-                  value={courseQuery.data?.notifications.files}
+                  value={notifications?.files}
                   leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
                   onChange={() => {
+                    setNotifications(prevNotifications => {
+                      if (!prevNotifications) return prevNotifications;
+                      return {
+                        ...prevNotifications,
+                        files: !prevNotifications.files,
+                      };
+                    });
                     updateCoursePreferences({
                       notifications: {
                         files: !courseQuery.data?.notifications.files,
@@ -236,11 +263,19 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('common.lecture_plural')}
                   subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
                   disabled={!courseQuery.data}
-                  value={courseQuery.data?.notifications.lectures}
+                  value={notifications?.lectures}
                   leadingItem={
                     <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
                   }
                   onChange={() => {
+                    setNotifications(prevNotifications => {
+                      if (!prevNotifications) return prevNotifications;
+                      return {
+                        ...prevNotifications,
+                        lectures: !prevNotifications.lectures,
+                      };
+                    });
+
                     updateCoursePreferences({
                       notifications: {
                         lectures: !courseQuery.data?.notifications.lectures,
