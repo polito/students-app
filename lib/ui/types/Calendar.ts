@@ -12,6 +12,8 @@ export interface ICalendarEventBase {
   children?: ReactElement | null;
   hideHours?: boolean;
   hours?: number[];
+  width?: number;
+  left?: number;
 }
 
 export type CalendarTouchableOpacityProps = {
