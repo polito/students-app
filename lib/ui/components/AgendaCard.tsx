@@ -86,10 +86,7 @@ export const AgendaCard = ({
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
 
   const isTablet = useMemo(() => isTabletHelper(), []);
-  const showsIcon = useMemo(
-    () => iconColor && (icon || isTablet),
-    [icon, iconColor, isTablet],
-  );
+  const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
 
   const secondaryIfLecture = useMemo(
     () =>
@@ -136,7 +133,6 @@ export const AgendaCard = ({
         <Col
           gap={isCompact ? 0.5 : 2}
           style={
-            !isTablet &&
             isCompact && { height: '100%', justifyContent: 'space-between' }
           }
         >
@@ -157,15 +153,24 @@ export const AgendaCard = ({
 
           <Stack
             {...(isCompact
-              ? { direction: 'column', flexGrow: 1 }
+              ? {
+                  direction: !isTablet ? 'column' : 'row',
+                  flexGrow: 1,
+                  gap: isTablet ? 2 : undefined,
+                }
               : { align: 'center', gap: 2 })}
           >
             {showsIcon && <AgendaIcon icon={icon} color={iconColor!} />}
             <Text
               style={[
                 styles.title,
-                isCompact ? styles.titleCompact : undefined,
+                isCompact
+                  ? isTablet
+                    ? styles.titleCompactTablet
+                    : styles.titleCompact
+                  : undefined,
               ]}
+              numberOfLines={isCompact ? (isTablet ? 2 : 3) : undefined}
             >
               {title}
             </Text>
@@ -223,10 +228,6 @@ const createStyles = ({
   dark,
 }: Theme) =>
   StyleSheet.create({
-    titleContainer: {
-      flex: 1,
-      alignItems: 'center',
-    },
     title: {
       flex: 1,
       fontWeight: fontWeights.semibold,
@@ -237,8 +238,9 @@ const createStyles = ({
       fontSize: fontSizes.xs,
       lineHeight: fontSizes.xs * 1.3,
     },
-    titleWithIcon: {
-      marginLeft: spacing[1.5],
+    titleCompactTablet: {
+      fontSize: fontSizes.sm,
+      lineHeight: fontSizes.xs * 1.3,
     },
     touchable: {
       paddingHorizontal: spacing[5],
