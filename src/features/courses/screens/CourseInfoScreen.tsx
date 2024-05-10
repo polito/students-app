@@ -53,6 +53,7 @@ export const CourseInfoScreen = () => {
   const { t } = useTranslation();
   const courseId = useCourseContext();
   const styles = useStylesheet(createStyles);
+  const { fontSizes } = useTheme();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
@@ -98,7 +99,6 @@ export const CourseInfoScreen = () => {
       ) === undefined,
     [courseId, queryClient],
   );
-  const { fontSizes } = useTheme();
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
 
   return (
@@ -215,21 +215,21 @@ export const CourseInfoScreen = () => {
         </Section>
 
         <Section>
-          <SectionHeader title={t('courseLinkScreen.title')} />
+          <SectionHeader title={t('courseInfoTab.linksSectionTitle')} />
           <OverviewList
             indented
             loading={!courseQuery?.data}
             emptyStateText={
               isOffline && courseQuery.isLoading
                 ? t('common.cacheMiss')
-                : t('courseLinkScreen.empty')
+                : t('courseInfoTab.linksSectionEmptyState')
             }
           >
             {courseQuery.data?.links.map(link => (
               <ListItem
-                key={courseQuery.data?.links.indexOf(link)}
+                key={link.url}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
-                title={link.description ?? t('courseLinkScreen.noDescription')}
+                title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
                 onPress={() => Linking.openURL(link.url)}
               />

@@ -307,11 +307,6 @@
   "courseGuideScreen": {
     "title": "Course guide"
   },
-  "courseLinkScreen": {
-    "title": "Useful links",
-    "empty": "There are no links related to the course",
-    "noDescription": "link to"
-  },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
   },
@@ -319,6 +314,9 @@
     "agendaSectionEmptyState": "This course has no entries in the agenda",
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
+    "linkDefaultTitle": "Link to",
+    "linksSectionEmptyState": "There are no links related to the course",
+    "linksSectionTitle": "Useful links",
     "moreSectionTitle": "More",
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
