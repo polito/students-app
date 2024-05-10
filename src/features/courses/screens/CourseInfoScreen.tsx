@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Linking,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
 import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
@@ -18,6 +25,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
 import { useNavigation } from '@react-navigation/native';
@@ -45,6 +53,7 @@ export const CourseInfoScreen = () => {
   const { t } = useTranslation();
   const courseId = useCourseContext();
   const styles = useStylesheet(createStyles);
+  const { fontSizes } = useTheme();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
@@ -90,7 +99,6 @@ export const CourseInfoScreen = () => {
       ) === undefined,
     [courseId, queryClient],
   );
-
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
 
   return (
@@ -205,6 +213,30 @@ export const CourseInfoScreen = () => {
             ))}
           </OverviewList>
         </Section>
+
+        <Section>
+          <SectionHeader title={t('courseInfoTab.linksSectionTitle')} />
+          <OverviewList
+            indented
+            loading={!courseQuery?.data}
+            emptyStateText={
+              isOffline && courseQuery.isLoading
+                ? t('common.cacheMiss')
+                : t('courseInfoTab.linksSectionEmptyState')
+            }
+          >
+            {courseQuery.data?.links.map(link => (
+              <ListItem
+                key={link.url}
+                leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
+                title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
+                subtitle={link.url}
+                onPress={() => Linking.openURL(link.url)}
+              />
+            ))}
+          </OverviewList>
+        </Section>
+
         <Section>
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
