@@ -217,7 +217,6 @@ jobs:
   build-ios:
     name: ${{ needs.configure.outputs.push_to_testflight == 'false' && 'Build' || 'Build & Deploy' }} iOS
     env:
-      ImageOS: macos12
       LANG: en_US.UTF-8
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
@@ -229,17 +228,24 @@ jobs:
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
       SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
     needs: configure
-    runs-on: [self-hosted, macos-12]
+    runs-on: [macos-latest]
     steps:
     - name: Select Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '14'
+        xcode-version: '15'
     - name: Checkout
       uses: actions/checkout@v3
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
+    - name: Set .netrc 
+      run: |
+        echo "machine api.mapbox.com
+        login mapbox
+        password ${{ secrets.MAPBOX_TOKEN }}
+        " > ~/.netrc
+        chmod 600 ~/.netrc
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
