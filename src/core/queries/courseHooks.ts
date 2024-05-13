@@ -277,8 +277,8 @@ const flattenFiles = (
 ): CourseFileOverviewWithLocation[] => {
   const result: CourseFileOverviewWithLocation[] = [];
   directoryContent?.forEach(item => {
-    if (item.type === 'file') {
-      result.push(item);
+    if ((item as CourseDirectoryContentWithLocations).type === 'file') {
+      result.push(item as CourseFileOverviewWithLocation);
     } else {
       result.push(
         ...flattenFiles(
