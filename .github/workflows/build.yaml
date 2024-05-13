@@ -45,7 +45,7 @@ jobs:
       push_to_playstore: ${{ steps.configure.outputs.push_to_playstore }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Get version from tag (new release)
@@ -120,7 +120,7 @@ jobs:
         cat $GITHUB_OUTPUT
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
@@ -144,7 +144,7 @@ jobs:
       KEYSTORE_PATH: './keystore.jks'
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
@@ -156,20 +156,18 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: ./android
-        ruby-version: '2.7.6'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
     - name: Cache Gradle artifacts
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
@@ -235,7 +233,7 @@ jobs:
       with:
         xcode-version: '15'
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
@@ -249,15 +247,13 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: ./ios
-        ruby-version: '2.7.6'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
@@ -266,7 +262,7 @@ jobs:
     - name: Install npm dependencies
       run: npm install
     - name: Cache pods
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./ios/Pods
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
@@ -307,7 +303,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Gather artifacts
       uses: actions/download-artifact@v3
       with:
