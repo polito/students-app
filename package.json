@@ -16,7 +16,7 @@
     "format": "prettier --write '**/*.{ts,tsx,md}'",
     "types:check": "tsc --noEmit",
     "check": "npm run lint:check && npm run format:check && npm run types:check",
-    "postinstall": "react-native setup-ios-permissions"
+    "postinstall": "react-native setup-ios-permissions && pod-install"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",

@@ -119,6 +119,10 @@ jobs:
         echo "CONFIGURED:"
         cat $GITHUB_OUTPUT
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
     - name: Cache node modules
       uses: actions/cache@v4
       with:
@@ -152,15 +156,15 @@ jobs:
       run:
         echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> android/local.properties
     - name: Gradle Wrapper Validation
-      uses: gradle/wrapper-validation-action@v1
+      uses: gradle/actions/wrapper-validation@v3
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version-file: .nvmrc
     - name: Cache node modules
       uses: actions/cache@v4
       with:
@@ -249,9 +253,9 @@ jobs:
       with:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version-file: .nvmrc
     - name: Cache node modules
       uses: actions/cache@v4
       with:
@@ -259,16 +263,13 @@ jobs:
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
-    - name: Install npm dependencies
-      run: npm install
     - name: Cache pods
       uses: actions/cache@v4
       with:
         path: ./ios/Pods
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-    - name: Install pod dependencies
-      working-directory: ./ios
-      run: bundle exec pod install --repo-update
+    - name: Install npm dependencies
+      run: npm install
     - name: Prepare fastlane
       working-directory: ./ios
       run: |
