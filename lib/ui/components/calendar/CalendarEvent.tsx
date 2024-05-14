@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { DimensionValue } from 'react-native';
 
 import { DateTime } from 'luxon';
 
@@ -36,7 +37,10 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
   showAllDayEventCell = false,
 }: CalendarEventProps<T>) => {
   const getEventCellPositionStyle = useCallback(
-    (start: DateTime, end: DateTime) => {
+    (
+      start: DateTime,
+      end: DateTime,
+    ): { height: DimensionValue; top: DimensionValue } => {
       const dayMinutes = hours.length * 60;
       const minutesInDay = showAllDayEventCell ? dayMinutes + 60 : dayMinutes;
       if (showAllDayEventCell && event.start.hour === 0) {
