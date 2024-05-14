@@ -143,7 +143,7 @@ export const ServicesScreen = () => {
         icon: faEnvelope,
         disabled: isOffline,
         unReadCount: unreadEmailsQuery.data
-          ? parseInt(unreadEmailsQuery.data.unreadEmails, 10)
+          ? unreadEmailsQuery.data.unreadEmails
           : 0,
         onPress: () => {
           queryClient
