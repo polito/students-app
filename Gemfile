@@ -8,5 +8,8 @@ install_if -> { RUBY_PLATFORM =~ /darwin/ } do
     gem 'cocoapods', '~> 1.14', '>= 1.14.3'
 end
 
-plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
+plugins_path = File.join(File.dirname(__FILE__), 'ios', 'fastlane', 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)
+
+plugins_path = File.join(File.dirname(__FILE__), 'android', 'fastlane', 'Pluginfile')
 eval_gemfile(plugins_path) if File.exist?(plugins_path)
