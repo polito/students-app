@@ -270,6 +270,9 @@ jobs:
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
     - name: Install npm dependencies
       run: npm install
+    - name: Ensure pods installed
+      working-directory: ./ios
+      run: bundle exec pod install
     - name: Prepare fastlane
       working-directory: ./ios
       run: |
