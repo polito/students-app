@@ -188,7 +188,7 @@ export const MessagingView = ({
           />
           {showSendButton && (
             <IconButton
-              disabled={!message?.length}
+              disabled={!message?.length || loading}
               onPress={onSend}
               icon={faPaperPlane}
               size={22}
