@@ -16,14 +16,20 @@ interface Props {
   text?: string | number;
   style?: TextProps['style'];
   variant?: 'outlined' | 'filled';
+  isNumeric?: boolean;
 }
 
-export const UnreadBadge = ({ text, style, variant = 'filled' }: Props) => {
+export const UnreadBadge = ({
+  text,
+  style,
+  variant = 'filled',
+  isNumeric = false,
+}: Props) => {
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const isOutlined = useMemo(() => variant === 'outlined', [variant]);
-  const isNumeric = isNumber(text);
+  const isDigit = isNumber(text);
 
   return (
     <Row
@@ -34,14 +40,14 @@ export const UnreadBadge = ({ text, style, variant = 'filled' }: Props) => {
       style={[
         styles.badge,
         {
-          backgroundColor: isNumeric
-            ? palettes.rose[600]
-            : palettes.orange[600],
+          backgroundColor:
+            isDigit || isNumeric ? palettes.rose[600] : palettes.orange[600],
         },
         !text && styles.dotBadge,
         isOutlined && {
           backgroundColor: colors.surface,
-          borderColor: isNumeric ? palettes.rose[600] : palettes.orange[600],
+          borderColor:
+            isDigit || isNumeric ? palettes.rose[600] : palettes.orange[600],
 
           borderWidth: 2,
         },
@@ -56,7 +62,7 @@ export const UnreadBadge = ({ text, style, variant = 'filled' }: Props) => {
           ]}
         >
           {text}
-          {isNumeric && (
+          {isDigit && (
             <VisuallyHidden>
               {t('common.newItems', { count: Number(text) })}
             </VisuallyHidden>
