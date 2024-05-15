@@ -225,9 +225,9 @@ export const CourseInfoScreen = () => {
                 : t('courseInfoTab.linksSectionEmptyState')
             }
           >
-            {courseQuery.data?.links.map(link => (
+            {courseQuery.data?.links.map((link, index) => (
               <ListItem
-                key={link.url}
+                key={index}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
