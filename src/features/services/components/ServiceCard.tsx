@@ -31,7 +31,7 @@ interface Props extends PropsWithChildren<TouchableCardProps> {
   onFavoriteChange: (favorite: boolean) => void;
   linkTo?: To<any>;
   onPress?: () => void;
-  unReadCount?: number;
+  unReadCount?: number | string;
 }
 
 export const ServiceCard = ({
@@ -81,7 +81,12 @@ export const ServiceCard = ({
         <Text variant="title" style={styles.title}>
           {name}
         </Text>
-        {unReadCount > 0 && !disabled && <UnreadBadge text={unReadCount} />}
+        {typeof unReadCount === 'number' && unReadCount > 0 && !disabled && (
+          <UnreadBadge text={unReadCount} />
+        )}
+        {typeof unReadCount === 'string' && !disabled && (
+          <UnreadBadge text={unReadCount} isNumeric={true} />
+        )}
       </Row>
       {children}
     </TouchableCard>
