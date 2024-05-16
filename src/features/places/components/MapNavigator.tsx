@@ -38,7 +38,7 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 import { Camera, MapView } from '@rnmapbox/maps';
-import { CameraProps } from '@rnmapbox/maps/lib/typescript/components/Camera';
+import { CameraProps } from '@rnmapbox/maps/src/components/Camera';
 
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';

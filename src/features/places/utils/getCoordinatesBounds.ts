@@ -1,4 +1,4 @@
-import { CameraBoundsWithPadding } from '@rnmapbox/maps/lib/typescript/components/Camera';
+import { CameraBoundsWithPadding } from '@rnmapbox/maps/src/components/Camera';
 
 export const getCoordinatesBounds = (
   coordinates: [number, number][],
