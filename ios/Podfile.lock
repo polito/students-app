@@ -204,12 +204,12 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
-  - MapboxCommon (23.9.1)
-  - MapboxCoreMaps (10.16.6):
+  - MapboxCommon (23.9.2)
+  - MapboxCoreMaps (10.17.0):
     - MapboxCommon (~> 23.9)
-  - MapboxMaps (10.16.6):
-    - MapboxCommon (= 23.9.1)
-    - MapboxCoreMaps (= 10.16.6)
+  - MapboxMaps (10.17.0):
+    - MapboxCommon (= 23.9.2)
+    - MapboxCoreMaps (= 10.17.0)
     - MapboxMobileEvents (= 1.0.10)
     - Turf (= 2.7.0)
   - MapboxMobileEvents (1.0.10)
@@ -697,14 +697,14 @@ PODS:
     - TOCropViewController
   - RNKeychain (8.1.2):
     - React-Core
-  - rnmapbox-maps (10.0.15):
-    - MapboxMaps (~> 10.16.0)
+  - rnmapbox-maps (10.1.24):
+    - MapboxMaps (~> 10.17.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.0.15)
+    - rnmapbox-maps/DynamicLibrary (= 10.1.24)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.0.15):
-    - MapboxMaps (~> 10.16.0)
+  - rnmapbox-maps/DynamicLibrary (10.1.24):
+    - MapboxMaps (~> 10.17.0)
     - React
     - React-Core
     - Turf
@@ -1048,9 +1048,9 @@ SPEC CHECKSUMS:
   hermes-engine: 6b116ce065327cef44156096edaa1e839ee69a03
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
-  MapboxCommon: 20466d839cc43381c44df09d19f7f794b55b9a93
-  MapboxCoreMaps: c21f433decbb295874f0c2464e492166db813b56
-  MapboxMaps: c3b36646b9038706bbceb5de203bcdd0f411e9d0
+  MapboxCommon: 768660d6fca8193529ecf82eb6f5f9ae7a5acdf9
+  MapboxCoreMaps: be412ff97b16aa7820922c818115a9a0d8211caa
+  MapboxMaps: 87ef0003e6db46e45e7a16939f29ae87e38e7ce2
   MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
@@ -1112,7 +1112,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 5102af8c91262d5a9b757a56e734b1a02071d83b
   RNImageCropPicker: 648356d68fbf9911a1016b3e3723885d28373eda
   RNKeychain: a65256b6ca6ba6976132cc4124b238a5b13b3d9c
-  rnmapbox-maps: b6219b7432508ae2cea169365116a811f822612e
+  rnmapbox-maps: 8005faa8e35b413ea5f387d8e057e9c2d7bcfbff
   RNPermissions: 84e15be8aab0567bc2c1a904bc4110b6d515666e
   RNReanimated: d4f25b2a931c4f0b2bb12173a3096f02ea4cfb05
   RNScreens: bea7b9767050d69e4b9da14639cdd5c8f5a37881
