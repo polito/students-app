@@ -137,6 +137,7 @@ export const CourseSharedScreens = (
           headerBackTitle: t('common.course'),
         }}
       />
+
       <Stack.Screen
         name="CourseVideolecture"
         component={CourseVideolectureScreen}
