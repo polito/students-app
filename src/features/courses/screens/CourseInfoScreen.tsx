@@ -140,6 +140,7 @@ export const CourseInfoScreen = () => {
     [courseId, queryClient],
   );
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
+  const isStatisticsDisabled = !courseQuery.data?.shortcode;
 
   return (
     <ScrollView
@@ -340,6 +341,19 @@ export const CourseInfoScreen = () => {
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
               disabled={isGuideDisabled}
+            />
+            <ListItem
+              title={t('courseStatisticsScreen.title')}
+              subtitle={t('courseStatisticsScreen.subtitle')}
+              linkTo={{
+                screen: 'CourseStatistics',
+                params: {
+                  courseShortcode: courseQuery.data?.shortcode,
+                  year: courseQuery.data?.year,
+                  teacherId: courseQuery.data?.teacherId,
+                },
+              }}
+              disabled={isStatisticsDisabled}
             />
           </OverviewList>
         </Section>
