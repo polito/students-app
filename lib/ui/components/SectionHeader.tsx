@@ -5,9 +5,12 @@ import {
   TextProps,
   TextStyle,
   TouchableOpacity,
+  TouchableOpacityProps,
   View,
 } from 'react-native';
 
+import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { Separator } from '@lib/ui/components/Separator';
 import { Link, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -23,12 +26,16 @@ interface Props {
   subtitle?: string;
   subtitleStyle?: StyleProp<TextStyle>;
   ellipsizeTitle?: boolean;
-  linkTo?: To<any>;
   linkToMoreCount?: number;
-  trailingItem?: JSX.Element;
   separator?: boolean;
   accessible?: boolean;
   accessibilityLabel?: string | undefined;
+  linkTo?: To<any>;
+  trailingItem?: JSX.Element;
+  trailingIcon?: Pick<FAProps, 'size' | 'icon' | 'color'> &
+    TouchableOpacityProps & {
+      iconStyle?: FAProps['style'];
+    };
 }
 
 /**
@@ -46,6 +53,7 @@ export const SectionHeader = ({
   linkToMoreCount,
   separator = true,
   trailingItem,
+  trailingIcon,
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -59,18 +67,25 @@ export const SectionHeader = ({
 
   const Header = () => {
     return (
-      <View style={styles.innerContainer}>
+      <View style={{ ...styles.innerContainer }}>
         <View style={styles.titleContainer}>
           {separator && <Separator />}
-          <Text
-            accessible={false}
-            variant="heading"
-            style={[styles.title, titleStyle]}
-            accessibilityRole="header"
-            {...ellipsis}
-          >
-            {title}
-          </Text>
+
+          <View style={{ ...styles.innerTitleContainer }}>
+            <Text
+              accessible={false}
+              variant="heading"
+              style={[styles.title, titleStyle, styles.titleContainer]}
+              accessibilityRole="header"
+              {...ellipsis}
+            >
+              {title}
+            </Text>
+            {trailingIcon && (
+              <IconButton {...{ size: 16, ...trailingIcon, noPadding: true }} />
+            )}
+          </View>
+
           {subtitle && (
             <Text
               accessible={false}
@@ -83,20 +98,20 @@ export const SectionHeader = ({
             </Text>
           )}
         </View>
-        {trailingItem
-          ? trailingItem
-          : linkTo && (
-              <Link to={linkTo} accessible={true} accessibilityRole="button">
-                <Text variant="link">
-                  {t('sectionHeader.cta')}
-                  {(linkToMoreCount ?? 0) > 0 &&
-                    ' ' +
-                      t('sectionHeader.ctaMoreSuffix', {
-                        count: linkToMoreCount,
-                      })}
-                </Text>
-              </Link>
-            )}
+        {trailingItem && trailingItem}
+
+        {linkTo && (
+          <Link to={linkTo} accessible={true} accessibilityRole="button">
+            <Text variant="link">
+              {t('sectionHeader.cta')}
+              {(linkToMoreCount ?? 0) > 0 &&
+                ' ' +
+                  t('sectionHeader.ctaMoreSuffix', {
+                    count: linkToMoreCount,
+                  })}
+            </Text>
+          </Link>
+        )}
       </View>
     );
   };
@@ -151,5 +166,11 @@ const createStyles = ({ spacing, colors }: Theme) =>
     },
     titleContainer: {
       flex: 1,
+    },
+    innerTitleContainer: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      padding: 0,
+      margin: 0,
     },
   });
