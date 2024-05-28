@@ -1,3 +1,3 @@
-import { VideoProperties } from 'react-native-video';
+import { ReactVideoProps } from 'react-native-video';
 
-declare function VideoPlayer(props: VideoProperties): JSX.Element;
+declare function VideoPlayer(props: ReactVideoProps): JSX.Element;
