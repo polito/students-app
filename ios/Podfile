@@ -12,7 +12,14 @@ end
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 
+MIN_IOS_OVERRIDE = '13.0'
+if Gem::Version.new(MIN_IOS_OVERRIDE) > Gem::Version.new(min_ios_version_supported)
+  min_ios_version_supported = MIN_IOS_OVERRIDE
+end
 platform :ios, min_ios_version_supported
+
+#use_frameworks! :linkage => :static
+
 prepare_react_native_project!
 
 setup_permissions([
@@ -82,10 +89,10 @@ target 'students' do
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
 
-    # NOTE: Change IPHONEOS_DEPLOYMENT_TARGET to 12.4.
+    # NOTE: Change IPHONEOS_DEPLOYMENT_TARGET to 13.0.
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.4'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
         if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
           config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
