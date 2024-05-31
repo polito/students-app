@@ -617,11 +617,11 @@
     "trainingOffer": "Offerta formativa"
   },
   "provisionalGradeScreen": {
-    "acceptGradeConfirmMessage": "Accettando il voto non potrai più cambiare la tua decisione",
+    "acceptGradeConfirmMessage": "Richiedendo la registrazione immediata la valutazione verrà inserita in libretto e non potrai più cambiare la tua decisione",
     "acceptGradeCta": "Richiedi la registrazione immediata",
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
-    "rejectGradeConfirmMessage": "Rifiutando il voto non potrai più cambiare la tua decisione",
+    "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
     "rejectGradeCta": "Rifiuta la valutazione",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"

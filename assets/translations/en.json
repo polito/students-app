@@ -617,7 +617,7 @@
     "trainingOffer": "Training offer"
   },
   "provisionalGradeScreen": {
-    "acceptGradeConfirmMessage": "By accepting this evaluation you will no longer be able to change your decision",
+    "acceptGradeConfirmMessage": "By requesting immediate registration, the evaluation will be recorded in your transcript and you will no longer be able to change your decision",
     "acceptGradeCta": "Request immediate registration",
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
