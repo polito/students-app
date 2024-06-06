@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 
 import {
+  faArrowRotateLeft,
+  faArrowRotateRight,
   faCompress,
   faExpand,
   faPause,
@@ -123,16 +125,12 @@ export const VideoControls = ({
     }
   }, [paused, buffering, sliding]);
 
-  // TODO
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const reverse10Secs = () => {
     let newTime = currentTime.minus({ second: 10 }).toSeconds();
     newTime = Math.max(newTime, 0);
     onProgressChange(newTime / duration);
   };
 
-  // TODO
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const advance10Secs = () => {
     let newTime = currentTime.plus({ second: 10 }).toSeconds();
     newTime = Math.min(newTime, duration);
@@ -171,16 +169,15 @@ export const VideoControls = ({
 
             {!buffering ? (
               <Row flex={1} justify="space-around">
-                {/* TODO re-enable once a solution to seek correctly is found */}
-                {/* <VideoControlButton*/}
-                {/*  onPress={reverse10Secs}*/}
-                {/*  accessibilityLabel={t('videoControls.tenSecReverse')}*/}
-                {/* >*/}
-                {/*  <Row align="center" gap={2}>*/}
-                {/*    <Icon icon={faArrowRotateLeft} size={24} />*/}
-                {/*    <Text style={styles.tenSecs}>10</Text>*/}
-                {/*  </Row>*/}
-                {/* </VideoControlButton>*/}
+                <VideoControlButton
+                  onPress={reverse10Secs}
+                  accessibilityLabel={t('videoControls.tenSecReverse')}
+                >
+                  <Row align="center" gap={2}>
+                    <Icon icon={faArrowRotateLeft} size={24} />
+                    <Text style={styles.tenSecs}>10</Text>
+                  </Row>
+                </VideoControlButton>
 
                 <VideoControlButton
                   accessibilityLabel={
@@ -192,15 +189,15 @@ export const VideoControls = ({
                   <Icon icon={paused ? faPlay : faPause} size={38} />
                 </VideoControlButton>
 
-                {/* <VideoControlButton*/}
-                {/*  onPress={advance10Secs}*/}
-                {/*  accessibilityLabel={t('videoControls.tenSecForward')}*/}
-                {/* >*/}
-                {/*  <Row align="center" gap={2}>*/}
-                {/*    <Text style={styles.tenSecs}>10</Text>*/}
-                {/*    <Icon icon={faArrowRotateRight} size={24} />*/}
-                {/*  </Row>*/}
-                {/* </VideoControlButton>*/}
+                <VideoControlButton
+                  onPress={advance10Secs}
+                  accessibilityLabel={t('videoControls.tenSecForward')}
+                >
+                  <Row align="center" gap={2}>
+                    <Text style={styles.tenSecs}>10</Text>
+                    <Icon icon={faArrowRotateRight} size={24} />
+                  </Row>
+                </VideoControlButton>
               </Row>
             ) : (
               <ActivityIndicator size="large" />
