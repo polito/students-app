@@ -35,7 +35,8 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
   const playerRef = useRef<VideoRef>(null);
-  const [paused, setPaused] = useState(false);
+  // If there is a single video paused is initialized to false
+  const [paused, setPaused] = useState(props.currentIndex !== props.index);
   const [fullscreen, setFullscreen] = useState(false);
   const [duration, setDuration] = useState(0);
   const [ready, setReady] = useState(false);
@@ -81,6 +82,10 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   const handleLoad = (meta: OnLoadData) => {
     setDuration(meta.duration);
   };
+
+  useEffect(() => {
+    setPaused(props.currentIndex !== props.index);
+  }, [props.currentIndex, props.index]);
 
   useEffect(() => {
     const navRoot = navigation.getParent()!;
