@@ -36,6 +36,7 @@ export const Swiper = <T,>({
   return (
     <View style={{ height: isFullScreen ? '100%' : 'auto' }}>
       <FlatList
+        scrollEnabled={!isFullScreen}
         data={items}
         horizontal
         pagingEnabled
