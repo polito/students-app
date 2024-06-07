@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ListRenderItemInfo,
@@ -16,7 +16,6 @@ import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Swiper } from '@lib/ui/components/Swiper';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
-import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -43,80 +42,37 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     lecture.courseId,
   );
   const { width } = useWindowDimensions();
-  const { addListener } = useNavigation();
   const [currentIndex, setCurrentVideoIndex] = useState<number>(0);
-  const [isPiP, setIsPiP] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-
-  useEffect(() => {
-    return addListener('blur', () => {
-      if (isPiP) return;
-      setPlayingVC(oldVC => [
-        ...oldVC.map((v, i) => {
-          if (i === currentIndex) {
-            v.isPaused = false;
-          }
-          return v;
-        }),
-      ]);
-      setTimeout(() => {
-        setPlayingVC(oldVC => [
-          ...oldVC.map((v, i) => {
-            if (i === currentIndex) {
-              v.isPaused = true;
-            }
-            return v;
-          }),
-        ]);
-      });
-    });
-  }, [currentIndex, isPiP, addListener]);
-
-  const onPictureInPictureStatusChanged = useCallback(
-    ({ isActive }: { isActive: boolean }) => {
-      setIsPiP(isActive);
-    },
-    [],
-  );
 
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string>();
 
-  const handleSetCurrentPageIndex = (newIndex: number, oldIndex: number) => {
+  const handleSetCurrentPageIndex = (newIndex: number) => {
     setCurrentVideoIndex(newIndex);
-    setPlayingVC(oldVC => [
-      ...oldVC.map((v, i) => {
-        if (i === newIndex) {
-          setCurrentVideoTitle(v.title);
-          v.isPaused = false;
-        }
-        if (i === oldIndex) v.isPaused = true;
-        return v;
-      }),
-    ]);
   };
 
-  const toggleFullScreen = useCallback(() => {
+  const toggleFullScreen = () => {
     setIsFullScreen(prev => !prev);
-  }, []);
+  };
 
-  const renderItem = ({ item, index }: ListRenderItemInfo<PlayingVC>) => {
+  const renderItem = ({
+    item,
+    index,
+  }: ListRenderItemInfo<VirtualClassroom>) => {
     return (
       <View style={{ width }}>
         <VideoPlayer
           source={{ uri: item.videoUrl }}
           poster={item.coverUrl ?? undefined}
-          paused={item.isPaused}
-          pictureInPicture={index === currentIndex}
-          onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
           toggleFullScreen={toggleFullScreen}
+          currentIndex={currentIndex}
+          index={index}
         />
       </View>
     );
   };
 
-  type PlayingVC = VirtualClassroom & { isPaused: boolean };
-
-  const [playingVC, setPlayingVC] = useState<PlayingVC[]>([]);
+  const [playingVC, setPlayingVC] = useState<VirtualClassroom[]>([]);
 
   useEffect(() => {
     if (!associatedVirtualClassrooms || !virtualClassroomsQuery) return;
@@ -124,10 +80,10 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     setCurrentVideoTitle(associatedVirtualClassrooms[0]?.title);
     setPlayingVC(
       associatedVirtualClassrooms
-        .map((vc, index) => {
+        .map(vc => {
           const apiVC = virtualClassroomsQuery.find(vcs => vcs.id === vc.id);
 
-          return { ...apiVC, isPaused: index > 0 } as PlayingVC;
+          return apiVC as VirtualClassroom;
         })
         .filter(vc => vc && vc?.videoUrl),
     );
@@ -137,6 +93,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={GlobalStyles.fillHeight}
+      scrollEnabled={!isFullScreen}
     >
       <SafeAreaView>
         {playingVC.length === 1 && isRecordedVC(playingVC[0]) && (
