@@ -4,7 +4,6 @@ import Video, {
   OnBufferData,
   OnLoadData,
   OnProgressData,
-  ReactVideoProps,
   VideoRef,
 } from 'react-native-video';
 
@@ -19,6 +18,7 @@ import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
+import { VideoProps } from './VideoPlayer';
 
 const playbackRates = [1, 1.5, 2, 2.5];
 
@@ -28,7 +28,7 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * In order for fullscreen to work correctly, this component's parent should
  * have a minHeight=100% of the available window height
  */
-export const VideoPlayer = (props: ReactVideoProps) => {
+export const VideoPlayer = (props: VideoProps) => {
   const { width, height } = Dimensions.get('screen');
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
@@ -118,12 +118,12 @@ export const VideoPlayer = (props: ReactVideoProps) => {
         onFullscreenPlayerDidDismiss={() => setFullscreen(false)}
         {...props}
       />
-
       {ready ? (
         <VideoControls
           buffering={buffering}
           fullscreen={fullscreen}
           toggleFullscreen={() => {
+            props.toggleFullScreen && props.toggleFullScreen();
             if (fullscreen) {
               playerRef.current?.dismissFullscreenPlayer();
             } else {
