@@ -5,7 +5,6 @@ import Video, {
   OnBufferData,
   OnLoadData,
   OnProgressData,
-  ReactVideoProps,
   VideoRef,
 } from 'react-native-video';
 
@@ -20,6 +19,7 @@ import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
+import { VideoProps } from './VideoPlayer';
 
 const playbackRates = [1, 1.5, 2, 2.5];
 
@@ -153,12 +153,19 @@ export const VideoPlayer = (props: ReactVideoProps) => {
         fullscreen={false}
         {...props}
       />
-
       {ready ? (
         <VideoControls
           buffering={buffering}
           fullscreen={fullscreen}
-          toggleFullscreen={() => setFullscreen(negate)}
+          toggleFullscreen={() => {
+            props.toggleFullScreen && props.toggleFullScreen();
+            if (fullscreen) {
+              playerRef.current?.dismissFullscreenPlayer();
+            } else {
+              playerRef.current?.presentFullscreenPlayer();
+            }
+            setFullscreen(negate);
+          }}
           progress={progress}
           onProgressChange={onProgressChange}
           paused={paused}
