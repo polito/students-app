@@ -3,9 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
-import { faHourglassEnd, faUsers } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHourglassEnd,
+  faTriangleExclamation,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { ErrorCard } from '@lib/ui/components/ErrorCard';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -16,6 +21,7 @@ import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -36,6 +42,7 @@ import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalConten
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { getExam, isExamPassed } from '../utils/exam';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 
@@ -187,14 +194,42 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   : t('common.dateToBeDefined')
               }
               subtitle={t('examScreen.bookingEndsAt')}
+              trailingItem={
+                exam?.bookingEndsAt && isExamPassed(exam.bookingEndsAt) ? (
+                  <Icon
+                    icon={faTriangleExclamation}
+                    color="red"
+                    size={fontSizes.md}
+                  />
+                ) : undefined
+              }
             />
+
             <ListItem
               leadingItem={<Icon icon={faUsers} size={fontSizes['2xl']} />}
               inverted
-              title={`${exam?.bookedCount}`}
+              /* check using undefined since the fields can be 0 */
+              title={
+                exam?.availableCount !== undefined &&
+                exam?.bookedCount !== undefined
+                  ? getExam(exam.bookedCount, exam.availableCount)
+                  : ''
+              }
               subtitle={t('examScreen.bookedCount')}
+              trailingItem={
+                exam?.availableCount && exam.availableCount === 0 ? (
+                  <Icon
+                    icon={faTriangleExclamation}
+                    color="red"
+                    size={fontSizes.md}
+                  />
+                ) : undefined
+              }
             />
           </OverviewList>
+          {exam?.feedback && exam?.status === ExamStatusEnum.Unavailable && (
+            <ErrorCard text={exam.feedback} />
+          )}
           <CtaButtonSpacer />
           <BottomBarSpacer />
         </SafeAreaView>
