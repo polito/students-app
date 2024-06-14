@@ -11,6 +11,7 @@ import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -35,6 +36,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
+  const { fontWeights } = useTheme();
 
   const confirmAcceptance = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -94,6 +96,8 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
             <Row
               pb={
                 grade.state === ProvisionalGradeStateEnum.Confirmed &&
+                !grade.isFailure &&
+                !grade.isWithdrawn &&
                 rejectionTime
                   ? 0
                   : 5
@@ -137,12 +141,17 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               </Col>
             </Row>
             {grade.state === ProvisionalGradeStateEnum.Confirmed &&
+              !grade.isFailure &&
+              !grade.isWithdrawn &&
               rejectionTime && (
                 <Row pl={5} pb={5}>
                   <Text style={styles.autoRegistration}>
                     {t('transcriptGradesScreen.autoRegistration')}
                     <Text
-                      style={[styles.autoRegistration, { fontWeight: '500' }]}
+                      style={[
+                        styles.autoRegistration,
+                        { fontWeight: fontWeights.medium },
+                      ]}
                     >
                       {rejectionTime}
                     </Text>
@@ -165,54 +174,56 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           action={() => navigation.navigate('Person', { id: grade?.teacherId })}
         />
       )}
-      {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
-        <CtaButtonContainer absolute={true}>
-          <CtaButton
-            title={t('provisionalGradeScreen.acceptGradeCta')}
-            action={() =>
-              confirmAcceptance().then(ok => {
-                if (ok) {
-                  acceptGradeQuery
-                    .mutateAsync(grade.id)
-                    .then(() => provideFeedback(true));
-                }
-              })
-            }
-            absolute={false}
-            loading={acceptGradeQuery.isLoading}
-            disabled={
-              isOffline ||
-              acceptGradeQuery.isLoading ||
-              rejectGradeQuery.isLoading
-            }
-            containerStyle={{ paddingVertical: 0 }}
-          />
-          <CtaButton
-            title={t('provisionalGradeScreen.rejectGradeCta', {
-              hours: rejectionTime,
-            })}
-            action={() =>
-              confirmRejection().then(ok => {
-                if (ok) {
-                  rejectGradeQuery
-                    .mutateAsync(grade.id)
-                    .then(() => provideFeedback(false));
-                }
-              })
-            }
-            absolute={false}
-            loading={rejectGradeQuery.isLoading}
-            variant="outlined"
-            disabled={
-              isOffline ||
-              acceptGradeQuery.isLoading ||
-              rejectGradeQuery.isLoading
-            }
-            containerStyle={{ paddingVertical: 0 }}
-            destructive
-          />
-        </CtaButtonContainer>
-      )}
+      {grade?.state === ProvisionalGradeStateEnum.Confirmed &&
+        !grade.isFailure &&
+        !grade.isWithdrawn && (
+          <CtaButtonContainer absolute={true}>
+            <CtaButton
+              title={t('provisionalGradeScreen.acceptGradeCta')}
+              action={() =>
+                confirmAcceptance().then(ok => {
+                  if (ok) {
+                    acceptGradeQuery
+                      .mutateAsync(grade.id)
+                      .then(() => provideFeedback(true));
+                  }
+                })
+              }
+              absolute={false}
+              loading={acceptGradeQuery.isLoading}
+              disabled={
+                isOffline ||
+                acceptGradeQuery.isLoading ||
+                rejectGradeQuery.isLoading
+              }
+              containerStyle={{ paddingVertical: 0 }}
+            />
+            <CtaButton
+              title={t('provisionalGradeScreen.rejectGradeCta', {
+                hours: rejectionTime,
+              })}
+              action={() =>
+                confirmRejection().then(ok => {
+                  if (ok) {
+                    rejectGradeQuery
+                      .mutateAsync(grade.id)
+                      .then(() => provideFeedback(false));
+                  }
+                })
+              }
+              absolute={false}
+              loading={rejectGradeQuery.isLoading}
+              variant="outlined"
+              disabled={
+                isOffline ||
+                acceptGradeQuery.isLoading ||
+                rejectGradeQuery.isLoading
+              }
+              containerStyle={{ paddingVertical: 0 }}
+              destructive
+            />
+          </CtaButtonContainer>
+        )}
     </>
   );
 };

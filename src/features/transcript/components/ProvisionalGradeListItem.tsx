@@ -35,13 +35,16 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
   const subtitle = useMemo(() => {
     switch (grade.state) {
       case ProvisionalGradeStateEnum.Confirmed:
-        return (
-          <TextWithLinks style={styles.rejectableSubtitle}>
-            {t('transcriptGradesScreen.rejectionCountdown', {
-              hours: rejectionTime,
-            })}
-          </TextWithLinks>
-        );
+        if (!grade.isFailure && !grade.isWithdrawn) {
+          return (
+            <TextWithLinks style={styles.rejectableSubtitle}>
+              {t('transcriptGradesScreen.rejectionCountdown', {
+                hours: rejectionTime,
+              })}
+            </TextWithLinks>
+          );
+        }
+        break;
       case ProvisionalGradeStateEnum.Rejected:
         return t('transcriptGradesScreen.rejectedSubtitle', {
           date: formatDate(grade.rejectedAt!),

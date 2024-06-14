@@ -35,12 +35,12 @@ export const CtaButtonContainer = ({
         },
         absolute && {
           position: 'absolute',
+          width: Platform.select({ android: '100%' }),
           left: Platform.select({ ios: left }),
           right,
           bottom:
             (modal ? 0 : bottomBarHeight) +
             (isFeedbackVisible ? spacing[10] * Children.count(children) : 0),
-          width: '100%',
         },
         style,
       ]}
