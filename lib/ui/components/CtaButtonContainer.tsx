@@ -40,6 +40,7 @@ export const CtaButtonContainer = ({
           bottom:
             (modal ? 0 : bottomBarHeight) +
             (isFeedbackVisible ? spacing[10] * Children.count(children) : 0),
+          width: '100%',
         },
         style,
       ]}

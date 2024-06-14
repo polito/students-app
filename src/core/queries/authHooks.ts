@@ -24,7 +24,7 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
-      const client = { name: 'Students app' };
+      const client = { name: 'Students app', id: 'students-app' };
 
       return Promise.all([
         DeviceInfo.getDeviceName(),
