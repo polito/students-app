@@ -424,6 +424,7 @@
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
     "noLocation": "Aula da definire",
+    "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
     "title": "Appello"
   },

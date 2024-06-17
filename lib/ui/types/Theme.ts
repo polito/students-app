@@ -83,6 +83,7 @@ export interface Colors {
   heading: string;
   subHeading: string;
   prose: string;
+  disableTitle: string;
   longProse: string;
   secondaryText: string;
   caption: string;
@@ -96,6 +97,8 @@ export interface Colors {
   deadlineCardBorder: string;
   examCardBorder: string;
   lectureCardSecondary: string;
+  errorCardText: string;
+  errorCardBorder: string;
   translucentSurface: string;
   white: string;
 }

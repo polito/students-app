@@ -424,6 +424,7 @@
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
     "noLocation": "Room to be defined",
+    "notAvailable": "Booking not available",
     "notes": "Notes",
     "title": "Exam call"
   },

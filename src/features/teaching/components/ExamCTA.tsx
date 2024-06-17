@@ -32,13 +32,13 @@ export const ExamCTA = ({ exam }: Props) => {
 
   const examRequestable = exam?.status === ExamStatusEnum.Requestable;
   const examAvailable = exam?.status === ExamStatusEnum.Available;
+  const examUnavailable = exam?.status === ExamStatusEnum.Unavailable;
 
   const confirm = useConfirmationDialog();
 
   const disabledStatuses = [
     ExamStatusEnum.RequestAccepted,
     ExamStatusEnum.RequestRejected,
-    ExamStatusEnum.Unavailable,
   ] as ExamStatusEnum[];
   const action = async () => {
     if (examRequestable) {
@@ -80,7 +80,9 @@ export const ExamCTA = ({ exam }: Props) => {
     <CtaButton
       destructive={!examAvailable && !examRequestable}
       title={
-        examRequestable
+        examUnavailable
+          ? t('examScreen.notAvailable')
+          : examRequestable
           ? t('examScreen.ctaRequest')
           : examAvailable
           ? t('examScreen.ctaBook')
@@ -88,7 +90,8 @@ export const ExamCTA = ({ exam }: Props) => {
       }
       action={action}
       loading={mutationsLoading}
-      disabled={!onlineManager.isOnline()}
+      disabled={!onlineManager.isOnline() || examUnavailable}
+      variant="filled"
     />
   );
 };
