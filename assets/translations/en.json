@@ -622,7 +622,7 @@
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
-    "rejectGradeCta": "Reject the evaluation",
+    "rejectGradeCta": "Reject the evaluation by: <br><b>{{hours}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "title": "Evaluation"
   },
@@ -707,13 +707,14 @@
     "title": "Evaluation"
   },
   "transcriptGradesScreen": {
+    "autoRegistration": "Automatic registration in:",
     "emptyState": "You haven't taken any exams",
     "expiredCountdown": "Expired",
     "provisionalEmptyState": "There are no provisional grades",
     "provisionalTitle": "Provisional",
     "recordedTitle": "Recorded",
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
-    "rejectionCountdown": "Rejectable by:",
+    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
     "title": "Grades",
     "total": "There are {{total}} grades"
   },

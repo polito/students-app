@@ -622,7 +622,7 @@
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
     "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta la valutazione",
+    "rejectGradeCta": "Rifiuta la valutazione entro:<br><b>{{hours}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"
   },
@@ -707,13 +707,14 @@
     "title": "Valutazione"
   },
   "transcriptGradesScreen": {
+    "autoRegistration": "Registrazione automatica tra:",
     "emptyState": "Non hai sostenuto nessun esame",
     "expiredCountdown": "Scaduto",
     "provisionalEmptyState": "Non ci sono valutazioni provvisorie",
     "provisionalTitle": "Provvisorie",
     "recordedTitle": "Registrate",
     "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
-    "rejectionCountdown": "Rifiutabile entro:",
+    "rejectionCountdown": "Rifiutabile entro: <b>{{hours}}</b>",
     "title": "Valutazioni",
     "total": "Sono presenti {{total}} valutazioni"
   },
