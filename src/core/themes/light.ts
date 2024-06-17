@@ -150,6 +150,7 @@ export const lightTheme: Theme = {
     subHeading: lightBlue[700],
     title: navy[700],
     prose: gray[800],
+    disableTitle: '#FFFFFF',
     longProse: gray[800],
     secondaryText: gray[500],
     caption: gray[500],
@@ -162,6 +163,8 @@ export const lightTheme: Theme = {
     deadlineCardBorder: red[700],
     examCardBorder: orange[600],
     lectureCardSecondary: gray[600],
+    errorCardText: rose[700],
+    errorCardBorder: rose[500],
   },
   palettes: {
     navy,
