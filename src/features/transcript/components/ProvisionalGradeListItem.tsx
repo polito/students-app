@@ -11,6 +11,7 @@ import {
   ProvisionalGradeStateEnum,
 } from '@polito/api-client/models/ProvisionalGrade';
 
+import { TextWithLinks } from '../../../core/components/TextWithLinks';
 import { IS_IOS } from '../../../core/constants';
 import { formatDate, formatTime } from '../../../utils/dates';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
@@ -34,7 +35,16 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
   const subtitle = useMemo(() => {
     switch (grade.state) {
       case ProvisionalGradeStateEnum.Confirmed:
-        return rejectionTime;
+        if (grade.canBeRejected) {
+          return (
+            <TextWithLinks style={styles.rejectableSubtitle}>
+              {t('transcriptGradesScreen.rejectionCountdown', {
+                hours: rejectionTime,
+              })}
+            </TextWithLinks>
+          );
+        }
+        break;
       case ProvisionalGradeStateEnum.Rejected:
         return t('transcriptGradesScreen.rejectedSubtitle', {
           date: formatDate(grade.rejectedAt!),
@@ -73,11 +83,12 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
   );
 };
 
-const createStyles = ({ colors, dark, palettes }: Theme) => ({
+const createStyles = ({ colors, dark, palettes, fontSizes }: Theme) => ({
   subtitle: {
     color: colors.title,
   },
   rejectableSubtitle: {
+    fontSize: fontSizes.sm,
     color: dark ? palettes.danger[300] : palettes.danger[700],
   },
 });

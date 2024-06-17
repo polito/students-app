@@ -21,18 +21,18 @@ export const useGetRejectionTime = ({
       return t('transcriptGradesScreen.expiredCountdown');
     }
 
-    let time = t('transcriptGradesScreen.rejectionCountdown');
+    let time = '';
 
     const hours = Math.floor(diff / (1000 * 60 * 60));
 
     // count hours
     if (hours > 0) {
-      time += ` ${hours} ${t('common.hours').toLowerCase()}`;
+      time += ` ${hours}h`;
     }
 
     if (hours === 0 || !isCompact) {
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      time += ` ${minutes} ${t('common.minutes').toLowerCase()}`;
+      time += ` ${minutes}m`;
     }
 
     return time;
