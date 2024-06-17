@@ -68,10 +68,14 @@ export const useDownloadCourseFile = (
             updateDownload({ isDownloaded: true });
           } else {
             // Update the name when changed
-            await mkdir(dirname(toFile));
-            await moveFile(cachedFilePath, toFile);
-            await cleanupEmptyFolders(coursesFilesCachePath);
-            refresh();
+            try {
+              await mkdir(dirname(toFile));
+              await moveFile(cachedFilePath, toFile);
+              await cleanupEmptyFolders(coursesFilesCachePath);
+              refresh();
+            } catch (_) {
+              // File rename was already scheduled
+            }
           }
         } else {
           updateDownload({ isDownloaded: false });
