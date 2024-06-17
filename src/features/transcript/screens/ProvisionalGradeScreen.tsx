@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
@@ -173,7 +173,10 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
         />
       )}
       {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
-        <CtaButtonContainer absolute={true}>
+        <CtaButtonContainer
+          absolute={true}
+          modal={Platform.select({ android: true })}
+        >
           {grade?.canBeAccepted && (
             <CtaButton
               title={t('provisionalGradeScreen.acceptGradeCta')}
