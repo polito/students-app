@@ -35,7 +35,7 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
   const subtitle = useMemo(() => {
     switch (grade.state) {
       case ProvisionalGradeStateEnum.Confirmed:
-        if (!grade.isFailure && !grade.isWithdrawn) {
+        if (grade.canBeRejected) {
           return (
             <TextWithLinks style={styles.rejectableSubtitle}>
               {t('transcriptGradesScreen.rejectionCountdown', {

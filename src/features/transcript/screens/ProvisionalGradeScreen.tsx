@@ -96,8 +96,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
             <Row
               pb={
                 grade.state === ProvisionalGradeStateEnum.Confirmed &&
-                !grade.isFailure &&
-                !grade.isWithdrawn &&
+                (grade.canBeAccepted || grade.canBeRejected) &&
                 rejectionTime
                   ? 0
                   : 5
@@ -141,8 +140,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               </Col>
             </Row>
             {grade.state === ProvisionalGradeStateEnum.Confirmed &&
-              !grade.isFailure &&
-              !grade.isWithdrawn &&
+              grade.canBeAccepted &&
               rejectionTime && (
                 <Row pl={5} pb={5}>
                   <Text style={styles.autoRegistration}>
@@ -174,10 +172,9 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           action={() => navigation.navigate('Person', { id: grade?.teacherId })}
         />
       )}
-      {grade?.state === ProvisionalGradeStateEnum.Confirmed &&
-        !grade.isFailure &&
-        !grade.isWithdrawn && (
-          <CtaButtonContainer absolute={true}>
+      {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
+        <CtaButtonContainer absolute={true} modal>
+          {grade?.canBeAccepted && (
             <CtaButton
               title={t('provisionalGradeScreen.acceptGradeCta')}
               action={() =>
@@ -198,6 +195,8 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               }
               containerStyle={{ paddingVertical: 0 }}
             />
+          )}
+          {grade?.canBeRejected && (
             <CtaButton
               title={t('provisionalGradeScreen.rejectGradeCta', {
                 hours: rejectionTime,
@@ -222,8 +221,9 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               containerStyle={{ paddingVertical: 0 }}
               destructive
             />
-          </CtaButtonContainer>
-        )}
+          )}
+        </CtaButtonContainer>
+      )}
     </>
   );
 };
