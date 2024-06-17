@@ -173,7 +173,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
         />
       )}
       {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
-        <CtaButtonContainer absolute={true} modal>
+        <CtaButtonContainer absolute={true}>
           {grade?.canBeAccepted && (
             <CtaButton
               title={t('provisionalGradeScreen.acceptGradeCta')}
