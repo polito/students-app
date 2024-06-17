@@ -195,7 +195,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               }
               subtitle={t('examScreen.bookingEndsAt')}
               trailingItem={
-                exam?.bookingEndsAt && isExamPassed(exam.bookingEndsAt) ? (
+                exam?.status === ExamStatusEnum.Unavailable &&
+                exam?.bookingEndsAt &&
+                isExamPassed(exam.bookingEndsAt) ? (
                   <Icon
                     icon={faTriangleExclamation}
                     color="red"
@@ -217,7 +219,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               }
               subtitle={t('examScreen.bookedCount')}
               trailingItem={
-                exam?.availableCount && exam.availableCount === 0 ? (
+                exam?.status === ExamStatusEnum.Unavailable &&
+                exam?.availableCount &&
+                exam.availableCount === 0 ? (
                   <Icon
                     icon={faTriangleExclamation}
                     color="red"
