@@ -246,7 +246,8 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "year": "year",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "sizeExc": "Excessive file size, maximum 32 MB"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -507,7 +508,7 @@
     "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messagingView": {
-    "pickFile": "Pick file",
+    "pickFile": "Pick file max 32MB",
     "pickFileHint": "From your device or from the cloud",
     "pickPhoto": "Pick image",
     "pickPhotoHint": "From your library",

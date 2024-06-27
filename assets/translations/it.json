@@ -246,7 +246,8 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -507,7 +508,7 @@
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messagingView": {
-    "pickFile": "Scegli un file",
+    "pickFile": "Scegli un file max 32MB",
     "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
     "pickPhotoHint": "Dalla tua galleria",
