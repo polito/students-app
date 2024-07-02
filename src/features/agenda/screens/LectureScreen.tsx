@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  useWindowDimensions,
 } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
@@ -27,6 +26,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useDeviceDimension } from '../../../core/hooks/useDeviceDimension';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -56,7 +56,8 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     return coursesPrefs[lecture?.uniqueShortcode];
   }, [lecture?.uniqueShortcode, coursesPrefs]);
 
-  const { width } = useWindowDimensions();
+  const dimensions = useDeviceDimension();
+
   const [currentIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
@@ -75,7 +76,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     index,
   }: ListRenderItemInfo<VirtualClassroom>) => {
     return (
-      <View style={{ width }}>
+      <View
+        style={{
+          width: isFullScreen
+            ? dimensions.screen.width
+            : dimensions.window.width,
+        }}
+      >
         <VideoPlayer
           source={{ uri: item.videoUrl }}
           poster={item.coverUrl ?? undefined}

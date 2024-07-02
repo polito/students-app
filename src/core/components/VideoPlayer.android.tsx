@@ -17,6 +17,7 @@ import { throttle } from 'lodash';
 
 import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
+import { useDeviceDimension } from '../hooks/useDeviceDimension';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
 import { VideoProps } from './VideoPlayer';
@@ -127,8 +128,8 @@ export const VideoPlayer = (props: ReactVideoProps) => {
         styles.container,
         fullscreen && {
           position: 'absolute',
-          width,
-          height,
+          width: dimensions.screen.width,
+          height: dimensions.screen.height,
           zIndex: 1,
         },
       ]}
@@ -180,6 +181,8 @@ export const VideoPlayer = (props: ReactVideoProps) => {
           duration={duration}
           playbackRate={playbackRate}
           setPlaybackRate={togglePlaybackRate}
+          width={dimensions.screen.width - dimensions.window.width}
+          heigth={dimensions.screen.height - dimensions.window.height}
         />
       ) : (
         <Col align="center" justify="center" style={StyleSheet.absoluteFill}>
