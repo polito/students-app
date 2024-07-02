@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import Video, {
   OnBufferData,
   OnLoadData,
@@ -16,6 +16,7 @@ import { throttle } from 'lodash';
 
 import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
+import { useDeviceDimension } from '../hooks/useDeviceDimension';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
 import { VideoProps } from './VideoPlayer';
@@ -29,7 +30,7 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * have a minHeight=100% of the available window height
  */
 export const VideoPlayer = (props: VideoProps) => {
-  const { width, height } = Dimensions.get('screen');
+  const dimensions = useDeviceDimension();
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
   const playerRef = useRef<VideoRef>(null);
@@ -91,8 +92,8 @@ export const VideoPlayer = (props: VideoProps) => {
         styles.container,
         fullscreen && {
           position: 'absolute',
-          width,
-          height,
+          width: dimensions.screen.width,
+          height: dimensions.screen.height,
           zIndex: 1,
         },
       ]}
@@ -103,8 +104,8 @@ export const VideoPlayer = (props: VideoProps) => {
         paused={paused}
         style={[
           {
-            width: '100%',
-            minHeight: (width / 16) * 9,
+            width: fullscreen ? '100%' : dimensions.screen.width,
+            minHeight: (dimensions.window.width / 16) * 9,
           },
           fullscreen && styles.fullHeight,
         ]}
@@ -145,6 +146,8 @@ export const VideoPlayer = (props: VideoProps) => {
           duration={duration}
           playbackRate={playbackRate}
           setPlaybackRate={togglePlaybackRate}
+          width={dimensions.screen.width - dimensions.window.width}
+          heigth={dimensions.screen.height - dimensions.window.height}
         />
       ) : (
         <Col align="center" justify="center" style={StyleSheet.absoluteFill}>
