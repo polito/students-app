@@ -49,6 +49,8 @@ export interface VideoControlProps {
   duration: number;
   playbackRate: number;
   setPlaybackRate: () => void;
+  width: number;
+  heigth: number;
 }
 
 export const VideoControls = ({
@@ -62,6 +64,8 @@ export const VideoControls = ({
   toggleFullscreen,
   playbackRate,
   setPlaybackRate,
+  width,
+  heigth,
 }: VideoControlProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -144,7 +148,16 @@ export const VideoControls = ({
   return (
     <ThemeContext.Provider value={darkTheme}>
       <Animated.View
-        style={[StyleSheet.absoluteFill, { opacity: controlsOpacity }]}
+        style={[
+          {
+            position: 'absolute',
+            left: fullscreen ? width / 2 : 0,
+            right: fullscreen ? width / 2 : 0,
+            top: fullscreen ? heigth : 0,
+            bottom: fullscreen ? heigth : 0,
+          },
+          { opacity: controlsOpacity },
+        ]}
       >
         <Pressable
           style={GlobalStyles.grow}
