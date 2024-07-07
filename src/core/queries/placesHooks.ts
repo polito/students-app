@@ -14,7 +14,6 @@ export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
-export const PLACES_SEARCH_DB_QUERY_KEY = 'places-search-db';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -33,7 +32,13 @@ export const useGetBuildings = (siteId?: string) => {
 
   return useQuery(
     [BUILDINGS_QUERY_KEY],
-    () => placesClient.getBuildings({ siteId: siteId! }),
+    () =>
+      placesClient.getBuildings({ siteId: siteId! }).then(r => {
+        if (r.data?.length) {
+          r.data = r.data.filter(b => !!b.category);
+        }
+        return r;
+      }),
     {
       staleTime: Infinity,
       enabled: siteId != null,
@@ -67,7 +72,10 @@ export const useGetSite = (siteId?: string) => {
 
 export const useGetPlaces = (params: GetPlacesRequest) => {
   const placesClient = usePlacesClient();
-  const key = [PLACES_QUERY_KEY, params.siteId];
+  if (!params.search) {
+    delete params.search;
+  }
+  const key = [PLACES_QUERY_KEY, JSON.stringify(params)];
 
   return useQuery(key, () => placesClient.getPlaces(params), {
     enabled: params.siteId != null,

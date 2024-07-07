@@ -36,7 +36,6 @@ import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
 
@@ -59,16 +58,15 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
   const siteId = place?.site.id;
   const floorId = place?.floor.id;
-  const { data: searchResult, isLoading: isLoadingPlaces } = useSearchPlaces({
+  const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
     floorId,
   });
-  const places = useGetPlacesFromSearchResult(searchResult);
 
   const isLoading = isLoadingPlace || isLoadingPlaces;
   const placeName =
     place?.room.name ??
-    place?.category.subCategory.name ??
+    place?.category.subCategory?.name ??
     t('common.untitled');
 
   useScreenTitle(
@@ -155,10 +153,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         ),
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     floorId,
     headerHeight,
+    isCrossNavigation,
     navigation,
     palettes.secondary,
     place,

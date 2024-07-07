@@ -7,7 +7,13 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -16,7 +22,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { faClock, faMap } from '@fortawesome/free-regular-svg-icons';
+import { faClock } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
   faBookReader,
@@ -28,7 +34,6 @@ import {
   faExpand,
   faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
-import { Col } from '@lib/ui/components/Col';
 import { Divider } from '@lib/ui/components/Divider';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
@@ -44,6 +49,7 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { PlaceOverview } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
@@ -66,21 +72,22 @@ import { MarkersLayer } from '../components/MarkersLayer';
 import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { DEFAULT_CATEGORY_MARKER } from '../constants';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
-import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
+import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { SearchPlace, isPlace } from '../types';
 import { formatPlaceCategory } from '../utils/category';
-import { useFormatAgendaItem } from '../utils/formatAgendaItem';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
   const { categoryId, subCategoryId, bounds } = route.params ?? {};
   const styles = useStylesheet(createStyles);
-  const { colors, spacing, fontSizes } = useTheme();
+  const { spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
+  const placeCategoriesMap = usePlaceCategoriesMap();
   const placeCategory = useGetPlaceCategory(categoryId);
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
   const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
@@ -91,27 +98,20 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const [search, setSearch] = useState('');
-  const [floorId, setFloorId] = useState<string | null>(null);
+  const [floorId, setFloorId] = useState<string>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const formatAgendaItem = useFormatAgendaItem();
   const bottomSheetPosition = useSharedValue(0);
   const [screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
   );
 
-  const {
-    data: searchResult,
-    isLoading: isLoadingPlaces,
-    siteIndexed,
-  } = useSearchPlaces({
+  const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: campus?.id,
     search: debouncedSearch,
     floorId,
     categoryId,
     subCategoryId,
   });
-
-  const places = useGetPlacesFromSearchResult(searchResult);
 
   const categoryFilterName = useMemo(
     () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
@@ -146,8 +146,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       if (!floorId && campus.floors?.length) {
         setFloorId(
           campus.floors.find(f => f.id === 'XPTE')?.id ??
-            campus.floors.find(f => f.level === 0)?.id ??
-            null,
+            campus.floors.find(f => f.level === 0)?.id,
         );
       }
       centerToCurrentCampus();
@@ -157,7 +156,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const displayFloorId = useMemo(() => {
     if (debouncedSearch) {
       const floorIds = new Set(
-        places.filter(p => isPlace(p)).map(p => p.floor.id),
+        (places.filter(p => isPlace(p)) as PlaceOverview[]).map(
+          p => p.floor.id,
+        ),
       );
       return floorIds.size === 1 ? [...floorIds][0] : null;
     }
@@ -228,7 +229,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     debouncedSearch,
     displayFloorId,
     headerHeight,
-    searchResult,
+    places,
     safeAreaInsets.top,
     spacing,
     subCategoryId,
@@ -282,37 +283,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       </TouchableOpacity>
     </TranslucentCard>
   );
-
-  if (!siteIndexed) {
-    return (
-      <Col flexGrow={1} align="center" justify="center">
-        <TranslucentCard ph={6} pv={10}>
-          <Col align="center" gap={1}>
-            <Icon
-              icon={faMap}
-              color={colors.secondaryText}
-              size={fontSizes['3xl']}
-              style={styles.loadingIcon}
-            />
-
-            <Text
-              style={{ textAlign: 'center', color: colors.secondaryText }}
-              variant="heading"
-            >
-              {t('placesScreen.unwrappingMap')}
-            </Text>
-
-            <Text
-              style={{ textAlign: 'center', fontSize: fontSizes.xs }}
-              variant="secondaryText"
-            >
-              {t('common.mightTakeAWhile')}
-            </Text>
-          </Col>
-        </TranslucentCard>
-      </Col>
-    );
-  }
 
   return (
     <View
@@ -465,7 +435,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         animatedPosition={bottomSheetPosition}
         search={search}
         onSearchChange={setSearch}
-        onTriggerSearch={triggerSearch}
+        onSearchTrigger={triggerSearch}
+        onSearchClear={() => {
+          setSearch('');
+          setDebouncedSearch('');
+        }}
         searchFieldLabel={[
           t('common.search'),
           categoryFilterName,
@@ -477,23 +451,33 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         isLoading={isLoadingPlaces}
         listProps={{
           data:
-            listPlaces?.map(p => ({
-              title: isPlace(p)
-                ? p.room.name ?? p.category.subCategory.name
-                : p.name,
-              subtitle: isPlace(p)
-                ? `${
-                    p.agendaItem != null
-                      ? formatAgendaItem(p.agendaItem)
-                      : placesSearched.some(ps => ps.id === p.id)
-                      ? t('common.recentlyViewed')
-                      : p.category.name
-                  } - ${p.floor.name}`
-                : t('common.building'),
-              linkTo: isPlace(p)
-                ? { screen: 'Place', params: { placeId: p.id } }
-                : { screen: 'Building', params: { buildingId: p.id } },
-            })) ?? [],
+            listPlaces?.map(p => {
+              const markerUrl = !placeCategoriesMap
+                ? DEFAULT_CATEGORY_MARKER.markerUrl
+                : p.category?.subCategory?.id
+                ? placeCategoriesMap[p.category.subCategory.id].markerUrl
+                : p.category.id
+                ? placeCategoriesMap[p.category.id].markerUrl
+                : DEFAULT_CATEGORY_MARKER.markerUrl;
+              return {
+                title: isPlace(p)
+                  ? p.room.name ?? p.category.subCategory?.name
+                  : p.name,
+                subtitle: isPlace(p)
+                  ? `${
+                      placesSearched.some(ps => ps.id === p.id)
+                        ? t('common.recentlyViewed')
+                        : p.category.name
+                    } - ${p.floor.name}`
+                  : t('common.building'),
+                linkTo: isPlace(p)
+                  ? { screen: 'Place', params: { placeId: p.id } }
+                  : { screen: 'Building', params: { buildingId: p.id } },
+                leadingItem: (
+                  <Image source={{ uri: markerUrl }} width={30} height={30} />
+                ),
+              };
+            }) ?? [],
           ListEmptyComponent: (
             <EmptyState
               message={t('placesScreen.noPlacesFound')}

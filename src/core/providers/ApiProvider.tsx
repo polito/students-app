@@ -129,7 +129,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         }));
         await client.invalidateQueries();
       }
-      const { message } = await error.response.json();
+      const { message } = (await error.response.json()) as { message?: string };
 
       // The login alert is handled in the login screen
       if (!error.response.url.includes('/login'))

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { ImageURISource, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { Divider } from '@lib/ui/components/Divider';
@@ -19,8 +19,10 @@ import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { notNullish } from '../../../utils/predicates';
 import { UnreadMessagesModal } from '../../user/screens/UnreadMessagesModal';
 import { MAX_ZOOM } from '../constants';
+import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { BuildingScreen } from '../screens/BuildingScreen';
 import { EventPlacesScreen } from '../screens/EventPlacesScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
@@ -63,6 +65,22 @@ export const PlacesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const colorScheme = useMemo(() => (theme.dark ? 'dark' : 'light'), [theme]);
+  const categories = usePlaceCategoriesMap();
+  const images = useMemo<Record<string, ImageURISource>>(
+    () =>
+      categories
+        ? Object.fromEntries(
+            [
+              ...new Set(
+                Object.values(categories)
+                  .map(c => c.markerUrl)
+                  .filter(notNullish),
+              ),
+            ].map(uri => [uri, { uri }]),
+          )
+        : {},
+    [categories],
+  );
 
   useEffect(() => {
     request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
@@ -106,33 +124,7 @@ export const PlacesNavigator = () => {
         mapDefaultContent: (
           <>
             <UserLocation />
-            <Images
-              images={{
-                bar: require('../../../../assets/map-icons/bar.png'),
-                bed: require('../../../../assets/map-icons/bed.png'),
-                bike: require('../../../../assets/map-icons/bike.png'),
-                car: require('../../../../assets/map-icons/car.png'),
-                classroom: require('../../../../assets/map-icons/classroom.png'),
-                conference: require('../../../../assets/map-icons/conference.png'),
-                door: require('../../../../assets/map-icons/door.png'),
-                elevator: require('../../../../assets/map-icons/elevator.png'),
-                lab: require('../../../../assets/map-icons/lab.png'),
-                library: require('../../../../assets/map-icons/library.png'),
-                medical: require('../../../../assets/map-icons/medical.png'),
-                microscope: require('../../../../assets/map-icons/microscope.png'),
-                office: require('../../../../assets/map-icons/office.png'),
-                pin: require('../../../../assets/map-icons/pin.png'),
-                post: require('../../../../assets/map-icons/post.png'),
-                print: require('../../../../assets/map-icons/print.png'),
-                recycle: require('../../../../assets/map-icons/recycle.png'),
-                restaurant: require('../../../../assets/map-icons/restaurant.png'),
-                restroom: require('../../../../assets/map-icons/restroom.png'),
-                service: require('../../../../assets/map-icons/service.png'),
-                stairs: require('../../../../assets/map-icons/stairs.png'),
-                study: require('../../../../assets/map-icons/study.png'),
-                water: require('../../../../assets/map-icons/water.png'),
-              }}
-            />
+            <Images images={images} />
             <RasterSource
               key={`outdoorSource:${colorScheme}`}
               tileUrlTemplates={[
