@@ -28,6 +28,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -83,8 +85,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     return (
       examsQuery.data
-        .filter(e => !hiddenCourses.includes(e.uniqueShortcode))
-        .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
+        .filter(
+          e =>
+            !hiddenCourses.includes(e.uniqueShortcode) &&
+            e.examEndsAt!.valueOf() > DateTime.now().toJSDate().valueOf(),
+        )
+        .sort((a, b) => {
+          const status =
+            (a.status === ExamStatusEnum.Booked ? -1 : 0) +
+            (b.status === ExamStatusEnum.Booked ? 1 : 0);
+          return status !== 0
+            ? status
+            : a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf();
+        })
         .slice(0, 4) ?? []
     );
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
