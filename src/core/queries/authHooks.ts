@@ -1,10 +1,12 @@
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { t } from 'i18next';
 
 import { isEnvProduction } from '../../utils/env';
 import { pluckData } from '../../utils/queries';
@@ -16,6 +18,18 @@ import { asyncStoragePersister } from '../providers/ApiProvider';
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
+
+async function getFcmToken(): Promise<string | undefined> {
+  if (!isEnvProduction) return undefined;
+
+  try {
+    return await messaging().getToken();
+  } catch (_) {
+    Alert.alert(t('common.error'), t('loginScreen.fcmUnsupported'));
+  }
+
+  return undefined;
+}
 
 export const useLogin = () => {
   const authClient = useAuthClient();
@@ -32,7 +46,7 @@ export const useLogin = () => {
         DeviceInfo.getManufacturer(),
         DeviceInfo.getBuildNumber(),
         DeviceInfo.getVersion(),
-        isEnvProduction ? messaging().getToken() : undefined,
+        getFcmToken(),
       ])
         .then(
           ([
