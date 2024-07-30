@@ -490,7 +490,8 @@
     "title": "Log in with your polito.it credentials",
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID",
-    "usernameLabelAccessibility": "Enter your username here"
+    "usernameLabelAccessibility": "Enter your username here",
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
   },
   "messageScreen": {
     "backTitle": "Archive",
