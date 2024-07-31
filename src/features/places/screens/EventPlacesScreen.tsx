@@ -157,7 +157,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
         listProps={{
           data:
             places.map(place => ({
-              title: place.room.name ?? place.category.subCategory.name,
+              title: place.room.name ?? place.category.subCategory?.name,
               subtitle: `${place.category.name} - ${place.floor.name}`,
               linkTo: { screen: 'Place', params: { placeId: place.id } },
             })) ?? [],

@@ -18,6 +18,7 @@ import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { PlaceOverview } from '@polito/api-client';
 
 import { last } from 'lodash';
 import { DateTime } from 'luxon';
@@ -33,9 +34,7 @@ import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { FREE_ROOMS_TIME_WINDOW_SIZE_HOURS } from '../constants';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
-import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
-import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
 
 type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
 
@@ -118,8 +117,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     [t, today],
   );
 
-  const { data: searchResult } = useSearchPlaces({ siteId: campus?.id });
-  const sitePlaces = useGetPlacesFromSearchResult(searchResult);
+  const { data: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
 
   const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
     siteId: campus?.id,
@@ -131,14 +129,11 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     () =>
       freeRooms?.data
         .map(fr => {
-          const place = sitePlaces?.find(p => p.id === fr.id);
+          const place = sitePlaces?.find(p => p.id === fr.id) as PlaceOverview;
           if (!place) return null;
           return { ...fr, ...place };
         })
-        ?.filter(notNullish) as (SearchPlace & {
-        freeFrom: Date;
-        freeTo: Date;
-      })[],
+        ?.filter(notNullish),
     [freeRooms?.data, sitePlaces],
   );
   const displayFloorId = useMemo(() => {
@@ -208,9 +203,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
         <BottomSheetFlatList
           data={
             places?.map(p => ({
-              title:
-                (p as PlaceOverviewWithMetadata).room.name ??
-                t('common.untitled'),
+              title: p.room.name ?? t('common.untitled'),
               subtitle: `${t('common.free')} ${formatTime(
                 p.freeFrom,
               )} - ${formatTime(p.freeTo)}`,
