@@ -188,6 +188,7 @@ jobs:
         echo "${{ secrets.SUPPLY_GOOGLE_JSON_SECRET }}" | base64 -d > ${SUPPLY_GOOGLE_JSON_PATH}
         echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
         chmod 600 ${KEYSTORE_PATH} ${SUPPLY_GOOGLE_JSON_PATH}
+        echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> ./sentry.properties
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_playstore == 'false'
       working-directory: ./android
@@ -197,9 +198,6 @@ jobs:
       working-directory: ./android
       env:
         STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: bundle exec fastlane release
     - name: Fastlane APK lane
       if: |
@@ -280,6 +278,7 @@ jobs:
         chmod 600 ${MATCH_GIT_PRIVATE_KEY}
         echo "${{ secrets.SUPPLY_GOOGLE_SERVICE_INFO_PLIST }}" | base64 -d > ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
         chmod 600 ${MATCH_GIT_PRIVATE_KEY} ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
+        echo "auth.token=${{ secrets.SENTRY_AUTH_TOKEN }}" >> ./sentry.properties
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_testflight == 'false'
       working-directory: ./ios
@@ -288,10 +287,6 @@ jobs:
     - name: Fastlane RELEASE lane
       if: needs.configure.outputs.push_to_testflight == 'true'
       working-directory: ./ios
-      env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: |
         bundle exec fastlane release
 

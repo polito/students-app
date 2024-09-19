@@ -717,11 +717,12 @@ PODS:
   - RNScreens (3.27.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNSentry (5.22.2):
+  - RNSentry (5.33.0):
     - hermes-engine
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-hermes
-    - Sentry/HybridSDK (= 8.25.0)
+    - Sentry/HybridSDK (= 8.36.0)
   - RNSVG (15.2.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -730,7 +731,7 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry/HybridSDK (8.25.0)
+  - Sentry/HybridSDK (8.36.0)
   - SocketRocket (0.6.1)
   - TOCropViewController (2.7.4)
   - Turf (2.7.0)
@@ -1116,11 +1117,11 @@ SPEC CHECKSUMS:
   RNPermissions: 84e15be8aab0567bc2c1a904bc4110b6d515666e
   RNReanimated: d4f25b2a931c4f0b2bb12173a3096f02ea4cfb05
   RNScreens: bea7b9767050d69e4b9da14639cdd5c8f5a37881
-  RNSentry: f6a5aee809d646763640130714d1fdfe69aac36b
+  RNSentry: 49b1723fc3b5a635ba6ccc958bc4a2d54555b44f
   RNSVG: 43b64ed39c14ce830d840903774154ca0c1f27ec
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: cd86fc55628f5b7c572cabe66cc8f95a9d2f165a
+  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Turf: 13d1a92d969ca0311bbc26e8356cca178ce95da2
