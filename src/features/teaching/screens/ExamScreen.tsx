@@ -212,15 +212,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               inverted
               /* check using undefined since the fields can be 0 */
               title={
-                exam?.availableCount !== undefined &&
                 exam?.bookedCount !== undefined
                   ? getExam(exam.bookedCount, exam.availableCount)
-                  : ''
+                  : t('examScreen.noBookedCount')
               }
               subtitle={t('examScreen.bookedCount')}
               trailingItem={
                 exam?.status === ExamStatusEnum.Unavailable &&
-                exam?.availableCount &&
                 exam.availableCount === 0 ? (
                   <Icon
                     icon={faTriangleExclamation}

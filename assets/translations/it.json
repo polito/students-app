@@ -426,7 +426,8 @@
     "noLocation": "Aula da definire",
     "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
-    "title": "Appello"
+    "title": "Appello",
+    "noBookedCount": "Dato non disponibile"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
