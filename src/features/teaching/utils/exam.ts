@@ -5,7 +5,7 @@ export const isExamPassed = (bookingEndsAt: Date) => {
 };
 
 export const getExam = (bookedCount: number, availableCount: number) => {
-  if (availableCount === 999) {
+  if (availableCount === undefined || availableCount === 999) {
     return `${bookedCount}`;
   }
   return `${bookedCount}/${availableCount + bookedCount}`;

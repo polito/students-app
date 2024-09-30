@@ -426,7 +426,8 @@
     "noLocation": "Room to be defined",
     "notAvailable": "Booking not available",
     "notes": "Notes",
-    "title": "Exam call"
+    "title": "Exam call",
+    "noBookedCount": "Data not available"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
