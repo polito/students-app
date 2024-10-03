@@ -307,6 +307,84 @@
   "courseGuideScreen": {
     "title": "Course guide"
   },
+  "courseStatisticsScreen": {
+    "title": "TODO",
+    "subtitle": "TODO",
+    "noData": "TODO",
+    "period": "TODO",
+    "teacher": "TODO",
+    "enrolledExamTitle": "TODO",
+    "enrolledExamInfo": "TODO",
+    "enrolledExamDetailTitle": "TODO",
+    "enrolledExamDetailInfo": "TODO",
+    "examGradeDetailTitle": "TODO",
+    "examGradeDetailInfo": "TODO",
+    "enrolledExamBottomSheet":  {
+      "title": "TODO",
+      "content": "TODO",
+      "item1": {
+        "title": "TODO",
+        "content": "TODO"
+      },
+      "item2": {
+        "title": "TODO",
+        "content": "TODO"
+      }
+    },
+    "enrolledExamDetailBottomSheet":  {
+      "title": "TODO",
+      "content": "TODO",
+      "item1": {
+        "title": "TODO",
+        "content": "TODO"
+      },
+      "item2": {
+        "title": "TODO",
+        "content": "TODO"
+      },
+      "item3": {
+        "title": "TODO",
+        "content": "TODO"
+      }
+    },
+    "gradesDetailBottomSheet":  {
+      "title": "TODO",
+      "content": "TODO",
+      "item1": {
+        "title": "TODO",
+        "content": "TODO"
+      },
+      "item2": {
+        "title": "TODO",
+        "content": "TODO"
+      },
+      "item3": {
+        "title": "TODO",
+        "content": "TODO"
+      }
+    },
+    "gradesDetailLegend": {
+      "averageGrade": "TODO",
+      "firstYear": "TODO",
+      "secondYear": "TODO",
+      "otherYears": "TODO"
+    },
+    "enrolledExamChartLabel": {
+      "firstYear": "TODO",
+      "secondYear": "TODO",
+      "otherYears": "TODO"
+    },
+    "enrolledExamChartLegend": {
+      "passed": "TODO",
+      "failed": "TODO"
+    },
+    "enrolledExamVisualization": {
+      "title": "TODO",
+      "single": "TODO",
+      "compare": "TODO",
+      "error": "TODO"
+    }
+  },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
   },
@@ -391,7 +469,9 @@
     "period": "Period",
     "staff": "Staff",
     "title": "Course",
-    "tutoring": "Tutoring"
+    "tutoring": "Tutoring",
+    "statistics": "Statistics",
+    "statisticsSubtitle": "See exam statistics"
   },
   "degreeScreen": {
     "cohort": "Coorte",
