@@ -34,11 +34,14 @@ async function getFcmToken(): Promise<string | undefined> {
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
-  const { updatePreference } = usePreferencesContext();
+  const { updatePreference, clientId } = usePreferencesContext();
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
-      const client = { name: 'Students app', id: 'students-app' };
+      const client = {
+        name: 'Students app',
+        ...(clientId && { id: clientId }),
+      };
 
       return Promise.all([
         DeviceInfo.getDeviceName(),
@@ -84,10 +87,10 @@ export const useLogin = () => {
         });
     },
     onSuccess: async data => {
-      const { token, clientId, username } = data;
+      const { token, clientId: cid, username } = data;
       refreshContext({ username, token });
       updatePreference('username', username);
-      await Keychain.setGenericPassword(clientId, token);
+      await Keychain.setGenericPassword(cid, token);
     },
   });
 };
