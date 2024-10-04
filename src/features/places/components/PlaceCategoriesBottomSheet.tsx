@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'react-native';
 
 import { faMapLocation } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -36,11 +37,12 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
       isLoading={isLoading}
       listProps={{
         data: categories?.data
-          .flatMap(c =>
-            c.subCategories.map(sc => ({
-              ...sc,
-              parent: formatPlaceCategory(c.name),
-            })),
+          .flatMap(
+            c =>
+              c.subCategories?.map(sc => ({
+                ...sc,
+                parent: formatPlaceCategory(c.name),
+              })) ?? [],
           )
           .filter(
             sc =>
@@ -50,7 +52,11 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
             title: sc.name,
             subtitle: sc.parent,
             isAction: true,
-            leadingItem: <Icon icon={faMapLocation} size={fontSizes['2xl']} />,
+            leadingItem: sc.markerUrl ? (
+              <Image source={{ uri: sc.markerUrl }} width={30} height={30} />
+            ) : (
+              <Icon icon={faMapLocation} size={fontSizes['2xl']} />
+            ),
             onPress: () => {
               sheetRef.current?.close();
               navigation.navigate({
