@@ -8,32 +8,30 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
-import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
-import { useCourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
-import { CourseTabsParamList } from '../navigation/CourseNavigator';
+import { FileStackParamList } from '../navigation/FileNavigator';
 
-type Props = MaterialTopTabScreenProps<
-  CourseTabsParamList,
-  'CourseFilesScreen'
->;
+type Props = NativeStackScreenProps<FileStackParamList, 'FileScreen'>;
 
-export const CourseFilesScreen = ({ navigation }: Props) => {
+export const CourseFilesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { refresh } = useContext(CourseFilesCacheContext);
-  const courseId = useCourseContext();
+  const courseId = route.params.courseId;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
+  const { updatePreference } = usePreferencesContext();
 
   useOnLeaveScreen(() => {
     clearNotificationScope(['teaching', 'courses', courseId, 'files']);
@@ -91,7 +89,10 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
-          action={() => navigation!.navigate('CourseDirectory', { courseId })}
+          action={() => {
+            navigation!.navigate('DirectoryFileScreen', { courseId });
+            updatePreference('filesScreen', 'folderView');
+          }}
         />
       )}
     </>

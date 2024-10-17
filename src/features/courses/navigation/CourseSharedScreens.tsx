@@ -23,16 +23,14 @@ import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomS
 import { NoticeScreen } from '../screens/NoticeScreen';
 import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
+import { FileStackParamList } from './FileNavigator';
 
-export interface CourseSharedScreensParamList extends ParamListBase {
+export interface CourseSharedScreensParamList
+  extends ParamListBase,
+    FileStackParamList {
   Course: { id: number; animated?: boolean };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
-  CourseDirectory: {
-    courseId: number;
-    directoryId?: string;
-    directoryName?: string;
-  };
   CourseGuide: { courseId: number };
   CourseVideolecture: {
     courseId: number;
@@ -109,9 +107,9 @@ export const CourseSharedScreens = (
         }}
       />
       <Stack.Screen
-        name="CourseDirectory"
+        name="DirectoryFileScreen"
         component={CourseDirectoryScreen}
-        getId={({ params }) => `${params.directoryId}`}
+        getId={({ params }) => `${params?.directoryId}`}
         options={{
           headerBackTitleVisible: false,
           headerLargeTitle: false,

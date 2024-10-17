@@ -291,7 +291,10 @@
     "subtitle_plural": "{{count}} file"
   },
   "courseDirectoryScreen": {
-    "noResult": "Nessun risultato trovato"
+    "noResult": "Nessun risultato trovato",
+    "navigateRecentFiles": "Sfoglia file recenti",
+    "search": "Cerca",
+    "clearSearch": "Cancella ricerca"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
