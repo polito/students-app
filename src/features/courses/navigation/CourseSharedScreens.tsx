@@ -113,9 +113,6 @@ export const CourseSharedScreens = (
         options={{
           headerBackTitleVisible: false,
           headerLargeTitle: false,
-          headerSearchBarOptions: {
-            hideWhenScrolling: false,
-          },
         }}
       />
 
