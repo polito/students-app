@@ -74,15 +74,12 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     <CourseContext.Provider value={courseId}>
       <CourseFilesCacheProvider>
         <FileCacheChecker />
-        <CourseSearchBar
-          searchFilter={searchFilter}
-          setSearchFilter={setSearchFilter}
-        />
 
         {searchFilter ? (
           <CourseFileSearchFlatList
             courseId={courseId}
             searchFilter={searchFilter}
+            setSearchFilter={setSearchFilter}
           />
         ) : (
           <FlatList
@@ -110,6 +107,12 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               ios: IndentedDivider,
             })}
             ListFooterComponent={<BottomBarSpacer />}
+            ListHeaderComponent={
+              <CourseSearchBar
+                searchFilter={searchFilter}
+                setSearchFilter={setSearchFilter}
+              />
+            }
           />
         )}
       </CourseFilesCacheProvider>
@@ -130,6 +133,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 interface SearchFlatListProps {
   courseId: number;
   searchFilter: string;
+  setSearchFilter: (search: string) => void;
 }
 
 interface SearchBarProps {
@@ -164,6 +168,7 @@ const CourseSearchBar = ({ searchFilter, setSearchFilter }: SearchBarProps) => {
 const CourseFileSearchFlatList = ({
   courseId,
   searchFilter,
+  setSearchFilter,
 }: SearchFlatListProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -209,6 +214,12 @@ const CourseFileSearchFlatList = ({
         <Text style={styles.noResultText}>
           {t('courseDirectoryScreen.noResult')}
         </Text>
+      }
+      ListHeaderComponent={
+        <CourseSearchBar
+          searchFilter={searchFilter}
+          setSearchFilter={setSearchFilter}
+        />
       }
     />
   );

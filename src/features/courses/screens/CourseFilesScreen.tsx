@@ -85,7 +85,7 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
           ) : null
         }
       />
-      {recentFilesQuery.data && recentFilesQuery.data.length > 0 && (
+      {recentFilesQuery.data && (
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
