@@ -6,6 +6,7 @@ export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;
+  onModalHide?: () => void;
 }>;
 
 export const BottomModal = ({
@@ -13,6 +14,7 @@ export const BottomModal = ({
   visible,
   onClose,
   dismissable,
+  onModalHide,
 }: BottomModalProps) => {
   const handleCloseModal = () => {
     dismissable && onClose?.();
@@ -23,6 +25,7 @@ export const BottomModal = ({
   return (
     <Modal
       {...Modal.defaultProps}
+      onModalHide={onModalHide}
       onBackButtonPress={handleCloseModal}
       style={{ margin: 0, justifyContent: 'flex-end' }}
       animationOutTiming={400}
