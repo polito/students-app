@@ -180,6 +180,8 @@
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
+    "newVersionTitle": "A new version is on the store!",
+    "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it from the <0>store</0> to access all the new features and avoid malfunctions.",
     "next": "Next",
     "noInternet": "You are offline, some features may not be available",
     "noValue": "No value",

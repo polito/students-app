@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
-import { useOfflineDisabled } from '../hooks/useOfflineDisabled.ts';
+import { useSplashContext } from '../contexts/SplashContext';
+import { useBottomModal } from '../hooks/useBottomModal';
+import { useCheckForUpdate } from '../hooks/useCheckForUpdate';
 import { MigrationService } from '../migrations/MigrationService';
-import { useUpdateAppInfo } from '../queries/authHooks.ts';
+import { BottomModal } from './BottomModal';
 import { GuestNavigator } from './GuestNavigator';
+import { NewVersionModal } from './NewVersionModal';
 import { RootNavigator } from './RootNavigator';
 
 export const AppContent = () => {
@@ -16,15 +20,40 @@ export const AppContent = () => {
   const [clientPatchOk, setClientPatchOk] = useState(false);
   const preferences = usePreferencesContext();
   const queryClient = useQueryClient();
-  const isOffline = useOfflineDisabled();
+  const { isSplashLoaded } = useSplashContext();
+
+  const {
+    close: closeModal,
+    open: showModal,
+    modal: bottomModal,
+  } = useBottomModal();
+  const { needsToUpdate, latestAppVersion, storeUrl } = useCheckForUpdate();
+  const [versionModalVisible, setVersionModalVisible] = useState<
+    boolean | undefined
+  >();
 
   useEffect(() => {
-    if (clientPatchOk || !isLogged || isOffline) return;
-    // TODO handle suggestUpdate field in new version in UpdateAppInfo response
-    updateAppInfo()
-      .then(() => setClientPatchOk(true))
-      .catch(console.warn);
-  }, [isLogged, isOffline, updateAppInfo, clientPatchOk]);
+    if (!isSplashLoaded || needsToUpdate === undefined) return;
+    if (needsToUpdate === false) {
+      setVersionModalVisible(false);
+      return;
+    }
+    setVersionModalVisible(true);
+    showModal(
+      <NewVersionModal
+        close={closeModal}
+        newVersion={latestAppVersion!}
+        storeUrl={storeUrl!}
+      />,
+    );
+  }, [
+    needsToUpdate,
+    isSplashLoaded,
+    closeModal,
+    showModal,
+    latestAppVersion,
+    storeUrl,
+  ]);
 
   useEffect(() => {
     MigrationService.migrateIfNeeded(preferences, queryClient);
@@ -32,5 +61,18 @@ export const AppContent = () => {
 
   if (MigrationService.needsMigration(preferences)) return null;
 
-  return isLogged ? <RootNavigator /> : <GuestNavigator />;
+  return (
+    <>
+      <BottomModal
+        dismissable
+        {...bottomModal}
+        onModalHide={() => setVersionModalVisible(false)}
+      />
+      {isLogged ? (
+        <RootNavigator versionModalIsOpen={versionModalVisible} />
+      ) : (
+        <GuestNavigator />
+      )}
+    </>
+  );
 };

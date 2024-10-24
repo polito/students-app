@@ -95,7 +95,13 @@
     "react-string-replace": "^1.1.1",
     "react-usestateref": "^1.0.9",
     "semver": "^7.6.3",
-    "superjson": "^2.2.1"
+    "superjson": "^2.2.1",
+    "react-native-version-check": "^3.4.7",
+    "react-native-video": "^5.2.1",
+    "react-string-replace": "^1.1.0",
+    "react-usestateref": "^1.0.8",
+    "semver": "^7.5.4",
+    "superjson": "^1.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

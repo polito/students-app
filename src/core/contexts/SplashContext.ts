@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, createContext, useContext } from 'react';
 export interface SplashContextProps {
   isAppLoaded: boolean;
   setIsAppLoaded: Dispatch<SetStateAction<boolean>>;
+  isSplashLoaded: boolean;
 }
 
 export const SplashContext = createContext<SplashContextProps | undefined>(
