@@ -25,19 +25,19 @@ import {
 } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CourseFileOverviewWithLocation } from '../../../core/types/files';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
-import { CourseSharedScreensParamList } from '../navigation/CourseSharedScreens';
 import { FileStackParamList } from '../navigation/FileNavigator';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<
-  CourseSharedScreensParamList & FileStackParamList,
-  'DirectoryFileScreen'
+  TeachingStackParamList & FileStackParamList,
+  'CourseDirectory' | 'DirectoryFiles'
 >;
 
 const FileCacheChecker = () => {
@@ -75,11 +75,15 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       <CourseFilesCacheProvider>
         <FileCacheChecker />
 
+        <CourseSearchBar
+          searchFilter={searchFilter}
+          setSearchFilter={setSearchFilter}
+        />
+
         {searchFilter ? (
           <CourseFileSearchFlatList
             courseId={courseId}
             searchFilter={searchFilter}
-            setSearchFilter={setSearchFilter}
           />
         ) : (
           <FlatList
@@ -107,12 +111,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               ios: IndentedDivider,
             })}
             ListFooterComponent={<BottomBarSpacer />}
-            ListHeaderComponent={
-              <CourseSearchBar
-                searchFilter={searchFilter}
-                setSearchFilter={setSearchFilter}
-              />
-            }
           />
         )}
       </CourseFilesCacheProvider>
@@ -121,8 +119,8 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
           title={t('courseDirectoryScreen.navigateRecentFiles')}
           icon={faFile}
           action={() => {
-            navigation!.navigate('FileScreen', { courseId });
-            updatePreference('filesScreen', 'recentFiles');
+            navigation!.navigate('RecentFiles', { courseId });
+            updatePreference('filesScreen', 'filesView');
           }}
         />
       )}
@@ -133,7 +131,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
 interface SearchFlatListProps {
   courseId: number;
   searchFilter: string;
-  setSearchFilter: (search: string) => void;
 }
 
 interface SearchBarProps {
@@ -168,7 +165,6 @@ const CourseSearchBar = ({ searchFilter, setSearchFilter }: SearchBarProps) => {
 const CourseFileSearchFlatList = ({
   courseId,
   searchFilter,
-  setSearchFilter,
 }: SearchFlatListProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -214,12 +210,6 @@ const CourseFileSearchFlatList = ({
         <Text style={styles.noResultText}>
           {t('courseDirectoryScreen.noResult')}
         </Text>
-      }
-      ListHeaderComponent={
-        <CourseSearchBar
-          searchFilter={searchFilter}
-          setSearchFilter={setSearchFilter}
-        />
       }
     />
   );

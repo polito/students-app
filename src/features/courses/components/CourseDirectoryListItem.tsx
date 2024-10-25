@@ -29,13 +29,10 @@ export const CourseDirectoryListItem = ({
         count: item.files.length,
       })}
       onPress={() =>
-        navigation.navigate('TeachingTab', {
-          screen: 'DirectoryFileScreen',
-          params: {
-            courseId,
-            directoryId: item.id,
-            directoryName: item.name,
-          },
+        navigation.navigate('CourseDirectory', {
+          courseId,
+          directoryId: item.id,
+          directoryName: item.name,
         })
       }
       {...rest}

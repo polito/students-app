@@ -33,7 +33,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
           lecture: false,
         },
       },
-      filesScreen: 'recentFiles',
+      filesScreen: 'filesView',
     });
 
   const preferencesInitialized = useRef<boolean>(false);

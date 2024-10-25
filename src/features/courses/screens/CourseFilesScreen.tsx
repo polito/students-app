@@ -21,7 +21,7 @@ import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
 import { FileStackParamList } from '../navigation/FileNavigator';
 
-type Props = NativeStackScreenProps<FileStackParamList, 'FileScreen'>;
+type Props = NativeStackScreenProps<FileStackParamList, 'RecentFiles'>;
 
 export const CourseFilesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
@@ -90,8 +90,8 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
           action={() => {
-            navigation!.navigate('DirectoryFileScreen', { courseId });
-            updatePreference('filesScreen', 'folderView');
+            navigation!.navigate('DirectoryFiles', { courseId });
+            updatePreference('filesScreen', 'directoryView');
           }}
         />
       )}

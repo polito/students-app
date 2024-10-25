@@ -64,7 +64,7 @@ export interface PreferencesContextBase {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
   };
-  filesScreen: 'recentFiles' | 'folderView';
+  filesScreen: 'filesView' | 'directoryView';
   hideGrades?: boolean;
 }
 

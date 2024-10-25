@@ -8,10 +8,10 @@ import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseFilesScreen } from '../screens/CourseFilesScreen';
 
 export type FileStackParamList = {
-  FileScreen: {
+  RecentFiles: {
     courseId: number;
   };
-  DirectoryFileScreen: {
+  DirectoryFiles: {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
@@ -32,16 +32,16 @@ export const FileNavigator = () => {
         ...useTitlesStyles(theme),
       }}
       initialRouteName={
-        filesScreen === 'recentFiles' ? 'FileScreen' : 'DirectoryFileScreen'
+        filesScreen === 'filesView' ? 'RecentFiles' : 'DirectoryFiles'
       }
     >
       <Stack.Screen
-        name="FileScreen"
+        name="RecentFiles"
         component={CourseFilesScreen}
         initialParams={{ courseId: courseId }}
       />
       <Stack.Screen
-        name="DirectoryFileScreen"
+        name="DirectoryFiles"
         component={CourseDirectoryScreen}
         initialParams={{ courseId: courseId }}
       />
