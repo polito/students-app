@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
@@ -11,6 +11,7 @@ import { Row } from '@lib/ui/components/Row';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -35,6 +36,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
+  const { fontWeights } = useTheme();
 
   const confirmAcceptance = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -91,7 +93,18 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           <ActivityIndicator />
         ) : (
           <SafeAreaView>
-            <Row p={5} gap={2}>
+            <Row
+              pb={
+                grade.state === ProvisionalGradeStateEnum.Confirmed &&
+                (grade.canBeAccepted || grade.canBeRejected) &&
+                rejectionTime
+                  ? 0
+                  : 5
+              }
+              ph={5}
+              pt={5}
+              gap={2}
+            >
               <Col flexGrow={1} flexShrink={1} gap={2}>
                 <ScreenTitle title={grade.courseName} />
                 <Text>{`${formatDate(grade.date)} - ${t(
@@ -100,10 +113,6 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                     credits: grade.credits,
                   },
                 )}`}</Text>
-                {grade.state === ProvisionalGradeStateEnum.Confirmed &&
-                  rejectionTime && (
-                    <Text style={styles.rejectionTime}>{rejectionTime}</Text>
-                  )}
               </Col>
               <Col
                 align="center"
@@ -113,17 +122,41 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 style={styles.grade}
               >
                 <Text
-                  style={
+                  style={[
                     grade.grade.length < 3
                       ? styles.gradeText
-                      : styles.longGradeText
-                  }
+                      : styles.longGradeText,
+                    grade.isFailure || grade.isWithdrawn
+                      ? styles.failureGradeText
+                      : undefined,
+                  ]}
                   numberOfLines={1}
                 >
-                  {grade.grade}{' '}
+                  {grade.isFailure || grade.isWithdrawn
+                    ? grade.grade.charAt(0).toUpperCase() +
+                      grade.grade.slice(1).toLowerCase()
+                    : grade.grade}
                 </Text>
               </Col>
             </Row>
+            {grade.state === ProvisionalGradeStateEnum.Confirmed &&
+              grade.canBeAccepted &&
+              rejectionTime && (
+                <Row pl={5} pb={5}>
+                  <Text style={styles.autoRegistration}>
+                    {t('transcriptGradesScreen.autoRegistration')}
+                    <Text
+                      style={[
+                        styles.autoRegistration,
+                        { fontWeight: fontWeights.medium },
+                      ]}
+                    >
+                      {rejectionTime}
+                    </Text>
+                  </Text>
+                </Row>
+              )}
+
             <GradeStates state={grade?.state} />
             {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
               <CtaButtonSpacer />
@@ -140,54 +173,63 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
         />
       )}
       {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
-        <CtaButtonContainer absolute={true}>
-          <CtaButton
-            title={t('provisionalGradeScreen.acceptGradeCta')}
-            action={() =>
-              confirmAcceptance().then(ok => {
-                if (ok) {
-                  acceptGradeQuery
-                    .mutateAsync(grade.id)
-                    .then(() => provideFeedback(true));
-                }
-              })
-            }
-            variant="outlined"
-            absolute={false}
-            loading={acceptGradeQuery.isLoading}
-            disabled={
-              isOffline ||
-              acceptGradeQuery.isLoading ||
-              rejectGradeQuery.isLoading
-            }
-            containerStyle={{ paddingVertical: 0 }}
-          />
-          <CtaButton
-            title={t('provisionalGradeScreen.rejectGradeCta')}
-            action={() =>
-              confirmRejection().then(ok => {
-                if (ok) {
-                  rejectGradeQuery
-                    .mutateAsync(grade.id)
-                    .then(() => provideFeedback(false));
-                }
-              })
-            }
-            absolute={false}
-            loading={rejectGradeQuery.isLoading}
-            disabled={
-              isOffline ||
-              acceptGradeQuery.isLoading ||
-              rejectGradeQuery.isLoading
-            }
-            containerStyle={{ paddingVertical: 0 }}
-          />
+        <CtaButtonContainer
+          absolute={true}
+          modal={Platform.select({ android: true })}
+        >
+          {grade?.canBeAccepted && (
+            <CtaButton
+              title={t('provisionalGradeScreen.acceptGradeCta')}
+              action={() =>
+                confirmAcceptance().then(ok => {
+                  if (ok) {
+                    acceptGradeQuery
+                      .mutateAsync(grade.id)
+                      .then(() => provideFeedback(true));
+                  }
+                })
+              }
+              absolute={false}
+              loading={acceptGradeQuery.isLoading}
+              disabled={
+                isOffline ||
+                acceptGradeQuery.isLoading ||
+                rejectGradeQuery.isLoading
+              }
+              containerStyle={{ paddingVertical: 0 }}
+            />
+          )}
+          {grade?.canBeRejected && (
+            <CtaButton
+              title={t('provisionalGradeScreen.rejectGradeCta', {
+                hours: rejectionTime,
+              })}
+              action={() =>
+                confirmRejection().then(ok => {
+                  if (ok) {
+                    rejectGradeQuery
+                      .mutateAsync(grade.id)
+                      .then(() => provideFeedback(false));
+                  }
+                })
+              }
+              absolute={false}
+              loading={rejectGradeQuery.isLoading}
+              variant="outlined"
+              disabled={
+                isOffline ||
+                acceptGradeQuery.isLoading ||
+                rejectGradeQuery.isLoading
+              }
+              containerStyle={{ paddingVertical: 0 }}
+              destructive
+            />
+          )}
         </CtaButtonContainer>
       )}
     </>
   );
 };
-
 const createStyles = ({
   colors,
   dark,
@@ -228,10 +270,17 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
     },
     longGradeText: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.lg,
       fontWeight: fontWeights.semibold,
+    },
+    failureGradeText: {
+      color: palettes.rose[600],
     },
     rejectionTime: {
       color: dark ? palettes.danger[300] : palettes.danger[700],
+    },
+    autoRegistration: {
+      fontSize: fontSizes.md,
+      color: dark ? palettes.primary[300] : palettes.primary[600],
     },
   });

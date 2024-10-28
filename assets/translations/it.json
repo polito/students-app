@@ -504,8 +504,10 @@
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
     "noLocation": "Aula da definire",
+    "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
-    "title": "Appello"
+    "title": "Appello",
+    "noBookedCount": "Dato non disponibile"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -569,7 +571,8 @@
     "title": "Accedi con le tue credenziali polito.it",
     "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola",
-    "usernameLabelAccessibility": "Inserisci qui il tuo username"
+    "usernameLabelAccessibility": "Inserisci qui il tuo username",
+    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
   },
   "messageScreen": {
     "backTitle": "Archivio",
@@ -697,12 +700,12 @@
     "trainingOffer": "Offerta formativa"
   },
   "provisionalGradeScreen": {
-    "acceptGradeConfirmMessage": "Accettando il voto non potrai più cambiare la tua decisione",
+    "acceptGradeConfirmMessage": "Richiedendo la registrazione immediata la valutazione verrà inserita in libretto e non potrai più cambiare la tua decisione",
     "acceptGradeCta": "Richiedi la registrazione immediata",
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
-    "rejectGradeConfirmMessage": "Rifiutando il voto non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta la valutazione",
+    "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
+    "rejectGradeCta": "Rifiuta la valutazione entro:<br><b>{{hours}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"
   },
@@ -787,13 +790,14 @@
     "title": "Valutazione"
   },
   "transcriptGradesScreen": {
+    "autoRegistration": "Registrazione automatica tra:",
     "emptyState": "Non hai sostenuto nessun esame",
     "expiredCountdown": "Scaduto",
     "provisionalEmptyState": "Non ci sono valutazioni provvisorie",
     "provisionalTitle": "Provvisorie",
     "recordedTitle": "Registrate",
     "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
-    "rejectionCountdown": "Rifiutabile entro:",
+    "rejectionCountdown": "Rifiutabile entro: <b>{{hours}}</b>",
     "title": "Valutazioni",
     "total": "Sono presenti {{total}} valutazioni"
   },
