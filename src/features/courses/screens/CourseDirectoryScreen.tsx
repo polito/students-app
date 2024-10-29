@@ -75,10 +75,12 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       <CourseFilesCacheProvider>
         <FileCacheChecker />
 
-        <CourseSearchBar
-          searchFilter={searchFilter}
-          setSearchFilter={setSearchFilter}
-        />
+        {navigation.getId() === 'FileTabNavigator' && (
+          <CourseSearchBar
+            searchFilter={searchFilter}
+            setSearchFilter={setSearchFilter}
+          />
+        )}
 
         {searchFilter ? (
           <CourseFileSearchFlatList
