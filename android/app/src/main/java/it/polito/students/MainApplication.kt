@@ -1,4 +1,4 @@
-package com.students
+package it.polito.students
 
 import android.app.Application
 import com.facebook.react.PackageList

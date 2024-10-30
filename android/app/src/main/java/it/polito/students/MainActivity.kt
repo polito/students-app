@@ -1,4 +1,4 @@
-package com.students
+package it.polito.students
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
