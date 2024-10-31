@@ -117,7 +117,11 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             ListEmptyComponent={
               !directoryQuery.isLoading ? (
                 <EmptyState
-                  message={t('courseFilesTab.empty')}
+                  message={
+                    navigation.getId() === 'FileTabNavigator'
+                      ? t('courseDirectoryScreen.emptyRootFolder')
+                      : t('courseDirectoryScreen.emptyFolder')
+                  }
                   icon={faFolderOpen}
                 />
               ) : null

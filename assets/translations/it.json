@@ -292,6 +292,8 @@
   },
   "courseDirectoryScreen": {
     "clearSearch": "Cancella ricerca",
+    "emptyRootFolder": "Non ci sono file",
+    "emptyFolder": "La cartella è vuota",
     "noResult": "Nessun risultato trovato",
     "navigateRecentFiles": "Sfoglia file recenti",
     "search": "Cerca"
@@ -302,7 +304,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
-    "empty": "Non ci sono file qui",
+    "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale"

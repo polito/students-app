@@ -292,6 +292,8 @@
   },
   "courseDirectoryScreen": {
     "clearSearch": "Clear search",
+    "emptyRootFolder": "There are no files",
+    "emptyFolder": "The folder is empty",
     "noResult": "No results found",
     "navigateRecentFiles": "View recent",
     "search": "Search"
@@ -302,7 +304,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "There are no files here",
+    "empty": "There are no files",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
