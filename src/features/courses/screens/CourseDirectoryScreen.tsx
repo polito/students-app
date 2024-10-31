@@ -2,9 +2,10 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet } from 'react-native';
 
-import { faFile } from '@fortawesome/free-regular-svg-icons';
+import { faFile, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
@@ -113,6 +114,14 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               ios: IndentedDivider,
             })}
             ListFooterComponent={<BottomBarSpacer />}
+            ListEmptyComponent={
+              !directoryQuery.isLoading ? (
+                <EmptyState
+                  message={t('courseFilesTab.empty')}
+                  icon={faFolderOpen}
+                />
+              ) : null
+            }
           />
         )}
       </CourseFilesCacheProvider>
