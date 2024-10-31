@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "./.tsbuild/",
+    "sourceMap": false,
+    "target": "ES2019",
+    "module": "CommonJS",
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "types": ["node", "@wdio/mocha-framework", "@wdio/globals/types"]
+  },
+  "include": [
+    "./constants/*.ts",
+    "./config/**/*.ts",
+    "./tests/**/*.ts",
+    "./node_modules/@polito/api-client/**/*.ts"
+  ]
+}

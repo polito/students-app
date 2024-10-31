@@ -1,0 +1,98 @@
+name: Appium CI
+
+on: 
+  push: 
+    branches:
+      - main
+  workflow_dispatch:
+    inputs: 
+      tests_to_run: 
+        type: string 
+        description: 'Tests to run (e.g., "place teaching_page/course")'
+
+env:
+  STUDENTID_TEST: ${{secrets.STUDENTID_TEST}}
+  PASSWORD_TEST: ${{secrets.PASSWORD_TEST}}
+  TOKEN: ${{secrets.TOKEN}}
+  PACKAGE_NAME: ${{vars.PACKAGE_NAME}}
+  LOCAL: ${{vars.LOCAL}}
+  USE_PLAYSTORE: ${{vars.USE_PLAYSTORE}}
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults: 
+      run: 
+        working-directory: "./tests/e2e"
+        
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get apk from polito students repo
+        run: |
+          wget https://github.com/polito/students-app/releases/download/v1.6.7/app-release.apk -O ./apps/app-release.apk
+
+      - name: Enable KVM (hw accelleration)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Setup .npmrc
+        run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "adopt"
+          java-version: 21
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version-file: .nvmrc
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ./tests/e2e/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('./tests/e2e/package-lock.json') }}
+
+      - name: Install npm dependencies and create error screenshots folder
+        run: |
+          npm install
+          mkdir -p screenshots
+
+      - name: Run emulator and tests 
+        uses: reactivecircus/android-emulator-runner@v2 # install and create the Emulator
+        with:
+          api-level: ${{vars.API_LEVEL}} #34
+          target: ${{ env.USE_PLAYSTORE == 'true' && 'google_apis' || 'default' }} #default
+          arch: x86_64
+          profile: ${{vars.PROFILE}} #pixel_3a_xl
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio
+          working-directory: "./tests/e2e"
+          disable-animations: false #reanimate issue map view 
+          script: npm run wdio
+
+      - name: Test report
+        run: |
+          npx ctrf merge report --output ctrf-report.json
+          npx github-actions-ctrf report/ctrf-report.json
+        if: always()
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctrf-report
+          path: ./tests/e2e/report/ctrf-report.json
+        if: always()
+
+      - name: Upload screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: ./tests/e2e/screenshots/*
+        if: failure()
