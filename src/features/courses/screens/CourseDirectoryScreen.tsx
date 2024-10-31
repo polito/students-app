@@ -135,7 +135,9 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   useEffect(() => {
     if (!recentFilesQuery.data) return;
     setSearchResults(
-      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
+      recentFilesQuery.data.filter(file =>
+        file.name.toLowerCase().includes(searchFilter.toLowerCase()),
+      ),
     );
   }, [recentFilesQuery.data, searchFilter]);
 
