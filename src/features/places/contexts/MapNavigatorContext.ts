@@ -1,10 +1,10 @@
 import { RefObject, createContext } from 'react';
 
-import { Camera, MapView } from '@rnmapbox/maps';
+import { CameraRef, MapViewRef } from '@maplibre/maplibre-react-native';
 
 interface MapNavigatorContextValue {
-  mapRef: RefObject<MapView>;
-  cameraRef: RefObject<Camera>;
+  mapRef: RefObject<MapViewRef>;
+  cameraRef: RefObject<CameraRef>;
 }
 
 export const MapNavigatorContext = createContext<MapNavigatorContextValue>(

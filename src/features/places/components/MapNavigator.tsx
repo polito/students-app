@@ -2,6 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
   ComponentProps,
+  ComponentType,
   ReactNode,
   useContext,
   useEffect,
@@ -13,6 +14,14 @@ import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/n
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import {
+  BackgroundLayer,
+  Camera,
+  CameraRef,
+  MapView,
+  MapViewRef,
+} from '@maplibre/maplibre-react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
@@ -37,8 +46,6 @@ import {
   NativeStackNavigationEventMap,
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
-import { Camera, MapView } from '@rnmapbox/maps';
-import { CameraProps } from '@rnmapbox/maps/src/components/Camera';
 
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
@@ -94,14 +101,15 @@ export const MapNavigator = ({
       screenOptions,
       initialRouteName,
     });
-  const mapRef = useRef<MapView>(null);
-  const cameraRef = useRef<Camera>(null);
+  const mapRef = useRef<MapViewRef>(null);
+  const cameraRef = useRef<CameraRef>(null);
   const currentRoute = descriptors[state.routes[state.index].key];
   const mapDefaultOptions = currentRoute.options?.mapDefaultOptions ?? {};
   const mapOptions = currentRoute.options?.mapOptions ?? {};
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
+  const { dark } = useTheme();
   const headerBack = previousDescriptor
     ? {
         title: getHeaderTitle(
@@ -117,6 +125,8 @@ export const MapNavigator = ({
   );
   const orientation = useDeviceOrientation();
   const [rotating, setRotating] = useState(false);
+  const MapDefaultContent = currentRoute.options?.mapDefaultContent;
+  const MapContent = currentRoute.options?.mapContent;
 
   useEffect(() => {
     if (IS_IOS) {
@@ -230,22 +240,32 @@ export const MapNavigator = ({
             }
           >
             <HeaderBackContext.Provider value={headerBack}>
-              <MapView
-                ref={mapRef}
-                style={[GlobalStyles.grow, rotating && { display: 'none' }]}
-                {...mapDefaultOptions}
-                {...mapOptions}
+              <MapNavigatorContext.Provider
+                value={{
+                  mapRef,
+                  cameraRef,
+                }}
               >
-                <Camera
-                  ref={cameraRef}
-                  {...(mapDefaultOptions?.camera ?? {})}
-                  {...(mapOptions?.camera ?? {})}
-                />
-                {currentRoute.options?.mapDefaultContent}
-                {currentRoute.options?.mapContent}
-              </MapView>
+                <MapView
+                  ref={mapRef}
+                  style={[GlobalStyles.grow, rotating && { display: 'none' }]}
+                  {...mapDefaultOptions}
+                  {...mapOptions}
+                >
+                  <BackgroundLayer
+                    id="background"
+                    // eslint-disable-next-line react-native/no-color-literals
+                    style={{ backgroundColor: dark ? 'black' : 'white' }}
+                  />
+                  <Camera
+                    ref={cameraRef}
+                    {...(mapDefaultOptions?.camera ?? {})}
+                    {...(mapOptions?.camera ?? {})}
+                  />
+                  {MapDefaultContent && <MapDefaultContent />}
+                  {MapContent && <MapContent />}
+                </MapView>
 
-              <MapNavigatorContext.Provider value={{ mapRef, cameraRef }}>
                 {!rotating ? (
                   <Route renderRoute={currentRoute.render} />
                 ) : (
@@ -277,6 +297,7 @@ const styles = StyleSheet.create({
 });
 
 type MapViewProps = ComponentProps<typeof MapView>;
+type CameraProps = ComponentProps<typeof Camera>;
 
 type MapOptions = Partial<
   Omit<MapViewProps, 'children'> & {
@@ -288,8 +309,8 @@ type MapOptions = Partial<
 export type MapNavigationOptions = NativeStackNavigationOptions & {
   mapOptions?: MapOptions;
   mapDefaultOptions?: MapOptions;
-  mapContent?: JSX.Element;
-  mapDefaultContent?: JSX.Element;
+  mapContent?: ComponentType;
+  mapDefaultContent?: ComponentType;
 };
 
 export const createMapNavigator = createNavigatorFactory<

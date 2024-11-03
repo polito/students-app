@@ -1,6 +1,6 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import Mapbox from '@rnmapbox/maps';
+import MapLibreGL from '@maplibre/maplibre-react-native';
 import * as Sentry from '@sentry/react-native';
 
 import { AppContent } from './core/components/AppContent';
@@ -16,7 +16,7 @@ import { extendSuperJSON } from './utils/superjson';
 initSentry();
 extendSuperJSON();
 
-Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
+MapLibreGL.setAccessToken(null);
 
 export const App = () => {
   return (

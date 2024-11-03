@@ -1,28 +1,35 @@
-import { useLayoutEffect, useMemo } from 'react';
+import { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import {
+  FillLayer,
+  LineLayer,
+  ShapeSource,
+} from '@maplibre/maplibre-react-native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
-import { IS_IOS } from '../../../core/constants';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetMultiplePlaces } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { notNullish } from '../../../utils/predicates';
-import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { PlacesContext } from '../contexts/PlacesContext';
+import { getBottomSheetScreenPadding } from '../utils/getBottomSheetScreenPadding';
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 
 type Props = MapScreenProps<PlacesStackParamList, 'EventPlaces'>;
+
+const initialBottomSheetHeightRatio = 0.5;
 
 /**
  * A screen used to highlight the locations of events that happen in multiple
@@ -33,7 +40,9 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
+  const tabBarHeight = useBottomTabBarHeight();
   const safeAreaInsets = useSafeAreaInsets();
+  const { floorId, setFloorId } = useContext(PlacesContext);
   const { placeIds, eventName } = route.params;
   const placesQueries = useGetMultiplePlaces(placeIds);
   const isLoading = useMemo(
@@ -49,7 +58,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
       undefined
     >[];
   }, [isLoading, placesQueries]);
-  const floorId = useMemo(() => {
+  const eventsFloorId = useMemo(() => {
     if (isLoading) {
       return undefined;
     }
@@ -57,39 +66,39 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     return floorIds.size === 1 ? [...floorIds][0] : undefined;
   }, [isLoading, placesQueries]);
 
+  useEffect(() => {
+    if (!isLoading && floorId !== eventsFloorId) {
+      setFloorId(eventsFloorId);
+    }
+  }, [eventsFloorId, floorId, isLoading, setFloorId]);
+
   useScreenTitle(eventName);
 
   useLayoutEffect(() => {
     if (!isLoading) {
       navigation.setOptions({
         mapOptions: {
-          compassPosition: IS_IOS
-            ? {
-                top: headerHeight - safeAreaInsets.top + spacing[2],
-                right: spacing[3],
-              }
-            : undefined,
           camera: {
-            bounds: getCoordinatesBounds(
-              places.map(place => [place.longitude, place.latitude]),
-            ),
-            padding: {
-              paddingTop: 0,
-              paddingLeft: 0,
-              paddingRight: 0,
-              paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
+            bounds: {
+              ...getBottomSheetScreenPadding({
+                headerHeight,
+                tabBarHeight,
+                initialBottomSheetHeightRatio,
+              }),
+              ...getCoordinatesBounds(
+                places.map(place => [place.longitude, place.latitude]),
+              ),
             },
           },
         },
-        mapContent: (
+        mapContent: () => (
           <>
-            <IndoorMapLayer floorId={floorId} />
             <MarkersLayer
               places={placesQueries.map(q => ({ type: 'place', ...q.data! }))}
               categoryId={places[0]?.category?.id}
               subCategoryId={places[0]?.category?.subCategory?.id}
             />
-            {floorId != null &&
+            {eventsFloorId != null &&
               places.map(place => {
                 if (!place.geoJson) {
                   return null;
@@ -99,7 +108,6 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
                     key={`placeOutline:${place.id}`}
                     id={`placeOutline:${place.id}`}
                     shape={place.geoJson as any} // TODO fix incompatible types
-                    existing={false}
                   >
                     <LineLayer
                       id={`placeHighlightLine:${place.id}`}
@@ -124,7 +132,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
       });
     }
   }, [
-    floorId,
+    eventsFloorId,
     headerHeight,
     isLoading,
     navigation,
@@ -133,13 +141,14 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     placesQueries,
     safeAreaInsets.top,
     spacing,
+    tabBarHeight,
   ]);
 
   if (isLoading) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
         <BottomSheet
-          middleSnapPoint={50}
+          middleSnapPoint={initialBottomSheetHeightRatio * 100}
           handleStyle={{ paddingVertical: undefined }}
         >
           <ActivityIndicator style={{ marginVertical: spacing[8] }} />
@@ -157,7 +166,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
         listProps={{
           data:
             places.map(place => ({
-              title: place.room.name ?? place.category.subCategory.name,
+              title: place.room.name ?? place.category.subCategory?.name,
               subtitle: `${place.category.name} - ${place.floor.name}`,
               linkTo: { screen: 'Place', params: { placeId: place.id } },
             })) ?? [],

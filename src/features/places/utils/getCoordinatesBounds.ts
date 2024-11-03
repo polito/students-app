@@ -1,9 +1,10 @@
-import { CameraBoundsWithPadding } from '@rnmapbox/maps/src/components/Camera';
+import { CameraBounds } from '@maplibre/maplibre-react-native';
+import { CameraPadding } from '@maplibre/maplibre-react-native/javascript/components/Camera';
 
 export const getCoordinatesBounds = (
   coordinates: [number, number][],
   padding = 0.0001,
-): CameraBoundsWithPadding => {
+): CameraBounds & Partial<CameraPadding> => {
   const lons = coordinates.map(([l]) => l);
   const lats = coordinates.map(([_, l]) => l);
   const n = Math.min(...lats) - padding;
