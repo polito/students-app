@@ -4,8 +4,7 @@ import Video, {
   OnBufferData,
   OnLoadData,
   OnProgressData,
-  ReactVideoProps,
-  VideoRef,
+  VideoProperties,
 } from 'react-native-video';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -28,11 +27,11 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * In order for fullscreen to work correctly, this component's parent should
  * have a minHeight=100% of the available window height
  */
-export const VideoPlayer = (props: ReactVideoProps) => {
+export const VideoPlayer = (props: VideoProperties) => {
   const { width, height } = Dimensions.get('screen');
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
-  const playerRef = useRef<VideoRef>(null);
+  const playerRef = useRef<Video>(null);
   const [paused, setPaused] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [duration, setDuration] = useState(0);

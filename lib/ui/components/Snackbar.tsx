@@ -17,6 +17,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import useLatestCallback from 'use-latest-callback';
 
 import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
+import { useTheme } from '../hooks/useTheme';
 
 export type Props = Feedback & {
   /**
@@ -47,6 +48,7 @@ export const Snackbar = ({
   const styles = useStylesheet(createStyles);
   const { bottom } = useSafeAreaInsets();
   const { isEnabled, announce } = useScreenReader();
+  const { dark, palettes } = useTheme();
 
   const { current: opacity } = React.useRef<Animated.Value>(
     new Animated.Value(0.0),
@@ -155,7 +157,7 @@ export const Snackbar = ({
         {action && (
           <View style={[styles.actionsContainer, { marginLeft }]}>
             <TouchableHighlight
-              underlayColor={styles.button.underlayColor}
+              underlayColor={palettes.gray[dark ? 300 : 700]}
               onPress={event => {
                 onPressAction?.(event);
                 onDismiss?.();
@@ -215,7 +217,6 @@ const createStyles = ({ dark, palettes, shapes, spacing }: Theme) =>
       paddingHorizontal: 12,
       paddingVertical: 10,
       borderRadius: shapes.md,
-      underlayColor: palettes.gray[dark ? 300 : 700],
     },
     buttonLabel: {
       fontWeight: '500',
