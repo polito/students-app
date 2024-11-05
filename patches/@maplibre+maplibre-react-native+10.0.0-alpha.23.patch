@@ -1,0 +1,63 @@
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/components/MapView.tsx b/node_modules/@maplibre/maplibre-react-native/javascript/components/MapView.tsx
+index 850b490..6aede07 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/components/MapView.tsx
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/components/MapView.tsx
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import debounce from "debounce";
+ import React, {
+   Component,
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/components/ShapeSource.tsx b/node_modules/@maplibre/maplibre-react-native/javascript/components/ShapeSource.tsx
+index ed6aaf2..0057bb4 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/components/ShapeSource.tsx
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/components/ShapeSource.tsx
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import React, {
+   Component,
+   ReactElement,
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/components/Style.tsx b/node_modules/@maplibre/maplibre-react-native/javascript/components/Style.tsx
+index 74130c6..17e6a7b 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/components/Style.tsx
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/components/Style.tsx
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import React, {
+   useMemo,
+   useState,
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/components/VectorSource.tsx b/node_modules/@maplibre/maplibre-react-native/javascript/components/VectorSource.tsx
+index b94880c..1b3d914 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/components/VectorSource.tsx
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/components/VectorSource.tsx
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import { featureCollection } from "@turf/helpers";
+ import React, { memo, useImperativeHandle } from "react";
+ import {
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/modules/offline/OfflinePack.ts b/node_modules/@maplibre/maplibre-react-native/javascript/modules/offline/OfflinePack.ts
+index c041d1e..2f36c56 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/modules/offline/OfflinePack.ts
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/modules/offline/OfflinePack.ts
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import { NativeModules } from "react-native";
+ 
+ import OfflineCreatePackOptions from "./OfflineCreatePackOptions";
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/utils/filterUtils.ts b/node_modules/@maplibre/maplibre-react-native/javascript/utils/filterUtils.ts
+index 14d878f..ed4889f 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/utils/filterUtils.ts
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/utils/filterUtils.ts
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import { FilterExpression } from "./MaplibreStyles";
+ 
+ export function getFilter(filter: FilterExpression | undefined): string[] {
+diff --git a/node_modules/@maplibre/maplibre-react-native/javascript/utils/index.ts b/node_modules/@maplibre/maplibre-react-native/javascript/utils/index.ts
+index 1f529d3..2810fa1 100644
+--- a/node_modules/@maplibre/maplibre-react-native/javascript/utils/index.ts
++++ b/node_modules/@maplibre/maplibre-react-native/javascript/utils/index.ts
+@@ -1,3 +1,4 @@
++//@ts-nocheck
+ import React, { Component, ReactElement } from "react";
+ import {
+   Image,

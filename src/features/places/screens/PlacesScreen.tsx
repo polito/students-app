@@ -43,7 +43,10 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import Mapbox, { CameraPadding } from '@maplibre/maplibre-react-native';
+import {
+  CameraPadding,
+  locationManager,
+} from '@maplibre/maplibre-react-native';
 import { PlaceOverview } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
 
@@ -115,7 +118,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   useScreenTitle(categoryFilterName);
 
   const centerToUserLocation = useCallback(async () => {
-    const location = await Mapbox.locationManager.getLastKnownLocation();
+    const location = await locationManager.getLastKnownLocation();
     if (location) {
       const { latitude, longitude } = location.coords;
       cameraRef.current?.flyTo([longitude, latitude]);

@@ -1,5 +1,4 @@
-import { CameraBounds } from '@maplibre/maplibre-react-native';
-import { CameraPadding } from '@maplibre/maplibre-react-native/javascript/components/Camera';
+import { CameraBounds, CameraPadding } from '@maplibre/maplibre-react-native';
 
 export const getCoordinatesBounds = (
   coordinates: [number, number][],
