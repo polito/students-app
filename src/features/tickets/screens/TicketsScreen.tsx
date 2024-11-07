@@ -24,6 +24,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { getHtmlTextContent } from '../../../utils/html';
@@ -34,19 +35,38 @@ interface Props {
   navigation: NativeStackNavigationProp<ServiceStackParamList, 'Tickets'>;
 }
 
-const ListItem = ({ ticket }: { ticket: TicketOverview }) => {
+const ListItem = ({
+  ticket,
+  index,
+  totalData,
+}: {
+  ticket: TicketOverview;
+  index: number;
+  totalData: number;
+}) => {
   const { getUnreadsCount } = useNotifications();
   const unread = useMemo(
     () => !!getUnreadsCount(['services', 'tickets', ticket.id.toString()]),
     [getUnreadsCount, ticket.id],
   );
 
+  const { accessibilityListLabel } = useAccessibility();
+  const accessibilityLabel =
+    accessibilityListLabel(index, totalData) +
+    ', ' +
+    getHtmlTextContent(ticket?.subject);
+
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={getHtmlTextContent(ticket?.subject)}
+      accessibilityLabel={accessibilityLabel}
     >
-      <TicketListItem ticket={ticket} key={ticket.id} unread={unread} />
+      <TicketListItem
+        accessibilityLabel={accessibilityLabel}
+        ticket={ticket}
+        key={ticket.id}
+        unread={unread}
+      />
     </Pressable>
   );
 };
@@ -90,8 +110,13 @@ export const TicketsScreen = ({ navigation }: Props) => {
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
             <OverviewList indented>
-              {openTickets?.map(ticket => (
-                <ListItem ticket={ticket} key={ticket.id} />
+              {openTickets?.map((ticket, index) => (
+                <ListItem
+                  totalData={openTickets?.length || 0}
+                  index={index}
+                  ticket={ticket}
+                  key={ticket.id}
+                />
               ))}
             </OverviewList>
           ) : (
@@ -136,8 +161,13 @@ export const TicketsScreen = ({ navigation }: Props) => {
         {!ticketsQuery.isLoading &&
           (renderedClosedTickets.length > 0 ? (
             <OverviewList indented>
-              {renderedClosedTickets.map(ticket => (
-                <ListItem ticket={ticket} key={ticket.id} />
+              {renderedClosedTickets.map((ticket, index) => (
+                <ListItem
+                  totalData={renderedClosedTickets?.length || 0}
+                  index={index}
+                  ticket={ticket}
+                  key={ticket.id}
+                />
               ))}
             </OverviewList>
           ) : (
