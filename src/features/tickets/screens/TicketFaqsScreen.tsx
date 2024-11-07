@@ -139,6 +139,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                           params: { faq },
                         }}
                         title={<Text numberOfLines={3}>{title}</Text>}
+                        accessibilityRole="button"
                       />
                     );
                   })
