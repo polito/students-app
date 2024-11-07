@@ -124,7 +124,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   }, [t, ticketBody?.subtopicId]);
 
   const subtopicAccessibilityLabel = useMemo(() => {
-    const baseText = t('createTicketScreen.subtopicDropdownLabel');
+    const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
     if (topicId) {
       return baseText;
     } else {
@@ -138,6 +138,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         <SectionHeader title={t('createTicketScreen.subtitle')} />
         <OverviewList>
           <Select
+            accessibilityLabel={t(
+              'createTicketScreen.topicDropdownLabelAccessibility',
+            )}
             label={t('createTicketScreen.topicDropdownLabel')}
             description={t('createTicketScreen.topicDescription')}
             options={topicOptions}

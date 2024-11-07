@@ -378,6 +378,8 @@
     "subtitle": "Inserisci la tua richiesta",
     "subtopicDescription": "Seleziona il sottoargomento",
     "subtopicDropdownLabel": "Sottoargomento",
+    "subtopicDropdownLabelAccessibility": "Sottoargomento, apri e scegli tra le opzioni",
+    "topicDropdownLabelAccessibility": "Argomento, apri e scegli tra le opzioni",
     "subtopicDropdownPlaceholder": "Seleziona il sottoargomento",
     "title": "Nuovo ticket",
     "topicDescription": "Seleziona l'argomento",
