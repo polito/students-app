@@ -33,6 +33,7 @@ import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -51,6 +52,8 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
     ticketFaqsQuery.data?.sort((a, b) => (a.question > b.question ? 1 : -1)) ??
     [];
   const canSearch = search?.length > 2;
+
+  const { accessibilityListLabel } = useAccessibility();
 
   useEffect(() => {
     if (!ticketFaqsQuery?.data) {
@@ -120,13 +123,19 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
           {hasSearchedOnce && (
             <OverviewList indented>
               {ticketFaqs.length > 0
-                ? ticketFaqs.map(faq => {
+                ? ticketFaqs.map((faq, index) => {
                     const dom = parseDocument(
                       faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
                     ) as Document;
                     const title = innerText(dom.children as any[]);
+                    const accessibilityLabel =
+                      accessibilityListLabel(index, ticketFaqs?.length || 0) +
+                      ', ' +
+                      title;
+
                     return (
                       <ListItem
+                        accessibilityLabel={accessibilityLabel}
                         key={faq.id}
                         leadingItem={
                           <Icon
