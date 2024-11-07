@@ -72,6 +72,8 @@
     "yellow": "Giallo"
   },
   "common": {
+    "active": "Attivo",
+    "disabled insert the precedents": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
@@ -512,6 +514,7 @@
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messagingView": {
+    "active replay": "Attivo, (clicca due volte per attivare)",
     "pickFile": "Scegli un file",
     "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",

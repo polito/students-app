@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View, ViewProps } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
@@ -101,6 +102,15 @@ export const MessagingView = ({
     }
   };
 
+  const replayAccessibilityLabel = useMemo(() => {
+    const baseText = t('ticketScreen.reply');
+    if (!disabled) {
+      return baseText + ', ' + t('messagingView.active replay');
+    } else {
+      return baseText + ', ' + t('common.disabled insert the precedents');
+    }
+  }, [disabled, t]);
+
   return (
     <View
       {...props}
@@ -169,6 +179,7 @@ export const MessagingView = ({
             }}
           >
             <IconButton
+              accessibilityLabel={t('messagingView.pickFile')}
               icon={faPaperclip}
               size={22}
               style={styles.actionButton}
@@ -177,6 +188,7 @@ export const MessagingView = ({
           </MenuView>
           <TranslucentTextField
             label={t('ticketScreen.reply')}
+            accessibilityLabel={replayAccessibilityLabel}
             value={message}
             autoCapitalize="sentences"
             onChangeText={onMessageChange}
@@ -219,6 +231,6 @@ const createStyles = ({ spacing, colors, safeAreaInsets }: Theme) =>
     },
     actionButton: {
       opacity: Platform.select({ ios: 0.8 }),
-      padding: spacing[1.5],
+      padding: spacing[2.5],
     },
   });

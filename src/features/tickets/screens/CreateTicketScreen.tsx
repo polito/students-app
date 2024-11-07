@@ -114,6 +114,24 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     [subTopics, ticketBody.subtopicId],
   );
 
+  const subjectAccessibilityLabel = useMemo(() => {
+    const baseText = t('createTicketScreen.subjectLabel');
+    if (ticketBody?.subtopicId) {
+      return baseText;
+    } else {
+      return baseText + ', ' + t('common.disabled insert the precedents');
+    }
+  }, [t, ticketBody?.subtopicId]);
+
+  const subtopicAccessibilityLabel = useMemo(() => {
+    const baseText = t('createTicketScreen.subtopicDropdownLabel');
+    if (topicId) {
+      return baseText;
+    } else {
+      return baseText + ', ' + t('common.disabled insert the precedents');
+    }
+  }, [t, topicId]);
+
   return (
     <ScreenContainer>
       <Section>
@@ -131,6 +149,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList>
           <Select
+            accessibilityLabel={subtopicAccessibilityLabel}
             options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
@@ -142,6 +161,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList style={styles.objectSection}>
           <TextField
+            accessibilityLabel={subjectAccessibilityLabel}
             autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
             inputStyle={styles.textFieldInput}
