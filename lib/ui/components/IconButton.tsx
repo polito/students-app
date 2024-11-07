@@ -11,12 +11,14 @@ type Props = Omit<FAProps, 'style'> &
     adjustSpacing?: 'left' | 'right';
     loading?: boolean;
     noPadding?: boolean;
+    iconPadding?: number;
   };
 
 export const IconButton = ({
   iconStyle,
   loading,
   adjustSpacing,
+  iconPadding,
   noPadding = false,
   ...rest
 }: Props) => {
@@ -49,7 +51,7 @@ export const IconButton = ({
     transform,
     testID,
   };
-  const padding = spacing[3] as number;
+  const padding = iconPadding || (spacing[3] as number);
   return (
     <TouchableOpacity
       hitSlop={{
