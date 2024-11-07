@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Alert,
   Keyboard,
   SafeAreaView,
@@ -40,6 +41,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
 
 export const TicketFaqsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const { fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [search, setSearch] = useState('');
@@ -48,8 +50,18 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
   const ticketFaqs =
     ticketFaqsQuery.data?.sort((a, b) => (a.question > b.question ? 1 : -1)) ??
     [];
-
   const canSearch = search?.length > 2;
+
+  useEffect(() => {
+    if (!ticketFaqsQuery?.data) {
+      return;
+    }
+    if (ticketFaqs?.length === 0 && canSearch && hasSearchedOnce) {
+      AccessibilityInfo.announceForAccessibility(
+        t('ticketFaqsScreen.emptyState'),
+      );
+    }
+  }, [ticketFaqs, canSearch, hasSearchedOnce, ticketFaqsQuery.data, t]);
 
   const triggerSearch = () => {
     if (!canSearch) {
@@ -93,11 +105,14 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                 inputStyle={styles.messageInput}
               />
               <IconButton
+                accessibilityLabel={t('ticketFaqsScreen.searchButton')}
+                iconPadding={spacing[5]}
                 icon={faSearch}
                 loading={ticketFaqsQuery.isFetching}
                 onPress={() => {
                   triggerSearch();
                 }}
+                accessibilityRole="button"
                 disabled={!canSearch}
               />
             </Row>
@@ -139,6 +154,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
 
         {hasSearchedOnce && !ticketFaqsQuery.isFetching && (
           <CtaButton
+            accessibilityLabel={t('ticketFaqScreen.writeTicketMessage')}
             absolute={false}
             title={t('ticketFaqsScreen.writeTicket')}
             hint={t('ticketFaqsScreen.noResultFound')}
