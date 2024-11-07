@@ -22,10 +22,12 @@ interface Props {
   label: string;
   description?: string;
   disabled?: boolean;
+  accessibilityLabel?: string;
 }
 
 export const Select = ({
   options,
+  accessibilityLabel,
   onSelectOption,
   value,
   label,
@@ -47,6 +49,7 @@ export const Select = ({
     >
       <ListItem
         isAction
+        accessibilityLabel={accessibilityLabel || label}
         disabled={disabled}
         title={displayedValue || label}
         subtitle={description}
