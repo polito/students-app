@@ -191,6 +191,7 @@
     "open": "Apri",
     "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
+    "openSourceAccessibilityLabel": "Open Source, clicca per andare al repository GitHub della App",
     "openedStatus": {
       "false": "Chiuso",
       "true": "Aperto"
@@ -481,6 +482,7 @@
     "title": "Biblioteca"
   },
   "loginScreen": {
+    "onboarding" : "Onboarding",
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
@@ -637,7 +639,10 @@
   "servicesScreen": {
     "subTitleOne": "Servizi informativi",
     "subTitleTwo": "Servizi operativi",
-    "title": "Servizi"
+    "title": "Servizi",
+    "newElement": ", hai Un nuovo elemento da visualizzare",
+    "favoriteActive": "Imposta preferito, Attivo",
+    "favoriteInactive": "Imposta preferito, Non attivo"
   },
   "settingsScreen": {
     "appVersion": "Versione {{version}}",
@@ -667,9 +672,11 @@
     "headerBackTitle": "Nuovo",
     "noResultFound": "Non hai trovato quello che cerchi?",
     "title": "FAQ",
-    "writeTicket": "Scrivi ticket"
+    "writeTicket": "Scrivi ticket",
+    "writeTicketMessage": "Scrivi ticket se non hai trovato quello che cerchi"
   },
   "ticketFaqsScreen": {
+    "searchButton": "Attiva per cercare le parole chiave inserite tra le faq",
     "emptyState": "Nessun risultato trovato",
     "findFAQ": "Cerca tra le FAQ",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
@@ -700,6 +707,8 @@
     }
   },
   "ticketsScreen": {
+    "noOpenTickets": "Non ci sono ticket aperti",
+    "noClosedTickets": "Non ci sono ticket chiusi",
     "addNew": "Nuovo ticket",
     "closed": "Ticket chiusi",
     "closedEmptyState": "Non ci sono ticket chiusi",
