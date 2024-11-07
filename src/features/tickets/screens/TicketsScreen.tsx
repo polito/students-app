@@ -1,6 +1,11 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +18,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
@@ -46,9 +52,32 @@ export const TicketsScreen = ({ navigation }: Props) => {
       .filter(ticket => ticket.status !== TicketStatus.Closed)
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
+    useFocusEffect(
+      useCallback(() => {
+        if (!ticketsQuery?.data || openTickets?.length > 0) {
+          return;
+        }
+        AccessibilityInfo.announceForAccessibility(
+          t('ticketsScreen.noOpenTickets'),
+        );
+      }, [openTickets]),
+    );
+
+    const sectionHeaderTicketOpenAccessibilityLabel = useMemo(() => {
+      const baseText = t('ticketsScreen.opened');
+      if (openTickets?.length > 0) {
+        return baseText;
+      } else {
+        return `${baseText}, ${t('ticketsScreen.noOpenTickets')}`;
+      }
+    }, [openTickets]);
+
     return (
       <Section>
-        <SectionHeader title={t('ticketsScreen.opened')} />
+        <SectionHeader
+          accessibilityLabel={sectionHeaderTicketOpenAccessibilityLabel}
+          title={t('ticketsScreen.opened')}
+        />
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
             <OverviewList indented>
@@ -75,9 +104,19 @@ export const TicketsScreen = ({ navigation }: Props) => {
       [closedTickets],
     );
 
+    const sectionHeaderTicketClosedAccessibilityLabel = useMemo(() => {
+      const baseText = t('ticketsScreen.closed');
+      if (renderedClosedTickets.length > 0) {
+        return baseText;
+      } else {
+        return `${baseText}, ${t('ticketsScreen.noClosedTickets')}`;
+      }
+    }, [renderedClosedTickets]);
+
     return (
       <Section>
         <SectionHeader
+          accessibilityLabel={sectionHeaderTicketClosedAccessibilityLabel}
           title={t('ticketsScreen.closed')}
           linkTo={{
             screen: 'TicketList',
