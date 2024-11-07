@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -25,6 +26,7 @@ import { onlineManager } from '@tanstack/react-query';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
+import { getHtmlTextContent } from '../../../utils/html';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
@@ -39,7 +41,14 @@ const ListItem = ({ ticket }: { ticket: TicketOverview }) => {
     [getUnreadsCount, ticket.id],
   );
 
-  return <TicketListItem ticket={ticket} key={ticket.id} unread={unread} />;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={getHtmlTextContent(ticket?.subject)}
+    >
+      <TicketListItem ticket={ticket} key={ticket.id} unread={unread} />
+    </Pressable>
+  );
 };
 
 export const TicketsScreen = ({ navigation }: Props) => {
