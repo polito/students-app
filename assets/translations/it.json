@@ -370,6 +370,7 @@
     "total": "Sono presenti {{ total }} questionari"
   },
   "createTicketScreen": {
+    "addFile": "Aggiungi file",
     "insert": "Inserimento ticket",
     "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
     "sendTicket": "Invia ticket",
@@ -691,6 +692,10 @@
     "writeTicket": "Scrivi ticket"
   },
   "ticketScreen": {
+    "incomingMessage": "la tua risposta",
+    "outgoingMessage": "Risposta da operatore numero",
+    "yourQuestion": "La tua domanda",
+    "send" : "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
