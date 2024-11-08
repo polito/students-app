@@ -211,6 +211,8 @@ export const MessagingView = ({
           />
           {showSendButton && (
             <IconButton
+              accessibilityRole="button"
+              accessibilityLabel={t('ticketScreen.send')}
               disabled={!message?.length || loading}
               onPress={onSend}
               icon={faPaperPlane}
