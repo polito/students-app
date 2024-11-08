@@ -190,6 +190,8 @@ export const MessagingView = ({
               }}
             >
               <IconButton
+                accessibilityRole="button"
+                accessibilityLabel={t('messagingView.pickFile')}
                 icon={faPaperclip}
                 size={22}
                 style={styles.actionButton}
