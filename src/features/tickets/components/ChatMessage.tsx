@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { Text } from '@lib/ui/components/Text';
@@ -51,21 +51,26 @@ export const ChatMessage = ({
   };
 
   return (
-    <ChatBubble
+    <Pressable
       accessibilityRole="text"
       accessibilityLabel={accessibilityMessageText}
-      direction={received ? 'incoming' : 'outgoing'}
-      time={message.createdAt}
-      style={styles.bubbleContainer}
     >
-      {message.agentId && (
-        <Text style={styles.agentText}>
-          {t('common.agent')} {message.agentId}
-        </Text>
-      )}
-      <TextMessage message={message.message?.trim() ?? ''} />
-      <Attachments />
-    </ChatBubble>
+      <ChatBubble
+        accessibilityRole="text"
+        accessibilityLabel={accessibilityMessageText}
+        direction={received ? 'incoming' : 'outgoing'}
+        time={message.createdAt}
+        style={styles.bubbleContainer}
+      >
+        {message.agentId && (
+          <Text style={styles.agentText}>
+            {t('common.agent')} {message.agentId}
+          </Text>
+        )}
+        <TextMessage message={message.message?.trim() ?? ''} />
+        <Attachments />
+      </ChatBubble>
+    </Pressable>
   );
 };
 

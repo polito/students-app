@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
@@ -173,24 +173,29 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 ticket={ticket}
                 loading={ticketQuery?.isLoading}
               />
-              <ChatBubble
+              <Pressable
                 accessibilityRole="text"
                 accessibilityLabel={accessibilityMessageText}
-                style={styles.requestMessage}
               >
-                <TextMessage message={ticket?.message} />
-                {ticket.hasAttachments && (
-                  <View>
-                    {ticket.attachments.map((item, index) => (
-                      <TicketAttachmentChip
-                        key={index}
-                        attachment={item}
-                        ticketId={ticket.id}
-                      />
-                    ))}
-                  </View>
-                )}
-              </ChatBubble>
+                <ChatBubble
+                  accessibilityRole="text"
+                  accessibilityLabel={accessibilityMessageText}
+                  style={styles.requestMessage}
+                >
+                  <TextMessage message={ticket?.message} />
+                  {ticket.hasAttachments && (
+                    <View>
+                      {ticket.attachments.map((item, index) => (
+                        <TicketAttachmentChip
+                          key={index}
+                          attachment={item}
+                          ticketId={ticket.id}
+                        />
+                      ))}
+                    </View>
+                  )}
+                </ChatBubble>
+              </Pressable>
             </>
           ) : undefined
         }
