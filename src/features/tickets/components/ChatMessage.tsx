@@ -25,6 +25,11 @@ export const ChatMessage = ({
   const { t } = useTranslation();
   const hasAttachment = message.attachments?.length > 0;
 
+  const messageFirstPart = !message.agentId
+    ? t('ticketScreen.incomingMessage')
+    : t('ticketScreen.outgoingMessage') + ', ' + message.agentId;
+  const accessibilityMessageText = messageFirstPart + ', ' + message.message;
+
   const Attachments = () => {
     if (hasAttachment) {
       return (
@@ -47,6 +52,8 @@ export const ChatMessage = ({
 
   return (
     <ChatBubble
+      accessibilityRole="text"
+      accessibilityLabel={accessibilityMessageText}
       direction={received ? 'incoming' : 'outgoing'}
       time={message.createdAt}
       style={styles.bubbleContainer}
