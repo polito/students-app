@@ -112,6 +112,9 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const ticket = ticketQuery.data;
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
+  const { t } = useTranslation();
+  const accessibilityMessageText =
+    t('ticketScreen.yourQuestion') + ', ' + ticket?.message;
 
   useScreenTitle(ticket?.subject);
 
@@ -170,7 +173,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 ticket={ticket}
                 loading={ticketQuery?.isLoading}
               />
-              <ChatBubble style={styles.requestMessage}>
+              <ChatBubble
+                accessibilityRole="text"
+                accessibilityLabel={accessibilityMessageText}
+                style={styles.requestMessage}
+              >
                 <TextMessage message={ticket?.message} />
                 {ticket.hasAttachments && (
                   <View>
