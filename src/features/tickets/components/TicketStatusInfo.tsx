@@ -33,6 +33,15 @@ export const TicketStatusInfo = ({
   const styles = useStylesheet(createStyles);
   const isClosed = ticket.status === TicketStatus.Closed;
 
+  const accessibilityIdText =
+    t('ticketScreen.ticketNumber') + ', ' + ticket?.id;
+  const accessibilityCreatedAtText =
+    t('common.createdAt') + ', ' + formatDate(ticket.createdAt);
+  const accessibilityStatusText =
+    t('common.status') + ', ' + t(`tickets.status.${ticket.status}`);
+  const accessibilityUpdatedAtText =
+    t('common.updatedAt') + ', ' + formatDateTime(ticket.updatedAt);
+
   if (loading) {
     return (
       <Col>
@@ -48,11 +57,15 @@ export const TicketStatusInfo = ({
       </Text>
       <Row style={styles.row}>
         <Metric
+          accessibilityLabel={accessibilityIdText}
+          accessibilityRole="text"
           title={t('ticketScreen.ticketNumber')}
           value={ticket.id}
           style={GlobalStyles.grow}
         />
         <Metric
+          accessibilityLabel={accessibilityCreatedAtText}
+          accessibilityRole="text"
           title={t('common.createdAt')}
           value={formatDate(ticket.createdAt)}
           style={GlobalStyles.grow}
@@ -60,11 +73,15 @@ export const TicketStatusInfo = ({
       </Row>
       <Row style={styles.row}>
         <Metric
+          accessibilityLabel={accessibilityUpdatedAtText}
+          accessibilityRole="text"
           title={t('common.updatedAt')}
           value={formatDateTime(ticket.updatedAt)}
           style={GlobalStyles.grow}
         />
         <Metric
+          accessibilityLabel={accessibilityStatusText}
+          accessibilityRole="text"
           title={t('common.status')}
           value={t(`tickets.status.${ticket.status}`)}
           style={GlobalStyles.grow}
