@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -56,37 +56,57 @@ export const TicketStatusInfo = ({
         {ticket.subject}
       </Text>
       <Row style={styles.row}>
-        <Metric
+        <Pressable
           accessibilityLabel={accessibilityIdText}
           accessibilityRole="text"
-          title={t('ticketScreen.ticketNumber')}
-          value={ticket.id}
           style={GlobalStyles.grow}
-        />
-        <Metric
+        >
+          <Metric
+            accessibilityLabel={accessibilityIdText}
+            accessibilityRole="text"
+            title={t('ticketScreen.ticketNumber')}
+            value={ticket.id}
+          />
+        </Pressable>
+        <Pressable
           accessibilityLabel={accessibilityCreatedAtText}
           accessibilityRole="text"
-          title={t('common.createdAt')}
-          value={formatDate(ticket.createdAt)}
           style={GlobalStyles.grow}
-        />
+        >
+          <Metric
+            accessibilityLabel={accessibilityCreatedAtText}
+            accessibilityRole="text"
+            title={t('common.createdAt')}
+            value={formatDate(ticket.createdAt)}
+          />
+        </Pressable>
       </Row>
       <Row style={styles.row}>
-        <Metric
+        <Pressable
           accessibilityLabel={accessibilityUpdatedAtText}
           accessibilityRole="text"
-          title={t('common.updatedAt')}
-          value={formatDateTime(ticket.updatedAt)}
           style={GlobalStyles.grow}
-        />
-        <Metric
+        >
+          <Metric
+            accessibilityLabel={accessibilityUpdatedAtText}
+            accessibilityRole="text"
+            title={t('common.updatedAt')}
+            value={formatDateTime(ticket.updatedAt)}
+          />
+        </Pressable>
+        <Pressable
           accessibilityLabel={accessibilityStatusText}
           accessibilityRole="text"
-          title={t('common.status')}
-          value={t(`tickets.status.${ticket.status}`)}
           style={GlobalStyles.grow}
-          valueStyle={{ textTransform: 'uppercase' }}
-        />
+        >
+          <Metric
+            accessibilityLabel={accessibilityStatusText}
+            accessibilityRole="text"
+            title={t('common.status')}
+            value={t(`tickets.status.${ticket.status}`)}
+            valueStyle={{ textTransform: 'uppercase' }}
+          />
+        </Pressable>
         {/* TODO colors? */}
       </Row>
       {refetching ? (
