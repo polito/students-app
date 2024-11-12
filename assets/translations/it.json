@@ -77,6 +77,7 @@
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "agenda": "Agenda",
     "agent": "Operatore",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
@@ -157,7 +158,9 @@
     "follow": "Segui",
     "free": "Libera",
     "grade": "Voto",
+    "hiddenEvents": "Eventi nascosti",
     "hide": "Nascondi",
+    "hideInAgenda": "Nascondi in agenda",
     "hour": "Orario",
     "hours": "Ore",
     "icon": "Icona",
@@ -474,7 +477,10 @@
     "title": "Offerte di lavoro"
   },
   "lectureScreen": {
-    "courseFilesCta": "Vai al materiale del corso"
+    "courseFilesCta": "Vai al materiale del corso",
+    "hideEventAlertTitle": "Nascondi Evento",
+    "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
+    "hideEventButtonTitle": "Nascondi evendo dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"

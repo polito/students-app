@@ -77,6 +77,7 @@ const setupCourses = (
       coursePreferences[newC.uniqueShortcode] = {
         color: colorData.color,
         isHidden: false,
+        isHiddenInAgenda: false,
       };
       hasNewPreferences = true;
     }
