@@ -115,6 +115,7 @@ const groupItemsByDay = (
         teacherId: lecture.teacherId,
         virtualClassrooms: lecture.virtualClassrooms,
         description: lecture.description,
+        uniqueShortcode: lecture.uniqueShortcode,
       };
       return item;
     }),
