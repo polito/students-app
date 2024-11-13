@@ -27,8 +27,10 @@ export const ChatMessage = ({
 
   const messageFirstPart = !message.agentId
     ? t('ticketScreen.incomingMessage')
-    : t('ticketScreen.outgoingMessage') + ', ' + message.agentId;
-  const accessibilityMessageText = messageFirstPart + ', ' + message.message;
+    : [t('ticketScreen.outgoingMessage'), message.agentId].join(', ');
+  const accessibilityMessageText = [messageFirstPart, message.message].join(
+    ', ',
+  );
 
   const Attachments = () => {
     if (hasAttachment) {
