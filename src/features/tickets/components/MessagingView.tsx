@@ -112,9 +112,9 @@ export const MessagingView = ({
   const replayAccessibilityLabel = useMemo(() => {
     const baseText = t('ticketScreen.reply');
     if (!disabled) {
-      return baseText + ', ' + t('messagingView.active replay');
+      return [baseText, t('messagingView.active replay')].join(', ');
     } else {
-      return baseText + ', ' + t('common.disabled insert the precedents');
+      return [baseText, t('common.disabled insert the precedents')].join(', ');
     }
   }, [disabled, t]);
 
