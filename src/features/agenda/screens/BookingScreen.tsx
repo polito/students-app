@@ -167,6 +167,16 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     }
   };
 
+  const locationAccessibilityLabel = booking
+    ? t(`bookingScreen.locationType.${booking?.location?.type}`) +
+      ', ' +
+      booking.location.name
+    : '';
+
+  const seatAccessibilityLabel = booking?.seat
+    ? t('common.seat') + ', ' + `${booking.seat.row}${booking.seat.column}`
+    : '';
+
   return (
     <>
       <ScrollView
@@ -189,6 +199,8 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <OverviewList>
             {booking?.location?.name && (
               <ListItem
+                accessibilityRole="button"
+                accessibilityLabel={locationAccessibilityLabel}
                 leadingItem={
                   <Icon
                     icon={faLocation}
@@ -208,6 +220,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
             {!!booking && !!booking?.seat && (
               <ListItem
                 accessibilityRole="button"
+                accessibilityLabel={seatAccessibilityLabel}
                 leadingItem={
                   <Icon
                     icon={faSeat}
