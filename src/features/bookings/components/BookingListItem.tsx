@@ -51,7 +51,6 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
         accessibilityLabel,
         title,
         date,
-        ', ',
         t('common.hour'),
         `${startsAtTime} - ${endAtTime}`,
       ].join(', ')}
