@@ -33,14 +33,21 @@ export const TicketStatusInfo = ({
   const styles = useStylesheet(createStyles);
   const isClosed = ticket.status === TicketStatus.Closed;
 
-  const accessibilityIdText =
-    t('ticketScreen.ticketNumber') + ', ' + ticket?.id;
-  const accessibilityCreatedAtText =
-    t('common.createdAt') + ', ' + formatDate(ticket.createdAt);
-  const accessibilityStatusText =
-    t('common.status') + ', ' + t(`tickets.status.${ticket.status}`);
-  const accessibilityUpdatedAtText =
-    t('common.updatedAt') + ', ' + formatDateTime(ticket.updatedAt);
+  const accessibilityIdText = [t('ticketScreen.ticketNumber'), ticket?.id].join(
+    ', ',
+  );
+  const accessibilityCreatedAtText = [
+    t('common.createdAt'),
+    formatDate(ticket.createdAt),
+  ].join(', ');
+  const accessibilityStatusText = [
+    t('common.status'),
+    t(`tickets.status.${ticket.status}`),
+  ].join(', ');
+  const accessibilityUpdatedAtText = [
+    t('common.updatedAt'),
+    formatDateTime(ticket.updatedAt),
+  ].join(', ');
 
   if (loading) {
     return (
