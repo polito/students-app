@@ -128,11 +128,10 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                       faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
                     ) as Document;
                     const title = innerText(dom.children as any[]);
-                    const accessibilityLabel =
-                      accessibilityListLabel(index, ticketFaqs?.length || 0) +
-                      ', ' +
-                      title;
-
+                    const accessibilityLabel = [
+                      accessibilityListLabel(index, ticketFaqs?.length || 0),
+                      title,
+                    ].join(', ');
                     return (
                       <ListItem
                         accessibilityLabel={accessibilityLabel}
