@@ -51,10 +51,10 @@ const ListItem = ({
   );
 
   const { accessibilityListLabel } = useAccessibility();
-  const accessibilityLabel =
-    accessibilityListLabel(index, totalData) +
-    ', ' +
-    getHtmlTextContent(ticket?.subject);
+  const accessibilityLabel = [
+    accessibilityListLabel(index, totalData),
+    getHtmlTextContent(ticket?.subject),
+  ].join(', ');
 
   return (
     <Pressable
@@ -97,7 +97,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
       if (openTickets?.length > 0) {
         return baseText;
       } else {
-        return `${baseText}, ${t('ticketsScreen.noOpenTickets')}`;
+        return [baseText, t('ticketsScreen.noOpenTickets')].join(', ');
       }
     }, [openTickets]);
 
@@ -143,7 +143,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
       if (renderedClosedTickets.length > 0) {
         return baseText;
       } else {
-        return `${baseText}, ${t('ticketsScreen.noClosedTickets')}`;
+        return [baseText, t('ticketsScreen.noClosedTickets')].join(', ');
       }
     }, [renderedClosedTickets]);
 
