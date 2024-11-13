@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { AccessibilityInfo, SafeAreaView, ScrollView } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -22,6 +23,19 @@ export const BookingsScreen = ({ navigation }: Props) => {
   const bookingsQuery = useGetBookings();
   const { t } = useTranslation();
   const { spacing } = useTheme();
+
+  useEffect(() => {
+    if (
+      !bookingsQuery?.isLoading &&
+      !bookingsQuery?.isError &&
+      bookingsQuery?.isSuccess &&
+      bookingsQuery?.data?.length === 0
+    ) {
+      AccessibilityInfo.announceForAccessibility(
+        t('bookingsScreen.emptyState'),
+      );
+    }
+  }, [bookingsQuery]);
 
   return (
     <>
