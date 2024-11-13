@@ -113,8 +113,10 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
-  const accessibilityMessageText =
-    t('ticketScreen.yourQuestion') + ', ' + ticket?.message;
+  const accessibilityMessageText = [
+    t('ticketScreen.yourQuestion'),
+    ticket?.message,
+  ].join(', ');
 
   useScreenTitle(ticket?.subject);
 
