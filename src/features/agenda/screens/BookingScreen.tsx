@@ -168,13 +168,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   };
 
   const locationAccessibilityLabel = booking
-    ? t(`bookingScreen.locationType.${booking?.location?.type}`) +
-      ', ' +
-      booking.location.name
+    ? [
+        t(`bookingScreen.locationType.${booking?.location?.type}`),
+        booking.location.name,
+      ].join(', ')
     : '';
 
   const seatAccessibilityLabel = booking?.seat
-    ? t('common.seat') + ', ' + `${booking.seat.row}${booking.seat.column}`
+    ? [t('common.seat'), `${booking.seat.row}${booking.seat.column}`].join(', ')
     : '';
 
   return (
