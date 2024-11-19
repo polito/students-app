@@ -16,7 +16,7 @@ import { extendSuperJSON } from './utils/superjson';
 initSentry();
 extendSuperJSON();
 
-MapLibreGL.setAccessToken(null);
+MapLibreGL.setAccessToken?.(null);
 
 export const App = () => {
   return (

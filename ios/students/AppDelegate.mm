@@ -23,17 +23,6 @@
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
-- (NSDictionary *)prepareInitialProps
-{
-  NSMutableDictionary *initProps = [NSMutableDictionary new];
-
-#ifdef RCT_NEW_ARCH_ENABLED
-  initProps[kRNConcurrentRoot] = @([self concurrentRootEnabled]);
-#endif
-
-  return initProps;
-}
-
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
   return [self bundleURL];

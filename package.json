@@ -15,7 +15,7 @@
     "format": "prettier --write '**/*.{ts,tsx,md}'",
     "types:check": "tsc --noEmit",
     "check": "npm run lint:check && npm run format:check && npm run types:check",
-    "postinstall": "patch-package && pod-install"
+    "postinstall": "patch-package && RCT_NEW_ARCH_ENABLED=0 pod-install"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -24,7 +24,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@gorhom/bottom-sheet": "^4.6.4",
-    "@maplibre/maplibre-react-native": "^10.0.0-alpha.23",
+    "@maplibre/maplibre-react-native": "^10.0.0-alpha.26",
     "@miblanchard/react-native-slider": "^2.6.0",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@orama/orama": "^3.0.0-rc-1",
