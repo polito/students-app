@@ -35,7 +35,7 @@ export const BookingsScreen = ({ navigation }: Props) => {
         t('bookingsScreen.emptyState'),
       );
     }
-  }, [bookingsQuery]);
+  }, [bookingsQuery, t]);
 
   return (
     <>
