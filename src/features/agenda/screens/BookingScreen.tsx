@@ -200,7 +200,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <OverviewList>
             {booking?.location?.name && (
               <ListItem
-                accessibilityRole="button"
+                isAction={booking?.location?.type !== 'virtualPlace'}
+                accessibilityRole={
+                  booking?.location?.type === 'virtualPlace' ? 'text' : 'button'
+                }
                 accessibilityLabel={locationAccessibilityLabel}
                 leadingItem={
                   <Icon
@@ -210,7 +213,6 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                     style={{ marginRight: spacing[2] }}
                   />
                 }
-                isAction
                 title={booking.location.name}
                 subtitle={t(
                   `bookingScreen.locationType.${booking.location?.type}`,
