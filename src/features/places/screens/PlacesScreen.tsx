@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -230,7 +230,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       bottomSheetPosition.value,
       [0.65 * screenHeight, 0.7 * screenHeight],
       [0, 1],
-      Extrapolate.CLAMP,
+      Extrapolation.CLAMP,
     );
 
     return {

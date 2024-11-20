@@ -21,6 +21,7 @@ import {
   CameraRef,
   MapView,
   MapViewRef,
+  UserLocation,
 } from '@maplibre/maplibre-react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
@@ -252,6 +253,7 @@ export const MapNavigator = ({
                   {...mapDefaultOptions}
                   {...mapOptions}
                 >
+                  <UserLocation renderMode="native" />
                   <BackgroundLayer
                     id="background"
                     // eslint-disable-next-line react-native/no-color-literals

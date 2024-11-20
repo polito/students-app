@@ -10,7 +10,6 @@ import {
   Images,
   RasterLayer,
   RasterSource,
-  UserLocation,
 } from '@maplibre/maplibre-react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -62,6 +61,7 @@ export type PlacesStackParamList = {
 const Map = createMapNavigator<PlacesStackParamList>();
 
 const MapDefaultContent = () => {
+  // eslint-disable-next-line no-console
   const theme = useTheme();
   const colorScheme = useMemo(() => (theme.dark ? 'dark' : 'light'), [theme]);
   const { floorId } = useContext(PlacesContext);
@@ -84,8 +84,6 @@ const MapDefaultContent = () => {
 
   return (
     <>
-      <UserLocation />
-
       {/* Marker images */}
       <Images images={images}>
         {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
@@ -114,7 +112,7 @@ const MapDefaultContent = () => {
             ? [
                 `https://app.didattica.polito.it/tiles/int-${colorScheme}-${floorId?.toLowerCase()}/{z}/{x}/{y}.png`,
               ]
-            : [`https://commons.wikimedia.org/wiki/File:1x1.png`]
+            : []
         }
         tileSize={RASTER_TILE_SIZE}
         minZoomLevel={INTERIORS_MIN_ZOOM}

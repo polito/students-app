@@ -19,8 +19,8 @@ export const useSearchPlaceToListItem = () => {
         ? DEFAULT_CATEGORY_MARKER.markerUrl
         : place.category?.subCategory?.id
         ? placeCategoriesMap[place.category.subCategory.id]?.markerUrl
-        : place.category.id
-        ? placeCategoriesMap[place.category.id]?.markerUrl
+        : placeCategoriesMap[place.category.id]
+        ? placeCategoriesMap[place.category.id].markerUrl
         : DEFAULT_CATEGORY_MARKER.markerUrl;
       return {
         title: isPlace(place)
