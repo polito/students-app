@@ -47,6 +47,7 @@ import {
   getCalendarPropsFromTopic,
   isPastSlot,
 } from '../../../utils/bookings';
+import { formatDate, formatTime } from '../../../utils/dates';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
@@ -293,10 +294,22 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 colors,
                 dark,
               );
-              const bookingStatus = getBookingSlotStatus(
-                item,
-                'bookingScreen.bookingStatus.notAvailableBooking',
-              );
+
+              const dateStart = formatDate(item?.start.toJSDate());
+              const timeStart = formatTime(item?.start.toJSDate());
+              const timeEnd = formatTime(item?.end.toJSDate());
+              const timeMessage = ` ${dateStart}, ${t(
+                'common.fromTime',
+              )} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
+              const accessibilityMessageText = [
+                t(
+                  getBookingSlotStatus(
+                    item,
+                    'bookingScreen.bookingStatus.notAvailableBooking',
+                  ),
+                ),
+                timeMessage,
+              ].join(', ');
 
               return (
                 <Pressable
@@ -307,7 +320,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                     { backgroundColor },
                   ]}
                   accessibilityRole="button"
-                  accessibilityLabel={t(bookingStatus)}
+                  accessibilityLabel={t(accessibilityMessageText)}
                 >
                   {!isMini && <Icon icon={faSeat} color={color} />}
                   <Text
