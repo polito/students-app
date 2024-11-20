@@ -1,6 +1,11 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import {
+  AccessibilityInfo,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
@@ -61,6 +66,9 @@ export const BookingSeatsCta = ({
               slotId: Number(slotId),
             })
             .then(() => {
+              AccessibilityInfo.announceForAccessibility(
+                t('bookingSeatScreen.confirmSuccess'),
+              );
               onCloseModal?.();
               navigation.pop(2);
             })
