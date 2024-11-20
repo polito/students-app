@@ -293,7 +293,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 colors,
                 dark,
               );
-              const bookingStatus = getBookingSlotStatus(item);
+              const bookingStatus = getBookingSlotStatus(
+                item,
+                'bookingScreen.bookingStatus.notAvailableBooking',
+              );
 
               return (
                 <Pressable
