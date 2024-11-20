@@ -17,7 +17,8 @@
       "available": "Prenotabile",
       "booked": "Prenotato",
       "full": "Non prenotabile",
-      "notAvailable": "Non ancora prenotabile"
+      "notAvailable": "Non ancora prenotabile",
+      "notAvailableBooking": "Non prenotabile"
     },
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
@@ -28,10 +29,13 @@
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
-    }
+    },
+    "nextWeek": "Prossima settimana",
+    "previousWeek": "Settimana precedente",
   },
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
+    "confirmSuccess": "Prenotazione confermata",
     "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
     "noSeatSelected": "Nessuna",
     "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
@@ -250,7 +254,9 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "fromTime" : "dalle",
+    "toTime" : "alle"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
