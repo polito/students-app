@@ -65,12 +65,14 @@ export const BookingSeatsCta = ({
               seatId: seatId ? Number(seatId) : undefined,
               slotId: Number(slotId),
             })
-            .then(() => {
-              AccessibilityInfo.announceForAccessibility(
-                t('bookingSeatScreen.confirmSuccess'),
-              );
+            .then(async () => {
               onCloseModal?.();
-              navigation.pop(2);
+              await navigation.pop(2);
+              setTimeout(() => {
+                AccessibilityInfo.announceForAccessibility(
+                  t('bookingSeatScreen.confirmSuccess'),
+                );
+              }, 2000);
             })
         }
         disabled={!ctaEnabled}
