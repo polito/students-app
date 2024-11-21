@@ -31,9 +31,11 @@ export const BookingsScreen = ({ navigation }: Props) => {
       bookingsQuery?.isSuccess &&
       bookingsQuery?.data?.length === 0
     ) {
-      AccessibilityInfo.announceForAccessibility(
-        t('bookingsScreen.emptyState'),
-      );
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(
+          t('bookingsScreen.emptyState'),
+        );
+      }, 500);
     }
   }, [bookingsQuery, t]);
 
