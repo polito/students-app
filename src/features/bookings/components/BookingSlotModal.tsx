@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 
@@ -49,7 +49,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   const endHour = item.end.toFormat('HH:mm');
   const day = item.start.toFormat('d MMMM');
 
-  useEffect(() => {
+  const findAccessibilityMessage = useCallback(() => {
     if (
       !canBeBooked &&
       inRange(
@@ -59,31 +59,21 @@ export const BookingSlotModal = ({ close, item }: Props) => {
       ) &&
       !isFull
     ) {
-      AccessibilityInfo.announceForAccessibility(item.feedback);
-      return;
+      return item.feedback;
     }
     if (isFull) {
-      AccessibilityInfo.announceForAccessibility(
-        t('bookingSeatScreen.noSeatsAvailable'),
-      );
-      return;
+      return t('bookingSeatScreen.noSeatsAvailable');
     }
     if (bookingNotYetOpen) {
-      AccessibilityInfo.announceForAccessibility(
-        [
-          t('bookingSeatScreen.slotBookableFrom'),
-          item?.bookingStartsAt
-            ? DateTime.fromJSDate(item?.bookingStartsAt, {
-                zone: IANAZone.create('Europe/Rome'),
-              }).toFormat('d MMMM yyyy')
-            : ' - ',
-        ].join(' '),
-      );
-      return;
+      return [
+        t('bookingSeatScreen.slotBookableFrom'),
+        item?.bookingStartsAt
+          ? DateTime.fromJSDate(item?.bookingStartsAt, {
+              zone: IANAZone.create('Europe/Rome'),
+            }).toFormat('d MMMM yyyy')
+          : ' - ',
+      ].join(' ');
     }
-    AccessibilityInfo.announceForAccessibility(
-      t('bookingSeatScreen.deadlineExpired'),
-    );
   }, [
     bookingNotYetOpen,
     canBeBooked,
@@ -93,6 +83,14 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     item.feedback,
     t,
   ]);
+
+  useEffect(() => {
+    const message = findAccessibilityMessage();
+    if (!message) return;
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(message);
+    }, 500);
+  }, []);
 
   const NotBookableMessage = () => {
     if (
