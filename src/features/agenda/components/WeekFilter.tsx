@@ -13,8 +13,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { DateTime } from 'luxon';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-
 interface Props {
   current: DateTime;
   getNext: () => void;
@@ -33,7 +31,6 @@ export const WeekFilter = ({
 }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { language } = usePreferencesContext();
   const endOfWeek = useMemo(() => {
     return current.plus({ days: daysPerWeek });
   }, [current, daysPerWeek]);
@@ -49,16 +46,7 @@ export const WeekFilter = ({
       />
 
       <Text style={styles.item}>
-        {/* workaround because toFormat from luxon is not working on iOS */}
-        {/* {current.toFormat('d MMM')} - {endOfWeek.toFormat('d MMM')} */}
-        {current.toJSDate().toLocaleDateString(language, {
-          day: '2-digit',
-          month: 'short',
-        })}{' '}
-        -{' '}
-        {endOfWeek
-          .toJSDate()
-          .toLocaleDateString(language, { day: '2-digit', month: 'short' })}
+        {current.toFormat('d MMM')} - {endOfWeek.toFormat('d MMM')}
       </Text>
       <IconButton
         icon={faChevronRight}
