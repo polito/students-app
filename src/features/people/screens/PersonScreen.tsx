@@ -58,6 +58,12 @@ export const PersonScreen = ({ route }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
+  const profileImageAccessibleLabel = [
+    t('common.profilePic'),
+    ', ',
+    person && person?.picture ? '' : t('personScreen.noProfileImage'),
+  ].join(' ');
+
   const header = (
     <Col ph={5} gap={6} mb={6}>
       <Text weight="bold" variant="title" style={styles.title}>
@@ -69,7 +75,10 @@ export const PersonScreen = ({ route }: Props) => {
         person?.facilityShortName ||
         person?.profileUrl) && (
         <Row gap={6}>
-          <View accessible={true} accessibilityLabel={t('common.profilePic')}>
+          <View
+            accessible={true}
+            accessibilityLabel={profileImageAccessibleLabel}
+          >
             {person?.picture ? (
               <Image
                 source={{ uri: person.picture }}
