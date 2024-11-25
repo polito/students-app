@@ -36,6 +36,8 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityRole="button"
       title={title}
       titleStyle={styles.title}
       linkTo={{
