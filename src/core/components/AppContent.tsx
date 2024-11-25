@@ -16,7 +16,7 @@ export const AppContent = () => {
 
   useEffect(() => {
     MigrationService.migrateIfNeeded(preferences, queryClient);
-  }, [preferences, queryClient]);
+  }, [queryClient]); // TODO: add preferences to dependencies in the next release
 
   if (MigrationService.needsMigration(preferences)) return null;
 

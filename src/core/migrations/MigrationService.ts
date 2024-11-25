@@ -7,6 +7,7 @@ import { PreferencesContextProps } from '../contexts/PreferencesContext';
 import { Migration } from '../types/migrations';
 import { storeCoursePreferencesByShortcode } from './1.5.0/storeCoursePreferencesByShortcode';
 import { migrateCourseFilesCacheToDocumentsDirectory } from './1.6.2/migrateCourseFilesCacheToDocumentsDirectory';
+import { migrateClientIdToPreferences } from './1.6.7/migrateClientIdToPreferences';
 import { invalidateCache } from './common';
 
 export class MigrationService {
@@ -18,6 +19,10 @@ export class MigrationService {
     {
       runBeforeVersion: '1.6.2',
       run: [migrateCourseFilesCacheToDocumentsDirectory],
+    },
+    {
+      runBeforeVersion: '1.6.7',
+      run: [migrateClientIdToPreferences],
     },
   ];
 

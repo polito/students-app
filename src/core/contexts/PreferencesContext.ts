@@ -7,6 +7,7 @@ import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesF
 
 export const editablePreferenceKeys = [
   'lastInstalledVersion',
+  'clientId',
   'username',
   'campusId',
   'colorScheme',
@@ -43,6 +44,7 @@ export type CoursesPreferences = {
 
 export interface PreferencesContextBase {
   lastInstalledVersion: string | null;
+  clientId?: string;
   username: string;
   campusId?: string;
   colorScheme: 'light' | 'dark' | 'system';
