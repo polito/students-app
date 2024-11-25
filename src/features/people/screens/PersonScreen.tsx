@@ -161,6 +161,8 @@ export const PersonScreen = ({ route }: Props) => {
 
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
@@ -198,6 +200,8 @@ export const PersonScreen = ({ route }: Props) => {
             <OverviewList indented loading={personQuery.isLoading}>
               {phoneNumbers?.map(renderPhoneNumber)}
               <ListItem
+                accessible={true}
+                accessibilityRole="button"
                 isAction
                 leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
                 title={t('common.email')}
