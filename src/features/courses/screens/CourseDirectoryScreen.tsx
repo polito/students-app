@@ -17,6 +17,8 @@ import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -70,6 +72,20 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       });
     }
   }, [directoryName, navigation, t]);
+
+  directoryQuery.data?.sort((a, b) => {
+    if (a.type !== 'directory' && b.type !== 'directory') {
+      const dateA = DateTime.fromJSDate(a.createdAt).startOf('minute');
+      const dateB = DateTime.fromJSDate(b.createdAt).startOf('minute');
+
+      if (dateA.equals(dateB)) {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      }
+
+      return dateA > dateB ? -1 : 1;
+    }
+    return 0;
+  });
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -193,7 +209,9 @@ const CourseFileSearchFlatList = ({
   useEffect(() => {
     if (!recentFilesQuery.data) return;
     setSearchResults(
-      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
+      recentFilesQuery.data.filter(file =>
+        file.name.toLowerCase().includes(searchFilter.toLowerCase()),
+      ),
     );
   }, [recentFilesQuery.data, searchFilter]);
 
