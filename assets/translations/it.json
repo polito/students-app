@@ -293,6 +293,8 @@
     "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
+    "resultFound": "Sono stati trovati",
+    "resultFoundRes": "Risultati",
     "cancelRecentSearch": "Rimuovi",
     "cancelRecentSearchText": "Rimuovi ricerca recente",
     "clearSearch": "Cancella ricerca",
