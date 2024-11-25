@@ -5,7 +5,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { TextWithLinks } from '../../../core/components/TextWithLinks';
-import { getHtmlTextContent } from '../../../utils/html';
+import { sanitizeHtml } from '../../../utils/html';
 
 export interface TextMessageProps {
   message: string;
@@ -15,7 +15,7 @@ export const TextMessage = ({ message }: TextMessageProps) => {
   const styles = useStylesheet(createStyles);
 
   const textMessage = useMemo(() => {
-    return getHtmlTextContent(message);
+    return sanitizeHtml(message ?? '');
   }, [message]);
 
   return <TextWithLinks style={styles.text}>{textMessage}</TextWithLinks>;
