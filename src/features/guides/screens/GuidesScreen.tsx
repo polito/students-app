@@ -50,6 +50,7 @@ export const GuidesScreen = (_props: Props) => {
           >
             {guidesQuery.data?.map((guide, index) => (
               <ListItem
+                accessibilityRole="button"
                 key={guide.id}
                 title={guide.listTitle}
                 unread={isUnread(guide.id)}
