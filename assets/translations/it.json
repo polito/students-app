@@ -655,6 +655,7 @@
     "title": "Lauree magistrali"
   },
   "offeringScreen": {
+    "section": "Intestazione",
     "bachelor": "Laurea triennale",
     "emptyMessage": "Nessun corso disponibile",
     "master": "Laurea magistrale",

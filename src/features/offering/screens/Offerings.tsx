@@ -34,7 +34,15 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
         {!!offerings && offerings?.length > 0 ? (
           offerings?.map(item => (
             <Section key={item.code} style={styles.section}>
-              <Text variant="subHeading" style={styles.offeringClass}>
+              <Text
+                accessibilityLabel={[
+                  item?.name,
+                  ', ',
+                  t('offeringScreen.section'),
+                ].join(' ')}
+                variant="subHeading"
+                style={styles.offeringClass}
+              >
                 {item?.name || item.code}
               </Text>
               <OverviewList>
