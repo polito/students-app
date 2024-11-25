@@ -54,10 +54,11 @@ export const GuidesScreen = (_props: Props) => {
                 title={guide.listTitle}
                 unread={isUnread(guide.id)}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(
-                  index,
-                  guidesQuery.data.length,
-                )}
+                accessibilityLabel={[
+                  accessibilityListLabel(index, guidesQuery.data.length),
+                  ' - ',
+                  guide.listTitle,
+                ].join(' ')}
                 linkTo={{
                   screen: 'Guide',
                   params: { id: guide.id },
