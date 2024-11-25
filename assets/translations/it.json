@@ -570,6 +570,7 @@
     "title": "Novità"
   },
   "personScreen": {
+    "noProfileImage" : "Nessuna immagine di profilo",
     "call": "Chiama",
     "contacts": "Contatti",
     "coursesLabel": "Lista dei corsi offerti dal docente",
