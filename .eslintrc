@@ -5,10 +5,7 @@
     "plugin:react/jsx-runtime",
     "prettier"
   ],
-  "plugins": [
-    "unused-imports",
-    "react-native"
-  ],
+  "plugins": ["unused-imports", "react-native"],
   "parserOptions": {
     "project": "tsconfig.json",
     "sourceType": "module"
@@ -20,6 +17,11 @@
     "react-native/no-single-element-style-arrays": 2
   },
   "overrides": [
+    {
+      "files": ["./tests/e2e/*.ts"],
+      "plugins": ["wdio"],
+      "extends": ["eslint:recommended", "plugin:wdio/recommended"]
+    },
     {
       "files": ["*.ts", "*.tsx"],
       "rules": {
@@ -39,9 +41,12 @@
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-use-before-define": "off",
-        "no-console": ["error", {
-          "allow": ["warn", "error", "debug"]
-        }],
+        "no-console": [
+          "error",
+          {
+            "allow": ["warn", "error", "debug"]
+          }
+        ],
         "react/jsx-curly-brace-presence": "error",
         "react/jsx-no-useless-fragment": "error"
       }

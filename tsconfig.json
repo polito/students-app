@@ -10,7 +10,9 @@
     },
     "types": [
       "node",
-      "@types/jest"
+      "@types/jest",
+      "mocha",
+      "@wdio/globals/types"
     ],
     "skipLibCheck": true,
     "strictNullChecks": true,
