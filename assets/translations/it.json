@@ -257,7 +257,8 @@
     "year": "anno",
     "yesterday": "Ieri",
     "fromTime" : "dalle",
-    "toTime" : "alle"
+    "toTime" : "alle",
+    "document" : "Allegato",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
