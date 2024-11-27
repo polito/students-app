@@ -442,6 +442,7 @@
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
   "degreeCourseScreen": {
+    "periodSelect": "clicca due volte per cambiare anno del corso",
     "classroomExercise": "Esercitazioni in aula",
     "examMode": "Modalità di esame",
     "hours": "{{hours}} Ore",
