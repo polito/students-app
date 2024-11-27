@@ -62,7 +62,7 @@ export const PersonScreen = ({ route }: Props) => {
     t('common.profilePic'),
     ', ',
     person && person?.picture ? '' : t('personScreen.noProfileImage'),
-  ].join(' ');
+  ].join(', ');
 
   const header = (
     <Col ph={5} gap={6} mb={6}>

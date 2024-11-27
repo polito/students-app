@@ -46,7 +46,7 @@ export const ContactsScreen = () => {
           people.length,
           ', ',
           t('contactsScreen.resultFoundRes'),
-        ].join(' '),
+        ].join(', '),
       );
     }
   }, [people]);
