@@ -138,6 +138,8 @@ export const PersonScreen = ({ route }: Props) => {
   const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         key={index}
         isAction
         leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
