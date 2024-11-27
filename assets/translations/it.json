@@ -40,6 +40,7 @@
     "noSeatSelected": "Nessuna",
     "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
     "seatStatus": {
+      "unavailable": "Non prenotabile",
       "available": "Disponibile",
       "booked": "Prenotato",
       "notAvailable": "Non prenotabile"
