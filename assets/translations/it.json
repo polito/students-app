@@ -290,7 +290,17 @@
     "fromTime" : "dalle",
     "toTime" : "alle",
     "document" : "Allegato",
-    "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
+    "sizeExc": "File di dimensioni eccessive, massimo 32 MB",
+    "first" : "Primo",
+    "second" : "Secondo",
+    "third" : "Terzo",
+    "quarto" : "Quarto",
+    "fifth" : "Quinto",
+    "sixth" : "Sesto",
+    "seventh" : "Settimo",
+    "eighth" : "Ottavo",
+    "ninth" : "Nono",
+    "tenth" : "Decimo"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
