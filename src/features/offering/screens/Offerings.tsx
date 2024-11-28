@@ -33,8 +33,10 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
       <LoadingContainer loading={isLoading}>
         {!!offerings && offerings?.length > 0 ? (
           offerings?.map(item => (
-            <Section key={item.code} style={styles.section}>
+            <Section accessible={false} key={item.code} style={styles.section}>
               <Text
+                accessibilityRole="text"
+                accessible={true}
                 accessibilityLabel={[
                   item?.name,
                   ', ',
@@ -48,6 +50,8 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
               <OverviewList>
                 {item?.degrees.map((degree, index) => (
                   <ListItem
+                    accessible={true}
+                    accessibilityLabel={degree?.name || degree.id}
                     containerStyle={styles.offeringListItem}
                     key={index}
                     title={degree?.name || degree.id}
