@@ -719,6 +719,7 @@
     "searchPlaceholder": "Prova con \"Aula 1\""
   },
   "profileScreen": {
+    "year click": "clicca due volte per cambiare anno del corso",
     "careerStatus": "Stato carriera:",
     "careerStatusEnum": {
       "active": "Attiva",
