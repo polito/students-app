@@ -246,7 +246,17 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "first" : "Primo",
+    "second" : "Secondo",
+    "third" : "Terzo",
+    "quarto" : "Quarto",
+    "fifth" : "Quinto",
+    "sixth" : "Sesto",
+    "seventh" : "Settimo",
+    "eighth" : "Ottavo",
+    "ninth" : "Nono",
+    "tenth" : "Decimo"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
