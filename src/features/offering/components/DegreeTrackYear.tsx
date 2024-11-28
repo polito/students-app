@@ -72,6 +72,10 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
       <OverviewList rounded={true} style={styles.firstLevelOverviewList}>
         {firstLevelCourses.map((course, index) => (
           <ListItem
+            accessible={true}
+            accessibilityLabel={[course.name, course.cfu, t('common.cfu')].join(
+              ', ',
+            )}
             title={course.name}
             titleProps={{ numberOfLines: undefined }}
             key={`${course.teachingYear.toString()}-${
