@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
 import { UseQueryResult, useQueries, useQuery } from '@tanstack/react-query';
 
-import { DateTime, Interval } from 'luxon';
+import { DateTime, IANAZone, Interval } from 'luxon';
 
 import {
   CoursesPreferences,
@@ -44,6 +44,9 @@ const groupItemsByDay = (
 ): AgendaDay[] => {
   const agendaItems: AgendaItem[] = [];
 
+  const timeOptions = {
+    zone: IANAZone.create('Europe/Rome'),
+  };
   agendaItems.push(
     ...exams
       .filter(exam => exam.status === ExamStatusEnum.Booked)
@@ -57,8 +60,8 @@ const groupItemsByDay = (
           color: coursePreferences?.color,
           icon: coursePreferences?.icon,
           date: formatMachineDate(exam.examStartsAt!),
-          start: DateTime.fromJSDate(exam.examStartsAt!),
-          end: DateTime.fromJSDate(exam.examEndsAt!),
+          start: DateTime.fromJSDate(exam.examStartsAt!, timeOptions),
+          end: DateTime.fromJSDate(exam.examEndsAt!, timeOptions),
           startTimestamp: exam.examStartsAt!.valueOf(),
           fromTime: formatTime(exam.examStartsAt!),
           isTimeToBeDefined: exam.isTimeToBeDefined,
@@ -80,8 +83,8 @@ const groupItemsByDay = (
         startTimestamp: booking.startsAt!.valueOf(),
         fromTime: formatTime(booking.startsAt!),
         toTime: formatTime(booking.endsAt!),
-        start: DateTime.fromJSDate(booking.startsAt!),
-        end: DateTime.fromJSDate(booking.endsAt!),
+        start: DateTime.fromJSDate(booking.startsAt!, timeOptions),
+        end: DateTime.fromJSDate(booking.endsAt!, timeOptions),
         title: booking.topic.title,
       };
       return item;
@@ -97,8 +100,8 @@ const groupItemsByDay = (
         id: lecture.id,
         key: 'lecture' + lecture.id,
         type: 'lecture',
-        start: DateTime.fromJSDate(lecture.startsAt),
-        end: DateTime.fromJSDate(lecture.endsAt),
+        start: DateTime.fromJSDate(lecture.startsAt, timeOptions),
+        end: DateTime.fromJSDate(lecture.endsAt, timeOptions),
         date: formatMachineDate(lecture.startsAt),
         startTimestamp: lecture.startsAt.valueOf(),
         fromTime: formatTime(lecture.startsAt),
@@ -124,8 +127,8 @@ const groupItemsByDay = (
       const item: DeadlineItem = {
         id: deadline.id!,
         key: 'deadline-' + deadline.id,
-        start: DateTime.fromJSDate(startDate),
-        end: DateTime.fromJSDate(startDate).plus({ hour: 1 }),
+        start: DateTime.fromJSDate(startDate, timeOptions),
+        end: DateTime.fromJSDate(startDate, timeOptions).plus({ hour: 1 }),
         startTimestamp: deadline.date.valueOf(),
         date: formatMachineDate(deadline.date),
         title: deadline.name,

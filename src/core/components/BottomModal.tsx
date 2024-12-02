@@ -1,8 +1,6 @@
 import { PropsWithChildren } from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import Modal from 'react-native-modal';
-
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
@@ -20,6 +18,8 @@ export const BottomModal = ({
     dismissable && onClose?.();
   };
 
+  const { width, height } = useWindowDimensions();
+
   return (
     <Modal
       {...Modal.defaultProps}
@@ -33,8 +33,8 @@ export const BottomModal = ({
       animationIn="slideInUp"
       animationOut="slideOutUp"
       backdropColor="black"
-      deviceHeight={SCREEN_HEIGHT}
-      deviceWidth={SCREEN_WIDTH}
+      deviceHeight={height}
+      deviceWidth={width}
       swipeDirection="down"
       backdropTransitionInTiming={400}
       backdropTransitionOutTiming={400}

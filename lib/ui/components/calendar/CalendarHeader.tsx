@@ -71,6 +71,8 @@ export const CalendarHeader = ({
 
         return (
           <TouchableOpacity
+            // Theme-independent hardcoded color
+            // eslint-disable-next-line react-native/no-color-literals
             style={{
               flex: 1,
               display: 'flex',

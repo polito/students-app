@@ -15,6 +15,7 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { CreateTicketRequest } from '@polito/api-client';
+import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -88,6 +89,31 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }));
   };
 
+  const topicOptions = useMemo(() => {
+    return topics.map(topic => ({
+      id: topic.id.toString(),
+      title: topic.name,
+      state: (topic.id.toString() === topicId
+        ? 'on'
+        : 'off') as MenuAction['state'],
+    }));
+  }, [topicId, topics]);
+
+  const subtopicOptions = useMemo(
+    () =>
+      subTopics.map(subtopic => {
+        const subId = subtopic.id.toString();
+        return {
+          id: subId,
+          title: subtopic.name,
+          state: (subId === ticketBody.subtopicId?.toString()
+            ? 'on'
+            : 'off') as MenuAction['state'],
+        };
+      }),
+    [subTopics, ticketBody.subtopicId],
+  );
+
   return (
     <ScreenContainer>
       <Section>
@@ -96,10 +122,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
           <Select
             label={t('createTicketScreen.topicDropdownLabel')}
             description={t('createTicketScreen.topicDescription')}
-            options={topics.map(topic => ({
-              id: topic.id.toString(),
-              title: topic.name,
-            }))}
+            options={topicOptions}
             onSelectOption={updateTopicId}
             disabled={!!initialTopicId}
             value={topicId}
@@ -108,12 +131,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList>
           <Select
-            options={subTopics.map(subTopic => {
-              return {
-                id: subTopic.id.toString(),
-                title: subTopic.name,
-              };
-            })}
+            options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
             value={ticketBody?.subtopicId?.toString()}

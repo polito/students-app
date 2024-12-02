@@ -9,11 +9,9 @@ import {
 import {
   faHourglassEnd,
   faHourglassStart,
-  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { IconButton } from '@lib/ui/components/IconButton';
+import { ModalContent } from '@lib/ui/components/ModalContent';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -21,9 +19,9 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { inRange } from 'lodash';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
-import { isSlotFull } from '../../../utils/bookings';
+import { isSlotBookable, isSlotFull } from '../../../utils/bookings';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
 import { BookingField } from './BookingField';
 import { BookingSeatsCta } from './BookingSeatsCta';
@@ -37,7 +35,7 @@ type Props = {
 export const BookingSlotModal = ({ close, item }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
+  const { fontSizes, spacing } = useTheme();
   const now = DateTime.now().toJSDate();
 
   const isFull = isSlotFull(item);
@@ -45,14 +43,14 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     item?.bookingStartsAt && item?.bookingStartsAt > now
   );
 
-  const canBeBooked = item.canBeBooked && item.start > DateTime.now();
+  const canBeBooked = isSlotBookable(item);
   const startHour = item.start.toFormat('HH:mm');
   const endHour = item.end.toFormat('HH:mm');
   const day = item.start.toFormat('d MMMM');
 
   const NotBookableMessage = () => {
     if (
-      !item.canBeBooked &&
+      !canBeBooked &&
       inRange(
         DateTime.now().valueOf(),
         item.bookingStartsAt.valueOf(),
@@ -81,7 +79,9 @@ export const BookingSlotModal = ({ close, item }: Props) => {
         message={[
           t('bookingSeatScreen.slotBookableFrom'),
           item?.bookingStartsAt
-            ? DateTime.fromJSDate(item?.bookingStartsAt).toFormat('d MMMM yyyy')
+            ? DateTime.fromJSDate(item?.bookingStartsAt, {
+                zone: IANAZone.create('Europe/Rome'),
+              }).toFormat('d MMMM yyyy')
             : ' - ',
         ].join(' ')}
       />
@@ -95,19 +95,24 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <HeaderAccessory
-        justify="space-between"
-        align="center"
-        style={styles.header}
-      >
-        <View style={styles.headerLeft} />
-        <Text style={styles.modalTitle}>{t('common.booking')}</Text>
-        <IconButton icon={faTimes} onPress={close} adjustSpacing="left" />
-      </HeaderAccessory>
-      {canBeBooked && item.id ? (
+    <ModalContent close={close} title={t('common.booking')}>
+      {item && canBeBooked && item.id ? (
         <>
           <View style={styles.spacer} />
+          {item.description && (
+            <Text variant="heading" style={styles.title}>
+              {item.description.trim()}
+            </Text>
+          )}
+          {item.location.description && (
+            <Text
+              variant="prose"
+              style={[styles.recapContainer, { marginBottom: spacing['2'] }]}
+            >
+              {item.location.description.trim()}
+            </Text>
+          )}
+
           <BookingSeatsCta
             slotId={item.id?.toString()}
             hasSeatSelection={item.hasSeatSelection}
@@ -132,17 +137,11 @@ export const BookingSlotModal = ({ close, item }: Props) => {
       ) : (
         <NotBookableMessage />
       )}
-    </View>
+    </ModalContent>
   );
 };
 
-const createStyles = ({
-  colors,
-  fontSizes,
-  fontWeights,
-  spacing,
-  shapes,
-}: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     spacer: {
       height: spacing[6],
@@ -150,20 +149,9 @@ const createStyles = ({
     recapContainer: {
       marginHorizontal: spacing[4],
     },
-    container: {
-      backgroundColor: colors.surface,
-      borderTopRightRadius: shapes.md,
-      borderTopLeftRadius: shapes.md,
-    },
-    header: {
-      borderTopRightRadius: shapes.md,
-      borderTopLeftRadius: shapes.md,
-      paddingVertical: spacing[1],
-    },
-    headerLeft: { padding: spacing[3] },
-    modalTitle: {
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      color: colors.prose,
+    title: {
+      padding: 0,
+      marginHorizontal: spacing[4],
+      marginBottom: spacing['2'],
     },
   });

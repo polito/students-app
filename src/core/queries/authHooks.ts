@@ -1,10 +1,12 @@
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { t } from 'i18next';
 
 import { isEnvProduction } from '../../utils/env';
 import { pluckData } from '../../utils/queries';
@@ -17,6 +19,18 @@ const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
 
+async function getFcmToken(): Promise<string | undefined> {
+  if (!isEnvProduction) return undefined;
+
+  try {
+    return await messaging().getToken();
+  } catch (_) {
+    Alert.alert(t('common.error'), t('loginScreen.fcmUnsupported'));
+  }
+
+  return undefined;
+}
+
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
@@ -24,24 +38,40 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
-      dto.client = { name: 'Students app' };
+      const client = { name: 'Students app', id: 'students-app' };
 
       return Promise.all([
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
-        isEnvProduction ? messaging().getToken() : undefined,
+        DeviceInfo.getBuildNumber(),
+        DeviceInfo.getVersion(),
+        getFcmToken(),
       ])
-        .then(([name, model, manufacturer, fcmRegistrationToken]) => {
-          dto.device = {
+        .then(
+          ([
             name,
-            platform: Platform.OS,
-            version: `${Platform.Version}`,
             model,
             manufacturer,
-          };
-          dto.preferences = { ...dto.preferences, fcmRegistrationToken };
-        })
+            buildNumber,
+            appVersion,
+            fcmRegistrationToken,
+          ]) => {
+            dto.device = {
+              name,
+              platform: Platform.OS,
+              version: `${Platform.Version}`,
+              model,
+              manufacturer,
+            };
+            dto.client = {
+              ...client,
+              buildNumber,
+              appVersion,
+            };
+            dto.preferences = { ...dto.preferences, fcmRegistrationToken };
+          },
+        )
         .then(() => authClient.login({ loginRequest: dto }))
         .then(pluckData)
         .then(res => {
@@ -72,7 +102,7 @@ export const useLogout = () => {
     onSuccess: async () => {
       refreshContext();
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
+      queryClient.removeQueries();
       await Keychain.resetGenericPassword();
     },
   });

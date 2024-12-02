@@ -8,35 +8,42 @@ import {
   View,
 } from 'react-native';
 
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Badge } from '@lib/ui/components/Badge';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
 import { EmptyState } from '@lib/ui/components/EmptyState';
+import { Icon } from '@lib/ui/components/Icon';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { Text } from '@lib/ui/components/Text';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
+import { SurveyTypesSection } from '../components/SurveyTypesSection';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
@@ -45,9 +52,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { courses: coursePreferences } = usePreferencesContext();
+  const { courses: coursePreferences, hideGrades } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
+  const surveyCategoriesQuery = useGetSurveyCategories();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
@@ -77,8 +85,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     return (
       examsQuery.data
-        .filter(e => !hiddenCourses.includes(e.uniqueShortcode))
-        .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
+        .filter(
+          e =>
+            !hiddenCourses.includes(e.uniqueShortcode) &&
+            e.examEndsAt!.valueOf() > DateTime.now().toJSDate().valueOf(),
+        )
+        .sort((a, b) => {
+          const status =
+            (a.status === ExamStatusEnum.Booked ? -1 : 0) +
+            (b.status === ExamStatusEnum.Booked ? 1 : 0);
+          return status !== 0
+            ? status
+            : a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf();
+        })
         .slice(0, 4) ?? []
     );
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
@@ -88,12 +107,20 @@ export const TeachingScreen = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <RefreshControl
-          queries={[coursesQuery, examsQuery, studentQuery]}
+          queries={[
+            coursesQuery,
+            examsQuery,
+            studentQuery,
+            surveyCategoriesQuery,
+          ]}
           manual
         />
       }
     >
       <SafeAreaView style={styles.container}>
+        {surveyCategoriesQuery.data?.length ? (
+          <SurveyTypesSection types={surveyCategoriesQuery.data} />
+        ) : undefined}
         <Section>
           <SectionHeader
             title={t('coursesScreen.title')}
@@ -122,9 +149,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 badge={
                   course.id
                     ? getUnreadsCount([
-                        // @ts-expect-error TODO fix path typing
                         'teaching',
-                        // @ts-expect-error TODO fix path typing
                         'courses',
                         course.id!.toString(),
                       ])
@@ -156,12 +181,18 @@ export const TeachingScreen = ({ navigation }: Props) => {
             }
           >
             {exams.map(exam => (
-              <ExamListItem key={exam.id} exam={exam} />
+              <ExamListItem
+                key={`${exam.id}` + exam.moduleNumber}
+                exam={exam}
+              />
             ))}
           </OverviewList>
         </Section>
         <Section>
-          <SectionHeader title={t('common.transcript')} />
+          <SectionHeader
+            title={t('common.transcript')}
+            trailingItem={<HideGrades />}
+          />
 
           <View style={GlobalStyles.relative}>
             <Card style={styles.transcriptCard}>
@@ -181,31 +212,39 @@ export const TeachingScreen = ({ navigation }: Props) => {
                       <Metric
                         title={
                           studentQuery.data?.averageGradePurged != null
-                            ? t('transcriptScreen.finalAverageLabel')
-                            : t('transcriptScreen.weightedAverageLabel')
+                            ? t('transcriptMetricsScreen.finalAverageLabel')
+                            : t('transcriptMetricsScreen.weightedAverageLabel')
                         }
                         value={
-                          studentQuery.data?.averageGradePurged ??
-                          studentQuery.data?.averageGrade ??
-                          '--'
+                          hideGrades
+                            ? '--'
+                            : studentQuery.data?.averageGradePurged ??
+                              studentQuery.data?.averageGrade ??
+                              '--'
                         }
                         color={colors.title}
                       />
                       {studentQuery.data?.estimatedFinalGradePurged ? (
                         <Metric
                           title={t(
-                            'transcriptScreen.estimatedFinalGradePurged',
+                            'transcriptMetricsScreen.estimatedFinalGradePurged',
                           )}
                           value={formatFinalGrade(
-                            studentQuery.data?.estimatedFinalGradePurged,
+                            hideGrades
+                              ? null
+                              : studentQuery.data?.estimatedFinalGradePurged,
                           )}
                           color={colors.title}
                         />
                       ) : (
                         <Metric
-                          title={t('transcriptScreen.estimatedFinalGrade')}
+                          title={t(
+                            'transcriptMetricsScreen.estimatedFinalGrade',
+                          )}
                           value={formatFinalGrade(
-                            studentQuery.data?.estimatedFinalGrade,
+                            hideGrades
+                              ? null
+                              : studentQuery.data?.estimatedFinalGrade,
                           )}
                           color={colors.title}
                         />
@@ -214,13 +253,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     <ProgressChart
                       label={
                         studentQuery.data?.totalCredits
-                          ? `${studentQuery.data?.totalAcquiredCredits}/${
-                              studentQuery.data?.totalCredits
-                            }\n${t('common.ects')}`
+                          ? `${
+                              hideGrades
+                                ? '--'
+                                : studentQuery.data?.totalAcquiredCredits
+                            }/${studentQuery.data?.totalCredits}\n${t(
+                              'common.ects',
+                            )}`
                           : undefined
                       }
                       data={
-                        studentQuery.data && studentQuery.data.totalCredits
+                        hideGrades
+                          ? []
+                          : studentQuery.data?.totalCredits
                           ? [
                               (studentQuery.data?.totalAttendedCredits ?? 0) /
                                 studentQuery.data?.totalCredits,
@@ -239,13 +284,41 @@ export const TeachingScreen = ({ navigation }: Props) => {
               )}
             </Card>
             {transcriptBadge && (
-              <Badge text={transcriptBadge} style={styles.badge} />
+              <UnreadBadge text={transcriptBadge} style={styles.badge} />
             )}
           </View>
         </Section>
       </SafeAreaView>
       <BottomBarSpacer />
     </ScrollView>
+  );
+};
+
+const HideGrades = () => {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = useStylesheet(createStyles);
+  const { hideGrades, updatePreference } = usePreferencesContext();
+
+  const label = hideGrades ? t('common.show') : t('common.hide');
+  const icon = hideGrades ? faEye : faEyeSlash;
+
+  const onHide = (value: boolean) => updatePreference('hideGrades', value);
+
+  return (
+    <View
+      style={styles.hideGradesSwitch}
+      accessibilityLabel={`${label}. ${t(
+        `common.activeStatus.${hideGrades}`,
+      )} `}
+      accessibilityRole="switch"
+      accessible={true}
+    >
+      <Icon icon={icon} color={colors.link} />
+      <Text variant="link" onPress={() => onHide(!hideGrades)}>
+        {label}
+      </Text>
+    </View>
   );
 };
 
@@ -264,5 +337,11 @@ const createStyles = ({ spacing }: Theme) =>
       position: 'absolute',
       top: 0,
       right: 10,
+    },
+    hideGradesSwitch: {
+      display: 'flex',
+      flexDirection: 'row',
+      gap: spacing[1],
+      alignItems: 'center',
     },
   });

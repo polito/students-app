@@ -5,6 +5,7 @@ import { Pie as ProgressIndicator } from 'react-native-progress';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheckCircle,
+  faExclamationCircle,
   faFile,
   faFileAudio,
   faFileCode,
@@ -69,6 +70,7 @@ interface Props {
   downloadProgress?: number;
   containerStyle?: StyleProp<ViewStyle>;
   mimeType?: string;
+  isCorrupted?: boolean;
 }
 
 export const FileListItem = ({
@@ -76,6 +78,7 @@ export const FileListItem = ({
   downloadProgress,
   subtitle,
   mimeType,
+  isCorrupted = false,
   ...rest
 }: ListItemProps & Props) => {
   const { palettes, fontSizes } = useTheme();
@@ -101,7 +104,8 @@ export const FileListItem = ({
               />
             </View>
           ) : (
-            isDownloaded && (
+            isDownloaded &&
+            (!isCorrupted ? (
               <View style={styles.downloadedIconContainer}>
                 <Icon
                   icon={faCheckCircle}
@@ -109,7 +113,15 @@ export const FileListItem = ({
                   color={palettes.secondary[600]}
                 />
               </View>
-            )
+            ) : (
+              <View style={styles.downloadedIconContainer}>
+                <Icon
+                  icon={faExclamationCircle}
+                  size={12}
+                  color={palettes.danger[600]}
+                />
+              </View>
+            ))
           )}
         </View>
       }

@@ -7,11 +7,18 @@
     "refresh": "Refresh",
     "room": "Room {{roomName}}",
     "rooms": "Rooms {{roomNames}}",
+    "selectDate": "Select date",
     "title": "Agenda",
     "weeklyLayout": "Weekly layout"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
+    "bookingStatus": {
+      "available": "Available",
+      "booked": "Booked",
+      "full": "Full",
+      "notAvailable": "Not available"
+    },
     "cancelBooking": "Cancel booking",
     "cancelBookingText": "Are you sure you want to cancel this booking?",
     "cancelFeedback": "Booking canceled",
@@ -21,35 +28,27 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
-    },
-    "bookingStatus": {
-      "notAvailable": "Not available",
+    }
+  },
+  "bookingSeatScreen": {
+    "confirm": "Confirm booking",
+    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
+    "noSeatSelected": "No seat",
+    "noSeatsAvailable": "We're sorry,\nthere are no places available",
+    "seatStatus": {
       "available": "Available",
       "booked": "Booked",
-      "full": "Full"
-    }
+      "notAvailable": "Non bookable"
+    },
+    "slotBookableFrom": "This slot will be bookable starting from ",
+    "title": "Select a seat",
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection"
   },
   "bookingsScreen": {
     "emptyState": "You have no active bookings",
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
-  },
-  "bookingSeatScreen": {
-    "title": "Select a seat",
-    "noSeatsAvailable": "We're sorry,\nthere are no places available",
-    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
-    "slotBookableFrom": "This slot will be bookable starting from ",
-    "confirm": "Confirm booking",
-    "informationAcknowledgment": "I declare that I have read it\nof the ",
-    "informationAcknowledgmentLink": "COVID 19 emergency information",
-    "noSeatSelected": "No seat",
-    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
-    "seatStatus": {
-      "booked": "Booked",
-      "available": "Available",
-      "notAvailable": "Non bookable"
-    }
   },
   "colors": {
     "amber": "Amber",
@@ -73,25 +72,16 @@
     "yellow": "Yellow"
   },
   "common": {
-    "back": "Back",
-    "desk": "Desk",
-    "seat": "Seat",
-    "reset": "Reset",
-    "hour": "Hour",
-    "day": "Day",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
     },
     "agent": "Agent",
-    "legend": "Legend",
-    "close": "Close",
-    "search": "Search",
-    "cfu": "CFU",
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
+    "back": "Back",
     "booking": "Booking",
     "booking_plural": "Bookings",
     "building": "Building",
@@ -101,8 +91,11 @@
     "campus": "Campus",
     "cancel": "Cancel",
     "capacity": "Capacity",
+    "career": "Career",
+    "cfu": "CFU",
     "classroomsNotSpecified": "Classroom not specified",
     "cleanCourseFiles": "Remove all course files",
+    "close": "Close",
     "color": "Color",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -111,14 +104,16 @@
     "course_plural": "Courses",
     "createdAt": "Created at",
     "credits": "Credits",
-    "creditsWithUnit": "{{credits}} ECTS",
+    "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
+    "day": "Day",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
     "department": "Department",
+    "desk": "Desk",
     "done": "Done",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
@@ -131,7 +126,7 @@
     },
     "duration": "Duration",
     "earnedCredits": "Earned credits",
-    "ects": "ECTS",
+    "ects": "CFU",
     "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
@@ -162,22 +157,28 @@
     "follow": "Follow",
     "free": "Free",
     "grade": "Grade",
+    "hide": "Hide",
+    "hour": "Hour",
     "hours": "Hour",
     "icon": "Icon",
+    "image": "Image",
     "inYourAgenda": "in your agenda",
     "it": "Italian",
     "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
+    "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
     "next": "Next",
     "noInternet": "You are offline, some features may not be available",
+    "noValue": "No value",
     "notFound": "Not found",
     "notes": "Notes",
     "notice": "Notice",
@@ -209,12 +210,17 @@
     "profilePic": "Profile picture",
     "recentlyViewed": "Recently viewed",
     "refresh": "Refresh",
+    "remaining": "{{value}} remaining",
     "remove": "Remove",
+    "reset": "Reset",
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
+    "search": "Search",
+    "seat": "Seat",
     "selectAnOption": "Please select an option",
     "services": "Services",
+    "show": "Show",
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
     "status": "Status",
@@ -240,7 +246,8 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
-    "year": "year"
+    "year": "year",
+    "yesterday": "Yesterday"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -308,6 +315,9 @@
     "agendaSectionEmptyState": "This course has no entries in the agenda",
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
+    "linkDefaultTitle": "Link to",
+    "linksSectionEmptyState": "There are no links related to the course",
+    "linksSectionTitle": "Useful links",
     "moreSectionTitle": "More",
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
@@ -353,6 +363,10 @@
     "title": "Courses",
     "total": "There are {{total}} courses"
   },
+  "cpdSurveysScreen": {
+    "emptyState": "There are no surveys",
+    "total": "There are {{ total }} surveys"
+  },
   "createTicketScreen": {
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
@@ -391,10 +405,14 @@
   "eventPlacesScreen": {
     "title": "Event locations"
   },
+  "examCpdModalContent": {
+    "message": " Before proceeding with booking this exam, you must complete the following surveys:",
+    "title": "CPD survey"
+  },
   "examRequestScreen": {
     "error": "Fill in the text field before proceeding with the request",
     "placeholder": "Explain why you need to take the exam early",
-    "title": "You can ask the college chairman to take the exam before the actual delivery of the course"
+    "title": "You can request the course holder to take the exam without having attended the classes"
   },
   "examScreen": {
     "bookedCount": "Booked students",
@@ -406,8 +424,11 @@
     "ctaRequest": "Request",
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
+    "noLocation": "Room to be defined",
+    "notAvailable": "Booking not available",
     "notes": "Notes",
-    "title": "Exam call"
+    "title": "Exam call",
+    "noBookedCount": "Data not available"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
@@ -428,7 +449,8 @@
     "title": "Guide"
   },
   "guidesScreen": {
-    "title": "Guides"
+    "title": "Guides",
+    "total": "There are {{ total }} guides"
   },
   "jobOfferScreen": {
     "application": "Application",
@@ -470,7 +492,8 @@
     "title": "Log in with your polito.it credentials",
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID",
-    "usernameLabelAccessibility": "Enter your username here"
+    "usernameLabelAccessibility": "Enter your username here",
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -507,7 +530,10 @@
     "reservationPresence": "Reservations"
   },
   "notificationsScreen": {
-    "title": "Notifications archive"
+    "title": "Notifications",
+    "perCourseTitle": "Courses",
+    "globalTitle": "Global",
+    "globalSubtitle": "Important notifications are always active"
   },
   "offeringBachelorScreen": {
     "title": "Bachelor degree"
@@ -571,6 +597,7 @@
     "noPlacesFound": "No places found",
     "searchCategories": "Search categories",
     "title": "Places",
+    "unwrappingMap": "Unwrapping the map",
     "viewWholeCampus": "View the whole campus"
   },
   "placesSearchScreen": {
@@ -593,6 +620,16 @@
     "title": "Profile",
     "trainingOffer": "Training offer"
   },
+  "provisionalGradeScreen": {
+    "acceptGradeConfirmMessage": "By requesting immediate registration, the evaluation will be recorded in your transcript and you will no longer be able to change your decision",
+    "acceptGradeCta": "Request immediate registration",
+    "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
+    "contactProfessorCta": "Contact the teacher",
+    "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
+    "rejectGradeCta": "Reject the evaluation by: <br><b>{{hours}}</b>",
+    "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "title": "Evaluation"
+  },
   "sectionHeader": {
     "cta": "See all",
     "ctaMoreSuffix": "({{- count}} more)"
@@ -609,8 +646,16 @@
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings"
   },
+  "surveysScreen": {
+    "compiledEmptyState": "There are no compiled surveys",
+    "compiledTitle": "Compiled surveys",
+    "title": "Surveys",
+    "toBeCompiledEmptyState": "There are no surveys to be compiled",
+    "toBeCompiledTitle": "Surveys to be compiled"
+  },
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
+    "cpdTitle": "CPD Surveys",
     "title": "Teaching"
   },
   "theme": {
@@ -662,19 +707,32 @@
     "opened": "Open tickets",
     "title": "Ticket"
   },
-  "transcriptScreen": {
+  "transcriptGradeScreen": {
+    "title": "Evaluation"
+  },
+  "transcriptGradesScreen": {
+    "autoRegistration": "Automatic registration in:",
+    "emptyState": "You haven't taken any exams",
+    "expiredCountdown": "Expired",
+    "provisionalEmptyState": "There are no provisional grades",
+    "provisionalTitle": "Provisional",
+    "recordedTitle": "Recorded",
+    "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
+    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
+    "title": "Grades",
+    "total": "There are {{total}} grades"
+  },
+  "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
-    "emptyState": "You have not taken any exams",
     "estimatedFinalGrade": "Final grade",
     "estimatedFinalGradePurged": "Estimated final grade",
     "finalAverageLabel": "Final average",
     "masterAdmissionAverage": "Master admission average",
-    "provisionalGradesSectionTitle": "Provisional grades",
     "thisYear": "This academic year",
-    "total": "There are {{total}} grades",
+    "title": "Career",
     "weightedAverageLabel": "Weighted average",
     "yourCareer": "Your career"
   },

@@ -83,6 +83,7 @@ export interface Colors {
   heading: string;
   subHeading: string;
   prose: string;
+  disableTitle: string;
   longProse: string;
   secondaryText: string;
   caption: string;
@@ -92,10 +93,12 @@ export interface Colors {
   tabBarInactive: string;
   title: string;
   touchableHighlight: string;
-  agendaBooking: string;
-  agendaDeadline: string;
-  agendaExam: string;
-  agendaLecture: string;
+  bookingCardBorder: string;
+  deadlineCardBorder: string;
+  examCardBorder: string;
+  lectureCardSecondary: string;
+  errorCardText: string;
+  errorCardBorder: string;
   translucentSurface: string;
   white: string;
 }

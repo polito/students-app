@@ -1,8 +1,6 @@
 name: Fastlane
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
   pull_request:
@@ -47,7 +45,7 @@ jobs:
       push_to_playstore: ${{ steps.configure.outputs.push_to_playstore }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Get version from tag (new release)
@@ -121,8 +119,12 @@ jobs:
         echo "CONFIGURED:"
         cat $GITHUB_OUTPUT
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
@@ -146,7 +148,7 @@ jobs:
       KEYSTORE_PATH: './keystore.jks'
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
@@ -154,24 +156,22 @@ jobs:
       run:
         echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> android/local.properties
     - name: Gradle Wrapper Validation
-      uses: gradle/wrapper-validation-action@v1
+      uses: gradle/actions/wrapper-validation@v3
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: ./android
-        ruby-version: '2.7.6'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
     - name: Cache Gradle artifacts
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
@@ -219,7 +219,6 @@ jobs:
   build-ios:
     name: ${{ needs.configure.outputs.push_to_testflight == 'false' && 'Build' || 'Build & Deploy' }} iOS
     env:
-      ImageOS: macos12
       LANG: en_US.UTF-8
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
@@ -231,44 +230,49 @@ jobs:
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
       SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
     needs: configure
-    runs-on: [self-hosted, macos-12]
+    runs-on: [macos-latest]
     steps:
     - name: Select Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '14'
+        xcode-version: '15'
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
+    - name: Set .netrc 
+      run: |
+        echo "machine api.mapbox.com
+        login mapbox
+        password ${{ secrets.MAPBOX_TOKEN }}
+        " > ~/.netrc
+        chmod 600 ~/.netrc
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: ./ios
-        ruby-version: '2.7.6'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
-    - name: Install npm dependencies
-      run: npm install
     - name: Cache pods
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./ios/Pods
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-    - name: Install pod dependencies
+    - name: Install npm dependencies
+      run: npm install
+    - name: Ensure pods installed
       working-directory: ./ios
-      run: bundle exec pod install --repo-update
+      run: bundle exec pod install
     - name: Prepare fastlane
       working-directory: ./ios
       run: |
@@ -303,7 +307,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Gather artifacts
       uses: actions/download-artifact@v3
       with:

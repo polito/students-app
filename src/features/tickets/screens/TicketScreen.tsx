@@ -21,7 +21,7 @@ import {
 
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
@@ -111,7 +111,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const [textFieldHeight, setTextFieldHeight] = useState(50);
   const ticket = ticketQuery.data;
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { resetUnread } = usePushNotifications();
+  const { clearNotificationScope } = useNotifications();
 
   useScreenTitle(ticket?.subject);
 
@@ -119,12 +119,16 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     if (!ticket) {
       return;
     }
-    resetUnread(['services', 'tickets', ticket?.id.toString()]);
+    clearNotificationScope([
+      'services',
+      'tickets',
+      ticket.id.toString(),
+    ] as unknown as Parameters<typeof clearNotificationScope>['0']); // TODO check PathExtractor type
     if (ticket.unreadCount === 0) {
       return;
     }
     markAsRead();
-  }, [markAsRead, ticket]);
+  }, [markAsRead, clearNotificationScope, ticket]);
 
   useEffect(() => {
     navigation.setOptions({

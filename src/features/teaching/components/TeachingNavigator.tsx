@@ -20,12 +20,14 @@ import {
 import { CoursesScreen } from '../../courses/screens/CoursesScreen';
 import { PlacesNavigator } from '../../places/components/PlacesNavigator';
 import { PlacesStackParamList } from '../../places/components/PlacesNavigator';
+import { CpdSurveysScreen } from '../../surveys/screens/CpdSurveysScreen';
+import { TranscriptTopTabsNavigator } from '../../transcript/navigation/TranscriptTopTabsNavigator';
+import { ProvisionalGradeScreen } from '../../transcript/screens/ProvisionalGradeScreen';
 import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
 import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
-import { TranscriptScreen } from '../screens/TranscriptScreen';
 
 export type TeachingStackParamList = CourseSharedScreensParamList &
   SharedScreensParamList & {
@@ -37,8 +39,10 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     ExamRequest: { id: number };
     MessagesModal: undefined;
     Transcript: undefined;
+    ProvisionalGrade: { id: number };
     OnboardingModal: undefined;
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
+    CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
 
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
@@ -111,9 +115,25 @@ export const TeachingNavigator = () => {
       />
       <Stack.Screen
         name="Transcript"
-        component={TranscriptScreen}
+        component={TranscriptTopTabsNavigator}
         options={{
           headerTitle: t('common.transcript'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="ProvisionalGrade"
+        component={ProvisionalGradeScreen}
+        options={{
+          headerTitle: t('transcriptGradeScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -132,8 +152,15 @@ export const TeachingNavigator = () => {
         component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="CpdSurveys"
+        component={CpdSurveysScreen}
+        options={{
+          title: t('teachingScreen.cpdTitle'),
           headerLargeTitle: false,
-          headerShadowVisible: false,
           headerBackTitleVisible: false,
         }}
       />

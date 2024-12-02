@@ -11,28 +11,28 @@ import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
+import { CourseFileOverviewWithLocation } from '../../../core/types/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
-import {
-  CourseRecentFile,
-  CourseRecentFileListItem,
-} from '../components/CourseRecentFileListItem';
+import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
-import { FilesCacheContext } from '../contexts/FilesCacheContext';
-import { FilesCacheProvider } from '../providers/FilesCacheProvider';
+import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
+import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseDirectory'>;
 
 const FileCacheChecker = () => {
-  const { refresh } = useContext(FilesCacheContext);
+  const { refresh } = useContext(CourseFilesCacheContext);
 
   useFocusEffect(
     useCallback(() => {
@@ -59,11 +59,25 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
         onChangeText: e => setSearchFilter(e.nativeEvent.text),
       },
     });
-  }, [directoryName]);
+  }, [directoryName, navigation, t]);
+
+  directoryQuery.data?.sort((a, b) => {
+    if (a.type !== 'directory' && b.type !== 'directory') {
+      const dateA = DateTime.fromJSDate(a.createdAt).startOf('minute');
+      const dateB = DateTime.fromJSDate(b.createdAt).startOf('minute');
+
+      if (dateA.equals(dateB)) {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      }
+
+      return dateA > dateB ? -1 : 1;
+    }
+    return 0;
+  });
 
   return (
     <CourseContext.Provider value={courseId}>
-      <FilesCacheProvider>
+      <CourseFilesCacheProvider>
         <FileCacheChecker />
         {searchFilter ? (
           <CourseFileSearchFlatList
@@ -98,7 +112,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             ListFooterComponent={<BottomBarSpacer />}
           />
         )}
-      </FilesCacheProvider>
+      </CourseFilesCacheProvider>
     </CourseContext.Provider>
   );
 };
@@ -111,7 +125,9 @@ interface SearchProps {
 const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const [searchResults, setSearchResults] = useState<CourseRecentFile[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    CourseFileOverviewWithLocation[]
+  >([]);
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const { paddingHorizontal } = useSafeAreaSpacing();
@@ -119,22 +135,30 @@ const CourseFileSearchFlatList = ({ courseId, searchFilter }: SearchProps) => {
   useEffect(() => {
     if (!recentFilesQuery.data) return;
     setSearchResults(
-      recentFilesQuery.data.filter(file => file.name.includes(searchFilter)),
+      recentFilesQuery.data.filter(file =>
+        file.name.toLowerCase().includes(searchFilter.toLowerCase()),
+      ),
     );
   }, [recentFilesQuery.data, searchFilter]);
+
+  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
+  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       scrollEnabled={scrollEnabled}
+      initialNumToRender={15}
+      maxToRenderPerBatch={15}
+      windowSize={4}
       contentContainerStyle={paddingHorizontal}
-      keyExtractor={(item: CourseRecentFile) => item.id}
+      keyExtractor={(item: CourseFileOverviewWithLocation) => item.id}
       renderItem={({ item }) => (
         <CourseRecentFileListItem
           item={item}
-          onSwipeStart={() => setScrollEnabled(false)}
-          onSwipeEnd={() => setScrollEnabled(true)}
+          onSwipeStart={onSwipeStart}
+          onSwipeEnd={onSwipeEnd}
         />
       )}
       refreshControl={<RefreshControl queries={[recentFilesQuery]} />}

@@ -11,6 +11,7 @@ import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsN
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
@@ -22,6 +23,7 @@ export type UserStackParamList = OfferingStackParamList & {
     id: number;
   };
   MessagesModal: undefined;
+  Notifications: undefined;
   Person: { id: number };
 };
 const Stack = createNativeStackNavigator<UserStackParamList>();
@@ -50,6 +52,13 @@ export const UserNavigator = () => {
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('profileScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+        options={{
+          headerTitle: t('notificationsScreen.title'),
         }}
       />
       <Stack.Screen

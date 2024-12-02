@@ -26,11 +26,10 @@ import { CALENDAR_CELL_HEIGHT } from '@lib/ui/utils/calendar';
 import { BookingSlot } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
-import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -74,7 +73,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { data: myBookings } = useGetBookings();
   const { data: topics } = useGetBookingTopics();
   const { language } = usePreferencesContext();
-  const { setFeedback } = useFeedbackContext();
   const {
     open: showBottomModal,
     modal: bottomModal,
@@ -87,19 +85,34 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
   );
-  const nextWeek = useCallback(
-    () => setCurrentWeekStart(odlW => odlW.plus({ week: 1 })),
-    [],
-  );
-
-  const prevWeek = useCallback(
-    () => setCurrentWeekStart(odlW => odlW.minus({ week: 1 })),
-    [],
-  );
 
   const currentTopic = useMemo(
     () => getCalendarPropsFromTopic(topics, topicId),
     [topics, topicId],
+  );
+
+  const mode = currentTopic.agendaView ? 'day' : 'custom';
+
+  const nextWeek = useCallback(
+    () =>
+      setCurrentWeekStart(oldW => {
+        if (currentTopic.agendaView) {
+          return oldW.plus({ days: 1 });
+        }
+        return oldW.plus({ week: 1 });
+      }),
+    [],
+  );
+
+  const prevWeek = useCallback(
+    () =>
+      setCurrentWeekStart(oldW => {
+        if (currentTopic.agendaView) {
+          return oldW.minus({ days: 1 });
+        }
+        return oldW.minus({ week: 1 });
+      }),
+    [],
   );
 
   useLayoutEffect(() => {
@@ -121,8 +134,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const calendarEvents = useMemo(() => {
     if (bookingSlotsQuery.data && bookingSlotsQuery.data?.length > 0) {
       return bookingSlotsQuery.data.map(slot => {
-        const start = DateTime.fromJSDate(slot.startsAt as Date);
-        const end = DateTime.fromJSDate(slot.endsAt as Date);
+        const start = DateTime.fromJSDate(slot.startsAt as Date, {
+          zone: IANAZone.create('Europe/Rome'),
+        });
+        const end = DateTime.fromJSDate(slot.endsAt as Date, {
+          zone: IANAZone.create('Europe/Rome'),
+        });
         return {
           ...slot,
           start,
@@ -183,7 +200,9 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     const newStartDate = currentTopic?.startDate
-      ? DateTime.fromJSDate(currentTopic?.startDate)
+      ? DateTime.fromJSDate(currentTopic?.startDate, {
+          zone: IANAZone.create('Europe/Rome'),
+        })
       : START_DATE;
     const newDaysPerWeek = currentTopic?.daysPerWeek as WeekNum;
     setCurrentWeekStart(newStartDate);
@@ -197,8 +216,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     return !!(
       isOffline ||
       (currentTopic?.startDate &&
-        DateTime.fromJSDate(currentTopic?.startDate)?.toISODate() ===
-          currentWeekStart.toISODate())
+        currentTopic?.startDate.toISOString() === currentWeekStart.toISODate())
     );
   }, [isOffline, currentTopic, currentWeekStart]);
 
@@ -248,6 +266,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         {calendarHeight && (
           <Calendar<BookingCalendarEvent>
             weekStartsOn={currentWeekStart.weekday as WeekNum}
+            mode={mode}
             weekEndsOn={weekEndsOn}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
@@ -257,7 +276,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             hours={hours}
             bodyContainerStyle={{ backgroundColor: 'yellow' }}
             cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
-            mode="custom"
             showAllDayEventCell={false}
             swipeEnabled={false}
             renderHeader={props => (

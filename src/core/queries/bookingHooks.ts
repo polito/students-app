@@ -6,9 +6,9 @@ import { DateTime } from 'luxon';
 import { pluckData } from '../../utils/queries';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
-export const BOOKINGS_TOPICS_QUERY_KEY = ['bookings', 'topics'];
-export const BOOKINGS_SLOTS_QUERY_KEY = ['bookings', 'slots'];
-export const BOOKINGS_SEATS_QUERY_KEY = ['bookings', 'seats'];
+export const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];
+export const BOOKINGS_SLOTS_QUERY_KEY = ['booking', 'slots'];
+export const BOOKINGS_SEATS_QUERY_KEY = ['booking', 'seats'];
 
 const useBookingClient = (): BookingsApi => {
   return new BookingsApi();

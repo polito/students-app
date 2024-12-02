@@ -7,11 +7,18 @@
     "refresh": "Aggiorna",
     "room": "Aula {{roomName}}",
     "rooms": "Aule {{roomNames}}",
+    "selectDate": "Seleziona data",
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
+    "bookingStatus": {
+      "available": "Prenotabile",
+      "booked": "Prenotato",
+      "full": "Non prenotabile",
+      "notAvailable": "Non ancora prenotabile"
+    },
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
     "cancelFeedback": "Prenotazione annullata",
@@ -21,35 +28,27 @@
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
-    },
-    "bookingStatus": {
-      "notAvailable": "Non ancora prenotabile",
-      "available": "Prenotabile",
-      "booked": "Prenotato",
-      "full": "Non prenotabile"
     }
+  },
+  "bookingSeatScreen": {
+    "confirm": "Conferma prenotazione",
+    "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
+    "noSeatSelected": "Nessuna",
+    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
+    "seatStatus": {
+      "available": "Disponibile",
+      "booked": "Prenotato",
+      "notAvailable": "Non prenotabile"
+    },
+    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal ",
+    "title": "Scegli il posto",
+    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto"
   },
   "bookingsScreen": {
     "emptyState": "Non hai prenotazioni attive",
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
-  },
-  "bookingSeatScreen": {
-    "title": "Scegli il posto",
-    "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
-    "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
-    "slotBookableFrom": "Questo slot sarà prenotabile a partire dal ",
-    "confirm": "Conferma prenotazione",
-    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
-    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
-    "noSeatSelected": "Nessuna",
-    "zoomInToEnableSeatSelection": "Zoom in per abilitare la selezione del posto",
-    "seatStatus": {
-      "booked": "Prenotato",
-      "available": "Disponibile",
-      "notAvailable": "Non prenotabile"
-    }
   },
   "colors": {
     "amber": "Ambra",
@@ -73,23 +72,12 @@
     "yellow": "Giallo"
   },
   "common": {
-    "desk": "Cattedra",
-    "seat": "Postazione",
-    "reset": "Reimposta",
-    "hour": "Orario",
-    "day": "Giorno",
-    "other": "Altro",
-    "noValue": "Nessun valore",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
     "agent": "Operatore",
-    "legend": "Legenda",
-    "close": "Chiudi",
-    "search": "Cerca",
-    "cfu": "CFU",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
@@ -103,8 +91,11 @@
     "campus": "Sede",
     "cancel": "Annulla",
     "capacity": "Capacità",
+    "career": "Carriera",
+    "cfu": "CFU",
     "classroomsNotSpecified": "Luogo non specificato",
     "cleanCourseFiles": "Rimuovi file dei corsi",
+    "close": "Chiudi",
     "color": "Colore",
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
@@ -117,10 +108,12 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Data e ora",
     "dateToBeDefined": "Data da definire",
+    "day": "Giorno",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
     "delete": "Elimina",
     "department": "Dipartimento",
+    "desk": "Cattedra",
     "done": "Fatto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
@@ -164,22 +157,28 @@
     "follow": "Segui",
     "free": "Libera",
     "grade": "Voto",
+    "hide": "Nascondi",
+    "hour": "Orario",
     "hours": "Ore",
     "icon": "Icona",
+    "image": "Immagine",
     "inYourAgenda": "nella tua agenda",
     "it": "Italiano",
     "language": "Lingua",
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
+    "legend": "Legenda",
     "loading": "Caricamento",
     "location": "Sede",
     "logout": "Logout",
+    "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",
     "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "next": "Avanti",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
+    "noValue": "Nessun valore",
     "notFound": "Luogo inesistente",
     "notes": "Note",
     "notice": "Avviso",
@@ -201,6 +200,7 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
     "phone": "Telefono",
@@ -210,12 +210,17 @@
     "profilePic": "Immagine di profilo",
     "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
+    "remaining": "{{value}} rimanenti",
     "remove": "Rimuovi",
+    "reset": "Reimposta",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
+    "search": "Cerca",
+    "seat": "Postazione",
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
+    "show": "Mostra",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
     "status": "Stato",
@@ -241,7 +246,8 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
-    "year": "anno"
+    "year": "anno",
+    "yesterday": "Ieri"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -309,6 +315,9 @@
     "agendaSectionEmptyState": "Non ci sono eventi relativi a questo corso",
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
+    "linkDefaultTitle": "Collegamento a",
+    "linksSectionEmptyState": "Non ci sono link relativi al corso",
+    "linksSectionTitle": "Link utili",
     "moreSectionTitle": "Altro",
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
@@ -354,6 +363,10 @@
     "title": "Corsi",
     "total": "Sono presenti {{total}} corsi"
   },
+  "cpdSurveysScreen": {
+    "emptyState": "Non ci sono questionari",
+    "total": "Sono presenti {{ total }} questionari"
+  },
   "createTicketScreen": {
     "insert": "Inserimento ticket",
     "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
@@ -392,10 +405,14 @@
   "eventPlacesScreen": {
     "title": "Luoghi evento"
   },
+  "examCpdModalContent": {
+    "message": "Prima di procedere alla prenotazione di questo appello, è necessario compilare i seguenti questionari:",
+    "title": "Questionario CPD"
+  },
   "examRequestScreen": {
     "error": "Compila il campo di testo prima di procedere con la richiesta",
     "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
-    "title": "Puoi chiedere al coordinatore del collegio di sostenere l'esame prima dell'effettiva erogazione del corso"
+    "title": "Puoi richiedere al titolare del corso di sostenere l'esame senza avere acquisito la frequenza"
   },
   "examScreen": {
     "bookedCount": "Studenti prenotati",
@@ -407,8 +424,11 @@
     "ctaRequest": "Richiedi",
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
+    "noLocation": "Aula da definire",
+    "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
-    "title": "Appello"
+    "title": "Appello",
+    "noBookedCount": "Dato non disponibile"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -472,7 +492,8 @@
     "title": "Accedi con le tue credenziali polito.it",
     "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola",
-    "usernameLabelAccessibility": "Inserisci qui il tuo username"
+    "usernameLabelAccessibility": "Inserisci qui il tuo username",
+    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
   },
   "messageScreen": {
     "backTitle": "Archivio",
@@ -501,7 +522,7 @@
     "eventStartTime": "Inizio evento",
     "information": "Informazioni",
     "logo": "Logo",
-    "title": "Avvisi & News"
+    "title": "News & Eventi"
   },
   "notifications": {
     "events": "Eventi e iniziative",
@@ -509,7 +530,10 @@
     "reservationPresence": "Prenotazione presenza"
   },
   "notificationsScreen": {
-    "title": "Archivio notifiche"
+    "title": "Notifiche",
+    "perCourseTitle": "Corsi",
+    "globalTitle": "Globali",
+    "globalSubtitle": "Le notifiche importanti sono sempre attive"
   },
   "offeringBachelorScreen": {
     "title": "Lauree triennali"
@@ -573,6 +597,7 @@
     "noPlacesFound": "Nessun posto trovato",
     "searchCategories": "Cerca categorie",
     "title": "Luoghi",
+    "unwrappingMap": "Aprendo la mappa",
     "viewWholeCampus": "Vedi tutta la sede"
   },
   "placesSearchScreen": {
@@ -595,6 +620,16 @@
     "title": "Profilo",
     "trainingOffer": "Offerta formativa"
   },
+  "provisionalGradeScreen": {
+    "acceptGradeConfirmMessage": "Richiedendo la registrazione immediata la valutazione verrà inserita in libretto e non potrai più cambiare la tua decisione",
+    "acceptGradeCta": "Richiedi la registrazione immediata",
+    "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
+    "contactProfessorCta": "Contatta il docente",
+    "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
+    "rejectGradeCta": "Rifiuta la valutazione entro:<br><b>{{hours}}</b>",
+    "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
+    "title": "Valutazione"
+  },
   "sectionHeader": {
     "cta": "Vedi tutti",
     "ctaMoreSuffix": "(altri {{- count}})"
@@ -611,8 +646,16 @@
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni"
   },
+  "surveysScreen": {
+    "compiledEmptyState": "Non ci sono questionari compilati",
+    "compiledTitle": "Questionari compilati",
+    "title": "Questionari",
+    "toBeCompiledEmptyState": "Non ci sono questionari da compilare",
+    "toBeCompiledTitle": "Questionari da compilare"
+  },
   "teachingScreen": {
     "allCoursesHidden": "Hai nascosto tutti i tuoi corsi",
+    "cpdTitle": "Questionari CPD",
     "title": "Didattica"
   },
   "theme": {
@@ -664,19 +707,32 @@
     "opened": "Ticket aperti",
     "title": "Ticket"
   },
-  "transcriptScreen": {
+  "transcriptGradeScreen": {
+    "title": "Valutazione"
+  },
+  "transcriptGradesScreen": {
+    "autoRegistration": "Registrazione automatica tra:",
+    "emptyState": "Non hai sostenuto nessun esame",
+    "expiredCountdown": "Scaduto",
+    "provisionalEmptyState": "Non ci sono valutazioni provvisorie",
+    "provisionalTitle": "Provvisorie",
+    "recordedTitle": "Registrate",
+    "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
+    "rejectionCountdown": "Rifiutabile entro: <b>{{hours}}</b>",
+    "title": "Valutazioni",
+    "total": "Sono presenti {{total}} valutazioni"
+  },
+  "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
-    "emptyState": "Non hai sostenuto nessun esame",
     "estimatedFinalGrade": "Voto di laurea",
     "estimatedFinalGradePurged": "Voto di laurea depurato",
     "finalAverageLabel": "Media depurata",
     "masterAdmissionAverage": "Media di ammissione al secondo livello",
-    "provisionalGradesSectionTitle": "Valutazioni provvisorie",
     "thisYear": "Questo anno accademico",
-    "total": "Sono presenti {{total}} appelli",
+    "title": "Carriera",
     "weightedAverageLabel": "Media ponderata",
     "yourCareer": "La tua carriera"
   },

@@ -33,7 +33,7 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Access to current position to check-in bookings</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>Check in bookings</string>
+    <string>Access to current position to check-in bookings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Scan documents and pick images for assignments and ticket attachments</string>
 	<key>UIAppFonts</key>

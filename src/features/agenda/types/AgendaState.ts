@@ -4,6 +4,6 @@ export interface AgendaState {
   isRefreshing: boolean;
   shouldLoadNext: boolean;
   shouldLoadPrevious: boolean;
-  todayOffsetInWeek: number;
-  todayOffsetOverall: number;
+  dayOffsetInWeek: number;
+  dayOffsetOverall: number;
 }

@@ -19,6 +19,7 @@ export const darkTheme: Theme = {
     subHeading: lightTheme.palettes.info[400],
     title: 'white',
     prose: lightTheme.palettes.text[50],
+    disableTitle: lightTheme.palettes.gray[700],
     longProse: lightTheme.palettes.text[50],
     secondaryText: lightTheme.palettes.text[400],
     caption: lightTheme.palettes.text[500],
@@ -29,7 +30,9 @@ export const darkTheme: Theme = {
     })!,
     divider: lightTheme.palettes.gray[500],
     touchableHighlight: 'rgba(255, 255, 255, .08)',
-    agendaLecture: lightTheme.palettes.navy[100],
+    lectureCardSecondary: lightTheme.palettes.gray[300],
     tabBarInactive: lightTheme.palettes.gray[400],
+    errorCardText: lightTheme.palettes.rose[200],
+    errorCardBorder: lightTheme.palettes.rose[500],
   },
 };

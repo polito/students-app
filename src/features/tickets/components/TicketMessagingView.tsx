@@ -64,6 +64,7 @@ export const TicketMessagingView = ({
         alwaysVisible
         hideBorder
         heightProperty="minHeight"
+        // eslint-disable-next-line react-native/no-color-literals
         style={{
           backgroundColor: 'transparent',
         }}

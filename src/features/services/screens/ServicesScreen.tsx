@@ -6,25 +6,32 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
-  faBullhorn,
+  faClipboardQuestion,
   faComments,
+  faEnvelope,
   faIdCard,
   faMobileScreenButton,
+  faNewspaper,
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Grid, auto } from '@lib/ui/components/Grid';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
+import {
+  GetWebmailLink,
+  WEBMAIL_LINK_QUERY_KEY,
+  useGetUnreadEmails,
+} from '../../../core/queries/webMailHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
 
@@ -35,12 +42,14 @@ export const ServicesScreen = () => {
     emailGuideRead,
     updatePreference,
   } = usePreferencesContext();
-  const { getUnreadsCount } = usePushNotifications();
+  const { getUnreadsCount } = useNotifications();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
   const queryClient = useQueryClient();
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
+  const unreadEmailsQuery = useGetUnreadEmails();
+
   const services = useMemo(() => {
     return [
       {
@@ -51,9 +60,7 @@ export const ServicesScreen = () => {
           isOffline &&
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
-        additionalContent: unreadTickets && (
-          <Badge text={unreadTickets} style={styles.badge} />
-        ),
+        unReadCount: unreadTickets,
       },
       {
         id: 'appFeedback',
@@ -67,7 +74,7 @@ export const ServicesScreen = () => {
             subtopicId: 2001,
           },
         },
-        additionalContent: <Badge text="BETA" style={styles.badge} />,
+        additionalContent: <UnreadBadge text="BETA" style={styles.badge} />,
       },
       {
         id: 'github',
@@ -79,11 +86,12 @@ export const ServicesScreen = () => {
       {
         id: 'news',
         name: t('newsScreen.title'),
-        icon: faBullhorn,
+        icon: faNewspaper,
         disabled: isOffline,
         linkTo: {
           screen: 'News',
         },
+        unReadCount: getUnreadsCount(['services', 'news']),
       },
       {
         id: 'jobOffers',
@@ -122,15 +130,41 @@ export const ServicesScreen = () => {
           queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Bookings' },
       },
+      {
+        id: 'surveys',
+        name: t('surveysScreen.title'),
+        icon: faClipboardQuestion,
+        disabled: isOffline,
+        linkTo: { screen: 'Surveys' },
+      },
+      {
+        id: 'mail',
+        name: 'WebMail',
+        icon: faEnvelope,
+        disabled: isOffline,
+        unReadCount: unreadEmailsQuery.data
+          ? unreadEmailsQuery.data.unreadEmails
+          : 0,
+        onPress: () => {
+          queryClient
+            .fetchQuery(WEBMAIL_LINK_QUERY_KEY, GetWebmailLink, {
+              staleTime: 55 * 1000, // 55 seconds
+              cacheTime: 55 * 1000, // 55 seconds
+            })
+            .then(res => Linking.openURL(res.url ?? ''));
+        },
+      },
     ];
   }, [
     emailGuideRead,
+    getUnreadsCount,
     isOffline,
     peopleSearched?.length,
     queryClient,
     styles.badge,
     t,
     unreadTickets,
+    unreadEmailsQuery.data,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(
@@ -143,7 +177,7 @@ export const ServicesScreen = () => {
   );
 
   const updateFavorite =
-    (service: typeof services[number]) => (favorite: boolean) => {
+    (service: (typeof services)[number]) => (favorite: boolean) => {
       const newVal = favorite
         ? [...new Set([...favoriteServiceIds, service.id])]
         : favoriteServiceIds.filter(fs => fs !== service.id);

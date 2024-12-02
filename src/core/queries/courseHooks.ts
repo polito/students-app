@@ -7,10 +7,12 @@ import {
   CourseDirectoryContentInner,
   CourseFileOverview,
   CourseOverviewPreviousEditionsInner,
+  CoursePreferencesRequest,
   CourseVcOtherCoursesInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
+import { MenuAction } from '@react-native-menu/menu';
 import {
   useMutation,
   useQueries,
@@ -18,7 +20,6 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import { CourseRecentFile } from '../../features/courses/components/CourseRecentFileListItem';
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
@@ -28,6 +29,10 @@ import {
   usePreferencesContext,
 } from '../contexts/PreferencesContext';
 import { CourseOverview } from '../types/api';
+import {
+  CourseDirectoryContentWithLocations,
+  CourseFileOverviewWithLocation,
+} from '../types/files';
 import { useGetExams } from './examHooks';
 
 export const COURSES_QUERY_KEY = ['courses'];
@@ -58,7 +63,7 @@ const setupCourses = (
       const usedColors = Object.values(coursePreferences)
         .map(cp => cp.color)
         .filter(notNullish);
-      let colorData: typeof courseColors[0] | undefined;
+      let colorData: (typeof courseColors)[0] | undefined;
       for (const currentColor of courseColors) {
         if (!usedColors.includes(currentColor.color)) {
           colorData = currentColor;
@@ -103,18 +108,19 @@ export const useGetCourses = () => {
 
 export const CourseSectionEnum = {
   Overview: 'overview',
+  Editions: 'editions',
   Guide: 'guide',
   Exams: 'exams',
   Notices: 'notices',
   Files: 'files',
   Assignments: 'assignments',
 } as const;
-export type CourseSectionEnum =
-  typeof CourseSectionEnum[keyof typeof CourseSectionEnum];
+export type CourseQueryEnum =
+  (typeof CourseSectionEnum)[keyof typeof CourseSectionEnum];
 
 export const getCourseKey = (
   courseId: number,
-  section: CourseSectionEnum = CourseSectionEnum.Overview,
+  section: CourseQueryEnum = CourseSectionEnum.Overview,
 ) => [COURSE_QUERY_PREFIX, courseId, section];
 
 export const useGetCourse = (courseId: number) => {
@@ -141,6 +147,44 @@ export const useGetCourse = (courseId: number) => {
   );
 };
 
+export const useGetCourseEditions = (courseId: number) => {
+  const coursesQuery = useGetCourses();
+
+  return useQuery(
+    getCourseKey(courseId, CourseSectionEnum.Editions),
+    () => {
+      const course = coursesQuery.data?.find(
+        c =>
+          c.id === courseId || c.previousEditions.some(e => e.id === courseId),
+      );
+      const editions: MenuAction[] = [];
+
+      if (!course || !course.previousEditions.length) return editions;
+
+      editions.push(
+        {
+          id: `${course.id}`,
+          title: course.year,
+          state: courseId === course?.id ? 'on' : undefined,
+        },
+        ...course.previousEditions.map(
+          e =>
+            ({
+              id: `${e.id}`,
+              title: e.year,
+              state: courseId === e.id ? 'on' : undefined,
+            } as MenuAction),
+        ),
+      );
+
+      return editions;
+    },
+    {
+      enabled: !!coursesQuery.data,
+    },
+  );
+};
+
 const courseFilesStaleTime = 60000; // 1 minute
 
 export const useGetCourseFiles = (courseId: number) => {
@@ -152,7 +196,8 @@ export const useGetCourseFiles = (courseId: number) => {
     () => {
       return coursesClient
         .getCourseFiles({ courseId: courseId })
-        .then(pluckData);
+        .then(pluckData)
+        .then(computeFileLocations);
     },
     {
       staleTime: courseFilesStaleTime,
@@ -192,24 +237,57 @@ export const useGetCourseFilesRecent = (courseId: number) => {
   };
 };
 
+const isFile = (
+  item: CourseDirectoryContentInner,
+): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
+
+/**
+ * Assigns a location to each file
+ */
+const computeFileLocations = (
+  directoryContent: CourseDirectoryContentInner[],
+  location: string = '/',
+): CourseDirectoryContentWithLocations[] => {
+  const result: CourseDirectoryContentWithLocations[] = [];
+  directoryContent?.forEach(item => {
+    if (isFile(item)) {
+      result.push({ ...item, location });
+    } else {
+      result.push({
+        ...item,
+        files: computeFileLocations(
+          item.files,
+          location.length === 1
+            ? location + item.name
+            : location + '/' + item.name,
+        ),
+      });
+    }
+  });
+  return result;
+};
+
 /**
  * Extract a flat array of files contained into the given directory tree
  */
 const flattenFiles = (
-  directoryContent: CourseDirectoryContentInner[] | CourseFileOverview[],
-  location: string = '/',
-): CourseRecentFile[] => {
-  const result: CourseRecentFile[] = [];
+  directoryContent:
+    | CourseDirectoryContentWithLocations[]
+    | CourseFileOverviewWithLocation[],
+): CourseFileOverviewWithLocation[] => {
+  const result: CourseFileOverviewWithLocation[] = [];
   directoryContent?.forEach(item => {
-    if (item.type === 'file') {
-      result.push({ ...item, location });
+    if ((item as CourseDirectoryContentWithLocations).type === 'file') {
+      result.push(item as CourseFileOverviewWithLocation);
     } else {
       result.push(
         ...flattenFiles(
-          (item as CourseDirectory).files,
-          location.length === 1
-            ? location + item.name
-            : location + '/' + item.name,
+          (
+            item as Extract<
+              CourseDirectoryContentWithLocations,
+              { type: 'directory' }
+            >
+          ).files,
         ),
       );
     }
@@ -221,8 +299,8 @@ const flattenFiles = (
  * Extract files from folders and sort them by decreasing createdAt
  */
 const sortRecentFiles = (
-  directoryContent: CourseDirectoryContentInner[],
-): CourseRecentFile[] => {
+  directoryContent: CourseDirectoryContentWithLocations[],
+): CourseFileOverviewWithLocation[] => {
   const flatFiles = flattenFiles(directoryContent);
   return flatFiles.sort(
     (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
@@ -455,12 +533,29 @@ export const useGetCourseExams = (
   return useQuery(
     getCourseKey(courseId, CourseSectionEnum.Exams),
     () =>
-      (exams ?? []).filter(exam => {
+      exams!.filter(exam => {
         return exam.courseShortcode === courseShortcode;
       }),
     {
       enabled: courseShortcode !== undefined && exams !== undefined,
-      initialData: [],
+    },
+  );
+};
+
+export const useUpdateCoursePreferences = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (preferences: CoursePreferencesRequest) =>
+      coursesClient.updateCoursePreferences({
+        courseId,
+        coursePreferencesRequest: preferences,
+      }),
+    {
+      onSuccess() {
+        return queryClient.invalidateQueries(getCourseKey(courseId));
+      },
     },
   );
 };

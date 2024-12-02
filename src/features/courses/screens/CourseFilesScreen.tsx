@@ -12,12 +12,13 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePushNotifications } from '../../../core/hooks/usePushNotifications';
+import { useNotifications } from '../../../core/hooks/useNotifications';
+import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { useCourseContext } from '../contexts/CourseContext';
-import { FilesCacheContext } from '../contexts/FilesCacheContext';
+import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
 import { CourseTabsParamList } from '../navigation/CourseNavigator';
 
 type Props = MaterialTopTabScreenProps<
@@ -28,18 +29,24 @@ type Props = MaterialTopTabScreenProps<
 export const CourseFilesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const { refresh } = useContext(FilesCacheContext);
+  const { refresh } = useContext(CourseFilesCacheContext);
   const courseId = useCourseContext();
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { resetUnread } = usePushNotifications();
+  const { clearNotificationScope } = useNotifications();
+
+  useOnLeaveScreen(() => {
+    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+  });
 
   useFocusEffect(
     useCallback(() => {
-      resetUnread(['teaching', 'courses', courseId.toString(), 'files']);
       refresh();
-    }, [courseId, refresh, resetUnread]),
+    }, [refresh]),
   );
+
+  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
+  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
   return (
     <>
@@ -50,12 +57,14 @@ export const CourseFilesScreen = ({ navigation }: Props) => {
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
         initialNumToRender={15}
+        maxToRenderPerBatch={15}
+        windowSize={4}
         renderItem={({ item }) => {
           return (
             <CourseRecentFileListItem
               item={item}
-              onSwipeStart={() => setScrollEnabled(false)}
-              onSwipeEnd={() => setScrollEnabled(true)}
+              onSwipeStart={onSwipeStart}
+              onSwipeEnd={onSwipeEnd}
             />
           );
         }}

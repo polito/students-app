@@ -130,7 +130,14 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         await client.invalidateQueries();
       }
       const { message } = await error.response.json();
-      Alert.alert(t('common.error'), message ?? t('common.somethingWentWrong'));
+
+      // The login alert is handled in the login screen
+      if (!error.response.url.includes('/login'))
+        Alert.alert(
+          t('common.error'),
+          message ?? t('common.somethingWentWrong'),
+        );
+
       if (!isEnvProduction) {
         console.error(message);
         console.error(JSON.stringify(error));
@@ -161,7 +168,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         },
       },
     });
-  }, [isEnvProduction, t]);
+  }, [t]);
 
   return (
     <ApiContext.Provider value={apiContext}>

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { DimensionValue } from 'react-native';
 
 import { DateTime } from 'luxon';
 
@@ -8,10 +9,7 @@ import {
   EventRenderer,
   ICalendarEventBase,
 } from '../../types/Calendar';
-import {
-  getRelativeTopInDay,
-  getStyleForOverlappingEvent,
-} from '../../utils/calendar';
+import { getRelativeTopInDay } from '../../utils/calendar';
 import { DefaultCalendarEventRenderer } from './DefaultCalendarEventRenderer';
 
 interface CalendarEventProps<T extends ICalendarEventBase> {
@@ -19,8 +17,6 @@ interface CalendarEventProps<T extends ICalendarEventBase> {
   onPressEvent?: (event: T) => void;
   eventCellStyle?: EventCellStyle<T>;
   showTime: boolean;
-  eventCount?: number;
-  eventOrder?: number;
   overlapOffset?: number;
   renderEvent?: EventRenderer<T>;
   ampm: boolean;
@@ -34,8 +30,6 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
   onPressEvent,
   eventCellStyle,
   showTime,
-  eventCount = 1,
-  eventOrder = 0,
   renderEvent,
   ampm,
   hours,
@@ -43,7 +37,10 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
   showAllDayEventCell = false,
 }: CalendarEventProps<T>) => {
   const getEventCellPositionStyle = useCallback(
-    (start: DateTime, end: DateTime) => {
+    (
+      start: DateTime,
+      end: DateTime,
+    ): { height: DimensionValue; top: DimensionValue } => {
       const dayMinutes = hours.length * 60;
       const minutesInDay = showAllDayEventCell ? dayMinutes + 60 : dayMinutes;
       if (showAllDayEventCell && event.start.hour === 0) {
@@ -76,10 +73,10 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
     onPressEvent,
     injectedStyles: [
       getEventCellPositionStyle(event.start, event.end),
-      getStyleForOverlappingEvent(eventOrder, eventCount),
+      { start: `${event.left!}%`, end: `${event.width! + event.left!}%` },
       {
         position: 'absolute',
-        width: `${100 / eventCount}%`,
+        width: `${event.width!}%`,
       },
     ],
   });

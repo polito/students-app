@@ -8,13 +8,16 @@ export const Switch = ({ children, ...rest }: SwitchProps) => {
     <RNSwitch
       trackColor={{
         true: Platform.select({
-          ios: palettes.secondary[500],
-          android: palettes.secondary[dark ? 700 : 300],
+          ios: palettes.primary[dark ? 400 : 500],
+          android: palettes.primary[400],
         }),
         false:
           Platform.OS === 'android' && !dark ? palettes.muted[200] : undefined,
       }}
-      thumbColor={Platform.select({ android: palettes.secondary[500] })}
+      thumbColor={Platform.select({
+        android: palettes.primary[500],
+      })}
+      style={{ opacity: 1 }}
       {...rest}
     >
       {children}

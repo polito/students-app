@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
+import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
@@ -22,6 +23,12 @@ import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
 import { ContactsScreen } from '../../people/screens/ContactsScreen';
+import {
+  PlacesNavigator,
+  PlacesStackParamList,
+} from '../../places/components/PlacesNavigator';
+import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
+import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
@@ -51,7 +58,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
   TicketList: {
-    statuses: Array<typeof TicketStatus[keyof typeof TicketStatus]>;
+    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
   };
   JobOffers: undefined;
   JobOffer: {
@@ -80,6 +87,9 @@ export type ServiceStackParamList = OfferingStackParamList & {
   };
   Guides: undefined;
   Guide: { id: string };
+  Surveys: undefined;
+  SurveyList: { isCompiled: boolean };
+  PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -251,6 +261,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: '',
           headerLargeTitle: false,
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
@@ -309,6 +320,31 @@ export const ServicesNavigator = () => {
           headerTitle: t('guideScreen.title'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="Surveys"
+        component={SurveysScreen}
+        options={{
+          headerTitle: t('surveysScreen.title'),
+          headerLargeTitle: false,
+        }}
+      />
+      <Stack.Screen
+        name="SurveyList"
+        component={SurveyListScreen}
+        options={{
+          headerTitle: t('surveysScreen.compiledTitle'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="PlacesAgendaStack"
+        component={PlacesNavigator}
+        options={{
+          title: t('placeScreen.title'),
+          headerShown: false,
         }}
       />
       {SharedScreens(Stack as any)}

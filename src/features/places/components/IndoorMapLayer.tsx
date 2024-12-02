@@ -6,7 +6,7 @@ import { RasterLayer, RasterSource } from '@rnmapbox/maps';
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM } from '../constants';
 
 export interface IndoorMapLayerProps {
-  floorId?: string | null;
+  floorId?: string;
 }
 
 export const IndoorMapLayer = ({ floorId }: IndoorMapLayerProps) => {

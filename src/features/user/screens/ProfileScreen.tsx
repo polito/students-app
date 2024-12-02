@@ -7,6 +7,7 @@ import {
   faAngleDown,
   faBell,
   faCog,
+  faMessage,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -18,27 +19,26 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Student } from '@polito/api-client';
-import {
-  MenuAction,
-  MenuView,
-  NativeActionEvent,
-} from '@react-native-menu/menu';
+import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_ANDROID } from '../../../core/constants';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
+import { CareerStatus } from '../components/CareerStatus';
 import { UserStackParamList } from '../components/UserNavigator';
 
 interface Props {
@@ -85,7 +85,7 @@ const HeaderRightDropdown = ({
         canSwitchCareer ? t('common.switchCareerLabel') : ''
       }`}
     >
-      <MenuView actions={actions} onPressAction={onPressAction}>
+      <StatefulMenuView actions={actions} onPressAction={onPressAction}>
         <Row>
           <Text variant="link" style={{ marginRight: 5 }}>
             {username}
@@ -94,7 +94,7 @@ const HeaderRightDropdown = ({
             <Icon icon={faAngleDown} color={palettes.primary[500]} />
           )}
         </Row>
-      </MenuView>
+      </StatefulMenuView>
     </View>
   );
 };
@@ -106,6 +106,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
   const queryClient = useQueryClient();
+  const { getUnreadsCount } = useNotifications();
 
   const styles = useStylesheet(createStyles);
 
@@ -136,17 +137,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
       refreshControl={<RefreshControl queries={[studentQuery]} />}
     >
       <SafeAreaView>
-        <Section style={styles.header}>
-          <Text weight="bold" variant="title" style={styles.title}>
-            {student?.firstName} {student?.lastName}
-          </Text>
-          <Text variant="secondaryText">
-            {t('profileScreen.careerStatus')}{' '}
-            {t(
-              `profileScreen.careerStatusEnum.${student?.status}`,
-            ).toLowerCase()}
-          </Text>
-        </Section>
         <View
           accessible={true}
           accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
@@ -156,8 +146,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
           } ${student?.lastName}`}
         >
           <Section accessible={false}>
-            <SectionHeader title={t('profileScreen.smartCard')} />
-            <Col ph={5} pv={2}>
+            <Col ph={5} pt={2}>
               <FastImage
                 style={styles.smartCard}
                 source={{ uri: student?.smartCardPicture }}
@@ -168,12 +157,15 @@ export const ProfileScreen = ({ navigation }: Props) => {
         </View>
         <Section accessible={false}>
           <SectionHeader
-            title={student?.degreeLevel ?? t('profileScreen.course')}
+            title={t('common.career')}
+            trailingItem={
+              student?.status && <CareerStatus status={student?.status} />
+            }
           />
           <OverviewList>
             <ListItem
               title={student?.degreeName ?? ''}
-              subtitle={t('profileScreen.enrollmentYear', { enrollmentYear })}
+              subtitle={student?.degreeLevel + ' - ' + enrollmentYear}
               linkTo={{
                 screen: 'Degree',
                 params: {
@@ -185,15 +177,21 @@ export const ProfileScreen = ({ navigation }: Props) => {
           </OverviewList>
           <OverviewList indented>
             <ListItem
+              title={t('notificationsScreen.title')}
+              leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+              linkTo="Notifications"
+            />
+            <ListItem
               title={t('profileScreen.settings')}
               leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
               linkTo="Settings"
             />
             <ListItem
               title={t('messagesScreen.title')}
-              leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+              leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}
+              unread={!!getUnreadsCount(['messages'])}
             />
           </OverviewList>
           <CtaButton

@@ -23,12 +23,12 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView } from '@react-native-menu/menu';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
@@ -165,7 +165,7 @@ const VisualizationListItem = () => {
   ];
 
   return (
-    <MenuView
+    <StatefulMenuView
       actions={themeColors.map(cc => {
         return {
           id: cc.id,
@@ -190,7 +190,7 @@ const VisualizationListItem = () => {
         )}. ${t('settingsScreen.openThemeMenu')}`}
         leadingItem={<ThemeIcon />}
       />
-    </MenuView>
+    </StatefulMenuView>
   );
 };
 
@@ -206,7 +206,7 @@ const LanguageListItem = () => {
     return ['it', 'en'] as const;
   }, [isDisabled]);
   return (
-    <MenuView
+    <StatefulMenuView
       actions={choices.map(cc => {
         return {
           id: cc,
@@ -233,10 +233,12 @@ const LanguageListItem = () => {
           `common.${language}`,
         )}. ${t('settingsScreen.openLanguageMenu')}`}
       />
-    </MenuView>
+    </StatefulMenuView>
   );
 };
 
+// TODO temporarily removed
+// eslint-disable-next-line unused-imports/no-unused-vars
 const Notifications = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();

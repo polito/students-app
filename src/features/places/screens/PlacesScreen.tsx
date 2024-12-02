@@ -16,7 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { faClock } from '@fortawesome/free-regular-svg-icons';
+import { faClock, faMap } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
   faBookReader,
@@ -26,7 +26,9 @@ import {
   faElevator,
   faEllipsis,
   faExpand,
+  faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { Divider } from '@lib/ui/components/Divider';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
@@ -34,6 +36,7 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { PillButton } from '@lib/ui/components/PillButton';
 import { PillIconButton } from '@lib/ui/components/PillIconButton';
 import { Row } from '@lib/ui/components/Row';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { Text } from '@lib/ui/components/Text';
 import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
@@ -41,7 +44,6 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuView } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
@@ -54,7 +56,6 @@ import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetPlaceCategory,
   useGetPlaceSubCategory,
-  useGetSites,
 } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { darkTheme } from '../../../core/themes/dark';
@@ -67,8 +68,9 @@ import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
-import { PlaceOverviewWithMetadata, isPlace } from '../types';
+import { SearchPlace, isPlace } from '../types';
 import { formatPlaceCategory } from '../utils/category';
 import { useFormatAgendaItem } from '../utils/formatAgendaItem';
 
@@ -76,21 +78,20 @@ type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
   const { categoryId, subCategoryId, bounds } = route.params ?? {};
+  const styles = useStylesheet(createStyles);
+  const { colors, spacing, fontSizes } = useTheme();
+  const { t } = useTranslation();
   const placeCategory = useGetPlaceCategory(categoryId);
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
-  const { t } = useTranslation();
-  const styles = useStylesheet(createStyles);
-  const { spacing, fontSizes } = useTheme();
   const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
   const headerHeight = useHeaderHeight();
   const [tabsHeight, setTabsHeight] = useState(46);
-  const { data: sites } = useGetSites();
   const campus = useGetCurrentCampus();
-  const { updatePreference, placesSearched } = usePreferencesContext();
+  const { placesSearched } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const [search, setSearch] = useState('');
-  const [floorId, setFloorId] = useState<string | null>();
+  const [floorId, setFloorId] = useState<string | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const formatAgendaItem = useFormatAgendaItem();
   const bottomSheetPosition = useSharedValue(0);
@@ -98,26 +99,19 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     Dimensions.get('window').height,
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const updateDebouncedSearch = useCallback(
-    debounce(
-      (newSearch: string) => setDebouncedSearch(newSearch.trim().toLowerCase()),
-      200,
-      { leading: true },
-    ),
-    [],
-  );
-
-  useEffect(() => {
-    updateDebouncedSearch(search);
-  }, [search]);
-
-  const { places, isLoading: isLoadingPlaces } = useSearchPlaces({
+  const {
+    data: searchResult,
+    isLoading: isLoadingPlaces,
+    siteIndexed,
+  } = useSearchPlaces({
+    siteId: campus?.id,
     search: debouncedSearch,
     floorId,
     categoryId,
     subCategoryId,
   });
+
+  const places = useGetPlacesFromSearchResult(searchResult);
 
   const categoryFilterName = useMemo(
     () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
@@ -148,11 +142,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   }, [cameraRef, campus]);
 
   useEffect(() => {
-    if (!campus) {
-      if (sites?.data?.length) {
-        updatePreference('campusId', sites?.data[0].id);
-      }
-    } else {
+    if (campus) {
       if (!floorId && campus.floors?.length) {
         setFloorId(
           campus.floors.find(f => f.id === 'XPTE')?.id ??
@@ -162,16 +152,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       }
       centerToCurrentCampus();
     }
-  }, [campus, sites, centerToCurrentCampus, floorId, updatePreference]);
+  }, [campus, centerToCurrentCampus, floorId]);
 
   const displayFloorId = useMemo(() => {
     if (debouncedSearch) {
       const floorIds = new Set(
-        places
-          ?.filter(p => isPlace(p))
-          .map(p => (p as PlaceOverviewWithMetadata).floor.id),
+        places.filter(p => isPlace(p)).map(p => p.floor.id),
       );
-      return floorIds.size === 1 ? [...floorIds][0] : undefined;
+      return floorIds.size === 1 ? [...floorIds][0] : null;
     }
     return floorId;
   }, [debouncedSearch, floorId, places]);
@@ -217,7 +205,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       },
       mapContent: (
         <>
-          {displayFloorId !== undefined && (
+          {displayFloorId != null && (
             <IndoorMapLayer floorId={displayFloorId} />
           )}
           <MarkersLayer
@@ -230,6 +218,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         </>
       ),
     });
+    // Including `navigation` here causes a rerender loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     bounds,
     campus,
@@ -238,7 +228,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     debouncedSearch,
     displayFloorId,
     headerHeight,
-    places,
+    searchResult,
     safeAreaInsets.top,
     spacing,
     subCategoryId,
@@ -263,12 +253,20 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     };
   });
 
-  const listPlaces = useMemo(() => {
-    if (!search && !categoryId && !subCategoryId) {
-      return places?.filter(p => isPlace(p) && p.room.name != null);
+  const listPlaces = useMemo((): SearchPlace[] => {
+    if (!debouncedSearch && !categoryId && !subCategoryId) {
+      return places.filter(p => isPlace(p) && p.room.name != null);
     }
     return places;
-  }, [categoryId, search, places, subCategoryId]);
+  }, [categoryId, debouncedSearch, places, subCategoryId]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const triggerSearch = useCallback(
+    debounce(() => setDebouncedSearch(search.trim().toLowerCase()), 100, {
+      leading: true,
+    }),
+    [search],
+  );
 
   const floorSelectorButton = (
     <TranslucentCard>
@@ -284,6 +282,37 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       </TouchableOpacity>
     </TranslucentCard>
   );
+
+  if (!siteIndexed) {
+    return (
+      <Col flexGrow={1} align="center" justify="center">
+        <TranslucentCard ph={6} pv={10}>
+          <Col align="center" gap={1}>
+            <Icon
+              icon={faMap}
+              color={colors.secondaryText}
+              size={fontSizes['3xl']}
+              style={styles.loadingIcon}
+            />
+
+            <Text
+              style={{ textAlign: 'center', color: colors.secondaryText }}
+              variant="heading"
+            >
+              {t('placesScreen.unwrappingMap')}
+            </Text>
+
+            <Text
+              style={{ textAlign: 'center', fontSize: fontSizes.xs }}
+              variant="secondaryText"
+            >
+              {t('common.mightTakeAWhile')}
+            </Text>
+          </Col>
+        </TranslucentCard>
+      </Col>
+    );
+  }
 
   return (
     <View
@@ -368,7 +397,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       )}
 
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
-        <Row gap={3} justify="space-between">
+        <Row gap={3} align="stretch" justify="space-between">
           <TranslucentCard>
             <IconButton
               icon={faCrosshairs}
@@ -387,7 +416,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
           {campus?.floors?.length ? (
             !debouncedSearch ? (
-              <MenuView
+              <StatefulMenuView
                 onPressAction={({
                   nativeEvent: { event: selectedFloorId },
                 }) => {
@@ -402,7 +431,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   }))}
               >
                 {floorSelectorButton}
-              </MenuView>
+              </StatefulMenuView>
             ) : displayFloorId ? (
               floorSelectorButton
             ) : (
@@ -436,6 +465,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         animatedPosition={bottomSheetPosition}
         search={search}
         onSearchChange={setSearch}
+        onTriggerSearch={triggerSearch}
         searchFieldLabel={[
           t('common.search'),
           categoryFilterName,
@@ -465,7 +495,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                 : { screen: 'Building', params: { buildingId: p.id } },
             })) ?? [],
           ListEmptyComponent: (
-            <EmptyState message={t('placesScreen.noPlacesFound')} />
+            <EmptyState
+              message={t('placesScreen.noPlacesFound')}
+              icon={faMagnifyingGlassLocation}
+            />
           ),
         }}
       />
@@ -490,8 +523,11 @@ const createStyles = ({ spacing }: Theme) =>
     divider: {
       alignSelf: 'stretch',
     },
+    loadingIcon: {
+      marginBottom: spacing[2],
+    },
     icon: {
+      alignItems: 'center',
       paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2.5],
     },
   });
