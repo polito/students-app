@@ -11,6 +11,7 @@ import {
 import {
   faAngleDown,
   faBriefcase,
+  faChartLine,
   faFlaskVial,
   faMicroscope,
   faPersonChalkboard,
@@ -214,8 +215,24 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     leadingItem={<Icon size={20} icon={faPersonChalkboard} />}
                   />
                 )}
+                {offeringCourse && (
+                  <ListItem
+                    title={t('degreeCourseScreen.statistics')}
+                    titleStyle={styles.title}
+                    titleProps={listTitleProps}
+                    subtitle={t('degreeCourseScreen.statistics')}
+                    linkTo={{
+                      screen: 'CourseStatistics',
+                      params: {
+                        courseShortcode: offeringCourse.shortcode,
+                      },
+                    }}
+                    leadingItem={<Icon size={20} icon={faChartLine} />}
+                  />
+                )}
               </OverviewList>
             )}
+
           <Section style={styles.staffSection}>
             <SectionHeader
               title={t('degreeCourseScreen.staff')}
