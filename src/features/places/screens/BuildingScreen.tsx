@@ -33,7 +33,6 @@ import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
 
@@ -54,10 +53,9 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   } = useGetBuilding(buildingId);
   const siteId = building?.siteId;
   const site = useGetSite(siteId);
-  const { data: searchResult, isLoading: isLoadingPlaces } = useSearchPlaces({
+  const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
   });
-  const places = useGetPlacesFromSearchResult(searchResult);
   const isLoading = isLoadingBuilding || isLoadingPlaces;
   const placeName = building?.name ?? t('common.untitled');
 
