@@ -287,6 +287,8 @@
     "visualization": "Visualizzazione",
     "year": "anno",
     "yesterday": "Ieri",
+    "enabled": "Abilitato",
+    "disabled": "Disabilitato",
     "fromTime" : "dalle",
     "toTime" : "alle",
     "document" : "Allegato",

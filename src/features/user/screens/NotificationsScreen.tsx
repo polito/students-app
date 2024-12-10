@@ -45,6 +45,10 @@ export const NotificationsScreen = () => {
             />
             <OverviewList indented loading={isLoading}>
               <SwitchListItem
+                accessibilityLabel={[
+                  t('common.ticket_plural'),
+                  data?.tickets ? t('common.enabled') : t('common.disabled'),
+                ].join(', ')}
                 leadingItem={<Icon icon={faComments} size={fontSizes['2xl']} />}
                 title={t('common.ticket_plural')}
                 disabled={isOffline}
@@ -57,6 +61,11 @@ export const NotificationsScreen = () => {
                 }}
               />
               <SwitchListItem
+                accessible
+                accessibilityLabel={[
+                  t('common.booking_plural'),
+                  data?.bookings ? t('common.enabled') : t('common.disabled'),
+                ].join(', ')}
                 leadingItem={
                   <Icon icon={faPersonCirclePlus} size={fontSizes['2xl']} />
                 }
@@ -68,6 +77,73 @@ export const NotificationsScreen = () => {
                     notificationType: 'bookings',
                     targetValue: !data?.bookings,
                   });
+                }}
+              />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader
+              title={t('notificationsScreen.perCourseTitle')}
+              trailingItem={<UnreadBadge text={t('common.comingSoon')} />}
+            />
+            <OverviewList indented loading={isLoading}>
+              <SwitchListItem
+                accessible
+                accessibilityLabel={[
+                  t('common.notice_plural'),
+                  t('coursePreferencesScreen.noticesSubtitle'),
+                  t('common.comingSoon'),
+                ].join(', ')}
+                title={t('common.notice_plural')}
+                subtitle={t('coursePreferencesScreen.noticesSubtitle')}
+                disabled={true}
+                value={true}
+                leadingItem={<Icon icon={faBullhorn} size={fontSizes['2xl']} />}
+                onChange={() => {
+                  /* updatePreference({
+                    notificationType: 'notices',
+                    targetValue: !data?.notices,
+                  });*/
+                }}
+              />
+              <SwitchListItem
+                accessible
+                accessibilityLabel={[
+                  t('common.file_plural'),
+                  t('coursePreferencesScreen.filesSubtitle'),
+                  t('common.comingSoon'),
+                ].join(', ')}
+                title={t('common.file_plural')}
+                subtitle={t('coursePreferencesScreen.filesSubtitle')}
+                disabled={true}
+                value={true}
+                leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
+                onChange={() => {
+                  /* updatePreference({
+                    notificationType: 'files',
+                    targetValue: !data?.files,
+                  });*/
+                }}
+              />
+              <SwitchListItem
+                accessible
+                accessibilityLabel={[
+                  t('common.lecture_plural'),
+                  t('coursePreferencesScreen.lecturesSubtitle'),
+                  t('common.comingSoon'),
+                ].join(', ')}
+                title={t('common.lecture_plural')}
+                subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
+                disabled={true}
+                value={true}
+                leadingItem={
+                  <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
+                }
+                onChange={() => {
+                  /* updatePreference({
+                    notificationType: 'lectures',
+                    targetValue: !data?.lectures,
+                  });*/
                 }}
               />
             </OverviewList>
