@@ -179,6 +179,13 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           />
           <OverviewList>
             <ListItem
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel={[
+                student?.degreeName ?? '',
+                student?.degreeLevel,
+                enrollmentYear,
+              ].join(', ')}
               title={student?.degreeName ?? ''}
               subtitle={student?.degreeLevel + ' - ' + enrollmentYear}
               linkTo={{
