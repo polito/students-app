@@ -89,9 +89,11 @@ export const NotificationsScreen = () => {
             <OverviewList indented loading={isLoading}>
               <SwitchListItem
                 accessible
+                accessibilityRole="button"
                 accessibilityLabel={[
                   t('common.notice_plural'),
                   t('coursePreferencesScreen.noticesSubtitle'),
+                  t('common.enabled'),
                   t('common.comingSoon'),
                 ].join(', ')}
                 title={t('common.notice_plural')}
@@ -108,9 +110,11 @@ export const NotificationsScreen = () => {
               />
               <SwitchListItem
                 accessible
+                accessibilityRole="button"
                 accessibilityLabel={[
                   t('common.file_plural'),
                   t('coursePreferencesScreen.filesSubtitle'),
+                  t('common.enabled'),
                   t('common.comingSoon'),
                 ].join(', ')}
                 title={t('common.file_plural')}
@@ -127,9 +131,11 @@ export const NotificationsScreen = () => {
               />
               <SwitchListItem
                 accessible
+                accessibilityRole="button"
                 accessibilityLabel={[
                   t('common.lecture_plural'),
                   t('coursePreferencesScreen.lecturesSubtitle'),
+                  t('common.enabled'),
                   t('common.comingSoon'),
                 ].join(', ')}
                 title={t('common.lecture_plural')}
