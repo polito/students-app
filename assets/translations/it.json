@@ -246,7 +246,9 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "enabled": "Abilitato",
+    "disabled": "Disabilitato"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
