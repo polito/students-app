@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { Text } from '@lib/ui/components/Text';
@@ -25,6 +25,13 @@ export const ChatMessage = ({
   const { t } = useTranslation();
   const hasAttachment = message.attachments?.length > 0;
 
+  const messageFirstPart = !message.agentId
+    ? t('ticketScreen.incomingMessage')
+    : [t('ticketScreen.outgoingMessage'), message.agentId].join(', ');
+  const accessibilityMessageText = [messageFirstPart, message.message].join(
+    ', ',
+  );
+
   const Attachments = () => {
     if (hasAttachment) {
       return (
@@ -46,19 +53,26 @@ export const ChatMessage = ({
   };
 
   return (
-    <ChatBubble
-      direction={received ? 'incoming' : 'outgoing'}
-      time={message.createdAt}
-      style={styles.bubbleContainer}
+    <Pressable
+      accessibilityRole="text"
+      accessibilityLabel={accessibilityMessageText}
     >
-      {message.agentId && (
-        <Text style={styles.agentText}>
-          {t('common.agent')} {message.agentId}
-        </Text>
-      )}
-      <TextMessage message={message.message?.trim() ?? ''} />
-      <Attachments />
-    </ChatBubble>
+      <ChatBubble
+        accessibilityRole="text"
+        accessibilityLabel={accessibilityMessageText}
+        direction={received ? 'incoming' : 'outgoing'}
+        time={message.createdAt}
+        style={styles.bubbleContainer}
+      >
+        {message.agentId && (
+          <Text style={styles.agentText}>
+            {t('common.agent')} {message.agentId}
+          </Text>
+        )}
+        <TextMessage message={message.message?.trim() ?? ''} />
+        <Attachments />
+      </ChatBubble>
+    </Pressable>
   );
 };
 

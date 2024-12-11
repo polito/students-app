@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -32,6 +33,7 @@ interface Props extends PropsWithChildren<TouchableCardProps> {
   linkTo?: To<any>;
   onPress?: () => void;
   unReadCount?: number | string;
+  accessibilityLabel?: string;
 }
 
 export const ServiceCard = ({
@@ -45,14 +47,17 @@ export const ServiceCard = ({
   onPress,
   children,
   unReadCount = 0,
+  accessibilityLabel = '',
   ...props
 }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
   const { dark, colors, palettes } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <TouchableCard
+      accessibilityRole="button"
       onPress={
         linkTo ? () => navigation.navigate(resolveLinkTo(linkTo)) : onPress
       }
@@ -60,15 +65,20 @@ export const ServiceCard = ({
       disabled={disabled}
       style={[styles.touchable, props.style]}
       cardStyle={[styles.card, props.cardStyle]}
+      accessibilityLabel={accessibilityLabel}
     >
-      <Row justify="space-between" align="flex-start">
+      <Row accessibilityRole="button" justify="space-between" align="center">
         <Icon
           icon={icon}
           size={28}
           color={iconColor ?? palettes.primary[dark ? 400 : 500]}
         />
-
         <IconButton
+          accessibilityLabel={
+            favorite
+              ? t('servicesScreen.favoriteActive')
+              : t('servicesScreen.favoriteInactive')
+          }
           icon={favorite ? faStarFilled : faStar}
           color={favorite ? palettes.orange[400] : colors.secondaryText}
           onPress={() => onFavoriteChange(!favorite)}
@@ -115,6 +125,6 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       flexShrink: 1,
     },
     favButton: {
-      padding: spacing[1],
+      padding: spacing[2],
     },
   });

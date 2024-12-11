@@ -88,7 +88,10 @@ export const getBookingStyle = (
   };
 };
 
-export const getBookingSlotStatus = (item: BookingCalendarEvent) => {
+export const getBookingSlotStatus = (
+  item: BookingCalendarEvent,
+  defaultMessage = 'bookingScreen.bookingStatus.notAvailable',
+) => {
   const isBooked = item.isBooked;
   const isFull = item.bookedPlaces === item.places;
   const canBeBooked = item.canBeBooked;
@@ -101,7 +104,7 @@ export const getBookingSlotStatus = (item: BookingCalendarEvent) => {
   if (canBeBooked) {
     return 'bookingScreen.bookingStatus.available';
   }
-  return 'bookingScreen.bookingStatus.notAvailable';
+  return defaultMessage;
 };
 
 export const canBeCancelled = (booking?: Booking) => {

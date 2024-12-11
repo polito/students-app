@@ -1,5 +1,6 @@
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 
 import {
   faCalendar,
@@ -47,6 +48,49 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   const startHour = item.start.toFormat('HH:mm');
   const endHour = item.end.toFormat('HH:mm');
   const day = item.start.toFormat('d MMMM');
+
+  const findAccessibilityMessage = useCallback(() => {
+    if (
+      !canBeBooked &&
+      inRange(
+        DateTime.now().valueOf(),
+        item.bookingStartsAt.valueOf(),
+        item.bookingEndsAt.valueOf(),
+      ) &&
+      !isFull
+    ) {
+      return item.feedback;
+    }
+    if (isFull) {
+      return t('bookingSeatScreen.noSeatsAvailable');
+    }
+    if (bookingNotYetOpen) {
+      return [
+        t('bookingSeatScreen.slotBookableFrom'),
+        item?.bookingStartsAt
+          ? DateTime.fromJSDate(item?.bookingStartsAt, {
+              zone: IANAZone.create('Europe/Rome'),
+            }).toFormat('d MMMM yyyy')
+          : ' - ',
+      ].join(' ');
+    }
+  }, [
+    bookingNotYetOpen,
+    canBeBooked,
+    isFull,
+    item.bookingEndsAt,
+    item.bookingStartsAt,
+    item.feedback,
+    t,
+  ]);
+
+  useEffect(() => {
+    const message = findAccessibilityMessage();
+    if (!message) return;
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(message);
+    }, 500);
+  }, []);
 
   const NotBookableMessage = () => {
     if (

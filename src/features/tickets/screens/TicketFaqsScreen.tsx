@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Alert,
   Keyboard,
   SafeAreaView,
@@ -32,6 +33,7 @@ import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -40,6 +42,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketFaqs'>;
 
 export const TicketFaqsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const { fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [search, setSearch] = useState('');
@@ -48,8 +51,20 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
   const ticketFaqs =
     ticketFaqsQuery.data?.sort((a, b) => (a.question > b.question ? 1 : -1)) ??
     [];
-
   const canSearch = search?.length > 2;
+
+  const { accessibilityListLabel } = useAccessibility();
+
+  useEffect(() => {
+    if (!ticketFaqsQuery?.data) {
+      return;
+    }
+    if (ticketFaqs?.length === 0 && canSearch && hasSearchedOnce) {
+      AccessibilityInfo.announceForAccessibility(
+        t('ticketFaqsScreen.emptyState'),
+      );
+    }
+  }, [ticketFaqs, canSearch, hasSearchedOnce, ticketFaqsQuery.data, t]);
 
   const triggerSearch = () => {
     if (!canSearch) {
@@ -93,11 +108,14 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                 inputStyle={styles.messageInput}
               />
               <IconButton
+                accessibilityLabel={t('ticketFaqsScreen.searchButton')}
+                iconPadding={spacing[5]}
                 icon={faSearch}
                 loading={ticketFaqsQuery.isFetching}
                 onPress={() => {
                   triggerSearch();
                 }}
+                accessibilityRole="button"
                 disabled={!canSearch}
               />
             </Row>
@@ -105,13 +123,18 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
           {hasSearchedOnce && (
             <OverviewList indented>
               {ticketFaqs.length > 0
-                ? ticketFaqs.map(faq => {
+                ? ticketFaqs.map((faq, index) => {
                     const dom = parseDocument(
                       faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
                     ) as Document;
                     const title = innerText(dom.children as any[]);
+                    const accessibilityLabel = [
+                      accessibilityListLabel(index, ticketFaqs?.length || 0),
+                      title,
+                    ].join(', ');
                     return (
                       <ListItem
+                        accessibilityLabel={accessibilityLabel}
                         key={faq.id}
                         leadingItem={
                           <Icon
@@ -124,6 +147,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                           params: { faq },
                         }}
                         title={<Text numberOfLines={3}>{title}</Text>}
+                        accessibilityRole="button"
                       />
                     );
                   })
@@ -139,6 +163,7 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
 
         {hasSearchedOnce && !ticketFaqsQuery.isFetching && (
           <CtaButton
+            accessibilityLabel={t('ticketFaqScreen.writeTicketMessage')}
             absolute={false}
             title={t('ticketFaqsScreen.writeTicket')}
             hint={t('ticketFaqsScreen.noResultFound')}
