@@ -252,7 +252,7 @@
     "click2Active": "Doppio click per attivare",
     "click2Deactivate": "Doppio click per disattivare",
     "activated": "Attivato",
-    "deactivated": "Disattivato",
+    "deactivated": "Disattivato"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -512,7 +512,8 @@
     "sentAt": "Inviato il",
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
-    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
+    "clickToNavigate": "clicca due volte per aprire e leggere il messaggio completo"
   },
   "messagingView": {
     "pickFile": "Scegli un file",
