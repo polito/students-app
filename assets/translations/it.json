@@ -626,7 +626,8 @@
     "sentAt": "Inviato il",
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
-    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
+    "clickToNavigate": "clicca due volte per aprire e leggere il messaggio completo"
   },
   "messagingView": {
     "activeReplay": "Attivo, (tocca due volte per attivare)",
