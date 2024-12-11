@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { AccessibilityInfo, SafeAreaView, ScrollView } from 'react-native';
 
 import {
   faBullhorn,
@@ -19,6 +19,7 @@ import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { IS_ANDROID } from '../../../core/constants';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useGetNotificationPreferences,
@@ -34,6 +35,16 @@ export const NotificationsScreen = () => {
 
   const { fontSizes } = useTheme();
   const isOffline = useOfflineDisabled();
+
+  const showIosSuccessMessage = (type = false) => {
+    if (IS_ANDROID) {
+      return;
+    }
+    const message = !type ? t('common.activated') : t('common.deactivated');
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(message);
+    }, 200);
+  };
 
   return (
     <ScrollView
@@ -65,6 +76,7 @@ export const NotificationsScreen = () => {
                     notificationType: 'tickets',
                     targetValue: !data?.tickets,
                   });
+                  showIosSuccessMessage(data?.tickets);
                 }}
               />
               <SwitchListItem
@@ -87,6 +99,7 @@ export const NotificationsScreen = () => {
                     notificationType: 'bookings',
                     targetValue: !data?.bookings,
                   });
+                  showIosSuccessMessage(data?.bookings);
                 }}
               />
             </OverviewList>
