@@ -291,6 +291,8 @@
     "disabled": "Disabilitato",
     "click2Active": "Doppio click per attivare",
     "click2Deactivate": "Doppio click per disattivare",
+    "activated": "Attivato",
+    "deactivated": "Disattivato",
     "disabled": "Disabilitato",
     "fromTime" : "dalle",
     "toTime" : "alle",
