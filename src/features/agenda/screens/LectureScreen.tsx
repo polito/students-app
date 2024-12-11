@@ -139,7 +139,14 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           <OverviewList indented>
             {lecture?.place && (
               <ListItem
-                leadingItem={
+                accessibilityRole="button"
+              accessible
+              accessibilityLabel={
+                lecture.place?.name
+                  ? t('agendaScreen.room', { roomName: lecture.place.name })
+                  : '-'
+              }
+              leadingItem={
                   <Icon icon={faLocationDot} size={fontSizes['2xl']} />
                 }
                 title={
@@ -166,7 +173,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               />
             )}
             <ListItem
-              title={lecture.title}
+              accessibilityRole="button"
+            accessible
+            accessibilityLabel={[
+              t('lectureScreen.courseFilesCta'),
+              lecture.title,
+            ].join(', ')}
+            title={lecture.title}
               subtitle={t('lectureScreen.courseFilesCta')}
               leadingItem={
                 <CourseIcon icon={lecture.icon} color={lecture.color} />
