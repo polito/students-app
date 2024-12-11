@@ -48,6 +48,9 @@ export const NotificationsScreen = () => {
                 accessibilityLabel={[
                   t('common.ticket_plural'),
                   data?.tickets ? t('common.enabled') : t('common.disabled'),
+                  data?.tickets
+                    ? t('common.click2Deactivate')
+                    : t('common.click2Active'),
                 ].join(', ')}
                 leadingItem={<Icon icon={faComments} size={fontSizes['2xl']} />}
                 title={t('common.ticket_plural')}
@@ -65,6 +68,9 @@ export const NotificationsScreen = () => {
                 accessibilityLabel={[
                   t('common.booking_plural'),
                   data?.bookings ? t('common.enabled') : t('common.disabled'),
+                  data?.bookings
+                    ? t('common.click2Deactivate')
+                    : t('common.click2Active'),
                 ].join(', ')}
                 leadingItem={
                   <Icon icon={faPersonCirclePlus} size={fontSizes['2xl']} />
@@ -89,7 +95,6 @@ export const NotificationsScreen = () => {
             <OverviewList indented loading={isLoading}>
               <SwitchListItem
                 accessible
-                accessibilityRole="button"
                 accessibilityLabel={[
                   t('common.notice_plural'),
                   t('coursePreferencesScreen.noticesSubtitle'),
@@ -110,7 +115,6 @@ export const NotificationsScreen = () => {
               />
               <SwitchListItem
                 accessible
-                accessibilityRole="button"
                 accessibilityLabel={[
                   t('common.file_plural'),
                   t('coursePreferencesScreen.filesSubtitle'),
@@ -131,7 +135,6 @@ export const NotificationsScreen = () => {
               />
               <SwitchListItem
                 accessible
-                accessibilityRole="button"
                 accessibilityLabel={[
                   t('common.lecture_plural'),
                   t('coursePreferencesScreen.lecturesSubtitle'),
