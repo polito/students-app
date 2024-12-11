@@ -248,7 +248,9 @@
     "year": "anno",
     "yesterday": "Ieri",
     "enabled": "Abilitato",
-    "disabled": "Disabilitato"
+    "disabled": "Disabilitato",
+    "click2Active": "Doppio click per attivare",
+    "click2Deactivate": "Doppio click per disattivare",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
