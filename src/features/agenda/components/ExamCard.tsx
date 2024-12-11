@@ -31,6 +31,7 @@ export const ExamCard = ({ item, compact = false }: Props) => {
   }, [item.places, t]);
   return (
     <AgendaCard
+      date={item?.date}
       title={item.title}
       type={t('common.examCall')}
       color={colors.examCardBorder}
