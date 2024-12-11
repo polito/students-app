@@ -332,6 +332,7 @@ export const SettingsScreen = () => {
             accessibilityLabel={[
               t('common.theme'),
               t(`theme.${colorScheme}`),
+              t('settingsScreen.openThemeMenu'),
             ].join(', ')}
           >
             <SectionHeader title={t('common.theme')} />
@@ -344,6 +345,7 @@ export const SettingsScreen = () => {
             accessibilityLabel={[
               t('common.language'),
               t(`common.${language}`),
+              t('settingsScreen.openLanguageMenu'),
             ].join(', ')}
           >
             <SectionHeader title={t('common.language')} />
