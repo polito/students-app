@@ -57,7 +57,10 @@ export interface AgendaCardProps {
    * On card pressed handler
    */
   onPress?: () => void;
-
+  /**
+   * The date of the event
+   */
+  date: string;
   /**
    * If true, the card will be compact
    */
@@ -81,6 +84,7 @@ export const AgendaCard = ({
   location,
   onPress,
   style,
+  date,
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
@@ -128,6 +132,7 @@ export const AgendaCard = ({
               paddingVertical: spacing[1],
             },
         ]}
+        accessibilityLabel={[date, time, type, title, location].join(', ')}
         onPress={onPress}
       >
         <Col

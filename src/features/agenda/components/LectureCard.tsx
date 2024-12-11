@@ -37,6 +37,7 @@ export const LectureCard = ({ item, compact = false }: Props) => {
 
   return (
     <AgendaCard
+      date={item?.date}
       title={item.title}
       type={t('common.lecture')}
       time={`${item.fromTime} - ${item.toTime}`}
