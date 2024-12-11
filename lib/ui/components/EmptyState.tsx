@@ -31,7 +31,7 @@ export const EmptyState = ({
   return (
     <Col
       accessibilityRole="text"
-      accessible={true}
+      accessible
       accessibilityLabel={message}
       align="center"
       style={{
