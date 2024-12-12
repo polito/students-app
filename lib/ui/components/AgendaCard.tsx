@@ -1,4 +1,5 @@
 import { PropsWithChildren, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableHighlight, ViewProps } from 'react-native';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 
@@ -88,6 +89,7 @@ export const AgendaCard = ({
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
+  const { t } = useTranslation();
 
   const isTablet = useMemo(() => isTabletHelper(), []);
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
@@ -132,7 +134,14 @@ export const AgendaCard = ({
               paddingVertical: spacing[1],
             },
         ]}
-        accessibilityLabel={[date, time, type, title, location].join(', ')}
+        accessibilityLabel={[
+          date,
+          time,
+          type,
+          title,
+          t('common.room'),
+          location,
+        ].join(', ')}
         onPress={onPress}
       >
         <Col
