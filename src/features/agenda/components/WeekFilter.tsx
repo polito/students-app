@@ -36,22 +36,30 @@ export const WeekFilter = ({
     return current.plus({ days: daysPerWeek });
   }, [current, daysPerWeek]);
 
+  const week = useMemo(() => {
+    return `${current.toFormat('d MMM')} - ${endOfWeek.toFormat('d MMM')}`;
+  }, [current, endOfWeek]);
+
   return (
     <Row align="center">
       <IconButton
         icon={faChevronLeft}
-        accessibilityLabel={t('loginScreen.showPassword')}
+        accessibilityLabel={t('agendaScreen.previous week')}
         color={colors.secondaryText}
         disabled={isPrevWeekDisabled}
         onPress={() => getPrev()}
       />
-
-      <Text style={styles.item}>
-        {current.toFormat('d MMM')} - {endOfWeek.toFormat('d MMM')}
+      <Text
+        accessible
+        accessibilityLabel={week}
+        accessibilityRole="text"
+        style={styles.item}
+      >
+        {week}
       </Text>
       <IconButton
         icon={faChevronRight}
-        accessibilityLabel={t('loginScreen.showPassword')}
+        accessibilityLabel={t('agendaScreen.next week')}
         color={colors.secondaryText}
         disabled={isNextWeekDisabled}
         onPress={() => getNext()}

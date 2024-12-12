@@ -9,7 +9,9 @@
     "rooms": "Aule {{roomNames}}",
     "selectDate": "Seleziona data",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "next week": "Prossima settimana",
+    "previous week": "Settimana precedente"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
