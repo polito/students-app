@@ -1,4 +1,10 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { faMapPin } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +20,9 @@ import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { TranslucentTextFieldProps } from '@lib/ui/components/TranslucentTextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useSearchPlaceToListItem } from '../hooks/useSearchPlaceToListItem';
+
 export interface PlacesBottomSheetProps
   extends Omit<BottomSheetProps, 'children'> {
   textFieldProps?: Partial<TranslucentTextFieldProps>;
@@ -22,8 +31,9 @@ export interface PlacesBottomSheetProps
   isLoading?: boolean;
   search?: string;
   showSearchBar?: boolean;
-  onTriggerSearch?: () => void;
   onSearchChange?: (newSearch: string) => void;
+  onSearchClear?: () => void;
+  onSearchTrigger?: () => void;
 }
 
 export const PlacesBottomSheet = forwardRef<
@@ -38,7 +48,8 @@ export const PlacesBottomSheet = forwardRef<
       isLoading = false,
       search,
       onSearchChange,
-      onTriggerSearch,
+      onSearchTrigger,
+      onSearchClear,
       showSearchBar = true,
       ...props
     },
@@ -48,9 +59,24 @@ export const PlacesBottomSheet = forwardRef<
     const { fontSizes, spacing } = useTheme();
     const innerRef = useRef<BottomSheetMethods>(null);
     const [typing, setTyping] = useState(false);
-    const [recentSearches] = useState([]);
+    const { placesSearched } = usePreferencesContext();
+    const searchPlaceToListItem = useSearchPlaceToListItem();
 
     useImperativeHandle(ref, () => innerRef.current!);
+
+    const listItems = useMemo(
+      () =>
+        typing && !isLoading
+          ? placesSearched.map(p => searchPlaceToListItem(p, true)) ?? []
+          : listProps?.data ?? [],
+      [
+        isLoading,
+        listProps?.data,
+        placesSearched,
+        searchPlaceToListItem,
+        typing,
+      ],
+    );
 
     return (
       <BottomSheet
@@ -68,14 +94,15 @@ export const PlacesBottomSheet = forwardRef<
             }}
             onBlur={() => {
               setTyping(false);
-              onTriggerSearch?.();
+              onSearchTrigger?.();
               innerRef.current?.snapToIndex(1);
             }}
             returnKeyType="search"
-            onSubmitEditing={onTriggerSearch}
+            onSubmitEditing={onSearchTrigger}
             value={search}
+            isClearable={!!search}
             onChangeText={onSearchChange}
-            clearButtonMode="always"
+            onClear={onSearchClear}
             {...textFieldProps}
           />
         )}
@@ -90,11 +117,7 @@ export const PlacesBottomSheet = forwardRef<
           keyboardShouldPersistTaps="handled"
           ItemSeparatorComponent={IndentedDivider}
           {...listProps}
-          data={
-            typing && !(listProps?.data as any[])?.length
-              ? recentSearches
-              : listProps?.data ?? []
-          }
+          data={listItems}
           ListEmptyComponent={
             isLoading ? (
               <ActivityIndicator style={{ marginVertical: spacing[8] }} />
