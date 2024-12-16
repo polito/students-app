@@ -19,7 +19,7 @@ export const useTitlesStyles: (
   },
   headerLargeTitleStyle: {
     fontFamily: fontFamilies.heading,
-    fontWeight: fontWeights.bold,
+    fontWeight: fontWeights.bold as string,
     color: colors.title,
   },
   headerBackTitleStyle: {
