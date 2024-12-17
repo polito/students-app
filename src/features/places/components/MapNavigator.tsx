@@ -39,7 +39,6 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
-import { CameraProps } from '@rnmapbox/maps/src/components/Camera';
 
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
@@ -290,7 +289,7 @@ type MapViewProps = ComponentProps<typeof MapView>;
 
 type MapOptions = Partial<
   Omit<MapViewProps, 'children'> & {
-    camera: Partial<CameraProps>;
+    camera: Partial<Parameters<typeof Camera>[0]>;
     insets?: Insets;
   }
 >;
