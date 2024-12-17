@@ -79,7 +79,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         // Reset navigation stack to the assignments screen
         navigation.pop(popCount);
       })
-      .catch(e => {
+      .catch((e: Error) => {
         setFeedback({ text: e.message, isError: true });
       })
       .finally(() => setIsUploading(false));

@@ -87,10 +87,7 @@ const MapDefaultContent = () => {
       <UserLocation />
 
       {/* Marker images */}
-      <Images images={images}>
-        {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-        {/* <></> */}
-      </Images>
+      <Images images={images}></Images>
 
       {/* Outdoor map */}
       <RasterSource
