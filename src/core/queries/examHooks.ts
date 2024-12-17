@@ -30,8 +30,12 @@ export const useGetExams = () => {
       .then(exams =>
         exams
           .map(mapApiExamToExam)
-          .sort(
-            (a, b) => a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf(),
+          .sort((a, b) =>
+            !a.examStartsAt
+              ? 1
+              : !b.examStartsAt
+              ? -1
+              : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
           ),
       ),
   );
