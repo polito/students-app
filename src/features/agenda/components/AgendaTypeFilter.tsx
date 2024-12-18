@@ -75,6 +75,19 @@ export const AgendaTypeFilter = () => {
     }
   }, [filters, colorsMap, getLocalizedType, styles.buttonType, t]);
 
+  const pillContentText = useMemo(() => {
+    const selectedTypes: AgendaItemType[] = [];
+    Object.entries(filters).forEach(([type, enabled]) => {
+      if (enabled) selectedTypes.push(type as AgendaItemType);
+    });
+
+    if (selectedTypes.length === 0 || selectedTypes.length === 4) {
+      return t('common.all');
+    } else {
+      return selectedTypes.map(type => getLocalizedType(type)).join(', ');
+    }
+  }, [filters, getLocalizedType, t]);
+
   const typeActions = useMemo(() => {
     return ALL_AGENDA_TYPES.map(eventType => {
       const typedEventType = eventType as AgendaItemType;
@@ -102,7 +115,13 @@ export const AgendaTypeFilter = () => {
       }}
     >
       <PillDropdownActivator variant="neutral">
-        <View style={styles.typeFilter}>
+        <View
+          accessible={false}
+          accessibilityLabel={[t('common.filterFor'), pillContentText].join(
+            ', ',
+          )}
+          style={styles.typeFilter}
+        >
           <Text key="events">{t('common.event_plural')}:</Text>
           {pillContent}
         </View>
