@@ -104,6 +104,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
         onLayout={e => setViewHeight(Math.round(e.nativeEvent.layout.height))}
       >
         <ReactNativeZoomableView
+          accessible={true}
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
           bindToBorders={true}

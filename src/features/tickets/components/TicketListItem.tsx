@@ -87,6 +87,8 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
     return (
       <ListItem
         {...props}
+        accessibilityRole="button"
+        accessible={true}
         linkTo={{
           screen: 'Ticket',
           params: { id: ticket.id },

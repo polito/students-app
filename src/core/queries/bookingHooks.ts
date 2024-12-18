@@ -1,3 +1,6 @@
+import { useTranslation } from 'react-i18next';
+import { AccessibilityInfo } from 'react-native';
+
 import { BookingsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -148,9 +151,15 @@ export const useCreateBooking = () => {
 export const useDeleteBooking = (bookingId: number) => {
   const bookingClient = useBookingClient();
   const client = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation(() => bookingClient.deleteBookingRaw({ bookingId }), {
     onSuccess() {
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(
+          t('bookingScreen.cancelFeedback'),
+        );
+      }, 1200);
       return Promise.all([
         client.invalidateQueries(BOOKINGS_QUERY_KEY),
         client.invalidateQueries(['agenda']),
