@@ -1,6 +1,11 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
 import {
@@ -80,8 +85,16 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   } = useGetAgendaWeek(currentWeek);
 
   const calendarData = useMemo(() => {
-    return weekData?.data?.flatMap(week => week.items) ?? [];
-  }, [weekData?.data]);
+    const res = weekData?.data?.flatMap(week => week.items) ?? [];
+    if (res?.length === 0) {
+      AccessibilityInfo.announceForAccessibility(t('agendaScreen.noEvents'));
+    } else {
+      AccessibilityInfo.announceForAccessibility(
+        [t('agendaScreen.totalEvents'), res.length].join(', '),
+      );
+    }
+    return res;
+  }, [t, weekData?.data]);
 
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {

@@ -11,7 +11,9 @@
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale",
     "next week": "Prossima settimana",
-    "previous week": "Settimana precedente"
+    "previous week": "Settimana precedente",
+    "totalEvents": "Numero prenotazioni settimanali",
+    "noEvents" : "Questa settimana non hai prenotazioni"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
