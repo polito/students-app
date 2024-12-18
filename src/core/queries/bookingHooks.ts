@@ -155,9 +155,11 @@ export const useDeleteBooking = (bookingId: number) => {
 
   return useMutation(() => bookingClient.deleteBookingRaw({ bookingId }), {
     onSuccess() {
-      AccessibilityInfo.announceForAccessibility(
-        t('bookingScreen.cancelFeedback'),
-      );
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(
+          t('bookingScreen.cancelFeedback'),
+        );
+      }, 1200);
       return Promise.all([
         client.invalidateQueries(BOOKINGS_QUERY_KEY),
         client.invalidateQueries(['agenda']),
