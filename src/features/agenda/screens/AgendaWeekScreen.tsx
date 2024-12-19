@@ -265,6 +265,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={today}

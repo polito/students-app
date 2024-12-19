@@ -248,6 +248,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         <AgendaFilters />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={today}
