@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -107,38 +107,26 @@ export const AgendaTypeFilter = () => {
   }, [filters, colorsMap, getLocalizedType]);
 
   return (
-    <MenuView
-      actions={typeActions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        const type = event as AgendaItemType;
-        toggleFilter(type);
-      }}
+    <Pressable
+      accessible={true}
+      accessibilityLabel={[t('common.filterFor'), pillContentText].join(', ')}
+      style={styles.typeFilter}
     >
-      <PillDropdownActivator variant="neutral">
-        <View
-          accessible={false}
-          accessibilityLabel={[t('common.filterFor'), pillContentText].join(
-            ', ',
-          )}
-          style={styles.typeFilter}
-        >
-          <Text key="events">{t('common.event_plural')} </Text>
-          <Text
-            style={
-              Array.isArray(pillContent) &&
-              pillContent.length > 0 && {
-                paddingRight: 4,
-                paddingLeft: 6,
-                backgroundColor: colors.background,
-                borderRadius: 3,
-              }
-            }
-          >
-            {Array.isArray(pillContent) && pillContent.length.toString()}{' '}
-          </Text>
-        </View>
-      </PillDropdownActivator>
-    </MenuView>
+      <MenuView
+        actions={typeActions}
+        onPressAction={({ nativeEvent: { event } }) => {
+          const type = event as AgendaItemType;
+          toggleFilter(type);
+        }}
+      >
+        <PillDropdownActivator variant="neutral">
+          <View style={styles.typeFilter}>
+            <Text key="events">{t('common.event_plural')}:</Text>
+            {pillContent}
+          </View>
+        </PillDropdownActivator>
+      </MenuView>
+    </Pressable>
   );
 };
 
