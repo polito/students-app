@@ -8,6 +8,7 @@ import { DateTime } from 'luxon';
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
+import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 
@@ -61,11 +62,11 @@ const getLectureWeekQueryFn = async (
   courses: CourseOverview[],
   visibleCourseIds: number[],
 ) => {
-  const until = monday.plus({ week: 1 });
+  const until = monday.endOf('week');
 
   return lectureClient
     .getLectures({
-      fromDate: monday.toJSDate(),
+      fromDate: toOASTruncable(monday),
       toDate: until.toJSDate(),
       courseIds: visibleCourseIds,
     })

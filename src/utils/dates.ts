@@ -81,3 +81,8 @@ export const convertMachineDateToFormatDate = (date: string) => {
 export const isValidDate = (date: Date) => {
   return date.toISOString() !== new Date(0).toISOString();
 };
+
+export const toOASTruncable = (date: DateTime) => {
+  // to fix the cut made by openapi-generator that cuts the last part of a Date, avoids having calls from Sunday
+  return date.plus({ minute: date.offset }).toJSDate();
+};

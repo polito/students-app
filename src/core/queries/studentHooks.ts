@@ -13,6 +13,7 @@ import {
 
 import { DateTime } from 'luxon';
 
+import { toOASTruncable } from '../../utils/dates.ts';
 import { unreadMessages } from '../../utils/messages';
 import { pluckData } from '../../utils/queries';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
@@ -153,11 +154,11 @@ const getDeadlineWeekQueryFn = async (
   studentClient: StudentApi,
   since: DateTime,
 ) => {
-  const until = since.plus({ week: 1 });
+  const until = since.endOf('week');
 
   return studentClient
     .getDeadlines({
-      fromDate: since.toJSDate(),
+      fromDate: toOASTruncable(since),
       toDate: until.toJSDate(),
     })
     .then(pluckData);
