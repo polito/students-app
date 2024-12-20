@@ -89,11 +89,15 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const calendarData = useMemo(() => {
     const res = weekData?.data?.flatMap(week => week.items) ?? [];
     if (res?.length === 0) {
-      AccessibilityInfo.announceForAccessibility(t('agendaScreen.noEvents'));
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(t('agendaScreen.noEvents'));
+      }, 500);
     } else {
-      AccessibilityInfo.announceForAccessibility(
-        [t('agendaScreen.totalEvents'), res.length].join(', '),
-      );
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(
+          [t('agendaScreen.totalEvents'), res.length].join(', '),
+        );
+      }, 500);
     }
     return res;
   }, [t, weekData?.data]);
