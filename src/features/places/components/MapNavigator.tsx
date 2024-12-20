@@ -14,6 +14,7 @@ import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/n
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
@@ -45,7 +46,6 @@ import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
 import { useKeyboardVisibile } from '../../../core/hooks/useKeyboardVisibile';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 
 interface Insets {
   top?: number;

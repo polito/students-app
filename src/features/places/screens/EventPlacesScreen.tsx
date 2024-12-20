@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useMemo, useEffect } from 'react';
+import { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
@@ -18,10 +19,9 @@ import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { getBottomSheetScreenPadding } from '../utils/getBottomSheetScreenPadding';
+import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 
 type Props = MapScreenProps<PlacesStackParamList, 'EventPlaces'>;
 

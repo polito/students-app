@@ -2,7 +2,7 @@ import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CameraPadding, CameraBounds } from '@rnmapbox/maps';
+
 import {
   faDiamondTurnRight,
   faSignsPost,
@@ -23,8 +23,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
+import { Polygon } from 'geojson';
 import { capitalize } from 'lodash';
 
 import { MAX_RECENT_SEARCHES } from '../../../core/constants';
@@ -35,10 +37,9 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { PlacesContext } from '../contexts/PlacesContext';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
-import { PlacesContext } from '../contexts/PlacesContext';
-import { Polygon } from 'geojson';
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Place'>;

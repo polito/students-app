@@ -6,13 +6,13 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { Divider } from '@lib/ui/components/Divider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   Images,
   RasterLayer,
   RasterSource,
   UserLocation,
 } from '@rnmapbox/maps';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';

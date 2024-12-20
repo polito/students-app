@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { Image } from 'react-native';
+
 import { faMapLocation } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { EmptyState } from '@lib/ui/components/EmptyState';

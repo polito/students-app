@@ -43,9 +43,9 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 import { PlaceOverview } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
+import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
 

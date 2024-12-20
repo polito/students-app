@@ -24,12 +24,14 @@ import { Theme } from '@lib/ui/types/Theme';
 import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
 import {
+  CameraBounds,
+  CameraPadding,
   FillLayer,
   LineLayer,
   ShapeSource,
-  CameraPadding,
-  CameraBounds,
 } from '@rnmapbox/maps';
+
+import { Polygon } from 'geojson';
 
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetBuilding, useGetSite } from '../../../core/queries/placesHooks';
@@ -37,10 +39,9 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { PlacesContext } from '../contexts/PlacesContext';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
-import { PlacesContext } from '../contexts/PlacesContext';
-import { Polygon } from 'geojson';
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Building'>;
