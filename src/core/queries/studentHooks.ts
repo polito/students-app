@@ -153,11 +153,11 @@ const getDeadlineWeekQueryFn = async (
   studentClient: StudentApi,
   since: DateTime,
 ) => {
-  const until = since.plus({ week: 1 });
+  const until = since.endOf('week');
 
   return studentClient
     .getDeadlines({
-      fromDate: since.toJSDate(),
+      fromDate: since.plus({ minute: since.offset }).toJSDate(), // to fix the cut made by openapi-generator that cuts the last part of a Date, avoids having calls from Sunday
       toDate: until.toJSDate(),
     })
     .then(pluckData);
