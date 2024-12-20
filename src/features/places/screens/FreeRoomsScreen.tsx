@@ -1,4 +1,10 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -22,6 +28,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { last } from 'lodash';
 import { DateTime } from 'luxon';
 
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatTime } from '../../../utils/dates';
@@ -42,8 +49,11 @@ type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
 const slotStartHour = [19, 17, 16, 14, 13, 11, 10, 8];
 
 const findNearestSlotStartHour = (dt: DateTime) => {
+  let maxDate = DateTime.now().plus({ day: 1 }).endOf('day');
+
   // Skip Sundays
   if (dt.weekday === 7) dt = dt.plus({ day: 1 }).startOf('day');
+  if (maxDate.weekday === 7) maxDate = maxDate.plus({ day: 1 }).startOf('day');
 
   const nearestStartHourIndex = slotStartHour.findIndex(h => h <= dt.hour);
   if (nearestStartHourIndex >= 0 && dt.hour < 20) {
@@ -71,10 +81,17 @@ const findNearestSlotStartHour = (dt: DateTime) => {
     }
   }
 
-  return dt.set({
-    second: 0,
-    millisecond: 0,
-  });
+  return dt < maxDate
+    ? dt.set({
+        second: 0,
+        millisecond: 0,
+      })
+    : maxDate.set({
+        hour: slotStartHour[0],
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      });
 };
 
 export const FreeRoomsScreen = ({ navigation }: Props) => {
@@ -82,6 +99,8 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const { colors } = useTheme();
   const { spacing, fontSizes } = useTheme();
   const campus = useGetCurrentCampus();
+  const { setFeedback, isFeedbackVisible } = useFeedbackContext();
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const today = useMemo(() => DateTime.now().startOf('day'), []);
 
@@ -117,6 +136,31 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     },
     [t, today],
   );
+
+  useEffect(() => {
+    if (
+      startDateTime.equals(
+        DateTime.now().plus({ day: 1 }).set({
+          hour: slotStartHour[0],
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        }),
+      )
+    ) {
+      if (showFeedback) {
+        setFeedback({
+          text: t('freeRoomsScreen.maxViewLimitMessage'),
+          isError: true,
+          isPersistent: false,
+        });
+      } else {
+        setShowFeedback(true);
+      }
+    } else {
+      setShowFeedback(false);
+    }
+  }, [startDateTime, t]);
 
   const { data: searchResult } = useSearchPlaces({ siteId: campus?.id });
   const sitePlaces = useGetPlacesFromSearchResult(searchResult);
@@ -197,7 +241,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
           <IconButton
             icon={faChevronRight}
             color={colors.secondaryText}
-            disabled={!freeRooms?.data}
+            disabled={!freeRooms?.data || isFeedbackVisible}
             onPress={() =>
               setStartDateTime(prevDt =>
                 findNearestSlotStartHour(prevDt.plus({ hour: 1, minute: 30 })),
