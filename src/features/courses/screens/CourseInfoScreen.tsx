@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -101,6 +101,20 @@ export const CourseInfoScreen = () => {
   );
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
 
+  const editionAccessibleLabel = useMemo(() => {
+    const yearLabel =
+      (editions?.length ?? 0) > 0 ? t('courseInfoTab.selectYear') : '';
+
+    return `${courseQuery.data?.teachingPeriod ?? '--'} - ${
+      courseQuery.data?.year ?? '--'
+    }, ${yearLabel}`;
+  }, [
+    courseQuery.data?.teachingPeriod,
+    courseQuery.data?.year,
+    editions?.length,
+    t,
+  ]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -112,7 +126,16 @@ export const CourseInfoScreen = () => {
       }
     >
       <SafeAreaView>
-        <Section style={styles.heading}>
+        <Section
+          accessible
+          accessibilityRole="text"
+          accessibilityLabel={[
+            courseQuery.data?.name,
+            t('courseInfoTab.shortcode'),
+            courseQuery.data?.shortcode,
+          ].join(', ')}
+          style={styles.heading}
+        >
           <ScreenTitle title={courseQuery.data?.name} />
           <Text variant="caption">{courseQuery.data?.shortcode ?? ' '}</Text>
         </Section>
@@ -124,41 +147,43 @@ export const CourseInfoScreen = () => {
               accessibilityRole="button"
               accessible={true}
             >
-              <StatefulMenuView
-                actions={editions ?? []}
-                onPressAction={async ({ nativeEvent: { event } }) => {
-                  // replace current screen with same screen with event id as param
-                  (
-                    getParent()! as NativeStackNavigationProp<
-                      TeachingStackParamList,
-                      'Course'
-                    >
-                  ).replace('Course', {
-                    id: +event,
-                    animated: false,
-                  });
-                }}
-              >
-                <Row justify="flex-start" align="center">
-                  <Metric
-                    title={t('common.period')}
-                    value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
-                      courseQuery.data?.year ?? '--'
-                    }`}
-                    accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
-                      courseQuery.data?.teachingPeriod ?? '--'
-                    } - ${courseQuery.data?.year ?? '--'}`}
-                  />
-                  {(editions?.length ?? 0) > 0 && (
-                    <Icon
-                      icon={faAngleDown}
-                      size={14}
-                      style={styles.periodDropdownIcon}
-                      color={styles.periodDropdownIcon.color}
+              <View accessible accessibilityLabel={editionAccessibleLabel}>
+                <StatefulMenuView
+                  actions={editions ?? []}
+                  onPressAction={async ({ nativeEvent: { event } }) => {
+                    // replace current screen with same screen with event id as param
+                    (
+                      getParent()! as NativeStackNavigationProp<
+                        TeachingStackParamList,
+                        'Course'
+                      >
+                    ).replace('Course', {
+                      id: +event,
+                      animated: false,
+                    });
+                  }}
+                >
+                  <Row justify="flex-start" align="center">
+                    <Metric
+                      title={t('common.period')}
+                      value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
+                        courseQuery.data?.year ?? '--'
+                      }`}
+                      accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
+                        courseQuery.data?.teachingPeriod ?? '--'
+                      } - ${courseQuery.data?.year ?? '--'}`}
                     />
-                  )}
-                </Row>
-              </StatefulMenuView>
+                    {(editions?.length ?? 0) > 0 && (
+                      <Icon
+                        icon={faAngleDown}
+                        size={14}
+                        style={styles.periodDropdownIcon}
+                        color={styles.periodDropdownIcon.color}
+                      />
+                    )}
+                  </Row>
+                </StatefulMenuView>
+              </View>
             </View>
             <Metric
               title={t('courseInfoTab.creditsLabel')}
@@ -227,7 +252,13 @@ export const CourseInfoScreen = () => {
           >
             {courseQuery.data?.links.map((link, index) => (
               <ListItem
+                accessible
+                accessibilityRole="button"
                 key={index}
+                accessibilityLabel={[
+                  link.description ?? t('courseInfoTab.linkDefaultTitle'),
+                  link.url,
+                ].join(', ')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
@@ -241,6 +272,9 @@ export const CourseInfoScreen = () => {
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
             <ListItem
+              accessible
+              accessibilityLabel={t('courseGuideScreen.title')}
+              accessibilityRole="button"
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
               disabled={isGuideDisabled}

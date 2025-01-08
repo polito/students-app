@@ -324,7 +324,9 @@
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
-    "yearLabel": "Anno"
+    "yearLabel": "Anno",
+    "shortcode" : "Codice insegnamento",
+    "selectYear" : "clicca per accedere agli anni precedenti",
   },
   "courseLecturesTab": {
     "emptyState": "Non ci sono lezioni",
