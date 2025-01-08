@@ -59,14 +59,15 @@ export const SectionHeader = ({
 
   const Header = () => {
     return (
-      <View style={styles.innerContainer}>
-        <View style={styles.titleContainer}>
+      <View accessible={false} style={styles.innerContainer}>
+        <View accessible={false} style={styles.titleContainer}>
           {separator && <Separator />}
           <Text
-            accessible={false}
+            accessible
             variant="heading"
             style={[styles.title, titleStyle]}
             accessibilityRole="header"
+            accessibilityLabel={title}
             {...ellipsis}
           >
             {title}
