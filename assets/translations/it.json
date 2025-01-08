@@ -743,7 +743,8 @@
     "yourCareer": "La tua carriera",
     "totalCredits": "Crediti totali",
     "notShown": "Voti nascosti",
-    "hideAndShowButton": "cliccandolo potrai nascondere o mostrare i dati del libretto"
+    "hideAndShowButton": "cliccandolo potrai nascondere o mostrare i dati del libretto",
+    "showDetails": "Cliccando aprirai la scheda completa",
   },
   "videoControls": {
     "changePlaybackRate": "Cambia velocità di riproduzione",

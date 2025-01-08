@@ -137,6 +137,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
       secondLabelValue,
       thirdLabel,
       thirdLabelValue,
+      t('transcriptMetricsScreen.showDetails'),
     ].join('. ');
   }, [
     hideGrades,
