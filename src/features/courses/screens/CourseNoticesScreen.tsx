@@ -76,7 +76,15 @@ export const CourseNoticesScreen = () => {
       renderItem={({ item: notice, index }) => (
         <ListItem
           title={notice.title}
-          accessibilityLabel={`${t(
+          accessibilityLabel={`
+          ${
+            getUnreadsCount([...noticesNotificationScope, notice.id])
+              ? `${t('common.unread')}, ${t(
+                  'courseNoticesTab.messageReadAfterGoBack',
+                )}`
+              : ''
+          }
+          ${t(
             accessibilityListLabel(index, notices?.length || 0),
           )}. ${DateTime.fromJSDate(notice.publishedAt, {
             zone: IANAZone.create('Europe/Rome'),
