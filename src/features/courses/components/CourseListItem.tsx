@@ -79,6 +79,10 @@ export const CourseListItem = ({
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
 
+  const prefs = usePreferencesContext();
+  const coursePrefs = prefs.courses[course?.uniqueShortcode];
+  const isHidden = coursePrefs?.isHidden ?? false;
+
   const hasDetails = course.id != null;
   const queryClient = useQueryClient();
 
@@ -130,7 +134,9 @@ export const CourseListItem = ({
       }}
       accessibilityLabel={`${accessibilityLabel || ''} ${course.name}, ${
         course.cfu
-      } ${t('common.credits')}`}
+      } ${t('common.credits')},  ${
+        isHidden ? t('coursesScreen.notVisible') : ''
+      }     `}
       accessibilityRole="button"
       title={course.name}
       subtitle={subtitle}

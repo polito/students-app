@@ -365,7 +365,8 @@
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi",
     "total": "Sono presenti {{total}} corsi",
-    "totalNotVisible": "Sono presenti {{total}} corsi nascosti"
+    "totalNotVisible": "Sono presenti {{total}} corsi nascosti",
+    "notVisible": "Corso nascosto"
   },
   "cpdSurveysScreen": {
     "emptyState": "Non ci sono questionari",
