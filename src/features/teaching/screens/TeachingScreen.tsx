@@ -102,6 +102,53 @@ export const TeachingScreen = ({ navigation }: Props) => {
     );
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
+  const transcriptAccessibleLabel = useMemo(() => {
+    if (hideGrades) {
+      return t('transcriptMetricsScreen.notShown');
+    }
+
+    const firstLabel =
+      studentQuery.data?.averageGradePurged != null
+        ? t('transcriptMetricsScreen.finalAverageLabel')
+        : t('transcriptMetricsScreen.weightedAverageLabel');
+    const firstLabelValue = hideGrades
+      ? t('common.notAvailable')
+      : studentQuery.data?.averageGradePurged ??
+        studentQuery.data?.averageGrade ??
+        t('common.notAvailable');
+
+    const secondLabel = studentQuery.data?.estimatedFinalGradePurged
+      ? t('transcriptMetricsScreen.estimatedFinalGradePurged')
+      : t('transcriptMetricsScreen.estimatedFinalGrade');
+    const secondPreValue = studentQuery.data?.estimatedFinalGradePurged
+      ? studentQuery.data?.estimatedFinalGradePurged || 0
+      : studentQuery.data?.estimatedFinalGrade || 0;
+    const secondLabelValue = `${secondPreValue} ${t('common.on')} 110`;
+
+    const thirdLabel = t('transcriptMetricsScreen.totalCredits');
+    const thirdLabelValue = `${studentQuery.data?.totalAcquiredCredits} ${t(
+      'common.on',
+    )} ${studentQuery.data?.totalCredits}`;
+
+    return [
+      firstLabel,
+      firstLabelValue,
+      secondLabel,
+      secondLabelValue,
+      thirdLabel,
+      thirdLabelValue,
+    ].join('. ');
+  }, [
+    hideGrades,
+    studentQuery.data?.averageGrade,
+    studentQuery.data?.averageGradePurged,
+    studentQuery.data?.estimatedFinalGrade,
+    studentQuery.data?.estimatedFinalGradePurged,
+    studentQuery.data?.totalAcquiredCredits,
+    studentQuery.data?.totalCredits,
+    t,
+  ]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -206,6 +253,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 <TouchableHighlight
                   accessible
                   accessibilityRole="button"
+                  accessibilityLabel={transcriptAccessibleLabel}
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
                 >

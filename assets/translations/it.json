@@ -246,7 +246,9 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "notAvailable": "Non ancora disponibile",
+    "on" : "su"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -734,7 +736,9 @@
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
     "weightedAverageLabel": "Media ponderata",
-    "yourCareer": "La tua carriera"
+    "yourCareer": "La tua carriera",
+    "totalCredits": "Crediti totali",
+    "notShown": "Voti nascosti"
   },
   "videoControls": {
     "changePlaybackRate": "Cambia velocità di riproduzione",
