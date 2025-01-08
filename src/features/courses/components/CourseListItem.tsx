@@ -128,7 +128,7 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
-      accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
+      accessibilityLabel={`${accessibilityLabel || ''} ${course.name}, ${
         course.cfu
       } ${t('common.credits')}`}
       title={course.name}
