@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
 import { faCircle, faEye } from '@fortawesome/free-regular-svg-icons';
@@ -122,7 +128,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 <StatefulMenuView
                   actions={courseColors.map(cc => {
                     return {
-                      id: cc.color,
+                      id: `${cc.color},${cc.name}`,
                       title: t(cc.name),
                       image: Platform.select({
                         ios: 'circle.fill',
@@ -132,7 +138,19 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       state: cc.color === coursePrefs?.color ? 'on' : undefined,
                     };
                   })}
-                  onPressAction={({ nativeEvent: { event: color } }) => {
+                  onPressAction={({
+                    nativeEvent: { event: selectedColor },
+                  }) => {
+                    const color = selectedColor.split(',')[0];
+                    const name = selectedColor.split(',')[1];
+                    setTimeout(() => {
+                      AccessibilityInfo.announceForAccessibility(
+                        [
+                          t('coursePreferencesScreen.selectedColor'),
+                          t(name),
+                        ].join(', '),
+                      );
+                    }, 200);
                     updatePreference('courses', {
                       ...coursesPrefs,
                       [uniqueShortcode]: {
@@ -143,12 +161,18 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   }}
                 >
                   <ListItem
+                    accessible
+                    accessibilityRole="button"
+                    accessibilityLabel={t('coursePreferencesScreen.choseColor')}
                     title={t('common.color')}
                     isAction
                     leadingItem={<CourseIcon color={coursePrefs?.color} />}
                   />
                 </StatefulMenuView>
                 <ListItem
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={t('coursePreferencesScreen.choseIcon')}
                   title={t('common.icon')}
                   isAction
                   onPress={() =>

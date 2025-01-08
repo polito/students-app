@@ -353,7 +353,10 @@
     "lecturesSubtitle": "Nuove lezioni disponibili",
     "noticesSubtitle": "Avvisi mandati dai professori",
     "showInExtracts": "Mostra negli estratti",
-    "showInExtractsSubtitle": "In home screen e agenda"
+    "showInExtractsSubtitle": "In home screen e agenda",
+    "choseColor": "Scegli un colore per il corso",
+    "choseIcon": "Scegli un' icona per il corso",
+    "selectedColor": "Colore selezionato",
   },
   "courseScreen": {
     "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
