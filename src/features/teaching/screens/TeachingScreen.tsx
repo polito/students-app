@@ -204,6 +204,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 )
               ) : (
                 <TouchableHighlight
+                  accessible
+                  accessibilityRole="button"
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
                 >
