@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList } from 'react-native';
+import { AccessibilityInfo, FlatList } from 'react-native';
 
 import { faInbox } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -8,6 +8,7 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { DateTime, IANAZone } from 'luxon';
 
@@ -50,6 +51,18 @@ export const CourseNoticesScreen = () => {
   useOnLeaveScreen(() => {
     clearNotificationScope(noticesNotificationScope);
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!notices || notices?.length === 0) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseNoticesTab.emptyState'),
+          );
+        }, 500);
+      }
+    }, [notices]),
+  );
 
   return (
     <FlatList

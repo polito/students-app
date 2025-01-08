@@ -586,7 +586,8 @@
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
-    "title": "Avvisi"
+    "title": "Avvisi",
+    "no"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
