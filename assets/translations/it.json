@@ -329,6 +329,7 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
+    "settingsIcon": "Impostazioni corso",
     "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
     "extra": "Extra carico",
     "overbooking": "Overbooking"

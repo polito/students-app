@@ -131,6 +131,7 @@ export const CourseListItem = ({
       accessibilityLabel={`${accessibilityLabel || ''} ${course.name}, ${
         course.cfu
       } ${t('common.credits')}`}
+      accessibilityRole="button"
       title={course.name}
       subtitle={subtitle}
       leadingItem={<CourseIndicator uniqueShortcode={course.uniqueShortcode} />}
@@ -138,21 +139,28 @@ export const CourseListItem = ({
         <>
           {badge && <UnreadBadge text={badge} />}
           {hasDetails ? (
-            Platform.select({
-              android: (
-                <Menu course={course}>
-                  <IconButton
-                    style={{
-                      padding: spacing[3],
-                    }}
-                    icon={faEllipsisVertical}
-                    color={colors.secondaryText}
-                    size={fontSizes.xl}
-                  />
-                </Menu>
-              ),
-              ios: <DisclosureIndicator />,
-            })
+            <View
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel={t('courseListItem.settingsIcon')}
+            >
+              {Platform.select({
+                android: (
+                  <Menu course={course}>
+                    <IconButton
+                      accessible={false}
+                      style={{
+                        padding: spacing[3],
+                      }}
+                      icon={faEllipsisVertical}
+                      color={colors.secondaryText}
+                      size={fontSizes.xl}
+                    />
+                  </Menu>
+                ),
+                ios: <DisclosureIndicator />,
+              })}
+            </View>
           ) : (
             <View style={{ width: 20 }} />
           )}
