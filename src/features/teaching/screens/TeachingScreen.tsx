@@ -149,6 +149,42 @@ export const TeachingScreen = ({ navigation }: Props) => {
     t,
   ]);
 
+  const coursesSectionLabelAccessible = useMemo(() => {
+    const notVisibleCourseCount = coursesQuery?.data?.length
+      ? coursesQuery?.data?.length - courses.length
+      : 0;
+    const notVisibleCourseCountLabel =
+      notVisibleCourseCount > 0
+        ? t('coursesScreen.totalNotVisible', {
+            total: notVisibleCourseCount,
+          })
+        : undefined;
+    return [
+      t('coursesScreen.title'),
+      t('coursesScreen.total', { total: courses.length }),
+      t('common.and'),
+      notVisibleCourseCountLabel,
+    ].join('. ');
+  }, [courses.length, coursesQuery?.data?.length, t]);
+
+  const examsSectionLabelAccessible = useMemo(() => {
+    const notVisibleExamCount = examsQuery?.data?.length
+      ? examsQuery?.data?.length - exams.length
+      : 0;
+    const notVisibleExamCountLabel =
+      notVisibleExamCount > 0
+        ? t('examsScreen.totalNotVisible', {
+            total: notVisibleExamCount,
+          })
+        : undefined;
+    return [
+      t('examsScreen.title'),
+      t('examsScreen.total', { total: exams.length }),
+      t('common.and'),
+      notVisibleExamCountLabel,
+    ].join('. ');
+  }, [exams.length, examsQuery?.data?.length, t]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -170,6 +206,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
         ) : undefined}
         <Section>
           <SectionHeader
+            accessible
+            accessibilityLabel={coursesSectionLabelAccessible}
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
@@ -208,6 +246,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           <SectionHeader
+            accessible
+            accessibilityLabel={examsSectionLabelAccessible}
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
             linkToMoreCount={

@@ -248,7 +248,8 @@
     "year": "anno",
     "yesterday": "Ieri",
     "notAvailable": "Non ancora disponibile",
-    "on" : "su"
+    "on" : "su",
+    "and" : "e",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -363,7 +364,8 @@
     "emptyState": "Non ci sono corsi",
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi",
-    "total": "Sono presenti {{total}} corsi"
+    "total": "Sono presenti {{total}} corsi",
+    "totalNotVisible": "Sono presenti {{total}} corsi nascosti"
   },
   "cpdSurveysScreen": {
     "emptyState": "Non ci sono questionari",
@@ -435,7 +437,8 @@
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
     "title": "Appelli",
-    "total": "Sono presenti {{ total }} appelli"
+    "total": "Sono presenti {{ total }} appelli",
+    "totalNotVisible": "Sono presenti {{ total }} appelli nascosti"
   },
   "freeRoomsScreen": {
     "noFreeRooms": "Nessuna aula libera trovata",
