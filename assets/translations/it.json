@@ -332,7 +332,7 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "settingsIcon": "Impostazioni corso",
+    "settingsIcon": "Impostazioni corso, tramite il menu potrai impostare quali corsi seguire e quali no",
     "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
     "extra": "Extra carico",
     "overbooking": "Overbooking"
@@ -742,7 +742,8 @@
     "weightedAverageLabel": "Media ponderata",
     "yourCareer": "La tua carriera",
     "totalCredits": "Crediti totali",
-    "notShown": "Voti nascosti"
+    "notShown": "Voti nascosti",
+    "hideAndShowButton": "cliccandolo potrai nascondere o mostrare i dati del libretto"
   },
   "videoControls": {
     "changePlaybackRate": "Cambia velocità di riproduzione",

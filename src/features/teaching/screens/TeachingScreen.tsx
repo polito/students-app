@@ -398,11 +398,11 @@ const HideGrades = () => {
   return (
     <View
       style={styles.hideGradesSwitch}
-      accessibilityLabel={`${label}. ${t(
-        `common.activeStatus.${hideGrades}`,
+      accessibilityLabel={`${label}, ${t(
+        'transcriptMetricsScreen.hideAndShowButton',
       )} `}
-      accessibilityRole="switch"
-      accessible={true}
+      accessibilityRole="button"
+      accessible
     >
       <Icon icon={icon} color={colors.link} />
       <Text variant="link" onPress={() => onHide(!hideGrades)}>
