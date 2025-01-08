@@ -491,7 +491,10 @@
     "yesterday": "Ieri",
     "notAvailable": "Non ancora disponibile",
     "on" : "su",
-    "and" : "e"
+    "and" : "e",
+    "active" : "Attivo",
+    "inactive" : "Inattivo",
+    "clickForChange" : "Clicca per cambiare stato",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",

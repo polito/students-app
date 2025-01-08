@@ -193,6 +193,15 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   }
                 />
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    coursePrefs?.isHidden
+                      ? t('common.inactive')
+                      : t('common.active'),
+                    t('coursePreferencesScreen.showInExtracts'),
+                    t('coursePreferencesScreen.showInExtractsSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('coursePreferencesScreen.showInExtracts')}
                   subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
                   disabled={!coursePrefs}
@@ -227,6 +236,15 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               <SectionHeader title={t('common.notifications')} />
               <OverviewList indented>
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    courseQuery.data?.notifications.notices
+                      ? t('common.active')
+                      : t('common.inactive'),
+                    t('common.notice_plural'),
+                    t('coursePreferencesScreen.noticesSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('common.notice_plural')}
                   subtitle={t('coursePreferencesScreen.noticesSubtitle')}
                   disabled={!courseQuery.data}
@@ -242,6 +260,15 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 />
 
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    courseQuery.data?.notifications.files
+                      ? t('common.active')
+                      : t('common.inactive'),
+                    t('common.file_plural'),
+                    t('coursePreferencesScreen.filesSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('common.file_plural')}
                   subtitle={t('coursePreferencesScreen.filesSubtitle')}
                   disabled={!courseQuery.data}
@@ -255,8 +282,16 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     });
                   }}
                 />
-
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    courseQuery.data?.notifications.lectures
+                      ? t('common.active')
+                      : t('common.inactive'),
+                    t('common.lecture_plural'),
+                    t('coursePreferencesScreen.lecturesSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('common.lecture_plural')}
                   subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
                   disabled={!courseQuery.data}
