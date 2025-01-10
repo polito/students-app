@@ -89,7 +89,10 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       }
     }
 
-    const classrooms = exam?.places?.map(p => p.name).join(', ');
+    const classrooms =
+      exam?.places?.length && exam?.places?.length > 0
+        ? exam?.places?.map(p => p.name).join(', ')
+        : t('examScreen.noLocation');
     const teacher = `${t('common.teacher')}: ${teacherQuery.data.firstName} ${
       teacherQuery.data.lastName
     }`;
