@@ -499,6 +499,7 @@
     "clickForChange" : "Clicca per cambiare stato",
     "unread" : "Non letto",
     "directory" : "Cartella",
+    "retracted": "Ritirato",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -536,7 +537,8 @@
   },
   "courseAssignmentsTab": {
     "emptyState": "Non ci sono elaborati",
-    "title": "Elaborati"
+    "title": "Elaborati",
+
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",

@@ -55,6 +55,7 @@ export const CourseAssignmentListItem = ({
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const { colors, spacing, fontSizes } = useTheme();
+  const { t } = useTranslation();
   const subTitle = `${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
     item.uploadedAt,
   )}`;
@@ -70,7 +71,13 @@ export const CourseAssignmentListItem = ({
             item.deletedAt != null ? 'line-through' : undefined,
         }}
         subtitle={subTitle}
-        accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={`    
+        ${accessibilityListLabel}. ${item.description},    
+        ${item.deletedAt ? t('common.retracted') : ''},               
+        ${subTitle} , 
+        ${t('common.downloadClick')}`}
         mimeType={item.mimeType}
         trailingItem={
           item.deletedAt == null
