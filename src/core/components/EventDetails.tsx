@@ -24,14 +24,31 @@ export const EventDetails = ({
 }: Props) => {
   const { spacing, fontSizes } = useTheme();
   return (
-    <View style={{ padding: spacing[5] }} {...rest}>
+    <View
+      style={{ padding: spacing[5] }}
+      {...rest}
+      accessible
+      accessibilityRole="text"
+      accessibilityLabel={[
+        title,
+        type,
+        typeof time === 'string'
+          ? `${time} ${endTime ? ` - ${formatTime(endTime)}` : ''}`
+          : time,
+        timeLabel,
+      ].join(', ')}
+    >
       <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
-      <Text variant="caption" style={{ marginBottom: spacing[2] }}>
+      <Text
+        accessible={false}
+        variant="caption"
+        style={{ marginBottom: spacing[2] }}
+      >
         {type}
       </Text>
       {time &&
         (typeof time === 'string' ? (
-          <Text style={{ fontSize: fontSizes.md }}>
+          <Text accessible={false} style={{ fontSize: fontSizes.md }}>
             {time}
             {endTime && ` - ${formatTime(endTime)}`}
           </Text>
@@ -39,7 +56,9 @@ export const EventDetails = ({
           time
         ))}
       {!!timeLabel && (
-        <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
+        <Text accessible={false} style={{ fontSize: fontSizes.md }}>
+          {timeLabel}
+        </Text>
       )}
     </View>
   );
