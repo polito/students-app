@@ -361,6 +361,7 @@
     "doubleTapToActive": "Doppio tocco per attivare",
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
+    "downloadClick": "Clicca 2 volte per scaricare",
     "downloadError": "Qualcosa è andato storto con durante il download",
     "downloadStatus": {
       "false": "Non scaricato",
@@ -430,6 +431,7 @@
     "of": "Su",
     "ok": "Ok",
     "open": "Apri",
+    "openClick": "Clicca 2 volte per aprire",
     "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
     "openedStatus": {
@@ -551,7 +553,8 @@
     "empty": "Non ci sono file qui",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
-    "title": "Materiale"
+    "title": "Materiale",
+    "emptyState": "Non ci sono file"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
