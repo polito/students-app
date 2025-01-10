@@ -1,5 +1,6 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { AccessibilityInfo, SafeAreaView, ScrollView } from 'react-native';
 
 import { faFileLines } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -7,6 +8,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
@@ -30,6 +32,22 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   const isCacheMissing = useOfflineDisabled(
     () => assignmentsQuery.data === undefined,
   );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!assignmentsQuery?.data) {
+        return;
+      }
+      if (assignmentsQuery?.data?.length === 0) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseAssignmentsTab.emptyState'),
+          );
+        }, 500);
+      }
+    }, [assignmentsQuery]),
+  );
+
   return (
     <>
       <ScrollView
