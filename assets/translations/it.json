@@ -582,7 +582,7 @@
   "courseLecturesTab": {
     "emptyState": "Non ci sono lezioni",
     "title": "Lezioni",
-    "virtualClassroomsSectionTitle": "Virtual classrooms"
+    "virtualClassroomsSectionTitle": "Virtual classrooms",
   },
   "courseListItem": {
     "settingsIcon": "Impostazioni corso, tramite il menu potrai impostare quali corsi seguire e quali no",
