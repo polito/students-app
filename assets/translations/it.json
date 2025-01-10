@@ -499,7 +499,7 @@
     "clickForChange" : "Clicca per cambiare stato",
     "unread" : "Non letto",
     "directory" : "Cartella",
-    "retracted": "Ritirato",
+    "retracted": "Ritirato"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -538,6 +538,7 @@
   "courseAssignmentsTab": {
     "emptyState": "Non ci sono elaborati",
     "title": "Elaborati",
+    "menuInfo": "Impostazione elaborati, tramite il menu potrai impostare quali elaborati ritirare"
 
   },
   "courseDirectoryListItem": {

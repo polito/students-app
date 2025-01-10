@@ -1,6 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Platform, TouchableHighlightProps } from 'react-native';
+import { Linking, Platform, TouchableHighlightProps, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
@@ -83,20 +83,27 @@ export const CourseAssignmentListItem = ({
           item.deletedAt == null
             ? Platform.select({
                 android: (
-                  <Menu>
-                    <IconButton
-                      style={{
-                        padding: spacing[3],
-                      }}
-                      icon={faEllipsisVertical}
-                      color={colors.secondaryText}
-                      size={fontSizes.xl}
-                      hitSlop={{
-                        right: +spacing[2],
-                        left: +spacing[2],
-                      }}
-                    />
-                  </Menu>
+                  <View
+                    accessible
+                    accessibilityRole="button"
+                    accessibilityLabel={t('courseAssignmentsTab.menuInfo')}
+                  >
+                    <Menu>
+                      <IconButton
+                        accessible={false}
+                        style={{
+                          padding: spacing[3],
+                        }}
+                        icon={faEllipsisVertical}
+                        color={colors.secondaryText}
+                        size={fontSizes.xl}
+                        hitSlop={{
+                          right: +spacing[2],
+                          left: +spacing[2],
+                        }}
+                      />
+                    </Menu>
+                  </View>
                 ),
               })
             : undefined
