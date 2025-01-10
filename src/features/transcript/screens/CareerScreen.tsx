@@ -55,7 +55,7 @@ export const CareerScreen = () => {
                 } CFU`}
                 style={styles.spaceBottom}
                 accessibilityLabel={`${t(
-                  'transcriptMetricsScreen.acquiredCreditsLabel',
+                  'transcriptMetricsScreen.acquiredCreditsLabelTotal',
                 )}: ${totalAcquiredCredits} ${t('common.of')} ${totalCredits}`}
               />
               <Metric
@@ -65,7 +65,7 @@ export const CareerScreen = () => {
                 } CFU`}
                 color={palettes.primary[400]}
                 accessibilityLabel={`${t(
-                  'transcriptMetricsScreen.attendedCreditsLabel',
+                  'transcriptMetricsScreen.attendedCreditsLabelTot',
                 )}: ${totalAttendedCredits} ${t('common.of')} ${totalCredits}`}
               />
             </View>
@@ -93,7 +93,7 @@ export const CareerScreen = () => {
                   enrollmentCredits ?? '--'
                 } CFU`}
                 accessibilityLabel={`${t(
-                  'transcriptMetricsScreen.acquiredCreditsLabel',
+                  'transcriptMetricsScreen.acquiredCreditsLabelTotal',
                 )}: ${enrollmentAcquiredCredits} ${t(
                   'common.of',
                 )} ${enrollmentCredits}`}
@@ -105,7 +105,7 @@ export const CareerScreen = () => {
                   enrollmentCredits ?? '--'
                 } CFU`}
                 accessibilityLabel={`${t(
-                  'transcriptMetricsScreen.attendedCreditsLabel',
+                  'transcriptMetricsScreen.attendedCreditsLabelTot',
                 )}: ${enrollmentCredits} ${t(
                   'common.of',
                 )} ${enrollmentCredits}`}

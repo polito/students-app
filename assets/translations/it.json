@@ -992,7 +992,9 @@
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
+    "acquiredCreditsLabelTotal": "Totale crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
+    "attendedCreditsLabelTot": "Totale crediti frequentati",
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
     "estimatedFinalGrade": "Voto di laurea",
