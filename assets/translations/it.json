@@ -497,7 +497,8 @@
     "active" : "Attivo",
     "inactive" : "Inattivo",
     "clickForChange" : "Clicca per cambiare stato",
-    "unread" : "Non letto"
+    "unread" : "Non letto",
+    "directory" : "Cartella",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",

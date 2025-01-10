@@ -24,6 +24,15 @@ export const CourseDirectoryListItem = ({
 
   return (
     <DirectoryListItem
+      accessibilityRole="button"
+      accessible
+      accessibilityLabel={[
+        t('common.directory'),
+        item.name,
+        t('courseDirectoryListItem.subtitle', {
+          count: item.files.length,
+        }),
+      ].join(', ')}
       title={item.name}
       subtitle={t('courseDirectoryListItem.subtitle', {
         count: item.files.length,
