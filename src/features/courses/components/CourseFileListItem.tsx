@@ -264,13 +264,17 @@ export const CourseFileListItem = memo(
     const listItem = (
       <FileListItem
         {...rest}
-        accessibilityLabel={
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={[
+          item.name ?? t('common.unnamedFile'),
+          metrics,
           !isDownloaded
             ? downloadProgress == null
-              ? t('common.download')
+              ? t('common.downloadClick')
               : t('common.stop')
-            : t('common.open')
-        }
+            : t('common.openClick'),
+        ].join(', ')}
         onPress={downloadFile}
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
