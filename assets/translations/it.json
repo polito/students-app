@@ -547,7 +547,8 @@
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
-    "reDownloadFile": "Ri-scarica file"
+    "reDownloadFile": "Ri-scarica file",
+    "downloadPending": "Download in corso",
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",

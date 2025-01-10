@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform } from 'react-native';
+import { AccessibilityInfo, Alert, Platform } from 'react-native';
 import { stat } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
 
@@ -185,6 +185,13 @@ export const CourseFileListItem = memo(
           return;
         }
         if (!isDownloaded) {
+          if (item?.sizeInKiloBytes > 3500) {
+            setTimeout(() => {
+              AccessibilityInfo.announceForAccessibility(
+                t('courseFileListItem.downloadPending'),
+              );
+            }, 500);
+          }
           await startDownload();
         }
         if (navigation.isFocused()) {
