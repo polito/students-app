@@ -94,7 +94,11 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       teacherQuery.data.lastName
     }`;
 
-    return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
+    return `${exam.courseName}. ${accessibleDateTime}, ${t(
+      'examScreen.location',
+    )}  ${classrooms} ${teacher}, ${t('common.status')}  ${t(
+      `common.examStatus.${exam.status}`,
+    )}`;
   }, [exam, t, teacherQuery]);
 
   useLayoutEffect(() => {
