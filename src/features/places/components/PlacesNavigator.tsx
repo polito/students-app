@@ -106,13 +106,9 @@ const MapDefaultContent = () => {
       <RasterSource
         key={`indoorSource:${colorScheme}:${floorId}`}
         id="indoorSource"
-        tileUrlTemplates={
-          floorId
-            ? [
-                `https://app.didattica.polito.it/tiles/int-${colorScheme}-${floorId?.toLowerCase()}/{z}/{x}/{y}.png`,
-              ]
-            : [`https://commons.wikimedia.org/wiki/File:1x1.png`]
-        }
+        tileUrlTemplates={[
+          `https://app.didattica.polito.it/tiles/int-${colorScheme}-${floorId?.toLowerCase()}/{z}/{x}/{y}.png`,
+        ]}
         tileSize={RASTER_TILE_SIZE}
         minZoomLevel={INTERIORS_MIN_ZOOM}
         maxZoomLevel={MAX_ZOOM}
@@ -129,13 +125,19 @@ export const PlacesNavigator = () => {
   const colorScheme = useMemo(() => (theme.dark ? 'dark' : 'light'), [theme]);
   const [floorId, setFloorId] = useState<string>();
 
+  const checkAndSetFloorId = (id?: string) => {
+    if (id) {
+      setFloorId(id);
+    }
+  };
+
   useEffect(() => {
     request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
     request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId }}>
+    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId }}>
       <Map.Navigator
         id="PlacesTabNavigator"
         key={`PlacesNavigator:${colorScheme}`}
