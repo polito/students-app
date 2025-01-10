@@ -499,7 +499,8 @@
     "clickForChange" : "Clicca per cambiare stato",
     "unread" : "Non letto",
     "directory" : "Cartella",
-    "retracted": "Ritirato"
+    "retracted": "Ritirato",
+    "note" : "Note"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",

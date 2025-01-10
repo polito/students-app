@@ -184,7 +184,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   <Icon icon={faNoteSticky} size={fontSizes['2xl']} />
                 }
                 title={exam.notes}
-                accessibilityLabel="a"
+                accessibilityLabel={[t('common.note'), exam.notes].join(', ')}
                 subtitle={t('examScreen.notes')}
                 inverted
                 titleProps={{ numberOfLines: 0 }}
