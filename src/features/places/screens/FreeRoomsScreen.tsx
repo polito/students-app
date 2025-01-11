@@ -53,7 +53,7 @@ const findNearestSlotStartHour = (dt: DateTime) => {
 
   // Skip Sundays
   if (dt.weekday === 7) dt = dt.plus({ day: 1 }).startOf('day');
-  if (maxDate.weekday === 7) maxDate = maxDate.plus({ day: 1 }).startOf('day');
+  if (maxDate.weekday === 7) maxDate = maxDate.plus({ day: 1 }).endOf('day');
 
   const nearestStartHourIndex = slotStartHour.findIndex(h => h <= dt.hour);
   if (nearestStartHourIndex >= 0 && dt.hour < 20) {
@@ -140,12 +140,20 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   useEffect(() => {
     if (
       startDateTime.equals(
-        DateTime.now().plus({ day: 1 }).set({
-          hour: slotStartHour[0],
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        }),
+        DateTime.now()
+          .plus({
+            day:
+              DateTime.now().plus({ day: 1 }).set({ hour: slotStartHour[0] })
+                .weekday === 7
+                ? 2
+                : 1,
+          })
+          .set({
+            hour: slotStartHour[0],
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+          }),
       )
     ) {
       if (showFeedback) {
