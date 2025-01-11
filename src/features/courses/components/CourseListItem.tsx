@@ -185,7 +185,9 @@ export const CourseListItem = ({
       <View
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={`${accessibilityLabel} ${course.name},  ${course.cfu}`}
+        accessibilityLabel={`${accessibilityLabel || ''} ${course.name},  ${
+          course.cfu
+        }`}
       >
         <Menu course={course} shouldOpenOnLongPress={true}>
           {listItem}
