@@ -437,7 +437,8 @@
   },
   "freeRoomsScreen": {
     "noFreeRooms": "No free rooms found",
-    "title": "Free rooms"
+    "title": "Free rooms",
+    "maxViewLimitMessage": "Maximum display limit reached "
   },
   "grades": {
     "absent": "Abs",
