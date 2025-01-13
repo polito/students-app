@@ -53,7 +53,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { setFloorId } = useContext(PlacesContext);
+  const { setFloorId, floorId } = useContext(PlacesContext);
   const { siteId, buildingId } = route.params;
   const {
     data: building,
@@ -63,6 +63,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const site = useGetSite(siteId);
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
+    floorId: floorId,
   });
   const isLoading = isLoadingBuilding || isLoadingPlaces;
   const placeName = building?.name ?? t('common.untitled');
