@@ -56,7 +56,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const examsQuery = useGetExams();
   const cpdSurveysQuery = useGetAllCpdSurveys();
   const cpd = useGetCpdSurveys();
-  // console.log(">",cpdSurveysQuery.data)
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
