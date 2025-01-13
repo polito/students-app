@@ -623,6 +623,7 @@
     "title": "Virtual classroom"
   },
   "coursesScreen": {
+    "longPress" :  "Su questo pulsante tramite un onPress potrai aprire un men che ti permetterà di seguire o non seguire il corso",
     "emptyState": "Non ci sono corsi",
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi",

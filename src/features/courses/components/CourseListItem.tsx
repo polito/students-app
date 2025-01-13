@@ -11,6 +11,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView } from '@react-native-menu/menu';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { IS_ANDROID } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
@@ -111,6 +112,25 @@ export const CourseListItem = ({
     t,
   ]);
 
+  const accessibleExtraText = useMemo(() => {
+    return IS_ANDROID ? '' : t('coursesScreen.longPress');
+  }, [t]);
+
+  const accessibleText = useMemo(() => {
+    return `${accessibilityLabel || ''} ${course.name},  ${course.cfu} ${t(
+      'common.credits',
+    )},  ${
+      isHidden ? t('coursesScreen.notVisible') : ''
+    }   ${accessibleExtraText}   `;
+  }, [
+    course.name,
+    course.cfu,
+    isHidden,
+    accessibleExtraText,
+    accessibilityLabel,
+    t,
+  ]);
+
   const listItem = (
     <ListItem
       accessible={accessible}
@@ -132,11 +152,7 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
-      accessibilityLabel={`${accessibilityLabel || ''} ${course.name}, ${
-        course.cfu
-      } ${t('common.credits')},  ${
-        isHidden ? t('coursesScreen.notVisible') : ''
-      }     `}
+      accessibilityLabel={accessibleText}
       accessibilityRole="button"
       title={course.name}
       subtitle={subtitle}
@@ -185,9 +201,7 @@ export const CourseListItem = ({
       <View
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={`${accessibilityLabel || ''} ${course.name},  ${
-          course.cfu
-        }`}
+        accessibilityLabel={accessibleText}
       >
         <Menu course={course} shouldOpenOnLongPress={true}>
           {listItem}

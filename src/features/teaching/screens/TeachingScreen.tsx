@@ -160,11 +160,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
             total: notVisibleCourseCount,
           })
         : undefined;
+
     return [
       t('coursesScreen.title'),
       t('coursesScreen.total', { total: courses.length }),
-      t('common.and'),
-      notVisibleCourseCountLabel,
+      `  ${t('common.and')} ${notVisibleCourseCountLabel} `,
     ].join('. ');
   }, [courses.length, coursesQuery?.data?.length, t]);
 
@@ -181,8 +181,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
     return [
       t('examsScreen.title'),
       t('examsScreen.total', { total: exams.length }),
-      t('common.and'),
-      notVisibleExamCountLabel,
+      `  ${t('common.and')} ${notVisibleExamCountLabel} `,
     ].join('. ');
   }, [exams.length, examsQuery?.data?.length, t]);
 
