@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -31,6 +33,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -52,7 +55,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { courses: coursePreferences, hideGrades } = usePreferencesContext();
+  const {
+    courses: coursePreferences,
+    hideGrades,
+    updatePreference,
+  } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
   const { getUnreadsCount } = useNotifications();
   const surveyCategoriesQuery = useGetSurveyCategories();
@@ -188,6 +195,16 @@ export const TeachingScreen = ({ navigation }: Props) => {
     ].join('. ');
   }, [exams.length, examsQuery?.data?.length, t]);
 
+  const onHide = (value: boolean) => {
+    updatePreference('hideGrades', value);
+    const message = value
+      ? 'coursesScreen.hiddenCredits'
+      : 'coursesScreen.visibleCredits';
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(t(message));
+    }, 200);
+  };
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -279,10 +296,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
           </OverviewList>
         </Section>
         <Section>
-          <SectionHeader
-            title={t('common.transcript')}
-            trailingItem={<HideGrades />}
-          />
+          {/*/ / this Pressable is for ios accessibility*/}
+          <Pressable onPress={() => IS_IOS && onHide(!hideGrades)}>
+            <SectionHeader
+              title={t('common.transcript')}
+              trailingItem={<HideGrades />}
+            />
+          </Pressable>
 
           <View style={GlobalStyles.relative}>
             <Card style={styles.transcriptCard}>
@@ -396,7 +416,15 @@ const HideGrades = () => {
   const label = hideGrades ? t('common.show') : t('common.hide');
   const icon = hideGrades ? faEye : faEyeSlash;
 
-  const onHide = (value: boolean) => updatePreference('hideGrades', value);
+  const onHide = (value: boolean) => {
+    updatePreference('hideGrades', value);
+    const message = value
+      ? 'coursesScreen.hiddenCredits'
+      : 'coursesScreen.visibleCredits';
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(t(message));
+    }, 200);
+  };
 
   return (
     <View
