@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, View } from 'react-native';
+import { AccessibilityInfo, Alert, Platform, View } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
@@ -64,6 +64,13 @@ const Menu = ({
         queryClient.invalidateQueries([LECTURES_QUERY_PREFIX]).then(() => {
           queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
         });
+        let message = '';
+        if (!isHidden) {
+          message = t('courseListItem.courseHidden');
+        } else {
+          message = t('courseListItem.courseShown');
+        }
+        AccessibilityInfo.announceForAccessibility(message);
       }}
     >
       {children}

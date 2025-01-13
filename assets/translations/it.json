@@ -589,6 +589,8 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms",
   },
   "courseListItem": {
+    "courseHidden": "Corso nascosto",
+    "courseShown": "Ora segui il corso",
     "settingsIcon": "Impostazioni corso, tramite il menu potrai impostare quali corsi seguire e quali no",
     "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
     "extra": "Extra carico",
