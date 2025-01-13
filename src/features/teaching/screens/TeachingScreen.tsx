@@ -104,7 +104,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
   const transcriptAccessibleLabel = useMemo(() => {
     if (hideGrades) {
-      return t('transcriptMetricsScreen.notShown');
+      return [
+        t('transcriptMetricsScreen.notShown'),
+        t('transcriptMetricsScreen.showDetails'),
+      ].join('. ');
     }
 
     const firstLabel =
