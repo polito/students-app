@@ -202,7 +202,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
       : 'coursesScreen.visibleCredits';
     setTimeout(() => {
       AccessibilityInfo.announceForAccessibility(t(message));
-    }, 200);
+    }, 500);
   };
 
   return (
@@ -423,7 +423,7 @@ const HideGrades = () => {
       : 'coursesScreen.visibleCredits';
     setTimeout(() => {
       AccessibilityInfo.announceForAccessibility(t(message));
-    }, 200);
+    }, 500);
   };
 
   return (

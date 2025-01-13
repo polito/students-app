@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccessibilityInfo, Alert, Platform } from 'react-native';
+import { AccessibilityInfo, Alert, Platform, Pressable } from 'react-native';
 import { stat } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
 
@@ -268,20 +268,23 @@ export const CourseFileListItem = memo(
       ],
     );
 
+    const accessibilityLabel = [
+      item.name ?? t('common.unnamedFile'),
+      metrics,
+      !isDownloaded
+        ? downloadProgress == null
+          ? t('common.downloadClick')
+          : t('common.stop')
+        : t('common.openClick'),
+      IS_IOS ? t('courseFilesTab.longPress') : '',
+    ].join(', ');
+
     const listItem = (
       <FileListItem
         {...rest}
         accessible
         accessibilityRole="button"
-        accessibilityLabel={[
-          item.name ?? t('common.unnamedFile'),
-          metrics,
-          !isDownloaded
-            ? downloadProgress == null
-              ? t('common.downloadClick')
-              : t('common.stop')
-            : t('common.openClick'),
-        ].join(', ')}
+        accessibilityLabel={accessibilityLabel}
         onPress={downloadFile}
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
@@ -296,13 +299,18 @@ export const CourseFileListItem = memo(
 
     if (IS_IOS) {
       return (
-        <Menu
-          shouldOpenOnLongPress
-          onRefreshDownload={refreshDownload}
-          onRemoveDownload={removeDownload}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={accessibilityLabel}
         >
-          {listItem}
-        </Menu>
+          <Menu
+            shouldOpenOnLongPress
+            onRefreshDownload={refreshDownload}
+            onRemoveDownload={removeDownload}
+          >
+            {listItem}
+          </Menu>
+        </Pressable>
       );
     }
 

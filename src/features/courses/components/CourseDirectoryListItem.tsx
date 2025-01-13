@@ -32,6 +32,7 @@ export const CourseDirectoryListItem = ({
         t('courseDirectoryListItem.subtitle', {
           count: item.files.length,
         }),
+        t('courseFilesTab.openDirectory'),
       ].join(', ')}
       title={item.name}
       subtitle={t('courseDirectoryListItem.subtitle', {

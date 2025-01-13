@@ -557,6 +557,8 @@
     "downloadPending": "Download in corso",
   },
   "courseFilesTab": {
+    "openDirectory": "Doppio click per aprire la cartella",
+    "longPress": "Premi a lungo per aprire il menu tramite il quale potrai aggiornare o eliminare il file",
     "browseFiles": "Esplora file",
     "empty": "Non ci sono file qui",
     "navigateFolders": "Sfoglia le cartelle",
@@ -629,7 +631,7 @@
   "coursesScreen": {
     "hiddenCredits" : "Crediti nascosti",
     "visibleCredits" : "Crediti visibili",
-    "longPress" :  "Su questo pulsante tramite un onPress potrai aprire un men che ti permetterà di seguire o non seguire il corso",
+    "longPress" :  "Su questo pulsante premendo a lungo potrai aprire un men che ti permetterà di seguire o non seguire il corso",
     "emptyState": "Non ci sono corsi",
     "otherCoursesSectionTitle": "Altri corsi",
     "title": "Corsi",
