@@ -500,7 +500,9 @@
     "unread" : "Non letto",
     "directory" : "Cartella",
     "retracted": "Ritirato",
-    "note" : "Note"
+    "note" : "Note",
+    "activated" : "Attivato",
+    "deactivated" : "Disattivato",
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
