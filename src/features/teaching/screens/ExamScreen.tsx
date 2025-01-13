@@ -30,7 +30,10 @@ import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { useGetCpdSurveys } from '../../../core/queries/surveysHooks';
+import {
+  useGetAllCpdSurveys,
+  useGetCpdSurveys,
+} from '../../../core/queries/surveysHooks';
 import {
   formatDate,
   formatDateTime,
@@ -51,7 +54,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
-  const cpdSurveysQuery = useGetCpdSurveys();
+  const cpdSurveysQuery = useGetAllCpdSurveys();
+  const cpd = useGetCpdSurveys();
+  // console.log(">",cpdSurveysQuery.data)
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
@@ -100,12 +105,19 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   useLayoutEffect(() => {
     if (!cpdSurveysQuery.data || !exam) return;
 
-    const requirements = cpdSurveysQuery.data.filter(
-      s =>
-        (s.type.id === 'CPDPERIODO' ||
+    const getPeriodo = cpdSurveysQuery.data.filter(s => {
+      return s.type.id === 'STUDENTE' && s.course?.id === exam.courseId;
+    });
+
+    const requirements = cpdSurveysQuery.data.filter(s => {
+      return (
+        ((s.type.id === 'CPDPERIODO' &&
+          getPeriodo.filter(g => g.period === s.period).length > 0) ||
           (s.type.id === 'STUDENTE' && s.course?.id === exam.courseId)) &&
-        !s.isCompiled,
-    );
+        !s.isCompiled
+      );
+    });
+
     if (!requirements.length) return;
     showBottomModal(
       <ExamCpdModalContent surveys={requirements} close={closeBottomModal} />,
