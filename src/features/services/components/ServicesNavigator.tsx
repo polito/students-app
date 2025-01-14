@@ -40,6 +40,7 @@ import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
+import { QrCodeScreen } from '../screens/QrCodeScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 
 export type OfferingStackParamList = SharedScreensParamList & {
@@ -345,6 +346,14 @@ export const ServicesNavigator = () => {
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="QrCode"
+        component={QrCodeScreen}
+        options={{
+          headerTitle: 'QR Code' /* implementare traduzione*/,
+          headerLargeTitle: false,
         }}
       />
       {SharedScreens(Stack as any)}

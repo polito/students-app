@@ -13,6 +13,7 @@ import {
   faMobileScreenButton,
   faNewspaper,
   faPersonCirclePlus,
+  faQrcode,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { Grid, auto } from '@lib/ui/components/Grid';
@@ -136,6 +137,15 @@ export const ServicesScreen = () => {
         icon: faClipboardQuestion,
         disabled: isOffline,
         linkTo: { screen: 'Surveys' },
+      },
+      {
+        id: 'qrcode',
+        name: 'Qr Code', // implementare traduzione
+        icon: faQrcode,
+        disabled: isOffline,
+        linkTo: {
+          screen: 'QrCode',
+        },
       },
       {
         id: 'mail',
