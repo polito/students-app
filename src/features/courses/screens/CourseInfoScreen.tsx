@@ -33,7 +33,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { IS_IOS } from '../../../core/constants';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import {
   CourseSectionEnum,
   getCourseKey,
@@ -57,6 +59,10 @@ export const CourseInfoScreen = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
+  const { isScreenReaderEnabled, announce } = useScreenReader();
+  const [isScreenReaderEnabledValue, setIsScreenReaderEnabledValue] =
+    useState(false);
+
   const courseExamsQuery = useGetCourseExams(
     courseId,
     courseQuery.data?.shortcode,
@@ -68,6 +74,14 @@ export const CourseInfoScreen = () => {
   const isOffline = useOfflineDisabled();
 
   const { getParent } = useNavigation();
+
+  useEffect(() => {
+    isScreenReaderEnabled().then(isEnabled => {
+      if (isEnabled) {
+        setIsScreenReaderEnabledValue(isEnabled);
+      }
+    });
+  }, [announce, isScreenReaderEnabled, t]);
 
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
@@ -115,6 +129,66 @@ export const CourseInfoScreen = () => {
     t,
   ]);
 
+  const CoursesRow = (
+    <View
+      style={GlobalStyles.grow}
+      importantForAccessibility="yes"
+      accessibilityRole="button"
+      accessible={true}
+    >
+      <View accessible accessibilityLabel={editionAccessibleLabel}>
+        <StatefulMenuView
+          actions={editions ?? []}
+          onPressAction={async ({ nativeEvent: { event } }) => {
+            // replace current screen with same screen with event id as param
+            (
+              getParent()! as NativeStackNavigationProp<
+                TeachingStackParamList,
+                'Course'
+              >
+            ).replace('Course', {
+              id: +event,
+              animated: false,
+            });
+          }}
+        >
+          <Row justify="flex-start" align="center">
+            <Metric
+              title={t('common.period')}
+              value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
+                courseQuery.data?.year ?? '--'
+              }`}
+              accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
+                courseQuery.data?.teachingPeriod ?? '--'
+              } - ${courseQuery.data?.year ?? '--'}`}
+            />
+            {(editions?.length ?? 0) > 0 && (
+              <Icon
+                icon={faAngleDown}
+                size={14}
+                style={styles.periodDropdownIcon}
+                color={styles.periodDropdownIcon.color}
+              />
+            )}
+          </Row>
+        </StatefulMenuView>
+      </View>
+    </View>
+  );
+
+  const CreditsRow = (
+    <Metric
+      title={t('courseInfoTab.creditsLabel')}
+      value={t('common.creditsWithUnit', {
+        credits: courseQuery.data?.cfu,
+      })}
+      accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
+        courseQuery.data?.cfu
+      }`}
+      style={GlobalStyles.grow}
+    />
+  );
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -139,64 +213,25 @@ export const CourseInfoScreen = () => {
           <ScreenTitle title={courseQuery.data?.name} />
           <Text variant="caption">{courseQuery.data?.shortcode ?? ' '}</Text>
         </Section>
-        <Card style={styles.metricsCard} accessible={true}>
-          <Grid>
-            <View
-              style={GlobalStyles.grow}
-              importantForAccessibility="yes"
-              accessibilityRole="button"
-              accessible={true}
-            >
-              <View accessible accessibilityLabel={editionAccessibleLabel}>
-                <StatefulMenuView
-                  actions={editions ?? []}
-                  onPressAction={async ({ nativeEvent: { event } }) => {
-                    // replace current screen with same screen with event id as param
-                    (
-                      getParent()! as NativeStackNavigationProp<
-                        TeachingStackParamList,
-                        'Course'
-                      >
-                    ).replace('Course', {
-                      id: +event,
-                      animated: false,
-                    });
-                  }}
-                >
-                  <Row justify="flex-start" align="center">
-                    <Metric
-                      title={t('common.period')}
-                      value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
-                        courseQuery.data?.year ?? '--'
-                      }`}
-                      accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
-                        courseQuery.data?.teachingPeriod ?? '--'
-                      } - ${courseQuery.data?.year ?? '--'}`}
-                    />
-                    {(editions?.length ?? 0) > 0 && (
-                      <Icon
-                        icon={faAngleDown}
-                        size={14}
-                        style={styles.periodDropdownIcon}
-                        color={styles.periodDropdownIcon.color}
-                      />
-                    )}
-                  </Row>
-                </StatefulMenuView>
-              </View>
-            </View>
-            <Metric
-              title={t('courseInfoTab.creditsLabel')}
-              value={t('common.creditsWithUnit', {
-                credits: courseQuery.data?.cfu,
-              })}
-              accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
-                courseQuery.data?.cfu
-              }`}
-              style={GlobalStyles.grow}
-            />
-          </Grid>
-        </Card>
+        {/* this is for ios accessibility*/}
+        {isScreenReaderEnabledValue && IS_IOS && (
+          <View>
+            <Card style={styles.metricsCard} accessible={true}>
+              {CoursesRow}
+            </Card>
+            <Card style={styles.metricsCard} accessible={true}>
+              {CreditsRow}
+            </Card>
+          </View>
+        )}
+        {(!isScreenReaderEnabledValue || !IS_IOS) && (
+          <Card style={styles.metricsCard} accessible={true}>
+            <Grid>
+              {CoursesRow}
+              {CreditsRow}
+            </Grid>
+          </Card>
+        )}
         {/*  <Section>
           <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
           <OverviewList emptyStateText={t('common.comingSoon')}></OverviewList>
