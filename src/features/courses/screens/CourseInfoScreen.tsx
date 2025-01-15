@@ -33,7 +33,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { IS_IOS } from '../../../core/constants';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useScreenReader } from '../../../core/hooks/useScreenReader';
 import {
@@ -214,7 +213,7 @@ export const CourseInfoScreen = () => {
           <Text variant="caption">{courseQuery.data?.shortcode ?? ' '}</Text>
         </Section>
         {/* this is for ios accessibility*/}
-        {isScreenReaderEnabledValue && IS_IOS && (
+        {isScreenReaderEnabledValue && (
           <View>
             <Card style={styles.metricsCard} accessible={true}>
               {CoursesRow}
@@ -224,7 +223,7 @@ export const CourseInfoScreen = () => {
             </Card>
           </View>
         )}
-        {(!isScreenReaderEnabledValue || !IS_IOS) && (
+        {!isScreenReaderEnabledValue && (
           <Card style={styles.metricsCard} accessible={true}>
             <Grid>
               {CoursesRow}
