@@ -27,7 +27,9 @@ import {
   faEllipsis,
   faExpand,
   faMagnifyingGlassLocation,
+  faMap,
 } from '@fortawesome/free-solid-svg-icons';
+import { Col } from '@lib/ui/components/Col.tsx';
 import { Divider } from '@lib/ui/components/Divider';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
@@ -77,7 +79,7 @@ type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 export const PlacesScreen = ({ navigation, route }: Props) => {
   const { categoryId, subCategoryId } = route.params ?? {};
   const styles = useStylesheet(createStyles);
-  const { spacing, fontSizes } = useTheme();
+  const { spacing, fontSizes, colors } = useTheme();
   const { t } = useTranslation();
   const placeCategory = useGetPlaceCategory(categoryId);
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
@@ -280,6 +282,37 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       ) ?? [],
     [listPlaces, placesSearched, searchPlaceToListItem],
   );
+
+  if (isLoadingPlaces) {
+    return (
+      <Col flexGrow={1} align="center" justify="center">
+        <TranslucentCard ph={6} pv={10}>
+          <Col align="center" gap={1}>
+            <Icon
+              icon={faMap}
+              color={colors.secondaryText}
+              size={fontSizes['3xl']}
+              style={styles.loadingIcon}
+            />
+
+            <Text
+              style={{ textAlign: 'center', color: colors.secondaryText }}
+              variant="heading"
+            >
+              {t('placesScreen.unwrappingMap')}
+            </Text>
+
+            <Text
+              style={{ textAlign: 'center', fontSize: fontSizes.xs }}
+              variant="secondaryText"
+            >
+              {t('common.mightTakeAWhile')}
+            </Text>
+          </Col>
+        </TranslucentCard>
+      </Col>
+    );
+  }
 
   return (
     <View
