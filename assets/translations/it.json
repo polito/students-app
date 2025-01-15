@@ -541,8 +541,8 @@
   "courseAssignmentsTab": {
     "emptyState": "Non ci sono elaborati",
     "title": "Elaborati",
-    "menuInfo": "Impostazione elaborati, tramite il menu potrai impostare quali elaborati ritirare"
-
+    "menuInfo": "Impostazione elaborati, tramite il menu potrai impostare quali elaborati ritirare",
+    "longPress": "Premi a lungo per aprire il menu tramite il quale potrai ritirare l'elaborato"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",

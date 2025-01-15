@@ -16,6 +16,7 @@ import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { IS_IOS } from '../../../core/constants';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
@@ -81,6 +82,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
                         assignment.sizeInKiloBytes,
                       )} - ${formatDateTime(assignment.uploadedAt)}`,
                       t('common.downloadClick'),
+                      IS_IOS ? t('courseAssignmentsTab.longPress') : '',
                     ].join(', ')}
                   >
                     <CourseAssignmentListItem
