@@ -14,7 +14,6 @@ import { formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
-  accessibilityListLabel?: string;
 }
 
 const Menu = ({
@@ -51,7 +50,6 @@ const Menu = ({
 
 export const CourseAssignmentListItem = ({
   item,
-  accessibilityListLabel,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const { colors, spacing, fontSizes } = useTheme();
@@ -71,13 +69,6 @@ export const CourseAssignmentListItem = ({
             item.deletedAt != null ? 'line-through' : undefined,
         }}
         subtitle={subTitle}
-        accessible
-        accessibilityRole="button"
-        accessibilityLabel={`    
-        ${accessibilityListLabel}. ${item.description},    
-        ${item.deletedAt ? t('common.retracted') : ''},               
-        ${subTitle} , 
-        ${t('common.downloadClick')}`}
         mimeType={item.mimeType}
         trailingItem={
           item.deletedAt == null
@@ -111,15 +102,7 @@ export const CourseAssignmentListItem = ({
         {...rest}
       />
     ),
-    [
-      item,
-      subTitle,
-      accessibilityListLabel,
-      spacing,
-      colors.secondaryText,
-      fontSizes.xl,
-      rest,
-    ],
+    [item, subTitle, spacing, colors.secondaryText, fontSizes.xl, rest],
   );
 
   if (Platform.OS === 'ios') {

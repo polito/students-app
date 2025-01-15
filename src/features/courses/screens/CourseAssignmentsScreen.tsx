@@ -1,6 +1,11 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccessibilityInfo, SafeAreaView, ScrollView } from 'react-native';
+import {
+  AccessibilityInfo,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 
 import { faFileLines } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -14,6 +19,8 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
+import { formatDateTime } from '../../../utils/dates';
+import { formatFileSize } from '../../../utils/files';
 import { CourseAssignmentListItem } from '../components/CourseAssignmentListItem';
 import { useCourseContext } from '../contexts/CourseContext';
 import { CourseTabsParamList } from '../navigation/CourseNavigator';
@@ -59,15 +66,28 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
             (assignmentsQuery.data.length > 0 ? (
               <List indented>
                 {assignmentsQuery.data.map((assignment, index) => (
-                  <CourseAssignmentListItem
+                  // this pressable is for ios accessibility
+                  <Pressable
                     key={assignment.id}
-                    item={assignment}
-                    accessibilityListLabel={accessibilityListLabel(
-                      index,
-                      assignmentsQuery.data.length,
-                    )}
-                    disabled={isDisabled}
-                  />
+                    accessibilityRole="button"
+                    accessibilityLabel={[
+                      accessibilityListLabel(
+                        index,
+                        assignmentsQuery.data.length,
+                      ),
+                      assignment.description,
+                      assignment.deletedAt ? t('common.retracted') : '',
+                      `${formatFileSize(
+                        assignment.sizeInKiloBytes,
+                      )} - ${formatDateTime(assignment.uploadedAt)}`,
+                      t('common.downloadClick'),
+                    ].join(', ')}
+                  >
+                    <CourseAssignmentListItem
+                      item={assignment}
+                      disabled={isDisabled}
+                    />
+                  </Pressable>
                 ))}
               </List>
             ) : (
