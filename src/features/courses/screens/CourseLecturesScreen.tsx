@@ -120,12 +120,15 @@ export const CourseLecturesScreen = () => {
         item => item?.isExpanded && item?.data?.length > 0,
       );
       const hasAllNoExpanded = _.every(lectures, item => !item?.isExpanded);
-      if (!hasExpandedWithData && !hasAllNoExpanded) {
+      if (
+        (!hasExpandedWithData && !hasAllNoExpanded) ||
+        lectures?.length === 0
+      ) {
         setTimeout(() => {
           AccessibilityInfo.announceForAccessibility(
             t('courseLecturesTab.emptyState'),
           );
-        }, 500);
+        }, 1000);
       }
     }, [lectures]),
   );
