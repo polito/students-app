@@ -191,6 +191,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               />
             )}
             <ListItem
+              accessible
+              accessibilityLabel={[
+                t('examScreen.bookingEndsAt'),
+                exam?.bookingEndsAt
+                  ? formatDateTime(exam?.bookingEndsAt)
+                  : t('common.dateToBeDefined'),
+              ].join(', ')}
               leadingItem={
                 <Icon icon={faHourglassEnd} size={fontSizes['2xl']} />
               }
@@ -215,6 +222,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             />
 
             <ListItem
+              accessible
+              accessibilityLabel={[
+                t('examScreen.bookedCount'),
+                exam?.bookedCount !== undefined
+                  ? getExam(exam.bookedCount, exam.availableCount)
+                  : t('examScreen.noBookedCount'),
+              ].join(', ')}
               leadingItem={<Icon icon={faUsers} size={fontSizes['2xl']} />}
               inverted
               /* check using undefined since the fields can be 0 */
