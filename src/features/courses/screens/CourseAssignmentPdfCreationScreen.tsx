@@ -152,7 +152,7 @@ export const CourseAssignmentPdfCreationScreen = ({
           },
         });
       })
-      .catch(e =>
+      .catch((e: Error) =>
         setFeedback({
           text: t('courseAssignmentPdfCreationScreen.failureFeedback', {
             reason: e.message,

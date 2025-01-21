@@ -24,10 +24,12 @@ export const CarouselDots = ({
       currentIndex={carouselIndex}
       maxIndicators={expandedDotsCounts}
       activeIndicatorConfig={{
+        size: 10,
         ...styles.indicator,
         ...styles.activeIndicator,
       }}
       inactiveIndicatorConfig={{
+        size: 10,
         ...styles.indicator,
         ...styles.inactiveIndicator,
       }}
@@ -58,7 +60,6 @@ const createStyles = ({ palettes, dark }: Theme) =>
     indicator: {
       margin: 3,
       opacity: 1,
-      size: 10,
     },
     activeIndicator: {
       color: palettes.navy[500],
