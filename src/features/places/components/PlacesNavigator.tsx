@@ -156,7 +156,7 @@ export const PlacesNavigator = () => {
           mapDefaultOptions: {
             camera: {
               animationDuration: 2000,
-              animationMode: 'easeTo',
+              animationMode: 'flyTo',
               maxZoomLevel: MAX_ZOOM,
             },
             attributionEnabled: false,
