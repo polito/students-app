@@ -180,7 +180,7 @@ export const useDownloadCourseFile = (
 
   const openFile = useCallback(
     () =>
-      open(toFile).catch(async e => {
+      open(toFile).catch(async (e: Error) => {
         if (e.message === 'No app associated with this mime type') {
           throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
         }
