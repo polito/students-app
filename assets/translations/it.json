@@ -727,16 +727,26 @@
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
-    "estimatedFinalGrade": "Voto di laurea",
-    "estimatedFinalGradePurged": "Voto di laurea depurato",
-    "finalAverageLabel": "Media depurata",
-    "masterAdmissionAverage": "Media di ammissione al secondo livello",
+    "averageLabel": "Media di ammissione all’esame di laurea",
+    "finalAverageLabelDescription":{
+      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} crediti peggiori",
+      "formula": "Media di ammissione all’esame di laurea = sommatoria (voto * crediti)/sommatoria crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
+    },
+    "laude": "*Le lodi non concorrono al calcolo",
+    "masterAdmissionAverage": "Media di ammissione al II liv",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degni n crediti peggiori\n(per conoscere n consulta la Guida Studenti)",
+      "formula":"Media di ammissione II liv = sommatoria (voto * crediti)/sommatoria crediti\n(escludendo gli n peggiori crediti)"
+    },
+    "NB": "NB",
+    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consultare la Guida Studenti del proprio corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
-    "weightedAverageLabel": "Media ponderata",
-    "yourCareer": "La tua carriera",
-    "finalAverageLabelDescription": "Media complessiva depurata dei {{-separation}} crediti peggiori",
-    "weightedAverageLabelDescription":"È la media pesata in funzione dei crediti relativi ad ogni esame con voto (le lodi non concorrono al calcolo) \nMedia ponderata = sommatoria (voto * crediti)/sommatoria crediti"
+    "weightedAverageLabelDescription":{
+      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
+      "formula": "Media ponderata = sommatoria (voto * crediti)/sommatoria crediti"
+    },
+    "yourCareer": "La tua carriera"
   },
   "videoControls": {
     "changePlaybackRate": "Cambia velocità di riproduzione",

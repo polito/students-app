@@ -41,6 +41,7 @@ export const CareerScreen = () => {
     totalCredits,
     mastersAdmissionAverageGrade,
     excludedCreditsNumber,
+    usePurgedAverageFinalGrade,
   } = studentQuery.data ?? {};
 
   const {
@@ -54,25 +55,64 @@ export const CareerScreen = () => {
       <CareerScreenModal
         title={t('transcriptMetricsScreen.averagesAndGrades')}
         itemList={[
-          {
-            title: t('transcriptMetricsScreen.weightedAverageLabel'),
-            content: t(
-              'transcriptMetricsScreen.weightedAverageLabelDescription',
-            ),
-          },
-          {
-            title: t('transcriptMetricsScreen.finalAverageLabel'),
-            content: t('transcriptMetricsScreen.finalAverageLabelDescription', {
-              separation: excludedCreditsNumber,
-            }),
-          },
+          usePurgedAverageFinalGrade
+            ? {
+                title: t('transcriptMetricsScreen.averageLabel'),
+                content: {
+                  description: t(
+                    'transcriptMetricsScreen.finalAverageLabelDescription.description',
+                    {
+                      excludedCreditsNumber: excludedCreditsNumber,
+                    },
+                  ),
+                  formula: t(
+                    'transcriptMetricsScreen.finalAverageLabelDescription.formula',
+                    {
+                      excludedCreditsNumber: excludedCreditsNumber,
+                    },
+                  ),
+                },
+                dot: true,
+              }
+            : {
+                title: t('transcriptMetricsScreen.averageLabel'),
+                content: {
+                  description: t(
+                    'transcriptMetricsScreen.weightedAverageLabelDescription.description',
+                  ),
+                  formula: t(
+                    'transcriptMetricsScreen.weightedAverageLabelDescription.formula',
+                  ),
+                },
+                dot: true,
+              },
           mastersAdmissionAverageGrade
             ? {
                 title: t('transcriptMetricsScreen.masterAdmissionAverage'),
-                content:
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                content: {
+                  description: t(
+                    'transcriptMetricsScreen.masterAdmissionAverageLabelDescription.description',
+                  ),
+                  formula: t(
+                    'transcriptMetricsScreen.masterAdmissionAverageLabelDescription.formula',
+                  ),
+                },
+                dot: true,
               }
-            : { title: '', content: '' },
+            : { title: '', content: { description: '' }, dot: false },
+          {
+            content: {
+              description: t('transcriptMetricsScreen.laude'),
+            },
+            dot: false,
+          },
+          {
+            title: t('transcriptMetricsScreen.NB'),
+            content: {
+              description: t('transcriptMetricsScreen.NBDescription'),
+            },
+            dot: false,
+          },
         ]}
         onDismiss={closeBottomModal}
       />,
@@ -189,60 +229,39 @@ export const CareerScreen = () => {
               <Col>
                 <Row>
                   <Text style={styles.title}>
-                    {t('transcriptMetricsScreen.weightedAverageLabel')}
+                    {t('transcriptMetricsScreen.averageLabel')}
                   </Text>
                 </Row>
-                <Row style={styles.row}>
-                  <Metric
-                    value={formatThirtiethsGrade(
-                      studentQuery.data?.averageGrade,
-                    )}
-                    style={GlobalStyles.grow}
-                  />
+                <Row>
                   <Metric
                     value={formatFinalGrade(
-                      studentQuery.data?.estimatedFinalGrade,
+                      usePurgedAverageFinalGrade
+                        ? studentQuery.data?.estimatedFinalGradePurged
+                        : studentQuery.data?.estimatedFinalGrade,
                     )}
                     color={palettes.primary[400]}
                     style={GlobalStyles.grow}
                   />
                 </Row>
-                <Row>
-                  <Text style={styles.title}>
-                    {t('transcriptMetricsScreen.finalAverageLabel')}
-                  </Text>
-                </Row>
-                <Row>
-                  {studentQuery.data?.averageGradePurged && (
-                    <Metric
-                      value={formatThirtiethsGrade(
-                        studentQuery.data.averageGradePurged,
-                      )}
-                      style={GlobalStyles.grow}
-                    />
-                  )}
 
-                  {studentQuery.data?.estimatedFinalGradePurged && (
-                    <Metric
-                      value={formatFinalGrade(
-                        studentQuery.data.estimatedFinalGradePurged,
-                      )}
-                      color={palettes.primary[400]}
-                      style={GlobalStyles.grow}
-                    />
-                  )}
-                </Row>
+                {studentQuery.data?.mastersAdmissionAverageGrade && (
+                  <>
+                    <Row style={styles.additionalMetric}>
+                      <Text style={styles.title}>
+                        {t('transcriptMetricsScreen.masterAdmissionAverage')}
+                      </Text>
+                    </Row>
+                    <Row>
+                      <Metric
+                        value={formatThirtiethsGrade(
+                          studentQuery.data?.mastersAdmissionAverageGrade,
+                        )}
+                        style={GlobalStyles.grow}
+                      />
+                    </Row>
+                  </>
+                )}
               </Col>
-
-              {studentQuery.data?.mastersAdmissionAverageGrade && (
-                <Metric
-                  title={t('transcriptMetricsScreen.masterAdmissionAverage')}
-                  value={formatThirtiethsGrade(
-                    studentQuery.data.mastersAdmissionAverageGrade,
-                  )}
-                  style={[GlobalStyles.grow, styles.additionalMetric]}
-                />
-              )}
             </Card>
           </Section>
           <BottomBarSpacer />
@@ -278,11 +297,8 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
     grade: {
       marginLeft: spacing[2],
     },
-    row: {
-      marginBottom: spacing[4],
-    },
     title: {
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
+      fontWeight: fontWeights.normal,
     },
   });
