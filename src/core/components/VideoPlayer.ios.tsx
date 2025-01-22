@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import Video, { ReactVideoProps } from 'react-native-video';
 
@@ -14,19 +14,32 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   const { width } = useWindowDimensions();
   const { addListener } = useNavigation();
   const [paused, setPaused] = useState(false);
+  const [isPiP, setIsPiP] = useState(false);
 
   useEffect(() => {
     return addListener('blur', () => {
+      if (isPiP) return;
       setPaused(false);
       setTimeout(() => {
         setPaused(true);
       });
     });
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPiP]);
+
+  const onPictureInPictureStatusChanged = useCallback(
+    ({ isActive }: { isActive: boolean }) => {
+      setIsPiP(isActive);
+    },
+    [],
+  );
 
   return (
     <Video
+      onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
+      playInBackground
       ignoreSilentSwitch="ignore"
+      pictureInPicture
       paused={paused}
       controls={true}
       style={{
