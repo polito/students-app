@@ -757,7 +757,7 @@
     "title": "Carriera",
     "weightedAverageLabelDescription":{
       "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
-      "formula": "Media ponderata = sommatoria (voto * crediti)/sommatoria crediti"
+      "formula": "Media di ammissione all’esame di laurea = sommatoria (voto * crediti)/sommatoria crediti"
     },
     "yourCareer": "La tua carriera"
   },

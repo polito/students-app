@@ -756,7 +756,7 @@
     "title": "Career",
     "weightedAverageLabelDescription":{
       "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
-      "formula": "Weighted average = summation (grade * credits)/summation of credits"
+      "formula": "Average admission to the degree exam = summation (grade * credits)/summation of credits"
     },
     "yourCareer": "Your career"
   },
