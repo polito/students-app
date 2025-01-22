@@ -240,7 +240,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       </ScrollView>
       <CtaButtonContainer absolute={true}>
         {exam?.isReschedulable &&
-          exam?.status !== ExamStatusEnum.Requestable &&
+          exam?.status === ExamStatusEnum.Available &&
           exam && <ExamRescheduleCTA exam={exam} />}
         {exam && <ExamCTA exam={exam} absolute={false} />}
       </CtaButtonContainer>
