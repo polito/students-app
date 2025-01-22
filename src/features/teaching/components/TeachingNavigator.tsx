@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ExamGrade } from '@polito/api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -23,6 +24,7 @@ import { PlacesStackParamList } from '../../places/components/PlacesNavigator';
 import { CpdSurveysScreen } from '../../surveys/screens/CpdSurveysScreen';
 import { TranscriptTopTabsNavigator } from '../../transcript/navigation/TranscriptTopTabsNavigator';
 import { ProvisionalGradeScreen } from '../../transcript/screens/ProvisionalGradeScreen';
+import { RecordedGradeScreen } from '../../transcript/screens/RecordedGradeScreen';
 import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
 import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamScreen } from '../screens/ExamScreen';
@@ -40,6 +42,7 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     MessagesModal: undefined;
     Transcript: undefined;
     ProvisionalGrade: { id: number };
+    RecordedGrade: { grade: ExamGrade };
     OnboardingModal: undefined;
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
@@ -132,6 +135,15 @@ export const TeachingNavigator = () => {
         component={ProvisionalGradeScreen}
         options={{
           headerTitle: t('transcriptGradeScreen.title'),
+          headerLargeTitle: false,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="RecordedGrade"
+        component={RecordedGradeScreen}
+        options={{
+          headerTitle: t('recordedGradeScreen.recordedGradeTitle'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}

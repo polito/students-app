@@ -22,13 +22,17 @@ import {
   useGetStudent,
 } from '../../../core/queries/studentHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
+import {
+  formatExamOnTime,
+  formatFinalGrade,
+  formatThirtiethsGrade,
+} from '../../../utils/grades';
 import { ProgressChart } from '../../teaching/components/ProgressChart';
 import { CareerScreenModal } from '../components/CareerScreenModal';
 
 export const CareerScreen = () => {
   const { t } = useTranslation();
-  const { palettes, colors } = useTheme();
+  const { palettes, colors, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const studentQuery = useGetStudent();
   const gradesQuery = useGetGrades();
@@ -42,6 +46,8 @@ export const CareerScreen = () => {
     mastersAdmissionAverageGrade,
     excludedCreditsNumber,
     usePurgedAverageFinalGrade,
+    totalOnTimeExamPoints,
+    maxOnTimeExamPoints,
   } = studentQuery.data ?? {};
 
   const {
@@ -50,7 +56,7 @@ export const CareerScreen = () => {
     close: closeBottomModal,
   } = useBottomModal();
 
-  const onPressEvent = () => {
+  const onPressAverageEvent = () => {
     showBottomModal(
       <CareerScreenModal
         title={t('transcriptMetricsScreen.averagesAndGrades')}
@@ -110,6 +116,24 @@ export const CareerScreen = () => {
             title: t('transcriptMetricsScreen.NB'),
             content: {
               description: t('transcriptMetricsScreen.NBDescription'),
+            },
+            dot: false,
+          },
+        ]}
+        onDismiss={closeBottomModal}
+      />,
+    );
+  };
+
+  const onPressPointEvent = () => {
+    showBottomModal(
+      <CareerScreenModal
+        title={t('transcriptMetricsScreen.pointTitle')}
+        itemList={[
+          {
+            title: t('transcriptMetricsScreen.onTimeScores'),
+            content: {
+              description: t('transcriptMetricsScreen.pointModal'),
             },
             dot: false,
           },
@@ -220,7 +244,7 @@ export const CareerScreen = () => {
             <SectionHeader
               title={t('transcriptMetricsScreen.averagesAndGrades')}
               trailingIcon={{
-                onPress: onPressEvent,
+                onPress: onPressAverageEvent,
                 icon: faQuestionCircle,
                 color: colors.link,
               }}
@@ -264,6 +288,29 @@ export const CareerScreen = () => {
               </Col>
             </Card>
           </Section>
+          {totalOnTimeExamPoints && maxOnTimeExamPoints && (
+            <Section>
+              <SectionHeader
+                title={t('transcriptMetricsScreen.pointTitle')}
+                trailingIcon={{
+                  onPress: onPressPointEvent,
+                  icon: faQuestionCircle,
+                  color: colors.link,
+                }}
+              />
+              <Card style={styles.metricsCard} accessible={true}>
+                <Metric
+                  title={t('transcriptMetricsScreen.onTimeScores')}
+                  value={formatExamOnTime(
+                    totalOnTimeExamPoints,
+                    maxOnTimeExamPoints,
+                  )}
+                  style={GlobalStyles.grow}
+                  color={palettes.success[dark ? 400 : 700]}
+                />
+              </Card>
+            </Section>
+          )}
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>

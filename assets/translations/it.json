@@ -598,6 +598,7 @@
     "noPlacesFound": "Nessun posto trovato",
     "searchCategories": "Cerca categorie",
     "title": "Luoghi",
+    "unwrappingMap": "Aprendo la mappa",
     "viewWholeCampus": "Vedi tutta la sede"
   },
   "placesSearchScreen": {
@@ -629,6 +630,15 @@
     "rejectGradeCta": "Rifiuta la valutazione entro:<br><b>{{hours}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"
+  },
+  "recordedGradeScreen": {
+    "additionalPoint": "Punteggio aggiuntivo",
+    "recordedGradeTitle": "Valutazione Registrata",
+    "staff": "Docente",
+    "teacher": "Titolare",
+    "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time  su carriera",
+    "titleOnTimePoint": "Esame on-time",
+    "ctaButtonModal": "Accedi alla tua cariera"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",
@@ -740,6 +750,9 @@
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consultare la Guida Studenti del proprio corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
+    "onTimeScores": "Punteggi on-time",
+    "pointTitle": "Punteggi",
+    "pointModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
     "weightedAverageLabelDescription":{
