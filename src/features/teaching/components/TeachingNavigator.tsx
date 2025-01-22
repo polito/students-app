@@ -25,6 +25,7 @@ import { TranscriptTopTabsNavigator } from '../../transcript/navigation/Transcri
 import { ProvisionalGradeScreen } from '../../transcript/screens/ProvisionalGradeScreen';
 import { ExamQuestionScreen } from '../screens/ExamQuestionScreen';
 import { ExamRequestScreen } from '../screens/ExamRequestScreen';
+import { ExamRescheduleScreen } from '../screens/ExamRescheduleScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
@@ -37,6 +38,7 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     Exam: { id: number };
     ExamQuestion: { id: number };
     ExamRequest: { id: number };
+    ExamReschedule: { id: number };
     MessagesModal: undefined;
     Transcript: undefined;
     ProvisionalGrade: { id: number };
@@ -111,6 +113,15 @@ export const TeachingNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.examCall'),
+        }}
+      />
+      <Stack.Screen
+        name="ExamReschedule"
+        component={ExamRescheduleScreen}
+        getId={({ params }) => `${params.id}`}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('examRescheduleScreen.screenTitle'),
         }}
       />
       <Stack.Screen
