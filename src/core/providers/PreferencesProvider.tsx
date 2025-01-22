@@ -77,7 +77,11 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
         const typedKey = key as PreferenceKey;
 
         if (objectPreferenceKeys.includes(key)) {
-          preferences[typedKey] = JSON.parse(value) ?? {};
+          (preferences[typedKey] as NonNullable<
+            (typeof preferences)[typeof typedKey]
+          >) = (JSON.parse(value) ?? {}) as NonNullable<
+            PreferencesContextProps[PreferenceKey]
+          >;
         } else {
           if (typedKey === 'language' && value === 'system') {
             preferences[typedKey] = deviceLanguage;
