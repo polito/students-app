@@ -727,16 +727,26 @@
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
-    "estimatedFinalGrade": "Final grade",
-    "estimatedFinalGradePurged": "Estimated final grade",
-    "finalAverageLabel": "Final average",
+    "averageLabel": "Average admission to the degree exam",
+    "finalAverageLabelDescription":{
+      "description":  "It is the average, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
+      "formula": "Average admission to the degree exam = summation (grade * credits)/sum of credits,\nexcluding the {{-excludedCreditsNumber}} worst credits"
+    },
+    "laude": "*Laude does not count toward the calculation",
     "masterAdmissionAverage": "Master admission average",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"It is the average, weighted according to the credits relating to each exam with grade*, adjusted for the worst credits\n(to find out more see the Student Guide)",
+      "formula":"Admission average II level = summation (grade * credits)/summation of credits\n(excluding the n worst credits)"
+    },
+    "NB": "NB",
+    "NBDescription": "These definitions are indicative. For details, consult the Student Guide for your course.\nOnly graded exams are considered in all averages above.",
     "thisYear": "This academic year",
     "title": "Career",
-    "weightedAverageLabel": "Weighted average",
-    "yourCareer": "Your career",
-    "finalAverageLabelDescription": "Adjusted total average of {{-separation}} worst",
-    "weightedAverageLabelDescription":"It is the average weighted according to the credits for each exam with a grade (the praise does not contribute to the calculation) \nWeighted average = summation (rating * credits) / summation credits"
+    "weightedAverageLabelDescription":{
+      "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
+      "formula": "Weighted average = summation (grade * credits)/summation of credits"
+    },
+    "yourCareer": "Your career"
   },
   "videoControls": {
     "changePlaybackRate": "Change playback rate",
