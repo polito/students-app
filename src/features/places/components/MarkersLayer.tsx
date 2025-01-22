@@ -3,20 +3,17 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { PlaceOverview } from '@polito/api-client';
+import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { capitalize } from 'lodash';
 
-import { CATEGORIES_DATA, SUBCATEGORIES_INITIALLY_SHOWN } from '../constants';
-import {
-  CategoryData,
-  PlaceOverviewWithMetadata,
-  SearchPlace,
-  isPlace,
-} from '../types';
-import { useFormatAgendaItem } from '../utils/formatAgendaItem';
+import { notNullish } from '../../../utils/predicates';
+import { DEFAULT_CATEGORY_MARKER } from '../constants';
+import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
+import { SearchPlace, isPlace } from '../types';
 
 export interface MarkersLayerProps {
   selectedPoiId?: string;
@@ -39,144 +36,164 @@ export const MarkersLayer = ({
 }: MarkersLayerProps) => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
-  const { dark, fontSizes, palettes } = useTheme();
-  const formatAgendaItem = useFormatAgendaItem();
-  const pois = useMemo((): (SearchPlace & CategoryData)[] => {
+  const { dark, fontSizes } = useTheme();
+  const placeCategoriesMap = usePlaceCategoriesMap();
+  const pois = useMemo((): (SearchPlace &
+    PlaceCategory & { siteId: string })[] => {
+    if (!placeCategoriesMap) {
+      return [];
+    }
     let result = places;
     if (!search) {
       result = result?.filter(
         p =>
           selectedPoiId === p.id ||
-          (categoryId != null &&
-            (p as PlaceOverviewWithMetadata).category?.id === categoryId) ||
+          (categoryId != null && p.category.id === categoryId) ||
           (subCategoryId != null &&
-            (p as PlaceOverviewWithMetadata).category?.subCategory.id ===
-              subCategoryId) ||
+            (!p.category.subCategory?.id ||
+              p.category.subCategory.id === subCategoryId)) ||
           (p.category.id === 'UFF'
-            ? !!(p as PlaceOverviewWithMetadata).room?.name
-            : (p as PlaceOverviewWithMetadata).category?.subCategory.id &&
-              SUBCATEGORIES_INITIALLY_SHOWN.includes(
-                (p as PlaceOverviewWithMetadata).category?.subCategory.id,
-              )),
+            ? !!(p as PlaceOverview).room.name
+            : !p.category.subCategory?.id ||
+              !!placeCategoriesMap[p.category.subCategory.id]?.highlighted),
       );
     }
     return result?.map(poi => {
-      const categoryData = (poi as PlaceOverviewWithMetadata).category?.id
-        ? CATEGORIES_DATA[
-            (poi as PlaceOverviewWithMetadata).category
-              .id as keyof typeof CATEGORIES_DATA
-          ] ?? CATEGORIES_DATA.default
-        : CATEGORIES_DATA.default;
-      const subcategoryData = (poi as PlaceOverviewWithMetadata).category
-        ?.subCategory?.id
-        ? (categoryData.children[
-            (poi as PlaceOverviewWithMetadata).category.subCategory
-              .id as keyof typeof categoryData.children
-          ] as any) ?? {}
-        : {};
+      const category = placeCategoriesMap[poi.category.id] ?? {};
+      const subcategory = poi.category.subCategory?.id
+        ? placeCategoriesMap[poi.category.subCategory.id]
+        : null;
+      const categoryData = {
+        ...category,
+        ...(subcategory ?? {}),
+      };
+      delete (categoryData as any).id;
+      delete (categoryData as any).name;
 
-      const markerData = {
+      return {
+        ...DEFAULT_CATEGORY_MARKER,
         ...poi,
         ...categoryData,
-        ...subcategoryData,
+        siteId: isPlace(poi) ? poi.site.id : poi.siteId,
         priority:
-          selectedPoiId === poi.id ||
-          (poi as PlaceOverviewWithMetadata).agendaItem != null
+          selectedPoiId === poi.id
             ? 0
-            : subcategoryData?.priority ?? categoryData.priority,
+            : subcategory?.priority ?? category.priority ?? 100,
       };
-      if (!markerData.icon) {
-        markerData.icon = 'pin';
-        markerData.color = 'gray';
-      }
-      return markerData;
     });
-  }, [categoryId, places, search, selectedPoiId, subCategoryId]);
+  }, [
+    categoryId,
+    placeCategoriesMap,
+    places,
+    search,
+    selectedPoiId,
+    subCategoryId,
+  ]);
+
+  if (!pois) {
+    return null;
+  }
 
   return (
-    pois && (
-      <ShapeSource
-        id="poisSource"
-        shape={{
-          type: 'FeatureCollection',
-          features: pois.map((p, i) => {
-            return {
-              type: 'Feature',
-              id: `poi-point-${p.id}`,
-              properties: {
-                dark,
-                index: i,
-                icon: p.icon,
-                priority: p.priority,
-                name: capitalize(
-                  isPlace(p)
-                    ? `${p.room.name ?? p.category.subCategory.name}${
-                        p.agendaItem != null
-                          ? `\n${formatAgendaItem(p.agendaItem, true)}`
-                          : displayFloor
-                          ? `\n${t('common.floor')} ${p.floor.level}`
-                          : ''
-                      }`
-                    : p.name,
-                ),
-                color:
-                  palettes[p.color as keyof Theme['palettes']][
-                    dark ? 200 : p.shade ?? 500
-                  ],
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: [p.longitude, p.latitude],
-              },
-            };
-          }),
-        }}
-        onPress={({ features }) => {
-          const selectedPoi = features?.[0]
-            ? pois?.[features[0].properties?.index]
-            : null;
-          if (selectedPoi) {
-            if (isCrossNavigation) {
-              if (navigation.getId() === 'AgendaTabNavigator') {
-                navigation.navigate('PlacesAgendaStack', {
-                  screen: 'Place',
-                  params: { placeId: selectedPoi.id, isCrossNavigation: true },
-                });
-              } else if (navigation.getId() === 'TeachingTabNavigator') {
-                navigation.navigate('PlacesTeachingStack', {
-                  screen: 'Place',
-                  params: { placeId: selectedPoi.id, isCrossNavigation: true },
-                });
-              }
-            } else {
-              navigation.navigate('PlacesTab', {
-                screen: 'Place',
-                params: { placeId: selectedPoi.id },
+    <ShapeSource
+      id="markersSource"
+      shape={{
+        type: 'FeatureCollection',
+        features: pois.map((p, i) => ({
+          type: 'Feature',
+          id: `poi-point-${p.id}`,
+          properties: {
+            dark,
+            index: i,
+            markerUrl: p.markerUrl,
+            priority: p.priority,
+            name: capitalize(
+              isPlace(p)
+                ? [
+                    p.room.name ??
+                      p.category.subCategory?.name ??
+                      p.category.name,
+                    displayFloor
+                      ? `${t('common.floor')} ${p.floor.level}`
+                      : null,
+                  ]
+                    .filter(notNullish)
+                    .join('\n')
+                : capitalize(p.name),
+            ),
+            color: p.color,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [p.longitude, p.latitude],
+          },
+        })),
+      }}
+      onPress={({ features }) => {
+        const selectedPoi = features?.[0]
+          ? pois?.[features[0].properties?.index]
+          : null;
+        if (selectedPoi) {
+          const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
+          if (isCrossNavigation) {
+            if (navigation.getId() === 'AgendaTabNavigator') {
+              navigation.navigate('PlacesAgendaStack', {
+                screen,
+                params:
+                  screen === 'Place'
+                    ? { placeId: selectedPoi.id, isCrossNavigation: true }
+                    : {
+                        siteId: selectedPoi.siteId,
+                        buildingId: selectedPoi.id,
+                      },
+              });
+            } else if (navigation.getId() === 'TeachingTabNavigator') {
+              navigation.navigate('PlacesTeachingStack', {
+                screen,
+                params:
+                  screen === 'Place'
+                    ? { placeId: selectedPoi.id, isCrossNavigation: true }
+                    : {
+                        siteId: selectedPoi.siteId,
+                        buildingId: selectedPoi.id,
+                      },
               });
             }
+          } else {
+            navigation.navigate('PlacesTab', {
+              screen,
+              params:
+                screen === 'Place'
+                  ? { placeId: selectedPoi.id }
+                  : {
+                      siteId: selectedPoi.siteId,
+                      buildingId: selectedPoi.id,
+                    },
+            });
           }
+        }
+      }}
+    >
+      <SymbolLayer
+        id="markers"
+        aboveLayerID="indoor"
+        // Theme-independent hardcoded color
+        // eslint-disable-next-line react-native/no-color-literals
+        style={{
+          iconImage: ['get', 'markerUrl'],
+          iconSize: 0.35,
+          symbolSortKey: ['get', 'priority'],
+          textField: ['get', 'name'],
+          textSize: fontSizes['2xs'],
+          textFont: ['Open Sans Semibold'],
+          textColor: ['get', 'color'],
+          textOffset: [0, 1.2],
+          textAnchor: 'top',
+          textOptional: true,
+          textHaloColor: 'white',
+          textHaloWidth: dark ? 0 : 0.8,
         }}
-      >
-        <SymbolLayer
-          id="markers"
-          // Theme-independent hardcoded color
-          // eslint-disable-next-line react-native/no-color-literals
-          style={{
-            iconImage: ['get', 'icon'],
-            iconSize: 0.35,
-            symbolSortKey: ['get', 'priority'],
-            textField: ['get', 'name'],
-            textSize: fontSizes['2xs'],
-            textFont: ['Open Sans Semibold'],
-            textColor: ['get', 'color'],
-            textOffset: [0, 1.2],
-            textAnchor: 'top',
-            textOptional: true,
-            textHaloColor: 'white',
-            textHaloWidth: dark ? 0 : 0.8,
-          }}
-        />
-      </ShapeSource>
-    )
+      />
+    </ShapeSource>
   );
 };

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
@@ -19,8 +18,6 @@ type RowProps = {
 };
 
 const GradeStateRow = ({ state, isActive = false }: RowProps) => {
-  const { t } = useTranslation();
-
   const styles = useStylesheet(createStyles);
   return (
     <Row ph={5} gap={5}>

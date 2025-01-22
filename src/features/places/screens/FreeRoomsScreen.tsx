@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -24,6 +25,9 @@ import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { PlaceOverview } from '@polito/api-client';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useHeaderHeight } from '@react-navigation/elements';
 
 import { last } from 'lodash';
 import { DateTime } from 'luxon';
@@ -34,19 +38,23 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatTime } from '../../../utils/dates';
 import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
-import { IndoorMapLayer } from '../components/IndoorMapLayer';
-import { MapScreenProps } from '../components/MapNavigator';
+import {
+  MapNavigationOptions,
+  MapScreenProps,
+} from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { FREE_ROOMS_TIME_WINDOW_SIZE_HOURS } from '../constants';
+import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
-import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
-import { PlaceOverviewWithMetadata, SearchPlace } from '../types';
+import { getBottomSheetScreenPadding } from '../utils/getBottomSheetScreenPadding';
+import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 
 type Props = MapScreenProps<PlacesStackParamList, 'FreeRooms'>;
 
 const slotStartHour = [19, 17, 16, 14, 13, 11, 10, 8];
+const initialBottomSheetHeightRatio = 0.3;
 
 const findNearestSlotStartHour = (dt: DateTime) => {
   let maxDate = DateTime.now().plus({ day: 1 }).endOf('day');
@@ -101,6 +109,9 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const campus = useGetCurrentCampus();
   const { setFeedback, isFeedbackVisible } = useFeedbackContext();
   const [showFeedback, setShowFeedback] = useState(false);
+  const headerHeight = useHeaderHeight();
+  const tabBarHeight = useBottomTabBarHeight();
+  const { floorId, setFloorId } = useContext(PlacesContext);
 
   const today = useMemo(() => DateTime.now().startOf('day'), []);
 
@@ -170,8 +181,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     }
   }, [startDateTime, t]);
 
-  const { data: searchResult } = useSearchPlaces({ siteId: campus?.id });
-  const sitePlaces = useGetPlacesFromSearchResult(searchResult);
+  const { data: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
 
   const { data: freeRooms, isLoading: isLoadingRooms } = useGetFreeRooms({
     siteId: campus?.id,
@@ -183,14 +193,11 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     () =>
       freeRooms?.data
         .map(fr => {
-          const place = sitePlaces?.find(p => p.id === fr.id);
+          const place = sitePlaces?.find(p => p.id === fr.id) as PlaceOverview;
           if (!place) return null;
           return { ...fr, ...place };
         })
-        ?.filter(notNullish) as (SearchPlace & {
-        freeFrom: Date;
-        freeTo: Date;
-      })[],
+        ?.filter(notNullish),
     [freeRooms?.data, sitePlaces],
   );
   const displayFloorId = useMemo(() => {
@@ -198,14 +205,33 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     return floorIds.size === 1 ? Array.from(floorIds.values())[0] : undefined;
   }, [freeRooms?.data]);
 
+  useEffect(() => {
+    if (!isLoadingRooms && floorId !== displayFloorId) {
+      setFloorId(displayFloorId);
+    }
+  }, [displayFloorId, floorId, isLoadingRooms, setFloorId]);
+
   useLayoutEffect(() => {
+    const mapOptions: Partial<MapNavigationOptions['mapOptions']> = {};
+    if (places?.length) {
+      mapOptions.camera = {
+        bounds: {
+          ...getBottomSheetScreenPadding({
+            headerHeight,
+            tabBarHeight,
+            initialBottomSheetHeightRatio,
+          }),
+          ...getCoordinatesBounds(
+            places.map(place => [place.longitude, place.latitude]),
+          ),
+        },
+      };
+    }
     navigation.setOptions({
       headerRight: () => <CampusSelector />,
-      mapContent: (
-        <>
-          <IndoorMapLayer floorId={displayFloorId} />
-          <MarkersLayer places={places ?? []} displayFloor={!displayFloorId} />
-        </>
+      mapOptions,
+      mapContent: () => (
+        <MarkersLayer places={places ?? []} displayFloor={!displayFloorId} />
       ),
     });
   }, [displayFloorId, navigation, places]);
@@ -214,7 +240,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     <View style={GlobalStyles.grow} pointerEvents="box-none">
       <BottomSheet
         index={1}
-        snapPoints={[64, '30%', '100%']}
+        snapPoints={[64, `${initialBottomSheetHeightRatio * 100}%`, '100%']}
         android_keyboardInputMode="adjustResize"
       >
         <Row align="center" gap={2} ph={1}>
@@ -260,9 +286,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
         <BottomSheetFlatList
           data={
             places?.map(p => ({
-              title:
-                (p as PlaceOverviewWithMetadata).room.name ??
-                t('common.untitled'),
+              title: p.room.name ?? t('common.untitled'),
               subtitle: `${t('common.free')} ${formatTime(
                 p.freeFrom,
               )} - ${formatTime(p.freeTo)}`,

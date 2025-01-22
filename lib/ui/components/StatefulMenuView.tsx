@@ -14,6 +14,7 @@ export const StatefulMenuView = ({
     if (action.state === 'on') {
       return {
         ...action,
+        state: undefined,
         title: `✓ ${action.title}`,
       };
     }
