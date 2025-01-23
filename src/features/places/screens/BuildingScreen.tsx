@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useContext, useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,19 +23,26 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
+import {
+  CameraBounds,
+  CameraPadding,
+  FillLayer,
+  LineLayer,
+  ShapeSource,
+} from '@rnmapbox/maps';
 
-import { IS_IOS } from '../../../core/constants';
+import { Polygon } from 'geojson';
+
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetBuilding, useGetSite } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { IndoorMapLayer } from '../components/IndoorMapLayer';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { useGetPlacesFromSearchResult } from '../hooks/useGetPlacesFromSearchResult';
+import { PlacesContext } from '../contexts/PlacesContext';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
+import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Building'>;
 
@@ -46,20 +53,24 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { buildingId } = route.params;
+  const { setFloorId, floorId } = useContext(PlacesContext);
+  const { siteId, buildingId } = route.params;
   const {
     data: building,
     isLoading: isLoadingBuilding,
     error: getBuildingError,
-  } = useGetBuilding(buildingId);
-  const siteId = building?.siteId;
+  } = useGetBuilding(siteId, buildingId);
   const site = useGetSite(siteId);
-  const { data: searchResult, isLoading: isLoadingPlaces } = useSearchPlaces({
+  const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId,
+    floorId: floorId,
   });
-  const places = useGetPlacesFromSearchResult(searchResult);
   const isLoading = isLoadingBuilding || isLoadingPlaces;
   const placeName = building?.name ?? t('common.untitled');
+
+  useEffect(() => {
+    setFloorId(undefined);
+  }, [setFloorId]);
 
   useScreenTitle(
     (getBuildingError as ResponseError)?.response?.status === 404
@@ -70,34 +81,38 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   useLayoutEffect(() => {
     if (building) {
       const { latitude, longitude } = building;
+      const bounds: CameraPadding & Partial<CameraBounds> = {
+        paddingTop: headerHeight,
+        paddingLeft: 8,
+        paddingRight: 8,
+        paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
+      };
+      if (building.geoJson?.geometry.type === 'Polygon') {
+        const coordinates = (building.geoJson.geometry as Polygon).coordinates;
+        if (coordinates?.length > 0) {
+          const { sw, ne } = getCoordinatesBounds(
+            coordinates.flat() as unknown as [number, number][],
+          );
+          bounds.sw = sw;
+          bounds.ne = ne;
+        }
+      }
       navigation.setOptions({
         mapOptions: {
-          compassPosition: IS_IOS
-            ? {
-                top: headerHeight - safeAreaInsets.top + spacing[2],
-                right: spacing[3],
-              }
-            : undefined,
           camera: {
-            centerCoordinate: [longitude, latitude],
-            padding: {
-              paddingTop: 0,
-              paddingLeft: 0,
-              paddingRight: 0,
-              paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
-            },
-            zoomLevel: 19,
+            centerCoordinate: bounds.sw ? undefined : [longitude, latitude],
+            padding: bounds.sw ? undefined : bounds,
+            bounds: bounds.sw ? (bounds as CameraBounds) : undefined,
+            zoomLevel: bounds.sw ? undefined : 19,
           },
         },
-        mapContent: (
+        mapContent: () => (
           <>
-            <IndoorMapLayer />
             <MarkersLayer selectedPoiId={buildingId} places={places} />
             {building?.geoJson != null && (
               <ShapeSource
                 id="placeHighlightSource"
                 shape={building?.geoJson as any} // TODO fix incompatible types
-                existing={false}
               >
                 <LineLayer
                   id="placeHighlightLine"

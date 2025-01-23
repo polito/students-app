@@ -97,7 +97,7 @@ const extractSubtreeNotifications = (root: any) => {
   const notifications: Notification[] = [];
   const exploreNode = (node: any) => {
     if (Array.isArray(node)) {
-      notifications.push(...node);
+      notifications.push(...(node as any[]));
     } else if (typeof node === 'object') {
       Object.values(node).forEach(exploreNode);
     }
@@ -165,9 +165,9 @@ export const useNotifications = () => {
       if (!notification || !notification.data?.polito_transazione) {
         return;
       }
-      const payload: PushNotificationPayload = JSON.parse(
+      const payload = JSON.parse(
         notification.data?.payload ?? 'null',
-      );
+      ) as PushNotificationPayload;
       const transaction = notification.data.polito_transazione as TransactionId;
       // Course
       if (courseTransactionsMapping[transaction as CourseTransactionId]) {

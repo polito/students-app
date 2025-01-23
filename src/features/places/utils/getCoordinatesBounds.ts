@@ -1,9 +1,9 @@
-import { CameraBoundsWithPadding } from '@rnmapbox/maps/src/components/Camera';
+import { CameraStop } from '@rnmapbox/maps';
 
 export const getCoordinatesBounds = (
   coordinates: [number, number][],
   padding = 0.0001,
-): CameraBoundsWithPadding => {
+): NonNullable<CameraStop['bounds']> => {
   const lons = coordinates.map(([l]) => l);
   const lats = coordinates.map(([_, l]) => l);
   const n = Math.min(...lats) - padding;
