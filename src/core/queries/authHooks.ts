@@ -3,6 +3,7 @@ import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
+import type { AppInfoRequest } from '@polito/api-client/models';
 import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -68,8 +69,9 @@ export const useLogin = () => {
               ...client,
               buildNumber,
               appVersion,
+              fcmRegistrationToken,
             };
-            dto.preferences = { ...dto.preferences, fcmRegistrationToken };
+            dto.preferences = { ...dto.preferences };
           },
         )
         .then(() => authClient.login({ loginRequest: dto }))
@@ -127,6 +129,28 @@ export const useSwitchCareer = () => {
       asyncStoragePersister.removeClient();
       queryClient.invalidateQueries([]);
       await Keychain.setGenericPassword(data.clientId, data.token);
+    },
+  });
+};
+
+export const useUpdateAppInfo = () => {
+  const authClient = useAuthClient();
+
+  return useMutation({
+    mutationFn: async (fcmRegistrationToken: string) => {
+      return Promise.all([
+        DeviceInfo.getBuildNumber(),
+        DeviceInfo.getVersion(),
+      ]).then(([buildNumber, appVersion]) => {
+        const dto: AppInfoRequest = {
+          buildNumber,
+          appVersion,
+          fcmRegistrationToken,
+        };
+        authClient.appInfo({
+          appInfoRequest: dto,
+        });
+      });
     },
   });
 };

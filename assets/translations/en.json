@@ -221,6 +221,7 @@
     "selectAnOption": "Please select an option",
     "services": "Services",
     "show": "Show",
+    "shortUsername": "ID",
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
     "status": "Status",
@@ -413,6 +414,18 @@
     "error": "Fill in the text field before proceeding with the request",
     "placeholder": "Explain why you need to take the exam early",
     "title": "You can request the course holder to take the exam without having attended the classes"
+  },
+  "examRescheduleScreen": {
+    "button": "Send request",
+    "ctaRescheduleSuccess": "Request sent",
+    "ctaRequest": "Request exam call date change",
+    "error": "Fill in the text field before proceeding with the request.",
+    "requestDetails": "Enter the dates to be suggested here",
+    "requestDetailsTitle": "What dates would you recommend to the coordinator?",
+    "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
+    "requestReason": "Enter your reasons for requesting a change of exam call date here",
+    "requestReasonTitle": "You can ask the college coordinator if you can change the date of your exam call",
+    "screenTitle": "Exam call date change"
   },
   "examScreen": {
     "bookedCount": "Booked students",
