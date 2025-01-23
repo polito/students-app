@@ -598,7 +598,6 @@
     "noPlacesFound": "Nessun posto trovato",
     "searchCategories": "Cerca categorie",
     "title": "Luoghi",
-    "unwrappingMap": "Aprendo la mappa",
     "viewWholeCampus": "Vedi tutta la sede"
   },
   "placesSearchScreen": {
@@ -636,8 +635,8 @@
     "recordedGradeTitle": "Valutazione Registrata",
     "staff": "Docente",
     "teacher": "Titolare",
-    "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time  su carriera",
-    "titleOnTimePoint": "Esame on-time",
+    "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
+    "titleOnTimePoint": "Punti on-time esame",
     "ctaButtonModal": "Accedi alla tua cariera"
   },
   "sectionHeader": {
@@ -740,24 +739,24 @@
     "averageLabel": "Media di ammissione all’esame di laurea",
     "finalAverageLabelDescription":{
       "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} crediti peggiori",
-      "formula": "Media di ammissione all’esame di laurea = sommatoria (voto * crediti)/sommatoria crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
+      "formula": "sum (voto * crediti) / sum crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
     },
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
     "masterAdmissionAverageLabelDescription":{
-      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degni n crediti peggiori\n(per conoscere n consulta la Guida Studenti)",
-      "formula":"Media di ammissione II liv = sommatoria (voto * crediti)/sommatoria crediti\n(escludendo gli n peggiori crediti)"
+      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degni n crediti peggiori\n(Per saperne di più, consulta la Guida Studenti)",
+      "formula":"sum (voto * crediti) / sum crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
-    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consultare la Guida Studenti del proprio corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
-    "onTimeScores": "Punteggi on-time",
+    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del proprio corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
+    "onTimeScores": "Punti on-time esami",
     "pointTitle": "Punteggi",
-    "pointModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.",
+    "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
     "weightedAverageLabelDescription":{
       "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
-      "formula": "Media di ammissione all’esame di laurea = sommatoria (voto * crediti)/sommatoria crediti"
+      "formula": "sum (voto * crediti) / sum crediti"
     },
     "yourCareer": "La tua carriera"
   },

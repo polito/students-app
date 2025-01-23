@@ -120,7 +120,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                 <>
                   <SectionHeader
                     separator={false}
-                    title={t('recordedGradeScreen.titleOnTimePoint')}
+                    title={t('recordedGradeScreen.additionalPoint')}
                     trailingIcon={{
                       onPress: onPressEvent,
                       icon: faQuestionCircle,
@@ -132,7 +132,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                       leadingItem={
                         <Icon icon={faFlagCheckered} size={fontSizes['2xl']} />
                       }
-                      title={t('recordedGradeScreen.additionalPoint')}
+                      title={t('recordedGradeScreen.titleOnTimePoint')}
                       trailingItem={
                         <Text style={styles.onTimeItem}>
                           {'+' + grade.onTimeExamPoints}
