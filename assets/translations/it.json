@@ -442,7 +442,8 @@
   },
   "freeRoomsScreen": {
     "noFreeRooms": "Nessuna aula libera trovata",
-    "title": "Aule libere"
+    "title": "Aule libere",
+    "maxViewLimitMessage": "Raggiunto il limite massimo di visulizzazione"
   },
   "grades": {
     "absent": "Ass",
