@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 
 import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
-import { GetFreeRoomsRequest } from '@polito/api-client/apis/PlacesApi';
+import {
+  GetBuildingsRequest,
+  GetFreeRoomsRequest,
+} from '@polito/api-client/apis/PlacesApi';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { noop } from 'lodash';
@@ -14,7 +17,6 @@ export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
-export const PLACES_SEARCH_DB_QUERY_KEY = 'places-search-db';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -28,21 +30,24 @@ export const useGetSites = () => {
   });
 };
 
-export const useGetBuildings = (siteId?: string) => {
+export const useGetBuildings = (
+  params: Omit<GetBuildingsRequest, 'siteId'> &
+    Pick<Partial<GetBuildingsRequest>, 'siteId'>,
+) => {
   const placesClient = usePlacesClient();
 
   return useQuery(
-    [BUILDINGS_QUERY_KEY],
-    () => placesClient.getBuildings({ siteId: siteId! }),
+    [BUILDINGS_QUERY_KEY, JSON.stringify(params)],
+    () => placesClient.getBuildings(params as GetBuildingsRequest),
     {
       staleTime: Infinity,
-      enabled: siteId != null,
+      enabled: params.siteId != null,
     },
   );
 };
 
-export const useGetBuilding = (buildingId?: string) => {
-  const { data: buildings, ...rest } = useGetBuildings();
+export const useGetBuilding = (siteId: string, buildingId?: string) => {
+  const { data: buildings, ...rest } = useGetBuildings({ siteId });
   return useMemo(
     () => ({
       ...rest,
@@ -67,7 +72,10 @@ export const useGetSite = (siteId?: string) => {
 
 export const useGetPlaces = (params: GetPlacesRequest) => {
   const placesClient = usePlacesClient();
-  const key = [PLACES_QUERY_KEY, params.siteId];
+  if (!params.search) {
+    delete params.search;
+  }
+  const key = [PLACES_QUERY_KEY, JSON.stringify(params)];
 
   return useQuery(key, () => placesClient.getPlaces(params), {
     enabled: params.siteId != null,

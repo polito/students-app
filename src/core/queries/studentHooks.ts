@@ -208,7 +208,7 @@ export const useUpdateDevicePreferences = () => {
       studentClient.updateDevicePreferences(dto),
     {
       onSuccess: () => {
-        return queryClient.invalidateQueries([]);
+        return queryClient.invalidateQueries();
       },
     },
   );

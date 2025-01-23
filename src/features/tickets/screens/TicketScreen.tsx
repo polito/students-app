@@ -65,7 +65,7 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
       ];
     }
     return [];
-  }, [ticket]);
+  }, [t, ticket.status]);
 
   const onPressCloseTicket = async () => {
     if (await confirm()) {
