@@ -9,6 +9,7 @@ import { ModalContent } from '@lib/ui/components/ModalContent';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Survey } from '@polito/api-client';
 
@@ -21,6 +22,7 @@ type Props = {
 
 export const ExamCpdModalContent = ({ surveys, close }: Props) => {
   const { t } = useTranslation();
+  const { fontSizes } = useTheme();
 
   const styles = useStylesheet(createStyles);
   return (
@@ -30,7 +32,7 @@ export const ExamCpdModalContent = ({ surveys, close }: Props) => {
           <Icon
             icon={faWarning}
             color={styles.icon.color}
-            size={styles.icon.size}
+            size={fontSizes['5xl']}
           />
           <Text variant="prose" style={styles.message}>
             {t('examCpdModalContent.message')}
@@ -51,10 +53,9 @@ export const ExamCpdModalContent = ({ surveys, close }: Props) => {
   );
 };
 
-const createStyles = ({ fontSizes, palettes, dark }: Theme) =>
+const createStyles = ({ palettes, dark }: Theme) =>
   StyleSheet.create({
     icon: {
-      size: fontSizes['5xl'],
       color: dark ? palettes.danger[200] : palettes.danger[800],
     },
     message: {

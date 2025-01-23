@@ -1,4 +1,10 @@
-import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import * as Keychain from 'react-native-keychain';
@@ -16,7 +22,7 @@ import {
 
 import SuperJSON from 'superjson';
 
-import { createApiConfiguration } from '../../config/api';
+import { updateGlobalApiConfiguration } from '../../config/api';
 import { isEnvProduction } from '../../utils/env';
 import {
   ApiContext,
@@ -43,12 +49,93 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     refreshContext: () => {},
   });
   const { setFeedback } = useFeedbackContext();
-  const { username } = usePreferencesContext();
-
+  const { username, language } = usePreferencesContext();
   const splashContext = useSplashContext();
+  const globalQueryErrorHandler = useCallback(
+    async (error: unknown, client: QueryClient) => {
+      if (error instanceof ResponseError) {
+        if (error.response.status === 401) {
+          await Keychain.resetGenericPassword();
+          setApiContext(c => ({
+            ...c,
+            isLogged: false,
+            username: '',
+            token: '',
+          }));
+          await client.invalidateQueries();
+        }
+        const { message } = (await error.response.json()) as {
+          message?: string;
+        };
+
+        // The login alert is handled in the login screen
+        if (!error.response.url.includes('/login'))
+          Alert.alert(
+            t('common.error'),
+            message ?? t('common.somethingWentWrong'),
+          );
+
+        if (!isEnvProduction) {
+          console.error(message);
+          console.error(JSON.stringify(error));
+        }
+      }
+    },
+    [t],
+  );
+  const queryClientRef = useRef(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          cacheTime: 1000 * 60 * 60 * 24 * 3, // 3 days
+          staleTime: 300000, // 5 minutes
+          // networkMode: 'always',
+          retry: isEnvProduction ? 2 : 1,
+          refetchOnWindowFocus: isEnvProduction,
+          onError(error) {
+            if (error instanceof ResponseError) {
+              globalQueryErrorHandler(error, queryClientRef.current);
+            }
+          },
+        },
+        mutations: {
+          retry: 1,
+          onError(error) {
+            if (error instanceof ResponseError) {
+              globalQueryErrorHandler(error, queryClientRef.current);
+            }
+          },
+        },
+      },
+    }),
+  );
+
+  // Update the queryClient options through the setter
+  // to avoid recreating the cache
+  useEffect(() => {
+    if (!queryClientRef.current) {
+      return;
+    }
+    queryClientRef.current.setDefaultOptions({
+      queries: {
+        onError(error) {
+          if (error instanceof ResponseError) {
+            globalQueryErrorHandler(error, queryClientRef.current);
+          }
+        },
+      },
+      mutations: {
+        onError(error) {
+          if (error instanceof ResponseError) {
+            globalQueryErrorHandler(error, queryClientRef.current);
+          }
+        },
+      },
+    });
+  }, [globalQueryErrorHandler]);
 
   useEffect(() => {
-    // update ApiContext based on the provided token
+    // Update ApiContext based on the provided token and selected language
     const refreshContext = (credentials?: Credentials) => {
       if (credentials) {
         Sentry.setUser({ username: credentials.username });
@@ -56,7 +143,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         Sentry.setUser(null);
       }
 
-      createApiConfiguration(credentials?.token);
+      updateGlobalApiConfiguration({
+        token: credentials?.token,
+        language,
+      });
 
       setApiContext(() => {
         return {
@@ -85,8 +175,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         console.warn("Keychain couldn't be accessed!", e);
         refreshContext();
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [language, username]);
 
   useEffect(() => {
     // Handle login status
@@ -117,62 +206,9 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     }
   }, [apiContext, splashContext]);
 
-  const queryClient = useMemo(() => {
-    const onError = async (error: ResponseError, client: QueryClient) => {
-      if (error.response.status === 401) {
-        await Keychain.resetGenericPassword();
-        setApiContext(c => ({
-          ...c,
-          isLogged: false,
-          username: '',
-          token: '',
-        }));
-        await client.invalidateQueries();
-      }
-      const { message } = await error.response.json();
-
-      // The login alert is handled in the login screen
-      if (!error.response.url.includes('/login'))
-        Alert.alert(
-          t('common.error'),
-          message ?? t('common.somethingWentWrong'),
-        );
-
-      if (!isEnvProduction) {
-        console.error(message);
-        console.error(JSON.stringify(error));
-      }
-    };
-
-    return new QueryClient({
-      defaultOptions: {
-        queries: {
-          cacheTime: 1000 * 60 * 60 * 24 * 3, // 3 days
-          staleTime: 300000, // 5 minutes
-          // networkMode: 'always',
-          retry: isEnvProduction ? 2 : 1,
-          refetchOnWindowFocus: isEnvProduction,
-          onError(error) {
-            if (error instanceof ResponseError) {
-              onError(error, queryClient);
-            }
-          },
-        },
-        mutations: {
-          retry: 1,
-          onError(error) {
-            if (error instanceof ResponseError) {
-              onError(error, queryClient);
-            }
-          },
-        },
-      },
-    });
-  }, [t]);
-
   return (
     <ApiContext.Provider value={apiContext}>
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClientRef.current}>
         {splashContext.isAppLoaded && children}
       </QueryClientProvider>
       {/* {splashContext.isAppLoaded && (

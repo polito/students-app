@@ -1,5 +1,4 @@
 import * as Svg from 'react-native-svg';
-import { SvgProps } from 'react-native-svg/src/elements/Svg';
 
 export const VerticalDashedLine = ({
   height,
@@ -7,7 +6,7 @@ export const VerticalDashedLine = ({
   color,
   style,
   ...rest
-}: SvgProps) => {
+}: Svg.SvgProps) => {
   return (
     <Svg.Svg
       height={height}

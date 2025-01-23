@@ -23,18 +23,12 @@
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
-- (NSDictionary *)prepareInitialProps
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-  NSMutableDictionary *initProps = [NSMutableDictionary new];
-
-#ifdef RCT_NEW_ARCH_ENABLED
-  initProps[kRNConcurrentRoot] = @([self concurrentRootEnabled]);
-#endif
-
-  return initProps;
+  return [self bundleURL];
 }
 
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+- (NSURL *)bundleURL
 {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];

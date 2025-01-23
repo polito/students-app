@@ -211,7 +211,7 @@ jobs:
       if: |
         github.event_name == 'push' &&
         github.ref_type == 'tag'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: android-release
         path: android/app/build/outputs/apk/release/*.apk
@@ -270,9 +270,10 @@ jobs:
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
     - name: Install npm dependencies
       run: npm install
-    - name: Ensure pods installed
-      working-directory: ./ios
-      run: bundle exec pod install
+    #handled by npm on postinstall:
+    # - name: Ensure pods installed 
+    #   working-directory: ./ios
+    #   run: bundle exec pod install
     - name: Prepare fastlane
       working-directory: ./ios
       run: |

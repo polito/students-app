@@ -206,7 +206,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         })
       : START_DATE;
     const newDaysPerWeek = currentTopic?.daysPerWeek as WeekNum;
-    setCurrentWeekStart(newStartDate);
+    setCurrentWeekStart(newStartDate.isValid ? newStartDate : START_DATE);
     setWeeksEndOn(
       newStartDate.plus({ days: newDaysPerWeek - 1 }).weekday as WeekNum,
     );

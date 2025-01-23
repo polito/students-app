@@ -6,6 +6,7 @@ import { pluckData } from '../../utils/queries';
 
 export const SURVEYS_QUERY_KEY = ['surveys'];
 export const CPD_QUERY_KEY = ['cpd'];
+export const CPD_ALL_QUERY_KEY = ['cpdall'];
 export const CPD_CATEGORIES_QUERY_KEY = ['cpdCategories'];
 
 const useSurveysClient = (): SurveysApi => {
@@ -20,7 +21,7 @@ export const useGetSurveys = () => {
   );
 };
 
-const filterMandatorySurveys = (surveys: Survey[]): Survey[] => {
+const filterMandatoryNotCompiledSurveys = (surveys: Survey[]): Survey[] => {
   return surveys.filter(survey => survey.isMandatory && !survey.isCompiled);
 };
 
@@ -29,6 +30,23 @@ export const useGetCpdSurveys = () => {
 
   return useQuery(
     CPD_QUERY_KEY,
+    () => filterMandatoryNotCompiledSurveys(surveysQuery.data!),
+    {
+      enabled: surveysQuery.data !== undefined,
+    },
+  );
+};
+
+const filterMandatorySurveys = (surveys: Survey[]): Survey[] => {
+  const s = surveys.filter(survey => survey.isMandatory);
+  return s;
+};
+
+export const useGetAllCpdSurveys = () => {
+  const surveysQuery = useGetSurveys();
+
+  return useQuery(
+    CPD_ALL_QUERY_KEY,
     () => filterMandatorySurveys(surveysQuery.data!),
     {
       enabled: surveysQuery.data !== undefined,
