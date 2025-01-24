@@ -742,7 +742,7 @@
       "description":  "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
       "formula": "sum (grade * credits) / sum of credits,\nexcluding the {{-excludedCreditsNumber}} worst credits"
     },
-    "laude": "*Honors does not count toward the calculation",
+    "laude": "*Honours does not count toward the calculation",
     "masterAdmissionAverage": "Master admission average grade",
     "masterAdmissionAverageLabelDescription":{
       "description":"It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst credits\n(To find out more, refer to the Student Guide)",
