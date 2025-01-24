@@ -632,7 +632,7 @@
     "title": "Valutazione"
   },
   "recordedGradeScreen": {
-    "additionalPoint": "Punteggio aggiuntivo",
+    "additionalPoint": "Punteggi aggiuntivi",
     "recordedGradeTitle": "Valutazione Registrata",
     "staff": "Docente",
     "teacher": "Titolare",
@@ -739,20 +739,20 @@
     "averagesAndGrades": "Medie e voti",
     "averageLabel": "Media di ammissione all’esame di laurea",
     "finalAverageLabelDescription":{
-      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} crediti peggiori",
+      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
       "formula": "sum (voto * crediti) / sum crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
     },
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
     "masterAdmissionAverageLabelDescription":{
-      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degni n crediti peggiori\n(Per saperne di più, consulta la Guida Studenti)",
+      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degni n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
       "formula":"sum (voto * crediti) / sum crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
-    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del proprio corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
+    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
     "onTimeScores": "Punti on-time esami",
     "pointTitle": "Punteggi",
-    "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più consulta la Guida Studenti.",
+    "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
     "weightedAverageLabelDescription":{
