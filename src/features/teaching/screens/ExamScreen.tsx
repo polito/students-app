@@ -35,10 +35,10 @@ import {
   useGetCpdSurveys,
 } from '../../../core/queries/surveysHooks';
 import {
+  dateFormatter,
   formatDate,
   formatDateTime,
   formatReadableDate,
-  formatTime,
 } from '../../../utils/dates';
 import { PlacesListItem } from '../../places/components/PlacesListItem';
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
@@ -66,7 +66,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     close: closeBottomModal,
   } = useBottomModal();
   const isOffline = useOfflineDisabled();
-
+  const formatHHmm = dateFormatter('HH:mm');
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
       navigation.setOptions({
@@ -87,7 +87,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       if (exam.isTimeToBeDefined) {
         accessibleDateTime += `, ${t('common.timeToBeDefined')}`;
       } else {
-        accessibleDateTime += `. ${t('common.time')} ${formatTime(
+        accessibleDateTime += `. ${t('common.time')} ${formatHHmm(
           exam.examStartsAt,
         )}`;
       }
@@ -162,7 +162,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 time={
                   exam
                     ? exam?.examStartsAt
-                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                      ? `${formatHHmm(exam.examStartsAt)} - ${formatHHmm(
                           exam.examEndsAt!,
                         )}`
                       : t('common.timeToBeDefined')

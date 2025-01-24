@@ -17,7 +17,7 @@ import {
   useGetDeadlineWeeks,
 } from '../../../core/queries/studentHooks';
 import { Exam } from '../../../core/types/api';
-import { formatMachineDate, formatTime } from '../../../utils/dates';
+import { dateFormatter, formatMachineDate } from '../../../utils/dates';
 import { AgendaDay } from '../types/AgendaDay';
 import {
   ALL_AGENDA_TYPES,
@@ -47,6 +47,7 @@ const groupItemsByDay = (
   const timeOptions = {
     zone: IANAZone.create('Europe/Rome'),
   };
+  const formatHHmm = dateFormatter('HH:mm');
   agendaItems.push(
     ...exams
       .filter(exam => exam.status === ExamStatusEnum.Booked)
@@ -63,7 +64,7 @@ const groupItemsByDay = (
           start: DateTime.fromJSDate(exam.examStartsAt!, timeOptions),
           end: DateTime.fromJSDate(exam.examEndsAt!, timeOptions),
           startTimestamp: exam.examStartsAt!.valueOf(),
-          fromTime: formatTime(exam.examStartsAt!),
+          fromTime: formatHHmm(exam.examStartsAt!),
           isTimeToBeDefined: exam.isTimeToBeDefined,
           title: exam.courseName,
           places: exam?.places ?? [],
@@ -81,8 +82,8 @@ const groupItemsByDay = (
         type: 'booking',
         date: formatMachineDate(booking.startsAt!),
         startTimestamp: booking.startsAt!.valueOf(),
-        fromTime: formatTime(booking.startsAt!),
-        toTime: formatTime(booking.endsAt!),
+        fromTime: formatHHmm(booking.startsAt!),
+        toTime: formatHHmm(booking.endsAt!),
         start: DateTime.fromJSDate(booking.startsAt!, timeOptions),
         end: DateTime.fromJSDate(booking.endsAt!, timeOptions),
         title: booking.topic.title,
@@ -104,8 +105,8 @@ const groupItemsByDay = (
         end: DateTime.fromJSDate(lecture.endsAt, timeOptions),
         date: formatMachineDate(lecture.startsAt),
         startTimestamp: lecture.startsAt.valueOf(),
-        fromTime: formatTime(lecture.startsAt),
-        toTime: formatTime(lecture.endsAt),
+        fromTime: formatHHmm(lecture.startsAt),
+        toTime: formatHHmm(lecture.endsAt),
         title: lecture.courseName,
         courseId: lecture.courseId,
         color: coursePreferences?.color,

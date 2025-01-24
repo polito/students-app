@@ -4,7 +4,7 @@ import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { formatTime } from '../../utils/dates';
+import { dateFormatter } from '../../utils/dates';
 
 type Props = ViewProps & {
   title?: string;
@@ -23,6 +23,7 @@ export const EventDetails = ({
   ...rest
 }: Props) => {
   const { spacing, fontSizes } = useTheme();
+  const formatHHmm = dateFormatter('HH:mm');
   return (
     <View style={{ padding: spacing[5] }} {...rest}>
       <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
@@ -33,7 +34,7 @@ export const EventDetails = ({
         (typeof time === 'string' ? (
           <Text style={{ fontSize: fontSizes.md }}>
             {time}
-            {endTime && ` - ${formatTime(endTime)}`}
+            {endTime && ` - ${formatHHmm(endTime)}`}
           </Text>
         ) : (
           time

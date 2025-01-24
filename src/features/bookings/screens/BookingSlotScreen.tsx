@@ -47,7 +47,7 @@ import {
   getCalendarPropsFromTopic,
   isPastSlot,
 } from '../../../utils/bookings';
-import { formatDate, formatTime } from '../../../utils/dates';
+import { dateFormatter, formatDate } from '../../../utils/dates';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
@@ -86,7 +86,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
   );
-
+  const formatHHmm = dateFormatter('HH:mm');
   const currentTopic = useMemo(
     () => getCalendarPropsFromTopic(topics, topicId),
     [topics, topicId],
@@ -296,8 +296,8 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               );
 
               const dateStart = formatDate(item?.start.toJSDate());
-              const timeStart = formatTime(item?.start.toJSDate());
-              const timeEnd = formatTime(item?.end.toJSDate());
+              const timeStart = formatHHmm(item?.start.toJSDate());
+              const timeEnd = formatHHmm(item?.end.toJSDate());
               const timeMessage = ` ${dateStart}, ${t(
                 'common.fromTime',
               )} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;

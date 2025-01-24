@@ -14,9 +14,9 @@ import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { Exam } from '../../../core/types/api';
 import {
+  dateFormatter,
   formatDate,
   formatReadableDate,
-  formatTime,
 } from '../../../utils/dates';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { ExamStatusBadge } from './ExamStatusBadge';
@@ -36,7 +36,7 @@ export const ExamListItem = ({
 
   const { courses: coursesPreferences } = usePreferencesContext();
   const { colors } = useTheme();
-
+  const formatHHmm = dateFormatter('HH:mm');
   const listItemProps = useMemo(() => {
     let dateTime,
       accessibleDateTime = '';
@@ -52,7 +52,7 @@ export const ExamListItem = ({
         dateTime += `, ${t('common.timeToBeDefined')}`;
         accessibleDateTime = `${dateTime}.`;
       } else {
-        const time = formatTime(exam.examStartsAt);
+        const time = formatHHmm(exam.examStartsAt);
         accessibleDateTime += `${dateTime}. ${t('common.time')} ${time}.`;
         dateTime += `, ${time}`;
       }

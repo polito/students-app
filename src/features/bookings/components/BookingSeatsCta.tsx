@@ -1,11 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  AccessibilityInfo,
-  StyleProp,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
@@ -15,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCreateBooking } from '../../../core/queries/bookingHooks';
+import { setTimeoutAccessibilityInfoHelper } from '../../../utils/setTimeoutAccessibilityInfo';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type BookingSeatsCtaProps = PropsWithChildren<{
@@ -68,11 +64,10 @@ export const BookingSeatsCta = ({
             .then(async () => {
               onCloseModal?.();
               await navigation.pop(2);
-              setTimeout(() => {
-                AccessibilityInfo.announceForAccessibility(
-                  t('bookingSeatScreen.confirmSuccess'),
-                );
-              }, 2000);
+              setTimeoutAccessibilityInfoHelper(
+                t('bookingSeatScreen.confirmSuccess'),
+                2000,
+              );
             })
         }
         disabled={!ctaEnabled}

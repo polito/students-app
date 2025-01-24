@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { AccessibilityInfo, Alert } from 'react-native';
+import { Alert } from 'react-native';
+
+import { setTimeoutAccessibilityInfoHelper } from '../../utils/setTimeoutAccessibilityInfo';
 
 interface Options {
   title?: string;
@@ -10,11 +12,10 @@ export const useConfirmationDialog = ({ title, message }: Options = {}) => {
   const { t } = useTranslation();
   return () =>
     new Promise<boolean>(resolve => {
-      setTimeout(() => {
-        AccessibilityInfo.announceForAccessibility(
-          t('bookingScreen.cancelBookingText'),
-        );
-      }, 500);
+      setTimeoutAccessibilityInfoHelper(
+        t('bookingScreen.cancelBookingText'),
+        500,
+      );
       Alert.alert(
         title ?? t('common.areYouSure?'),
         message ?? t('common.actionPotentiallyNotUndoable'),

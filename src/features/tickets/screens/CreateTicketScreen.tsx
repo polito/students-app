@@ -119,7 +119,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     if (ticketBody?.subtopicId) {
       return baseText;
     } else {
-      return [baseText, t('common.disabled insert the precedents')].join(', ');
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
     }
   }, [t, ticketBody?.subtopicId]);
 
@@ -128,7 +128,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     if (topicId) {
       return baseText;
     } else {
-      return [baseText, t('common.disabled insert the precedents')].join(', ');
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
     }
   }, [t, topicId]);
 

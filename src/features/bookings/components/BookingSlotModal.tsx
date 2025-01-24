@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccessibilityInfo, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import {
   faCalendar,
@@ -23,6 +23,7 @@ import { inRange } from 'lodash';
 import { DateTime, IANAZone } from 'luxon';
 
 import { isSlotBookable, isSlotFull } from '../../../utils/bookings';
+import { setTimeoutAccessibilityInfoHelper } from '../../../utils/setTimeoutAccessibilityInfo';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
 import { BookingField } from './BookingField';
 import { BookingSeatsCta } from './BookingSeatsCta';
@@ -87,9 +88,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   useEffect(() => {
     const message = findAccessibilityMessage();
     if (!message) return;
-    setTimeout(() => {
-      AccessibilityInfo.announceForAccessibility(message);
-    }, 500);
+    setTimeoutAccessibilityInfoHelper(message, 500);
   }, []);
 
   const NotBookableMessage = () => {

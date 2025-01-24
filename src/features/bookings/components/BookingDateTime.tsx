@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { Booking } from '@polito/api-client';
 
-import { DateTime, IANAZone } from 'luxon';
-
-import { formatReadableDate, formatTime } from '../../../utils/dates';
+import { dateFormatter, formatReadableDate } from '../../../utils/dates';
 
 interface Props {
   accessible?: boolean;
@@ -18,22 +16,12 @@ export const BookingDateTime = ({
   inListItem = false,
 }: Props) => {
   const { t } = useTranslation();
+  const formatHHmm = dateFormatter('HH:mm');
+  const formatddMMMM = dateFormatter('dd MMMM');
 
-  const date = booking
-    ? DateTime.fromJSDate(booking?.startsAt, {
-        zone: IANAZone.create('Europe/Rome'),
-      }).toFormat('dd MMMM')
-    : '';
-  const startsAtTime = booking
-    ? DateTime.fromJSDate(booking?.startsAt, {
-        zone: IANAZone.create('Europe/Rome'),
-      }).toFormat('HH:mm')
-    : '';
-  const endAtTime = booking
-    ? DateTime.fromJSDate(booking?.endsAt, {
-        zone: IANAZone.create('Europe/Rome'),
-      }).toFormat('HH:mm')
-    : '';
+  const date = booking ? formatddMMMM(booking.startsAt) : '';
+  const startsAtTime = booking ? formatHHmm(booking.startsAt) : '';
+  const endAtTime = booking ? formatHHmm(booking?.endsAt) : '';
 
   const accessibilityLabel = [
     date,
@@ -48,7 +36,7 @@ export const BookingDateTime = ({
       date={booking?.startsAt && formatReadableDate(booking.startsAt)}
       time={
         booking?.startsAt &&
-        `${formatTime(booking.startsAt)} - ${formatTime(booking.endsAt!)}`
+        `${formatHHmm(booking.startsAt)} - ${formatHHmm(booking.endsAt!)}`
       }
       inListItem={inListItem}
     />

@@ -31,7 +31,7 @@
       "virtualPlace": "Link sportello virtuale"
     },
     "nextWeek": "Prossima settimana",
-    "previousWeek": "Settimana precedente",
+    "previousWeek": "Settimana precedente"
   },
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
@@ -78,7 +78,7 @@
   },
   "common": {
     "active": "Attivo",
-    "disabled insert the precedents": "Disattivato perche non sono stati inseriti i precedenti valori",
+    "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
@@ -198,7 +198,7 @@
     "open": "Apri",
     "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
-    "openSourceAccessibilityLabel": "Open Source, clicca per andare al repository GitHub della App",
+    "openSourceAccessibilityLabel": "Open Source, Tocca per andare al repository GitHub della App",
     "openedStatus": {
       "false": "Chiuso",
       "true": "Aperto"
@@ -258,7 +258,7 @@
     "yesterday": "Ieri",
     "fromTime" : "dalle",
     "toTime" : "alle",
-    "document" : "Allegato",
+    "document" : "Allegato"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -526,7 +526,7 @@
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messagingView": {
-    "active replay": "Attivo, (clicca due volte per attivare)",
+    "activeReplay": "Attivo, (tocca due volte per attivare)",
     "pickFile": "Scegli un file",
     "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
