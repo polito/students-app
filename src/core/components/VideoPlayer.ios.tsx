@@ -36,10 +36,10 @@ export const VideoPlayer = (props: ReactVideoProps) => {
 
   return (
     <Video
-      onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
-      playInBackground
+      // onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
+      // playInBackground
       ignoreSilentSwitch="ignore"
-      pictureInPicture
+      // pictureInPicture
       paused={paused}
       controls={true}
       style={{
