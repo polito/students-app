@@ -149,7 +149,7 @@ export const useUpdateAppInfo = () => {
           appVersion,
           fcmRegistrationToken,
         };
-        authClient.appInfo({
+        return authClient.appInfo({
           appInfoRequest: dto,
         });
       });

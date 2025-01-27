@@ -13,18 +13,18 @@ import { RootNavigator } from './RootNavigator';
 export const AppContent = () => {
   const { isLogged } = useApiContext();
   const { mutateAsync: updateAppInfo } = useUpdateAppInfo();
-  const [updateTriggered, setUpdateTriggered] = useState(false);
+  const [clientPatchOk, setClientPatchOk] = useState(false);
   const preferences = usePreferencesContext();
   const queryClient = useQueryClient();
   const isOffline = useOfflineDisabled();
 
   useEffect(() => {
-    if (updateTriggered || !isLogged || isOffline) return;
-
+    if (clientPatchOk || !isLogged || isOffline) return;
+    // TODO handle suggestUpdate field in new version in UpdateAppInfo response
     updateAppInfo()
-      .then(() => setUpdateTriggered(true))
+      .then(() => setClientPatchOk(true))
       .catch(console.warn);
-  }, [isLogged, isOffline, updateAppInfo, updateTriggered]);
+  }, [isLogged, isOffline, updateAppInfo, clientPatchOk]);
 
   useEffect(() => {
     MigrationService.migrateIfNeeded(preferences, queryClient);
