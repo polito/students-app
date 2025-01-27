@@ -637,7 +637,7 @@
     "staff": "Docente",
     "teacher": "Titolare",
     "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
-    "titleOnTimePoint": "Punti on-time esame",
+    "titleOnTimePoint": "Punti Esame On-time",
     "ctaButtonModal": "Accedi alla tua cariera"
   },
   "sectionHeader": {
@@ -745,12 +745,12 @@
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
     "masterAdmissionAverageLabelDescription":{
-      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degni n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
+      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
       "formula":"sum (voto * crediti) / sum crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
-    "onTimeScores": "Punti on-time esami",
+    "onTimeScores": "Punti Esami On-time",
     "pointTitle": "Punteggi",
     "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
