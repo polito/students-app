@@ -26,9 +26,7 @@ export const useInitFirebaseMessaging = () => {
   const { mutate: updateAppInfo } = useUpdateAppInfo();
 
   if (isEnvProduction) {
-    messaging().onTokenRefresh(fcmRegistrationToken => {
-      updateAppInfo(fcmRegistrationToken);
-    });
+    messaging().onTokenRefresh(updateAppInfo);
   }
 
   useEffect(() => {

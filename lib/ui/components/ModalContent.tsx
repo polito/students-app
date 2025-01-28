@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
@@ -50,21 +50,23 @@ const createStyles = ({
   shapes,
   fontSizes,
   fontWeights,
-}: Theme) => ({
-  container: {
-    backgroundColor: colors.surface,
-    borderTopRightRadius: shapes.md,
-    borderTopLeftRadius: shapes.md,
-  },
-  header: {
-    borderTopRightRadius: shapes.md,
-    borderTopLeftRadius: shapes.md,
-    paddingVertical: spacing[1],
-  },
-  headerLeft: { padding: spacing[3] },
-  modalTitle: {
-    fontSize: fontSizes.md,
-    fontWeight: fontWeights.semibold,
-    color: colors.prose,
-  },
-});
+}: Theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.surface,
+      borderTopRightRadius: shapes.md,
+      borderTopLeftRadius: shapes.md,
+      maxHeight: '100%',
+    },
+    header: {
+      borderTopRightRadius: shapes.md,
+      borderTopLeftRadius: shapes.md,
+      paddingVertical: spacing[1],
+    },
+    headerLeft: { padding: spacing[3] },
+    modalTitle: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+      color: colors.prose,
+    },
+  });

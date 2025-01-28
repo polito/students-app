@@ -68,6 +68,7 @@
     "react-native-file-viewer": "^2.1.5",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.20.2",
+    "react-native-get-random-values": "^1.11.0",
     "react-native-html-to-pdf": "^0.12.0",
     "react-native-image-crop-picker": "^0.41.2",
     "react-native-keyboard-accessory": "^0.1.16",
@@ -92,7 +93,8 @@
     "react-string-replace": "^1.1.1",
     "react-usestateref": "^1.0.9",
     "semver": "^7.6.3",
-    "superjson": "^2.2.1"
+    "superjson": "^2.2.1",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -123,6 +125,7 @@
     "@types/react-native-html-to-pdf": "^0.8.3",
     "@types/react-native-video": "^5.0.14",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/uuid": "^10.0.0",
     "babel-jest": "^29.6.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^8.19.0",

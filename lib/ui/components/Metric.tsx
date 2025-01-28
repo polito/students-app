@@ -5,7 +5,7 @@ import { CardProps } from './Card';
 import { Text, Props as TextProps } from './Text';
 
 type Props = ViewProps & {
-  title: string;
+  title?: string;
   value: string | number | JSX.Element;
   color?: string;
   valueStyle?: TextProps['style'];
@@ -19,7 +19,7 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
 
   return (
     <View {...rest}>
-      <Text accessible={false}>{title}</Text>
+      {title && <Text accessible={false}>{title}</Text>}
       {['string', 'number'].includes(typeof value) ? (
         <Text
           accessible={false}

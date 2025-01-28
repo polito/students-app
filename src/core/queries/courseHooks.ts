@@ -331,7 +331,7 @@ export const useGetCourseDirectory = (
 
   const rootDirectoryContent = filesQuery.data;
 
-  return useQuery(
+  const directoryQuery = useQuery(
     [COURSE_QUERY_PREFIX, courseId, 'directories', directoryId ?? 'root'],
     () => {
       if (!directoryId) {
@@ -351,6 +351,10 @@ export const useGetCourseDirectory = (
       staleTime: courseFilesStaleTime,
     },
   );
+  return {
+    ...directoryQuery,
+    refetch: () => filesQuery.refetch().then(directoryQuery.refetch),
+  };
 };
 
 /**
