@@ -56,7 +56,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     async (error: unknown, client: QueryClient) => {
       if (error instanceof ResponseError) {
         if (error.response.status === 401) {
-          resetKeychain();
+          await resetKeychain();
           setApiContext(c => ({
             ...c,
             isLogged: false,
