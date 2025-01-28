@@ -88,6 +88,7 @@
     "react-native-safe-area-context": "^4.14.0",
     "react-native-screens": "^3.35.0",
     "react-native-svg": "^15.8.0",
+    "react-native-system-navigation-bar": "^2.6.4",
     "react-native-tab-view": "^3.5.2",
     "react-native-video": "^6.7.0",
     "react-string-replace": "^1.1.1",
