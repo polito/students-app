@@ -110,7 +110,14 @@ export const CtaButton = ({
         containerStyle,
       ]}
     >
-      {hint && <Text style={styles.hint}>{hint}</Text>}
+      {hint && (
+        <View
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={true}
+        >
+          <Text style={styles.hint}>{hint}</Text>
+        </View>
+      )}
       <TouchableHighlight
         accessibilityRole="button"
         underlayColor={underlayColor}

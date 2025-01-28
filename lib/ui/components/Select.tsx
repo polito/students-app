@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Pressable } from 'react-native';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -22,10 +23,12 @@ interface Props {
   label: string;
   description?: string;
   disabled?: boolean;
+  accessibilityLabel?: string;
 }
 
 export const Select = ({
   options,
+  accessibilityLabel,
   onSelectOption,
   value,
   label,
@@ -37,21 +40,26 @@ export const Select = ({
   }, [options, value]);
 
   return (
-    <StatefulMenuView
-      style={{ width: '100%' }}
-      title={label}
-      actions={!disabled ? options : []}
-      onPressAction={({ nativeEvent: { event } }) => {
-        !disabled && onSelectOption?.(event);
-      }}
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel || label}
     >
-      <ListItem
-        isAction
-        disabled={disabled}
-        title={displayedValue || label}
-        subtitle={description}
-        trailingItem={IS_ANDROID ? <Icon icon={faChevronDown} /> : undefined}
-      />
-    </StatefulMenuView>
+      <StatefulMenuView
+        style={{ width: '100%' }}
+        title={label}
+        actions={!disabled ? options : []}
+        onPressAction={({ nativeEvent: { event } }) => {
+          !disabled && onSelectOption?.(event);
+        }}
+      >
+        <ListItem
+          isAction
+          disabled={disabled}
+          title={displayedValue || label}
+          subtitle={description}
+          trailingItem={IS_ANDROID ? <Icon icon={faChevronDown} /> : undefined}
+        />
+      </StatefulMenuView>
+    </Pressable>
   );
 };

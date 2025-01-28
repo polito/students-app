@@ -19,9 +19,10 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
 
   return (
     <View {...rest}>
-      {title && <Text>{title}</Text>}
+      {title && <Text accessible={false}>{title}</Text>}
       {['string', 'number'].includes(typeof value) ? (
         <Text
+          accessible={false}
           style={[
             {
               color: color ?? palettes.secondary[dark ? 500 : 600],

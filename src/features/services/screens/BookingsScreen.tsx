@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
@@ -12,6 +13,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useGetBookings } from '../../../core/queries/bookingHooks';
+import { setTimeoutAccessibilityInfoHelper } from '../../../utils/setTimeoutAccessibilityInfo';
 import { BookingListItem } from '../../bookings/components/BookingListItem';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
@@ -22,6 +24,17 @@ export const BookingsScreen = ({ navigation }: Props) => {
   const bookingsQuery = useGetBookings();
   const { t } = useTranslation();
   const { spacing } = useTheme();
+
+  useEffect(() => {
+    if (
+      !bookingsQuery?.isLoading &&
+      !bookingsQuery?.isError &&
+      bookingsQuery?.isSuccess &&
+      bookingsQuery?.data?.length === 0
+    ) {
+      setTimeoutAccessibilityInfoHelper(t('bookingsScreen.emptyState'), 500);
+    }
+  }, [bookingsQuery, t]);
 
   return (
     <>

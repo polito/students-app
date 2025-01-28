@@ -1,5 +1,13 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View, ViewProps } from 'react-native';
+import {
+  FlatList,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+  ViewProps,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera, openPicker } from 'react-native-image-crop-picker';
 
@@ -101,6 +109,15 @@ export const MessagingView = ({
     }
   };
 
+  const replayAccessibilityLabel = useMemo(() => {
+    const baseText = t('ticketScreen.reply');
+    if (!disabled) {
+      return [baseText, t('messagingView.activeReplay')].join(', ');
+    } else {
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
+    }
+  }, [disabled, t]);
+
   return (
     <View
       {...props}
@@ -126,57 +143,65 @@ export const MessagingView = ({
           />
         )}
         <Row align="flex-end">
-          <MenuView
-            title={t('ticketScreen.pickFileTitle')}
-            actions={[
-              {
-                id: 'pickFile',
-                title: t('messagingView.pickFile'),
-                subtitle: t('messagingView.pickFileHint'),
-                image: 'folder',
-              },
-              ...(IS_IOS
-                ? [
-                    {
-                      id: 'pickPhoto',
-                      title: t('messagingView.pickPhoto'),
-                      subtitle: t('messagingView.pickPhotoHint'),
-                      image: 'photo',
-                    },
-                  ]
-                : []),
-              {
-                id: 'takePhoto',
-                title: t('messagingView.takePhoto'),
-                subtitle: t('messagingView.takePhotoHint'),
-                image: 'camera',
-              },
-            ]}
-            onPressAction={event => {
-              switch (event.nativeEvent.event) {
-                case 'pickFile':
-                  pickFile();
-                  break;
-                case 'pickPhoto':
-                  pickPhoto();
-                  break;
-                case 'takePhoto':
-                  takePhoto();
-                  break;
-                default:
-                  break;
-              }
-            }}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('messagingView.pickFile')}
           >
-            <IconButton
-              icon={faPaperclip}
-              size={22}
-              style={styles.actionButton}
-              disabled={disabled}
-            />
-          </MenuView>
+            <MenuView
+              title={t('ticketScreen.pickFileTitle')}
+              actions={[
+                {
+                  id: 'pickFile',
+                  title: t('messagingView.pickFile'),
+                  subtitle: t('messagingView.pickFileHint'),
+                  image: 'folder',
+                },
+                ...(IS_IOS
+                  ? [
+                      {
+                        id: 'pickPhoto',
+                        title: t('messagingView.pickPhoto'),
+                        subtitle: t('messagingView.pickPhotoHint'),
+                        image: 'photo',
+                      },
+                    ]
+                  : []),
+                {
+                  id: 'takePhoto',
+                  title: t('messagingView.takePhoto'),
+                  subtitle: t('messagingView.takePhotoHint'),
+                  image: 'camera',
+                },
+              ]}
+              onPressAction={event => {
+                switch (event.nativeEvent.event) {
+                  case 'pickFile':
+                    pickFile();
+                    break;
+                  case 'pickPhoto':
+                    pickPhoto();
+                    break;
+                  case 'takePhoto':
+                    takePhoto();
+                    break;
+                  default:
+                    break;
+                }
+              }}
+            >
+              <IconButton
+                accessibilityRole="button"
+                accessibilityLabel={t('messagingView.pickFile')}
+                icon={faPaperclip}
+                size={22}
+                style={styles.actionButton}
+                disabled={disabled}
+              />
+            </MenuView>
+          </Pressable>
           <TranslucentTextField
             label={t('ticketScreen.reply')}
+            accessibilityLabel={replayAccessibilityLabel}
             value={message}
             autoCapitalize="sentences"
             onChangeText={onMessageChange}
@@ -188,6 +213,8 @@ export const MessagingView = ({
           />
           {showSendButton && (
             <IconButton
+              accessibilityRole="button"
+              accessibilityLabel={t('ticketScreen.send')}
               disabled={!message?.length || loading}
               onPress={onSend}
               icon={faPaperPlane}
@@ -219,6 +246,6 @@ const createStyles = ({ spacing, colors, safeAreaInsets }: Theme) =>
     },
     actionButton: {
       opacity: Platform.select({ ios: 0.8 }),
-      padding: spacing[1.5],
+      padding: spacing[2.5],
     },
   });

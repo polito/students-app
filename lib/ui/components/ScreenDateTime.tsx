@@ -11,10 +11,12 @@ interface Props {
   date?: string;
   time?: string;
   inListItem?: boolean;
+  accessibilityLabel?: string;
 }
 
 export const ScreenDateTime = ({
   accessible,
+  accessibilityLabel,
   date,
   time,
   inListItem = false,
@@ -27,7 +29,11 @@ export const ScreenDateTime = ({
   }, [colors.prose, dark, inListItem, palettes.gray]);
 
   return (
-    <Row gap={3} accessible={accessible}>
+    <Row
+      accessibilityLabel={accessibilityLabel}
+      gap={3}
+      accessible={accessible}
+    >
       <Row gap={2} align="center">
         <Icon icon={faCalendar} color={color} size={fontSizes.md} />
         <Text style={{ fontSize: fontSizes.md, color }}>{date ?? ''}</Text>

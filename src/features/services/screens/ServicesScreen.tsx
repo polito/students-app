@@ -61,6 +61,9 @@ export const ServicesScreen = () => {
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
         unReadCount: unreadTickets,
+        accessibilityLabel: `${t('ticketsScreen.title')} ${
+          unreadTickets ? t('servicesScreen.newElement') : ''
+        }`,
       },
       {
         id: 'appFeedback',
@@ -75,6 +78,7 @@ export const ServicesScreen = () => {
           },
         },
         additionalContent: <UnreadBadge text="BETA" style={styles.badge} />,
+        accessibilityLabel: t('common.appFeedback'),
       },
       {
         id: 'github',
@@ -82,6 +86,7 @@ export const ServicesScreen = () => {
         icon: faGithub,
         onPress: () =>
           Linking.openURL('https://github.com/polito/students-app'),
+        accessibilityLabel: t('common.openSourceAccessibilityLabel'),
       },
       {
         id: 'news',
@@ -92,6 +97,11 @@ export const ServicesScreen = () => {
           screen: 'News',
         },
         unReadCount: getUnreadsCount(['services', 'news']),
+        accessibilityLabel: `${t('newsScreen.title')} ${
+          getUnreadsCount(['services', 'news'])
+            ? t('servicesScreen.newElement')
+            : ''
+        }`,
       },
       {
         id: 'jobOffers',
@@ -99,6 +109,7 @@ export const ServicesScreen = () => {
         icon: faBriefcase,
         disabled: isOffline,
         linkTo: { screen: 'JobOffers' },
+        accessibilityLabel: t('jobOffersScreen.title'),
       },
       {
         id: 'offering',
@@ -106,6 +117,7 @@ export const ServicesScreen = () => {
         icon: faBookBookmark,
         disabled: isOffline,
         linkTo: { screen: 'Offering' },
+        accessibilityLabel: t('offeringScreen.title'),
       },
       {
         id: 'contacts',
@@ -113,6 +125,7 @@ export const ServicesScreen = () => {
         icon: faIdCard,
         disabled: isOffline && peopleSearched?.length === 0, // TODO why?
         linkTo: { screen: 'Contacts' },
+        accessibilityLabel: t('contactsScreen.title'),
       },
       {
         id: 'guides',
@@ -120,6 +133,9 @@ export const ServicesScreen = () => {
         icon: faSignsPost,
         linkTo: { screen: 'Guides' },
         unReadCount: emailGuideRead ? 0 : 1,
+        accessibilityLabel: `${t('guidesScreen.title')} ${
+          !emailGuideRead ? t('servicesScreen.newElement') : ''
+        }`,
       },
       {
         id: 'bookings',
@@ -129,6 +145,7 @@ export const ServicesScreen = () => {
           isOffline &&
           queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Bookings' },
+        accessibilityLabel: t('bookingsScreen.title'),
       },
       {
         id: 'surveys',
@@ -136,6 +153,7 @@ export const ServicesScreen = () => {
         icon: faClipboardQuestion,
         disabled: isOffline,
         linkTo: { screen: 'Surveys' },
+        accessibilityLabel: t('surveysScreen.title'),
       },
       {
         id: 'mail',
@@ -153,6 +171,9 @@ export const ServicesScreen = () => {
             })
             .then(res => Linking.openURL(res.url ?? ''));
         },
+        accessibilityLabel: `${t('WebMail')} ${
+          unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
+        }`,
       },
     ];
   }, [
@@ -206,6 +227,7 @@ export const ServicesScreen = () => {
                 favorite
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
+                accessibilityLabel={service?.accessibilityLabel}
               />
             ))}
           </Grid>
@@ -229,6 +251,7 @@ export const ServicesScreen = () => {
                 onPress={service.onPress}
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
+                accessibilityLabel={service?.accessibilityLabel}
               />
             ))}
           </Grid>

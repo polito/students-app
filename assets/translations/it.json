@@ -17,7 +17,8 @@
       "available": "Prenotabile",
       "booked": "Prenotato",
       "full": "Non prenotabile",
-      "notAvailable": "Non ancora prenotabile"
+      "notAvailable": "Non ancora prenotabile",
+      "notAvailableBooking": "Non prenotabile"
     },
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
@@ -28,14 +29,18 @@
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
-    }
+    },
+    "nextWeek": "Prossima settimana",
+    "previousWeek": "Settimana precedente"
   },
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
+    "confirmSuccess": "Prenotazione confermata",
     "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
     "noSeatSelected": "Nessuna",
     "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
     "seatStatus": {
+      "unavailable": "Non prenotabile",
       "available": "Disponibile",
       "booked": "Prenotato",
       "notAvailable": "Non prenotabile"
@@ -72,6 +77,8 @@
     "yellow": "Giallo"
   },
   "common": {
+    "active": "Attivo",
+    "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
@@ -191,6 +198,7 @@
     "open": "Apri",
     "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
+    "openSourceAccessibilityLabel": "Open Source, Tocca per andare al repository GitHub della App",
     "openedStatus": {
       "false": "Chiuso",
       "true": "Aperto"
@@ -248,7 +256,10 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "fromTime" : "dalle",
+    "toTime" : "alle",
+    "document" : "Allegato"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -374,6 +385,7 @@
     "total": "Sono presenti {{ total }} questionari"
   },
   "createTicketScreen": {
+    "addFile": "Aggiungi file",
     "insert": "Inserimento ticket",
     "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
     "sendTicket": "Invia ticket",
@@ -382,6 +394,8 @@
     "subtitle": "Inserisci la tua richiesta",
     "subtopicDescription": "Seleziona il sottoargomento",
     "subtopicDropdownLabel": "Sottoargomento",
+    "subtopicDropdownLabelAccessibility": "Sottoargomento, apri e scegli tra le opzioni",
+    "topicDropdownLabelAccessibility": "Argomento, apri e scegli tra le opzioni",
     "subtopicDropdownPlaceholder": "Seleziona il sottoargomento",
     "title": "Nuovo ticket",
     "topicDescription": "Seleziona l'argomento",
@@ -500,6 +514,7 @@
     "title": "Biblioteca"
   },
   "loginScreen": {
+    "onboarding" : "Onboarding",
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
@@ -529,6 +544,7 @@
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messagingView": {
+    "activeReplay": "Attivo, (tocca due volte per attivare)",
     "pickFile": "Scegli un file",
     "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
@@ -664,7 +680,10 @@
   "servicesScreen": {
     "subTitleOne": "Servizi informativi",
     "subTitleTwo": "Servizi operativi",
-    "title": "Servizi"
+    "title": "Servizi",
+    "newElement": ", hai Un nuovo elemento da visualizzare",
+    "favoriteActive": "Imposta preferito, Attivo",
+    "favoriteInactive": "Imposta preferito, Non attivo"
   },
   "settingsScreen": {
     "appVersion": "Versione {{version}}",
@@ -694,9 +713,11 @@
     "headerBackTitle": "Nuovo",
     "noResultFound": "Non hai trovato quello che cerchi?",
     "title": "FAQ",
-    "writeTicket": "Scrivi ticket"
+    "writeTicket": "Scrivi ticket",
+    "writeTicketMessage": "Scrivi ticket se non hai trovato quello che cerchi"
   },
   "ticketFaqsScreen": {
+    "searchButton": "Attiva per cercare le parole chiave inserite tra le faq",
     "emptyState": "Nessun risultato trovato",
     "findFAQ": "Cerca tra le FAQ",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
@@ -707,6 +728,10 @@
     "writeTicket": "Scrivi ticket"
   },
   "ticketScreen": {
+    "incomingMessage": "la tua risposta",
+    "outgoingMessage": "Risposta da operatore numero",
+    "yourQuestion": "La tua domanda",
+    "send" : "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
@@ -727,6 +752,8 @@
     }
   },
   "ticketsScreen": {
+    "noOpenTickets": "Non ci sono ticket aperti",
+    "noClosedTickets": "Non ci sono ticket chiusi",
     "addNew": "Nuovo ticket",
     "closed": "Ticket chiusi",
     "closedEmptyState": "Non ci sono ticket chiusi",

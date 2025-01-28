@@ -41,6 +41,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
           id: newsItem?.id,
         },
       }}
+      accessibilityRole="button"
       accessibilityLabel={[accessibilityLabel, title, subTitle].join(', ')}
       subtitle={subTitle}
       subtitleStyle={styles.subtitle}

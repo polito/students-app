@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +20,8 @@ export const ModalContent = ({
   title,
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <HeaderAccessory
@@ -28,7 +31,13 @@ export const ModalContent = ({
       >
         <View style={styles.headerLeft} />
         <Text style={styles.modalTitle}>{title}</Text>
-        <IconButton icon={faTimes} onPress={close} adjustSpacing="left" />
+        <IconButton
+          accessibilityLabel={t('common.close')}
+          accessibilityRole="button"
+          icon={faTimes}
+          onPress={close}
+          adjustSpacing="left"
+        />
       </HeaderAccessory>
       <View>{children}</View>
     </View>
