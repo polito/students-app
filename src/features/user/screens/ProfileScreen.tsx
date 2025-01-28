@@ -154,7 +154,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl queries={[studentQuery]} />}
+      refreshControl={<RefreshControl manual queries={[studentQuery]} />}
     >
       <SafeAreaView>
         <View

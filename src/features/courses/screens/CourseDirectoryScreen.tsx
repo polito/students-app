@@ -125,7 +125,9 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
                 />
               )
             }
-            refreshControl={<RefreshControl queries={[directoryQuery]} />}
+            refreshControl={
+              <RefreshControl manual queries={[directoryQuery]} />
+            }
             ItemSeparatorComponent={Platform.select({
               ios: IndentedDivider,
             })}
@@ -235,7 +237,7 @@ const CourseFileSearchFlatList = ({
           onSwipeEnd={onSwipeEnd}
         />
       )}
-      refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
+      refreshControl={<RefreshControl manual queries={[recentFilesQuery]} />}
       ItemSeparatorComponent={Platform.select({
         ios: () => <IndentedDivider />,
       })}
