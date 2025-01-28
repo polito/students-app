@@ -5,10 +5,8 @@ import messaging from '@react-native-firebase/messaging';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { isEnvProduction } from '../../utils/env';
-import {
-  NOTIFICATIONS_QUERY_KEY,
-  useUpdateDevicePreferences,
-} from '../queries/studentHooks';
+import { useUpdateAppInfo } from '../queries/authHooks.ts';
+import { NOTIFICATIONS_QUERY_KEY } from '../queries/studentHooks';
 import { RemoteMessage } from '../types/notifications';
 import { useNotifications } from './useNotifications';
 
@@ -25,14 +23,10 @@ const isNotificationPermissionGranted = async () => {
 export const useInitFirebaseMessaging = () => {
   const queryClient = useQueryClient();
   const { navigateToUpdate } = useNotifications();
-  const preferencesQuery = useUpdateDevicePreferences();
+  const { mutate: updateAppInfo } = useUpdateAppInfo();
 
   if (isEnvProduction) {
-    messaging().onTokenRefresh(fcmRegistrationToken => {
-      preferencesQuery.mutate({
-        updatePreferencesRequest: { fcmRegistrationToken },
-      });
-    });
+    messaging().onTokenRefresh(updateAppInfo);
   }
 
   useEffect(() => {

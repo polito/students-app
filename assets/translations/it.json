@@ -221,6 +221,7 @@
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "show": "Mostra",
+    "shortUsername": "Matr.",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
     "status": "Stato",
@@ -292,7 +293,12 @@
     "subtitle_plural": "{{count}} file"
   },
   "courseDirectoryScreen": {
-    "noResult": "Nessun risultato trovato"
+    "clearSearch": "Cancella ricerca",
+    "emptyRootFolder": "Non ci sono file",
+    "emptyFolder": "La cartella è vuota",
+    "noResult": "Nessun risultato trovato",
+    "navigateRecentFiles": "Sfoglia file recenti",
+    "search": "Cerca"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
@@ -300,7 +306,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
-    "empty": "Non ci sono file qui",
+    "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale"
@@ -414,6 +420,18 @@
     "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
     "title": "Puoi richiedere al titolare del corso di sostenere l'esame senza avere acquisito la frequenza"
   },
+  "examRescheduleScreen": {
+    "button": "Invia richiesta",
+    "ctaRescheduleSuccess": "Richiesta inviata",
+    "ctaRequest": "Richiedi cambio data appello",
+    "error": "Compilare il campo di testo prima di procedere con la richiesta",
+    "requestDetails": "Inserisci qui le date da suggerire",
+    "requestDetailsTitle": "Quale date consiglieresti al coordinatore?",
+    "responsibilityDeclaration": "Dichiaro di prendere la responsabilità di quanto dichiarato",
+    "requestReason": "Inserisci qui le tue motivazioni della richiesta di cambio data appello",
+    "requestReasonTitle": "Puoi chiedere al coordinatore del collegio di poter cambiare data del tuo appello",
+    "screenTitle": "Cambio data appello"
+  },
   "examScreen": {
     "bookedCount": "Studenti prenotati",
     "bookingEndsAt": "Prenotazione entro il",
@@ -437,7 +455,8 @@
   },
   "freeRoomsScreen": {
     "noFreeRooms": "Nessuna aula libera trovata",
-    "title": "Aule libere"
+    "title": "Aule libere",
+    "maxViewLimitMessage": "Raggiunto il limite massimo di visulizzazione"
   },
   "grades": {
     "absent": "Ass",
@@ -629,6 +648,15 @@
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"
   },
+  "recordedGradeScreen": {
+    "additionalPoint": "Punteggi aggiuntivi",
+    "recordedGradeTitle": "Valutazione Registrata",
+    "staff": "Docente",
+    "teacher": "Titolare",
+    "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
+    "titleOnTimePoint": "Punti Esame on-time",
+    "ctaButtonModal": "Accedi alla tua cariera"
+  },
   "sectionHeader": {
     "cta": "Vedi tutti",
     "ctaMoreSuffix": "(altri {{- count}})"
@@ -726,13 +754,28 @@
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
-    "estimatedFinalGrade": "Voto di laurea",
-    "estimatedFinalGradePurged": "Voto di laurea depurato",
-    "finalAverageLabel": "Media depurata",
-    "masterAdmissionAverage": "Media di ammissione al secondo livello",
+    "averageLabel": "Media di ammissione all’esame di laurea",
+    "finalAverageLabelDescription":{
+      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
+      "formula": "sum (voto * crediti) / sum crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
+    },
+    "laude": "*Le lodi non concorrono al calcolo",
+    "masterAdmissionAverage": "Media di ammissione al II liv",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
+      "formula":"sum (voto * crediti) / sum crediti\n(escludendo gli n peggiori crediti)"
+    },
+    "NB": "NB",
+    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
+    "onTimeScores": "Punti Esami on-time",
+    "pointTitle": "Punteggi",
+    "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
-    "weightedAverageLabel": "Media ponderata",
+    "weightedAverageLabelDescription":{
+      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
+      "formula": "sum (voto * crediti) / sum crediti"
+    },
     "yourCareer": "La tua carriera"
   },
   "videoControls": {

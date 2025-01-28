@@ -41,6 +41,7 @@ import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
+import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { SurveyTypesSection } from '../components/SurveyTypesSection';
@@ -66,7 +67,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     return coursesQuery.data.filter(
       c =>
-        c.id &&
+        isCourseDetailed(c) &&
         c.uniqueShortcode &&
         !coursePreferences[c.uniqueShortcode]?.isHidden,
     );
@@ -207,78 +208,57 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
                 >
-                  <Row p={5} gap={5} align="stretch" justify="space-between">
-                    <Col justify="space-between">
+                  <Row p={5} gap={5} align="center" justify="space-between">
+                    <Col justify="center" flexShrink={1}>
                       <Metric
-                        title={
-                          studentQuery.data?.averageGradePurged != null
-                            ? t('transcriptMetricsScreen.finalAverageLabel')
-                            : t('transcriptMetricsScreen.weightedAverageLabel')
-                        }
-                        value={
-                          hideGrades
-                            ? '--'
-                            : studentQuery.data?.averageGradePurged ??
-                              studentQuery.data?.averageGrade ??
-                              '--'
-                        }
+                        title={t('transcriptMetricsScreen.averageLabel')}
+                        value={formatFinalGrade(
+                          !hideGrades
+                            ? studentQuery.data?.usePurgedAverageFinalGrade
+                              ? studentQuery.data?.estimatedFinalGradePurged
+                              : studentQuery.data?.estimatedFinalGrade
+                            : null,
+                        )}
                         color={colors.title}
+                        valueStyle={{ paddingVertical: 10 }}
                       />
-                      {studentQuery.data?.estimatedFinalGradePurged ? (
-                        <Metric
-                          title={t(
-                            'transcriptMetricsScreen.estimatedFinalGradePurged',
-                          )}
-                          value={formatFinalGrade(
-                            hideGrades
-                              ? null
-                              : studentQuery.data?.estimatedFinalGradePurged,
-                          )}
-                          color={colors.title}
-                        />
-                      ) : (
-                        <Metric
-                          title={t(
-                            'transcriptMetricsScreen.estimatedFinalGrade',
-                          )}
-                          value={formatFinalGrade(
-                            hideGrades
-                              ? null
-                              : studentQuery.data?.estimatedFinalGrade,
-                          )}
-                          color={colors.title}
-                        />
-                      )}
                     </Col>
-                    <ProgressChart
-                      label={
-                        studentQuery.data?.totalCredits
-                          ? `${
-                              hideGrades
-                                ? '--'
-                                : studentQuery.data?.totalAcquiredCredits
-                            }/${studentQuery.data?.totalCredits}\n${t(
-                              'common.ects',
-                            )}`
-                          : undefined
-                      }
-                      data={
-                        hideGrades
-                          ? []
-                          : studentQuery.data?.totalCredits
-                          ? [
-                              (studentQuery.data?.totalAttendedCredits ?? 0) /
-                                studentQuery.data?.totalCredits,
-                              (studentQuery.data?.totalAcquiredCredits ?? 0) /
-                                studentQuery.data?.totalCredits,
-                            ]
-                          : []
-                      }
-                      boxSize={140}
-                      radius={40}
-                      thickness={18}
-                      colors={[palettes.primary[400], palettes.secondary[500]]}
-                    />
+                    <Col style={styles.graph} flexShrink={1}>
+                      <View style={{ alignItems: 'center' }}>
+                        <ProgressChart
+                          label={
+                            studentQuery.data?.totalCredits
+                              ? `${
+                                  hideGrades
+                                    ? '--'
+                                    : studentQuery.data?.totalAcquiredCredits
+                                }/${studentQuery.data?.totalCredits}\n${t(
+                                  'common.ects',
+                                )}`
+                              : undefined
+                          }
+                          data={
+                            hideGrades
+                              ? []
+                              : studentQuery.data?.totalCredits
+                              ? [
+                                  (studentQuery.data?.totalAttendedCredits ??
+                                    0) / studentQuery.data?.totalCredits,
+                                  (studentQuery.data?.totalAcquiredCredits ??
+                                    0) / studentQuery.data?.totalCredits,
+                                ]
+                              : []
+                          }
+                          boxSize={140}
+                          radius={40}
+                          thickness={18}
+                          colors={[
+                            palettes.primary[400],
+                            palettes.secondary[500],
+                          ]}
+                        />
+                      </View>
+                    </Col>
                   </Row>
                 </TouchableHighlight>
               )}
@@ -343,5 +323,8 @@ const createStyles = ({ spacing }: Theme) =>
       flexDirection: 'row',
       gap: spacing[1],
       alignItems: 'center',
+    },
+    graph: {
+      paddingHorizontal: spacing[4],
     },
   });

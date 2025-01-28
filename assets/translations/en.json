@@ -221,6 +221,7 @@
     "selectAnOption": "Please select an option",
     "services": "Services",
     "show": "Show",
+    "shortUsername": "ID",
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
     "status": "Status",
@@ -292,7 +293,12 @@
     "subtitle_plural": "{{count}} files"
   },
   "courseDirectoryScreen": {
-    "noResult": "No results found"
+    "clearSearch": "Clear search",
+    "emptyRootFolder": "There are no files",
+    "emptyFolder": "The folder is empty",
+    "noResult": "No results found",
+    "navigateRecentFiles": "View recent",
+    "search": "Search"
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
@@ -300,7 +306,7 @@
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "There are no files here",
+    "empty": "There are no files",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
@@ -414,6 +420,18 @@
     "placeholder": "Explain why you need to take the exam early",
     "title": "You can request the course holder to take the exam without having attended the classes"
   },
+  "examRescheduleScreen": {
+    "button": "Send request",
+    "ctaRescheduleSuccess": "Request sent",
+    "ctaRequest": "Request exam call date change",
+    "error": "Fill in the text field before proceeding with the request.",
+    "requestDetails": "Enter the dates to be suggested here",
+    "requestDetailsTitle": "What dates would you recommend to the coordinator?",
+    "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
+    "requestReason": "Enter your reasons for requesting a change of exam call date here",
+    "requestReasonTitle": "You can ask the college coordinator if you can change the date of your exam call",
+    "screenTitle": "Exam call date change"
+  },
   "examScreen": {
     "bookedCount": "Booked students",
     "bookingEndsAt": "Booking ends on",
@@ -437,7 +455,8 @@
   },
   "freeRoomsScreen": {
     "noFreeRooms": "No free rooms found",
-    "title": "Free rooms"
+    "title": "Free rooms",
+    "maxViewLimitMessage": "Maximum display limit reached "
   },
   "grades": {
     "absent": "Abs",
@@ -629,6 +648,15 @@
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "title": "Evaluation"
   },
+  "recordedGradeScreen": {
+    "additionalPoint": "Additional Scores",
+    "recordedGradeTitle": "Recorded grade",
+    "staff": "Staff",
+    "teacher": "Holder",
+    "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5 out of a maximum of 4.\nYou can consult your total on-time points on career",
+    "titleOnTimePoint": "On-time Exam points",
+    "ctaButtonModal": "Access your career"
+  },
   "sectionHeader": {
     "cta": "See all",
     "ctaMoreSuffix": "({{- count}} more)"
@@ -726,13 +754,28 @@
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
-    "estimatedFinalGrade": "Final grade",
-    "estimatedFinalGradePurged": "Estimated final grade",
-    "finalAverageLabel": "Final average",
-    "masterAdmissionAverage": "Master admission average",
+    "averageLabel": "Average grade for admission to the Final Examination",
+    "finalAverageLabelDescription":{
+      "description":  "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
+      "formula": "sum (grade * credits) / sum of credits,\nexcluding the {{-excludedCreditsNumber}} worst credits"
+    },
+    "laude": "*Honours does not count toward the calculation",
+    "masterAdmissionAverage": "Master admission average grade",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
+      "formula":"sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
+    },
+    "NB": "NB",
+    "NBDescription": "These definitions are indicative. To find out more, refer to the Student Guide.\nOnly graded exams are considered in all average grade above.",
+    "onTimeScores": "On-time Exams points",
+    "pointTitle": "Scores",
+    "pointModal": "The total of the Exam on-time points earned. This value can never exceed the maximum allowed by the degree program.\nTo find out more, refer to the Student Guide.",
     "thisYear": "This academic year",
     "title": "Career",
-    "weightedAverageLabel": "Weighted average",
+    "weightedAverageLabelDescription":{
+      "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
+      "formula": "sum (grade * credits) / sum of credits"
+    },
     "yourCareer": "Your career"
   },
   "videoControls": {

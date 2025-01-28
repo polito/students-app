@@ -21,6 +21,7 @@ import {
 } from '@tanstack/react-query';
 
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
+import { isCourseDetailed } from '../../features/courses/utils/courses';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
@@ -56,10 +57,10 @@ const setupCourses = (
 
   courses?.forEach(c => {
     const newC = c as CourseOverview;
-
+    const hasDetails = isCourseDetailed(newC);
     newC.uniqueShortcode = c.shortcode + c.moduleNumber;
 
-    if (c.id && !(newC.uniqueShortcode in coursePreferences)) {
+    if (hasDetails && !(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
         .map(cp => cp.color)
         .filter(notNullish);
@@ -158,24 +159,39 @@ export const useGetCourseEditions = (courseId: number) => {
           c.id === courseId || c.previousEditions.some(e => e.id === courseId),
       );
       const editions: MenuAction[] = [];
-
       if (!course || !course.previousEditions.length) return editions;
-
-      editions.push(
-        {
-          id: `${course.id}`,
-          title: course.year,
-          state: courseId === course?.id ? 'on' : undefined,
-        },
-        ...course.previousEditions.map(
-          e =>
-            ({
-              id: `${e.id}`,
-              title: e.year,
-              state: courseId === e.id ? 'on' : undefined,
-            } as MenuAction),
-        ),
-      );
+      if (course.id) {
+        editions.push(
+          {
+            id: `${course.id}`,
+            title: course.year,
+            state: courseId === course?.id ? 'on' : undefined,
+          },
+          ...course.previousEditions.map(
+            e =>
+              ({
+                id: `${e.id}`,
+                title: e.year,
+                state: courseId === e.id ? 'on' : undefined,
+              } as MenuAction),
+          ),
+        );
+      } else {
+        const prevEditions = course.previousEditions
+          .filter(e => e.id !== null)
+          .sort((a, b) => +b.year - +a.year)
+          .slice(1);
+        editions.push(
+          ...prevEditions.map(
+            e =>
+              ({
+                id: `${e.id}`,
+                title: e.year,
+                state: courseId === e.id ? 'on' : undefined,
+              } as MenuAction),
+          ),
+        );
+      }
 
       return editions;
     },
@@ -315,7 +331,7 @@ export const useGetCourseDirectory = (
 
   const rootDirectoryContent = filesQuery.data;
 
-  return useQuery(
+  const directoryQuery = useQuery(
     [COURSE_QUERY_PREFIX, courseId, 'directories', directoryId ?? 'root'],
     () => {
       if (!directoryId) {
@@ -335,6 +351,10 @@ export const useGetCourseDirectory = (
       staleTime: courseFilesStaleTime,
     },
   );
+  return {
+    ...directoryQuery,
+    refetch: () => filesQuery.refetch().then(directoryQuery.refetch),
+  };
 };
 
 /**
