@@ -637,7 +637,7 @@
     "staff": "Docente",
     "teacher": "Titolare",
     "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
-    "titleOnTimePoint": "Punti Esame On-time",
+    "titleOnTimePoint": "Punti Esame on-time",
     "ctaButtonModal": "Accedi alla tua cariera"
   },
   "sectionHeader": {
@@ -750,7 +750,7 @@
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
-    "onTimeScores": "Punti Esami On-time",
+    "onTimeScores": "Punti Esami on-time",
     "pointTitle": "Punteggi",
     "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
