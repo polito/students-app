@@ -17,9 +17,10 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 interface Props {
   exam: Exam;
+  absolute?: boolean;
 }
 
-export const ExamCTA = ({ exam }: Props) => {
+export const ExamCTA = ({ exam, absolute = false }: Props) => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
 
@@ -92,6 +93,8 @@ export const ExamCTA = ({ exam }: Props) => {
       loading={mutationsLoading}
       disabled={!onlineManager.isOnline() || examUnavailable}
       variant="filled"
+      absolute={absolute}
+      containerStyle={{ paddingVertical: 0 }}
     />
   );
 };

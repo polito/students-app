@@ -41,6 +41,7 @@ import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { formatFinalGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
+import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { SurveyTypesSection } from '../components/SurveyTypesSection';
@@ -66,7 +67,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     return coursesQuery.data.filter(
       c =>
-        c.id &&
+        isCourseDetailed(c) &&
         c.uniqueShortcode &&
         !coursePreferences[c.uniqueShortcode]?.isHidden,
     );

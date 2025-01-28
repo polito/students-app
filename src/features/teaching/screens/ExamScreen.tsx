@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { ErrorCard } from '@lib/ui/components/ErrorCard';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -43,6 +44,7 @@ import {
 import { PlacesListItem } from '../../places/components/PlacesListItem';
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';
+import { ExamRescheduleCTA } from '../components/ExamRescheduleCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { getExam, isExamPassed } from '../utils/exam';
@@ -247,7 +249,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {exam && <ExamCTA exam={exam} />}
+      <CtaButtonContainer absolute={true}>
+        {exam?.isReschedulable &&
+          exam?.status === ExamStatusEnum.Available &&
+          exam && <ExamRescheduleCTA exam={exam} />}
+        {exam && <ExamCTA exam={exam} absolute={false} />}
+      </CtaButtonContainer>
+      <CtaButtonSpacer />
     </>
   );
 };

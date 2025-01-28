@@ -137,17 +137,19 @@ export const useUpdateAppInfo = () => {
   const authClient = useAuthClient();
 
   return useMutation({
-    mutationFn: async (fcmRegistrationToken: string) => {
+    mutationFn: async (fcmToken: string | void) => {
+      // mutation requires a variable, an undefined string is not accepted
       return Promise.all([
         DeviceInfo.getBuildNumber(),
         DeviceInfo.getVersion(),
-      ]).then(([buildNumber, appVersion]) => {
+        fcmToken || getFcmToken(),
+      ]).then(([buildNumber, appVersion, fcmRegistrationToken]) => {
         const dto: AppInfoRequest = {
           buildNumber,
           appVersion,
           fcmRegistrationToken,
         };
-        authClient.appInfo({
+        return authClient.appInfo({
           appInfoRequest: dto,
         });
       });

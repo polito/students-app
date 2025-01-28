@@ -17,6 +17,7 @@ import { getCourseKey } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks';
 import { LECTURES_QUERY_PREFIX } from '../../agenda/queries/lectureHooks';
+import { getLatestCourseInfo, isCourseDetailed } from '../utils/courses';
 import { CourseIndicator } from './CourseIndicator';
 
 interface Props {
@@ -79,7 +80,8 @@ export const CourseListItem = ({
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
 
-  const hasDetails = course.id != null;
+  const hasDetails = isCourseDetailed(course);
+  const courseInfo = getLatestCourseInfo(course);
   const queryClient = useQueryClient();
 
   const isDataMissing = useCallback(
@@ -116,9 +118,9 @@ export const CourseListItem = ({
           ? {
               screen: 'Course',
               params: {
-                id: course.id,
-                courseName: course.name,
-                uniqueShortcode: course.uniqueShortcode,
+                id: courseInfo?.id,
+                courseName: courseInfo?.name,
+                uniqueShortcode: courseInfo?.uniqueShortcode,
               },
             }
           : undefined
