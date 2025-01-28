@@ -24,6 +24,13 @@ const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
 
+export async function resetKeychain(): Promise<void> {
+  const credentials = await Keychain.getGenericPassword();
+  if (credentials) {
+    await Keychain.setGenericPassword(credentials.username, NO_TOKEN);
+  }
+}
+
 async function getFcmToken(): Promise<string | undefined> {
   if (!isEnvProduction) return undefined;
 
@@ -83,7 +90,7 @@ export const useLogin = () => {
               manufacturer,
             };
             dto.client = {
-              name: 'students app',
+              name: 'students-app',
               buildNumber,
               appVersion,
               id,
@@ -122,10 +129,7 @@ export const useLogout = () => {
       refreshContext();
       asyncStoragePersister.removeClient();
       queryClient.removeQueries();
-      const credentials = await Keychain.getGenericPassword();
-      if (credentials) {
-        await Keychain.setGenericPassword(credentials.username, NO_TOKEN);
-      }
+      resetKeychain();
     },
   });
 };

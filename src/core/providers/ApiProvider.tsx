@@ -32,7 +32,7 @@ import {
 import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
-import { NO_TOKEN } from '../queries/authHooks.ts';
+import { NO_TOKEN, resetKeychain } from '../queries/authHooks.ts';
 
 export const asyncStoragePersister = createAsyncStoragePersister({
   key: 'polito-students.queries',
@@ -56,7 +56,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     async (error: unknown, client: QueryClient) => {
       if (error instanceof ResponseError) {
         if (error.response.status === 401) {
-          await Keychain.resetGenericPassword();
+          resetKeychain();
           setApiContext(c => ({
             ...c,
             isLogged: false,
