@@ -129,7 +129,7 @@ export const useLogout = () => {
       refreshContext();
       asyncStoragePersister.removeClient();
       queryClient.removeQueries();
-      resetKeychain();
+      await resetKeychain();
     },
   });
 };
