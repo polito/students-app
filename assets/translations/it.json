@@ -221,6 +221,7 @@
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "show": "Mostra",
+    "shortUsername": "Matr.",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
     "status": "Stato",
@@ -418,6 +419,18 @@
     "error": "Compila il campo di testo prima di procedere con la richiesta",
     "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
     "title": "Puoi richiedere al titolare del corso di sostenere l'esame senza avere acquisito la frequenza"
+  },
+  "examRescheduleScreen": {
+    "button": "Invia richiesta",
+    "ctaRescheduleSuccess": "Richiesta inviata",
+    "ctaRequest": "Richiedi cambio data appello",
+    "error": "Compilare il campo di testo prima di procedere con la richiesta",
+    "requestDetails": "Inserisci qui le date da suggerire",
+    "requestDetailsTitle": "Quale date consiglieresti al coordinatore?",
+    "responsibilityDeclaration": "Dichiaro di prendere la responsabilità di quanto dichiarato",
+    "requestReason": "Inserisci qui le tue motivazioni della richiesta di cambio data appello",
+    "requestReasonTitle": "Puoi chiedere al coordinatore del collegio di poter cambiare data del tuo appello",
+    "screenTitle": "Cambio data appello"
   },
   "examScreen": {
     "bookedCount": "Studenti prenotati",
