@@ -1449,6 +1449,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-get-random-values (1.11.0):
+    - React-Core
   - react-native-html-to-pdf (0.12.0):
     - React-Core
   - react-native-menu (1.1.6):
@@ -1798,7 +1800,7 @@ PODS:
     - React-Core
   - RNCClipboard (1.14.3):
     - React-Core
-  - RNDeviceInfo (13.0.0):
+  - RNDeviceInfo (13.2.0):
     - React-Core
   - RNFastImage (8.6.3):
     - React-Core
@@ -2056,6 +2058,7 @@ DEPENDENCIES:
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -2220,6 +2223,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-picker"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-html-to-pdf:
     :path: "../node_modules/react-native-html-to-pdf"
   react-native-menu:
@@ -2389,6 +2394,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: 06a4d96ab525a163c7a90bccd68833d136b0bb13
   react-native-document-picker: 7343222102ece8aec51390717f47ad7119c7921f
   react-native-geolocation: 0c7a8496962d3268ac5b28f22a8e5d7a04c43f1a
+  react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-menu: b7e42b26d3014c993db0f0ae3d5fcc523d5585bd
   react-native-netinfo: f0a9899081c185db1de5bb2fdc1c88c202a059ac
@@ -2427,7 +2433,7 @@ SPEC CHECKSUMS:
   ReactCommon: 422e364463f33e336fc4db196aeb50fd801d90d6
   RNCAsyncStorage: d35c79ffba52c1013013e16b1fc295aec2feabb6
   RNCClipboard: 2821ac938ef46f736a8de0c8814845dde2dcbdfb
-  RNDeviceInfo: 55264dd7cc939dad6e9c231a7621311f5277f1dc
+  RNDeviceInfo: 29e01d5ae94bdb5a0f6c11a4c438132545b4df80
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: 5d3d1b9d563857c68d161a3226d9dd6d6be1a846
   RNFBMessaging: 2895d9dfa1cfea663c26a1b5dfb5faf17ad096f8

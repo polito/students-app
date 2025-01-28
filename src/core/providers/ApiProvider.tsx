@@ -32,6 +32,7 @@ import {
 import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
+import { NO_TOKEN } from '../queries/authHooks.ts';
 
 export const asyncStoragePersister = createAsyncStoragePersister({
   key: 'polito-students.queries',
@@ -163,7 +164,11 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       .then(keychainCredentials => {
         let credentials = undefined;
 
-        if (username && keychainCredentials) {
+        if (
+          username &&
+          keychainCredentials &&
+          keychainCredentials.password !== NO_TOKEN
+        ) {
           credentials = {
             username: username,
             token: keychainCredentials.password,
