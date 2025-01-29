@@ -42,16 +42,19 @@ platform :ios do
 
     source_map_path = '../../main.jsbundle.map'
 
-    sentry_upload_sourcemap(
-      auth_token: ENV['SENTRY_AUTH_TOKEN'],
-      org_slug: ENV['SENTRY_ORG'],
-      project_slug: ENV['SENTRY_PROJECT'],
-      version: 'it.polito.students@' + ENV['APP_VERSION'],
-      build: ENV['BUILD_PIECE'],
-      sourcemap: [source_map_path],
-      rewrite: true
-    )
-
+    begin
+      sentry_upload_sourcemap(
+        auth_token: ENV['SENTRY_AUTH_TOKEN'],
+        org_slug: ENV['SENTRY_ORG'],
+        project_slug: ENV['SENTRY_PROJECT'],
+        version: 'it.polito.students@' + ENV['APP_VERSION'],
+        build: ENV['BUILD_PIECE'],
+        sourcemap: [source_map_path],
+        rewrite: true
+      )
+    rescue => e
+      UI.important("Sentry sourcemap upload failed => #{e.message}")
+    end
   end
 
   lane :verify do
