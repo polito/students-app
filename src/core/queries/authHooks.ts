@@ -60,6 +60,7 @@ const getClientId = async (): Promise<string> => {
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
+  const { updatePreference } = usePreferencesContext();
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
@@ -112,6 +113,7 @@ export const useLogin = () => {
     },
     onSuccess: async data => {
       const { token, clientId: clientIdentifier, username } = data;
+      updatePreference('username', username);
       refreshContext({ username, token });
       await Keychain.setGenericPassword(clientIdentifier, token);
     },
