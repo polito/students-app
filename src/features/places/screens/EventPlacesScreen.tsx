@@ -39,7 +39,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
   const tabBarHeight = useBottomTabBarHeight();
   const safeAreaInsets = useSafeAreaInsets();
   const { floorId, setFloorId } = useContext(PlacesContext);
-  const { placeIds, eventName } = route.params;
+  const { placeIds, eventName, isCrossNavigation } = route.params;
   const placesQueries = useGetMultiplePlaces(placeIds);
   const isLoading = useMemo(
     () => placesQueries.some(q => q.isLoading),
@@ -90,6 +90,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
         mapContent: () => (
           <>
             <MarkersLayer
+              isCrossNavigation={isCrossNavigation}
               places={placesQueries.map(q => ({ type: 'place', ...q.data! }))}
               categoryId={places[0]?.category?.id}
               subCategoryId={places[0]?.category?.subCategory?.id}
