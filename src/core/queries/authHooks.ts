@@ -1,7 +1,7 @@
 import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import 'react-native-get-random-values';
 import Keychain from 'react-native-keychain';
+import uuid from 'react-native-uuid';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import type { AppInfoRequest } from '@polito/api-client/models';
@@ -9,7 +9,6 @@ import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { t } from 'i18next';
-import { v4 as uuidv4 } from 'uuid';
 
 import { isEnvProduction } from '../../utils/env';
 import { pluckData } from '../../utils/queries';
@@ -27,6 +26,7 @@ const useAuthClient = (): AuthApi => {
 export async function resetKeychain(): Promise<void> {
   const credentials = await Keychain.getGenericPassword();
   if (credentials) {
+    await Keychain.resetGenericPassword();
     await Keychain.setGenericPassword(credentials.username, NO_TOKEN);
   }
 }
@@ -52,7 +52,7 @@ const getClientId = async (): Promise<string> => {
   } catch (e) {
     console.warn("Keychain couldn't be accessed!", e);
   }
-  const clientId = uuidv4();
+  const clientId = uuid.v4();
   await Keychain.setGenericPassword(clientId, NO_TOKEN);
   return clientId;
 };
