@@ -14,6 +14,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { isNil } from 'lodash';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
@@ -288,7 +290,7 @@ export const CareerScreen = () => {
               </Col>
             </Card>
           </Section>
-          {totalOnTimeExamPoints && maxOnTimeExamPoints && (
+          {!isNil(totalOnTimeExamPoints) && !isNil(maxOnTimeExamPoints) && (
             <Section>
               <SectionHeader
                 title={t('transcriptMetricsScreen.pointTitle')}
