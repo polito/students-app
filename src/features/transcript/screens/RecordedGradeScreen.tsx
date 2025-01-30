@@ -108,10 +108,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                   }
                   numberOfLines={1}
                 >
-                  {isNumber(grade.grade)
-                    ? grade.grade
-                    : grade.grade.charAt(0).toUpperCase() +
-                      grade.grade.slice(1).toLowerCase()}
+                  {isNumber(grade.grade) && grade.grade}
                 </Text>
               </Col>
             </Row>
