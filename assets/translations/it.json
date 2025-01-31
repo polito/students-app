@@ -1,4 +1,19 @@
 {
+  "accessibilitySettingsScreen": {
+    "title": "Impostazioni di accessibilità",
+    "customFontTitle": "Font personalizzato",
+    "customFontDefault": "No custom font",
+    "customFontAction": "Seleziona un font",
+    "customFontPlacement": "Usalo per",
+    "customFontSectionTitle": "Font accessibile",
+    "customThemeSectionTitle": "Tema accessibile",
+    "highContrastTitle": "Alto contrasto",
+    "greyscaleTitle": "Scala di grigi",
+    "wordSpacingTitle": "Spaziatura parole",
+    "paragraphSpacingTitle": "Spaziatura paragrafi",
+    "lineHeightTitle": "Altezza riga",
+    "Example Text": "Testo di esempio"
+  },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
     "dailyLayout": "Layout giornaliero",
@@ -77,6 +92,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "accessibility": "Accessibilità",
     "active": "Attivo",
     "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
