@@ -1,4 +1,19 @@
 {
+  "accessibilitySettingsScreen": {
+    "title": "Accessibility settings",
+    "customFontTitle": "Custom font",
+    "customFontAction": "Pick a font",
+    "customFontPlacement": "Use it for",
+    "themeCustomizationTitle": "Theme customization",
+    "customFontSectionTitle": "Accessible font",
+    "customThemeSectionTitle": "Accessible theme",
+    "highContrastTitle": "High contrast",
+    "greyscaleTitle": "Greyscale",
+    "wordSpacingTitle": "Word spacing",
+    "paragraphSpacingTitle": "Paragraph spacing",
+    "lineHeightTitle": "Line height",
+    "exampleText": "Example text"
+  },
   "agendaScreen": {
     "backToToday": "Back to today",
     "dailyLayout": "Daily layout",
@@ -72,6 +87,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "accessibility": "Accessibility",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",

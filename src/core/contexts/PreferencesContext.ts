@@ -9,6 +9,7 @@ import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
 export const editablePreferenceKeys = [
   // This version is used exclusively for migrations.
   // For all other cases, use DeviceInfo from react-native-device-info.
+  'accessibility',
   'lastInstalledVersion',
   'username',
   'campusId',
@@ -31,6 +32,7 @@ export type PreferenceKey = (typeof editablePreferenceKeys)[number];
 
 // Specify here complex keys, that require serialization/deserialization
 export const objectPreferenceKeys = [
+  'accessibility',
   'courses',
   'notifications',
   'favoriteServices',
@@ -69,6 +71,21 @@ export interface PreferencesContextBase {
     filters: AgendaTypesFilterState;
   };
   filesScreen: 'filesView' | 'directoryView';
+  accessibility?: {
+    fontFamily?:
+      | 'default'
+      | 'open-dyslexic'
+      | 'dyslexie'
+      | 'easy-reading'
+      | 'sylexiad';
+    fontPlacement?: 'none' | 'long-text' | 'all-text';
+    highContrast?: boolean;
+    grayscale?: boolean;
+    lineHeight?: boolean;
+    wordSpacing?: boolean;
+    letterSpacing?: boolean;
+    paragraphSpacing?: boolean;
+  };
   hideGrades?: boolean;
   loginUid?: string;
 }
