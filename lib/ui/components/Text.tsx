@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Text as RNText, StyleSheet, TextProps } from 'react-native';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
@@ -46,12 +48,62 @@ export const Text = ({
   children,
   ...rest
 }: Props) => {
-  const { colors, fontFamilies, fontWeights } = useTheme();
+  const { colors, fontFamilies, fontWeights, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
+  const { accessibility } = usePreferencesContext();
+  const [styless, setStyless] = useState(styles);
+  const wordSpacing = fontSizes.md * 0.16;
 
+  const changeStyle = () => {
+    setStyless({
+      heading: {
+        fontSize: fontSizes.md,
+      },
+      subHeading: {
+        fontSize: fontSizes.md,
+        textTransform: 'uppercase',
+      },
+      title: {
+        fontSize: fontSizes.xl,
+      },
+      headline: {
+        fontSize: fontSizes.md,
+      },
+      caption: {
+        fontSize: fontSizes.sm,
+        textTransform: 'uppercase',
+      },
+      prose: {
+        fontSize: fontSizes.md,
+        letterSpacing:
+          accessibility?.fontPlacement === 'long-text'
+            ? fontSizes.md * 0.12
+            : undefined,
+      },
+      longProse: {
+        fontSize: fontSizes.md,
+        lineHeight: accessibility?.lineHeight ? fontSizes.md * 1.5 : undefined,
+        letterSpacing:
+          accessibility?.fontPlacement === 'long-text'
+            ? fontSizes.md * 0.12
+            : undefined,
+        marginBottom: accessibility?.paragraphSpacing ? fontSizes.md * 2 : 0,
+      },
+      secondaryText: {},
+      link: {},
+    } as any);
+  };
+
+  const addWordSpacing = (text: string, spacing: number) => {
+    return text.split(' ').join(' '.repeat(spacing));
+  };
+
+  useEffect(() => {
+    changeStyle();
+  }, [accessibility]);
   return (
     <RNText
       style={[
@@ -63,20 +115,26 @@ export const Text = ({
         italic && {
           fontStyle: 'italic',
         },
-        styles[variant],
+        styless[variant],
         capitalize && { textTransform: 'capitalize' },
         uppercase && { textTransform: 'uppercase' },
         style,
       ]}
       {...rest}
     >
-      {children}
+      {typeof children === 'string' &&
+      variant === 'longProse' &&
+      accessibility?.wordSpacing
+        ? addWordSpacing(children, wordSpacing)
+        : children}
     </RNText>
   );
 };
 
-const createStyles = ({ fontSizes }: Theme) =>
-  StyleSheet.create({
+const createStyles = ({ fontSizes }: Theme) => {
+  // const { accessibility } = usePreferencesContext()
+
+  return StyleSheet.create({
     heading: {
       fontSize: fontSizes.md,
     },
@@ -96,11 +154,15 @@ const createStyles = ({ fontSizes }: Theme) =>
     },
     prose: {
       fontSize: fontSizes.md,
+      // letterSpacing: accessibility?.fontPlacement === 'long-text' ? fontSizes.md * 0.12 : undefined,
     },
     longProse: {
       fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.5,
+      // lineHeight: accessibility?.lineHeight ? fontSizes.md * 1.5 : undefined,
+      // letterSpacing: accessibility?.fontPlacement === 'long-text' ? fontSizes.md * 0.12 : undefined,
+      // marginBottom: accessibility?.paragraphSpacing ? fontSizes.md * 2 : 0,
     },
     secondaryText: {},
     link: {},
   });
+};
