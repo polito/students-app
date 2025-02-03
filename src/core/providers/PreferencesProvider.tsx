@@ -3,9 +3,11 @@ import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
+  EditablePreferences,
   PreferenceKey,
   PreferencesContext,
   PreferencesContextProps,
+  UpdatePreferenceValue,
   editablePreferenceKeys,
   objectPreferenceKeys,
 } from '../contexts/PreferencesContext';
@@ -15,7 +17,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const deviceLanguage = useDeviceLanguage();
   const [preferencesContext, setPreferencesContext] =
     useState<PreferencesContextProps>({
-      lastInstalledVersion: null,
+      lastInstalledVersion: undefined,
       username: '',
       colorScheme: 'system',
       courses: {},
@@ -38,35 +40,52 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
 
   const preferencesInitialized = useRef<boolean>(false);
 
-  const updatePreference = (key: PreferenceKey, value: unknown) => {
-    const stringKey = key.toString();
-    if (value === null) {
-      AsyncStorage.removeItem(stringKey).then(() =>
-        setPreferencesContext(oldP => ({
-          ...oldP,
-          [stringKey]: value,
-        })),
-      );
-    } else {
-      let storageValue: string;
+  // Initialize preferences from AsyncStorage
+  useEffect(() => {
+    const updatePreference = <K extends PreferenceKey>(
+      key: K,
+      value: UpdatePreferenceValue<K>,
+    ) => {
+      const stringKey = key.toString();
 
-      if (objectPreferenceKeys.includes(key)) {
-        storageValue = JSON.stringify(value);
+      // if value is undefined, remove the preference
+      if (value === undefined) {
+        AsyncStorage.removeItem(stringKey).then(() =>
+          setPreferencesContext(oldP => ({
+            ...oldP,
+            [stringKey]: value,
+          })),
+        );
+
+        return;
+      }
+
+      let storageValue: string;
+      let nextValue: EditablePreferences[PreferenceKey];
+
+      // if value is a callback, call it with the current value
+      if (typeof value === 'function') {
+        const currentValue = preferencesContext[key];
+        nextValue = value(currentValue);
       } else {
-        storageValue = value as string;
+        nextValue = value;
+      }
+
+      // if value is an object, stringify it
+      if (objectPreferenceKeys.includes(key)) {
+        storageValue = JSON.stringify(nextValue);
+      } else {
+        storageValue = nextValue as string;
       }
 
       AsyncStorage.setItem(stringKey, storageValue).then(() =>
         setPreferencesContext(oldP => ({
           ...oldP,
-          [stringKey]: value,
+          [stringKey]: nextValue,
         })),
       );
-    }
-  };
+    };
 
-  // Initialize preferences from AsyncStorage
-  useEffect(() => {
     AsyncStorage.multiGet(editablePreferenceKeys).then(storagePreferences => {
       const preferences: Partial<PreferencesContextProps> = {
         updatePreference,
@@ -94,6 +113,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
         return { ...oldP, ...preferences };
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, []);
 
   // Preferences are loaded
