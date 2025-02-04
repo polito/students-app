@@ -48,7 +48,7 @@ export const PillButton = ({
   );
 };
 
-const createStyles = ({ palettes, spacing, fontWeights }: Theme) =>
+const createStyles = ({ palettes, spacing, fontWeights, colors }: Theme) =>
   StyleSheet.create({
     container: {
       borderRadius: 10,
@@ -67,6 +67,6 @@ const createStyles = ({ palettes, spacing, fontWeights }: Theme) =>
     },
     textNeutral: {},
     textPrimary: {
-      color: 'white',
+      color: colors.white,
     },
   });
