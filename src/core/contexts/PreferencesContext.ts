@@ -85,6 +85,7 @@ export interface PreferencesContextBase {
     wordSpacing?: boolean;
     letterSpacing?: boolean;
     paragraphSpacing?: boolean;
+    fontSize?: 100 | 125 | 150 | 175 | 200;
   };
   hideGrades?: boolean;
   loginUid?: string;

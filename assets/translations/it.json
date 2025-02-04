@@ -10,9 +10,10 @@
     "highContrastTitle": "Alto contrasto",
     "greyscaleTitle": "Scala di grigi",
     "wordSpacingTitle": "Spaziatura parole",
+    "customFontSizeTitle": "Grandezza font",
     "paragraphSpacingTitle": "Spaziatura paragrafi",
     "lineHeightTitle": "Altezza riga",
-    "Example Text": "Testo di esempio"
+    "exampleText": "Testo di esempio"
   },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
