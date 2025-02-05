@@ -39,7 +39,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { formatFinalGrade } from '../../../utils/grades';
+import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
 import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
@@ -209,7 +209,14 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   underlayColor={colors.touchableHighlight}
                 >
                   <Row p={5} gap={5} align="center" justify="space-between">
-                    <Col justify="center" flexShrink={1}>
+                    <Col justify="center" flexShrink={1} gap={5}>
+                      <Metric
+                        title={t('transcriptMetricsScreen.weightedAverage')}
+                        value={formatThirtiethsGrade(
+                          !hideGrades ? studentQuery.data?.averageGrade : null,
+                        )}
+                        color={colors.title}
+                      />
                       <Metric
                         title={t('transcriptMetricsScreen.averageLabel')}
                         value={formatFinalGrade(
@@ -220,7 +227,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
                             : null,
                         )}
                         color={colors.title}
-                        valueStyle={{ paddingVertical: 10 }}
                       />
                     </Col>
                     <Col style={styles.graph} flexShrink={1}>
