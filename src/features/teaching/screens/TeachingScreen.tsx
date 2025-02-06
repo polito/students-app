@@ -55,7 +55,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences, hideGrades } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
-  const { getUnreadsCount } = useNotifications();
+  const { getUnreadsCountPerCourse } = useNotifications();
   const surveyCategoriesQuery = useGetSurveyCategories();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
@@ -147,15 +147,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
-                badge={
-                  course.id
-                    ? getUnreadsCount([
-                        'teaching',
-                        'courses',
-                        course.id!.toString(),
-                      ])
-                    : undefined
-                }
+                badge={getUnreadsCountPerCourse(
+                  course.id,
+                  course.previousEditions,
+                )}
               />
             ))}
           </OverviewList>
