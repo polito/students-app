@@ -132,10 +132,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                   ]}
                   numberOfLines={1}
                 >
-                  {grade.isFailure || grade.isWithdrawn
-                    ? grade.grade.charAt(0).toUpperCase() +
-                      grade.grade.slice(1).toLowerCase()
-                    : grade.grade}
+                  {grade.grade}
                 </Text>
               </Col>
             </Row>
