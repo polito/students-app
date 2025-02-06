@@ -784,13 +784,13 @@
     "averageLabel": "Media di ammissione all’esame di laurea",
     "finalAverageLabelDescription":{
       "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
-      "formula": "sum (voto * crediti) / sum crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
+      "formula": "somma (voto * crediti) / somma crediti,\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
     },
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
     "masterAdmissionAverageLabelDescription":{
       "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
-      "formula":"sum (voto * crediti) / sum crediti\n(escludendo gli n peggiori crediti)"
+      "formula":"somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
@@ -801,7 +801,7 @@
     "title": "Carriera",
     "weightedAverageLabelDescription":{
       "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
-      "formula": "sum (voto * crediti) / sum crediti"
+      "formula": "somma (voto * crediti) / somma crediti"
     },
     "yourCareer": "La tua carriera"
   },
