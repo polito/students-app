@@ -25,7 +25,7 @@ import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
-  Course: { id: number; animated?: boolean; unreadsCount?: number };
+  Course: { id: number; animated?: boolean };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };

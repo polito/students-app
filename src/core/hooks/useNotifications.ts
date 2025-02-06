@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { CourseOverviewPreviousEditionsInner } from '@polito/api-client';
 import { Notification } from '@polito/api-client/models/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,7 +14,6 @@ import {
   useGetNotifications,
   useMarkNotificationAsRead,
 } from '../queries/studentHooks';
-import { CourseOverview } from '../types/api';
 import { RootParamList } from '../types/navigation';
 import {
   PushNotificationPayload,
@@ -162,10 +162,14 @@ export const useNotifications = () => {
   );
 
   const getUnreadsCountPerCourse = useCallback(
-    (course: CourseOverview) => {
-      const courseIds = course.previousEditions?.map(e => e.id) ?? [];
-      if (course.id) {
-        courseIds.push(course.id);
+    (
+      courseId?: number | null,
+      prevEditions?: CourseOverviewPreviousEditionsInner[],
+    ) => {
+      if (courseId === undefined || !prevEditions) return 0;
+      const courseIds = prevEditions.map(e => e.id);
+      if (courseId) {
+        courseIds.push(courseId);
       }
       return (
         courseIds.reduce(

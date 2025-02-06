@@ -119,7 +119,6 @@ export const CourseListItem = ({
               screen: 'Course',
               params: {
                 id: courseInfo?.id,
-                unreadsCount: badge,
               },
             }
           : undefined

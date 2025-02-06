@@ -147,7 +147,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
-                badge={course ? getUnreadsCountPerCourse(course) : undefined}
+                badge={getUnreadsCountPerCourse(
+                  course.id,
+                  course.previousEditions,
+                )}
               />
             ))}
           </OverviewList>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { Platform } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
@@ -30,7 +31,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
-import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
+import { MenuAction } from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -50,19 +51,15 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { useCourseContext } from '../contexts/CourseContext';
-import { CourseTabsParamList } from '../navigation/CourseNavigator';
-
-type Props = MaterialTopTabScreenProps<CourseTabsParamList, 'CourseInfoScreen'>;
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
-export const CourseInfoScreen = ({ route }: Props) => {
+export const CourseInfoScreen = () => {
   const { t } = useTranslation();
   const courseId = useCourseContext();
-  const { unreadsCount } = route.params;
   const styles = useStylesheet(createStyles);
-  const { spacing } = useTheme();
-  const { getUnreadsCount } = useNotifications();
+  const { spacing, palettes } = useTheme();
+  const { getUnreadsCount, getUnreadsCountPerCourse } = useNotifications();
   const { fontSizes } = useTheme();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
@@ -76,11 +73,29 @@ export const CourseInfoScreen = ({ route }: Props) => {
   );
 
   const unreadsCurrentYear = getUnreadsCount(['teaching', 'courses', courseId]);
-  const unreadsPrevEditions = (unreadsCount ?? 0) - (unreadsCurrentYear ?? 0);
+  const unreadsPrevEditions =
+    (getUnreadsCountPerCourse(null, editions) ?? 0) - (unreadsCurrentYear ?? 0);
 
   const isOffline = useOfflineDisabled();
 
   const { getParent } = useNavigation();
+
+  const menuActions = useMemo(() => {
+    if (!editions) return [];
+    return editions.map(e => {
+      const editionsCount = getUnreadsCount(['teaching', 'courses', e.id]);
+      return {
+        id: `${e.id}`,
+        title: e.year,
+        state: courseId === e.id ? 'on' : undefined,
+        image: editionsCount
+          ? Platform.select({ ios: 'circle.fill', android: 'circle' })
+          : undefined,
+        imageColor: editionsCount ? palettes.rose[600] : undefined,
+      } as MenuAction;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editions, courseId]);
 
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
@@ -138,7 +153,7 @@ export const CourseInfoScreen = ({ route }: Props) => {
               accessible={true}
             >
               <StatefulMenuView
-                actions={editions ?? []}
+                actions={menuActions}
                 onPressAction={async ({ nativeEvent: { event } }) => {
                   // replace current screen with same screen with event id as param
                   (
@@ -149,7 +164,6 @@ export const CourseInfoScreen = ({ route }: Props) => {
                   ).replace('Course', {
                     id: +event,
                     animated: false,
-                    unreadsCount,
                   });
                 }}
               >
