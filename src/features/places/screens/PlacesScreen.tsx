@@ -102,7 +102,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: campus?.id,
     search: debouncedSearch,
-    floorId,
     categoryId,
     subCategoryId,
   });
