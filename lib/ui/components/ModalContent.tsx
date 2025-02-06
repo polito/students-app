@@ -1,6 +1,6 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
@@ -12,15 +12,25 @@ import { Theme } from '@lib/ui/types/Theme';
 type Props = {
   title: string;
   close: () => void;
+  scrollViewRef?: any;
+  setScrollOffset?: (value: number) => void;
 };
 
 export const ModalContent = ({
   children,
   close,
   title,
+  scrollViewRef,
+  setScrollOffset,
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+
+  const handleOnScroll = useCallback((event: any) => {
+    if (setScrollOffset) {
+      setScrollOffset(event.nativeEvent.contentOffset.y);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -39,7 +49,13 @@ export const ModalContent = ({
           adjustSpacing="left"
         />
       </HeaderAccessory>
-      <View>{children}</View>
+      <ScrollView
+        onScroll={handleOnScroll}
+        scrollEventThrottle={120}
+        ref={scrollViewRef}
+      >
+        {children}
+      </ScrollView>
     </View>
   );
 };

@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -58,11 +59,25 @@ export const CareerScreen = () => {
     close: closeBottomModal,
   } = useBottomModal();
 
+  const [scrollOffset, setScrollOffset] = useState<number>(0);
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const onPressAverageEvent = () => {
     showBottomModal(
       <CareerScreenModal
         title={t('transcriptMetricsScreen.averagesAndGrades')}
         itemList={[
+          {
+            title: t('transcriptMetricsScreen.weightedAverage'),
+            content: {
+              description: t(
+                'transcriptMetricsScreen.weightedAverageDescription.description',
+              ),
+              formula: t(
+                'transcriptMetricsScreen.weightedAverageDescription.formula',
+              ),
+            },
+            dot: true,
+          },
           usePurgedAverageFinalGrade
             ? {
                 title: t('transcriptMetricsScreen.averageLabel'),
@@ -123,6 +138,8 @@ export const CareerScreen = () => {
           },
         ]}
         onDismiss={closeBottomModal}
+        scrollViewRef={scrollViewRef}
+        setScrollOffset={setScrollOffset}
       />,
     );
   };
@@ -147,7 +164,12 @@ export const CareerScreen = () => {
 
   return (
     <>
-      <BottomModal dismissable {...bottomModal} />
+      <BottomModal
+        dismissable
+        {...bottomModal}
+        scrollOffset={scrollOffset}
+        scrollViewRef={scrollViewRef}
+      />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.container}
@@ -253,6 +275,22 @@ export const CareerScreen = () => {
             />
             <Card style={styles.metricsCard} accessible={true}>
               <Col>
+                <>
+                  <Row>
+                    <Text style={styles.title}>
+                      {t('transcriptMetricsScreen.weightedAverage')}
+                    </Text>
+                  </Row>
+                  <Row style={styles.spaceBottom}>
+                    <Metric
+                      value={formatThirtiethsGrade(
+                        studentQuery.data?.averageGrade,
+                      )}
+                      style={GlobalStyles.grow}
+                    />
+                  </Row>
+                </>
+
                 <Row>
                   <Text style={styles.title}>
                     {t('transcriptMetricsScreen.averageLabel')}
