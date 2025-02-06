@@ -10,7 +10,9 @@ import {
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@lib/ui/components/Card';
+import { Col } from '@lib/ui/components/Col';
 import { Grid } from '@lib/ui/components/Grid';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -28,11 +30,13 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { Person } from '@polito/api-client/models/Person';
+import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   CourseSectionEnum,
@@ -46,13 +50,19 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { useCourseContext } from '../contexts/CourseContext';
+import { CourseTabsParamList } from '../navigation/CourseNavigator';
+
+type Props = MaterialTopTabScreenProps<CourseTabsParamList, 'CourseInfoScreen'>;
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
-export const CourseInfoScreen = () => {
+export const CourseInfoScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const courseId = useCourseContext();
+  const { unreadsCount } = route.params;
   const styles = useStylesheet(createStyles);
+  const { spacing } = useTheme();
+  const { getUnreadsCount } = useNotifications();
   const { fontSizes } = useTheme();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
@@ -64,6 +74,9 @@ export const CourseInfoScreen = () => {
   const { queries: staffQueries, isLoading: isStaffLoading } = useGetPersons(
     courseQuery.data?.staff.map(s => s.id),
   );
+
+  const unreadsCurrentYear = getUnreadsCount(['teaching', 'courses', courseId]);
+  const unreadsPrevEditions = (unreadsCount ?? 0) - (unreadsCurrentYear ?? 0);
 
   const isOffline = useOfflineDisabled();
 
@@ -136,6 +149,7 @@ export const CourseInfoScreen = () => {
                   ).replace('Course', {
                     id: +event,
                     animated: false,
+                    unreadsCount,
                   });
                 }}
               >
@@ -148,15 +162,30 @@ export const CourseInfoScreen = () => {
                     accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
                       courseQuery.data?.teachingPeriod ?? '--'
                     } - ${courseQuery.data?.year ?? '--'}`}
+                    style={styles.periodMetric}
                   />
-                  {(editions?.length ?? 0) > 0 && (
-                    <Icon
-                      icon={faAngleDown}
-                      size={14}
-                      style={styles.periodDropdownIcon}
-                      color={styles.periodDropdownIcon.color}
-                    />
-                  )}
+                  <Col align="center">
+                    {unreadsPrevEditions > 0 && (
+                      <Icon
+                        icon={faCircle}
+                        size={8}
+                        color={styles.dotIcon.color}
+                        style={styles.dotIcon}
+                      />
+                    )}
+                    {(editions?.length ?? 0) > 0 && (
+                      <Icon
+                        icon={faAngleDown}
+                        size={14}
+                        style={{
+                          marginTop: unreadsPrevEditions
+                            ? undefined
+                            : spacing[4],
+                        }}
+                        color={styles.periodDropdownIcon.color}
+                      />
+                    )}
+                  </Col>
                 </Row>
               </StatefulMenuView>
             </View>
@@ -267,9 +296,14 @@ const createStyles = ({ palettes, spacing }: Theme) =>
       marginTop: 0,
       marginBottom: spacing[7],
     },
+    periodMetric: {
+      marginRight: spacing[2],
+    },
     periodDropdownIcon: {
-      marginLeft: spacing[2],
-      marginTop: spacing[4],
       color: palettes.secondary['500'],
+    },
+    dotIcon: {
+      marginBottom: spacing[2],
+      color: palettes.rose['600'],
     },
   });

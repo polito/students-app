@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   CourseOverview as ApiCourseOverview,
   CourseDirectory,
@@ -29,6 +31,7 @@ import {
   CoursesPreferences,
   usePreferencesContext,
 } from '../contexts/PreferencesContext';
+import { useNotifications } from '../hooks/useNotifications';
 import { CourseOverview } from '../types/api';
 import {
   CourseDirectoryContentWithLocations,
@@ -150,6 +153,8 @@ export const useGetCourse = (courseId: number) => {
 
 export const useGetCourseEditions = (courseId: number) => {
   const coursesQuery = useGetCourses();
+  const { getUnreadsCount } = useNotifications();
+  const { palettes } = useTheme();
 
   return useQuery(
     getCourseKey(courseId, CourseSectionEnum.Editions),
@@ -161,20 +166,33 @@ export const useGetCourseEditions = (courseId: number) => {
       const editions: MenuAction[] = [];
       if (!course || !course.previousEditions.length) return editions;
       if (course.id) {
+        const courseCount = getUnreadsCount(['teaching', 'courses', course.id]);
         editions.push(
           {
             id: `${course.id}`,
             title: course.year,
             state: courseId === course?.id ? 'on' : undefined,
+            image: courseCount
+              ? Platform.select({ ios: 'circle.fill', android: 'circle' })
+              : undefined,
+            imageColor: courseCount ? palettes.rose[600] : undefined,
           },
-          ...course.previousEditions.map(
-            e =>
-              ({
-                id: `${e.id}`,
-                title: e.year,
-                state: courseId === e.id ? 'on' : undefined,
-              } as MenuAction),
-          ),
+          ...course.previousEditions.map(e => {
+            const editionsCount = getUnreadsCount([
+              'teaching',
+              'courses',
+              e.id,
+            ]);
+            return {
+              id: `${e.id}`,
+              title: e.year,
+              state: courseId === e.id ? 'on' : undefined,
+              image: editionsCount
+                ? Platform.select({ ios: 'circle.fill', android: 'circle' })
+                : undefined,
+              imageColor: editionsCount ? palettes.rose[600] : undefined,
+            } as MenuAction;
+          }),
         );
       } else {
         const prevEditions = course.previousEditions
@@ -182,14 +200,22 @@ export const useGetCourseEditions = (courseId: number) => {
           .sort((a, b) => +b.year - +a.year)
           .slice(1);
         editions.push(
-          ...prevEditions.map(
-            e =>
-              ({
-                id: `${e.id}`,
-                title: e.year,
-                state: courseId === e.id ? 'on' : undefined,
-              } as MenuAction),
-          ),
+          ...prevEditions.map(e => {
+            const editionsCount = getUnreadsCount([
+              'teaching',
+              'courses',
+              e.id,
+            ]);
+            return {
+              id: `${e.id}`,
+              title: e.year,
+              state: courseId === e.id ? 'on' : undefined,
+              image: editionsCount
+                ? Platform.select({ ios: 'circle.fill', android: 'circle' })
+                : undefined,
+              imageColor: editionsCount ? palettes.rose[600] : undefined,
+            } as MenuAction;
+          }),
         );
       }
 

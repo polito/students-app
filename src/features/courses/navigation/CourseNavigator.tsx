@@ -27,7 +27,7 @@ import { FileNavigator } from './FileNavigator';
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
 export interface CourseTabsParamList extends TeachingStackParamList {
-  CourseInfoScreen: undefined;
+  CourseInfoScreen: { unreadsCount?: number };
   CourseNoticesScreen: undefined;
   CourseFilesScreen: undefined;
   CourseLecturesScreen: undefined;
@@ -44,8 +44,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const { getUnreadsCount } = useNotifications();
   const titleStyles = useTitlesStyles(theme);
 
-  const { id } = route.params;
-
+  const { id, unreadsCount } = route.params;
   const coursesQuery = useGetCourses();
 
   useEffect(() => {
@@ -124,6 +123,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             options={{
               title: t('courseInfoTab.title'),
             }}
+            initialParams={{ unreadsCount }}
           />
           <TopTabs.Screen
             name="CourseNoticesScreen"

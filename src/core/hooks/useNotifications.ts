@@ -13,6 +13,7 @@ import {
   useGetNotifications,
   useMarkNotificationAsRead,
 } from '../queries/studentHooks';
+import { CourseOverview } from '../types/api';
 import { RootParamList } from '../types/navigation';
 import {
   PushNotificationPayload,
@@ -160,6 +161,23 @@ export const useNotifications = () => {
     [unreadNotifications],
   );
 
+  const getUnreadsCountPerCourse = useCallback(
+    (course: CourseOverview) => {
+      const courseIds = course.previousEditions?.map(e => e.id) ?? [];
+      if (course.id) {
+        courseIds.push(course.id);
+      }
+      return (
+        courseIds.reduce(
+          (acc, eid) =>
+            acc + (getUnreadsCount(['teaching', 'courses', eid]) ?? 0),
+          0,
+        ) || undefined
+      );
+    },
+    [getUnreadsCount],
+  );
+
   const navigateToUpdate = useCallback(
     (notification?: RemoteMessage) => {
       if (!notification || !notification.data?.polito_transazione) {
@@ -216,5 +234,6 @@ export const useNotifications = () => {
     navigateToUpdate,
     clearNotificationScope,
     getUnreadsCount,
+    getUnreadsCountPerCourse,
   };
 };
