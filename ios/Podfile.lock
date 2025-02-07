@@ -1478,6 +1478,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-pdf (6.7.6):
+    - React-Core
   - react-native-pdf-light (2.4.1):
     - React-Core
   - react-native-render-html (6.3.4):
@@ -2061,6 +2063,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-override-color-scheme (from `../node_modules/react-native-override-color-scheme`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
+  - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-pdf-light (from `../node_modules/react-native-pdf-light`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -2230,6 +2233,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-override-color-scheme"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
+  react-native-pdf:
+    :path: "../node_modules/react-native-pdf"
   react-native-pdf-light:
     :path: "../node_modules/react-native-pdf-light"
   react-native-render-html:
@@ -2394,6 +2399,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-override-color-scheme: ffee175f44cafe12c6264aed171e6039b7c64bfe
   react-native-pager-view: 8bd7d72d1c260ef565952ac617ab6e492c457894
+  react-native-pdf: 5ad328deec86764b0684cfe3d64f2a81b1b9aacb
   react-native-pdf-light: bf37b7f2ed2ac57493bbda9a85ed43d195866d2d
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: b13be9714d9771fbde0120bc519c963484de3a71
