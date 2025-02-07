@@ -72,9 +72,6 @@ export const useGetSite = (siteId?: string) => {
 
 export const useGetPlaces = (params: GetPlacesRequest) => {
   const placesClient = usePlacesClient();
-  if (!params.search) {
-    delete params.search;
-  }
   const key = [PLACES_QUERY_KEY, JSON.stringify(params)];
 
   return useQuery(key, () => placesClient.getPlaces(params), {
