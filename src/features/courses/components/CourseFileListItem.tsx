@@ -17,7 +17,9 @@ import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_IOS } from '../../../core/constants';
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -96,7 +98,7 @@ export const CourseFileListItem = memo(
     ...rest
   }: Props) => {
     const { t } = useTranslation();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { colors, fontSizes, spacing } = useTheme();
     const iconProps = useMemo(
       () => ({
@@ -107,6 +109,7 @@ export const CourseFileListItem = memo(
     );
     const courseId = useCourseContext();
     const [courseFilesCache] = useCourseFilesCachePath();
+    const { setFeedback } = useFeedbackContext();
     const { getUnreadsCount } = useNotifications();
     const fileNotificationScope = useMemo(
       () => ['teaching', 'courses', courseId.toString(), 'files', item.id],
@@ -171,12 +174,35 @@ export const CourseFileListItem = memo(
     );
 
     const openDownloadedFile = useCallback(() => {
-      openFile().catch(e => {
-        if (e instanceof UnsupportedFileTypeError) {
-          Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
+      if (Platform.OS === 'android') {
+        try {
+          navigation.navigate('PdfViewer', { fileUrl: cachedFilePath });
+          setFeedback({
+            text:
+              Platform.Version > 29
+                ? t('courseFileListItem.fileSavedDocumentsPath')
+                : t('courseFileListItem.fileSaved') + cachedFilePath,
+            isPersistent: false,
+          });
+        } catch (e) {
+          if (e instanceof UnsupportedFileTypeError) {
+            Alert.alert(
+              t('common.error'),
+              t('courseFileListItem.openFileError'),
+            );
+          }
         }
-      });
-    }, [openFile, t]);
+      } else {
+        openFile().catch(e => {
+          if (e instanceof UnsupportedFileTypeError) {
+            Alert.alert(
+              t('common.error'),
+              t('courseFileListItem.openFileError'),
+            );
+          }
+        });
+      }
+    }, [openFile, t, navigation, cachedFilePath, setFeedback]);
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
