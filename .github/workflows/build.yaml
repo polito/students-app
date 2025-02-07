@@ -33,6 +33,11 @@ on:
         type: string
         description: Build piece (last 2 digits of build_no)
         required: true
+      create_release:
+        type: boolean
+        description: Create release
+        required: true
+        default: false
 
 jobs:
   configure:
@@ -75,7 +80,7 @@ jobs:
           PUSH_TESTFLIGHT=true
           PUSH_PLAYSTORE="${{ vars.PLAYSTORE_RELEASE_TRACK }}"
           VERSION="${{ steps.tag_version.outputs.version }}"
-          BUILD_PIECE=99
+          BUILD_PIECE=90
         elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
           # On repo manual dispatch
           PUSH_TESTFLIGHT="${{ github.event.inputs.push_to_testflight }}"
@@ -301,16 +306,18 @@ jobs:
     permissions:
       contents: write
     if: |
-      github.event_name == 'push' &&
       github.event.repository.full_name == github.repository &&
-      github.ref_type == 'tag'
+      (
+        (github.event_name == 'push' && github.ref_type == 'tag') ||
+        github.event.inputs.create_release == 'true'
+      )
     needs: [build-android, build-ios]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Gather artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: android-release
         path: ./android-release
