@@ -1,6 +1,5 @@
 export const formatGrade = (grade: string) =>
   grade
-    .toLowerCase()
     .replace(' e lode', 'L')
     .replace('assente', 'grades.absent')
     .replace('fallito', 'grades.fail')

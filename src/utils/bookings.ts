@@ -34,7 +34,7 @@ export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
     slot.canBeBooked &&
     slot.hasSeatSelection &&
     slot.hasSeats &&
-    slot.start > DateTime.now()
+    slot.end > DateTime.now()
   );
 };
 

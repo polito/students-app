@@ -12,7 +12,6 @@ import {
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
-import { MenuAction } from '@react-native-menu/menu';
 import {
   useMutation,
   useQueries,
@@ -158,41 +157,21 @@ export const useGetCourseEditions = (courseId: number) => {
         c =>
           c.id === courseId || c.previousEditions.some(e => e.id === courseId),
       );
-      const editions: MenuAction[] = [];
+      const editions: CourseOverviewPreviousEditionsInner[] = [];
       if (!course || !course.previousEditions.length) return editions;
       if (course.id) {
-        editions.push(
-          {
-            id: `${course.id}`,
-            title: course.year,
-            state: courseId === course?.id ? 'on' : undefined,
-          },
-          ...course.previousEditions.map(
-            e =>
-              ({
-                id: `${e.id}`,
-                title: e.year,
-                state: courseId === e.id ? 'on' : undefined,
-              } as MenuAction),
-          ),
-        );
+        editions.push({
+          id: course.id,
+          year: course.year,
+        });
+        editions.push(...course.previousEditions);
       } else {
         const prevEditions = course.previousEditions
           .filter(e => e.id !== null)
           .sort((a, b) => +b.year - +a.year)
           .slice(1);
-        editions.push(
-          ...prevEditions.map(
-            e =>
-              ({
-                id: `${e.id}`,
-                title: e.year,
-                state: courseId === e.id ? 'on' : undefined,
-              } as MenuAction),
-          ),
-        );
+        editions.push(...prevEditions);
       }
-
       return editions;
     },
     {

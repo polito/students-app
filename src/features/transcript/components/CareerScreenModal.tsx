@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ModalContent } from '@lib/ui/components/ModalContent';
 import { Text } from '@lib/ui/components/Text';
@@ -9,6 +9,8 @@ export const CareerScreenModal = ({
   title,
   itemList,
   onDismiss,
+  scrollViewRef,
+  setScrollOffset,
 }: {
   title: string;
   itemList: {
@@ -17,12 +19,19 @@ export const CareerScreenModal = ({
     dot: boolean;
   }[];
   onDismiss: () => void;
+  scrollViewRef?: any;
+  setScrollOffset?: (value: number) => void;
 }) => {
   const styles = useStylesheet(createStyles);
 
   return (
-    <ModalContent close={onDismiss} title={title}>
-      <ScrollView style={styles.content} accessible>
+    <ModalContent
+      close={onDismiss}
+      title={title}
+      scrollViewRef={scrollViewRef}
+      setScrollOffset={setScrollOffset}
+    >
+      <View style={styles.content} accessible>
         {itemList.map((item, index) => {
           if (item.content.description) {
             return (
@@ -50,7 +59,7 @@ export const CareerScreenModal = ({
             );
           }
         })}
-      </ScrollView>
+      </View>
     </ModalContent>
   );
 };

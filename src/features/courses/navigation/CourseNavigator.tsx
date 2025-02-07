@@ -51,7 +51,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const titleStyles = useTitlesStyles(theme);
 
   const { id } = route.params;
-
   const coursesQuery = useGetCourses();
 
   useEffect(() => {
