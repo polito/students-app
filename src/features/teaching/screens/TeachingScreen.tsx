@@ -39,6 +39,7 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { isValidDate } from '../../../utils/dates';
 import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
 import { isCourseDetailed } from '../../courses/utils/courses';
@@ -89,7 +90,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
         .filter(
           e =>
             !hiddenCourses.includes(e.uniqueShortcode) &&
-            e.examEndsAt!.valueOf() > DateTime.now().toJSDate().valueOf(),
+            (e.examEndsAt!.valueOf() > DateTime.now().toJSDate().valueOf() ||
+              !isValidDate(e.examEndsAt!)),
         )
         .sort((a, b) => {
           const status =

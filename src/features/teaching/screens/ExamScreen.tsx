@@ -40,6 +40,7 @@ import {
   formatDate,
   formatDateTime,
   formatReadableDate,
+  isValidDate,
 } from '../../../utils/dates';
 import { PlacesListItem } from '../../places/components/PlacesListItem';
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
@@ -81,7 +82,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     if (!exam || !teacherQuery.data) return;
 
     let accessibleDateTime: string;
-    if (!exam.examStartsAt) {
+    if (!exam.examStartsAt || !isValidDate(exam?.examStartsAt)) {
       accessibleDateTime = t('common.dateToBeDefined');
     } else {
       accessibleDateTime = formatDate(exam.examStartsAt);
@@ -156,9 +157,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 accessible={true}
                 date={
                   exam
-                    ? exam.examStartsAt
+                    ? exam.examStartsAt && isValidDate(exam?.examStartsAt)
                       ? formatReadableDate(exam.examStartsAt)
-                      : t('common.dateToBeDefined')
+                      : t('common.dateToBeDefinedShort')
                     : ''
                 }
                 time={
@@ -167,7 +168,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                       ? `${formatHHmm(exam.examStartsAt)} - ${formatHHmm(
                           exam.examEndsAt!,
                         )}`
-                      : t('common.timeToBeDefined')
+                      : t('common.timeToBeDefinedShort')
                     : ''
                 }
               />
