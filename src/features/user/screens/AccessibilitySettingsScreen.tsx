@@ -36,7 +36,7 @@ export const AccessibilitySettingsScreen = () => {
               title={t('accessibilitySettingsScreen.customFontSectionTitle')}
             />
             <OverviewList indented>
-              <CustomFontListItem
+              {/* <CustomFontListItem
                 t={t}
                 value={accessibility?.fontFamily}
                 onUpdate={e => {
@@ -53,7 +53,7 @@ export const AccessibilitySettingsScreen = () => {
                     });
                   }
                 }}
-              />
+              /> */}
               <CustomFontPlacementListItem
                 t={t}
                 value={accessibility?.fontPlacement}
@@ -65,7 +65,7 @@ export const AccessibilitySettingsScreen = () => {
                     });
                 }}
               />
-              <CustomFontSizeListItem
+              {/* <CustomFontSizeListItem
                 t={t}
                 value={accessibility?.fontSize?.toString()}
                 onUpdate={e => {
@@ -81,7 +81,7 @@ export const AccessibilitySettingsScreen = () => {
                       fontSize: e,
                     });
                 }}
-              />
+              /> */}
               <SwitchListItem
                 title={t('accessibilitySettingsScreen.lineHeightTitle')}
                 value={accessibility?.lineHeight ?? false}
