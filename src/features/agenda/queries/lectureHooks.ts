@@ -5,7 +5,10 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
-import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
+import {
+  CoursesPreferences,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { pluckData } from '../../../utils/queries';
@@ -74,9 +77,9 @@ const getLectureWeekQueryFn = async (
 };
 
 export const useGetLectureWeek = (
-  coursesPreferences: CoursesPreferences,
   since: DateTime = DateTime.now().startOf('week'),
 ) => {
+  const { courses: coursesPreferences } = usePreferencesContext();
   const lectureClient = useLectureClient();
   const { data: courses } = useGetCourses();
 
@@ -84,15 +87,26 @@ export const useGetLectureWeek = (
     return getVisibleCourseIds(courses!, coursesPreferences);
   }, [courses, coursesPreferences]);
 
-  return useQuery<Lecture[]>(
-    getLectureWeekQueryKey(since),
+  const query = useQuery<Lecture[]>(
+    [...getLectureWeekQueryKey(since), visibleCourseIds],
     async () =>
       getLectureWeekQueryFn(lectureClient, since, courses!, visibleCourseIds),
     {
-      enabled: !!courses && Array.isArray(visibleCourseIds),
+      enabled:
+        !!courses &&
+        Array.isArray(visibleCourseIds) &&
+        visibleCourseIds.length > 0,
       staleTime: Infinity,
     },
   );
+
+  const refetch = async () => {
+    if (query.refetch) {
+      return await query.refetch();
+    }
+  };
+
+  return { query, refetch };
 };
 
 export const useGetLectureWeeks = (
@@ -123,8 +137,19 @@ export const useGetLectureWeeks = (
     return queries.some(query => query.isLoading);
   }, [queries]);
 
+  const refetch = async () => {
+    await Promise.all(
+      queries.map(q => {
+        if (q.refetch) {
+          return q.refetch();
+        }
+      }),
+    );
+  };
+
   return {
     data: queries.map(query => query.data!),
     isLoading,
+    refetch,
   };
 };

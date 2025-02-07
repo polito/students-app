@@ -269,10 +269,11 @@ export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
 
   const examsQuery = useGetExams();
   const bookingsQuery = useGetBookings();
-  const lecturesQuery = useGetLectureWeek(preferences.courses, startDate);
+  const { query: lecturesQuery, refetch: refetchLecture } =
+    useGetLectureWeek(startDate);
   const deadlinesQuery = useGetDeadlineWeek(startDate);
 
-  return useQuery<AgendaWeek>(
+  const query = useQuery<AgendaWeek>(
     getAgendaWeekQueryKey(preferences.agendaScreen.filters, startDate),
     async () =>
       getAgendaWeekQueryFn({
@@ -293,6 +294,19 @@ export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
       staleTime: 300000, // TODO define
     },
   );
+
+  const refetch = async () => {
+    await refetchLecture().then(() => {
+      return query.refetch();
+    });
+  };
+
+  return {
+    data: query.data,
+    isFetching: query.isFetching,
+    isRefetching: query.isRefetching || lecturesQuery.isRefetching,
+    refetch,
+  };
 };
 
 export const useGetAgendaWeeks = (mondays: DateTime[]) => {
@@ -329,10 +343,22 @@ export const useGetAgendaWeeks = (mondays: DateTime[]) => {
     return queries.some(q => q.isLoading);
   }, [mondays, queries]);
 
+  const refetch = async () => {
+    await Promise.all(
+      queries.map(q => {
+        if (q.refetch) {
+          lecturesQueries.refetch();
+          return q.refetch();
+        }
+      }),
+    );
+  };
+
   return {
     isLoading,
     data: (queries as UseQueryResult<AgendaWeek>[])
       .filter(q => q.data)
       .map(q => q.data!),
+    refetch,
   };
 };

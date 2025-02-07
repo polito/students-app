@@ -1,4 +1,10 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
@@ -46,7 +52,11 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { updatePreference, agendaScreen } = usePreferencesContext();
+  const {
+    updatePreference,
+    agendaScreen,
+    courses: coursePrefs,
+  } = usePreferencesContext();
 
   const { language } = usePreferencesContext();
 
@@ -76,8 +86,13 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const {
     data: weekData,
     isFetching /* , fetchPreviousPage, fetchNextPage*/,
+    isRefetching,
     refetch,
   } = useGetAgendaWeek(currentWeek);
+
+  useEffect(() => {
+    refetch();
+  }, [coursePrefs]);
 
   const calendarData = useMemo(() => {
     return weekData?.data?.flatMap(week => week.items) ?? [];
@@ -249,7 +264,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         }}
       >
         {!calendarHeight ||
-          (isFetching && (
+          (isFetching && isRefetching && (
             <ActivityIndicator size="large" style={styles.loader} />
           ))}
         {calendarHeight && (

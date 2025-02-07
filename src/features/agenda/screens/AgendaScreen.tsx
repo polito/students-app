@@ -51,7 +51,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   const { palettes, fontSizes } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { updatePreference, agendaScreen } = usePreferencesContext();
+  const { updatePreference, agendaScreen, courses } = usePreferencesContext();
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
   const { language } = usePreferencesContext();
@@ -67,7 +67,11 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     selectedDate.startOf('week'),
   ]);
 
-  const { isLoading, data } = useGetAgendaWeeks(weeks);
+  const { isLoading, data, refetch } = useGetAgendaWeeks(weeks);
+
+  useEffect(() => {
+    refetch();
+  }, [courses]);
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
 
@@ -205,7 +209,10 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
           switchToWeekly();
           break;
         case 'refresh':
-          refreshQueries();
+          setAgendaState(prev => ({ ...prev, isRefreshing: true }));
+          refetch().then(_ =>
+            setAgendaState(prev => ({ ...prev, isRefreshing: false })),
+          );
           break;
       }
     };

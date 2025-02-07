@@ -140,6 +140,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         color,
                       },
                     });
+                    queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
                   }}
                 >
                   <ListItem
