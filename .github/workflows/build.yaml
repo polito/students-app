@@ -75,7 +75,7 @@ jobs:
           PUSH_TESTFLIGHT=true
           PUSH_PLAYSTORE="${{ vars.PLAYSTORE_RELEASE_TRACK }}"
           VERSION="${{ steps.tag_version.outputs.version }}"
-          BUILD_PIECE=0
+          BUILD_PIECE=99
         elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
           # On repo manual dispatch
           PUSH_TESTFLIGHT="${{ github.event.inputs.push_to_testflight }}"
