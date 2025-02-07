@@ -13,7 +13,7 @@ import {
 
 import { TextWithLinks } from '../../../core/components/TextWithLinks';
 import { IS_IOS } from '../../../core/constants';
-import { formatDate, formatTime } from '../../../utils/dates';
+import { dateFormatter, formatDate } from '../../../utils/dates';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 import { ProvisionalGradeStatusBadge } from './ProvisionalGradeStatusBadge';
 
@@ -32,6 +32,7 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
     isCompact: true,
   });
 
+  const formatHHmm = dateFormatter('HH:mm');
   const subtitle = useMemo(() => {
     switch (grade.state) {
       case ProvisionalGradeStateEnum.Confirmed:
@@ -48,7 +49,7 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
       case ProvisionalGradeStateEnum.Rejected:
         return t('transcriptGradesScreen.rejectedSubtitle', {
           date: formatDate(grade.rejectedAt!),
-          time: formatTime(grade.rejectedAt!),
+          time: formatHHmm(grade.rejectedAt!),
         });
       default:
         return undefined;

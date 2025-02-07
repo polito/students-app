@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCreateBooking } from '../../../core/queries/bookingHooks';
+import { setTimeoutAccessibilityInfoHelper } from '../../../utils/setTimeoutAccessibilityInfo';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
 type BookingSeatsCtaProps = PropsWithChildren<{
@@ -60,9 +61,13 @@ export const BookingSeatsCta = ({
               seatId: seatId ? Number(seatId) : undefined,
               slotId: Number(slotId),
             })
-            .then(() => {
+            .then(async () => {
               onCloseModal?.();
-              navigation.pop(2);
+              await navigation.pop(2);
+              setTimeoutAccessibilityInfoHelper(
+                t('bookingSeatScreen.confirmSuccess'),
+                2000,
+              );
             })
         }
         disabled={!ctaEnabled}

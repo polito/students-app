@@ -1,11 +1,15 @@
-import { PropsWithChildren } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { PropsWithChildren, useCallback } from 'react';
+import { View } from 'react-native';
 import Modal from 'react-native-modal';
+
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;
+  scrollOffset?: number;
+  scrollViewRef?: any;
 }>;
 
 export const BottomModal = ({
@@ -13,12 +17,21 @@ export const BottomModal = ({
   visible,
   onClose,
   dismissable,
+  scrollOffset,
+  scrollViewRef,
 }: BottomModalProps) => {
   const handleCloseModal = () => {
     dismissable && onClose?.();
   };
 
-  const { width, height } = useWindowDimensions();
+  const handleScrollTo = useCallback(
+    (p: any) => {
+      if (scrollViewRef && scrollViewRef.current) {
+        scrollViewRef.current.scrollTo(p);
+      }
+    },
+    [scrollViewRef],
+  );
 
   return (
     <Modal
@@ -33,14 +46,18 @@ export const BottomModal = ({
       animationIn="slideInUp"
       animationOut="slideOutUp"
       backdropColor="black"
-      deviceHeight={height}
-      deviceWidth={width}
-      swipeDirection="down"
-      backdropTransitionInTiming={400}
-      backdropTransitionOutTiming={400}
-      useNativeDriver
+      deviceHeight={SCREEN_HEIGHT}
+      deviceWidth={SCREEN_WIDTH}
+      swipeDirection={['down']}
       supportedOrientations={['landscape', 'portrait']}
       onBackdropPress={handleCloseModal}
+      scrollTo={handleScrollTo}
+      propagateSwipe
+      useNativeDriver={false}
+      useNativeDriverForBackdrop
+      onSwipeComplete={handleCloseModal}
+      scrollOffset={scrollOffset}
+      scrollOffsetMax={100}
     >
       <View>{children}</View>
     </Modal>

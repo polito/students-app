@@ -35,6 +35,10 @@ export const AttachmentChip = ({
 
   return (
     <Row
+      accessibilityLabel={[
+        t('common.document'),
+        attachment.name ?? t('common.unnamedFile'),
+      ].join(', ')}
       align="center"
       ph={3}
       pv={1.5}

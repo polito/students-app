@@ -1,6 +1,12 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  AccessibilityInfo,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -13,12 +19,15 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
+import { getHtmlTextContent } from '../../../utils/html';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
@@ -26,14 +35,40 @@ interface Props {
   navigation: NativeStackNavigationProp<ServiceStackParamList, 'Tickets'>;
 }
 
-const ListItem = ({ ticket }: { ticket: TicketOverview }) => {
+const ListItem = ({
+  ticket,
+  index,
+  totalData,
+}: {
+  ticket: TicketOverview;
+  index: number;
+  totalData: number;
+}) => {
   const { getUnreadsCount } = useNotifications();
   const unread = useMemo(
     () => !!getUnreadsCount(['services', 'tickets', ticket.id.toString()]),
     [getUnreadsCount, ticket.id],
   );
 
-  return <TicketListItem ticket={ticket} key={ticket.id} unread={unread} />;
+  const { accessibilityListLabel } = useAccessibility();
+  const accessibilityLabel = [
+    accessibilityListLabel(index, totalData),
+    getHtmlTextContent(ticket?.subject),
+  ].join(', ');
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+    >
+      <TicketListItem
+        accessibilityLabel={accessibilityLabel}
+        ticket={ticket}
+        key={ticket.id}
+        unread={unread}
+      />
+    </Pressable>
+  );
 };
 
 export const TicketsScreen = ({ navigation }: Props) => {
@@ -46,14 +81,42 @@ export const TicketsScreen = ({ navigation }: Props) => {
       .filter(ticket => ticket.status !== TicketStatus.Closed)
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
+    useFocusEffect(
+      useCallback(() => {
+        if (!ticketsQuery?.data || openTickets?.length > 0) {
+          return;
+        }
+        AccessibilityInfo.announceForAccessibility(
+          t('ticketsScreen.noOpenTickets'),
+        );
+      }, [openTickets]),
+    );
+
+    const sectionHeaderTicketOpenAccessibilityLabel = useMemo(() => {
+      const baseText = t('ticketsScreen.opened');
+      if (openTickets?.length > 0) {
+        return baseText;
+      } else {
+        return [baseText, t('ticketsScreen.noOpenTickets')].join(', ');
+      }
+    }, [openTickets]);
+
     return (
       <Section>
-        <SectionHeader title={t('ticketsScreen.opened')} />
+        <SectionHeader
+          accessibilityLabel={sectionHeaderTicketOpenAccessibilityLabel}
+          title={t('ticketsScreen.opened')}
+        />
         {!ticketsQuery.isLoading &&
           (openTickets.length > 0 ? (
             <OverviewList indented>
-              {openTickets?.map(ticket => (
-                <ListItem ticket={ticket} key={ticket.id} />
+              {openTickets?.map((ticket, index) => (
+                <ListItem
+                  totalData={openTickets?.length || 0}
+                  index={index}
+                  ticket={ticket}
+                  key={ticket.id}
+                />
               ))}
             </OverviewList>
           ) : (
@@ -75,9 +138,19 @@ export const TicketsScreen = ({ navigation }: Props) => {
       [closedTickets],
     );
 
+    const sectionHeaderTicketClosedAccessibilityLabel = useMemo(() => {
+      const baseText = t('ticketsScreen.closed');
+      if (renderedClosedTickets.length > 0) {
+        return baseText;
+      } else {
+        return [baseText, t('ticketsScreen.noClosedTickets')].join(', ');
+      }
+    }, [renderedClosedTickets]);
+
     return (
       <Section>
         <SectionHeader
+          accessibilityLabel={sectionHeaderTicketClosedAccessibilityLabel}
           title={t('ticketsScreen.closed')}
           linkTo={{
             screen: 'TicketList',
@@ -88,8 +161,13 @@ export const TicketsScreen = ({ navigation }: Props) => {
         {!ticketsQuery.isLoading &&
           (renderedClosedTickets.length > 0 ? (
             <OverviewList indented>
-              {renderedClosedTickets.map(ticket => (
-                <ListItem ticket={ticket} key={ticket.id} />
+              {renderedClosedTickets.map((ticket, index) => (
+                <ListItem
+                  totalData={renderedClosedTickets?.length || 0}
+                  index={index}
+                  ticket={ticket}
+                  key={ticket.id}
+                />
               ))}
             </OverviewList>
           ) : (

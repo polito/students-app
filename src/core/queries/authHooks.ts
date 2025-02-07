@@ -1,8 +1,10 @@
 import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Keychain from 'react-native-keychain';
+import uuid from 'react-native-uuid';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
+import type { AppInfoRequest } from '@polito/api-client/models';
 import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -15,9 +17,19 @@ import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { asyncStoragePersister } from '../providers/ApiProvider';
 
+export const NO_TOKEN = '__EMPTY__';
+
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
+
+export async function resetKeychain(): Promise<void> {
+  const credentials = await Keychain.getGenericPassword();
+  if (credentials) {
+    await Keychain.resetGenericPassword();
+    await Keychain.setGenericPassword(credentials.username, NO_TOKEN);
+  }
+}
 
 async function getFcmToken(): Promise<string | undefined> {
   if (!isEnvProduction) return undefined;
@@ -31,6 +43,20 @@ async function getFcmToken(): Promise<string | undefined> {
   return undefined;
 }
 
+const getClientId = async (): Promise<string> => {
+  try {
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials && credentials.username) {
+      return credentials.username;
+    }
+  } catch (e) {
+    console.warn("Keychain couldn't be accessed!", e);
+  }
+  const clientId = uuid.v4();
+  await Keychain.setGenericPassword(clientId, NO_TOKEN);
+  return clientId;
+};
+
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
@@ -38,9 +64,8 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
-      const client = { name: 'Students app', id: 'students-app' };
-
       return Promise.all([
+        getClientId(),
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
@@ -50,6 +75,7 @@ export const useLogin = () => {
       ])
         .then(
           ([
+            id,
             name,
             model,
             manufacturer,
@@ -65,11 +91,13 @@ export const useLogin = () => {
               manufacturer,
             };
             dto.client = {
-              ...client,
+              name: 'students-app',
               buildNumber,
               appVersion,
+              id,
+              fcmRegistrationToken,
             };
-            dto.preferences = { ...dto.preferences, fcmRegistrationToken };
+            dto.preferences = { ...dto.preferences };
           },
         )
         .then(() => authClient.login({ loginRequest: dto }))
@@ -84,10 +112,10 @@ export const useLogin = () => {
         });
     },
     onSuccess: async data => {
-      const { token, clientId, username } = data;
-      refreshContext({ username, token });
+      const { token, clientId: clientIdentifier, username } = data;
       updatePreference('username', username);
-      await Keychain.setGenericPassword(clientId, token);
+      refreshContext({ username, token });
+      await Keychain.setGenericPassword(clientIdentifier, token);
     },
   });
 };
@@ -103,7 +131,7 @@ export const useLogout = () => {
       refreshContext();
       asyncStoragePersister.removeClient();
       queryClient.removeQueries();
-      await Keychain.resetGenericPassword();
+      await resetKeychain();
     },
   });
 };
@@ -127,6 +155,30 @@ export const useSwitchCareer = () => {
       asyncStoragePersister.removeClient();
       queryClient.invalidateQueries([]);
       await Keychain.setGenericPassword(data.clientId, data.token);
+    },
+  });
+};
+
+export const useUpdateAppInfo = () => {
+  const authClient = useAuthClient();
+
+  return useMutation({
+    mutationFn: async (fcmToken: string | void) => {
+      // mutation requires a variable, an undefined string is not accepted
+      return Promise.all([
+        DeviceInfo.getBuildNumber(),
+        DeviceInfo.getVersion(),
+        fcmToken || getFcmToken(),
+      ]).then(([buildNumber, appVersion, fcmRegistrationToken]) => {
+        const dto: AppInfoRequest = {
+          buildNumber,
+          appVersion,
+          fcmRegistrationToken,
+        };
+        return authClient.appInfo({
+          appInfoRequest: dto,
+        });
+      });
     },
   });
 };

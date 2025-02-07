@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 import { BookingsApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
 import { pluckData } from '../../utils/queries';
+import { setTimeoutAccessibilityInfoHelper } from '../../utils/setTimeoutAccessibilityInfo';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
 export const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];
@@ -148,9 +151,14 @@ export const useCreateBooking = () => {
 export const useDeleteBooking = (bookingId: number) => {
   const bookingClient = useBookingClient();
   const client = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation(() => bookingClient.deleteBookingRaw({ bookingId }), {
     onSuccess() {
+      setTimeoutAccessibilityInfoHelper(
+        t('bookingScreen.cancelFeedback'),
+        1200,
+      );
       return Promise.all([
         client.invalidateQueries(BOOKINGS_QUERY_KEY),
         client.invalidateQueries(['agenda']),

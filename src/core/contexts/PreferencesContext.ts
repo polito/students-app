@@ -19,6 +19,7 @@ export const editablePreferenceKeys = [
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
+  'filesScreen',
   'hideGrades',
 ] as const;
 
@@ -34,6 +35,7 @@ export const objectPreferenceKeys = [
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
+  'filesScreen',
   'hideGrades',
 ];
 
@@ -62,6 +64,7 @@ export interface PreferencesContextBase {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
   };
+  filesScreen: 'filesView' | 'directoryView';
   hideGrades?: boolean;
 }
 

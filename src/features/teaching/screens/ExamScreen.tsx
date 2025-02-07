@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { ErrorCard } from '@lib/ui/components/ErrorCard';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -35,15 +36,16 @@ import {
   useGetCpdSurveys,
 } from '../../../core/queries/surveysHooks';
 import {
+  dateFormatter,
   formatDate,
   formatDateTime,
   formatReadableDate,
-  formatTime,
   isValidDate,
 } from '../../../utils/dates';
 import { PlacesListItem } from '../../places/components/PlacesListItem';
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';
+import { ExamRescheduleCTA } from '../components/ExamRescheduleCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
 import { getExam, isExamPassed } from '../utils/exam';
@@ -67,7 +69,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     close: closeBottomModal,
   } = useBottomModal();
   const isOffline = useOfflineDisabled();
-
+  const formatHHmm = dateFormatter('HH:mm');
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
       navigation.setOptions({
@@ -88,7 +90,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       if (exam.isTimeToBeDefined) {
         accessibleDateTime += `, ${t('common.timeToBeDefined')}`;
       } else {
-        accessibleDateTime += `. ${t('common.time')} ${formatTime(
+        accessibleDateTime += `. ${t('common.time')} ${formatHHmm(
           exam.examStartsAt,
         )}`;
       }
@@ -162,8 +164,8 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 }
                 time={
                   exam
-                    ? exam?.examStartsAt && isValidDate(exam?.examStartsAt)
-                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                    ? exam?.examStartsAt
+                      ? `${formatHHmm(exam.examStartsAt)} - ${formatHHmm(
                           exam.examEndsAt!,
                         )}`
                       : t('common.timeToBeDefinedShort')
@@ -248,7 +250,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {exam && <ExamCTA exam={exam} />}
+      <CtaButtonContainer absolute={true}>
+        {exam?.isReschedulable &&
+          exam?.status === ExamStatusEnum.Available &&
+          exam && <ExamRescheduleCTA exam={exam} />}
+        {exam && <ExamCTA exam={exam} absolute={false} />}
+      </CtaButtonContainer>
+      <CtaButtonSpacer />
     </>
   );
 };

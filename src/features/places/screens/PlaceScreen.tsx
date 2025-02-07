@@ -86,13 +86,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   );
 
   useEffect(() => {
-    if (isCrossNavigation) {
-      navigation.setOptions({ headerShown: false });
-      navigation.getParent()?.setOptions({ title: placeName });
-    }
-  }, [navigation, t, placeName, isCrossNavigation]);
-
-  useEffect(() => {
     if (place && !updatedRecentPlaces) {
       updatePreference('placesSearched', [
         place,

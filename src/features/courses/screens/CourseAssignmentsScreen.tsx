@@ -33,7 +33,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   return (
     <>
       <ScrollView
-        refreshControl={<RefreshControl queries={[assignmentsQuery]} />}
+        refreshControl={<RefreshControl manual queries={[assignmentsQuery]} />}
       >
         <SafeAreaView>
           {!assignmentsQuery.isLoading &&

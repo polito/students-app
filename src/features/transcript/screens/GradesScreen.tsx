@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
@@ -17,9 +15,8 @@ import {
   useGetGrades,
   useGetProvisionalGrades,
 } from '../../../core/queries/studentHooks';
-import { formatDate } from '../../../utils/dates';
-import { formatGrade } from '../../../utils/grades';
 import { ProvisionalGradeListItem } from '../components/ProvisionalGradeListItem';
+import { RecordedGradeListItem } from '../components/RecordedGradeListItem';
 
 export const GradesScreen = () => {
   const { t } = useTranslation();
@@ -80,30 +77,7 @@ export const GradesScreen = () => {
             }
           >
             {gradesQuery.data?.map((grade, index) => (
-              <ListItem
-                key={grade.courseName}
-                title={grade.courseName}
-                accessibilityLabel={`${t(
-                  accessibilityListLabel(index, gradesQuery.data?.length || 0),
-                )}. ${grade.courseName}: ${formatDate(grade.date)} ${t(
-                  'common.grade',
-                )}: ${grade?.grade} - ${t('common.creditsWithUnit', {
-                  credits: grade.credits,
-                })}`}
-                subtitle={`${formatDate(grade.date)} - ${t(
-                  'common.creditsWithUnit',
-                  { credits: grade.credits },
-                )}`}
-                trailingItem={
-                  <Text
-                    variant="title"
-                    style={styles.grade}
-                    accessibilityLabel={`${t('common.grade')}: ${grade?.grade}`}
-                  >
-                    {t(formatGrade(grade.grade))}
-                  </Text>
-                }
-              />
+              <RecordedGradeListItem grade={grade} key={index} />
             ))}
           </OverviewList>
         </Section>

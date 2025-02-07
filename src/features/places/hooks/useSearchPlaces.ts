@@ -28,9 +28,9 @@ export const useSearchPlaces = ({
     placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });
   const placesQuery = useGetPlaces({
-    search,
+    search: search || undefined,
     siteId,
-    floorId,
+    floorId: search ? undefined : floorId,
     placeCategoryId: categoryId,
     placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });

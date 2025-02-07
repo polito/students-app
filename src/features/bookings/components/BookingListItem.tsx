@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -19,6 +20,7 @@ interface Props {
 
 export const BookingListItem = ({ booking, index, totalData }: Props) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   const { accessibilityListLabel } = useAccessibility();
   const date = DateTime.fromJSDate(booking?.startsAt, {
     zone: IANAZone.create('Europe/Rome'),
@@ -49,6 +51,7 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
         accessibilityLabel,
         title,
         date,
+        t('common.hour'),
         `${startsAtTime} - ${endAtTime}`,
       ].join(', ')}
       subtitleStyle={styles.subtitle}

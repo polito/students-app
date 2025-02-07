@@ -35,7 +35,7 @@ import { DateTime } from 'luxon';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { formatTime } from '../../../utils/dates';
+import { dateFormatter } from '../../../utils/dates';
 import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
 import {
@@ -126,7 +126,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
       }),
     [startDateTime],
   );
-
+  const formatHHmm = dateFormatter('HH:mm');
   const printDate = useCallback(
     (dt: DateTime) => {
       const diffInDays = Math.floor(dt.diff(today, 'days').days);
@@ -287,9 +287,9 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
           data={
             places?.map(p => ({
               title: p.room.name ?? t('common.untitled'),
-              subtitle: `${t('common.free')} ${formatTime(
+              subtitle: `${t('common.free')} ${formatHHmm(
                 p.freeFrom,
-              )} - ${formatTime(p.freeTo)}`,
+              )} - ${formatHHmm(p.freeTo)}`,
               linkTo: { screen: 'Place', params: { placeId: p.id } },
             })) ?? []
           }
