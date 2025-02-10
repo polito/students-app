@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import RenderHTML, { RenderHTMLProps } from 'react-native-render-html';
 
@@ -5,7 +6,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
-export const HtmlView = (props: RenderHTMLProps) => {
+export const HtmlView = memo((props: RenderHTMLProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
@@ -39,7 +40,7 @@ export const HtmlView = (props: RenderHTMLProps) => {
       ]}
     />
   );
-};
+});
 
 const createStyles = ({ spacing, fontWeights }: Theme) =>
   StyleSheet.create({

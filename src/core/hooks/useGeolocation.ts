@@ -61,7 +61,7 @@ export const useGeolocation = () => {
         },
       );
     });
-  }, [t]);
+  }, [t, setFeedback]);
 
   useEffect(() => {
     Geolocation.requestAuthorization(
@@ -79,7 +79,7 @@ export const useGeolocation = () => {
         }
       },
     );
-  }, [t]);
+  }, [t, setFeedback]);
 
   return {
     getCurrentPosition,

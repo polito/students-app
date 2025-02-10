@@ -140,6 +140,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     placesQueries,
     safeAreaInsets.top,
     spacing,
+    isCrossNavigation,
   ]);
 
   if (isLoading) {

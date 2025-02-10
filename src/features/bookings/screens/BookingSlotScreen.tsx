@@ -102,7 +102,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         }
         return oldW.plus({ week: 1 });
       }),
-    [],
+    [currentTopic.agendaView],
   );
 
   const prevWeek = useCallback(
@@ -113,7 +113,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         }
         return oldW.minus({ week: 1 });
       }),
-    [],
+    [currentTopic.agendaView],
   );
 
   useLayoutEffect(() => {
@@ -275,7 +275,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             date={currentWeekStart}
             locale={language}
             hours={hours}
-            bodyContainerStyle={{ backgroundColor: 'yellow' }}
+            bodyContainerStyle={{ backgroundColor: colors.yellow }}
             cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
             showAllDayEventCell={false}
             swipeEnabled={false}

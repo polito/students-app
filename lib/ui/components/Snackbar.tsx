@@ -39,7 +39,6 @@ const ANIMATION_TIME = 300; // .3 seconds
 export const Snackbar = ({
   visible,
   isPersistent = false,
-  isError = false,
   action,
   onDismiss,
   text,
@@ -64,7 +63,7 @@ export const Snackbar = ({
 
   useEffect(() => {
     if (isEnabled && visible) announce(text);
-  }, [isEnabled, announce, visible]);
+  }, [isEnabled, announce, visible, text]);
 
   // useEffect(() => {
   //   if()

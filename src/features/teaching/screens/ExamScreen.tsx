@@ -31,10 +31,7 @@ import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import {
-  useGetAllCpdSurveys,
-  useGetCpdSurveys,
-} from '../../../core/queries/surveysHooks';
+import { useGetAllCpdSurveys } from '../../../core/queries/surveysHooks';
 import {
   dateFormatter,
   formatDate,
@@ -57,7 +54,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
   const cpdSurveysQuery = useGetAllCpdSurveys();
-  const cpd = useGetCpdSurveys();
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
@@ -101,7 +97,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     }`;
 
     return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
-  }, [exam, t, teacherQuery]);
+  }, [exam, t, teacherQuery, formatHHmm]);
 
   useLayoutEffect(() => {
     if (!cpdSurveysQuery.data || !exam) return;
@@ -123,7 +119,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     showBottomModal(
       <ExamCpdModalContent surveys={requirements} close={closeBottomModal} />,
     );
-  }, [cpdSurveysQuery.data, exam]);
+  }, [cpdSurveysQuery.data, exam, showBottomModal, closeBottomModal]);
 
   return (
     <>

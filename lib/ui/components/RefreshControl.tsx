@@ -54,7 +54,7 @@ export const RefreshControl = ({ queries, manual = false, ...rest }: Props) => {
         AccessibilityInfo.announceForAccessibility(t('common.endRefresh'));
       }
     }
-  }, [refreshing, screenReaderEnabled]);
+  }, [refreshing, screenReaderEnabled, previousRefreshing, t]);
 
   const onRefresh = useCallback(() => {
     if (!onlineManager.isOnline()) return;

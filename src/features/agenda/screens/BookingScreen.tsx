@@ -89,7 +89,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         headerTitle: title,
       });
     }
-  }, [bookingsQuery, titleStyles.headerStyle, width, description, title]);
+  }, [
+    bookingsQuery,
+    titleStyles.headerStyle,
+    width,
+    description,
+    title,
+    navigation,
+  ]);
 
   const hasCheckIn = useMemo(
     () =>

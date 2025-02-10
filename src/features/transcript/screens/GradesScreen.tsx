@@ -9,7 +9,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useGetGrades,
@@ -23,7 +22,6 @@ export const GradesScreen = () => {
   const styles = useStylesheet(createStyles);
   const gradesQuery = useGetGrades();
   const provisionalGradesQuery = useGetProvisionalGrades();
-  const { accessibilityListLabel } = useAccessibility();
 
   const isOffline = useOfflineDisabled();
 

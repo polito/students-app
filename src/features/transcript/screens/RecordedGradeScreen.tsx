@@ -39,7 +39,6 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
   const staffQueries = useGetPerson(teacherIds);
 
   const styles = useStylesheet(createStyles);
-  const isNumber = (value: string): boolean => !isNaN(Number(value));
 
   const {
     open: showBottomModal,

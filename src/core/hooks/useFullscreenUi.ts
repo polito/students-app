@@ -25,5 +25,5 @@ export const useFullscreenUi = (fullscreen: boolean) => {
       navigation.setOptions({ headerShown: true });
       displayTabBar(navRoot);
     };
-  }, [fullscreen]);
+  }, [fullscreen, navigation]);
 };
