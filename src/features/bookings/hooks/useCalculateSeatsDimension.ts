@@ -37,7 +37,7 @@ export const useCalculateSeatsDimension = (
       setGap(calculatedGap);
       setSeatSize(Math.min(minHeight, minWidth, minBookableCellSize));
     }
-  }, [seats, spacing, viewHeight, bottomTabBarHeight]);
+  }, [seats, spacing, viewHeight, bottomTabBarHeight, basicPadding]);
 
   return { seatSize, gap };
 };

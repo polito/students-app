@@ -78,7 +78,7 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
     if (isSuccess) {
       navigation.navigate('Tickets');
     }
-  }, [isSuccess]);
+  }, [isSuccess, navigation]);
 
   if (ticket?.status !== TicketStatus.Closed) {
     return (

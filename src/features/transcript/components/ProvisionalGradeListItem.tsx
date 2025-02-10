@@ -54,7 +54,15 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
       default:
         return undefined;
     }
-  }, [grade.rejectedAt, grade.state, rejectionTime, t]);
+  }, [
+    grade.rejectedAt,
+    grade.state,
+    rejectionTime,
+    t,
+    formatHHmm,
+    grade.canBeRejected,
+    styles.rejectableSubtitle,
+  ]);
 
   return (
     <ListItem

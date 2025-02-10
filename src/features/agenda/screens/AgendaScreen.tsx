@@ -80,8 +80,6 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
   const flatListRef = useRef<FlatList<AgendaWeek>>(null);
 
-  const prevPageThreshold = 300;
-
   const isOffline = useOfflineDisabled();
 
   const [agendaState, setAgendaState, agendaStateRef] =
@@ -127,21 +125,24 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         return;
       setNextDate(startDate);
     },
-    [],
+    [nextDateRef, setNextDate],
   );
 
-  const getSelectedWeek = useCallback((newJSDate: Date) => {
-    setDataPickerIsOpened(false);
-    const newDate = DateTime.fromJSDate(newJSDate, {
-      zone: IANAZone.create('Europe/Rome'),
-    });
-    (
-      navigation as NativeStackNavigationProp<AgendaStackParamList, 'Agenda'>
-    ).replace('Agenda', {
-      date: newDate,
-      animated: false,
-    });
-  }, []);
+  const getSelectedWeek = useCallback(
+    (newJSDate: Date) => {
+      setDataPickerIsOpened(false);
+      const newDate = DateTime.fromJSDate(newJSDate, {
+        zone: IANAZone.create('Europe/Rome'),
+      });
+      (
+        navigation as NativeStackNavigationProp<AgendaStackParamList, 'Agenda'>
+      ).replace('Agenda', {
+        date: newDate,
+        animated: false,
+      });
+    },
+    [navigation],
+  );
 
   const scrollToSelectedDay = useCallback(() => {
     agendaStateRef.current.dayOffsetOverall > 0 &&
@@ -152,20 +153,20 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     setIsScrolling(false);
   }, [agendaStateRef]);
 
-  const scrollToLastOffset = () => {
-    flatListRef.current?.scrollToOffset({
-      offset: agendaState.currentOffset,
-      animated: false,
-    });
-  };
+  // const scrollToLastOffset = () => {
+  //   flatListRef.current?.scrollToOffset({
+  //     offset: agendaState.currentOffset,
+  //     animated: false,
+  //   });
+  // };
 
-  const onContentHeightChange = (height: number) => {
-    setAgendaState(prev => ({
-      ...prev,
-      contentHeight: height,
-      todayOffsetOverall: prev.dayOffsetOverall + (height - prev.contentHeight),
-    }));
-  };
+  // const onContentHeightChange = (height: number) => {
+  //   setAgendaState(prev => ({
+  //     ...prev,
+  //     contentHeight: height,
+  //     todayOffsetOverall: prev.dayOffsetOverall + (height - prev.contentHeight),
+  //   }));
+  // };
 
   const screenOptions = useMemo<AgendaOption[]>(
     () => [
@@ -178,14 +179,14 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         title: t('agendaScreen.weeklyLayout'),
       },
     ],
-    [],
+    [t],
   );
 
   useEffect(() => {
     if (isScrolling) {
       scrollToSelectedDay();
     }
-  }, [isScrolling]);
+  }, [isScrolling, scrollToSelectedDay]);
 
   useLayoutEffect(() => {
     const switchToWeekly = () => {

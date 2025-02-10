@@ -94,7 +94,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
         return { ...oldP, ...preferences };
       });
     });
-  }, []);
+  }, [deviceLanguage]);
 
   // Preferences are loaded
   useEffect(() => {

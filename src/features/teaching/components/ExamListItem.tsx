@@ -62,7 +62,7 @@ export const ExamListItem = ({
       // subtitle: `${dateTime}`,
       accessibilityLabel: `${accessibilityLabel} ${exam.courseName} ${accessibleDateTime} ${status}`,
     };
-  }, [accessibilityLabel, exam, t]);
+  }, [accessibilityLabel, exam, t, formatHHmm]);
 
   return (
     <ListItem

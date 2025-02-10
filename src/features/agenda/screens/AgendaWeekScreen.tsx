@@ -132,7 +132,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         title: t('agendaScreen.dailyLayout'),
       },
     ],
-    [],
+    [t],
   );
 
   useLayoutEffect(() => {
@@ -188,6 +188,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     t,
     agendaScreen,
     selectedDate,
+    refetch,
+    screenOptions,
+    updatePreference,
   ]);
 
   const isPrevMissing = useCallback(

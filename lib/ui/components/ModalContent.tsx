@@ -26,11 +26,14 @@ export const ModalContent = ({
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
 
-  const handleOnScroll = useCallback((event: any) => {
-    if (setScrollOffset) {
-      setScrollOffset(event.nativeEvent.contentOffset.y);
-    }
-  }, []);
+  const handleOnScroll = useCallback(
+    (event: any) => {
+      if (setScrollOffset) {
+        setScrollOffset(event.nativeEvent.contentOffset.y);
+      }
+    },
+    [setScrollOffset],
+  );
 
   return (
     <View style={styles.container}>

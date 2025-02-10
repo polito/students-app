@@ -64,7 +64,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
       navigation.navigate(initialTopicId ? 'Services' : 'Tickets');
       navigation.navigate('Ticket', { id: data.id });
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data, initialTopicId, navigation]);
 
   const subTopics = useMemo(
     () =>

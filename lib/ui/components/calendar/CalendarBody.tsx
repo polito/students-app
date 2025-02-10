@@ -80,7 +80,6 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   headerComponent = null,
   headerComponentStyle = {},
   hideHours = false,
-  isEventOrderingEnabled = true,
   hours = HOURS,
   startHour = 8,
 }: CalendarBodyProps<T>) => {

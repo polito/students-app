@@ -179,7 +179,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
     } else {
       setShowFeedback(false);
     }
-  }, [startDateTime, t]);
+  }, [startDateTime, t, showFeedback, setFeedback]);
 
   const { data: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
 
@@ -234,7 +234,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
         <MarkersLayer places={places ?? []} displayFloor={!displayFloorId} />
       ),
     });
-  }, [displayFloorId, navigation, places]);
+  }, [displayFloorId, navigation, places, tabBarHeight, headerHeight]);
 
   return (
     <View style={GlobalStyles.grow} pointerEvents="box-none">

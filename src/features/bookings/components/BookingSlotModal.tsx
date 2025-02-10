@@ -89,7 +89,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     const message = findAccessibilityMessage();
     if (!message) return;
     setTimeoutAccessibilityInfoHelper(message, 500);
-  }, []);
+  }, [findAccessibilityMessage]);
 
   const NotBookableMessage = () => {
     if (

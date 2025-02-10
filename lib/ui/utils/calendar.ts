@@ -332,7 +332,7 @@ export function getStyledEvents<T extends ICalendarEventBase>(
   }
 
   let left: number, b0: number, b1: number;
-  const finalEvents = newEvents.map(({ day, cells, num, r0, r1, ...rest }) => {
+  const finalEvents = newEvents.map(({ day, cells, num, ...rest }) => {
     const B = lcm(nums[day] ?? 1);
     const a0 = cells[0];
     const a1 = cells[cells.length - 1] + 1;
