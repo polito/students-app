@@ -37,7 +37,7 @@ import { version } from '../../../../package.json';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import {
-  PreferencesContextBase,
+  EditablePreferences,
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -178,7 +178,7 @@ const VisualizationListItem = () => {
       onPressAction={({ nativeEvent: { event } }) => {
         updatePreference(
           'colorScheme',
-          event as PreferencesContextBase['colorScheme'],
+          event as EditablePreferences['colorScheme'],
         );
       }}
     >
@@ -249,7 +249,7 @@ const Notifications = () => {
       updatePreference('notifications', {
         ...notifications,
         [notificationType]: value,
-      } as PreferencesContextBase['notifications']);
+      } as EditablePreferences['notifications']);
     };
 
   return (

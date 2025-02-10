@@ -9,7 +9,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import {
-  PreferencesContextBase,
+  EditablePreferences,
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -96,7 +96,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
                 ...coursePrefs,
                 icon: null,
               },
-            } as PreferencesContextBase['courses']);
+            } as EditablePreferences['courses']);
             navigation.goBack();
           }}
         />
