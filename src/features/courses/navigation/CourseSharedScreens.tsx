@@ -11,7 +11,6 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 
-import { PdfViewerScreen } from '../../../../src/features/user/screens/PdfViewerScreen';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
@@ -183,15 +182,6 @@ export const CourseSharedScreens = (
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="PdfViewer"
-        component={PdfViewerScreen}
-        getId={({ params }) => `${params.fileUrl}`}
-        options={{
-          headerTitle: t('courseFileListItem.pdfViewer'),
-          headerLargeTitle: false,
         }}
       />
     </>
