@@ -176,7 +176,6 @@ export const CourseFileListItem = memo(
     const openDownloadedFile = useCallback(() => {
       if (Platform.OS === 'android') {
         try {
-          navigation.navigate('PdfViewer', { fileUrl: cachedFilePath });
           setFeedback({
             text:
               Platform.Version > 29

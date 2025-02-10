@@ -11,7 +11,6 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 
-import { PdfViewerScreen } from '../../../../src/features/user/screens/PdfViewerScreen';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
