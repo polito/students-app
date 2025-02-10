@@ -14,7 +14,6 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 
-import { PdfViewerScreen } from '../../../../src/features/user/screens/PdfViewerScreen';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
@@ -180,7 +179,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             }}
           />
         </TopTabs.Navigator>
-        <Stack.Screen name="PdfViewer" component={PdfViewerScreen} />
       </CourseFilesCacheProvider>
     </CourseContext.Provider>
   );
