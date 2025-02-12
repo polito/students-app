@@ -21,13 +21,14 @@ import {
   UnreadNotificationsByScope,
 } from '../types/notifications';
 
-type PathExtractor<T, Paths extends any[] = []> = T extends Array<Notification>
-  ? never
-  : T extends object
-  ? {
-      [K in keyof T]: PathExtractor<T[K], [...Paths, K]>;
-    }[keyof T]
-  : Paths;
+type PathExtractor<T, Paths extends any[] = []> =
+  T extends Array<Notification>
+    ? never
+    : T extends object
+      ? {
+          [K in keyof T]: PathExtractor<T[K], [...Paths, K]>;
+        }[keyof T]
+      : Paths;
 
 type CourseTransactionId =
   | 'avvisidoc'
