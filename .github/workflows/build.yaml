@@ -124,7 +124,7 @@ jobs:
         echo "CONFIGURED:"
         cat $GITHUB_OUTPUT
 
-    - name: Set up Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: .nvmrc
@@ -166,7 +166,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Set up Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: .nvmrc
@@ -234,7 +234,6 @@ jobs:
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
       SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
-      CCACHE_COMPILERCHECK: content
     needs: configure
     runs-on: [macos-latest]
     steps:
