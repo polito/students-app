@@ -292,10 +292,14 @@ export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
         !!deadlinesQuery.data,
       networkMode: 'always',
       staleTime: 300000, // TODO define
+      refetchOnWindowFocus: true,
     },
   );
 
   const refetch = async () => {
+    await deadlinesQuery.refetch();
+    await bookingsQuery.refetch();
+    await examsQuery.refetch();
     await refetchLecture().then(() => {
       return query.refetch();
     });
@@ -305,6 +309,7 @@ export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
     data: query.data,
     isFetching: query.isFetching,
     isRefetching: query.isRefetching || lecturesQuery.isRefetching,
+    status: query.fetchStatus,
     refetch,
   };
 };
@@ -335,6 +340,7 @@ export const useGetAgendaWeeks = (mondays: DateTime[]) => {
         !!lecturesQueries.data[index] &&
         !!deadlinesQueries.data[index],
       staleTime: Infinity,
+      refetchOnWindowFocus: true,
     })),
   });
 
@@ -344,14 +350,11 @@ export const useGetAgendaWeeks = (mondays: DateTime[]) => {
   }, [mondays, queries]);
 
   const refetch = async () => {
-    await Promise.all(
-      queries.map(q => {
-        if (q.refetch) {
-          lecturesQueries.refetch();
-          return q.refetch();
-        }
-      }),
-    );
+    queries.map(async q => {
+      if (q.refetch) {
+        await q.refetch();
+      }
+    });
   };
 
   return {

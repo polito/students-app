@@ -82,7 +82,6 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   );
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
-
   const {
     data: weekData,
     isFetching /* , fetchPreviousPage, fetchNextPage*/,
@@ -232,17 +231,17 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   return (
     <>
-      <HeaderAccessory justify="space-between">
+      <HeaderAccessory justify="space-between" style={{ paddingVertical: 4 }}>
         <Tabs contentContainerStyle={styles.tabs}>
           <AgendaTypeFilter />
-          <WeekFilter
-            current={currentWeek}
-            getNext={getNextWeek}
-            getPrev={getPrevWeek}
-            isNextWeekDisabled={isNextWeekDisabled}
-            isPrevWeekDisabled={isPrevWeekDisabled}
-          />
         </Tabs>
+        <WeekFilter
+          current={currentWeek}
+          getNext={getNextWeek}
+          getPrev={getPrevWeek}
+          isNextWeekDisabled={isNextWeekDisabled}
+          isPrevWeekDisabled={isPrevWeekDisabled}
+        />
       </HeaderAccessory>
       <DatePicker
         modal
@@ -264,7 +263,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         }}
       >
         {!calendarHeight ||
-          (isFetching && isRefetching && (
+          ((isFetching || isRefetching) && (
             <ActivityIndicator size="large" style={styles.loader} />
           ))}
         {calendarHeight && (

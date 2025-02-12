@@ -61,9 +61,8 @@ const Menu = ({
             isHidden: !isHidden,
           },
         });
-        queryClient.invalidateQueries([LECTURES_QUERY_PREFIX]).then(() => {
-          queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
-        });
+        queryClient.removeQueries([LECTURES_QUERY_PREFIX]);
+        queryClient.removeQueries([AGENDA_QUERY_PREFIX]);
       }}
     >
       {children}

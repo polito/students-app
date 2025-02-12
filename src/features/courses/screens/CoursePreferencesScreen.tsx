@@ -190,11 +190,12 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         files: value,
                       },
                     });
-                    queryClient
-                      .invalidateQueries([LECTURES_QUERY_PREFIX])
-                      .then(() => {
-                        queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
-                      });
+                    queryClient.removeQueries({
+                      queryKey: [AGENDA_QUERY_PREFIX],
+                    });
+                    queryClient.removeQueries({
+                      queryKey: [LECTURES_QUERY_PREFIX],
+                    });
                   }}
                 />
               </OverviewList>

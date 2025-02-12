@@ -88,7 +88,7 @@ export const useGetLectureWeek = (
   }, [courses, coursesPreferences]);
 
   const query = useQuery<Lecture[]>(
-    [...getLectureWeekQueryKey(since), visibleCourseIds],
+    getLectureWeekQueryKey(since),
     async () =>
       getLectureWeekQueryFn(lectureClient, since, courses!, visibleCourseIds),
     {
@@ -130,6 +130,7 @@ export const useGetLectureWeeks = (
           courses!,
           visibleCourseIds,
         ),
+      refetchOnWindowFocus: true,
     })),
   });
 
