@@ -1514,29 +1514,7 @@ PODS:
     - React-Core
   - react-native-override-color-scheme (1.0.3):
     - React-Core
-  - react-native-pager-view (6.4.1):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - react-native-pager-view/common (= 6.4.1)
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
-  - react-native-pager-view/common (6.4.1):
+  - react-native-pager-view (6.7.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2712,7 +2690,7 @@ SPEC CHECKSUMS:
   react-native-menu: 2ae57ae345762db416ee7c44ece7f39955675fe9
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-override-color-scheme: ffee175f44cafe12c6264aed171e6039b7c64bfe
-  react-native-pager-view: ddcdfa41b65930c9c648ff715a4afa1bb0c2358d
+  react-native-pager-view: 4ad4883a8288c5207bd432dd3c98bf648b7bc7d7
   react-native-pdf-light: bf37b7f2ed2ac57493bbda9a85ed43d195866d2d
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: 819935871d06a80e963546208027f839aa972a85
