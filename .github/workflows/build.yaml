@@ -234,6 +234,7 @@ jobs:
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
       SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
+      CCACHE_COMPILERCHECK: content
     needs: configure
     runs-on: [macos-latest]
     steps:
@@ -243,6 +244,8 @@ jobs:
         xcode-version: '15'
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Setup build cache
+      uses: hendrikmuhs/ccache-action@v1.2
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
@@ -257,7 +260,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Set up Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: .nvmrc
@@ -275,10 +278,6 @@ jobs:
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
     - name: Install npm dependencies
       run: npm install
-    #handled by npm on postinstall:
-    # - name: Ensure pods installed 
-    #   working-directory: ./ios
-    #   run: bundle exec pod install
     - name: Prepare fastlane
       working-directory: ./ios
       run: |
