@@ -352,6 +352,9 @@ export const useGetAgendaWeeks = (mondays: DateTime[]) => {
   const refetch = async () => {
     queries.map(async q => {
       if (q.refetch) {
+        await examsQuery.refetch();
+        await bookingsQuery.refetch();
+        await lecturesQueries.refetch();
         await q.refetch();
       }
     });
