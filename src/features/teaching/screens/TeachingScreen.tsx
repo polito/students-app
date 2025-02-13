@@ -138,7 +138,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             emptyStateText={(() => {
               if (isOffline) return t('common.cacheMiss');
 
-              return coursesQuery.data?.length ?? 0 > 0
+              return (coursesQuery.data?.length ?? 0 > 0)
                 ? t('teachingScreen.allCoursesHidden')
                 : t('coursesScreen.emptyState');
             })()}
@@ -242,13 +242,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
                             hideGrades
                               ? []
                               : studentQuery.data?.totalCredits
-                              ? [
-                                  (studentQuery.data?.totalAttendedCredits ??
-                                    0) / studentQuery.data?.totalCredits,
-                                  (studentQuery.data?.totalAcquiredCredits ??
-                                    0) / studentQuery.data?.totalCredits,
-                                ]
-                              : []
+                                ? [
+                                    (studentQuery.data?.totalAttendedCredits ??
+                                      0) / studentQuery.data?.totalCredits,
+                                    (studentQuery.data?.totalAcquiredCredits ??
+                                      0) / studentQuery.data?.totalCredits,
+                                  ]
+                                : []
                           }
                           boxSize={140}
                           radius={40}

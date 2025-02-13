@@ -38,9 +38,8 @@ export const useGetRejectionTime = ({
     return time;
   }, [rejectingExpiresAt, t, isCompact]);
 
-  const [remainingTime, setRemainingTime] = useState<string>(
-    getRemainingTime(),
-  );
+  const [remainingTime, setRemainingTime] =
+    useState<string>(getRemainingTime());
   useEffect(() => {
     if (!rejectingExpiresAt) return;
 

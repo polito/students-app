@@ -81,7 +81,7 @@ export const AgendaNavigator = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
-          animation: params?.animated ?? true ? 'default' : 'none',
+          animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
       />
       <Stack.Screen
