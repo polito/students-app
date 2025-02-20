@@ -101,6 +101,7 @@ export interface Colors {
   errorCardBorder: string;
   translucentSurface: string;
   white: string;
+  black: string;
 }
 
 export interface Palettes {

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
+  TextStyle,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
@@ -34,6 +35,7 @@ interface Props extends TouchableHighlightProps {
   destructive?: boolean;
   success?: boolean;
   hint?: string;
+  textStyle?: TextStyle;
 }
 
 /**
@@ -53,6 +55,7 @@ export const CtaButton = ({
   hint,
   containerStyle,
   variant = 'filled',
+  textStyle,
   ...rest
 }: Props) => {
   const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
@@ -178,6 +181,7 @@ export const CtaButton = ({
                     color: variant === 'filled' ? colors.white : color,
                   },
                   disabled ? { color: colors.disableTitle } : undefined,
+                  textStyle,
                 ]}
                 baseStyle={{ fontWeight: fontWeights.medium }}
               >
