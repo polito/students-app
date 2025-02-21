@@ -18,16 +18,21 @@ import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { asyncStoragePersister } from '../providers/ApiProvider';
 
 export const NO_TOKEN = '__EMPTY__';
+export const kcSettings = { service: 'it.polito.students-app' };
 
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
 
 export async function resetKeychain(): Promise<void> {
-  const credentials = await Keychain.getGenericPassword();
+  const credentials = await Keychain.getGenericPassword(kcSettings);
   if (credentials) {
-    await Keychain.resetGenericPassword();
-    await Keychain.setGenericPassword(credentials.username, NO_TOKEN);
+    await Keychain.resetGenericPassword(kcSettings);
+    await Keychain.setGenericPassword(
+      credentials.username,
+      NO_TOKEN,
+      kcSettings,
+    );
   }
 }
 
@@ -45,7 +50,7 @@ async function getFcmToken(): Promise<string | undefined> {
 
 const getClientId = async (): Promise<string> => {
   try {
-    const credentials = await Keychain.getGenericPassword();
+    const credentials = await Keychain.getGenericPassword(kcSettings);
     if (credentials && credentials.username) {
       return credentials.username;
     }
@@ -53,7 +58,7 @@ const getClientId = async (): Promise<string> => {
     console.warn("Keychain couldn't be accessed!", e);
   }
   const clientId = uuid.v4();
-  await Keychain.setGenericPassword(clientId, NO_TOKEN);
+  await Keychain.setGenericPassword(clientId, NO_TOKEN, kcSettings);
   return clientId;
 };
 
@@ -115,7 +120,7 @@ export const useLogin = () => {
       const { token, clientId: clientIdentifier, username } = data;
       updatePreference('username', username);
       refreshContext({ username, token });
-      await Keychain.setGenericPassword(clientIdentifier, token);
+      await Keychain.setGenericPassword(clientIdentifier, token, kcSettings);
     },
   });
 };
@@ -153,8 +158,8 @@ export const useSwitchCareer = () => {
       });
       updatePreference('username', username);
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
-      await Keychain.setGenericPassword(data.clientId, data.token);
+      await queryClient.invalidateQueries([]);
+      await Keychain.setGenericPassword(data.clientId, data.token, kcSettings);
     },
   });
 };
