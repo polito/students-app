@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -31,15 +31,15 @@ export const UserQrModal = ({
 }: AgendaEventVisibilityModalProps) => {
   const deviceOrientation = useDeviceOrientation();
 
+  const handleBackCloseModal = useCallback(() => {
+    dismissable && onClose?.();
+  }, [dismissable, onClose]);
+
   useEffect(() => {
     if (deviceOrientation === 'landscape') {
       handleBackCloseModal();
     }
-  }, [deviceOrientation]);
-
-  const handleBackCloseModal = () => {
-    dismissable && onClose?.();
-  };
+  }, [deviceOrientation, handleBackCloseModal]);
 
   const { width, height } = useWindowDimensions();
   const styles = useStylesheet(createStyles);

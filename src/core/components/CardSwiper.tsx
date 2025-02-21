@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import FastImage from 'react-native-fast-image';
@@ -235,13 +235,7 @@ export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
       : []),
   ];
 
-  useEffect(() => {
-    if (isFirstRequest) {
-      scrollTo();
-    }
-  }, []);
-
-  const scrollTo = (index = 1, valInterval = 1000) => {
+  const scrollTo = useCallback((index = 1, valInterval = 1000) => {
     let step = 0;
     const interval = setInterval(() => {
       if (step === 0) {
@@ -254,7 +248,13 @@ export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
     }, valInterval);
 
     return () => clearInterval(interval);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRequest) {
+      scrollTo();
+    }
+  }, [isFirstRequest, scrollTo]);
 
   const scrollToItem = (index: number) => {
     flatListRef.current?.scrollToIndex({
