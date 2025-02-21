@@ -65,7 +65,7 @@ export const UserQrModal = ({
       supportedOrientations={['landscape', 'portrait']}
       onBackdropPress={handleBackCloseModal}
     >
-      <View style={styles.modalOverlay}>
+      <View style={styles.modalOverlay} pointerEvents="none">
         <View
           style={[
             deviceOrientation === 'portrait'
@@ -97,7 +97,6 @@ export const UserQrModal = ({
 const createStyles = ({ colors, fontWeights }: Theme) =>
   StyleSheet.create({
     modalOverlay: {
-      justifyContent: 'center',
       alignItems: 'center',
     },
     modalContainer: {

@@ -22,7 +22,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Student } from '@polito/api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -37,9 +37,7 @@ import {
 import { CareerStatus } from '../components/CareerStatus';
 import { UserStackParamList } from '../components/UserNavigator';
 
-interface Props {
-  navigation: NativeStackNavigationProp<UserStackParamList, 'Profile'>;
-}
+type Props = NativeStackScreenProps<UserStackParamList, 'Profile'>;
 
 type UserDetailsProps = {
   student?: Student;
@@ -115,8 +113,9 @@ const HeaderRightDropdown = ({
   );
 };
 
-export const ProfileScreen = ({ navigation }: Props) => {
+export const ProfileScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
+  const { firstRequest } = route.params;
   const { fontSizes } = useTheme();
   const { mutate: handleLogout } = useLogout();
   const studentQuery = useGetStudent();
@@ -162,7 +161,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
           {student &&
           (student?.smartCardPicture ||
             student.europeanStudentCard.canBeRequested) ? (
-            <CardSwiper student={student} />
+            <CardSwiper student={student} firstRequest={firstRequest} />
           ) : (
             <UserDetails student={student} />
           )}

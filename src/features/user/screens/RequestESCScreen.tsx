@@ -36,7 +36,14 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
     requestEsc().then(() => {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Profile' }],
+        routes: [
+          {
+            name: 'Profile',
+            params: {
+              firstRequest: true,
+            },
+          },
+        ],
       });
     });
   };

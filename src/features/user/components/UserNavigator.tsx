@@ -17,7 +17,7 @@ import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
 export type UserStackParamList = OfferingStackParamList & {
-  Profile: undefined;
+  Profile: { firstRequest?: boolean };
   Settings: undefined;
   Messages: undefined;
   RequestESC: undefined;
@@ -51,6 +51,7 @@ export const UserNavigator = () => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
+        initialParams={{ firstRequest: false }}
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('profileScreen.title'),
@@ -108,7 +109,6 @@ export const UserNavigator = () => {
           },
         }}
       />
-
       {SharedScreens(Stack as any)}
     </Stack.Navigator>
   );

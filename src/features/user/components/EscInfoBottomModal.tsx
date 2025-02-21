@@ -21,10 +21,11 @@ import { useDeleteEsc } from '../../../core/queries/escHooks.ts';
 type Props = PropsWithChildren<
   ViewProps & {
     onClose: () => void;
+    scrollTo: (_index: number, _valInterval: number) => void;
   }
 >;
 
-export const EscInfoBottomModal = ({ onClose, ...rest }: Props) => {
+export const EscInfoBottomModal = ({ onClose, scrollTo, ...rest }: Props) => {
   const { t } = useTranslation();
   const { palettes, dark } = useTheme();
   const style = useStylesheet(createStyle);
@@ -51,6 +52,7 @@ export const EscInfoBottomModal = ({ onClose, ...rest }: Props) => {
       deleteEsc()
         .then(() => {
           handleBackCloseModal();
+          scrollTo(0, 100);
         })
         .catch(e => {
           if (e.response && e.response.status === 500) {

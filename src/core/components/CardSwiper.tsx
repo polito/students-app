@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import FastImage from 'react-native-fast-image';
 import Animated, {
@@ -30,11 +30,13 @@ import { EscCard } from './EscCard.tsx';
 
 export interface CardSwiperProps {
   student: Student;
+  firstRequest?: boolean;
 }
 
 type EscItem = {
   isESC: true;
   ESC: EuropeanStudentCard;
+  firstRender?: boolean;
 };
 
 type UrlItem = {
@@ -54,6 +56,7 @@ type CarouselProps = {
   index: number;
   scrollX: SharedValue<number>;
   single: boolean;
+  scrollTo: (index: number, valInterval: number) => void;
 };
 
 const SRC_WIDTH = Dimensions.get('window').width;
@@ -61,7 +64,13 @@ const CARD_LENGTH = SRC_WIDTH * 0.8;
 const SPACING = SRC_WIDTH * 0.02;
 const SIDECARD_LENGHT = (SRC_WIDTH - CARD_LENGTH) / 2;
 
-const SlideItem = ({ item, index, scrollX, single }: CarouselProps) => {
+const SlideItem = ({
+  item,
+  index,
+  scrollX,
+  single,
+  scrollTo,
+}: CarouselProps) => {
   const styles = useStylesheet(createStyles);
 
   const navigation =
@@ -122,7 +131,10 @@ const SlideItem = ({ item, index, scrollX, single }: CarouselProps) => {
       {!item.card.isESC ? (
         <FastImage
           style={styles.smartCard}
-          source={{ uri: item.card.uri }}
+          source={{
+            uri: item.card.uri,
+            priority: FastImage.priority.high,
+          }}
           resizeMode={FastImage.resizeMode.contain}
         />
       ) : (
@@ -145,6 +157,8 @@ const SlideItem = ({ item, index, scrollX, single }: CarouselProps) => {
                 : 'N/A'
             }
             inactiveStatusReason={item.card.ESC.details?.inactiveStatusReason}
+            firstRequest={item.card.firstRender}
+            scrollTo={scrollTo}
           />
           {item.card.ESC.canBeRequested && !item.card.ESC.details && (
             <CtaButtonContainer
@@ -183,16 +197,20 @@ const SlideItem = ({ item, index, scrollX, single }: CarouselProps) => {
   );
 };
 
-export const CardSwiper = ({ student }: CardSwiperProps) => {
+export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
   const styles = useStylesheet(createStyles);
   const scrollX = useSharedValue(0);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
+  const [isFirstRequest, setIsFirstRequest] = useState<boolean>(
+    firstRequest ?? false,
+  );
   const onScrollHandler = useAnimatedScrollHandler({
     onScroll: e => {
       scrollX.value = e.contentOffset.x;
       runOnJS(setCurrentPageIndex)(Math.round(e.contentOffset.x / SRC_WIDTH));
     },
   });
+  const flatListRef = useRef<FlatList>(null);
 
   const { colors } = useTheme();
 
@@ -212,15 +230,46 @@ export const CardSwiper = ({ student }: CardSwiperProps) => {
             ESC: {
               ...student.europeanStudentCard,
             },
+            firstRender: isFirstRequest,
           } as EscItem,
         ]
       : []),
   ];
 
+  useEffect(() => {
+    if (isFirstRequest) {
+      scrollTo();
+    }
+  }, []);
+
+  const scrollTo = (index = 1, valInterval = 1000) => {
+    let step = 0;
+    const interval = setInterval(() => {
+      if (step === 0) {
+        scrollToItem(index);
+      } else if (step === 1) {
+        setIsFirstRequest(false);
+        clearInterval(interval);
+      }
+      step++;
+    }, valInterval);
+
+    return () => clearInterval(interval);
+  };
+
+  const scrollToItem = (index: number) => {
+    flatListRef.current?.scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 0.5,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ width: '100%' }}>
         <Animated.FlatList
+          ref={flatListRef}
           data={items}
           renderItem={({ item, index }) => (
             <SlideItem
@@ -233,6 +282,7 @@ export const CardSwiper = ({ student }: CardSwiperProps) => {
               index={index}
               scrollX={scrollX}
               single={items.length < 1}
+              scrollTo={scrollTo}
             />
           )}
           horizontal
@@ -248,6 +298,11 @@ export const CardSwiper = ({ student }: CardSwiperProps) => {
           contentInsetAdjustmentBehavior="never"
           decelerationRate={0.8}
           scrollEventThrottle={16}
+          getItemLayout={(data, index) => ({
+            length: SRC_WIDTH,
+            offset: SRC_WIDTH * index,
+            index,
+          })}
         />
       </View>
       <View style={styles.dotsContainer}>
@@ -322,7 +377,7 @@ const createStyles = ({ fontWeights, colors }: Theme) =>
     smartCard: {
       aspectRatio: 1.5817,
       height: undefined,
-      maxWidth: 540,
+      maxWidth: 540, // width of a physical card in dp
       maxHeight: 341,
       paddingHorizontal: '50%',
     },
