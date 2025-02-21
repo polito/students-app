@@ -32,7 +32,6 @@ export const EscCard = (
     expiresDate: string;
     cardStatus: EuropeanStudentCardDetailsStatusEnum | 'Requestable';
     inactiveStatusReason?: string | null;
-    firstRequest?: boolean;
     scrollTo: (index: number, valInterval: number) => void;
   },
 ) => {
@@ -304,27 +303,6 @@ export const EscCard = (
                     {line}
                   </TSpan>
                 ))}
-            </Text>
-          </G>
-        )}
-        {props.firstRequest && (
-          <G>
-            <Path
-              d="M1.18893e-06 29L30 -0.632278L38.5 -0.632277L49.0816 -0.632278L4.02697e-07 48.5L8.51754e-07 37.5L1.18893e-06 29Z"
-              fill="#FF0000"
-            />
-            <Text
-              id="NEW"
-              transform="translate(3 25.6274) rotate(-45)"
-              fill="white"
-              font-family="Montserrat"
-              font-size="12"
-              font-weight="600"
-              letter-spacing="0em"
-            >
-              <TSpan x="0.320312" y="11.802">
-                NEW
-              </TSpan>
             </Text>
           </G>
         )}

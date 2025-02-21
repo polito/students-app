@@ -157,7 +157,6 @@ const SlideItem = ({
                 : 'N/A'
             }
             inactiveStatusReason={item.card.ESC.details?.inactiveStatusReason}
-            firstRequest={item.card.firstRender}
             scrollTo={scrollTo}
           />
           {item.card.ESC.canBeRequested && !item.card.ESC.details && (
