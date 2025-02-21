@@ -65,7 +65,7 @@ export const UserQrModal = ({
       supportedOrientations={['landscape', 'portrait']}
       onBackdropPress={handleBackCloseModal}
     >
-      <View style={styles.modalOverlay} pointerEvents="none">
+      <View style={styles.modalOverlay} pointerEvents="box-none">
         <View
           style={[
             deviceOrientation === 'portrait'
@@ -73,6 +73,7 @@ export const UserQrModal = ({
               : { height: '95%' },
             styles.modalContainer,
           ]}
+          pointerEvents="auto"
         >
           <Row style={styles.modalTitleContainer}>
             <Col>
