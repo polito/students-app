@@ -250,6 +250,7 @@
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",
+    "shortUsername": "Matr.",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
@@ -421,6 +422,43 @@
     "jobOpportunities": "Sbocchi",
     "title": "Corso di laurea",
     "tracks": "Piano studi"
+  },
+  "escRequestScreen": {
+    "title": "European Student Card",
+    "firstTitle": "Che cos'è la Carta europea dello studente?",
+    "firstSection": "L'ESC (European Student Card) è un'identificazione digitale che consente agli studenti universitari di tutta Europa di accedere ai servizi e ai benefici offerti dalle istituzioni scolastiche e dalle organizzazioni studentesche in modo semplice e sicuro.",
+    "secondTitle": "Perché dovrei usarla?",
+    "secondSection": "L'utilizzo della Carta Europea dello Studente offre numerosi vantaggi, tra cui:",
+    "secondSectionList": {
+      "first": "Accesso semplificato ai servizi delle università partner in tutta Europa. ",
+      "second": "Riduzione della necessità di documentazione cartacea.",
+      "third": "Partecipazione più facile ai programmi di mobilità internazionale, come Erasmus+.",
+      "fourth": "Accesso a sconti e promozioni riservati agli studenti di vari Paesi europei."
+    },
+    "cardRequest": {
+      "firstSectionNormalText":"Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
+      "sectionBoldText":"autorizzazione a trasmettere i seguenti dati",
+      "secondSectionNormalText":"all'autorità competente dell'UE:",
+      "firstName" : "Nome",
+      "lastName" : "Cognome",
+      "id": "Matricola",
+      "mail": "Mail istituzionale",
+      "studyProgram": "Programma di studio"
+    },
+    "authorize": "Autorizza",
+    "escModalInfo": "Tutte le impostazioni di gestione e revoca della carta si trovano nel Portale dell'istruzione."
+  },
+  "escModalInfo": {
+    "revoke": "Revoca autorizzazione",
+    "revokeConfirm": "Revocando l’autorizzazione a conservare i tuoi dati all’ESC-Router disattiverai questa card e quelle legate a tue eventuali carriere",
+    "text": "Per ottenere la tua European Student Card (ESC), hai autorizzato la trasmissione dei tuoi dati tramite ESC_router. Puoi revocare questa autorizzazione in qualsiasi momento.",
+    "title":"Dati ESC"
+  },
+  "europeanCardScreen": {
+    "title": "THE EUROPEAN STUDENT CARD",
+    "expiredTitle": "La tua Card è scaduta",
+    "expiredText": "Studente non iscritto all’a.a corrente",
+    "inactive": "La tua Card è sospesa"
   },
   "eventPlacesScreen": {
     "title": "Luoghi evento"

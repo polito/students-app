@@ -242,6 +242,7 @@
     "updatedAt": "Updated at",
     "upload": "Upload",
     "username": "Student ID",
+    "shortUsername": "ID",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
@@ -407,6 +408,43 @@
     "jobOpportunities": "Job opportunities",
     "title": "Degree",
     "tracks": "Tracks"
+  },
+  "escRequestScreen": {
+    "title": "European Student Card",
+    "firstTitle": "What is the European Student Card?",
+    "firstSection": "The ESC (European Student Card) is a digital identification that allows university students across Europe to access services and benefits offered by educational institutions and student organizations in a simple and secure way.",
+    "secondTitle": "Why should I use it?",
+    "secondSection": "Using the European Student Card offers numerous advantages, including:",
+    "secondSectionList": {
+      "first": "Simplified access to services from partner universities across Europe.",
+      "second": "Reduced need for paper documentation.",
+      "third": "Easier participation in international mobility programs, such as Erasmus+.",
+      "fourth": "Access to discounts and promotions reserved for students in various European countries."
+    },
+    "cardRequest": {
+      "firstSectionNormalText":"To activate your Card for each of your careers, we need ",
+      "sectionBoldText":"authorization to transmit the following data ",
+      "secondSectionNormalText":"to the relevant EU authority:",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "id": "Student ID number",
+      "mail": "Institutional email",
+      "studyProgram": "Study program"
+    },
+    "authorize": "Authorize",
+    "escModalInfo": "All card management and revocation settings can be found within the Education Portal"
+  },
+  "escModalInfo": {
+    "revoke": "Revoke authorisation",
+    "revokeConfirm": "Revoking the authorization to keep your data in the ESC-Router will deactivate this card and any other cards linked to your academic careers, if any",
+    "text": "To obtain your European Student Card (ESC), you authorized the transmission of your data through ESC_router. You can revoke this authorization at any time.",
+    "title":"ESC Data Settings"
+  },
+  "europeanCardScreen": {
+    "title": "THE EUROPEAN STUDENT CARD",
+    "expiredTitle": "Your Card has expired",
+    "expiredText": "Student not enrolled in the current school year",
+    "inactive": "Your Card is suspended"
   },
   "eventPlacesScreen": {
     "title": "Event locations"

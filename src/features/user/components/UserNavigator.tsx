@@ -13,12 +13,14 @@ import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
 
 export type UserStackParamList = OfferingStackParamList & {
-  Profile: undefined;
+  Profile: { firstRequest?: boolean };
   Settings: undefined;
   Messages: undefined;
+  RequestESC: undefined;
   Message: {
     id: number;
   };
@@ -49,9 +51,17 @@ export const UserNavigator = () => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
+        initialParams={{ firstRequest: false }}
         options={{
           headerLeft: () => <HeaderLogo />,
           headerTitle: t('profileScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="RequestESC"
+        component={RequestESCScreen}
+        options={{
+          headerTitle: t('escRequestScreen.title'),
         }}
       />
       <Stack.Screen
