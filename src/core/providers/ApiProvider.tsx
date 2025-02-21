@@ -32,7 +32,7 @@ import {
 import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
-import { NO_TOKEN, resetKeychain, settings } from '../queries/authHooks.ts';
+import { NO_TOKEN, kcSettings, resetKeychain } from '../queries/authHooks.ts';
 
 export const asyncStoragePersister = createAsyncStoragePersister({
   key: 'polito-students.queries',
@@ -160,7 +160,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     };
 
     // Retrieve existing token from SecureStore, if any
-    Keychain.getGenericPassword(settings)
+    Keychain.getGenericPassword(kcSettings)
       .then(keychainCredentials => {
         let credentials = undefined;
 
