@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -33,19 +34,23 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
     useRequestEsc();
 
   const onSubmit = async () => {
-    requestEsc().then(() => {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'Profile',
-            params: {
-              firstRequest: true,
+    requestEsc()
+      .then(() => {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'Profile',
+              params: {
+                firstRequest: true,
+              },
             },
-          },
-        ],
+          ],
+        });
+      })
+      .catch(_ => {
+        Alert.alert(t('common.error'), t('common.somethingWentWrong'));
       });
-    });
   };
 
   const itemList = [

@@ -54,11 +54,15 @@ export const EscInfoBottomModal = ({ onClose, scrollTo, ...rest }: Props) => {
           handleBackCloseModal();
           scrollTo(0, 100);
         })
-        .catch(e => {
+        .catch(async e => {
           if (e.response && e.response.status === 500) {
+            const { message } = (await e.response.json()) as {
+              message?: string;
+            };
             Alert.alert(
               t('common.error'),
-              e.response.message + ' on ' + e.response.careerId,
+              message + ' on ' + e.response.careerId ??
+                t('common.somethingWentWrong'),
             );
           }
         });
