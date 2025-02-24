@@ -222,7 +222,8 @@ export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
           } as UrlItem,
         ]
       : []),
-    ...(student.europeanStudentCard.canBeRequested
+    ...(student.europeanStudentCard.canBeRequested ||
+    student.europeanStudentCard.details
       ? [
           {
             isESC: true,

@@ -55,13 +55,20 @@ export const EscCard = (
 
   const ESCimage = 'data:image/png;base64,' + props.qr;
 
-  const insertLineBreaks = (input: string, maxLength = 50) => {
-    let result = '';
-    for (let i = 0; i < input.length; i += maxLength) {
-      result += input.slice(i, i + maxLength) + '\n';
+  const insertLineBreaks = (input: string, maxLength = 40): string => {
+    const result = [];
+    let start = 0;
+
+    while (start < input.length) {
+      let end = Math.min(start + maxLength, input.length);
+      if (end < input.length && input[end] !== ' ')
+        end = input.lastIndexOf(' ', end) || end;
+
+      result.push(input.slice(start, end).trim());
+      start = end + 1;
     }
 
-    return result.trim();
+    return result.join('\n');
   };
 
   const isBlur =
