@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
+import { isTablet as isTabletHelper } from 'react-native-device-info';
 import FastImage from 'react-native-fast-image';
 import Animated, {
   Extrapolation,
@@ -109,7 +110,7 @@ const SlideItem = ({
     };
   });
 
-  const { spacing, colors, palettes } = useTheme();
+  const { colors, palettes } = useTheme();
 
   return (
     <Animated.View
@@ -154,38 +155,24 @@ const SlideItem = ({
                 ? DateTime.fromISO(item.card.ESC.details?.expiresAt).toFormat(
                     'dd/MM/yyyy',
                   )
-                : 'N/A'
+                : '--/--/--'
             }
             inactiveStatusReason={item.card.ESC.details?.inactiveStatusReason}
             scrollTo={scrollTo}
           />
           {item.card.ESC.canBeRequested && !item.card.ESC.details && (
-            <CtaButtonContainer
-              absolute={true}
-              style={{
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                justifyContent: 'center',
-              }}
-            >
+            <CtaButtonContainer absolute={true} style={styles.buttonContainer}>
               <CtaButton
                 absolute={false}
                 title="Request Card"
                 action={() => navigation.navigate('RequestESC')}
                 textStyle={{ color: colors.black, fontWeight: '600' }}
-                style={{
-                  borderColor: colors.white,
-                  backgroundColor: colors.white,
-                  paddingVertical: spacing[3],
-                }}
+                style={styles.button}
                 underlayColor={palettes.gray[200]}
                 containerStyle={{
-                  paddingHorizontal:
-                    deviceOrientation === 'portrait'
-                      ? CARD_LENGTH / 6
-                      : CARD_LENGTH / 3,
+                  paddingHorizontal: isTabletHelper()
+                    ? CARD_LENGTH / 3
+                    : CARD_LENGTH / 6,
                 }}
               />
             </CtaButtonContainer>
@@ -348,7 +335,7 @@ export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
   );
 };
 
-const createStyles = ({ fontWeights, colors }: Theme) =>
+const createStyles = ({ fontWeights, colors, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -384,5 +371,17 @@ const createStyles = ({ fontWeights, colors }: Theme) =>
     dotsContainer: {
       alignItems: 'center',
       height: 6,
+    },
+    buttonContainer: {
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      justifyContent: 'center',
+    },
+    button: {
+      borderColor: colors.white,
+      backgroundColor: colors.white,
+      paddingVertical: spacing[3],
     },
   });
