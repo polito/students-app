@@ -155,20 +155,6 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
   // TODO try to scroll backwards
   // https://github.com/polito/students-app/blob/v1.6.9/src/features/agenda/screens/AgendaScreen.tsx#L155
-  // const scrollToLastOffset = () => {
-  //   flatListRef.current?.scrollToOffset({
-  //     offset: agendaState.currentOffset,
-  //     animated: false,
-  //   });
-  // };
-
-  // const onContentHeightChange = (height: number) => {
-  //   setAgendaState(prev => ({
-  //     ...prev,
-  //     contentHeight: height,
-  //     todayOffsetOverall: prev.dayOffsetOverall + (height - prev.contentHeight),
-  //   }));
-  // };
 
   const screenOptions = useMemo<AgendaOption[]>(
     () => [
