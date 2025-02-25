@@ -57,7 +57,7 @@ platform :android do
         org_slug: ENV['SENTRY_ORG'],
         project_slug: ENV['SENTRY_PROJECT'],
         version: 'it.polito.students@' + ENV['APP_VERSION'],
-        build: ENV['BUILD_PIECE'],
+        dist: ENV['BUILD_NO'],
         sourcemap: [bundle_path, source_map_path],
         rewrite: true
       )
