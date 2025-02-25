@@ -8,8 +8,8 @@ export const ANDROID_DOCUMENT_DIRECTORY_PATH = '/storage/emulated/0/Documents';
 export const PUBLIC_APP_DIRECTORY_PATH = IS_IOS
   ? DocumentDirectoryPath
   : Platform.Version > '29'
-  ? ANDROID_DOCUMENT_DIRECTORY_PATH
-  : ExternalDirectoryPath;
+    ? ANDROID_DOCUMENT_DIRECTORY_PATH
+    : ExternalDirectoryPath;
 export const courseColors = [
   { name: 'colors.red', color: '#DC2626' },
   { name: 'colors.orange', color: '#EA580C' },

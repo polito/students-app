@@ -86,7 +86,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
           id: edition.toString(),
           title: edition,
           state: edition === currentYear ? 'on' : undefined,
-        } as MenuAction),
+        }) as MenuAction,
     );
   }, [currentYear, isOffline, offeringCourse]);
 
@@ -234,12 +234,14 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               }
             />
             <OverviewList emptyStateText={t('degreeCourseScreen.noStaff')}>
-              {offeringCourse?.staff.slice(0, 3).map(item => (
-                <StaffListItem
-                  key={`${item.id}${item.courseId}`}
-                  staff={item}
-                />
-              ))}
+              {offeringCourse?.staff
+                .slice(0, 3)
+                .map(item => (
+                  <StaffListItem
+                    key={`${item.id}${item.courseId}`}
+                    staff={item}
+                  />
+                ))}
             </OverviewList>
           </Section>
           <Section>

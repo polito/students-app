@@ -35,8 +35,8 @@ export const useGetExams = () => {
             !a.examStartsAt || !isValidDate(a.examStartsAt)
               ? 1
               : !b.examStartsAt || !isValidDate(b.examStartsAt)
-              ? -1
-              : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
+                ? -1
+                : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
           ),
       ),
   );

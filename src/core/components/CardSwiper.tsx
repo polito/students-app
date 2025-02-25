@@ -148,7 +148,7 @@ const SlideItem = ({
             cardStatus={
               item.card.ESC.canBeRequested && !item.card.ESC.details
                 ? 'Requestable'
-                : item.card.ESC.details?.status ?? 'active'
+                : (item.card.ESC.details?.status ?? 'active')
             }
             expiresDate={
               item.card.ESC.details?.expiresAt
