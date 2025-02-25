@@ -183,33 +183,33 @@ export const MapNavigator = ({
                               label: headerBackTitle,
                             })
                         : headerLeft === undefined && canGoBack
-                        ? ({ tintColor }) => (
-                            <HeaderBackButton
-                              tintColor={tintColor}
-                              backImage={
-                                headerBackImageSource !== undefined
-                                  ? () => (
-                                      <Image
-                                        source={headerBackImageSource}
-                                        style={[
-                                          styles.backImage,
-                                          { tintColor },
-                                        ]}
-                                      />
-                                    )
-                                  : undefined
-                              }
-                              onPress={navigation.goBack}
-                              canGoBack={canGoBack}
-                              label={
-                                headerBackTitle ??
-                                previousDescriptor?.options.title
-                              }
-                              labelVisible={IS_IOS && headerBackTitleVisible}
-                              labelStyle={headerBackTitleStyle}
-                            />
-                          )
-                        : headerLeft
+                          ? ({ tintColor }) => (
+                              <HeaderBackButton
+                                tintColor={tintColor}
+                                backImage={
+                                  headerBackImageSource !== undefined
+                                    ? () => (
+                                        <Image
+                                          source={headerBackImageSource}
+                                          style={[
+                                            styles.backImage,
+                                            { tintColor },
+                                          ]}
+                                        />
+                                      )
+                                    : undefined
+                                }
+                                onPress={navigation.goBack}
+                                canGoBack={canGoBack}
+                                label={
+                                  headerBackTitle ??
+                                  previousDescriptor?.options.title
+                                }
+                                labelVisible={IS_IOS && headerBackTitleVisible}
+                                labelStyle={headerBackTitleStyle}
+                              />
+                            )
+                          : headerLeft
                       : undefined
                   }
                   headerRight={
