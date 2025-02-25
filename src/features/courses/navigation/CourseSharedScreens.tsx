@@ -48,6 +48,7 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
   CourseIconPicker: { courseId: number; uniqueShortcode: string };
+  PdfViewer: { fileUrl: string };
 }
 
 export const CourseSharedScreens = (

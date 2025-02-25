@@ -9,7 +9,10 @@ import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
@@ -32,9 +35,11 @@ export interface CourseTabsParamList extends TeachingStackParamList {
   CourseFilesScreen: undefined;
   CourseLecturesScreen: undefined;
   CourseAssignmentsScreen: undefined;
+  PdfViewer: { fileUrl: string };
 }
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
+const Stack = createNativeStackNavigator<CourseTabsParamList>();
 
 export const CourseNavigator = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
