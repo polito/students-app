@@ -21,14 +21,6 @@ import {
   UnreadNotificationsByScope,
 } from '../types/notifications';
 
-type PathExtractor<T, Paths extends any[] = []> = T extends Array<Notification>
-  ? never
-  : T extends object
-  ? {
-      [K in keyof T]: PathExtractor<T[K], [...Paths, K]>;
-    }[keyof T]
-  : Paths;
-
 type CourseTransactionId =
   | 'avvisidoc'
   | 'videolezioni'
@@ -50,14 +42,14 @@ type TransactionId =
   | 'booking'
   | 'avvisi';
 
-const messageTransactionIds: MessageTransactionId[] = [
-  'emergenze',
-  'eventi',
-  'esitiesami',
-  'individuale',
-  'messaggidoc',
-  'segreteria',
-];
+// const messageTransactionIds: MessageTransactionId[] = [
+//   'emergenze',
+//   'eventi',
+//   'esitiesami',
+//   'individuale',
+//   'messaggidoc',
+//   'segreteria',
+// ];
 
 const courseTransactionsMapping: Record<
   CourseTransactionId,
@@ -143,6 +135,7 @@ export const useNotifications = () => {
       summarize = false,
     ) => {
       // TODO PathExtractor<UnreadNotificationsByScope>
+      // https://github.com/polito/students-app/blob/v1.6.9/src/core/hooks/useNotifications.ts#L24
       const root = get(unreadNotifications, path!);
       const visitNode = (node: object | Notification[]): number => {
         if (Array.isArray(node)) {

@@ -45,7 +45,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
         onChangeText: e => setSearchFilter(e.nativeEvent.text.toLowerCase()),
       },
     });
-  }, []);
+  }, [navigation]);
 
   return (
     <>

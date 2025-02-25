@@ -9,7 +9,7 @@
     "test": "jest",
     "prepare": "husky",
     "commit": "commit",
-    "lint:check": "eslint '**/*.{ts,tsx}'",
+    "lint:check": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
     "lint": "npm run lint:check -- --fix",
     "format:check": "prettier --check '**/*.{ts,tsx,md}'",
     "format": "prettier --write '**/*.{ts,tsx,md}'",

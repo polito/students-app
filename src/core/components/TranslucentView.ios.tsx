@@ -17,7 +17,7 @@ export const TranslucentView = ({
       blurType: dark ? 'ultraThinMaterialDark' : 'ultraThinMaterialLight',
       reducedTransparencyFallbackColor: colors.surface,
     }),
-    [dark],
+    [dark, colors.surface],
   );
 
   return (

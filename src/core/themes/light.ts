@@ -146,6 +146,7 @@ export const lightTheme: Theme = {
     surfaceDark: navy[700],
     white: '#FFFFFF',
     black: '#000000',
+    yellow: '#FFD700',
     headersBackground: IS_ANDROID ? '#FFFFFF' : '#EDEEF0',
     heading: navy[700],
     subHeading: lightBlue[700],

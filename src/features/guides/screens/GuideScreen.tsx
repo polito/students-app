@@ -42,7 +42,7 @@ export const GuideScreen = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerTitle: guide?.listTitle,
     });
-  }, [guide, navigation]);
+  }, [guide, navigation, emailGuideRead, updatePreference]);
 
   return (
     <ScrollView

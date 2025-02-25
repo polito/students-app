@@ -49,7 +49,7 @@ const FileCacheChecker = () => {
   useFocusEffect(
     useCallback(() => {
       refresh();
-    }, []),
+    }, [refresh]),
   );
 
   // eslint-disable-next-line react/jsx-no-useless-fragment

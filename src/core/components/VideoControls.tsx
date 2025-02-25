@@ -117,7 +117,7 @@ export const VideoControls = ({
       }
       opacityAnimation.current = null;
     });
-  }, [controlsHidden]);
+  }, [controlsHidden, paused, buffering, sliding, controlsOpacity]);
 
   useEffect(() => {
     if ((paused || buffering || sliding) && hideTimeout.current) {

@@ -75,7 +75,7 @@ export type StackProps<
    */
   gap?: keyof Theme['spacing'];
 } & Partial<{
-  [key in keyof typeof spacingShorthands]: keyof Theme['spacing'];
+  [_key in keyof typeof spacingShorthands]: keyof Theme['spacing'];
 }> &
   ComponentProps<T>;
 

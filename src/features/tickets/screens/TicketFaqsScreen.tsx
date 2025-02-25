@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
@@ -48,9 +48,14 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
   const [search, setSearch] = useState('');
   const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
   const ticketFaqsQuery = useSearchTicketFaqs(search);
-  const ticketFaqs =
-    ticketFaqsQuery.data?.sort((a, b) => (a.question > b.question ? 1 : -1)) ??
-    [];
+  const ticketFaqs = useMemo(() => {
+    return (
+      ticketFaqsQuery.data?.sort((a, b) =>
+        a.question > b.question ? 1 : -1,
+      ) ?? []
+    );
+  }, [ticketFaqsQuery.data]);
+
   const canSearch = search?.length > 2;
 
   const { accessibilityListLabel } = useAccessibility();
