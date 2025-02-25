@@ -110,7 +110,6 @@ export const Calendar = <T extends ICalendarEventBase>({
   dayHeaderStyle = {},
   dayHeaderHighlightColor = '',
   weekDayHeaderHighlightColor = '',
-  // bodyContainerStyle = {},
   swipeEnabled = true,
   weekStartsOn = 0,
   onChangeDate,
@@ -119,15 +118,11 @@ export const Calendar = <T extends ICalendarEventBase>({
   onPressEvent,
   renderEvent,
   renderHeader: HeaderComponent = CalendarHeader,
-  // renderHeaderForMonthView : HeaderComponentForMonthView =  CalendarHeaderForMonthView,
   weekEndsOn = 6,
   activeDate,
   headerComponent = null,
   headerComponentStyle = {},
   showAllDayEventCell = true,
-  // moreLabel = '{moreCount} More',
-  // showAdjacentMonths = true,
-  // sortedMonthView = true,
   isEventOrderingEnabled,
   hours,
   startHour = 6,
@@ -215,45 +210,7 @@ export const Calendar = <T extends ICalendarEventBase>({
   };
 
   // TODO restore month view
-  // if (mode === 'month') {
-  //   const headerProps = {
-  //     style: headerContainerStyle,
-  //     locale: locale,
-  //     weekStartsOn: weekStartsOn,
-  //     headerContentStyle: headerContentStyle,
-  //     dayHeaderStyle: dayHeaderStyle,
-  //     dayHeaderHighlightColor: dayHeaderHighlightColor,
-  //     weekDayHeaderHighlightColor: weekDayHeaderHighlightColor,
-  //     showAllDayEventCell: showAllDayEventCell,
-  //   };
-  //   return (
-  //     <Fragment>
-  //       {/*<HeaderComponentForMonthView {...headerProps} />*/}
-  //       <CalendarBodyForMonthView<T>
-  //         {...commonProps}
-  //         style={bodyContainerStyle}
-  //         containerHeight={height}
-  //         events={[...daytimeEvents, ...allDayEvents]}
-  //         eventCellStyle={eventCellStyle}
-  //         calendarCellStyle={calendarCellStyle}
-  //         calendarCellTextStyle={calendarCellTextStyle}
-  //         weekStartsOn={weekStartsOn}
-  //         hideNowIndicator={hideNowIndicator}
-  //         showAdjacentMonths={showAdjacentMonths}
-  //         onPressCell={onPressCell}
-  //         onPressDateHeader={onPressDateHeader}
-  //         onPressEvent={onPressEvent}
-  //         onSwipeHorizontal={onSwipeHorizontal}
-  //         renderEvent={renderEvent}
-  //         targetDate={targetDate}
-  //         maxVisibleEventCount={maxVisibleEventCount}
-  //         eventMinHeightForMonthView={eventMinHeightForMonthView}
-  //         sortedMonthView={sortedMonthView}
-  //         moreLabel={moreLabel}
-  //       />
-  //     </Fragment>
-  //   );
-  // }
+  // https://github.com/polito/students-app/blob/v1.6.9/lib/ui/components/calendar/Calendar.tsx#L217
 
   const headerProps = {
     ...commonProps,

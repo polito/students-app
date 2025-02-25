@@ -65,10 +65,6 @@ export const Snackbar = ({
     if (isEnabled && visible) announce(text);
   }, [isEnabled, announce, visible, text]);
 
-  // useEffect(() => {
-  //   if()
-  // }, [text]);
-
   const handleOnVisible = useLatestCallback(() => {
     // show
     if (hideTimeout.current) clearTimeout(hideTimeout.current);
