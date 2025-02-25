@@ -11,7 +11,7 @@ export const darkTheme: Theme = {
   dark: true,
   colors: {
     ...lightTheme.colors,
-    background: lightTheme.palettes.primary[700],
+    background: lightTheme.palettes.primary[800],
     surface: lightTheme.colors.surfaceDark,
     surfaceDark: '#002B49',
     headersBackground: '#1e3444',

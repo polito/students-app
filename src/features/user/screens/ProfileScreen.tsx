@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import {
   faAngleDown,
@@ -10,7 +9,6 @@ import {
   faMessage,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
-import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -21,16 +19,14 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { Student } from '@polito/api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { IS_ANDROID } from '../../../core/constants';
+import { CardSwiper } from '../../../core/components/CardSwiper';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
@@ -41,12 +37,26 @@ import {
 import { CareerStatus } from '../components/CareerStatus';
 import { UserStackParamList } from '../components/UserNavigator';
 
-interface Props {
-  navigation: NativeStackNavigationProp<UserStackParamList, 'Profile'>;
-}
+type Props = NativeStackScreenProps<UserStackParamList, 'Profile'>;
 
 type UserDetailsProps = {
   student?: Student;
+};
+
+const UserDetails = ({ student }: UserDetailsProps) => {
+  const { t } = useTranslation();
+  const { spacing, fontSizes } = useTheme();
+
+  return (
+    <Section accessible={false} style={{ marginTop: spacing[3] }}>
+      <SectionHeader
+        title={student?.lastName + ' ' + student?.firstName}
+        subtitle={t('common.shortUsername') + ' ' + student?.username}
+        titleStyle={{ fontSize: fontSizes.xl }}
+        subtitleStyle={{ fontSize: fontSizes.lg }}
+      />
+    </Section>
+  );
 };
 
 const HeaderRightDropdown = ({
@@ -103,32 +113,15 @@ const HeaderRightDropdown = ({
   );
 };
 
-const UserDetails = ({ student }: UserDetailsProps) => {
+export const ProfileScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
-  const { spacing, fontSizes } = useTheme();
-
-  return (
-    <Section accessible={false} style={{ marginTop: spacing[3] }}>
-      <SectionHeader
-        title={student?.lastName + ' ' + student?.firstName}
-        subtitle={t('common.shortUsername') + ' ' + student?.username}
-        titleStyle={{ fontSize: fontSizes.xl }}
-        subtitleStyle={{ fontSize: fontSizes.lg }}
-      />
-    </Section>
-  );
-};
-
-export const ProfileScreen = ({ navigation }: Props) => {
-  const { t } = useTranslation();
+  const { firstRequest } = route.params;
   const { fontSizes } = useTheme();
   const { mutate: handleLogout } = useLogout();
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
   const queryClient = useQueryClient();
   const { getUnreadsCount } = useNotifications();
-
-  const styles = useStylesheet(createStyles);
 
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
@@ -165,16 +158,10 @@ export const ProfileScreen = ({ navigation }: Props) => {
             student?.firstName
           } ${student?.lastName}`}
         >
-          {student?.smartCardPicture ? (
-            <Section accessible={false}>
-              <Col ph={5} pt={2}>
-                <FastImage
-                  style={styles.smartCard}
-                  source={{ uri: student?.smartCardPicture }}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-              </Col>
-            </Section>
+          {student &&
+          (student?.smartCardPicture ||
+            student.europeanStudentCard.canBeRequested) ? (
+            <CardSwiper student={student} firstRequest={firstRequest} />
           ) : (
             <UserDetails student={student} />
           )}
@@ -231,20 +218,3 @@ export const ProfileScreen = ({ navigation }: Props) => {
     </ScrollView>
   );
 };
-
-const createStyles = ({ spacing, fontSizes }: Theme) =>
-  StyleSheet.create({
-    title: {
-      fontSize: fontSizes['2xl'],
-    },
-    header: {
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[IS_ANDROID ? 4 : 1],
-    },
-    smartCard: {
-      aspectRatio: 1.5817,
-      height: undefined,
-      maxWidth: 540, // width of a physical card in dp
-      maxHeight: 341,
-    },
-  });
