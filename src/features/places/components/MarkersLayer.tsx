@@ -78,7 +78,7 @@ export const MarkersLayer = ({
         priority:
           selectedPoiId === poi.id
             ? 0
-            : subcategory?.priority ?? category.priority ?? 100,
+            : (subcategory?.priority ?? category.priority ?? 100),
       };
     });
   }, [

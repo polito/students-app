@@ -33,14 +33,14 @@ export const CoursesScreen = () => {
         {coursesQuery.data &&
           (coursesQuery.data.length > 0 ? (
             Object.entries(
-              coursesQuery.data.reduce((byPeriod, course) => {
-                (byPeriod[course.teachingPeriod] =
-                  byPeriod[course.teachingPeriod] ?? []).push(course);
-                return byPeriod;
-              }, {} as Record<string, CourseOverview[]>) as Record<
-                string,
-                CourseOverview[]
-              >,
+              coursesQuery.data.reduce(
+                (byPeriod, course) => {
+                  (byPeriod[course.teachingPeriod] =
+                    byPeriod[course.teachingPeriod] ?? []).push(course);
+                  return byPeriod;
+                },
+                {} as Record<string, CourseOverview[]>,
+              ) as Record<string, CourseOverview[]>,
             ).map(([period, courses]) => (
               <Section key={period}>
                 <SectionHeader

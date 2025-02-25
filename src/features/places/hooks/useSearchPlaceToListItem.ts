@@ -13,7 +13,7 @@ export const useSearchPlaceToListItem = () => {
     (place: SearchPlace, isRecentlyViewed = false) => {
       return {
         title: isPlace(place)
-          ? place.room.name ?? place.category.subCategory?.name
+          ? (place.room.name ?? place.category.subCategory?.name)
           : place.name,
         subtitle: isPlace(place)
           ? `${
@@ -25,9 +25,6 @@ export const useSearchPlaceToListItem = () => {
         linkTo: isPlace(place)
           ? { screen: 'Place', params: { placeId: place.id } }
           : { screen: 'Building', params: { buildingId: place.id } },
-        // leadingItem: (
-        //   <Image source={{ uri: markerUrl }} width={30} height={30} />
-        // ),
       };
     },
     [t],

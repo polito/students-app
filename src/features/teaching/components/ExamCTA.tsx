@@ -84,10 +84,10 @@ export const ExamCTA = ({ exam, absolute = false }: Props) => {
         examUnavailable
           ? t('examScreen.notAvailable')
           : examRequestable
-          ? t('examScreen.ctaRequest')
-          : examAvailable
-          ? t('examScreen.ctaBook')
-          : t('examScreen.ctaCancel')
+            ? t('examScreen.ctaRequest')
+            : examAvailable
+              ? t('examScreen.ctaBook')
+              : t('examScreen.ctaCancel')
       }
       action={action}
       loading={mutationsLoading}

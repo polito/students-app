@@ -18,9 +18,6 @@
 		421B0ABE59B5422AA80527B9 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */; };
 		4261CE84249426DA2AD8F7D3 /* libPods-students-studentsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BADEE9E139127DB51296F263 /* libPods-students-studentsTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		854737302CD8224500A264C2 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C9FC690AA1369A0BC5CA9D14 /* MapLibre */; };
-		854737312CD8224500A264C2 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 4F85B788136772BDD767E888 /* MapLibre */; };
-		854737322CD8224500A264C2 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 03F3EA4F2FEF09BB4F99E42A /* MapLibre */; };
 		944531432DCE469C9F10AB4F /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */; };
 		96125A232AD6A8E600CF037A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 96125A222AD6A8E600CF037A /* GoogleService-Info.plist */; };
 		97547E738A1E444EB344D4D0 /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */; };
@@ -104,7 +101,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				854737322CD8224500A264C2 /* MapLibre in Frameworks */,
 				4261CE84249426DA2AD8F7D3 /* libPods-students-studentsTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -113,7 +109,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				854737312CD8224500A264C2 /* MapLibre in Frameworks */,
 				3EA6CBE673262FFC27683243 /* libPods-students.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,7 +117,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				854737302CD8224500A264C2 /* MapLibre in Frameworks */,
 				CB4BF40DED3EE2D517E92179 /* libPods-students-students dev.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,9 +255,6 @@
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
 			name = studentsTests;
-			packageProductDependencies = (
-				03F3EA4F2FEF09BB4F99E42A /* MapLibre */,
-			);
 			productName = studentsTests;
 			productReference = 00E356EE1AD99517003FC87E /* studentsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -287,9 +278,6 @@
 			dependencies = (
 			);
 			name = students;
-			packageProductDependencies = (
-				4F85B788136772BDD767E888 /* MapLibre */,
-			);
 			productName = students;
 			productReference = 13B07F961A680F5B00A75B9A /* students.app */;
 			productType = "com.apple.product-type.application";
@@ -312,9 +300,6 @@
 			dependencies = (
 			);
 			name = "students dev";
-			packageProductDependencies = (
-				C9FC690AA1369A0BC5CA9D14 /* MapLibre */,
-			);
 			productName = students;
 			productReference = B44D6C2229F17BF2001BA0DC /* students dev.app */;
 			productType = "com.apple.product-type.application";
@@ -326,7 +311,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -346,9 +331,6 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
-			packageReferences = (
-				19090EAF7B1B274619B15E4A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
-			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -708,7 +690,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 357F7B84A61240A55B98C650 /* Pods-students-studentsTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -737,7 +718,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7EADBDA19E5649E5022A6C9F /* Pods-students-studentsTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = studentsTests/Info.plist;
@@ -842,7 +822,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CC = "";
+				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -869,7 +849,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CXX = "";
+				CXX = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -891,8 +871,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13;
-				LD = "";
-				LDPLUSPLUS = "";
+				LD = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				LDPLUSPLUS = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -927,7 +907,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CC = "";
+				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -954,7 +934,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CXX = "";
+				CXX = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -972,8 +952,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13;
-				LD = "";
-				LDPLUSPLUS = "";
+				LD = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				LDPLUSPLUS = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -1116,35 +1096,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		19090EAF7B1B274619B15E4A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
-			requirement = {
-				kind = exactVersion;
-				version = 6.5.4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		03F3EA4F2FEF09BB4F99E42A /* MapLibre */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 19090EAF7B1B274619B15E4A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = MapLibre;
-		};
-		4F85B788136772BDD767E888 /* MapLibre */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 19090EAF7B1B274619B15E4A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = MapLibre;
-		};
-		C9FC690AA1369A0BC5CA9D14 /* MapLibre */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 19090EAF7B1B274619B15E4A /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = MapLibre;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
