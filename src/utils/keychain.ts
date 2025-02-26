@@ -1,7 +1,7 @@
 import Keychain from 'react-native-keychain';
 
 const NO_TOKEN = '__EMPTY__';
-const kcSettings = { service: 'it.polito.students-app' };
+const kcSettings: Keychain.Options = { service: 'it.polito.students-app' };
 
 export interface KeychainServiceCredentials {
   username: string;
@@ -12,11 +12,7 @@ export async function resetCredentials(): Promise<void> {
   const credentials = await Keychain.getGenericPassword(kcSettings);
   if (credentials) {
     await Keychain.resetGenericPassword(kcSettings);
-    await Keychain.setGenericPassword(
-      credentials.username,
-      NO_TOKEN,
-      kcSettings,
-    );
+    await setCredentials(credentials.username, NO_TOKEN);
   }
 }
 
@@ -24,26 +20,19 @@ export async function getCredentials(): Promise<
   KeychainServiceCredentials | false
 > {
   const credentials = await Keychain.getGenericPassword(kcSettings);
-  if (!credentials) {
-    return false;
-  }
-  if (credentials.password === NO_TOKEN) {
+  if (credentials && credentials.password === NO_TOKEN) {
     return { ...credentials, password: null };
   }
   return credentials;
 }
 
 export async function setCredentials(
-  value: KeychainServiceCredentials,
-): Promise<void> {
-  if (value.username) {
-    if (value.password) {
-      await Keychain.setGenericPassword(
-        value.username,
-        value.password,
-        kcSettings,
-      );
-    }
-    await Keychain.setGenericPassword(value.username, NO_TOKEN, kcSettings);
-  }
+  username: string,
+  password: string | null = null,
+): Promise<boolean> {
+  return !!(await Keychain.setGenericPassword(
+    username,
+    password || NO_TOKEN,
+    kcSettings,
+  ));
 }

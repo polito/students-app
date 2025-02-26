@@ -169,7 +169,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
             token: keychainCredentials.password,
           };
         }
-        refreshContext(credentials as Credentials);
+        refreshContext(credentials);
       })
       .catch(e => {
         console.warn("Keychain couldn't be accessed!", e);

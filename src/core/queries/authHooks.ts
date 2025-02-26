@@ -47,7 +47,7 @@ const getClientId = async (): Promise<string> => {
     console.warn("Keychain couldn't be accessed!", e);
   }
   const clientId = uuid.v4();
-  await setCredentials({ username: clientId });
+  await setCredentials(clientId);
   return clientId;
 };
 
@@ -109,7 +109,7 @@ export const useLogin = () => {
       const { token, clientId: clientIdentifier, username } = data;
       updatePreference('username', username);
       refreshContext({ username, token });
-      await setCredentials({ username: clientIdentifier, password: token });
+      await setCredentials(clientIdentifier, token);
     },
   });
 };
@@ -148,7 +148,7 @@ export const useSwitchCareer = () => {
       updatePreference('username', username);
       asyncStoragePersister.removeClient();
       await queryClient.invalidateQueries([]);
-      await setCredentials({ username: data.clientId, password: data.token });
+      await setCredentials(data.clientId, data.token);
     },
   });
 };
