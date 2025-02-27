@@ -200,26 +200,35 @@ jobs:
       run: |
         echo "${{ secrets.SUPPLY_GOOGLE_JSON_SECRET }}" | base64 -d > ${SUPPLY_GOOGLE_JSON_PATH}
         echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
+        echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
         chmod 600 ${KEYSTORE_PATH} ${SUPPLY_GOOGLE_JSON_PATH}
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_playstore == 'false'
       working-directory: ./android
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
       run: bundle exec fastlane verify
     - name: Fastlane RELEASE lane
+      id: fastlane_release_android
       if: contains(fromJSON('["internal", "beta", "production"]'), needs.configure.outputs.push_to_playstore)
       working-directory: ./android
       env:
         STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: bundle exec fastlane release
+    - name: Fastlane RELEASE lane [without Sentry]
+      if: steps.fastlane_release_android.outcome == 'failure'
+      working-directory: ./android
+      run: bundle exec fastlane release
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
     - name: Fastlane APK lane
       if: |
         (github.event_name == 'push' && github.ref_type == 'tag') ||
         github.event.inputs.create_release == 'true'
       run: bundle exec fastlane apk
       working-directory: ./android
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
     - name: Upload Artifacts
       if: |
         (github.event_name == 'push' && github.ref_type == 'tag') ||
@@ -302,21 +311,27 @@ jobs:
         echo "${{ secrets.MATCH_GIT_AUTH_PK }}" > ${MATCH_GIT_PRIVATE_KEY}
         chmod 600 ${MATCH_GIT_PRIVATE_KEY}
         echo "${{ secrets.SUPPLY_GOOGLE_SERVICE_INFO_PLIST }}" | base64 -d > ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
+        echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
         chmod 600 ${MATCH_GIT_PRIVATE_KEY} ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_testflight == 'false'
       working-directory: ./ios
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
       run: |
         bundle exec fastlane verify
     - name: Fastlane RELEASE lane
+      id: fastlane_release_ios
       if: needs.configure.outputs.push_to_testflight == 'true'
       working-directory: ./ios
+      run: bundle exec fastlane release
+      continue-on-error: true
+    - name: Fastlane RELEASE lane [without Sentry]
+      if: steps.fastlane_release_ios.outcome == 'failure'
+      working-directory: ./ios
+      run: bundle exec fastlane release
       env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-      run: |
-        bundle exec fastlane release
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
 
   create-release:
     name: Create GitHub Release
