@@ -174,10 +174,10 @@ export function getEventSpanningInfo(
     !showAdjacentMonths && monthDaysLeft < 7 && monthDaysLeft < eventDuration
       ? monthDaysLeft + 1
       : eventDaysLeft > weekDaysLeft
-      ? weekDaysLeft
-      : eventDaysLeft < eventDuration
-      ? eventDaysLeft
-      : eventDuration;
+        ? weekDaysLeft
+        : eventDaysLeft < eventDuration
+          ? eventDaysLeft
+          : eventDuration;
   // - 6 to take in account the padding
   const eventWidth = dayWidth * eventWeekDuration - 6;
 

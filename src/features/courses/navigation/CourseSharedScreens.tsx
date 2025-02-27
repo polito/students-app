@@ -76,7 +76,7 @@ export const CourseSharedScreens = (
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
-          animation: params?.animated ?? true ? 'default' : 'none',
+          animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
       />
       <Stack.Screen
