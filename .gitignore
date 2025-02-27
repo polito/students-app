@@ -63,3 +63,5 @@ npm-debug.*
 /ios/fastlane/report.xml
 
 .npmrc
+android/sentry.properties
+ios/sentry.properties
