@@ -40,21 +40,6 @@ platform :ios do
       apple_id: "6443913305",
     )
 
-    source_map_path = '../../main.jsbundle.map'
-
-    begin
-      sentry_upload_sourcemap(
-        auth_token: ENV['SENTRY_AUTH_TOKEN'],
-        org_slug: ENV['SENTRY_ORG'],
-        project_slug: ENV['SENTRY_PROJECT'],
-        version: 'it.polito.students@' + ENV['APP_VERSION'],
-        dist: ENV['BUILD_NO'],
-        sourcemap: [source_map_path],
-        rewrite: true
-      )
-    rescue => e
-      UI.important("Sentry sourcemap upload failed => #{e.message}")
-    end
   end
 
   lane :verify do
