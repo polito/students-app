@@ -286,7 +286,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             events={calendarEvents}
             height={calendarHeight}
             startHour={currentTopic.startHour || 8}
-            renderEvent={(item, touchableOpacityProps) => {
+            renderEvent={(item, touchableOpacityProps, key) => {
               const isMini = item.duration <= 15;
               const { color, backgroundColor } = getBookingStyle(
                 item,
@@ -313,6 +313,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
 
               return (
                 <Pressable
+                  key={key}
                   {...touchableOpacityProps}
                   style={[
                     touchableOpacityProps.style,
