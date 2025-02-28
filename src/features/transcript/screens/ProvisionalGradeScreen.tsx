@@ -25,7 +25,7 @@ import {
   useGetProvisionalGrades,
   useRejectProvisionalGrade,
 } from '../../../core/queries/studentHooks';
-import { formatDate } from '../../../utils/dates';
+import { formatDate, formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { GradeStates } from '../components/GradeStates';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
@@ -199,7 +199,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           {grade?.canBeRejected && (
             <CtaButton
               title={t('provisionalGradeScreen.rejectGradeCta', {
-                hours: rejectionTime,
+                date: formatDateWithTimeIfNotNull(grade.rejectingExpiresAt),
               })}
               action={() =>
                 confirmRejection().then(ok => {
