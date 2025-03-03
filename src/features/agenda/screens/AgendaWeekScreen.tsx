@@ -270,9 +270,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
             renderHeader={props => (
               <CalendarHeader {...props} cellHeight={-1} />
             )}
-            renderEvent={(item: AgendaItem, touchableOpacityProps) => {
+            renderEvent={(item: AgendaItem, touchableOpacityProps, key) => {
               return (
                 <TouchableOpacity
+                  key={key}
                   {...touchableOpacityProps}
                   style={[touchableOpacityProps.style, styles.event]}
                 >
