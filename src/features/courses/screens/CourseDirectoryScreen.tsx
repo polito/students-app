@@ -19,6 +19,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
+import { useNotifications } from '../../../../src/core/hooks/useNotifications';
+import { useOnLeaveScreen } from '../../../../src/core/hooks/useOnLeaveScreen';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -64,6 +66,11 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
+  const { clearNotificationScope } = useNotifications();
+
+  useOnLeaveScreen(() => {
+    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+  });
 
   useEffect(() => {
     if (navigation.getId() !== 'FileTabNavigator') {
@@ -77,7 +84,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     if (a.type !== 'directory' && b.type !== 'directory') {
       const dateA = DateTime.fromJSDate(a.createdAt).startOf('minute');
       const dateB = DateTime.fromJSDate(b.createdAt).startOf('minute');
-
       if (dateA.equals(dateB)) {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
