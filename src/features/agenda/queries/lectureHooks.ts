@@ -61,11 +61,11 @@ const getLectureWeekQueryFn = async (
   courses: CourseOverview[],
   visibleCourseIds: number[],
 ) => {
-  const until = monday.plus({ week: 1 });
+  const until = monday.endOf('week');
 
   return lectureClient
     .getLectures({
-      fromDate: monday.toJSDate(),
+      fromDate: monday.plus({ minute: monday.offset }).toJSDate(), // to fix the cut made by openapi-generator that cuts the last part of a Date, avoids having calls from Sunday
       toDate: until.toJSDate(),
       courseIds: visibleCourseIds,
     })
