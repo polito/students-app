@@ -95,7 +95,8 @@
     "react-string-replace": "^1.1.1",
     "react-usestateref": "^1.0.9",
     "semver": "^7.6.3",
-    "superjson": "^2.2.1"
+    "superjson": "^2.2.1",
+    "uri-scheme": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
