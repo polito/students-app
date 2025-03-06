@@ -318,6 +318,10 @@
   "courseGuideScreen": {
     "title": "Course guide"
   },
+  "courseHideEventScreen": {
+    "button": "Show in Agenda",
+    "selectItems": "Select all"
+  },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
   },

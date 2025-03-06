@@ -126,7 +126,6 @@ export const CourseSharedScreens = (
         options={{
           title: t('common.hiddenEvents'),
           headerLargeTitle: false,
-          headerSearchBarOptions: {},
         }}
       />
       <Stack.Screen

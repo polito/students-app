@@ -4,3 +4,7 @@ export type HiddenRecurrence = {
   end: string;
   room: string;
 };
+
+export type CourseHiddenRecurrence = HiddenRecurrence & {
+  restoreVisibility: boolean;
+};
