@@ -4,6 +4,7 @@ import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
 import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesFilterState';
+import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
 
 export const editablePreferenceKeys = [
   'lastInstalledVersion',
@@ -80,6 +81,8 @@ export interface CoursePreferencesProps {
   icon?: string;
   isHidden: boolean;
   order?: number;
+  isHiddenInAgenda: boolean;
+  itemsToHideInAgenda?: HiddenRecurrence[];
 }
 
 export const PreferencesContext = createContext<
