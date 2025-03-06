@@ -11,6 +11,7 @@ import {
 import {
   faBell,
   faBroom,
+  faCalendarDay,
   faChevronRight,
   faFile,
   faVideoCamera,
@@ -289,7 +290,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   trailingItem={
                     <Icon icon={faChevronRight} size={fontSizes.xl} />
                   }
-                  leadingItem={<Icon icon={faCircle} size={fontSizes['2xl']} />}
+                  leadingItem={
+                    <Icon icon={faCalendarDay} size={fontSizes['2xl']} />
+                  }
                 />
               </OverviewList>
             </Section>

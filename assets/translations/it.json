@@ -329,6 +329,10 @@
   "courseGuideScreen": {
     "title": "Guida del corso"
   },
+  "courseHideEventScreen": {
+    "button": "Mostra in Agenda",
+    "selectItems": "Seleziona tutti"
+  },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"
   },

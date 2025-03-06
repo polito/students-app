@@ -13,7 +13,7 @@ import { Row } from '@lib/ui/components/Row';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime } from 'luxon';
+import { DateTime, WeekdayNumbers } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
@@ -61,19 +61,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     return virtualClassrooms.find(vcs => vcs.id === vc.id);
   }, [lecture.virtualClassrooms, virtualClassrooms]);
 
-  /* useLayoutEffect(() => {
-    if(!lecture.uniqueShortcode){
-      return;
-    }
-  }, [lecture.uniqueShortcode, navigation]);*/
-
   const hideEvent = () => {
     Alert.alert(
       t('lectureScreen.hideEventAlertTitle'),
       t('lectureScreen.hideEventAlertMessage', {
         title: lecture.title,
         day: DateTime.now()
-          .set({ weekday: lecture.start.weekday })
+          .set({ weekday: lecture.start.weekday as WeekdayNumbers })
           .toFormat('cccc'),
         fromTime: lecture.fromTime,
         toTime: lecture.toTime,
