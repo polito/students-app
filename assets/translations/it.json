@@ -577,7 +577,8 @@
     "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
-    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
+    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push.",
+    "SSO": "Accedi con Single Sign-on"
   },
   "messageScreen": {
     "backTitle": "Archivio",

@@ -29,7 +29,6 @@
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data 
-            android:host="students"
             android:scheme="polito" />
         </intent-filter>
       </activity>

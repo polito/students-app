@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -24,10 +24,16 @@ import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
-import { useLogin } from '../queries/authHooks';
+import { getClientId, useLogin } from '../queries/authHooks';
+
+type LoginScreenRouteProp = RouteProp<
+  { Login: { uid: string; key: string } },
+  'Login'
+>;
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
@@ -40,6 +46,8 @@ export const LoginScreen = () => {
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
   const language = useDeviceLanguage();
+  const route = useRoute<LoginScreenRouteProp>();
+  const { uid, key } = route.params || {};
 
   const handleLogin = () =>
     login({
@@ -56,7 +64,15 @@ export const LoginScreen = () => {
         );
       }
     });
-
+  const handleSSO = async () => {
+    const clientId = await getClientId();
+    const url = `https://app.didattica.polito.it/auth/start?uid=${clientId}`;
+    Linking.openURL(url);
+  };
+  useEffect(() => {
+    // if (uid && key) {
+    // }
+  }, [route.params, uid, key]);
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -122,6 +138,12 @@ export const LoginScreen = () => {
             action={handleLogin}
             loading={isLoading}
             disabled={!canLogin}
+          />
+          <CtaButton
+            absolute={false}
+            title={t('loginScreen.SSO')}
+            action={handleSSO}
+            loading={isLoading}
           />
           <TouchableOpacity
             style={styles.link}
