@@ -45,6 +45,14 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   useFullscreenUi(fullscreen);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      setPaused(true);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', _ => {
       SystemNavigationBar.fullScreen(false);
     });
