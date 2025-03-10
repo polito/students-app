@@ -49,8 +49,6 @@ export interface VideoControlProps {
   duration: number;
   playbackRate: number;
   setPlaybackRate: () => void;
-  width: number;
-  heigth: number;
 }
 
 export const VideoControls = ({
@@ -64,8 +62,6 @@ export const VideoControls = ({
   toggleFullscreen,
   playbackRate,
   setPlaybackRate,
-  width,
-  heigth,
 }: VideoControlProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -129,16 +125,12 @@ export const VideoControls = ({
     }
   }, [paused, buffering, sliding]);
 
-  // TODO
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const reverse10Secs = () => {
     let newTime = currentTime.minus({ second: 10 }).toSeconds();
     newTime = Math.max(newTime, 0);
     onProgressChange(newTime / duration);
   };
 
-  // TODO
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const advance10Secs = () => {
     let newTime = currentTime.plus({ second: 10 }).toSeconds();
     newTime = Math.min(newTime, duration);
@@ -148,16 +140,7 @@ export const VideoControls = ({
   return (
     <ThemeContext.Provider value={darkTheme}>
       <Animated.View
-        style={[
-          {
-            position: 'absolute',
-            left: fullscreen ? width / 2 : 0,
-            right: fullscreen ? width / 2 : 0,
-            top: fullscreen ? heigth : 0,
-            bottom: fullscreen ? heigth : 0,
-          },
-          { opacity: controlsOpacity },
-        ]}
+        style={[StyleSheet.absoluteFill, { opacity: controlsOpacity }]}
       >
         <Pressable
           style={GlobalStyles.grow}
