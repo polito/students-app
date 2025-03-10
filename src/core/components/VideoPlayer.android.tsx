@@ -11,13 +11,13 @@ import Video, {
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme.ts';
 import { useNavigation } from '@react-navigation/native';
 
 import { throttle } from 'lodash';
 
 import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
-import { useDeviceDimension } from '../hooks/useDeviceDimension';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
 import { VideoProps } from './VideoPlayer';
@@ -30,7 +30,7 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * In order for fullscreen to work correctly, this component's parent should
  * have a minHeight=100% of the available window height
  */
-export const VideoPlayer = (props: ReactVideoProps) => {
+export const VideoPlayer = (props: VideoProps) => {
   const [width, setWidth] = useState(Dimensions.get('screen').width);
   const [height, setHeight] = useState(Dimensions.get('screen').height);
   const styles = useStylesheet(createStyles);
@@ -44,6 +44,7 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   const [buffering, setBuffering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const { toggleFullScreen } = props;
   useFullscreenUi(fullscreen);
 
   useEffect(() => {
@@ -53,6 +54,10 @@ export const VideoPlayer = (props: ReactVideoProps) => {
 
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    setPaused(props.currentIndex !== props.index);
+  }, [props.currentIndex, props.index]);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -70,15 +75,13 @@ export const VideoPlayer = (props: ReactVideoProps) => {
     } else {
       SystemNavigationBar.fullScreen(fullscreen);
     }
+    toggleFullScreen?.(fullscreen);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fullscreen]);
 
   const handleLoad = (meta: OnLoadData) => {
     setDuration(meta.duration);
   };
-
-  useEffect(() => {
-    setPaused(props.currentIndex !== props.index);
-  }, [props.currentIndex, props.index]);
 
   useEffect(() => {
     const navRoot = navigation.getParent()!;
@@ -120,8 +123,8 @@ export const VideoPlayer = (props: ReactVideoProps) => {
         styles.container,
         fullscreen && {
           position: 'absolute',
-          width: dimensions.screen.width,
-          height: dimensions.screen.height,
+          width,
+          height,
           zIndex: 1,
         },
       ]}
@@ -155,15 +158,7 @@ export const VideoPlayer = (props: ReactVideoProps) => {
         <VideoControls
           buffering={buffering}
           fullscreen={fullscreen}
-          toggleFullscreen={() => {
-            props.toggleFullScreen && props.toggleFullScreen();
-            if (fullscreen) {
-              playerRef.current?.dismissFullscreenPlayer();
-            } else {
-              playerRef.current?.presentFullscreenPlayer();
-            }
-            setFullscreen(negate);
-          }}
+          toggleFullscreen={() => setFullscreen(negate)}
           progress={progress}
           onProgressChange={onProgressChange}
           paused={paused}
@@ -173,8 +168,6 @@ export const VideoPlayer = (props: ReactVideoProps) => {
           duration={duration}
           playbackRate={playbackRate}
           setPlaybackRate={togglePlaybackRate}
-          width={dimensions.screen.width - dimensions.window.width}
-          heigth={dimensions.screen.height - dimensions.window.height}
         />
       ) : (
         <Col align="center" justify="center" style={StyleSheet.absoluteFill}>
@@ -185,11 +178,10 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   );
 };
 
-const createStyles = () =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
-    // eslint-disable-next-line react-native/no-color-literals
     container: {
-      backgroundColor: 'black',
+      backgroundColor: colors.black,
     },
     fullHeight: {
       height: '100%',

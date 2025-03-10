@@ -194,7 +194,7 @@ export const CourseAssignmentPdfCreationScreen = ({
       </View>
     </View>
   );
-  const handleSetCurrentPageIndex = (newIndex: number, oldIndex: number) => {
+  const handleSetCurrentPageIndex = (newIndex: number) => {
     setCurrentPageIndex(newIndex);
   };
 

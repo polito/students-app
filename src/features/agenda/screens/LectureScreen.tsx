@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Dimensions,
   ListRenderItemInfo,
   SafeAreaView,
   ScrollView,
@@ -17,14 +18,13 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { EventDetails } from '../../../core/components/EventDetails';
+import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer.tsx';
+import { EventDetails } from '../../../core/components/EventDetails.tsx';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
-import { useDeviceDimension } from '../../../core/hooks/useDeviceDimension';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { convertMachineDateToFormatDate } from '../../../utils/dates';
+import { convertMachineDateToFormatDate } from '../../../utils/dates.ts';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { isLiveVC, isRecordedVC } from '../../courses/utils/lectures';
 import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
@@ -38,24 +38,31 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
   const teacherQuery = useGetPerson(lecture.teacherId);
-  const { data: virtualClassroomsQuery } = useGetCourseVirtualClassrooms(
+  const { data: virtualClassrooms } = useGetCourseVirtualClassrooms(
     lecture.courseId,
   );
-
-  const dimensions = useDeviceDimension();
-
   const [currentIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string>();
 
   const handleSetCurrentPageIndex = (newIndex: number) => {
     setCurrentVideoIndex(newIndex);
   };
 
-  const toggleFullScreen = () => {
-    setIsFullScreen(prev => !prev);
+  const toggleFullScreen = (value: boolean) => {
+    setIsFullScreen(value);
   };
+
+  const [width, setWidth] = useState(Dimensions.get('screen').width);
+  const [height, setHeight] = useState(Dimensions.get('screen').height);
+  useEffect(() => {
+    const updateDimensions = () => {
+      const { width: newWidth, height: newHeight } = Dimensions.get('screen');
+      setWidth(newWidth);
+      setHeight(newHeight);
+    };
+    Dimensions.addEventListener('change', updateDimensions);
+  }, []);
 
   const renderItem = ({
     item,
@@ -64,9 +71,9 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     return (
       <View
         style={{
-          width: isFullScreen
-            ? dimensions.screen.width
-            : dimensions.window.width,
+          width: isFullScreen ? width : Dimensions.get('window').width,
+          height: isFullScreen ? height : undefined,
+          display: isFullScreen && index !== currentIndex ? 'none' : 'flex',
         }}
       >
         <VideoPlayer
@@ -83,19 +90,19 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const [playingVC, setPlayingVC] = useState<VirtualClassroom[]>([]);
 
   useEffect(() => {
-    if (!associatedVirtualClassrooms || !virtualClassroomsQuery) return;
+    if (!associatedVirtualClassrooms || !virtualClassrooms) return;
 
-    setCurrentVideoTitle(associatedVirtualClassrooms[0]?.title);
+    setCurrentVideoTitle(associatedVirtualClassrooms[currentIndex]?.title);
     setPlayingVC(
       associatedVirtualClassrooms
         .map(vc => {
-          const apiVC = virtualClassroomsQuery.find(vcs => vcs.id === vc.id);
+          const apiVC = virtualClassrooms.find(vcs => vcs.id === vc.id);
 
           return apiVC as VirtualClassroom;
         })
         .filter(vc => vc && vc?.videoUrl),
     );
-  }, [associatedVirtualClassrooms, virtualClassroomsQuery]);
+  }, [associatedVirtualClassrooms, currentIndex, virtualClassrooms]);
 
   return (
     <ScrollView
