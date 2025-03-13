@@ -84,8 +84,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
   );
 
   return (
-    <>
-      <ScrollView
+    <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl queries={[gradesQuery]} manual />}
       >
@@ -162,69 +161,71 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           </SafeAreaView>
         )}
         <BottomBarSpacer />
+        {grade?.state === ProvisionalGradeStateEnum.Published && (
+          <CtaButton
+            title={t('provisionalGradeScreen.contactProfessorCta')}
+            action={() =>
+              navigation.navigate('Person', { id: grade?.teacherId })
+            }
+          />
+        )}
+        {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
+          <CtaButtonContainer
+            absolute={true}
+            modal={Platform.select({ android: true })}
+          >
+            {grade?.canBeAccepted && (
+              <CtaButton
+                title={t('provisionalGradeScreen.acceptGradeCta')}
+                action={() =>
+                  confirmAcceptance().then(ok => {
+                    if (ok) {
+                      acceptGradeQuery
+                        .mutateAsync(grade.id)
+                        .then(() => provideFeedback(true));
+                    }
+                  })
+                }
+                absolute={false}
+                loading={acceptGradeQuery.isLoading}
+                disabled={
+                  isOffline ||
+                  acceptGradeQuery.isLoading ||
+                  rejectGradeQuery.isLoading
+                }
+                containerStyle={{ paddingVertical: 0 }}
+              />
+            )}
+            {grade?.canBeRejected && (
+              <CtaButton
+                title={t('provisionalGradeScreen.rejectGradeCta', {
+                  date: formatDateWithTimeIfNotNull(grade.rejectingExpiresAt),
+                })}
+                action={() =>
+                  confirmRejection().then(ok => {
+                    if (ok) {
+                      rejectGradeQuery
+                        .mutateAsync(grade.id)
+                        .then(() => provideFeedback(false));
+                    }
+                  })
+                }
+                absolute={false}
+                loading={rejectGradeQuery.isLoading}
+                variant="outlined"
+                disabled={
+                  isOffline ||
+                  acceptGradeQuery.isLoading ||
+                  rejectGradeQuery.isLoading
+                }
+                containerStyle={{ paddingVertical: 0 }}
+                destructive
+                style={{ marginBottom: 40 }}
+              />
+            )}
+          </CtaButtonContainer>
+        )}
       </ScrollView>
-      {grade?.state === ProvisionalGradeStateEnum.Published && (
-        <CtaButton
-          title={t('provisionalGradeScreen.contactProfessorCta')}
-          action={() => navigation.navigate('Person', { id: grade?.teacherId })}
-        />
-      )}
-      {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
-        <CtaButtonContainer
-          absolute={true}
-          modal={Platform.select({ android: true })}
-        >
-          {grade?.canBeAccepted && (
-            <CtaButton
-              title={t('provisionalGradeScreen.acceptGradeCta')}
-              action={() =>
-                confirmAcceptance().then(ok => {
-                  if (ok) {
-                    acceptGradeQuery
-                      .mutateAsync(grade.id)
-                      .then(() => provideFeedback(true));
-                  }
-                })
-              }
-              absolute={false}
-              loading={acceptGradeQuery.isLoading}
-              disabled={
-                isOffline ||
-                acceptGradeQuery.isLoading ||
-                rejectGradeQuery.isLoading
-              }
-              containerStyle={{ paddingVertical: 0 }}
-            />
-          )}
-          {grade?.canBeRejected && (
-            <CtaButton
-              title={t('provisionalGradeScreen.rejectGradeCta', {
-                date: formatDateWithTimeIfNotNull(grade.rejectingExpiresAt),
-              })}
-              action={() =>
-                confirmRejection().then(ok => {
-                  if (ok) {
-                    rejectGradeQuery
-                      .mutateAsync(grade.id)
-                      .then(() => provideFeedback(false));
-                  }
-                })
-              }
-              absolute={false}
-              loading={rejectGradeQuery.isLoading}
-              variant="outlined"
-              disabled={
-                isOffline ||
-                acceptGradeQuery.isLoading ||
-                rejectGradeQuery.isLoading
-              }
-              containerStyle={{ paddingVertical: 0 }}
-              destructive
-            />
-          )}
-        </CtaButtonContainer>
-      )}
-    </>
   );
 };
 const createStyles = ({
