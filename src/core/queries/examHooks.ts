@@ -2,6 +2,7 @@ import { Exam as ApiExam, BookExamRequest, ExamsApi } from '@polito/api-client';
 import type { RescheduleExamRequest } from '@polito/api-client/models';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { isValidDate } from '../../utils/dates';
 import { pluckData } from '../../utils/queries';
 import { Exam } from '../types/api';
 
@@ -31,9 +32,9 @@ export const useGetExams = () => {
         exams
           .map(mapApiExamToExam)
           .sort((a, b) =>
-            !a.examStartsAt
+            !a.examStartsAt || !isValidDate(a.examStartsAt)
               ? 1
-              : !b.examStartsAt
+              : !b.examStartsAt || !isValidDate(b.examStartsAt)
               ? -1
               : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
           ),
