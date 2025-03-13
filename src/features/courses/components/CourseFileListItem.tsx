@@ -201,7 +201,7 @@ export const CourseFileListItem = memo(
           }
         });
       }
-    }, [openFile, t, navigation, cachedFilePath, setFeedback]);
+    }, [openFile, t, cachedFilePath, setFeedback]);
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {

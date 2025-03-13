@@ -165,6 +165,8 @@ export const lightTheme: Theme = {
     lectureCardSecondary: gray[600],
     errorCardText: rose[700],
     errorCardBorder: rose[500],
+    black: '#000000',
+    yellow: '#FFD700',
   },
   palettes: {
     navy,

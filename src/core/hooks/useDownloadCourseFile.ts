@@ -13,9 +13,6 @@ import {
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
-import { useNavigation } from '@react-navigation/core';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
 import { CourseFilesCacheContext } from '../../features/courses/contexts/CourseFilesCacheContext';
 import { UnsupportedFileTypeError } from '../../features/courses/errors/UnsupportedFileTypeError';
 import { useCoursesFilesCachePath } from '../../features/courses/hooks/useCourseFilesCachePath';
@@ -32,7 +29,6 @@ export const useDownloadCourseFile = (
   const { t } = useTranslation();
   const coursesFilesCachePath = useCoursesFilesCachePath();
   const { downloadsRef, setDownloads } = useDownloadsContext();
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const {
     cache,
     isRefreshing: isCacheRefreshing,
@@ -189,7 +185,7 @@ export const useDownloadCourseFile = (
           throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
         }
       }),
-    [fromUrl, toFile, cachedFilePath, navigation],
+    [fromUrl, toFile],
   );
 
   return {
