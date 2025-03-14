@@ -7,7 +7,6 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
-import * as Keychain from 'react-native-keychain';
 
 import { ResponseError } from '@polito/api-client/runtime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,6 +23,7 @@ import SuperJSON from 'superjson';
 
 import { updateGlobalApiConfiguration } from '../../config/api';
 import { isEnvProduction } from '../../utils/env';
+import { getCredentials, resetCredentials } from '../../utils/keychain.ts';
 import {
   ApiContext,
   ApiContextProps,
@@ -32,7 +32,6 @@ import {
 import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
-import { NO_TOKEN, resetKeychain } from '../queries/authHooks.ts';
 
 export const asyncStoragePersister = createAsyncStoragePersister({
   key: 'polito-students.queries',
@@ -56,7 +55,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     async (error: unknown, client: QueryClient) => {
       if (error instanceof ResponseError) {
         if (error.response.status === 401) {
-          await resetKeychain();
+          await resetCredentials();
           setApiContext(c => ({
             ...c,
             isLogged: false,
@@ -160,15 +159,11 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     };
 
     // Retrieve existing token from SecureStore, if any
-    Keychain.getGenericPassword()
+    getCredentials()
       .then(keychainCredentials => {
         let credentials = undefined;
 
-        if (
-          username &&
-          keychainCredentials &&
-          keychainCredentials.password !== NO_TOKEN
-        ) {
+        if (username && keychainCredentials && keychainCredentials.password) {
           credentials = {
             username: username,
             token: keychainCredentials.password,

@@ -15,6 +15,7 @@ import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { WeekNum } from '@lib/ui/types/Calendar.ts';
 import { Theme } from '@lib/ui/types/Theme';
 import { HOURS } from '@lib/ui/utils/calendar';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
@@ -82,6 +83,14 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const calendarData = useMemo(() => {
     return weekData?.data?.flatMap(week => week.items) ?? [];
   }, [weekData?.data]);
+
+  const calendarMax = useMemo(() => {
+    return (
+      calendarData.reduce((max, item) => {
+        return item.start.weekday > max.start.weekday ? item : max;
+      }, calendarData[0]) ?? null
+    );
+  }, [calendarData]);
 
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {
@@ -270,9 +279,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
             renderHeader={props => (
               <CalendarHeader {...props} cellHeight={-1} />
             )}
-            renderEvent={(item: AgendaItem, touchableOpacityProps) => {
+            renderEvent={(item: AgendaItem, touchableOpacityProps, key) => {
               return (
                 <TouchableOpacity
+                  key={key}
                   {...touchableOpacityProps}
                   style={[touchableOpacityProps.style, styles.event]}
                 >
@@ -292,7 +302,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
               );
             }}
             weekStartsOn={1}
-            weekEndsOn={5}
+            weekEndsOn={
+              calendarMax ? (calendarMax.start.weekday as WeekNum) : 5
+            }
             isEventOrderingEnabled={false}
             overlapOffset={10000}
           />

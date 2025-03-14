@@ -1,6 +1,5 @@
 import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import Keychain from 'react-native-keychain';
 import uuid from 'react-native-uuid';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
@@ -11,25 +10,20 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { t } from 'i18next';
 
 import { isEnvProduction } from '../../utils/env';
+import {
+  getCredentials,
+  resetCredentials,
+  setCredentials,
+} from '../../utils/keychain.ts';
 import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { asyncStoragePersister } from '../providers/ApiProvider';
 
-export const NO_TOKEN = '__EMPTY__';
-
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
-
-export async function resetKeychain(): Promise<void> {
-  const credentials = await Keychain.getGenericPassword();
-  if (credentials) {
-    await Keychain.resetGenericPassword();
-    await Keychain.setGenericPassword(credentials.username, NO_TOKEN);
-  }
-}
 
 async function getFcmToken(): Promise<string | undefined> {
   if (!isEnvProduction) return undefined;
@@ -45,7 +39,7 @@ async function getFcmToken(): Promise<string | undefined> {
 
 const getClientId = async (): Promise<string> => {
   try {
-    const credentials = await Keychain.getGenericPassword();
+    const credentials = await getCredentials();
     if (credentials && credentials.username) {
       return credentials.username;
     }
@@ -53,7 +47,7 @@ const getClientId = async (): Promise<string> => {
     console.warn("Keychain couldn't be accessed!", e);
   }
   const clientId = uuid.v4();
-  await Keychain.setGenericPassword(clientId, NO_TOKEN);
+  await setCredentials(clientId);
   return clientId;
 };
 
@@ -115,7 +109,7 @@ export const useLogin = () => {
       const { token, clientId: clientIdentifier, username } = data;
       updatePreference('username', username);
       refreshContext({ username, token });
-      await Keychain.setGenericPassword(clientIdentifier, token);
+      await setCredentials(clientIdentifier, token);
     },
   });
 };
@@ -131,7 +125,7 @@ export const useLogout = () => {
       refreshContext();
       asyncStoragePersister.removeClient();
       queryClient.removeQueries();
-      await resetKeychain();
+      await resetCredentials();
     },
   });
 };
@@ -153,8 +147,8 @@ export const useSwitchCareer = () => {
       });
       updatePreference('username', username);
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
-      await Keychain.setGenericPassword(data.clientId, data.token);
+      await queryClient.invalidateQueries([]);
+      await setCredentials(data.clientId, data.token);
     },
   });
 };

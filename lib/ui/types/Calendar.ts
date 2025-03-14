@@ -18,7 +18,6 @@ export interface ICalendarEventBase {
 
 export type CalendarTouchableOpacityProps = {
   delayPressIn: number;
-  key: string;
   style: RecursiveArray<ViewStyle | undefined> | ViewStyle;
   onPress: () => void;
   disabled: boolean;
@@ -50,6 +49,7 @@ export type HorizontalDirection = 'RIGHT' | 'LEFT';
 export type EventRenderer<T extends ICalendarEventBase = ICalendarEventBase> = (
   event: T,
   touchableOpacityProps: CalendarTouchableOpacityProps,
+  key: string,
 ) => JSX.Element;
 
 export type HeaderRenderer = ComponentType<

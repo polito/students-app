@@ -81,8 +81,10 @@ export const CalendarEvent = <T extends ICalendarEventBase>({
     ],
   });
 
+  const key = `${event.start.toISO()}_${event.title}`;
+
   if (renderEvent) {
-    return renderEvent(event, touchableOpacityProps);
+    return renderEvent(event, touchableOpacityProps, key);
   }
 
   return (
