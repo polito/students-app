@@ -27,7 +27,7 @@ export const WeekFilter = ({
   getPrev,
   isPrevWeekDisabled = false,
   isNextWeekDisabled = false,
-  daysPerWeek = 7,
+  daysPerWeek = 6, // The default setting is 6 days a week because the last day otherwise would be the Monday of the following week
 }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
