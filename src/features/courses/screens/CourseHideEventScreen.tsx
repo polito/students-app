@@ -122,7 +122,7 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
   };
 
   const onPress = () => {
-    const itemsToDelete = items.filter(item => item.restoreVisibility); // Raccogli gli eventi che devono essere eliminati
+    const itemsToDelete = items.filter(item => item.restoreVisibility);
 
     if (itemsToDelete.length > 0) {
       updatePreference('courses', {
@@ -206,7 +206,11 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
           </OverviewList>
         </SafeAreaView>
       </ScrollView>
-      <CtaButton title={t('courseHideEventScreen.button')} action={onPress} />
+      <CtaButton
+        title={t('courseHideEventScreen.button')}
+        action={onPress}
+        disabled={!items.filter(item => item.restoreVisibility).length}
+      />
       <CtaButtonSpacer />
     </>
   );
