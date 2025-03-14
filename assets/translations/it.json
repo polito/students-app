@@ -253,7 +253,6 @@
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",
-    "shortUsername": "Matr.",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
@@ -708,7 +707,7 @@
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
     "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta la valutazione entro:<br><b>{{hours}}</b>",
+    "rejectGradeCta": "Rifiutabile entro il:<br><b>{{date}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"
   },
