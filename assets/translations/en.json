@@ -348,8 +348,8 @@
     "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
-    "emptyState": "There are no notices here",
-    "title": "Notices"
+    "emptyState": "There are no news here",
+    "title": "News"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
