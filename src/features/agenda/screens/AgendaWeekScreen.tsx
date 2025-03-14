@@ -15,6 +15,7 @@ import { Calendar } from '@lib/ui/components/calendar/Calendar';
 import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { WeekNum } from '@lib/ui/types/Calendar.ts';
 import { Theme } from '@lib/ui/types/Theme';
 import { HOURS } from '@lib/ui/utils/calendar';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
@@ -32,6 +33,7 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
+import { useHideEventFilter } from '../hooks/useHideEventFilter';
 import {
   getAgendaWeekQueryKey,
   useGetAgendaWeek,
@@ -82,6 +84,16 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const calendarData = useMemo(() => {
     return weekData?.data?.flatMap(week => week.items) ?? [];
   }, [weekData?.data]);
+
+  const calendarMax = useMemo(() => {
+    return (
+      calendarData.reduce((max, item) => {
+        return item.start.weekday > max.start.weekday ? item : max;
+      }, calendarData[0]) ?? null
+    );
+  }, [calendarData]);
+
+  const filteredCalendarData = useHideEventFilter(calendarData);
 
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {
@@ -257,7 +269,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           ))}
         {calendarHeight && (
           <Calendar<AgendaItem>
-            events={calendarData}
+            events={filteredCalendarData}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
             date={currentWeek}
@@ -293,7 +305,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
               );
             }}
             weekStartsOn={1}
-            weekEndsOn={5}
+            weekEndsOn={
+              calendarMax ? (calendarMax.start.weekday as WeekNum) : 5
+            }
             isEventOrderingEnabled={false}
             overlapOffset={10000}
           />

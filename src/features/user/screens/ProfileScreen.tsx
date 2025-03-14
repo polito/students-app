@@ -19,19 +19,24 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { Text } from '@lib/ui/components/Text';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Student } from '@polito/api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import {
+  hasUnreadMessages,
+  unreadMessages,
+} from '../../../../src/utils/messages';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { CardSwiper } from '../../../core/components/CardSwiper';
-import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
 import {
   MESSAGES_QUERY_KEY,
+  useGetMessages,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
 import { CareerStatus } from '../components/CareerStatus';
@@ -72,7 +77,6 @@ const HeaderRightDropdown = ({
   const username = student?.username || '';
   const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
   const canSwitchCareer = allCareerIds.length > 1 && !isOffline;
-
   const actions = useMemo((): MenuAction[] => {
     if (!canSwitchCareer) return [];
 
@@ -121,7 +125,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
   const queryClient = useQueryClient();
-  const { getUnreadsCount } = useNotifications();
+  const messages = useGetMessages();
 
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
@@ -202,7 +206,11 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}
-              unread={!!getUnreadsCount(['messages'])}
+              trailingItem={
+                messages.data && hasUnreadMessages(messages.data) ? (
+                  <UnreadBadge text={unreadMessages(messages.data).length} />
+                ) : undefined
+              }
             />
           </OverviewList>
           <CtaButton

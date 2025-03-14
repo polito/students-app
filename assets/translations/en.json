@@ -77,6 +77,7 @@
       "false": "Non active",
       "true": "Active"
     },
+    "agenda": "Agenda",
     "agent": "Agent",
     "all": "All",
     "appFeedback": "App Feedback",
@@ -158,7 +159,9 @@
     "follow": "Follow",
     "free": "Free",
     "grade": "Grade",
+    "hiddenEvents": "Hidden events",
     "hide": "Hide",
+    "hideInAgenda": "Hide in Agenda",
     "hour": "Hour",
     "hours": "Hour",
     "icon": "Icon",
@@ -243,7 +246,6 @@
     "updatedAt": "Updated at",
     "upload": "Upload",
     "username": "Student ID",
-    "shortUsername": "ID",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
@@ -315,6 +317,10 @@
   },
   "courseGuideScreen": {
     "title": "Course guide"
+  },
+  "courseHideEventScreen": {
+    "button": "Show in Agenda",
+    "selectItems": "Select all"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
@@ -533,7 +539,10 @@
     "title": "Offers screen"
   },
   "lectureScreen": {
-    "courseFilesCta": "Go to course files"
+    "courseFilesCta": "Go to course files",
+    "hideEventAlertTitle": "Hide event",
+    "hideEventAlertMessage": " You are hiding the {{ day }} {{ title }} event from {{ fromTime }} to {{ toTime }}",
+    "hideEventButtonTitle": "Hide from the agenda"
   },
   "libraryScreen": {
     "title": "Library"
@@ -683,7 +692,7 @@
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
-    "rejectGradeCta": "Reject the evaluation by: <br><b>{{hours}}</b>",
+    "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "title": "Evaluation"
   },

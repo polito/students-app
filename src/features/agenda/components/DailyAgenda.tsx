@@ -7,6 +7,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { isCurrentMonth, isCurrentYear } from '../../../utils/dates';
+import { useHideEventFilter } from '../hooks/useHideEventFilter';
 import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';
@@ -28,6 +29,8 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
   const monthOfYear =
     !isCurrentMonth(agendaDay.date) && agendaDay.date.toFormat('MMM');
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
+
+  const filteredAgendaDay = useHideEventFilter(agendaDay.items);
 
   return (
     <Row onLayout={onLayout}>
@@ -68,7 +71,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
             <EmptyDay />
           )
         ) : (
-          agendaDay?.items.map(item => {
+          filteredAgendaDay.map(item => {
             switch (item.type) {
               case 'booking':
                 return <BookingCard key={item.key} item={item} />;
