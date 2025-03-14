@@ -58,6 +58,7 @@ export interface LectureItem extends BaseAgendaItem {
   virtualClassrooms: RelatedVirtualClassroom[];
   color?: string;
   icon?: string;
+  uniqueShortcode?: string;
 }
 
 export type AgendaItem = BookingItem | DeadlineItem | ExamItem | LectureItem;

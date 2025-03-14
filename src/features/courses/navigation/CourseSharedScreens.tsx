@@ -16,6 +16,7 @@ import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssig
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
+import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
@@ -48,6 +49,7 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
   CourseIconPicker: { courseId: number; uniqueShortcode: string };
+  CourseHideEvent: { courseId: number; uniqueShortcode: string };
 }
 
 export const CourseSharedScreens = (
@@ -117,7 +119,15 @@ export const CourseSharedScreens = (
           headerLargeTitle: false,
         }}
       />
-
+      <Stack.Screen
+        name="CourseHideEvent"
+        component={CourseHideEventScreen}
+        getId={({ params }) => `${params.courseId}`}
+        options={{
+          title: t('common.hiddenEvents'),
+          headerLargeTitle: false,
+        }}
+      />
       <Stack.Screen
         name="CourseGuide"
         component={CourseGuideScreen}
