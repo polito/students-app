@@ -176,13 +176,14 @@ export const CourseFileListItem = memo(
     const openDownloadedFile = useCallback(() => {
       if (Platform.OS === 'android') {
         try {
-          setFeedback({
-            text:
-              Platform.Version > 29
-                ? t('courseFileListItem.fileSavedDocumentsPath')
-                : t('courseFileListItem.fileSaved') + cachedFilePath,
-            isPersistent: false,
-          });
+          if (!isDownloaded)
+            setFeedback({
+              text:
+                Platform.Version > 29
+                  ? t('courseFileListItem.fileSavedDocumentsPath')
+                  : t('courseFileListItem.fileSaved') + cachedFilePath,
+              isPersistent: false,
+            });
           openFile().catch(e => {
             if (e instanceof UnsupportedFileTypeError) {
               Alert.alert(
@@ -209,7 +210,7 @@ export const CourseFileListItem = memo(
           }
         });
       }
-    }, [openFile, t, cachedFilePath, setFeedback]);
+    }, [openFile, t, cachedFilePath, setFeedback, isDownloaded]);
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
