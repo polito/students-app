@@ -33,6 +33,7 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
+import { useHideEventFilter } from '../hooks/useHideEventFilter';
 import {
   getAgendaWeekQueryKey,
   useGetAgendaWeek,
@@ -91,6 +92,8 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
       }, calendarData[0]) ?? null
     );
   }, [calendarData]);
+
+  const filteredCalendarData = useHideEventFilter(calendarData);
 
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {
@@ -266,7 +269,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           ))}
         {calendarHeight && (
           <Calendar<AgendaItem>
-            events={calendarData}
+            events={filteredCalendarData}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
             date={currentWeek}

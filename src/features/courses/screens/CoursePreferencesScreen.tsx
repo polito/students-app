@@ -3,10 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import { faCircle, faEye } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCircle,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faBell,
   faBroom,
+  faCalendarDay,
+  faChevronRight,
   faFile,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
@@ -247,6 +253,46 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       },
                     });
                   }}
+                />
+              </OverviewList>
+            </Section>
+
+            <Section>
+              <SectionHeader title={t('common.agenda')} />
+              <OverviewList indented>
+                <SwitchListItem
+                  title={t('common.hideInAgenda')}
+                  disabled={!coursePrefs}
+                  value={coursePrefs.isHiddenInAgenda}
+                  leadingItem={
+                    <Icon icon={faEyeSlash} size={fontSizes['2xl']} />
+                  }
+                  onChange={value => {
+                    updatePreference('courses', {
+                      ...coursesPrefs,
+                      [uniqueShortcode]: {
+                        ...coursePrefs,
+                        isHiddenInAgenda: value,
+                      },
+                    });
+                  }}
+                />
+                <ListItem
+                  title={t('common.hiddenEvents')}
+                  isAction
+                  onPress={() => {
+                    navigation.navigate('CourseHideEvent', {
+                      courseId,
+                      uniqueShortcode,
+                    });
+                  }}
+                  disabled={!coursePrefs.itemsToHideInAgenda?.length}
+                  trailingItem={
+                    <Icon icon={faChevronRight} size={fontSizes.xl} />
+                  }
+                  leadingItem={
+                    <Icon icon={faCalendarDay} size={fontSizes['2xl']} />
+                  }
                 />
               </OverviewList>
             </Section>

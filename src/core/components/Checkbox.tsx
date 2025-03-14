@@ -1,6 +1,4 @@
-import { useRef } from 'react';
 import {
-  Animated,
   StyleProp,
   StyleSheet,
   TextStyle,
@@ -9,7 +7,8 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faSquare, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -23,27 +22,20 @@ export const Checkbox = ({
   textStyle,
   checkboxStyle,
   disable,
+  dimension = 'default',
+  icon,
 }: {
-  text: string;
+  text?: string;
   onPress: () => void;
   isChecked: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   checkboxStyle?: StyleProp<ViewStyle>;
   disable?: boolean;
+  dimension?: 'default' | 'small';
+  icon?: IconDefinition;
 }) => {
   const styles = useStylesheet(createStyles);
-
-  const animatedWidth = useRef(new Animated.Value(0)).current;
-
-  const startAnimation = () => {
-    const toValue = isChecked ? 30 : 0;
-    Animated.timing(animatedWidth, {
-      toValue: toValue,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-  };
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -51,25 +43,34 @@ export const Checkbox = ({
         style={[
           styles.checkbox,
           checkboxStyle,
-          isChecked && styles.checkboxSelected,
+          dimension === 'small' && { height: 20, width: 20 },
         ]}
         disabled={disable ?? false}
         onPress={() => {
-          startAnimation();
           onPress();
         }}
       >
-        <Animated.View
+        <View
           style={{
-            width: animatedWidth,
-            height: 30,
-            display: isChecked ? 'flex' : 'none',
+            display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
           }}
         >
-          <Icon icon={faCheck} color="white" size={20} />
-        </Animated.View>
+          {isChecked ? (
+            <Icon
+              icon={icon ? icon : faSquareCheck}
+              style={styles.checkboxIcon}
+              size={dimension === 'small' ? 15 : 20}
+            />
+          ) : (
+            <Icon
+              icon={faSquare}
+              style={styles.checkboxIcon}
+              size={dimension === 'small' ? 15 : 20}
+            />
+          )}
+        </View>
       </TouchableOpacity>
       <Text style={[styles.text, textStyle]}>{text}</Text>
     </View>
@@ -85,16 +86,13 @@ const createStyles = ({ palettes, spacing, fontSizes, dark }: Theme) =>
       marginHorizontal: spacing[5],
     },
     checkbox: {
-      borderColor: palettes.navy[dark ? '50' : '600'],
-      borderWidth: 1,
-      borderRadius: 5,
       height: 25,
       width: 25,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    checkboxSelected: {
-      backgroundColor: palettes.navy[dark ? '50' : '600'],
+    checkboxIcon: {
+      color: palettes.navy[dark ? '50' : '600'],
     },
     text: {
       fontSize: fontSizes.sm,
