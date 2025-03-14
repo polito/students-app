@@ -242,7 +242,6 @@
     "updatedAt": "Updated at",
     "upload": "Upload",
     "username": "Student ID",
-    "shortUsername": "ID",
     "videoLecture": "Video lecture",
     "videoLecture_plural": "Video lecture",
     "virtualClassroom": "Virtual classroom",
@@ -682,7 +681,7 @@
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
-    "rejectGradeCta": "Reject the evaluation by: <br><b>{{hours}}</b>",
+    "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "title": "Evaluation"
   },
