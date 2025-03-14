@@ -19,6 +19,7 @@ import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { unreadMessages } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
 import { useGetCurrentCampus } from '../../features/places/hooks/useGetCurrentCampus';
@@ -30,7 +31,11 @@ import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useNotifications } from '../hooks/useNotifications';
 import { useGetSites } from '../queries/placesHooks';
-import { useGetModalMessages, useGetStudent } from '../queries/studentHooks';
+import {
+  useGetMessages,
+  useGetModalMessages,
+  useGetStudent,
+} from '../queries/studentHooks';
 import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
@@ -48,6 +53,7 @@ export const RootNavigator = () => {
   const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
+  const profileMessages = useGetMessages();
 
   useEffect(() => {
     if (student?.smartCardPicture) {
@@ -165,7 +171,12 @@ export const RootNavigator = () => {
           tabBarIcon: ({ color }) => (
             <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
-          tabBarBadge: getUnreadsCount(['messages']),
+          tabBarBadge: (() => {
+            return profileMessages.data &&
+              unreadMessages(profileMessages.data).length > 0
+              ? unreadMessages(profileMessages.data).length
+              : undefined;
+          })(),
         }}
       />
     </TabNavigator.Navigator>
