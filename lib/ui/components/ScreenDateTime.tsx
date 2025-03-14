@@ -39,8 +39,12 @@ export const ScreenDateTime = ({
         <Text style={{ fontSize: fontSizes.md, color }}>{date ?? ''}</Text>
       </Row>
       <Row gap={2} align="center">
-        <Icon icon={faClock} color={color} size={fontSizes.md} />
-        <Text style={{ fontSize: fontSizes.md, color }}>{time ?? ''}</Text>
+        {time && (
+          <>
+            <Icon icon={faClock} color={color} size={fontSizes.md} />
+            <Text style={{ fontSize: fontSizes.md, color }}>{time ?? ''}</Text>
+          </>
+        )}
       </Row>
     </Row>
   );
