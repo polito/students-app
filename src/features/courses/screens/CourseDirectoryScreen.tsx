@@ -20,7 +20,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { useNotifications } from '../../../../src/core/hooks/useNotifications';
-import { useOnLeaveScreen } from '../../../../src/core/hooks/useOnLeaveScreen';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -68,10 +67,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { updatePreference } = usePreferencesContext();
   const { clearNotificationScope } = useNotifications();
 
-  useOnLeaveScreen(() => {
-    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
-  });
-
   useEffect(() => {
     if (navigation.getId() !== 'FileTabNavigator') {
       navigation.setOptions({
@@ -93,6 +88,12 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     return 0;
   });
 
+  useFocusEffect(() => {
+    const notificationTimeout = setTimeout(() => {
+      clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+    }, 10000);
+    return () => clearTimeout(notificationTimeout);
+  });
   return (
     <CourseContext.Provider value={courseId}>
       <CourseFilesCacheProvider>
