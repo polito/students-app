@@ -32,6 +32,7 @@ export interface CourseTabsParamList extends TeachingStackParamList {
   CourseFilesScreen: undefined;
   CourseLecturesScreen: undefined;
   CourseAssignmentsScreen: undefined;
+  PdfViewer: { fileUrl: string };
 }
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
