@@ -183,6 +183,14 @@ export const CourseFileListItem = memo(
                 : t('courseFileListItem.fileSaved') + cachedFilePath,
             isPersistent: false,
           });
+          openFile().catch(e => {
+            if (e instanceof UnsupportedFileTypeError) {
+              Alert.alert(
+                t('common.error'),
+                t('courseFileListItem.openFileError'),
+              );
+            }
+          });
         } catch (e) {
           if (e instanceof UnsupportedFileTypeError) {
             Alert.alert(
