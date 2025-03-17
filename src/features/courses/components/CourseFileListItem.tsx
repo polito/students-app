@@ -17,7 +17,6 @@ import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_IOS } from '../../../core/constants';
@@ -98,7 +97,7 @@ export const CourseFileListItem = memo(
     ...rest
   }: Props) => {
     const { t } = useTranslation();
-    const navigation = useNavigation<NativeStackNavigationProp<any>>();
+    const navigation = useNavigation();
     const { colors, fontSizes, spacing } = useTheme();
     const iconProps = useMemo(
       () => ({
