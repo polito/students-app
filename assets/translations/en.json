@@ -109,6 +109,7 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
+    "dateToBeDefinedShort": "To be defined",
     "day": "Day",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",

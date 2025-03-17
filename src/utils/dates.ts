@@ -77,3 +77,7 @@ export const isCurrentYear = (date: DateTime): boolean => {
 export const convertMachineDateToFormatDate = (date: string) => {
   return date.replace(MACHINE_DATE_REGEX, '$3/$2/$1');
 };
+
+export const isValidDate = (date: Date) => {
+  return date.toISOString() !== new Date(0).toISOString();
+};
