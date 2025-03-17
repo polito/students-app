@@ -179,7 +179,9 @@ export const CourseFileListItem = memo(
             text:
               Platform.Version > 29
                 ? t('courseFileListItem.fileSavedDocumentsPath')
-                : t('courseFileListItem.fileSaved') + cachedFilePath,
+                : t('courseFileListItem.fileSaved', {
+                    cachedFilePath: cachedFilePath,
+                  }),
             isPersistent: false,
           });
       }
