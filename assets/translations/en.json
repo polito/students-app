@@ -306,7 +306,9 @@
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
-    "reDownloadFile": "Redownload file"
+    "reDownloadFile": "Redownload file",
+    "fileSavedDocumentsPath": "File saved in the documents folder",
+    "fileSaved": "File saved in {{cachedFilePath}}"
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",

@@ -18,6 +18,7 @@ import { MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 import { useNavigation } from '@react-navigation/native';
 
+import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_IOS } from '../../../core/constants';
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -107,6 +108,7 @@ export const CourseFileListItem = memo(
     );
     const courseId = useCourseContext();
     const [courseFilesCache] = useCourseFilesCachePath();
+    const { setFeedback } = useFeedbackContext();
     const { getUnreadsCount } = useNotifications();
     const fileNotificationScope = useMemo(
       () => ['teaching', 'courses', courseId.toString(), 'files', item.id],
@@ -170,13 +172,25 @@ export const CourseFileListItem = memo(
       [showCreatedDate, item, showSize, showLocation],
     );
 
-    const openDownloadedFile = useCallback(() => {
+    const openDownloadedFile = useCallback(async () => {
+      if (Platform.OS === 'android') {
+        if (!isDownloaded)
+          setFeedback({
+            text:
+              Platform.Version > 29
+                ? t('courseFileListItem.fileSavedDocumentsPath')
+                : t('courseFileListItem.fileSaved', {
+                    cachedFilePath: cachedFilePath,
+                  }),
+            isPersistent: false,
+          });
+      }
       openFile().catch(e => {
         if (e instanceof UnsupportedFileTypeError) {
           Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
         }
       });
-    }, [openFile, t]);
+    }, [openFile, t, cachedFilePath, setFeedback, isDownloaded]);
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {

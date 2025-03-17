@@ -145,8 +145,6 @@ export const lightTheme: Theme = {
     surface: '#FFFFFF',
     surfaceDark: navy[700],
     white: '#FFFFFF',
-    black: '#000000',
-    yellow: '#FFD700',
     headersBackground: IS_ANDROID ? '#FFFFFF' : '#EDEEF0',
     heading: navy[700],
     subHeading: lightBlue[700],
@@ -167,6 +165,8 @@ export const lightTheme: Theme = {
     lectureCardSecondary: gray[600],
     errorCardText: rose[700],
     errorCardBorder: rose[500],
+    black: '#000000',
+    yellow: '#FFD700',
   },
   palettes: {
     navy,
