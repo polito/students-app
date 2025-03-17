@@ -173,43 +173,22 @@ export const CourseFileListItem = memo(
       [showCreatedDate, item, showSize, showLocation],
     );
 
-    const openDownloadedFile = useCallback(() => {
+    const openDownloadedFile = useCallback(async () => {
       if (Platform.OS === 'android') {
-        try {
-          if (!isDownloaded)
-            setFeedback({
-              text:
-                Platform.Version > 29
-                  ? t('courseFileListItem.fileSavedDocumentsPath')
-                  : t('courseFileListItem.fileSaved') + cachedFilePath,
-              isPersistent: false,
-            });
-          openFile().catch(e => {
-            if (e instanceof UnsupportedFileTypeError) {
-              Alert.alert(
-                t('common.error'),
-                t('courseFileListItem.openFileError'),
-              );
-            }
+        if (!isDownloaded)
+          setFeedback({
+            text:
+              Platform.Version > 29
+                ? t('courseFileListItem.fileSavedDocumentsPath')
+                : t('courseFileListItem.fileSaved') + cachedFilePath,
+            isPersistent: false,
           });
-        } catch (e) {
-          if (e instanceof UnsupportedFileTypeError) {
-            Alert.alert(
-              t('common.error'),
-              t('courseFileListItem.openFileError'),
-            );
-          }
-        }
-      } else {
-        openFile().catch(e => {
-          if (e instanceof UnsupportedFileTypeError) {
-            Alert.alert(
-              t('common.error'),
-              t('courseFileListItem.openFileError'),
-            );
-          }
-        });
       }
+      openFile().catch(e => {
+        if (e instanceof UnsupportedFileTypeError) {
+          Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
+        }
+      });
     }, [openFile, t, cachedFilePath, setFeedback, isDownloaded]);
 
     const downloadFile = useCallback(async () => {
