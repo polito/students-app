@@ -159,7 +159,7 @@ const getDeadlineWeekQueryFn = async (
   return studentClient
     .getDeadlines({
       fromDate: toOASTruncable(since),
-      toDate: until.toJSDate(),
+      toDate: toOASTruncable(until),
     })
     .then(pluckData);
 };

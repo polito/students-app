@@ -67,7 +67,7 @@ const getLectureWeekQueryFn = async (
   return lectureClient
     .getLectures({
       fromDate: toOASTruncable(monday),
-      toDate: until.toJSDate(),
+      toDate: toOASTruncable(until),
       courseIds: visibleCourseIds,
     })
     .then(pluckData)
