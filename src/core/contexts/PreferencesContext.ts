@@ -21,6 +21,7 @@ export const editablePreferenceKeys = [
   'agendaScreen',
   'filesScreen',
   'hideGrades',
+  'loginUid',
 ] as const;
 
 export type PreferenceKey = (typeof editablePreferenceKeys)[number];
@@ -66,6 +67,7 @@ export interface PreferencesContextBase {
   };
   filesScreen: 'filesView' | 'directoryView';
   hideGrades?: boolean;
+  loginUid?: string;
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {
