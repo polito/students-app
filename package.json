@@ -30,7 +30,7 @@
     "@miblanchard/react-native-slider": "^2.6.0",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@orama/orama": "^3.0.0-rc-1",
-    "@polito/api-client": "^2.1.4",
+    "@polito/api-client": "^2.2.0",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-clipboard/clipboard": "^1.14.3",
     "@react-native-community/blur": "^4.4.1",
