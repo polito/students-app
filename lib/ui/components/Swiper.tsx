@@ -55,12 +55,7 @@ export const Swiper = <T,>({
   }, []);
 
   return (
-    <View
-      style={{
-        height: isFullScreen ? '100%' : 'auto',
-        width: isFullScreen ? '100%' : 'auto',
-      }}
-    >
+    <>
       <FlatList
         ref={flatListRef}
         data={items}
@@ -86,7 +81,7 @@ export const Swiper = <T,>({
         scrollEventThrottle={100}
         showsHorizontalScrollIndicator={false}
         renderItem={renderItem}
-        extraData={[currentPageIndex, renderItem, items]}
+        extraData={items}
         automaticallyAdjustContentInsets={true}
         snapToAlignment="center"
         centerContent
@@ -110,7 +105,7 @@ export const Swiper = <T,>({
           expandedDotsCounts={4}
         />
       </View>
-    </View>
+    </>
   );
 };
 const createStyles = ({ spacing }: Theme) =>
