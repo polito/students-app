@@ -118,13 +118,20 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           />
         )}
         {playingVC.length > 1 && (
-          <Swiper
-            isFullScreen={isFullScreen}
-            items={playingVC}
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            onIndexChanged={handleSetCurrentPageIndex}
-          />
+          <View
+            style={{
+              height: isFullScreen ? '100%' : 'auto',
+              width: isFullScreen ? '100%' : 'auto',
+            }}
+          >
+            <Swiper
+              isFullScreen={isFullScreen}
+              items={playingVC}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              onIndexChanged={handleSetCurrentPageIndex}
+            />
+          </View>
         )}
 
         {isLiveVC(playingVC) && (
