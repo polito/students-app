@@ -53,7 +53,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { placeId, isCrossNavigation } = route.params;
+  const { placeId, isCrossNavigation, long, lat } = route.params;
   const {
     data: place,
     isLoading: isLoadingPlace,
@@ -98,14 +98,14 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   }, [place, placesSearched, updatePreference, updatedRecentPlaces]);
 
   useLayoutEffect(() => {
+    const bounds: CameraPadding & Partial<CameraBounds> = {
+      paddingTop: headerHeight,
+      paddingLeft: 8,
+      paddingRight: 8,
+      paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
+    };
     if (place) {
       const { latitude, longitude } = place;
-      const bounds: CameraPadding & Partial<CameraBounds> = {
-        paddingTop: headerHeight,
-        paddingLeft: 8,
-        paddingRight: 8,
-        paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
-      };
       if (place.geoJson?.geometry.type === 'Polygon') {
         const coordinates = (place.geoJson.geometry as Polygon).coordinates;
         if (coordinates?.length > 0) {
@@ -156,6 +156,53 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 />
               </ShapeSource>
             )}
+          </>
+        ),
+      });
+    } else {
+      places.push({
+        id: '1',
+        name: 'Punto Specifico',
+        latitude: lat ? parseFloat(lat) : 0, // Latitudine del punto
+        longitude: long ? parseFloat(long) : 0, // Longitudine del punto
+        siteId: '',
+        category: { id: 'OTHER', name: '', markerUrl: 'pin' },
+      });
+      navigation.setOptions({
+        mapOptions: {
+          camera: {
+            centerCoordinate:
+              long && lat ? [parseFloat(long), parseFloat(lat)] : [],
+            padding: bounds.sw ? undefined : bounds,
+            bounds: bounds.sw ? (bounds as CameraBounds) : undefined,
+            zoomLevel: bounds.sw ? undefined : 17,
+          },
+        },
+        mapContent: () => (
+          <>
+            <MarkersLayer
+              selectedPoiId={placeId}
+              places={places}
+              isCrossNavigation={isCrossNavigation}
+              categoryId="OTHER"
+            />
+            <ShapeSource id="placeHighlightSource">
+              <LineLayer
+                id="placeHighlightLine"
+                aboveLayerID="indoor"
+                style={{
+                  lineColor: palettes.secondary[600],
+                  lineWidth: 2,
+                }}
+              />
+              <FillLayer
+                id="placeHighlightFill"
+                aboveLayerID="indoor"
+                style={{
+                  fillColor: `${palettes.secondary[600]}33`,
+                }}
+              />
+            </ShapeSource>
           </>
         ),
       });
