@@ -8,6 +8,8 @@ def node_require(script)
     )", __dir__]).strip
 end
 
+ENV['RCT_NEW_ARCH_ENABLED'] = '0'
+
 # Use it to require both react-native's and this package's scripts:
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
@@ -72,7 +74,8 @@ target 'students' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false
+      :mac_catalyst_enabled => false,
+      :ccache_enabled => true
     )
 
     installer.pods_project.targets.each do |target|

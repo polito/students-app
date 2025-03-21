@@ -161,8 +161,8 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
       items.filter(item => item.restoreVisibility).length === items.length
         ? CheckboxState.SELECTED
         : items.filter(item => item.restoreVisibility).length > 0
-        ? CheckboxState.NOT_ALL_SELECTED
-        : CheckboxState.UNSELECTED,
+          ? CheckboxState.NOT_ALL_SELECTED
+          : CheckboxState.UNSELECTED,
     );
   }, [items]);
 
