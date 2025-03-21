@@ -95,6 +95,13 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const filteredCalendarData = useHideEventFilter(calendarData);
 
+  const weekLength = useMemo(() => {
+    if (calendarMax && calendarMax.start.weekday > 5) {
+      return calendarMax.start.weekday as WeekNum;
+    }
+    return 5;
+  }, [calendarMax]);
+
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {
       const nextWeek = w.plus({ days: 7 });
@@ -232,17 +239,17 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   return (
     <>
-      <HeaderAccessory justify="space-between">
+      <HeaderAccessory justify="space-between" style={styles.headerContainer}>
         <Tabs contentContainerStyle={styles.tabs}>
           <AgendaTypeFilter />
-          <WeekFilter
-            current={currentWeek}
-            getNext={getNextWeek}
-            getPrev={getPrevWeek}
-            isNextWeekDisabled={isNextWeekDisabled}
-            isPrevWeekDisabled={isPrevWeekDisabled}
-          />
         </Tabs>
+        <WeekFilter
+          current={currentWeek}
+          getNext={getNextWeek}
+          getPrev={getPrevWeek}
+          isNextWeekDisabled={isNextWeekDisabled}
+          isPrevWeekDisabled={isPrevWeekDisabled}
+        />
       </HeaderAccessory>
       <DatePicker
         modal
@@ -305,9 +312,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
               );
             }}
             weekStartsOn={1}
-            weekEndsOn={
-              calendarMax ? (calendarMax.start.weekday as WeekNum) : 5
-            }
+            weekEndsOn={weekLength}
             isEventOrderingEnabled={false}
             overlapOffset={10000}
           />
@@ -325,8 +330,7 @@ const createStyles = ({ spacing }: Theme) =>
       paddingVertical: spacing[1],
     },
     headerContainer: {
-      display: 'flex',
-      flexDirection: 'row',
+      paddingVertical: spacing[1],
     },
     container: {
       display: 'flex',
