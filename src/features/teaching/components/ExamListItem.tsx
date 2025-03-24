@@ -17,6 +17,7 @@ import {
   dateFormatter,
   formatDate,
   formatReadableDate,
+  isValidDate,
 } from '../../../utils/dates';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { ExamStatusBadge } from './ExamStatusBadge';
@@ -43,7 +44,7 @@ export const ExamListItem = ({
 
     const status = t(`common.examStatus.${exam.status}`);
 
-    if (!exam.examStartsAt) {
+    if (!exam.examStartsAt || !isValidDate(exam?.examStartsAt)) {
       dateTime = t('common.dateToBeDefined');
     } else {
       dateTime = formatDate(exam.examStartsAt);
@@ -89,9 +90,9 @@ export const ExamListItem = ({
           <Row gap={1}>
             <Icon icon={faCalendar} color={colors.secondaryText} />
             <Text variant="secondaryText">
-              {exam.examStartsAt
+              {exam.examStartsAt && isValidDate(exam?.examStartsAt)
                 ? formatReadableDate(exam.examStartsAt, true)
-                : t('common.dateToBeDefined')}
+                : t('common.dateToBeDefinedShort')}
             </Text>
           </Row>
           {(exam.places?.length ?? 0) > 0 && (

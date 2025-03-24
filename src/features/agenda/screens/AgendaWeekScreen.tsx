@@ -33,6 +33,7 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
+import { useHideEventFilter } from '../hooks/useHideEventFilter';
 import {
   getAgendaWeekQueryKey,
   useGetAgendaWeek,
@@ -91,6 +92,15 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
       }, calendarData[0]) ?? null
     );
   }, [calendarData]);
+
+  const filteredCalendarData = useHideEventFilter(calendarData);
+
+  const weekLength = useMemo(() => {
+    if (calendarMax && calendarMax.start.weekday > 5) {
+      return calendarMax.start.weekday as WeekNum;
+    }
+    return 5;
+  }, [calendarMax]);
 
   const getNextWeek = useCallback(() => {
     setCurrentWeek(w => {
@@ -229,17 +239,17 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   return (
     <>
-      <HeaderAccessory justify="space-between">
+      <HeaderAccessory justify="space-between" style={styles.headerContainer}>
         <Tabs contentContainerStyle={styles.tabs}>
           <AgendaTypeFilter />
-          <WeekFilter
-            current={currentWeek}
-            getNext={getNextWeek}
-            getPrev={getPrevWeek}
-            isNextWeekDisabled={isNextWeekDisabled}
-            isPrevWeekDisabled={isPrevWeekDisabled}
-          />
         </Tabs>
+        <WeekFilter
+          current={currentWeek}
+          getNext={getNextWeek}
+          getPrev={getPrevWeek}
+          isNextWeekDisabled={isNextWeekDisabled}
+          isPrevWeekDisabled={isPrevWeekDisabled}
+        />
       </HeaderAccessory>
       <DatePicker
         modal
@@ -266,7 +276,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           ))}
         {calendarHeight && (
           <Calendar<AgendaItem>
-            events={calendarData}
+            events={filteredCalendarData}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
             date={currentWeek}
@@ -302,9 +312,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
               );
             }}
             weekStartsOn={1}
-            weekEndsOn={
-              calendarMax ? (calendarMax.start.weekday as WeekNum) : 5
-            }
+            weekEndsOn={weekLength}
             isEventOrderingEnabled={false}
             overlapOffset={10000}
           />
@@ -322,8 +330,7 @@ const createStyles = ({ spacing }: Theme) =>
       paddingVertical: spacing[1],
     },
     headerContainer: {
-      display: 'flex',
-      flexDirection: 'row',
+      paddingVertical: spacing[1],
     },
     container: {
       display: 'flex',

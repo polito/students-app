@@ -84,6 +84,7 @@
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "agenda": "Agenda",
     "agent": "Operatore",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
@@ -115,6 +116,7 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Data e ora",
     "dateToBeDefined": "Data da definire",
+    "dateToBeDefinedShort": "Da definire",
     "day": "Giorno",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
@@ -164,7 +166,9 @@
     "follow": "Segui",
     "free": "Libera",
     "grade": "Voto",
+    "hiddenEvents": "Eventi nascosti",
     "hide": "Nascondi",
+    "hideInAgenda": "Nascondi in agenda",
     "hour": "Orario",
     "hours": "Ore",
     "icon": "Icona",
@@ -250,7 +254,6 @@
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",
-    "shortUsername": "Matr.",
     "videoLecture": "Video lezione",
     "videoLecture_plural": "Video lezioni",
     "virtualClassroom": "Virtual classroom",
@@ -314,7 +317,9 @@
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
-    "reDownloadFile": "Ri-scarica file"
+    "reDownloadFile": "Ri-scarica file",
+    "fileSavedDocumentsPath": "File salvato nella cartella documenti",
+    "fileSaved": "File salvato in {{cachedFilePath}}"
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
@@ -325,6 +330,10 @@
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
+  },
+  "courseHideEventScreen": {
+    "button": "Mostra in Agenda",
+    "selectItems": "Seleziona tutti"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"
@@ -546,7 +555,10 @@
     "title": "Offerte di lavoro"
   },
   "lectureScreen": {
-    "courseFilesCta": "Vai al materiale del corso"
+    "courseFilesCta": "Vai al materiale del corso",
+    "hideEventAlertTitle": "Nascondi Evento",
+    "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
+    "hideEventButtonTitle": "Nascondi evendo dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"
@@ -698,7 +710,7 @@
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
     "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta la valutazione entro:<br><b>{{hours}}</b>",
+    "rejectGradeCta": "Rifiutabile entro il:<br><b>{{date}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "title": "Valutazione"
   },
