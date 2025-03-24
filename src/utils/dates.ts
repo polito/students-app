@@ -81,3 +81,11 @@ export const convertMachineDateToFormatDate = (date: string) => {
 export const isValidDate = (date: Date) => {
   return date.toISOString() !== new Date(0).toISOString();
 };
+
+export const toOASTruncable = (date: DateTime) => {
+  // This fix is needed to correct the truncation made by OpenAPI Generator,
+  // which cuts off the first characters of the date. This causes issues because
+  // OpenAPI returns the date in UTC format, and in particular, when it comes to midnight (00:00),
+  // the conversion can result in an hour of 23:00 on the previous day.
+  return date.plus({ minute: date.offset }).toJSDate();
+};
