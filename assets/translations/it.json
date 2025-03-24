@@ -715,7 +715,7 @@
     "teacherMessage": {
       "title": "Messaggio del docente",
       "readMore": " altro",
-      "readLess": " riduci"
+      "readLess": " meno"
     },
     "title": "Valutazione"
   },

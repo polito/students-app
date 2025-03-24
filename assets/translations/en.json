@@ -698,8 +698,8 @@
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "teacherMessage": {
       "title": "Professor's message",
-      "readMore": " read more",
-      "readLess": " show less"
+      "readMore": " more",
+      "readLess": " less"
     },
     "title": "Evaluation"
   },
