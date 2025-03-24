@@ -130,7 +130,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           <Row justify="space-between" align="center">
             <EventDetails
               title={virtualClassroom?.title ?? lecture.title}
-              type={t('common.lecture')}
+              type={`${t('common.lecture')} - ${lecture.description}`}
               time={`${convertMachineDateToFormatDate(lecture.date)} ${
                 lecture.fromTime
               } - ${lecture.toTime}`}

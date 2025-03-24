@@ -672,7 +672,9 @@
     "capacity": "{{count}} posto",
     "capacity_plural": "{{count}} posti",
     "placeNotFound": "Questo luogo non esiste",
-    "title": "Luogo"
+    "title": "Luogo",
+    "placeDetail": "Dettaglio luogo",
+    "getDirections": "Ottieni indicazioni"
   },
   "placesScreen": {
     "changeFloor": "Cambia piano",
