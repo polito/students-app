@@ -13,6 +13,7 @@ export type ReadMoreTextProps = {
   message: string;
   styleText?: StyleProp<TextStyle>;
   styleReadMore?: StyleProp<TextStyle>;
+  numberOfLines?: number;
 };
 
 const DEFAULT_NUMBER_OF_LINES = 3;
@@ -20,6 +21,7 @@ export const ReadMoreText = ({
   message,
   styleText,
   styleReadMore,
+  numberOfLines = DEFAULT_NUMBER_OF_LINES,
 }: ReadMoreTextProps) => {
   const { language } = usePreferencesContext();
   const { t } = useTranslation();
@@ -32,13 +34,13 @@ export const ReadMoreText = ({
   const [readMore, setReadMore] = useState<boolean>(false);
 
   const space = useMemo(() => {
-    return language === 'it' ? 10 : 20;
+    return language === 'it' ? 15 : 20;
   }, [language]);
 
   const handleReadMoreText = (textLayoutLines: TextLayoutLine[]) => {
     let textLength = 0;
-    if (textLayoutLines.length > DEFAULT_NUMBER_OF_LINES) {
-      for (let line = 0; line < DEFAULT_NUMBER_OF_LINES; line++) {
+    if (textLayoutLines.length > numberOfLines) {
+      for (let line = 0; line < numberOfLines; line++) {
         textLength += textLayoutLines[line].text.length;
       }
       setText({ length: textLength, isTruncatedText: true });
@@ -65,7 +67,7 @@ export const ReadMoreText = ({
       )}
       <Text
         style={[styles.message, styleText]}
-        numberOfLines={text.length === 0 ? DEFAULT_NUMBER_OF_LINES : 0}
+        numberOfLines={text.length === 0 ? numberOfLines : 0}
         onTextLayout={({ nativeEvent: { lines } }) => {
           if (text.length > 0) {
             return;
