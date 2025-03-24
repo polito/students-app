@@ -656,7 +656,10 @@
     "capacity": "{{count}} seat",
     "capacity_plural": "{{count}} seats",
     "placeNotFound": "Place not found",
-    "title": "Place"
+    "title": "Place",
+    "placeDetail": "Place detail",
+    "getDirections": "Obtain directions"
+
   },
   "placesScreen": {
     "changeFloor": "Change floor",

@@ -45,6 +45,9 @@ export type PlacesStackParamList = {
   Place: {
     placeId: string;
     isCrossNavigation?: boolean;
+    long?: string | null;
+    lat?: string | null;
+    name?: string;
   };
   EventPlaces: {
     placeIds: string[];
