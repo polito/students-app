@@ -28,6 +28,7 @@ import {
 import { formatDate, formatDateWithTimeIfNotNull } from '../../../utils/dates';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { GradeStates } from '../components/GradeStates';
+import { TeacherMessage } from '../components/TeacherMessage.tsx';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'ProvisionalGrade'>;
@@ -152,6 +153,9 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 </Text>
               </Row>
             )}
+          {grade.teacherMessage && (
+            <TeacherMessage message={grade.teacherMessage} />
+          )}
 
           <GradeStates state={grade?.state} />
           {grade?.state === ProvisionalGradeStateEnum.Confirmed && (

@@ -696,6 +696,11 @@
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
     "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "teacherMessage": {
+      "title": "Professor's message",
+      "readMore": " read more",
+      "readLess": " show less"
+    },
     "title": "Evaluation"
   },
   "recordedGradeScreen": {
