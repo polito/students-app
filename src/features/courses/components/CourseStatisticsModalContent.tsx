@@ -1,14 +1,11 @@
-import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { faClose } from '@fortawesome/free-solid-svg-icons';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
-import { IconButton } from '@lib/ui/components/IconButton';
+import { ModalContent } from '@lib/ui/components/ModalContent.tsx';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
-export const CourseStatisticsBottomSheetContent = ({
+export const CourseStatisticsModalContent = ({
   title,
   content,
   itemList,
@@ -19,26 +16,10 @@ export const CourseStatisticsBottomSheetContent = ({
   itemList: { title: string; content: string }[];
   onDismiss: () => void;
 }) => {
-  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   return (
-    <BottomSheetView style={{ paddingBottom: 60 }}>
+    <ModalContent close={onDismiss} title={title}>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text
-            accessible
-            accessibilityLabel={title}
-            style={styles.headerTitle}
-          >
-            {title}
-          </Text>
-          <IconButton
-            accessible
-            accessibilityLabel={t('common.close')}
-            icon={faClose}
-            onPress={onDismiss}
-          ></IconButton>
-        </View>
         <View style={styles.content} accessible>
           <Text accessibilityLabel={content}>{content}</Text>
           {itemList.map((item, index) => {
@@ -61,7 +42,7 @@ export const CourseStatisticsBottomSheetContent = ({
           })}
         </View>
       </View>
-    </BottomSheetView>
+    </ModalContent>
   );
 };
 
