@@ -42,7 +42,6 @@ export const CourseStatisticsFilters = ({
               onYearChanged(nativeEvent.event);
             }}
             actions={years}
-            disabled={years.length === 1}
           >
             <Row>
               <Text

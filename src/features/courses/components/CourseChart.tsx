@@ -322,7 +322,7 @@ export const EnrolledExamDetailChart = ({
     },
   ];
 
-  const hasData = barData.some(it => it.value > 0);
+  const hasData = barData.some(it => it.value !== undefined && it.value > 0);
 
   return (
     <View
@@ -553,7 +553,7 @@ export const EnrolledExamChart = ({
     setMode(nextMode);
   };
 
-  const hasData = barData.some(it => it.value > 0);
+  const hasData = barData.some(it => it.value !== undefined && it.value > 0);
 
   return (
     <View
