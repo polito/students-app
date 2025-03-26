@@ -11,6 +11,7 @@ import {
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { Card } from '@lib/ui/components/Card';
+import { IconButton } from '@lib/ui/components/IconButton.tsx';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -18,6 +19,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomModal } from '../../../core/components/BottomModal.tsx';
+import { useBottomModal } from '../../../core/hooks/useBottomModal.ts';
 import { useGetCourseStatistics } from '../../../core/queries/offeringHooks';
 import { SharedScreensParamList } from '../../../shared/navigation/SharedScreens';
 import {
@@ -25,8 +28,11 @@ import {
   EnrolledExamChart,
   EnrolledExamDetailChart,
 } from '../components/CourseChart';
-import { CourseStatisticsBottomSheets } from '../components/CourseStatisticsBottomSheets';
 import { CourseStatisticsFilters } from '../components/CourseStatisticsFilters';
+import {
+  CourseStatisticsModal,
+  CourseStatisticsTypes,
+} from '../components/CourseStatisticsModal.tsx';
 import { computeStatisticsFilters } from '../utils/computeStatisticsFilters';
 
 type Props = NativeStackScreenProps<SharedScreensParamList, 'CourseStatistics'>;
@@ -82,122 +88,141 @@ export const CourseStatisticsScreen = ({ route }: Props) => {
     Dimensions.get('window').width -
     Platform.select({ ios: 128, android: 100 })!;
 
-  return (
-    <CourseStatisticsBottomSheets>
-      {({
-        onPresentEnrolledExamModalPress,
-        onPresentEnrolledExamDetailModalPress,
-        onPresentGradesDetailModalPress,
-      }) => {
-        return (
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={{
-              paddingVertical: spacing[5],
-              paddingBottom: spacing['20'],
-            }}
-          >
-            <SafeAreaView>
-              <CourseStatisticsFilters
-                {...filters}
-                onTeacherChanged={nextTeacherId => {
-                  setCurrentFilters(prev => ({
-                    ...prev,
-                    currentTeacherId: nextTeacherId,
-                  }));
-                }}
-                onYearChanged={nextYear => {
-                  setCurrentFilters(prev => ({
-                    ...prev,
-                    currentYear: nextYear,
-                  }));
-                }}
-              />
-              <View style={styles.container}>
-                <View>
-                  <SectionHeader
-                    accessible
-                    accessibilityLabel={t(
-                      'courseStatisticsScreen.enrolledExamTitle',
-                    )}
-                    title={t('courseStatisticsScreen.enrolledExamTitle')}
-                    trailingIcon={{
-                      onPress: onPresentEnrolledExamModalPress,
-                      accessibilityLabel: t(
-                        'courseStatisticsScreen.enrolledExamInfo',
-                      ),
-                      icon: faQuestionCircle,
-                      color: colors.link,
-                    }}
-                  />
-                  <Card>
-                    <LoadingContainer loading={isFetching}>
-                      <EnrolledExamChart
-                        width={graphWidth}
-                        statistics={statistics}
-                        noOfSections={4}
-                      />
-                    </LoadingContainer>
-                  </Card>
-                </View>
-                <View>
-                  <SectionHeader
-                    accessible
-                    accessibilityLabel={t(
-                      'courseStatisticsScreen.enrolledExamDetailTitle',
-                    )}
-                    title={t('courseStatisticsScreen.enrolledExamDetailTitle')}
-                    trailingIcon={{
-                      onPress: onPresentEnrolledExamDetailModalPress,
-                      accessibilityLabel: t(
-                        'courseStatisticsScreen.enrolledExamDetailInfo',
-                      ),
-                      icon: faQuestionCircle,
-                      color: colors.link,
-                    }}
-                  />
-                  <Card>
-                    <LoadingContainer loading={isFetching}>
-                      <EnrolledExamDetailChart
-                        width={graphWidth}
-                        statistics={statistics}
-                        noOfSections={4}
-                      />
-                    </LoadingContainer>
-                  </Card>
-                </View>
+  const {
+    open: showBottomModal,
+    modal: bottomModal,
+    close: closeBottomModal,
+  } = useBottomModal();
 
-                <View>
-                  <SectionHeader
-                    accessible
+  const openModal = (type: CourseStatisticsTypes) => {
+    showBottomModal(
+      <CourseStatisticsModal type={type} onDismiss={closeBottomModal} />,
+    );
+  };
+
+  return (
+    <>
+      <BottomModal dismissable {...bottomModal} />
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{
+          paddingVertical: spacing[5],
+          paddingBottom: spacing['20'],
+        }}
+      >
+        <SafeAreaView>
+          <CourseStatisticsFilters
+            {...filters}
+            onTeacherChanged={nextTeacherId => {
+              setCurrentFilters(prev => ({
+                ...prev,
+                currentTeacherId: nextTeacherId,
+              }));
+            }}
+            onYearChanged={nextYear => {
+              setCurrentFilters(prev => ({
+                ...prev,
+                currentYear: nextYear,
+              }));
+            }}
+          />
+          <View style={styles.container}>
+            <View>
+              <SectionHeader
+                accessible
+                accessibilityLabel={t(
+                  'courseStatisticsScreen.enrolledExamTitle',
+                )}
+                title={t('courseStatisticsScreen.enrolledExamTitle')}
+                trailingItem={
+                  <IconButton
+                    icon={faQuestionCircle}
+                    color={colors.link}
+                    onPress={() =>
+                      openModal(CourseStatisticsTypes.enrolledExamBottomSheet)
+                    }
                     accessibilityLabel={t(
-                      'courseStatisticsScreen.examGradeDetailTitle',
+                      'courseStatisticsScreen.enrolledExamInfo',
                     )}
-                    title={t('courseStatisticsScreen.examGradeDetailTitle')}
-                    trailingIcon={{
-                      onPress: onPresentGradesDetailModalPress,
-                      accessibilityLabel: t(
-                        'courseStatisticsScreen.examGradeDetailInfo',
-                      ),
-                      icon: faQuestionCircle,
-                      color: colors.link,
-                    }}
                   />
-                  <Card>
-                    <LoadingContainer loading={isFetching}>
-                      <CourseGradesChart
-                        width={graphWidth}
-                        statistics={statistics}
-                      />
-                    </LoadingContainer>
-                  </Card>
-                </View>
-              </View>
-            </SafeAreaView>
-          </ScrollView>
-        );
-      }}
-    </CourseStatisticsBottomSheets>
+                }
+              />
+              <Card>
+                <LoadingContainer loading={isFetching}>
+                  <EnrolledExamChart
+                    width={graphWidth}
+                    statistics={statistics}
+                    noOfSections={4}
+                  />
+                </LoadingContainer>
+              </Card>
+            </View>
+            <View>
+              <SectionHeader
+                accessible
+                accessibilityLabel={t(
+                  'courseStatisticsScreen.enrolledExamDetailTitle',
+                )}
+                title={t('courseStatisticsScreen.enrolledExamDetailTitle')}
+                trailingItem={
+                  <IconButton
+                    icon={faQuestionCircle}
+                    color={colors.link}
+                    onPress={() =>
+                      openModal(
+                        CourseStatisticsTypes.enrolledExamDetailBottomSheet,
+                      )
+                    }
+                    accessibilityLabel={t(
+                      'courseStatisticsScreen.enrolledExamDetailInfo',
+                    )}
+                  />
+                }
+              />
+              <Card>
+                <LoadingContainer loading={isFetching}>
+                  <EnrolledExamDetailChart
+                    width={graphWidth}
+                    statistics={statistics}
+                    noOfSections={4}
+                  />
+                </LoadingContainer>
+              </Card>
+            </View>
+
+            <View>
+              <SectionHeader
+                accessible
+                accessibilityLabel={t(
+                  'courseStatisticsScreen.examGradeDetailTitle',
+                )}
+                title={t('courseStatisticsScreen.examGradeDetailTitle')}
+                trailingItem={
+                  <IconButton
+                    icon={faQuestionCircle}
+                    color={colors.link}
+                    onPress={() =>
+                      openModal(CourseStatisticsTypes.gradesDetailBottomSheet)
+                    }
+                    accessibilityLabel={t(
+                      'courseStatisticsScreen.examGradeDetailInfo',
+                    )}
+                  />
+                }
+              />
+              <Card>
+                <LoadingContainer loading={isFetching}>
+                  <CourseGradesChart
+                    width={graphWidth}
+                    statistics={statistics}
+                  />
+                </LoadingContainer>
+              </Card>
+            </View>
+          </View>
+        </SafeAreaView>
+      </ScrollView>
+    </>
   );
 };
 
