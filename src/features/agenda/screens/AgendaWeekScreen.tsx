@@ -326,11 +326,10 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     tabs: {
       alignItems: 'center',
-      paddingHorizontal: spacing[4],
-      paddingVertical: spacing[1],
     },
     headerContainer: {
-      paddingVertical: spacing[1],
+      paddingVertical: spacing[2],
+      paddingLeft: spacing[4],
     },
     container: {
       display: 'flex',
