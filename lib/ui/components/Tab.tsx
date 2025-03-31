@@ -67,8 +67,8 @@ export const Tab = ({
               color: selected
                 ? palettes.text[50]
                 : dark
-                ? palettes.primary[400]
-                : palettes.primary[500],
+                  ? palettes.primary[400]
+                  : palettes.primary[500],
               fontWeight: fontWeights.medium,
             },
             textStyle,

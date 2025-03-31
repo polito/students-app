@@ -67,8 +67,8 @@ export const PlacesBottomSheet = forwardRef<
     const listItems = useMemo(
       () =>
         typing && !isLoading
-          ? placesSearched.map(p => searchPlaceToListItem(p, true)) ?? []
-          : listProps?.data ?? [],
+          ? (placesSearched.map(p => searchPlaceToListItem(p, true)) ?? [])
+          : (listProps?.data ?? []),
       [
         isLoading,
         listProps?.data,

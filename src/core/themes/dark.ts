@@ -34,5 +34,6 @@ export const darkTheme: Theme = {
     tabBarInactive: lightTheme.palettes.gray[400],
     errorCardText: lightTheme.palettes.rose[200],
     errorCardBorder: lightTheme.palettes.rose[500],
+    readMore: lightTheme.palettes.navy[500],
   },
 };

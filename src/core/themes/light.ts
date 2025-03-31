@@ -167,6 +167,7 @@ export const lightTheme: Theme = {
     errorCardBorder: rose[500],
     black: '#000000',
     yellow: '#FFD700',
+    readMore: navy[400],
   },
   palettes: {
     navy,

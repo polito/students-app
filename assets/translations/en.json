@@ -656,7 +656,10 @@
     "capacity": "{{count}} seat",
     "capacity_plural": "{{count}} seats",
     "placeNotFound": "Place not found",
-    "title": "Place"
+    "title": "Place",
+    "placeDetail": "Place detail",
+    "getDirections": "Obtain directions"
+
   },
   "placesScreen": {
     "changeFloor": "Change floor",
@@ -696,6 +699,11 @@
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
     "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "teacherMessage": {
+      "title": "Professor's message",
+      "readMore": " more",
+      "readLess": " less"
+    },
     "title": "Evaluation"
   },
   "recordedGradeScreen": {
