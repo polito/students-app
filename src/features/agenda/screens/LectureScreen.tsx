@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -16,6 +16,7 @@ import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { PersonListItem } from '@lib/ui/components/PersonListItem';
+import { Row } from '@lib/ui/components/Row.tsx';
 import { Swiper } from '@lib/ui/components/Swiper';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
@@ -171,7 +172,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         contentContainerStyle={GlobalStyles.fillHeight}
         scrollEnabled={!isFullScreen}
       >
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           {playingVC &&
             playingVC.length === 1 &&
             playingVC[0] &&
@@ -205,7 +206,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           )}
           <Row justify="space-between" align="center">
             <EventDetails
-              title={playingVC[currentVideoIndex]?.title ?? lecture.title}
+              title={currentVideoTitle ?? lecture.title}
               type={`${t('common.lecture')} ${lecture.description ? '- ' + lecture.description : ''}`}
               time={`${convertMachineDateToFormatDate(lecture.date)} ${
                 lecture.fromTime
@@ -265,7 +266,10 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           action={hideEvent}
           destructive
           absolute={false}
-          containerStyle={{ paddingVertical: 0 }}
+          containerStyle={{
+            paddingVertical: 0,
+            display: isFullScreen ? 'none' : undefined,
+          }}
         />
       </CtaButtonContainer>
     </>
