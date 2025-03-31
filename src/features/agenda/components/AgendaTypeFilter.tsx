@@ -103,8 +103,20 @@ export const AgendaTypeFilter = () => {
     >
       <PillDropdownActivator variant="neutral">
         <View style={styles.typeFilter}>
-          <Text key="events">{t('common.event_plural')}:</Text>
-          {pillContent}
+          <Text key="events">{t('common.event_plural')} </Text>
+          <Text
+            style={
+              Array.isArray(pillContent) &&
+              pillContent.length > 0 && {
+                paddingRight: 4,
+                paddingLeft: 6,
+                backgroundColor: colors.background,
+                borderRadius: 3,
+              }
+            }
+          >
+            {Array.isArray(pillContent) && pillContent.length.toString()}{' '}
+          </Text>
         </View>
       </PillDropdownActivator>
     </MenuView>
