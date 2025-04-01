@@ -159,70 +159,70 @@ export const AccessibilitySettingsScreen = () => {
   );
 };
 
-const CustomFontListItem = ({ t, value, onUpdate }: AccessibilityItemProps) => {
-  const choices = useMemo(() => {
-    return [
-      {
-        label: 'Montserrat (default)',
-        value: 'default',
-      },
-      {
-        label: 'Open Dyslexic',
-        value: 'open-dyslexic',
-      },
-      {
-        label: 'Dyslexie',
-        value: 'dyslexie',
-      },
-      {
-        label: 'EasyReading',
-        value: 'easy-reading',
-      },
-      {
-        label: 'Sylexiad',
-        value: 'sylexiad',
-      },
-    ];
-  }, []);
+// const CustomFontListItem = ({ t, value, onUpdate }: AccessibilityItemProps) => {
+//   const choices = useMemo(() => {
+//     return [
+//       {
+//         label: 'Montserrat (default)',
+//         value: 'default',
+//       },
+//       {
+//         label: 'Open Dyslexic',
+//         value: 'open-dyslexic',
+//       },
+//       {
+//         label: 'Dyslexie',
+//         value: 'dyslexie',
+//       },
+//       {
+//         label: 'EasyReading',
+//         value: 'easy-reading',
+//       },
+//       {
+//         label: 'Sylexiad',
+//         value: 'sylexiad',
+//       },
+//     ];
+//   }, []);
 
-  const effectiveValue = useMemo(() => {
-    return value || 'default';
-  }, [value]);
+//   const effectiveValue = useMemo(() => {
+//     return value || 'default';
+//   }, [value]);
 
-  const effectiveLabel = useMemo(() => {
-    return effectiveValue.replace('-', ' ');
-  }, [effectiveValue]);
+//   const effectiveLabel = useMemo(() => {
+//     return effectiveValue.replace('-', ' ');
+//   }, [effectiveValue]);
 
-  const actions: MenuAction[] = useMemo(() => {
-    return choices.map(cc => {
-      const actionValue = cc.value.endsWith('(default)') ? 'default' : cc.value;
-      return {
-        id: actionValue,
-        title: cc.label,
-        state: actionValue === effectiveValue ? 'on' : undefined,
-      };
-    });
-  }, [effectiveValue, choices]);
-  return (
-    <MenuView
-      title={t(`accessibilitySettingsScreen.customFontAction`)}
-      actions={actions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        onUpdate(event);
-      }}
-    >
-      <ListItem
-        isAction
-        title={t(`accessibilitySettingsScreen.customFontTitle`)}
-        subtitle={effectiveLabel}
-        // // subtitleProps={{ capitalize: true }}
-        /* TODO accessibilityLabel={`${t('common.language')}: ${t(
-          `common.${language}`,
-        )}. ${t('settingsScreen.openLanguageMenu')}`}*/
-      />
-    </MenuView>
-  );
-};
+//   const actions: MenuAction[] = useMemo(() => {
+//     return choices.map(cc => {
+//       const actionValue = cc.value.endsWith('(default)') ? 'default' : cc.value;
+//       return {
+//         id: actionValue,
+//         title: cc.label,
+//         state: actionValue === effectiveValue ? 'on' : undefined,
+//       };
+//     });
+//   }, [effectiveValue, choices]);
+//   return (
+//     <MenuView
+//       title={t(`accessibilitySettingsScreen.customFontAction`)}
+//       actions={actions}
+//       onPressAction={({ nativeEvent: { event } }) => {
+//         onUpdate(event);
+//       }}
+//     >
+//       <ListItem
+//         isAction
+//         title={t(`accessibilitySettingsScreen.customFontTitle`)}
+//         subtitle={effectiveLabel}
+//         // // subtitleProps={{ capitalize: true }}
+//         /* TODO accessibilityLabel={`${t('common.language')}: ${t(
+//           `common.${language}`,
+//         )}. ${t('settingsScreen.openLanguageMenu')}`}*/
+//       />
+//     </MenuView>
+//   );
+// };
 
 const CustomFontPlacementListItem = ({
   t,
@@ -286,71 +286,71 @@ const CustomFontPlacementListItem = ({
     </MenuView>
   );
 };
-const CustomFontSizeListItem = ({
-  t,
-  value,
-  onUpdate,
-}: AccessibilityItemProps) => {
-  const choices = useMemo(() => {
-    return [
-      {
-        label: '100%',
-        value: 100,
-      },
-      {
-        label: '125%',
-        value: 125,
-      },
-      {
-        label: '150%',
-        value: 150,
-      },
-      {
-        label: '175%',
-        value: 175,
-      },
-      {
-        label: '200%',
-        value: 200,
-      },
-    ];
-  }, []);
+// const CustomFontSizeListItem = ({
+//   t,
+//   value,
+//   onUpdate,
+// }: AccessibilityItemProps) => {
+//   const choices = useMemo(() => {
+//     return [
+//       {
+//         label: '100%',
+//         value: 100,
+//       },
+//       {
+//         label: '125%',
+//         value: 125,
+//       },
+//       {
+//         label: '150%',
+//         value: 150,
+//       },
+//       {
+//         label: '175%',
+//         value: 175,
+//       },
+//       {
+//         label: '200%',
+//         value: 200,
+//       },
+//     ];
+//   }, []);
 
-  const effectiveValue = useMemo(() => {
-    return value || '100';
-  }, [value]);
+//   const effectiveValue = useMemo(() => {
+//     return value || '100';
+//   }, [value]);
 
-  const effectiveLabel = useMemo(() => {
-    return effectiveValue + '%';
-  }, [effectiveValue]);
+//   const effectiveLabel = useMemo(() => {
+//     return effectiveValue + '%';
+//   }, [effectiveValue]);
 
-  const actions: MenuAction[] = useMemo(() => {
-    return choices.map(cc => {
-      const actionValue = cc.value === 100 ? '100' : cc.value.toString();
-      return {
-        id: actionValue,
-        title: cc.label,
-        state: actionValue === effectiveValue ? 'on' : undefined,
-      };
-    });
-  }, [effectiveValue, choices]);
-  return (
-    <MenuView
-      title={t(`accessibilitySettingsScreen.customFontSizeTitle`)}
-      actions={actions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        onUpdate(event);
-      }}
-    >
-      <ListItem
-        isAction
-        title={t(`accessibilitySettingsScreen.customFontSizeTitle`)}
-        subtitle={effectiveLabel}
-        // // subtitleProps={{ capitalize: true }}
-        /* TODO accessibilityLabel={`${t('common.language')}: ${t(
-          `common.${language}`,
-        )}. ${t('settingsScreen.openLanguageMenu')}`}*/
-      />
-    </MenuView>
-  );
-};
+//   const actions: MenuAction[] = useMemo(() => {
+//     return choices.map(cc => {
+//       const actionValue = cc.value === 100 ? '100' : cc.value.toString();
+//       return {
+//         id: actionValue,
+//         title: cc.label,
+//         state: actionValue === effectiveValue ? 'on' : undefined,
+//       };
+//     });
+//   }, [effectiveValue, choices]);
+//   return (
+//     <MenuView
+//       title={t(`accessibilitySettingsScreen.customFontSizeTitle`)}
+//       actions={actions}
+//       onPressAction={({ nativeEvent: { event } }) => {
+//         onUpdate(event);
+//       }}
+//     >
+//       <ListItem
+//         isAction
+//         title={t(`accessibilitySettingsScreen.customFontSizeTitle`)}
+//         subtitle={effectiveLabel}
+//         // // subtitleProps={{ capitalize: true }}
+//         /* TODO accessibilityLabel={`${t('common.language')}: ${t(
+//           `common.${language}`,
+//         )}. ${t('settingsScreen.openLanguageMenu')}`}*/
+//       />
+//     </MenuView>
+//   );
+// };
