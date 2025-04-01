@@ -17,6 +17,7 @@ import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeC
 import { DegreeCourseScreen } from '../../features/offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../features/offering/screens/StaffScreen';
 import { PersonScreen } from '../../features/people/screens/PersonScreen';
+import { WebView } from '../../features/services/screens/WebView.tsx';
 import { ImageScreen } from '../../features/tickets/components/ImageScreen';
 import { UnreadMessagesModal } from '../../features/user/screens/UnreadMessagesModal';
 
@@ -41,6 +42,7 @@ export interface SharedScreensParamList extends ParamListBase {
     width: number;
     height: number;
   };
+  WebView: { uri: string; title?: string };
 }
 export const SharedScreens = (
   Stack: TypedNavigator<
@@ -113,6 +115,13 @@ export const SharedScreens = (
           headerLargeTitle: false,
           headerTitle: t('common.image'),
           headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="WebView"
+        component={WebView}
+        options={{
+          headerShown: true,
         }}
       />
     </>
