@@ -11,10 +11,17 @@ const useWebmailClient = (): WebmailApi => {
   return new WebmailApi();
 };
 
-export const GetWebmailLink = async () => {
+export const useGetWebmailLink = () => {
   const webmailClient = useWebmailClient();
 
-  return webmailClient.getWebmailLink().then(pluckData);
+  return useQuery(
+    WEBMAIL_LINK_QUERY_KEY,
+    () => webmailClient.getWebmailLink().then(pluckData),
+    {
+      staleTime: 55 * 1000, // 55 seconds
+      cacheTime: 55 * 1000, // 55 seconds
+    },
+  );
 };
 
 export const useGetUnreadEmails = () => {

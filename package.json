@@ -91,6 +91,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-uuid": "^2.0.3",
     "react-native-video": "^6.7.0",
+    "react-native-webview": "^13.13.5",
     "react-string-replace": "^1.1.1",
     "react-usestateref": "^1.0.9",
     "semver": "^7.6.3",
