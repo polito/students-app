@@ -186,7 +186,7 @@
     "notFound": "Not found",
     "notes": "Notes",
     "notice": "Notice",
-    "notice_plural": "Notices",
+    "notice_plural": "News",
     "notifications": "Notifications",
     "now": "Now",
     "objectives": "Objectives",
@@ -362,7 +362,7 @@
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
+    "noticesSubtitle": "News sent by the professor",
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda"
   },

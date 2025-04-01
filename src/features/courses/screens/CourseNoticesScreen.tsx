@@ -71,7 +71,11 @@ export const CourseNoticesScreen = () => {
           subtitle={formatDate(notice.publishedAt)}
           linkTo={{
             screen: 'Notice',
-            params: { noticeId: notice.id, courseId },
+            params: {
+              noticeId: notice.id,
+              courseId,
+              date: formatDate(notice.publishedAt),
+            },
           }}
           unread={!!getUnreadsCount([...noticesNotificationScope, notice.id])}
         />

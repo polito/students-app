@@ -112,7 +112,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     titleStyles.headerTitleStyle,
     width,
   ]);
-
   return (
     <CourseContext.Provider value={id}>
       <CourseFilesCacheProvider>
