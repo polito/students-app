@@ -313,7 +313,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
         index={1}
-        onAnimate={() => {}} // ritriggera l'animazione del componente con index = 1 al click di un nuovo marker
+        onAnimate={() => {}} // trigger animation with index = 1 when clicked
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
