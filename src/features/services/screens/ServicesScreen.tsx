@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -84,8 +84,13 @@ export const ServicesScreen = () => {
         id: 'github',
         name: t('common.openSource'),
         icon: faGithub,
-        onPress: () =>
-          Linking.openURL('https://github.com/polito/students-app'),
+        linkTo: {
+          screen: 'WebView',
+          params: {
+            uri: 'https://github.com/polito/students-app',
+            title: 'Github',
+          },
+        },
         accessibilityLabel: t('common.openSourceAccessibilityLabel'),
       },
       {
@@ -164,8 +169,8 @@ export const ServicesScreen = () => {
           ? unreadEmailsQuery.data.unreadEmails
           : 0,
         linkTo: {
-          screen: 'WebMail',
-          params: { uri: urlEmailsQuery.data?.url ?? '' },
+          screen: 'WebView',
+          params: { uri: urlEmailsQuery.data?.url ?? '', title: 'WebMail' },
         },
         accessibilityLabel: `${t('WebMail')} ${
           unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
@@ -220,7 +225,6 @@ export const ServicesScreen = () => {
                 icon={service.icon}
                 disabled={service.disabled}
                 linkTo={service.linkTo}
-                onPress={service.onPress}
                 favorite
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
@@ -245,7 +249,6 @@ export const ServicesScreen = () => {
                 icon={service.icon}
                 disabled={service.disabled}
                 linkTo={service.linkTo}
-                onPress={service.onPress}
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
                 accessibilityLabel={service?.accessibilityLabel}
