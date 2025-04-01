@@ -55,72 +55,56 @@ export const Text = ({
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
   const { accessibility } = usePreferencesContext();
   const [styless, setStyless] = useState(styles);
-
-  const calculateValueOfPercentage = (fontSize: number) => {
-    return (fontSizes.md * fontSize) / 100;
-  };
-
-  const wordSpacing = accessibility?.fontSize
-    ? calculateValueOfPercentage(accessibility?.fontSize) * 0.16
-    : fontSizes.md;
-
-  const changeStyle = () => {
-    setStyless({
-      heading: {
-        fontSize: fontSizes.md,
-      },
-      subHeading: {
-        fontSize: fontSizes.md,
-        textTransform: 'uppercase',
-      },
-      title: {
-        fontSize: fontSizes.xl,
-      },
-      headline: {
-        fontSize: fontSizes.md,
-      },
-      caption: {
-        fontSize: fontSizes.sm,
-        textTransform: 'uppercase',
-      },
-      prose: {
-        fontSize: fontSizes.md,
-        letterSpacing:
-          accessibility?.fontPlacement === 'long-text'
-            ? fontSizes.md * 0.12
-            : undefined,
-      },
-      longProse: {
-        fontSize:
-          accessibility?.fontSize && accessibility?.fontSize !== 100
-            ? calculateValueOfPercentage(accessibility.fontSize)
-            : fontSizes.md,
-        lineHeight:
-          accessibility?.fontSize && accessibility?.lineHeight
-            ? calculateValueOfPercentage(accessibility.fontSize) * 1.5
-            : undefined,
-        letterSpacing:
-          accessibility?.fontSize &&
-          accessibility?.fontPlacement === 'long-text'
-            ? calculateValueOfPercentage(accessibility.fontSize) * 0.12
-            : undefined,
-        marginBottom:
-          accessibility?.fontSize && accessibility?.paragraphSpacing
-            ? calculateValueOfPercentage(accessibility.fontSize) * 2
-            : 0,
-      },
-      secondaryText: {},
-      link: {},
-    } as any);
-  };
+  const wordSpacing = fontSizes.md * 0.16;
 
   const addWordSpacing = (text: string, spacing: number) => {
     return text.split(' ').join(' '.repeat(spacing));
   };
 
   useEffect(() => {
+    const changeStyle = () => {
+      setStyless({
+        heading: {
+          fontSize: fontSizes.md,
+        },
+        subHeading: {
+          fontSize: fontSizes.md,
+          textTransform: 'uppercase',
+        },
+        title: {
+          fontSize: fontSizes.xl,
+        },
+        headline: {
+          fontSize: fontSizes.md,
+        },
+        caption: {
+          fontSize: fontSizes.sm,
+          textTransform: 'uppercase',
+        },
+        prose: {
+          fontSize: fontSizes.md,
+          letterSpacing:
+            accessibility?.fontPlacement === 'long-text'
+              ? fontSizes.md * 0.12
+              : undefined,
+        },
+        longProse: {
+          fontSize: fontSizes.md,
+          lineHeight: accessibility?.lineHeight
+            ? fontSizes.md * 1.5
+            : undefined,
+          letterSpacing:
+            accessibility?.fontPlacement === 'long-text'
+              ? fontSizes.md * 0.12
+              : undefined,
+          marginBottom: accessibility?.paragraphSpacing ? fontSizes.md * 2 : 0,
+        },
+        secondaryText: {},
+        link: {},
+      } as any);
+    };
     changeStyle();
-  }, [accessibility]);
+  }, [accessibility, fontSizes]);
   return (
     <RNText
       style={[
