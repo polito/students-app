@@ -558,7 +558,7 @@
     "courseFilesCta": "Vai al materiale del corso",
     "hideEventAlertTitle": "Nascondi Evento",
     "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
-    "hideEventButtonTitle": "Nascondi evendo dall'agenda"
+    "hideEventButtonTitle": "Nascondi evento dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"
