@@ -41,7 +41,6 @@ import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
 import { NewsScreen } from '../screens/NewsScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
-import { WebMail } from '../screens/WebView.tsx';
 
 export type OfferingStackParamList = SharedScreensParamList & {
   Offering: undefined;
@@ -91,7 +90,6 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Surveys: undefined;
   SurveyList: { isCompiled: boolean };
   PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
-  WebMail: { uri: string };
 };
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
@@ -347,14 +345,6 @@ export const ServicesNavigator = () => {
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="WebMail"
-        component={WebMail}
-        options={{
-          title: 'WebMail',
-          headerShown: true,
         }}
       />
       {SharedScreens(Stack as any)}
