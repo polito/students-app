@@ -259,7 +259,7 @@ export const ServicesNavigator = () => {
         component={BookingScreen}
         getId={({ params: { id } }) => id.toString()}
         options={{
-          headerTitle: '',
+          headerTitle: t('common.booking'),
           headerLargeTitle: false,
           headerBackTitleVisible: false,
         }}
