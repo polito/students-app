@@ -75,7 +75,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   useScreenTitle(
     (getBuildingError as ResponseError)?.response?.status === 404
       ? t('common.notFound')
-      : placeName,
+      : t('placeScreen.placeDetail'),
   );
 
   useLayoutEffect(() => {
