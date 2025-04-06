@@ -29,9 +29,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
   const monthOfYear =
     !isCurrentMonth(agendaDay.date) && agendaDay.date.toFormat('MMM');
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
-
   const filteredAgendaDay = useHideEventFilter(agendaDay.items);
-
   return (
     <Row onLayout={onLayout}>
       <Col style={styles.dayColumn} align="stretch">

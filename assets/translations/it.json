@@ -340,7 +340,7 @@
   },
   "courseInfoTab": {
     "agendaSectionEmptyState": "Non ci sono eventi relativi a questo corso",
-    "agendaSectionTitle": "Questo corso nell'agenda",
+    "agendaSectionTitle": "nell'agenda",
     "creditsLabel": "Crediti",
     "linkDefaultTitle": "Collegamento a",
     "linksSectionEmptyState": "Non ci sono link relativi al corso",
@@ -349,7 +349,8 @@
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
-    "yearLabel": "Anno"
+    "yearLabel": "Anno",
+    "nextLectureLabel": "Corso nell'agenda"
   },
   "courseLecturesTab": {
     "emptyState": "Non ci sono lezioni",

@@ -57,7 +57,7 @@ export interface AgendaCardProps {
    * On card pressed handler
    */
   onPress?: () => void;
-
+  /**
   /**
    * If true, the card will be compact
    */

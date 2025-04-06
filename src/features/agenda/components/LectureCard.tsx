@@ -19,14 +19,14 @@ import { AgendaStackParamList as AgendaStack } from './AgendaNavigator';
 interface Props {
   item: LectureItem;
   compact?: boolean;
+  notPress?: boolean;
 }
 
-export const LectureCard = ({ item, compact = false }: Props) => {
+export const LectureCard = ({ item, compact = false, notPress }: Props) => {
   const { navigate } = useNavigation<NavigationProp<AgendaStack, 'Lecture'>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { colors, fontSizes, dark } = useTheme();
-
   const location = useMemo(() => {
     if (!item.place?.name) return '-';
 
@@ -44,13 +44,16 @@ export const LectureCard = ({ item, compact = false }: Props) => {
       iconColor={item.color}
       isCompact={compact}
       icon={item.icon}
-      onPress={() =>
-        navigate({
-          name: 'Lecture',
-          params: {
-            item,
-          },
-        })
+      onPress={
+        !notPress
+          ? () =>
+              navigate({
+                name: 'Lecture',
+                params: {
+                  item,
+                },
+              })
+          : undefined
       }
       style={[
         styles.card,

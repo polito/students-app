@@ -329,7 +329,7 @@
   },
   "courseInfoTab": {
     "agendaSectionEmptyState": "This course has no entries in the agenda",
-    "agendaSectionTitle": "This course in the agenda",
+    "agendaSectionTitle": "in the agenda",
     "creditsLabel": "Credits",
     "linkDefaultTitle": "Link to",
     "linksSectionEmptyState": "There are no links related to the course",
@@ -338,7 +338,8 @@
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
     "title": "Info",
-    "yearLabel": "Year"
+    "yearLabel": "Year",
+    "nextLectureLabel": "Course in agenda"
   },
   "courseLecturesTab": {
     "emptyState": "There are no lectures here",

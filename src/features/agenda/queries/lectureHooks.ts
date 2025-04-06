@@ -3,13 +3,15 @@ import { useMemo } from 'react';
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
+import { isCurrentMonth } from '../../../utils/dates';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
+import { formatNextLecture } from '../utils/formatters';
 
 export const LECTURES_QUERY_PREFIX = 'lectures';
 
@@ -126,5 +128,63 @@ export const useGetLectureWeeks = (
   return {
     data: queries.map(query => query.data!),
     isLoading,
+  };
+};
+
+export const useGetNextLecture = (
+  courseId: number,
+  coursesPreferences: CoursesPreferences,
+) => {
+  const lectureClient = useLectureClient();
+  const { data: courses } = useGetCourses();
+  const [nextLectureQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['nextLecture', courseId],
+        queryFn: async () => {
+          const now = DateTime.now().setZone('Europe/Rome');
+          const fromDate = now.toJSDate();
+          const toDate = now.plus({ week: 3 }).toJSDate();
+          const lectures = await lectureClient
+            .getLectures({
+              fromDate,
+              toDate,
+              courseIds: [courseId],
+            })
+            .then(pluckData)
+            .then(l => addUniqueShortcodeToLectures(l, courses!));
+          if (lectures.length > 0) {
+            return formatNextLecture(lectures[0], coursesPreferences);
+          }
+          return undefined;
+        },
+        enabled: !!courseId,
+        staleTime: Infinity,
+      },
+    ],
+  });
+
+  const nextLecture = nextLectureQuery.data;
+  const { dayOfMonth, weekDay, monthOfYear } = useMemo(() => {
+    if (!nextLecture) return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
+    const lectureStart = DateTime.fromISO(nextLecture.date, {
+      zone: IANAZone.create('Europe/Rome'),
+    });
+    return {
+      dayOfMonth: lectureStart.toFormat('d'),
+      weekDay: lectureStart.toFormat('ccc'),
+      monthOfYear: isCurrentMonth(lectureStart)
+        ? ''
+        : lectureStart.toFormat('LLL'),
+    };
+  }, [nextLecture]);
+
+  return {
+    nextLecture,
+    dayOfMonth,
+    weekDay,
+    monthOfYear,
+    isLoadingNextLecture: nextLectureQuery.isLoading,
+    error: nextLectureQuery.error,
   };
 };
