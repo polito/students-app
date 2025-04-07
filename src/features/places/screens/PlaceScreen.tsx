@@ -223,7 +223,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     spacing,
   ]);
 
-  if (long && lat && name) {
+  if (long && lat && name && !place) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
         <BottomSheet
@@ -312,6 +312,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       <BottomSheet
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
+        index={1}
+        onAnimate={() => {}} // trigger animation with index = 1 when clicked
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
