@@ -1,10 +1,11 @@
-import { APP_BUILD, APP_VERSION } from '@env';
+import { APP_VERSION, BUILD_NO } from '@env';
 import * as Sentry from '@sentry/react-native';
 
 import { isEnvProduction } from './env';
 
-export const routingInstrumentation =
-  new Sentry.ReactNavigationInstrumentation();
+export const routingInstrumentation = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: true,
+});
 
 export const initSentry = () => {
   Sentry.init({
@@ -12,12 +13,12 @@ export const initSentry = () => {
     enabled: isEnvProduction,
     enableNative: true,
     integrations: [
-      new Sentry.ReactNativeTracing({
+      Sentry.reactNativeTracingIntegration({
         routingInstrumentation,
       }),
     ],
     release: `it.polito.students@${APP_VERSION}`,
-    dist: APP_BUILD,
+    dist: BUILD_NO,
     environment: process.env.NODE_ENV,
     tracesSampleRate: 1.0,
   });

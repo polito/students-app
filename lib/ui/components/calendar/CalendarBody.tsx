@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Platform,
   SafeAreaView,
@@ -12,7 +12,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-import { DateTime, Interval } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { useNow } from '../../hooks/calendar/useNow';
 import { usePanResponder } from '../../hooks/calendar/usePanResponder';
@@ -25,8 +25,8 @@ import {
 } from '../../types/Calendar';
 import {
   HOURS,
-  getMaxOverlappingEventsCount,
   getRelativeTopInDay,
+  getStyledEvents,
   isToday,
 } from '../../utils/calendar';
 import { CalendarEvent } from './CalendarEvent';
@@ -80,7 +80,6 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   headerComponent = null,
   headerComponentStyle = {},
   hideHours = false,
-  isEventOrderingEnabled = true,
   hours = HOURS,
   startHour = 8,
 }: CalendarBodyProps<T>) => {
@@ -89,6 +88,12 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   const bottomBarHeight = useBottomTabBarHeight();
 
   const styles = useStylesheet(createStyles);
+
+  const styledEvents = useMemo(() => getStyledEvents(events), [events]);
+  const styledAllDayEvents = useMemo(
+    () => getStyledEvents(allDayEvents),
+    [allDayEvents],
+  );
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -123,18 +128,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   );
 
   const _renderMappedEvent = useCallback(
-    (event: T, index: number, dailyEvents: T[]) => {
-      const eventTime = Interval.fromDateTimes(event.start, event.end);
-      const overlappingEvents = dailyEvents.filter(e =>
-        eventTime.overlaps(Interval.fromDateTimes(e.start, e.end)),
-      );
-      const overlappingEventsCount = getMaxOverlappingEventsCount(
-        event,
-        overlappingEvents,
-      );
-      let eventIndex = overlappingEvents.indexOf(event);
-      if (eventIndex === -1) eventIndex = 0;
-
+    (event: T, index: number, _: T[]) => {
       return (
         <CalendarEvent
           key={`${index}${event.start}${event.title}${event.end}`}
@@ -142,8 +136,6 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           onPressEvent={onPressEvent}
           eventCellStyle={eventCellStyle}
           showTime={showTime}
-          eventCount={overlappingEventsCount}
-          eventOrder={eventIndex}
           overlapOffset={overlapOffset}
           renderEvent={renderEvent}
           ampm={ampm}
@@ -237,7 +229,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                       isLastDate && { borderRightWidth: 0 },
                     ]}
                   >
-                    {allDayEvents
+                    {styledAllDayEvents
                       .filter(({ end }) => end.hasSame(date, 'day'))
                       .map(_renderMappedEvent)}
                   </View>
@@ -256,7 +248,7 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                   />
                 ))}
 
-                {events
+                {styledEvents
                   .filter(
                     ({ end, start }) =>
                       start.hasSame(date, 'day') && end.hasSame(date, 'day'),

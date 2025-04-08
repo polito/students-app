@@ -25,7 +25,7 @@ export const formatDateFromString = (date: string | null) => {
 };
 
 export const formatDateTime = (date: Date) => {
-  return `${formatDate(date)} ${formatTime(date)}`;
+  return `${formatDate(date)} ${formatTime(date, 'HH:mm')}`;
 };
 
 export const formatDateTimeAccessibility = (
@@ -33,7 +33,7 @@ export const formatDateTimeAccessibility = (
 ): { date: string; time: string } => {
   return {
     date: formatDate(date),
-    time: formatTime(date),
+    time: formatTime(date, 'HH:mm'),
   };
 };
 
@@ -52,10 +52,16 @@ export const formatMachineDate = (date: Date) => {
   );
 };
 
-export const formatTime = (date: Date) => {
+const formatTime = (date: Date, format: string) => {
   return DateTime.fromJSDate(date, {
     zone: IANAZone.create('Europe/Rome'),
-  }).toFormat('HH:mm');
+  }).toFormat(format);
+};
+
+export const dateFormatter = (format: string) => {
+  return (date: Date) => {
+    return formatTime(date, format);
+  };
 };
 
 const today = DateTime.now();
@@ -70,4 +76,16 @@ export const isCurrentYear = (date: DateTime): boolean => {
 
 export const convertMachineDateToFormatDate = (date: string) => {
   return date.replace(MACHINE_DATE_REGEX, '$3/$2/$1');
+};
+
+export const isValidDate = (date: Date) => {
+  return date.toISOString() !== new Date(0).toISOString();
+};
+
+export const toOASTruncable = (date: DateTime) => {
+  // This fix is needed to correct the truncation made by OpenAPI Generator,
+  // which cuts off the first characters of the date. This causes issues because
+  // OpenAPI returns the date in UTC format, and in particular, when it comes to midnight (00:00),
+  // the conversion can result in an hour of 23:00 on the previous day.
+  return date.plus({ minute: date.offset }).toJSDate();
 };

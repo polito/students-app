@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { Dimensions, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 import Video, {
   OnBufferData,
   OnLoadData,
   OnProgressData,
-  VideoProperties,
+  ReactVideoProps,
+  VideoRef,
 } from 'react-native-video';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -27,11 +29,12 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * In order for fullscreen to work correctly, this component's parent should
  * have a minHeight=100% of the available window height
  */
-export const VideoPlayer = (props: VideoProperties) => {
-  const { width, height } = Dimensions.get('screen');
+export const VideoPlayer = (props: ReactVideoProps) => {
+  const [width, setWidth] = useState(Dimensions.get('screen').width);
+  const [height, setHeight] = useState(Dimensions.get('screen').height);
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
-  const playerRef = useRef<Video>(null);
+  const playerRef = useRef<VideoRef>(null);
   const [paused, setPaused] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -40,6 +43,40 @@ export const VideoPlayer = (props: VideoProperties) => {
   const [progress, setProgress] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
   useFullscreenUi(fullscreen);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      setPaused(true);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', _ => {
+      SystemNavigationBar.fullScreen(false);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      const { width: newWidth, height: newHeight } = Dimensions.get('screen');
+      setWidth(newWidth);
+      setHeight(newHeight);
+    };
+    Dimensions.addEventListener('change', updateDimensions);
+  }, []);
+
+  useEffect(() => {
+    if (fullscreen) {
+      SystemNavigationBar.stickyImmersive();
+      StatusBar.setHidden(true);
+    } else {
+      SystemNavigationBar.fullScreen(fullscreen);
+    }
+  }, [fullscreen]);
 
   const handleLoad = (meta: OnLoadData) => {
     setDuration(meta.duration);
@@ -95,13 +132,14 @@ export const VideoPlayer = (props: VideoProperties) => {
         ref={playerRef}
         controls={false}
         paused={paused}
-        style={[
-          {
-            width: '100%',
-            minHeight: (width / 16) * 9,
-          },
-          fullscreen && styles.fullHeight,
-        ]}
+        style={
+          !fullscreen
+            ? {
+                width: '100%',
+                minHeight: (width / 16) * 9,
+              }
+            : styles.fullHeight
+        }
         rate={playbackRate}
         resizeMode="contain"
         onLoad={handleLoad}
@@ -112,9 +150,7 @@ export const VideoPlayer = (props: VideoProperties) => {
           onProgressChange(0);
         }}
         onBuffer={(data: OnBufferData) => setBuffering(data.isBuffering)}
-        fullscreen={fullscreen}
-        onFullscreenPlayerDidPresent={() => setFullscreen(true)}
-        onFullscreenPlayerDidDismiss={() => setFullscreen(false)}
+        fullscreen={false}
         {...props}
       />
 
@@ -122,14 +158,7 @@ export const VideoPlayer = (props: VideoProperties) => {
         <VideoControls
           buffering={buffering}
           fullscreen={fullscreen}
-          toggleFullscreen={() => {
-            if (fullscreen) {
-              playerRef.current?.dismissFullscreenPlayer();
-            } else {
-              playerRef.current?.presentFullscreenPlayer();
-            }
-            setFullscreen(negate);
-          }}
+          toggleFullscreen={() => setFullscreen(negate)}
           progress={progress}
           onProgressChange={onProgressChange}
           paused={paused}

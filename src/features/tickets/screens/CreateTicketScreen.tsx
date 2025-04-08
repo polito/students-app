@@ -64,7 +64,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
       navigation.navigate(initialTopicId ? 'Services' : 'Tickets');
       navigation.navigate('Ticket', { id: data.id });
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data, initialTopicId, navigation]);
 
   const subTopics = useMemo(
     () =>
@@ -114,12 +114,33 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     [subTopics, ticketBody.subtopicId],
   );
 
+  const subjectAccessibilityLabel = useMemo(() => {
+    const baseText = t('createTicketScreen.subjectLabel');
+    if (ticketBody?.subtopicId) {
+      return baseText;
+    } else {
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
+    }
+  }, [t, ticketBody?.subtopicId]);
+
+  const subtopicAccessibilityLabel = useMemo(() => {
+    const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
+    if (topicId) {
+      return baseText;
+    } else {
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
+    }
+  }, [t, topicId]);
+
   return (
     <ScreenContainer>
       <Section>
         <SectionHeader title={t('createTicketScreen.subtitle')} />
         <OverviewList>
           <Select
+            accessibilityLabel={t(
+              'createTicketScreen.topicDropdownLabelAccessibility',
+            )}
             label={t('createTicketScreen.topicDropdownLabel')}
             description={t('createTicketScreen.topicDescription')}
             options={topicOptions}
@@ -131,6 +152,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList>
           <Select
+            accessibilityLabel={subtopicAccessibilityLabel}
             options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
@@ -142,6 +164,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList style={styles.objectSection}>
           <TextField
+            accessibilityLabel={subjectAccessibilityLabel}
             autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
             inputStyle={styles.textFieldInput}

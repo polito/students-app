@@ -33,8 +33,6 @@
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
     "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
-    "informationAcknowledgment": "I declare that I have read it\nof the ",
-    "informationAcknowledgmentLink": "COVID 19 emergency information",
     "noSeatSelected": "No seat",
     "noSeatsAvailable": "We're sorry,\nthere are no places available",
     "seatStatus": {
@@ -79,6 +77,7 @@
       "false": "Non active",
       "true": "Active"
     },
+    "agenda": "Agenda",
     "agent": "Agent",
     "all": "All",
     "appFeedback": "App Feedback",
@@ -110,6 +109,7 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
+    "dateToBeDefinedShort": "To be defined",
     "day": "Day",
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
@@ -159,10 +159,13 @@
     "follow": "Follow",
     "free": "Free",
     "grade": "Grade",
+    "hiddenEvents": "Hidden events",
     "hide": "Hide",
+    "hideInAgenda": "Hide in Agenda",
     "hour": "Hour",
     "hours": "Hour",
     "icon": "Icon",
+    "image": "Image",
     "inYourAgenda": "in your agenda",
     "it": "Italian",
     "language": "Language",
@@ -182,8 +185,8 @@
     "noValue": "No value",
     "notFound": "Not found",
     "notes": "Notes",
-    "notice": "Notice",
-    "notice_plural": "Notices",
+    "notice": "News",
+    "notice_plural": "News",
     "notifications": "Notifications",
     "now": "Now",
     "objectives": "Objectives",
@@ -222,6 +225,7 @@
     "selectAnOption": "Please select an option",
     "services": "Services",
     "show": "Show",
+    "shortUsername": "ID",
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
     "status": "Status",
@@ -293,21 +297,32 @@
     "subtitle_plural": "{{count}} files"
   },
   "courseDirectoryScreen": {
-    "noResult": "No results found"
+    "clearSearch": "Clear search",
+    "emptyRootFolder": "There are no files",
+    "emptyFolder": "The folder is empty",
+    "noResult": "No results found",
+    "navigateRecentFiles": "View recent",
+    "search": "Search"
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
-    "reDownloadFile": "Redownload file"
+    "reDownloadFile": "Redownload file",
+    "fileSavedDocumentsPath": "File saved in the documents folder",
+    "fileSaved": "File saved in {{cachedFilePath}}"
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
-    "empty": "There are no files here",
+    "empty": "There are no files",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
     "title": "Files"
   },
   "courseGuideScreen": {
     "title": "Course guide"
+  },
+  "courseHideEventScreen": {
+    "button": "Show in Agenda",
+    "selectItems": "Select all"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"
@@ -316,6 +331,9 @@
     "agendaSectionEmptyState": "This course has no entries in the agenda",
     "agendaSectionTitle": "This course in the agenda",
     "creditsLabel": "Credits",
+    "linkDefaultTitle": "Link to",
+    "linksSectionEmptyState": "There are no links related to the course",
+    "linksSectionTitle": "Useful links",
     "moreSectionTitle": "More",
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
@@ -333,8 +351,8 @@
     "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
-    "emptyState": "There are no notices here",
-    "title": "Notices"
+    "emptyState": "There are no news here",
+    "title": "News"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -344,7 +362,7 @@
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
+    "noticesSubtitle": "News sent by the professor",
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda"
   },
@@ -400,6 +418,43 @@
     "title": "Degree",
     "tracks": "Tracks"
   },
+  "escRequestScreen": {
+    "title": "European Student Card",
+    "firstTitle": "What is the European Student Card?",
+    "firstSection": "The ESC (European Student Card) is a digital identification that allows university students across Europe to access services and benefits offered by educational institutions and student organizations in a simple and secure way.",
+    "secondTitle": "Why should I use it?",
+    "secondSection": "Using the European Student Card offers numerous advantages, including:",
+    "secondSectionList": {
+      "first": "Simplified access to services from partner universities across Europe.",
+      "second": "Reduced need for paper documentation.",
+      "third": "Easier participation in international mobility programs, such as Erasmus+.",
+      "fourth": "Access to discounts and promotions reserved for students in various European countries."
+    },
+    "cardRequest": {
+      "firstSectionNormalText":"To activate your Card for each of your careers, we need ",
+      "sectionBoldText":"authorization to transmit the following data ",
+      "secondSectionNormalText":"to the relevant EU authority:",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "id": "Student ID number",
+      "mail": "Institutional email",
+      "studyProgram": "Study program"
+    },
+    "authorize": "Authorize",
+    "escModalInfo": "All card management and revocation settings can be found within the Education Portal"
+  },
+  "escModalInfo": {
+    "revoke": "Revoke authorisation",
+    "revokeConfirm": "Revoking the authorization to keep your data in the ESC-Router will deactivate this card and any other cards linked to your academic careers, if any",
+    "text": "To obtain your European Student Card (ESC), you authorized the transmission of your data through ESC_router. You can revoke this authorization at any time.",
+    "title":"ESC Data Settings"
+  },
+  "europeanCardScreen": {
+    "title": "THE EUROPEAN STUDENT CARD",
+    "expiredTitle": "Your Card has expired",
+    "expiredText": "Student not enrolled in the current school year",
+    "inactive": "Your Card is suspended"
+  },
   "eventPlacesScreen": {
     "title": "Event locations"
   },
@@ -412,6 +467,18 @@
     "placeholder": "Explain why you need to take the exam early",
     "title": "You can request the course holder to take the exam without having attended the classes"
   },
+  "examRescheduleScreen": {
+    "button": "Send request",
+    "ctaRescheduleSuccess": "Request sent",
+    "ctaRequest": "Request exam call date change",
+    "error": "Fill in the text field before proceeding with the request.",
+    "requestDetails": "Enter the dates to be suggested here",
+    "requestDetailsTitle": "What dates would you recommend to the coordinator?",
+    "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
+    "requestReason": "Enter your reasons for requesting a change of exam call date here",
+    "requestReasonTitle": "You can ask the college coordinator if you can change the date of your exam call",
+    "screenTitle": "Exam call date change"
+  },
   "examScreen": {
     "bookedCount": "Booked students",
     "bookingEndsAt": "Booking ends on",
@@ -423,8 +490,10 @@
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
     "noLocation": "Room to be defined",
+    "notAvailable": "Booking not available",
     "notes": "Notes",
-    "title": "Exam call"
+    "title": "Exam call",
+    "noBookedCount": "Data not available"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
@@ -433,7 +502,8 @@
   },
   "freeRoomsScreen": {
     "noFreeRooms": "No free rooms found",
-    "title": "Free rooms"
+    "title": "Free rooms",
+    "maxViewLimitMessage": "Maximum display limit reached "
   },
   "grades": {
     "absent": "Abs",
@@ -471,7 +541,10 @@
     "title": "Offers screen"
   },
   "lectureScreen": {
-    "courseFilesCta": "Go to course files"
+    "courseFilesCta": "Go to course files",
+    "hideEventAlertTitle": "Hide event",
+    "hideEventAlertMessage": " You are hiding the {{ day }} {{ title }} event from {{ fromTime }} to {{ toTime }}",
+    "hideEventButtonTitle": "Hide from the agenda"
   },
   "libraryScreen": {
     "title": "Library"
@@ -488,7 +561,8 @@
     "title": "Log in with your polito.it credentials",
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID",
-    "usernameLabelAccessibility": "Enter your username here"
+    "usernameLabelAccessibility": "Enter your username here",
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -582,7 +656,10 @@
     "capacity": "{{count}} seat",
     "capacity_plural": "{{count}} seats",
     "placeNotFound": "Place not found",
-    "title": "Place"
+    "title": "Place",
+    "placeDetail": "Place detail",
+    "getDirections": "Obtain directions"
+
   },
   "placesScreen": {
     "changeFloor": "Change floor",
@@ -592,7 +669,6 @@
     "noPlacesFound": "No places found",
     "searchCategories": "Search categories",
     "title": "Places",
-    "unwrappingMap": "Unwrapping the map",
     "viewWholeCampus": "View the whole campus"
   },
   "placesSearchScreen": {
@@ -616,14 +692,28 @@
     "trainingOffer": "Training offer"
   },
   "provisionalGradeScreen": {
-    "acceptGradeConfirmMessage": "By accepting this evaluation you will no longer be able to change your decision",
+    "acceptGradeConfirmMessage": "By requesting immediate registration, the evaluation will be recorded in your transcript and you will no longer be able to change your decision",
     "acceptGradeCta": "Request immediate registration",
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
-    "rejectGradeCta": "Reject the evaluation",
+    "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "teacherMessage": {
+      "title": "Professor's message",
+      "readMore": " more",
+      "readLess": " less"
+    },
     "title": "Evaluation"
+  },
+  "recordedGradeScreen": {
+    "additionalPoint": "Additional Scores",
+    "recordedGradeTitle": "Recorded grade",
+    "staff": "Staff",
+    "teacher": "Holder",
+    "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5 out of a maximum of 4.\nYou can consult your total on-time points on career",
+    "titleOnTimePoint": "On-time Exam points",
+    "ctaButtonModal": "Access your career"
   },
   "sectionHeader": {
     "cta": "See all",
@@ -706,13 +796,14 @@
     "title": "Evaluation"
   },
   "transcriptGradesScreen": {
+    "autoRegistration": "Automatic registration in:",
     "emptyState": "You haven't taken any exams",
     "expiredCountdown": "Expired",
     "provisionalEmptyState": "There are no provisional grades",
     "provisionalTitle": "Provisional",
     "recordedTitle": "Recorded",
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
-    "rejectionCountdown": "Rejectable by:",
+    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
     "title": "Grades",
     "total": "There are {{total}} grades"
   },
@@ -721,13 +812,33 @@
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
-    "estimatedFinalGrade": "Final grade",
-    "estimatedFinalGradePurged": "Estimated final grade",
-    "finalAverageLabel": "Final average",
-    "masterAdmissionAverage": "Master admission average",
+    "averageLabel": "Average grade for admission to the Final Examination",
+    "finalAverageLabelDescription":{
+      "description":  "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
+      "formula": "(sum (grade * credits) / sum of credits) * (110/30) ,\nexcluding the {{-excludedCreditsNumber}} worst credits"
+    },
+    "laude": "*Honours does not count toward the calculation",
+    "masterAdmissionAverage": "Master admission average grade",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
+      "formula":"sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
+    },
+    "NB": "Note",
+    "NBDescription": "These definitions are indicative. To find out more, refer to the Student Guide.\nOnly graded exams are considered in all average grade above.",
+    "onTimeScores": "On-time Exams points",
+    "pointTitle": "Scores",
+    "pointModal": "The total of the Exam on-time points earned. This value can never exceed the maximum allowed by the degree program.\nTo find out more, refer to the Student Guide.",
     "thisYear": "This academic year",
     "title": "Career",
-    "weightedAverageLabel": "Weighted average",
+    "weightedAverageLabelDescription":{
+      "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
+      "formula": "(sum (grade * credits) / sum of credits) * (110/30)"
+    },
+    "weightedAverage": "Weighted average of grades",
+    "weightedAverageDescription":{
+      "description":"It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
+      "formula": "sum (grade * credits) / sum of credits"
+    },
     "yourCareer": "Your career"
   },
   "videoControls": {

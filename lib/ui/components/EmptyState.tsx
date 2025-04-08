@@ -30,6 +30,9 @@ export const EmptyState = ({
 
   return (
     <Col
+      accessibilityRole="text"
+      accessible={true}
+      accessibilityLabel={message}
       align="center"
       style={{
         padding: _spacing[spacing as unknown as keyof Theme['spacing']],

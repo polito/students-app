@@ -47,6 +47,7 @@ import {
   getCalendarPropsFromTopic,
   isPastSlot,
 } from '../../../utils/bookings';
+import { dateFormatter, formatDate } from '../../../utils/dates';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
@@ -85,19 +86,34 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [calendarHeight, setCalendarHeight] = useState<number | undefined>(
     undefined,
   );
-  const nextWeek = useCallback(
-    () => setCurrentWeekStart(odlW => odlW.plus({ week: 1 })),
-    [],
-  );
-
-  const prevWeek = useCallback(
-    () => setCurrentWeekStart(odlW => odlW.minus({ week: 1 })),
-    [],
-  );
-
+  const formatHHmm = dateFormatter('HH:mm');
   const currentTopic = useMemo(
     () => getCalendarPropsFromTopic(topics, topicId),
     [topics, topicId],
+  );
+
+  const mode = currentTopic.agendaView ? 'day' : 'custom';
+
+  const nextWeek = useCallback(
+    () =>
+      setCurrentWeekStart(oldW => {
+        if (currentTopic.agendaView) {
+          return oldW.plus({ days: 1 });
+        }
+        return oldW.plus({ week: 1 });
+      }),
+    [currentTopic.agendaView],
+  );
+
+  const prevWeek = useCallback(
+    () =>
+      setCurrentWeekStart(oldW => {
+        if (currentTopic.agendaView) {
+          return oldW.minus({ days: 1 });
+        }
+        return oldW.minus({ week: 1 });
+      }),
+    [currentTopic.agendaView],
   );
 
   useLayoutEffect(() => {
@@ -190,7 +206,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         })
       : START_DATE;
     const newDaysPerWeek = currentTopic?.daysPerWeek as WeekNum;
-    setCurrentWeekStart(newStartDate);
+    setCurrentWeekStart(newStartDate.isValid ? newStartDate : START_DATE);
     setWeeksEndOn(
       newStartDate.plus({ days: newDaysPerWeek - 1 }).weekday as WeekNum,
     );
@@ -251,6 +267,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         {calendarHeight && (
           <Calendar<BookingCalendarEvent>
             weekStartsOn={currentWeekStart.weekday as WeekNum}
+            mode={mode}
             weekEndsOn={weekEndsOn}
             headerContentStyle={styles.dayHeader}
             weekDayHeaderHighlightColor={colors.background}
@@ -258,9 +275,8 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             date={currentWeekStart}
             locale={language}
             hours={hours}
-            bodyContainerStyle={{ backgroundColor: 'yellow' }}
+            bodyContainerStyle={{ backgroundColor: colors.yellow }}
             cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
-            mode="custom"
             showAllDayEventCell={false}
             swipeEnabled={false}
             renderHeader={props => (
@@ -270,7 +286,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             events={calendarEvents}
             height={calendarHeight}
             startHour={currentTopic.startHour || 8}
-            renderEvent={(item, touchableOpacityProps) => {
+            renderEvent={(item, touchableOpacityProps, key) => {
               const isMini = item.duration <= 15;
               const { color, backgroundColor } = getBookingStyle(
                 item,
@@ -278,10 +294,26 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 colors,
                 dark,
               );
-              const bookingStatus = getBookingSlotStatus(item);
+
+              const dateStart = formatDate(item?.start.toJSDate());
+              const timeStart = formatHHmm(item?.start.toJSDate());
+              const timeEnd = formatHHmm(item?.end.toJSDate());
+              const timeMessage = ` ${dateStart}, ${t(
+                'common.fromTime',
+              )} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
+              const accessibilityMessageText = [
+                t(
+                  getBookingSlotStatus(
+                    item,
+                    'bookingScreen.bookingStatus.notAvailableBooking',
+                  ),
+                ),
+                timeMessage,
+              ].join(', ');
 
               return (
                 <Pressable
+                  key={key}
                   {...touchableOpacityProps}
                   style={[
                     touchableOpacityProps.style,
@@ -289,7 +321,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                     { backgroundColor },
                   ]}
                   accessibilityRole="button"
-                  accessibilityLabel={t(bookingStatus)}
+                  accessibilityLabel={t(accessibilityMessageText)}
                 >
                   {!isMini && <Icon icon={faSeat} color={color} />}
                   <Text

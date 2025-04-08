@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { CourseOverviewPreviousEditionsInner } from '@polito/api-client';
 import { Notification } from '@polito/api-client/models/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,14 +20,6 @@ import {
   RemoteMessage,
   UnreadNotificationsByScope,
 } from '../types/notifications';
-
-type PathExtractor<T, Paths extends any[] = []> = T extends Array<Notification>
-  ? never
-  : T extends object
-  ? {
-      [K in keyof T]: PathExtractor<T[K], [...Paths, K]>;
-    }[keyof T]
-  : Paths;
 
 type CourseTransactionId =
   | 'avvisidoc'
@@ -49,14 +42,14 @@ type TransactionId =
   | 'booking'
   | 'avvisi';
 
-const messageTransactionIds: MessageTransactionId[] = [
-  'emergenze',
-  'eventi',
-  'esitiesami',
-  'individuale',
-  'messaggidoc',
-  'segreteria',
-];
+// const messageTransactionIds: MessageTransactionId[] = [
+//   'emergenze',
+//   'eventi',
+//   'esitiesami',
+//   'individuale',
+//   'messaggidoc',
+//   'segreteria',
+// ];
 
 const courseTransactionsMapping: Record<
   CourseTransactionId,
@@ -97,7 +90,7 @@ const extractSubtreeNotifications = (root: any) => {
   const notifications: Notification[] = [];
   const exploreNode = (node: any) => {
     if (Array.isArray(node)) {
-      notifications.push(...node);
+      notifications.push(...(node as any[]));
     } else if (typeof node === 'object') {
       Object.values(node).forEach(exploreNode);
     }
@@ -142,6 +135,7 @@ export const useNotifications = () => {
       summarize = false,
     ) => {
       // TODO PathExtractor<UnreadNotificationsByScope>
+      // https://github.com/polito/students-app/blob/v1.6.9/src/core/hooks/useNotifications.ts#L24
       const root = get(unreadNotifications, path!);
       const visitNode = (node: object | Notification[]): number => {
         if (Array.isArray(node)) {
@@ -160,14 +154,35 @@ export const useNotifications = () => {
     [unreadNotifications],
   );
 
+  const getUnreadsCountPerCourse = useCallback(
+    (
+      courseId?: number | null,
+      prevEditions?: CourseOverviewPreviousEditionsInner[],
+    ) => {
+      if (courseId === undefined || !prevEditions) return 0;
+      const courseIds = prevEditions.map(e => e.id);
+      if (courseId) {
+        courseIds.push(courseId);
+      }
+      return (
+        courseIds.reduce(
+          (acc, eid) =>
+            acc + (getUnreadsCount(['teaching', 'courses', eid]) ?? 0),
+          0,
+        ) || undefined
+      );
+    },
+    [getUnreadsCount],
+  );
+
   const navigateToUpdate = useCallback(
     (notification?: RemoteMessage) => {
       if (!notification || !notification.data?.polito_transazione) {
         return;
       }
-      const payload: PushNotificationPayload = JSON.parse(
+      const payload = JSON.parse(
         notification.data?.payload ?? 'null',
-      );
+      ) as PushNotificationPayload;
       const transaction = notification.data.polito_transazione as TransactionId;
       // Course
       if (courseTransactionsMapping[transaction as CourseTransactionId]) {
@@ -216,5 +231,6 @@ export const useNotifications = () => {
     navigateToUpdate,
     clearNotificationScope,
     getUnreadsCount,
+    getUnreadsCountPerCourse,
   };
 };

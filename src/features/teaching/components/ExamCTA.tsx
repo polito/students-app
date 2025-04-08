@@ -17,9 +17,10 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 interface Props {
   exam: Exam;
+  absolute?: boolean;
 }
 
-export const ExamCTA = ({ exam }: Props) => {
+export const ExamCTA = ({ exam, absolute = false }: Props) => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
 
@@ -32,13 +33,13 @@ export const ExamCTA = ({ exam }: Props) => {
 
   const examRequestable = exam?.status === ExamStatusEnum.Requestable;
   const examAvailable = exam?.status === ExamStatusEnum.Available;
+  const examUnavailable = exam?.status === ExamStatusEnum.Unavailable;
 
   const confirm = useConfirmationDialog();
 
   const disabledStatuses = [
     ExamStatusEnum.RequestAccepted,
     ExamStatusEnum.RequestRejected,
-    ExamStatusEnum.Unavailable,
   ] as ExamStatusEnum[];
   const action = async () => {
     if (examRequestable) {
@@ -80,15 +81,20 @@ export const ExamCTA = ({ exam }: Props) => {
     <CtaButton
       destructive={!examAvailable && !examRequestable}
       title={
-        examRequestable
-          ? t('examScreen.ctaRequest')
-          : examAvailable
-          ? t('examScreen.ctaBook')
-          : t('examScreen.ctaCancel')
+        examUnavailable
+          ? t('examScreen.notAvailable')
+          : examRequestable
+            ? t('examScreen.ctaRequest')
+            : examAvailable
+              ? t('examScreen.ctaBook')
+              : t('examScreen.ctaCancel')
       }
       action={action}
       loading={mutationsLoading}
-      disabled={!onlineManager.isOnline()}
+      disabled={!onlineManager.isOnline() || examUnavailable}
+      variant="filled"
+      absolute={absolute}
+      containerStyle={{ paddingVertical: 0 }}
     />
   );
 };

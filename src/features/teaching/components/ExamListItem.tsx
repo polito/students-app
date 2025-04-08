@@ -14,9 +14,10 @@ import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { Exam } from '../../../core/types/api';
 import {
+  dateFormatter,
   formatDate,
   formatReadableDate,
-  formatTime,
+  isValidDate,
 } from '../../../utils/dates';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { ExamStatusBadge } from './ExamStatusBadge';
@@ -36,14 +37,14 @@ export const ExamListItem = ({
 
   const { courses: coursesPreferences } = usePreferencesContext();
   const { colors } = useTheme();
-
+  const formatHHmm = dateFormatter('HH:mm');
   const listItemProps = useMemo(() => {
     let dateTime,
       accessibleDateTime = '';
 
     const status = t(`common.examStatus.${exam.status}`);
 
-    if (!exam.examStartsAt) {
+    if (!exam.examStartsAt || !isValidDate(exam?.examStartsAt)) {
       dateTime = t('common.dateToBeDefined');
     } else {
       dateTime = formatDate(exam.examStartsAt);
@@ -52,17 +53,16 @@ export const ExamListItem = ({
         dateTime += `, ${t('common.timeToBeDefined')}`;
         accessibleDateTime = `${dateTime}.`;
       } else {
-        const time = formatTime(exam.examStartsAt);
+        const time = formatHHmm(exam.examStartsAt);
         accessibleDateTime += `${dateTime}. ${t('common.time')} ${time}.`;
         dateTime += `, ${time}`;
       }
     }
 
     return {
-      // subtitle: `${dateTime}`,
       accessibilityLabel: `${accessibilityLabel} ${exam.courseName} ${accessibleDateTime} ${status}`,
     };
-  }, [accessibilityLabel, exam, t]);
+  }, [accessibilityLabel, exam, t, formatHHmm]);
 
   return (
     <ListItem
@@ -90,9 +90,9 @@ export const ExamListItem = ({
           <Row gap={1}>
             <Icon icon={faCalendar} color={colors.secondaryText} />
             <Text variant="secondaryText">
-              {exam.examStartsAt
+              {exam.examStartsAt && isValidDate(exam?.examStartsAt)
                 ? formatReadableDate(exam.examStartsAt, true)
-                : t('common.dateToBeDefined')}
+                : t('common.dateToBeDefinedShort')}
             </Text>
           </Row>
           {(exam.places?.length ?? 0) > 0 && (

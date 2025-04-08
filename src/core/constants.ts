@@ -4,9 +4,12 @@ import { DocumentDirectoryPath, ExternalDirectoryPath } from 'react-native-fs';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 export const MAX_RECENT_SEARCHES = 10;
+export const ANDROID_DOCUMENT_DIRECTORY_PATH = '/storage/emulated/0/Documents';
 export const PUBLIC_APP_DIRECTORY_PATH = IS_IOS
   ? DocumentDirectoryPath
-  : ExternalDirectoryPath;
+  : Platform.Version > '29'
+    ? ANDROID_DOCUMENT_DIRECTORY_PATH
+    : ExternalDirectoryPath;
 export const courseColors = [
   { name: 'colors.red', color: '#DC2626' },
   { name: 'colors.orange', color: '#EA580C' },

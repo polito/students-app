@@ -27,13 +27,18 @@
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
-	<dict/>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan documents</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Access to current position to check-in bookings</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>Check in bookings</string>
+	<string>Access to current position to check-in bookings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Scan documents and pick images for assignments and ticket attachments</string>
 	<key>UIAppFonts</key>
@@ -53,6 +58,7 @@
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
+		<string>audio</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>

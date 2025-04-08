@@ -28,6 +28,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { DateTime } from 'luxon';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -37,8 +39,9 @@ import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { formatFinalGrade } from '../../../utils/grades';
+import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
+import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { SurveyTypesSection } from '../components/SurveyTypesSection';
@@ -52,7 +55,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences, hideGrades } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
-  const { getUnreadsCount } = useNotifications();
+  const { getUnreadsCountPerCourse } = useNotifications();
   const surveyCategoriesQuery = useGetSurveyCategories();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
@@ -64,7 +67,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     return coursesQuery.data.filter(
       c =>
-        c.id &&
+        isCourseDetailed(c) &&
         c.uniqueShortcode &&
         !coursePreferences[c.uniqueShortcode]?.isHidden,
     );
@@ -83,8 +86,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
 
     return (
       examsQuery.data
-        .filter(e => !hiddenCourses.includes(e.uniqueShortcode))
-        .sort(e => (e.status === ExamStatusEnum.Booked ? -1 : 1))
+        .filter(
+          e =>
+            !hiddenCourses.includes(e.uniqueShortcode) &&
+            e.examEndsAt!.valueOf() > DateTime.now().toJSDate().valueOf(),
+        )
+        .sort((a, b) => {
+          const status =
+            (a.status === ExamStatusEnum.Booked ? -1 : 0) +
+            (b.status === ExamStatusEnum.Booked ? 1 : 0);
+          return status !== 0
+            ? status
+            : a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf();
+        })
         .slice(0, 4) ?? []
     );
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
@@ -124,7 +138,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             emptyStateText={(() => {
               if (isOffline) return t('common.cacheMiss');
 
-              return coursesQuery.data?.length ?? 0 > 0
+              return (coursesQuery.data?.length ?? 0 > 0)
                 ? t('teachingScreen.allCoursesHidden')
                 : t('coursesScreen.emptyState');
             })()}
@@ -133,15 +147,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
-                badge={
-                  course.id
-                    ? getUnreadsCount([
-                        'teaching',
-                        'courses',
-                        course.id!.toString(),
-                      ])
-                    : undefined
-                }
+                badge={getUnreadsCountPerCourse(
+                  course.id,
+                  course.previousEditions,
+                )}
               />
             ))}
           </OverviewList>
@@ -194,78 +203,63 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
                 >
-                  <Row p={5} gap={5} align="stretch" justify="space-between">
-                    <Col justify="space-between">
+                  <Row p={5} gap={5} align="center" justify="space-between">
+                    <Col justify="center" flexShrink={1} gap={5}>
                       <Metric
-                        title={
-                          studentQuery.data?.averageGradePurged != null
-                            ? t('transcriptMetricsScreen.finalAverageLabel')
-                            : t('transcriptMetricsScreen.weightedAverageLabel')
-                        }
-                        value={
-                          hideGrades
-                            ? '--'
-                            : studentQuery.data?.averageGradePurged ??
-                              studentQuery.data?.averageGrade ??
-                              '--'
-                        }
+                        title={t('transcriptMetricsScreen.weightedAverage')}
+                        value={formatThirtiethsGrade(
+                          !hideGrades ? studentQuery.data?.averageGrade : null,
+                        )}
                         color={colors.title}
                       />
-                      {studentQuery.data?.estimatedFinalGradePurged ? (
-                        <Metric
-                          title={t(
-                            'transcriptMetricsScreen.estimatedFinalGradePurged',
-                          )}
-                          value={formatFinalGrade(
-                            hideGrades
-                              ? null
-                              : studentQuery.data?.estimatedFinalGradePurged,
-                          )}
-                          color={colors.title}
-                        />
-                      ) : (
-                        <Metric
-                          title={t(
-                            'transcriptMetricsScreen.estimatedFinalGrade',
-                          )}
-                          value={formatFinalGrade(
-                            hideGrades
-                              ? null
-                              : studentQuery.data?.estimatedFinalGrade,
-                          )}
-                          color={colors.title}
-                        />
-                      )}
+                      <Metric
+                        title={t('transcriptMetricsScreen.averageLabel')}
+                        value={formatFinalGrade(
+                          !hideGrades
+                            ? studentQuery.data?.usePurgedAverageFinalGrade
+                              ? studentQuery.data?.estimatedFinalGradePurged
+                              : studentQuery.data?.estimatedFinalGrade
+                            : null,
+                        )}
+                        color={colors.title}
+                      />
                     </Col>
-                    <ProgressChart
-                      label={
-                        studentQuery.data?.totalCredits
-                          ? `${
-                              hideGrades
-                                ? '--'
-                                : studentQuery.data?.totalAcquiredCredits
-                            }/${studentQuery.data?.totalCredits}\n${t(
-                              'common.ects',
-                            )}`
-                          : undefined
-                      }
-                      data={
-                        hideGrades
-                          ? []
-                          : studentQuery.data?.totalCredits
-                          ? [
-                              (studentQuery.data?.totalAttendedCredits ?? 0) /
-                                studentQuery.data?.totalCredits,
-                              (studentQuery.data?.totalAcquiredCredits ?? 0) /
-                                studentQuery.data?.totalCredits,
-                            ]
-                          : []
-                      }
-                      boxSize={140}
-                      radius={40}
-                      thickness={18}
-                      colors={[palettes.primary[400], palettes.secondary[500]]}
-                    />
+                    <Col style={styles.graph} flexShrink={1}>
+                      <View style={{ alignItems: 'center' }}>
+                        <ProgressChart
+                          label={
+                            studentQuery.data?.totalCredits
+                              ? `${
+                                  hideGrades
+                                    ? '--'
+                                    : studentQuery.data?.totalAcquiredCredits
+                                }/${studentQuery.data?.totalCredits}\n${t(
+                                  'common.ects',
+                                )}`
+                              : undefined
+                          }
+                          data={
+                            hideGrades
+                              ? []
+                              : studentQuery.data?.totalCredits
+                                ? [
+                                    (studentQuery.data?.totalAttendedCredits ??
+                                      0) / studentQuery.data?.totalCredits,
+                                    (studentQuery.data?.totalAcquiredCredits ??
+                                      0) / studentQuery.data?.totalCredits,
+                                  ]
+                                : []
+                          }
+                          boxSize={140}
+                          radius={40}
+                          thickness={18}
+                          colors={[
+                            palettes.primary[400],
+                            palettes.secondary[500],
+                          ]}
+                        />
+                      </View>
+                    </Col>
                   </Row>
                 </TouchableHighlight>
               )}
@@ -330,5 +324,8 @@ const createStyles = ({ spacing }: Theme) =>
       flexDirection: 'row',
       gap: spacing[1],
       alignItems: 'center',
+    },
+    graph: {
+      paddingHorizontal: spacing[4],
     },
   });

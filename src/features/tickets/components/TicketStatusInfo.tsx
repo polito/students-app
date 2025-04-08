@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -33,6 +33,22 @@ export const TicketStatusInfo = ({
   const styles = useStylesheet(createStyles);
   const isClosed = ticket.status === TicketStatus.Closed;
 
+  const accessibilityIdText = [t('ticketScreen.ticketNumber'), ticket?.id].join(
+    ', ',
+  );
+  const accessibilityCreatedAtText = [
+    t('common.createdAt'),
+    formatDate(ticket.createdAt),
+  ].join(', ');
+  const accessibilityStatusText = [
+    t('common.status'),
+    t(`tickets.status.${ticket.status}`),
+  ].join(', ');
+  const accessibilityUpdatedAtText = [
+    t('common.updatedAt'),
+    formatDateTime(ticket.updatedAt),
+  ].join(', ');
+
   if (loading) {
     return (
       <Col>
@@ -47,29 +63,57 @@ export const TicketStatusInfo = ({
         {ticket.subject}
       </Text>
       <Row style={styles.row}>
-        <Metric
-          title={t('ticketScreen.ticketNumber')}
-          value={ticket.id}
+        <Pressable
+          accessibilityLabel={accessibilityIdText}
+          accessibilityRole="text"
           style={GlobalStyles.grow}
-        />
-        <Metric
-          title={t('common.createdAt')}
-          value={formatDate(ticket.createdAt)}
+        >
+          <Metric
+            accessibilityLabel={accessibilityIdText}
+            accessibilityRole="text"
+            title={t('ticketScreen.ticketNumber')}
+            value={ticket.id}
+          />
+        </Pressable>
+        <Pressable
+          accessibilityLabel={accessibilityCreatedAtText}
+          accessibilityRole="text"
           style={GlobalStyles.grow}
-        />
+        >
+          <Metric
+            accessibilityLabel={accessibilityCreatedAtText}
+            accessibilityRole="text"
+            title={t('common.createdAt')}
+            value={formatDate(ticket.createdAt)}
+          />
+        </Pressable>
       </Row>
       <Row style={styles.row}>
-        <Metric
-          title={t('common.updatedAt')}
-          value={formatDateTime(ticket.updatedAt)}
+        <Pressable
+          accessibilityLabel={accessibilityUpdatedAtText}
+          accessibilityRole="text"
           style={GlobalStyles.grow}
-        />
-        <Metric
-          title={t('common.status')}
-          value={t(`tickets.status.${ticket.status}`)}
+        >
+          <Metric
+            accessibilityLabel={accessibilityUpdatedAtText}
+            accessibilityRole="text"
+            title={t('common.updatedAt')}
+            value={formatDateTime(ticket.updatedAt)}
+          />
+        </Pressable>
+        <Pressable
+          accessibilityLabel={accessibilityStatusText}
+          accessibilityRole="text"
           style={GlobalStyles.grow}
-          valueStyle={{ textTransform: 'uppercase' }}
-        />
+        >
+          <Metric
+            accessibilityLabel={accessibilityStatusText}
+            accessibilityRole="text"
+            title={t('common.status')}
+            value={t(`tickets.status.${ticket.status}`)}
+            valueStyle={{ textTransform: 'uppercase' }}
+          />
+        </Pressable>
         {/* TODO colors? */}
       </Row>
       {refetching ? (

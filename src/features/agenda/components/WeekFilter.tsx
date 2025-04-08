@@ -27,7 +27,7 @@ export const WeekFilter = ({
   getPrev,
   isPrevWeekDisabled = false,
   isNextWeekDisabled = false,
-  daysPerWeek = 7,
+  daysPerWeek = 6, // The default setting is 6 days a week because the last day otherwise would be the Monday of the following week
 }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -39,8 +39,9 @@ export const WeekFilter = ({
   return (
     <Row align="center">
       <IconButton
+        accessibilityRole="button"
         icon={faChevronLeft}
-        accessibilityLabel={t('loginScreen.showPassword')}
+        accessibilityLabel={t('bookingScreen.previousWeek')}
         color={colors.secondaryText}
         disabled={isPrevWeekDisabled}
         onPress={() => getPrev()}
@@ -50,8 +51,9 @@ export const WeekFilter = ({
         {current.toFormat('d MMM')} - {endOfWeek.toFormat('d MMM')}
       </Text>
       <IconButton
+        accessibilityRole="button"
         icon={faChevronRight}
-        accessibilityLabel={t('loginScreen.showPassword')}
+        accessibilityLabel={t('bookingScreen.nextWeek')}
         color={colors.secondaryText}
         disabled={isNextWeekDisabled}
         onPress={() => getNext()}

@@ -1,6 +1,8 @@
 import { Exam as ApiExam, BookExamRequest, ExamsApi } from '@polito/api-client';
+import type { RescheduleExamRequest } from '@polito/api-client/models';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { isValidDate } from '../../utils/dates';
 import { pluckData } from '../../utils/queries';
 import { Exam } from '../types/api';
 
@@ -29,8 +31,12 @@ export const useGetExams = () => {
       .then(exams =>
         exams
           .map(mapApiExamToExam)
-          .sort(
-            (a, b) => a.examStartsAt!.valueOf() - b.examStartsAt!.valueOf(),
+          .sort((a, b) =>
+            !a.examStartsAt || !isValidDate(a.examStartsAt)
+              ? 1
+              : !b.examStartsAt || !isValidDate(b.examStartsAt)
+                ? -1
+                : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
           ),
       ),
   );
@@ -57,6 +63,24 @@ export const useCancelExamBooking = (examId: number) => {
 
   return useMutation(
     () => examsClient.deleteExamBookingById({ examId: examId }),
+    {
+      onSuccess() {
+        return client.invalidateQueries(EXAMS_QUERY_KEY);
+      },
+    },
+  );
+};
+
+export const useRescheduleRequest = (examId: number) => {
+  const examsClient = useExamsClient();
+  const client = useQueryClient();
+
+  return useMutation(
+    (rescheduleReason: RescheduleExamRequest) =>
+      examsClient.rescheduleExam({
+        examId: examId,
+        rescheduleExamRequest: rescheduleReason,
+      }),
     {
       onSuccess() {
         return client.invalidateQueries(EXAMS_QUERY_KEY);

@@ -19,10 +19,10 @@ import { CourseIndicator } from '../components/CourseIndicator';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
-import { CourseFilesScreen } from '../screens/CourseFilesScreen';
 import { CourseInfoScreen } from '../screens/CourseInfoScreen';
 import { CourseLecturesScreen } from '../screens/CourseLecturesScreen';
 import { CourseNoticesScreen } from '../screens/CourseNoticesScreen';
+import { FileNavigator } from './FileNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
 
@@ -45,7 +45,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const titleStyles = useTitlesStyles(theme);
 
   const { id } = route.params;
-
   const coursesQuery = useGetCourses();
 
   useEffect(() => {
@@ -113,7 +112,6 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     titleStyles.headerTitleStyle,
     width,
   ]);
-
   return (
     <CourseContext.Provider value={id}>
       <CourseFilesCacheProvider>
@@ -141,7 +139,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           />
           <TopTabs.Screen
             name="CourseFilesScreen"
-            component={CourseFilesScreen}
+            component={FileNavigator}
             options={{
               title: t('courseFilesTab.title'),
               tabBarBadge: () =>

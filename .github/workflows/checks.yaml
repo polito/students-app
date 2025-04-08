@@ -19,11 +19,15 @@ jobs:
     name: "Code linting: ${{ matrix.check }}"
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}

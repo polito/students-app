@@ -1,14 +1,24 @@
 import { Theme } from '@lib/ui/types/Theme';
 import { Booking, BookingTopic } from '@polito/api-client';
 
-import { DateTime } from 'luxon';
+import { inRange } from 'lodash';
+import { DateTime, IANAZone } from 'luxon';
 
 import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotScreen';
 
 export const MIN_CELL_HEIGHT = 20;
 
-const isSlotBookable = (item: BookingCalendarEvent) => {
-  return item.canBeBooked && item.start > DateTime.now();
+export const isSlotBookable = (item: BookingCalendarEvent) => {
+  const bookingStartsAt = DateTime.fromJSDate(item.bookingStartsAt as Date, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).valueOf();
+  const bookingEndsAt = DateTime.fromJSDate(item.bookingEndsAt as Date, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).valueOf();
+  return (
+    item.canBeBooked &&
+    inRange(DateTime.now().valueOf(), bookingStartsAt, bookingEndsAt)
+  );
 };
 
 export const isSlotFull = (item: BookingCalendarEvent) => {
@@ -16,7 +26,7 @@ export const isSlotFull = (item: BookingCalendarEvent) => {
 };
 
 export const isPastSlot = (item: BookingCalendarEvent) => {
-  return item.start < DateTime.now();
+  return DateTime.now() > item.end;
 };
 
 export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
@@ -24,7 +34,7 @@ export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
     slot.canBeBooked &&
     slot.hasSeatSelection &&
     slot.hasSeats &&
-    slot.start > DateTime.now()
+    slot.end > DateTime.now()
   );
 };
 
@@ -38,7 +48,7 @@ export const getBookingStyle = (
   const isFull = isSlotFull(item);
   const canBeBooked = isSlotBookable(item);
   const notYetBookable = item.start > DateTime.now();
-  const isPast = item.start < DateTime.now();
+  const isPast = isPastSlot(item);
 
   if (isBooked && !isPast) {
     return {
@@ -78,7 +88,10 @@ export const getBookingStyle = (
   };
 };
 
-export const getBookingSlotStatus = (item: BookingCalendarEvent) => {
+export const getBookingSlotStatus = (
+  item: BookingCalendarEvent,
+  defaultMessage = 'bookingScreen.bookingStatus.notAvailable',
+) => {
   const isBooked = item.isBooked;
   const isFull = item.bookedPlaces === item.places;
   const canBeBooked = item.canBeBooked;
@@ -91,7 +104,7 @@ export const getBookingSlotStatus = (item: BookingCalendarEvent) => {
   if (canBeBooked) {
     return 'bookingScreen.bookingStatus.available';
   }
-  return 'bookingScreen.bookingStatus.notAvailable';
+  return defaultMessage;
 };
 
 export const canBeCancelled = (booking?: Booking) => {
@@ -110,7 +123,7 @@ export const getCalendarPropsFromTopic = (
   topicId?: string,
 ) => {
   const topicIndex = topics?.findIndex(topic => topic.id === topicId);
-  if (!!topicIndex && topicIndex > -1 && topics) {
+  if (topicIndex !== undefined && topicIndex > -1 && topics) {
     return topics[topicIndex];
   }
   const topicWithSubtopics = topics?.find(topic =>

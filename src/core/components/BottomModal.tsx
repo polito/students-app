@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import { View } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -8,6 +8,8 @@ export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;
+  scrollOffset?: number;
+  scrollViewRef?: any;
 }>;
 
 export const BottomModal = ({
@@ -15,10 +17,21 @@ export const BottomModal = ({
   visible,
   onClose,
   dismissable,
+  scrollOffset,
+  scrollViewRef,
 }: BottomModalProps) => {
   const handleCloseModal = () => {
     dismissable && onClose?.();
   };
+
+  const handleScrollTo = useCallback(
+    (p: any) => {
+      if (scrollViewRef && scrollViewRef.current) {
+        scrollViewRef.current.scrollTo(p);
+      }
+    },
+    [scrollViewRef],
+  );
 
   return (
     <Modal
@@ -35,12 +48,16 @@ export const BottomModal = ({
       backdropColor="black"
       deviceHeight={SCREEN_HEIGHT}
       deviceWidth={SCREEN_WIDTH}
-      swipeDirection="down"
-      backdropTransitionInTiming={400}
-      backdropTransitionOutTiming={400}
-      useNativeDriver
+      swipeDirection={['down']}
       supportedOrientations={['landscape', 'portrait']}
       onBackdropPress={handleCloseModal}
+      scrollTo={handleScrollTo}
+      propagateSwipe
+      useNativeDriver={false}
+      useNativeDriverForBackdrop
+      onSwipeComplete={handleCloseModal}
+      scrollOffset={scrollOffset}
+      scrollOffsetMax={100}
     >
       <View>{children}</View>
     </Modal>

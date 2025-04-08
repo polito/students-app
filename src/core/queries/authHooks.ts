@@ -1,12 +1,20 @@
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import Keychain from 'react-native-keychain';
+import uuid from 'react-native-uuid';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
+import type { AppInfoRequest } from '@polito/api-client/models';
 import messaging from '@react-native-firebase/messaging';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { t } from 'i18next';
+
 import { isEnvProduction } from '../../utils/env';
+import {
+  getCredentials,
+  resetCredentials,
+  setCredentials,
+} from '../../utils/keychain.ts';
 import { pluckData } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -17,6 +25,32 @@ const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
 
+async function getFcmToken(): Promise<string | undefined> {
+  if (!isEnvProduction) return undefined;
+
+  try {
+    return await messaging().getToken();
+  } catch (_) {
+    Alert.alert(t('common.error'), t('loginScreen.fcmUnsupported'));
+  }
+
+  return undefined;
+}
+
+const getClientId = async (): Promise<string> => {
+  try {
+    const credentials = await getCredentials();
+    if (credentials && credentials.username) {
+      return credentials.username;
+    }
+  } catch (e) {
+    console.warn("Keychain couldn't be accessed!", e);
+  }
+  const clientId = uuid.v4();
+  await setCredentials(clientId);
+  return clientId;
+};
+
 export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
@@ -24,18 +58,18 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
-      const client = { name: 'Students app' };
-
       return Promise.all([
+        getClientId(),
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
         DeviceInfo.getBuildNumber(),
         DeviceInfo.getVersion(),
-        isEnvProduction ? messaging().getToken() : undefined,
+        getFcmToken(),
       ])
         .then(
           ([
+            id,
             name,
             model,
             manufacturer,
@@ -51,11 +85,13 @@ export const useLogin = () => {
               manufacturer,
             };
             dto.client = {
-              ...client,
+              name: 'students-app',
               buildNumber,
               appVersion,
+              id,
+              fcmRegistrationToken,
             };
-            dto.preferences = { ...dto.preferences, fcmRegistrationToken };
+            dto.preferences = { ...dto.preferences };
           },
         )
         .then(() => authClient.login({ loginRequest: dto }))
@@ -70,10 +106,10 @@ export const useLogin = () => {
         });
     },
     onSuccess: async data => {
-      const { token, clientId, username } = data;
-      refreshContext({ username, token });
+      const { token, clientId: clientIdentifier, username } = data;
       updatePreference('username', username);
-      await Keychain.setGenericPassword(clientId, token);
+      refreshContext({ username, token });
+      await setCredentials(clientIdentifier, token);
     },
   });
 };
@@ -89,7 +125,7 @@ export const useLogout = () => {
       refreshContext();
       asyncStoragePersister.removeClient();
       queryClient.removeQueries();
-      await Keychain.resetGenericPassword();
+      await resetCredentials();
     },
   });
 };
@@ -111,8 +147,32 @@ export const useSwitchCareer = () => {
       });
       updatePreference('username', username);
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
-      await Keychain.setGenericPassword(data.clientId, data.token);
+      await queryClient.invalidateQueries([]);
+      await setCredentials(data.clientId, data.token);
+    },
+  });
+};
+
+export const useUpdateAppInfo = () => {
+  const authClient = useAuthClient();
+
+  return useMutation({
+    mutationFn: async (fcmToken: string | void) => {
+      // mutation requires a variable, an undefined string is not accepted
+      return Promise.all([
+        DeviceInfo.getBuildNumber(),
+        DeviceInfo.getVersion(),
+        fcmToken || getFcmToken(),
+      ]).then(([buildNumber, appVersion, fcmRegistrationToken]) => {
+        const dto: AppInfoRequest = {
+          buildNumber,
+          appVersion,
+          fcmRegistrationToken,
+        };
+        return authClient.appInfo({
+          appInfoRequest: dto,
+        });
+      });
     },
   });
 };

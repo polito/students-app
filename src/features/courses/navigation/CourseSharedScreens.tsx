@@ -16,6 +16,7 @@ import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssig
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
+import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
@@ -28,12 +29,12 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   Course: { id: number; animated?: boolean };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
+  CourseGuide: { courseId: number };
   CourseDirectory: {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
   };
-  CourseGuide: { courseId: number };
   CourseVideolecture: {
     courseId: number;
     lectureId: number;
@@ -48,6 +49,7 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
   CourseIconPicker: { courseId: number; uniqueShortcode: string };
+  CourseHideEvent: { courseId: number; uniqueShortcode: string };
 }
 
 export const CourseSharedScreens = (
@@ -76,7 +78,7 @@ export const CourseSharedScreens = (
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackTitleVisible: false,
-          animation: params?.animated ?? true ? 'default' : 'none',
+          animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
       />
       <Stack.Screen
@@ -111,16 +113,21 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseDirectory"
         component={CourseDirectoryScreen}
-        getId={({ params }) => `${params.directoryId}`}
+        getId={({ params }) => `${params?.directoryId}`}
         options={{
           headerBackTitleVisible: false,
           headerLargeTitle: false,
-          headerSearchBarOptions: {
-            hideWhenScrolling: false,
-          },
         }}
       />
-
+      <Stack.Screen
+        name="CourseHideEvent"
+        component={CourseHideEventScreen}
+        getId={({ params }) => `${params.courseId}`}
+        options={{
+          title: t('common.hiddenEvents'),
+          headerLargeTitle: false,
+        }}
+      />
       <Stack.Screen
         name="CourseGuide"
         component={CourseGuideScreen}

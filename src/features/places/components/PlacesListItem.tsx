@@ -46,10 +46,13 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
         placeIds?.length
           ? () => {
               if (navigation.getId() === 'AgendaTabNavigator') {
-                navigation.navigate('EventPlaces', {
-                  placeIds,
-                  eventName,
-                  isCrossNavigation: true,
+                navigation.navigate('PlacesAgendaStack', {
+                  screen: 'EventPlaces',
+                  params: {
+                    placeIds,
+                    eventName,
+                    isCrossNavigation: true,
+                  },
                 });
               } else if (navigation.getId() === 'TeachingTabNavigator') {
                 navigation.navigate('PlacesTeachingStack', {

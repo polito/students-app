@@ -5,10 +5,8 @@ import messaging from '@react-native-firebase/messaging';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { isEnvProduction } from '../../utils/env';
-import {
-  NOTIFICATIONS_QUERY_KEY,
-  useUpdateDevicePreferences,
-} from '../queries/studentHooks';
+import { useUpdateAppInfo } from '../queries/authHooks.ts';
+import { NOTIFICATIONS_QUERY_KEY } from '../queries/studentHooks';
 import { RemoteMessage } from '../types/notifications';
 import { useNotifications } from './useNotifications';
 
@@ -25,14 +23,10 @@ const isNotificationPermissionGranted = async () => {
 export const useInitFirebaseMessaging = () => {
   const queryClient = useQueryClient();
   const { navigateToUpdate } = useNotifications();
-  const preferencesQuery = useUpdateDevicePreferences();
+  const { mutate: updateAppInfo } = useUpdateAppInfo();
 
   if (isEnvProduction) {
-    messaging().onTokenRefresh(fcmRegistrationToken => {
-      preferencesQuery.mutate({
-        updatePreferencesRequest: { fcmRegistrationToken },
-      });
-    });
+    messaging().onTokenRefresh(updateAppInfo);
   }
 
   useEffect(() => {
@@ -60,11 +54,11 @@ export const useInitFirebaseMessaging = () => {
             navigateToUpdate(remoteMessage as RemoteMessage);
           });
 
-        const unsubscribeOnMessage = messaging().onMessage(remoteMessage =>
+        const unsubscribeOnMessage = messaging().onMessage(() =>
           queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY),
         );
 
-        messaging().setBackgroundMessageHandler(async remoteMessage => {
+        messaging().setBackgroundMessageHandler(async () => {
           queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY);
         });
 

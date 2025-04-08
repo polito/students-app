@@ -35,6 +35,7 @@ export const CtaButtonContainer = ({
         },
         absolute && {
           position: 'absolute',
+          width: Platform.select({ android: '100%' }),
           left: Platform.select({ ios: left }),
           right,
           bottom:

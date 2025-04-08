@@ -4,6 +4,7 @@ import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
 import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesFilterState';
+import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
 
 export const editablePreferenceKeys = [
   'lastInstalledVersion',
@@ -19,6 +20,7 @@ export const editablePreferenceKeys = [
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
+  'filesScreen',
   'hideGrades',
 ] as const;
 
@@ -34,6 +36,7 @@ export const objectPreferenceKeys = [
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
+  'filesScreen',
   'hideGrades',
 ];
 
@@ -62,6 +65,7 @@ export interface PreferencesContextBase {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
   };
+  filesScreen: 'filesView' | 'directoryView';
   hideGrades?: boolean;
 }
 
@@ -77,6 +81,8 @@ export interface CoursePreferencesProps {
   icon?: string;
   isHidden: boolean;
   order?: number;
+  isHiddenInAgenda: boolean;
+  itemsToHideInAgenda?: HiddenRecurrence[];
 }
 
 export const PreferencesContext = createContext<

@@ -1,13 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from 'react-native';
-import Pdf from 'react-native-pdf';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Pdf } from 'react-native-pdf-light';
 
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FullWidthPicture } from '@lib/ui/components/FullWidthPicture';
@@ -17,12 +11,10 @@ import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useUploadAssignment } from '../../../core/queries/courseHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -41,8 +33,6 @@ export const CourseAssignmentUploadConfirmationScreen = ({
   const { colors, fontSizes } = useTheme();
   const { mutateAsync: requestUpload } = useUploadAssignment(courseId);
   const styles = useStylesheet(createStyles);
-  const tabBarHeight = useBottomTabBarHeight();
-  const { width } = useWindowDimensions();
   const { setFeedback } = useFeedbackContext();
 
   const [description, setDescription] = useState('');
@@ -89,7 +79,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         // Reset navigation stack to the assignments screen
         navigation.pop(popCount);
       })
-      .catch(e => {
+      .catch((e: Error) => {
         setFeedback({ text: e.message, isError: true });
       })
       .finally(() => setIsUploading(false));
@@ -145,18 +135,7 @@ export const CourseAssignmentUploadConfirmationScreen = ({
         />
       </View>
 
-      {file.uri!.endsWith('pdf') && (
-        <Pdf
-          source={{ uri: file.uri! }}
-          style={[
-            {
-              paddingBottom: tabBarHeight,
-              width,
-            },
-            GlobalStyles.grow,
-          ]}
-        />
-      )}
+      {file.uri!.endsWith('pdf') && <Pdf source={file.uri} />}
       {/\.jpe?g|gif|png|heic$/i.test(file.uri) && (
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"

@@ -27,11 +27,11 @@ const createStyles = ({ colors, shapes }: Theme) =>
     container: {
       maxWidth: 300,
       maxHeight: 200,
-      backgroundColor: 'white',
+      backgroundColor: colors.white,
       borderRadius: shapes.md,
       borderColor: colors.divider,
       borderWidth: 1,
-      shadowColor: 'black',
+      shadowColor: colors.black,
       shadowOpacity: 0.3,
       shadowRadius: 8,
       shadowOffset: {
@@ -46,7 +46,7 @@ const createStyles = ({ colors, shapes }: Theme) =>
       bottom: -6,
       width: 10,
       height: 10,
-      backgroundColor: 'white',
+      backgroundColor: colors.white,
       borderColor: colors.divider,
       borderRightWidth: 1,
       borderBottomWidth: 1,

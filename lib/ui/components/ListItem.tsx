@@ -93,7 +93,7 @@ export const ListItem = ({
           numberOfLines={
             multilineTitle
               ? undefined
-              : titleProps?.numberOfLines ?? (card ? 2 : 1)
+              : (titleProps?.numberOfLines ?? (card ? 2 : 1))
           }
           ellipsizeMode={titleProps?.ellipsizeMode ?? 'tail'}
           {...titleProps}

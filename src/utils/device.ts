@@ -1,9 +1,6 @@
-import { NativeModules, Platform } from 'react-native';
+import { getLocales } from 'react-native-localize';
 
-const deviceLocale =
-  Platform.OS === 'ios'
-    ? NativeModules.SettingsManager.settings.AppleLocale ||
-      NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
-    : NativeModules.I18nManager.localeIdentifier;
+const deviceLocale = getLocales()[0];
 
-export const deviceLanguage = deviceLocale.startsWith('it') ? 'it' : 'en';
+export const deviceLanguage =
+  deviceLocale && deviceLocale.languageCode === 'it' ? 'it' : 'en';

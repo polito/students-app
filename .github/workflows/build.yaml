@@ -33,6 +33,11 @@ on:
         type: string
         description: Build piece (last 2 digits of build_no)
         required: true
+      create_release:
+        type: boolean
+        description: Create release
+        required: true
+        default: false
 
 jobs:
   configure:
@@ -45,7 +50,7 @@ jobs:
       push_to_playstore: ${{ steps.configure.outputs.push_to_playstore }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Get version from tag (new release)
@@ -75,7 +80,7 @@ jobs:
           PUSH_TESTFLIGHT=true
           PUSH_PLAYSTORE="${{ vars.PLAYSTORE_RELEASE_TRACK }}"
           VERSION="${{ steps.tag_version.outputs.version }}"
-          BUILD_PIECE=0
+          BUILD_PIECE=90
         elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
           # On repo manual dispatch
           PUSH_TESTFLIGHT="${{ github.event.inputs.push_to_testflight }}"
@@ -119,8 +124,12 @@ jobs:
         echo "CONFIGURED:"
         cat $GITHUB_OUTPUT
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
@@ -142,9 +151,10 @@ jobs:
       SUPPLY_GOOGLE_JSON_PATH: './pc-api-secret.json'
       KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PW }}
       KEYSTORE_PATH: './keystore.jks'
+      CCACHE_CONFIGPATH: "${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf"
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
@@ -152,32 +162,37 @@ jobs:
       run:
         echo "MAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> android/local.properties
     - name: Gradle Wrapper Validation
-      uses: gradle/wrapper-validation-action@v1
+      uses: gradle/actions/wrapper-validation@v3
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: ./android
-        ruby-version: '2.7.6'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
     - name: Cache Gradle artifacts
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: ${{ runner.os }}-gradle-
+    - name: Setup build cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        max-size: 1G
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
+    - name: Enforce version
+      if: ${{ env.APP_VERSION != '' }}
+      run: npm version "$APP_VERSION" --no-git-tag-version
     - name: Install npm dependencies
       run: npm install
     - name: Prepare fastlane
@@ -185,31 +200,40 @@ jobs:
       run: |
         echo "${{ secrets.SUPPLY_GOOGLE_JSON_SECRET }}" | base64 -d > ${SUPPLY_GOOGLE_JSON_PATH}
         echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
+        echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
         chmod 600 ${KEYSTORE_PATH} ${SUPPLY_GOOGLE_JSON_PATH}
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_playstore == 'false'
       working-directory: ./android
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
       run: bundle exec fastlane verify
     - name: Fastlane RELEASE lane
+      id: fastlane_release_android
       if: contains(fromJSON('["internal", "beta", "production"]'), needs.configure.outputs.push_to_playstore)
       working-directory: ./android
       env:
         STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
       run: bundle exec fastlane release
+    - name: Fastlane RELEASE lane [without Sentry]
+      if: steps.fastlane_release_android.outcome == 'failure'
+      working-directory: ./android
+      run: bundle exec fastlane release
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
     - name: Fastlane APK lane
       if: |
-        github.event_name == 'push' &&
-        github.ref_type == 'tag'
+        (github.event_name == 'push' && github.ref_type == 'tag') ||
+        github.event.inputs.create_release == 'true'
       run: bundle exec fastlane apk
       working-directory: ./android
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
     - name: Upload Artifacts
       if: |
-        github.event_name == 'push' &&
-        github.ref_type == 'tag'
-      uses: actions/upload-artifact@v3
+        (github.event_name == 'push' && github.ref_type == 'tag') ||
+        github.event.inputs.create_release == 'true'
+      uses: actions/upload-artifact@v4
       with:
         name: android-release
         path: android/app/build/outputs/apk/release/*.apk
@@ -217,7 +241,6 @@ jobs:
   build-ios:
     name: ${{ needs.configure.outputs.push_to_testflight == 'false' && 'Build' || 'Build & Deploy' }} iOS
     env:
-      ImageOS: macos12
       LANG: en_US.UTF-8
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
@@ -228,82 +251,106 @@ jobs:
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
       SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
+      CCACHE_CONFIGPATH: "${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf"
     needs: configure
-    runs-on: [self-hosted, macos-12]
+    runs-on: [macos-15]
     steps:
     - name: Select Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '14'
+        xcode-version: '16'
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set .env
       run:
         echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
+    - name: Set .netrc 
+      run: |
+        echo "machine api.mapbox.com
+        login mapbox
+        password ${{ secrets.MAPBOX_TOKEN }}
+        " > ~/.netrc
+        chmod 600 ~/.netrc
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: ./ios
-        ruby-version: '2.7.6'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version-file: .nvmrc
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
-    - name: Install npm dependencies
-      run: npm install
+    - name: Setup build cache pt.1
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        max-size: 1G
+    - name: Setup build cache pt.2
+      uses: irgaly/xcode-cache@v1
+      with:
+        key: xcode-cache-deriveddata-${{ github.workflow }}-${{ github.sha }}
+        restore-keys: xcode-cache-deriveddata-${{ github.workflow }}-
+    - name: Enforce version
+      if: ${{ env.APP_VERSION != '' }}
+      run: npm version "$APP_VERSION" --no-git-tag-version
     - name: Cache pods
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./ios/Pods
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-    - name: Install pod dependencies
-      working-directory: ./ios
-      run: bundle exec pod install --repo-update
+    - name: Install npm dependencies
+      run: npm install
     - name: Prepare fastlane
       working-directory: ./ios
       run: |
         echo "${{ secrets.MATCH_GIT_AUTH_PK }}" > ${MATCH_GIT_PRIVATE_KEY}
         chmod 600 ${MATCH_GIT_PRIVATE_KEY}
         echo "${{ secrets.SUPPLY_GOOGLE_SERVICE_INFO_PLIST }}" | base64 -d > ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
+        echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
         chmod 600 ${MATCH_GIT_PRIVATE_KEY} ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
     - name: Fastlane VERIFY lane
       if: needs.configure.outputs.push_to_testflight == 'false'
       working-directory: ./ios
+      env:
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
       run: |
         bundle exec fastlane verify
     - name: Fastlane RELEASE lane
+      id: fastlane_release_ios
       if: needs.configure.outputs.push_to_testflight == 'true'
       working-directory: ./ios
+      run: bundle exec fastlane release
+      continue-on-error: true
+    - name: Fastlane RELEASE lane [without Sentry]
+      if: steps.fastlane_release_ios.outcome == 'failure'
+      working-directory: ./ios
+      run: bundle exec fastlane release
       env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-      run: |
-        bundle exec fastlane release
+        SENTRY_DISABLE_AUTO_UPLOAD: "true"
 
   create-release:
     name: Create GitHub Release
     permissions:
       contents: write
     if: |
-      github.event_name == 'push' &&
       github.event.repository.full_name == github.repository &&
-      github.ref_type == 'tag'
+      (
+        (github.event_name == 'push' && github.ref_type == 'tag') ||
+        github.event.inputs.create_release == 'true'
+      )
     needs: [build-android, build-ios]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Gather artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
+      continue-on-error: true
       with:
         name: android-release
         path: ./android-release

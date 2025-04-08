@@ -3,9 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
-import { faHourglassEnd, faUsers } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHourglassEnd,
+  faTriangleExclamation,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
+import { ErrorCard } from '@lib/ui/components/ErrorCard';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -16,6 +22,7 @@ import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -24,18 +31,21 @@ import { useBottomModal } from '../../../core/hooks/useBottomModal';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { useGetCpdSurveys } from '../../../core/queries/surveysHooks';
+import { useGetAllCpdSurveys } from '../../../core/queries/surveysHooks';
 import {
+  dateFormatter,
   formatDate,
   formatDateTime,
   formatReadableDate,
-  formatTime,
+  isValidDate,
 } from '../../../utils/dates';
 import { PlacesListItem } from '../../places/components/PlacesListItem';
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';
+import { ExamRescheduleCTA } from '../components/ExamRescheduleCTA';
 import { ExamStatusBadge } from '../components/ExamStatusBadge';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { getExam, isExamPassed } from '../utils/exam';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Exam'>;
 
@@ -44,7 +54,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { fontSizes, spacing } = useTheme();
   const examsQuery = useGetExams();
-  const cpdSurveysQuery = useGetCpdSurveys();
+  const cpdSurveysQuery = useGetAllCpdSurveys();
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
@@ -55,7 +65,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     close: closeBottomModal,
   } = useBottomModal();
   const isOffline = useOfflineDisabled();
-
+  const formatHHmm = dateFormatter('HH:mm');
   useEffect(() => {
     if (routes[routes.length - 2]?.name === 'Course') {
       navigation.setOptions({
@@ -68,7 +78,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     if (!exam || !teacherQuery.data) return;
 
     let accessibleDateTime: string;
-    if (!exam.examStartsAt) {
+    if (!exam.examStartsAt || !isValidDate(exam?.examStartsAt)) {
       accessibleDateTime = t('common.dateToBeDefined');
     } else {
       accessibleDateTime = formatDate(exam.examStartsAt);
@@ -76,7 +86,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       if (exam.isTimeToBeDefined) {
         accessibleDateTime += `, ${t('common.timeToBeDefined')}`;
       } else {
-        accessibleDateTime += `. ${t('common.time')} ${formatTime(
+        accessibleDateTime += `. ${t('common.time')} ${formatHHmm(
           exam.examStartsAt,
         )}`;
       }
@@ -88,22 +98,29 @@ export const ExamScreen = ({ route, navigation }: Props) => {
     }`;
 
     return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
-  }, [exam, t, teacherQuery]);
+  }, [exam, t, teacherQuery, formatHHmm]);
 
   useLayoutEffect(() => {
     if (!cpdSurveysQuery.data || !exam) return;
 
-    const requirements = cpdSurveysQuery.data.filter(
-      s =>
-        (s.type.id === 'CPDPERIODO' ||
+    const getPeriodo = cpdSurveysQuery.data.filter(s => {
+      return s.type.id === 'STUDENTE' && s.course?.id === exam.courseId;
+    });
+
+    const requirements = cpdSurveysQuery.data.filter(s => {
+      return (
+        ((s.type.id === 'CPDPERIODO' &&
+          getPeriodo.filter(g => g.period === s.period).length > 0) ||
           (s.type.id === 'STUDENTE' && s.course?.id === exam.courseId)) &&
-        !s.isCompiled,
-    );
+        !s.isCompiled
+      );
+    });
+
     if (!requirements.length) return;
     showBottomModal(
       <ExamCpdModalContent surveys={requirements} close={closeBottomModal} />,
     );
-  }, [cpdSurveysQuery.data, exam]);
+  }, [cpdSurveysQuery.data, exam, showBottomModal, closeBottomModal]);
 
   return (
     <>
@@ -136,18 +153,18 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 accessible={true}
                 date={
                   exam
-                    ? exam.examStartsAt
+                    ? exam.examStartsAt && isValidDate(exam?.examStartsAt)
                       ? formatReadableDate(exam.examStartsAt)
-                      : t('common.dateToBeDefined')
+                      : t('common.dateToBeDefinedShort')
                     : ''
                 }
                 time={
                   exam
-                    ? exam?.examStartsAt
-                      ? `${formatTime(exam.examStartsAt)} - ${formatTime(
+                    ? exam?.examStartsAt && isValidDate(exam?.examStartsAt)
+                      ? `${formatHHmm(exam.examStartsAt)} - ${formatHHmm(
                           exam.examEndsAt!,
                         )}`
-                      : t('common.timeToBeDefined')
+                      : ''
                     : ''
                 }
               />
@@ -187,19 +204,55 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   : t('common.dateToBeDefined')
               }
               subtitle={t('examScreen.bookingEndsAt')}
+              trailingItem={
+                exam?.status === ExamStatusEnum.Unavailable &&
+                exam?.bookingEndsAt &&
+                isExamPassed(exam.bookingEndsAt) ? (
+                  <Icon
+                    icon={faTriangleExclamation}
+                    color="red"
+                    size={fontSizes.md}
+                  />
+                ) : undefined
+              }
             />
+
             <ListItem
               leadingItem={<Icon icon={faUsers} size={fontSizes['2xl']} />}
               inverted
-              title={`${exam?.bookedCount}`}
+              /* check using undefined since the fields can be 0 */
+              title={
+                exam?.bookedCount !== undefined
+                  ? getExam(exam.bookedCount, exam.availableCount)
+                  : t('examScreen.noBookedCount')
+              }
               subtitle={t('examScreen.bookedCount')}
+              trailingItem={
+                exam?.status === ExamStatusEnum.Unavailable &&
+                exam.availableCount === 0 ? (
+                  <Icon
+                    icon={faTriangleExclamation}
+                    color="red"
+                    size={fontSizes.md}
+                  />
+                ) : undefined
+              }
             />
           </OverviewList>
+          {exam?.feedback && exam?.status === ExamStatusEnum.Unavailable && (
+            <ErrorCard text={exam.feedback} />
+          )}
           <CtaButtonSpacer />
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
-      {exam && <ExamCTA exam={exam} />}
+      <CtaButtonContainer absolute={true}>
+        {exam?.isReschedulable &&
+          exam?.status === ExamStatusEnum.Available &&
+          exam && <ExamRescheduleCTA exam={exam} />}
+        {exam && <ExamCTA exam={exam} absolute={false} />}
+      </CtaButtonContainer>
+      <CtaButtonSpacer />
     </>
   );
 };

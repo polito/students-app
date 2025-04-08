@@ -65,7 +65,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
         cell && setSeat(cell);
       }
     }
-  }, [isEnabled, bookingSeatsQuery]);
+  }, [bookingSeatsQuery.data, isEnabled]);
 
   const isSeatSizeValidForBooking = () => {
     const currentSeatSize = seatSize * currentZoom.current;

@@ -17,7 +17,8 @@
       "available": "Prenotabile",
       "booked": "Prenotato",
       "full": "Non prenotabile",
-      "notAvailable": "Non ancora prenotabile"
+      "notAvailable": "Non ancora prenotabile",
+      "notAvailableBooking": "Non prenotabile"
     },
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
@@ -28,16 +29,18 @@
     "locationType": {
       "place": "Luogo",
       "virtualPlace": "Link sportello virtuale"
-    }
+    },
+    "nextWeek": "Prossima settimana",
+    "previousWeek": "Settimana precedente"
   },
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
+    "confirmSuccess": "Prenotazione confermata",
     "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
-    "informationAcknowledgment": "Dichiaro di aver preso visione \ndell' ",
-    "informationAcknowledgmentLink": "Informativa emergenza COVID 19",
     "noSeatSelected": "Nessuna",
     "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
     "seatStatus": {
+      "unavailable": "Non prenotabile",
       "available": "Disponibile",
       "booked": "Prenotato",
       "notAvailable": "Non prenotabile"
@@ -74,11 +77,14 @@
     "yellow": "Giallo"
   },
   "common": {
+    "active": "Attivo",
+    "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
     "activeStatus": {
       "false": "Non attiva",
       "true": "Attiva"
     },
+    "agenda": "Agenda",
     "agent": "Operatore",
     "all": "Tutti",
     "appFeedback": "Segnalazioni App",
@@ -110,6 +116,7 @@
     "creditsWithoutUnit": "{{credits}}",
     "dateAndHours": "Data e ora",
     "dateToBeDefined": "Data da definire",
+    "dateToBeDefinedShort": "Da definire",
     "day": "Giorno",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
@@ -159,10 +166,13 @@
     "follow": "Segui",
     "free": "Libera",
     "grade": "Voto",
+    "hiddenEvents": "Eventi nascosti",
     "hide": "Nascondi",
+    "hideInAgenda": "Nascondi in agenda",
     "hour": "Orario",
     "hours": "Ore",
     "icon": "Icona",
+    "image": "Immagine",
     "inYourAgenda": "nella tua agenda",
     "it": "Italiano",
     "language": "Lingua",
@@ -192,6 +202,7 @@
     "open": "Apri",
     "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
+    "openSourceAccessibilityLabel": "Open Source, Tocca per andare al repository GitHub della App",
     "openedStatus": {
       "false": "Chiuso",
       "true": "Aperto"
@@ -222,6 +233,7 @@
     "selectAnOption": "Seleziona una delle opzioni",
     "services": "Servizi",
     "show": "Mostra",
+    "shortUsername": "Matr.",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
     "startRefresh": "Caricamento in corso",
     "status": "Stato",
@@ -248,7 +260,10 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "fromTime" : "dalle",
+    "toTime" : "alle",
+    "document" : "Allegato"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -293,21 +308,32 @@
     "subtitle_plural": "{{count}} file"
   },
   "courseDirectoryScreen": {
-    "noResult": "Nessun risultato trovato"
+    "clearSearch": "Cancella ricerca",
+    "emptyRootFolder": "Non ci sono file",
+    "emptyFolder": "La cartella è vuota",
+    "noResult": "Nessun risultato trovato",
+    "navigateRecentFiles": "Sfoglia file recenti",
+    "search": "Cerca"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
-    "reDownloadFile": "Ri-scarica file"
+    "reDownloadFile": "Ri-scarica file",
+    "fileSavedDocumentsPath": "File salvato nella cartella documenti",
+    "fileSaved": "File salvato in {{cachedFilePath}}"
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
-    "empty": "Non ci sono file qui",
+    "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "title": "Materiale"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
+  },
+  "courseHideEventScreen": {
+    "button": "Mostra in Agenda",
+    "selectItems": "Seleziona tutti"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"
@@ -316,6 +342,9 @@
     "agendaSectionEmptyState": "Non ci sono eventi relativi a questo corso",
     "agendaSectionTitle": "Questo corso nell'agenda",
     "creditsLabel": "Crediti",
+    "linkDefaultTitle": "Collegamento a",
+    "linksSectionEmptyState": "Non ci sono link relativi al corso",
+    "linksSectionTitle": "Link utili",
     "moreSectionTitle": "Altro",
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
@@ -366,6 +395,7 @@
     "total": "Sono presenti {{ total }} questionari"
   },
   "createTicketScreen": {
+    "addFile": "Aggiungi file",
     "insert": "Inserimento ticket",
     "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
     "sendTicket": "Invia ticket",
@@ -374,6 +404,8 @@
     "subtitle": "Inserisci la tua richiesta",
     "subtopicDescription": "Seleziona il sottoargomento",
     "subtopicDropdownLabel": "Sottoargomento",
+    "subtopicDropdownLabelAccessibility": "Sottoargomento, apri e scegli tra le opzioni",
+    "topicDropdownLabelAccessibility": "Argomento, apri e scegli tra le opzioni",
     "subtopicDropdownPlaceholder": "Seleziona il sottoargomento",
     "title": "Nuovo ticket",
     "topicDescription": "Seleziona l'argomento",
@@ -400,6 +432,43 @@
     "title": "Corso di laurea",
     "tracks": "Piano studi"
   },
+  "escRequestScreen": {
+    "title": "European Student Card",
+    "firstTitle": "Che cos'è la Carta europea dello studente?",
+    "firstSection": "L'ESC (European Student Card) è un'identificazione digitale che consente agli studenti universitari di tutta Europa di accedere ai servizi e ai benefici offerti dalle istituzioni scolastiche e dalle organizzazioni studentesche in modo semplice e sicuro.",
+    "secondTitle": "Perché dovrei usarla?",
+    "secondSection": "L'utilizzo della Carta Europea dello Studente offre numerosi vantaggi, tra cui:",
+    "secondSectionList": {
+      "first": "Accesso semplificato ai servizi delle università partner in tutta Europa. ",
+      "second": "Riduzione della necessità di documentazione cartacea.",
+      "third": "Partecipazione più facile ai programmi di mobilità internazionale, come Erasmus+.",
+      "fourth": "Accesso a sconti e promozioni riservati agli studenti di vari Paesi europei."
+    },
+    "cardRequest": {
+      "firstSectionNormalText":"Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
+      "sectionBoldText":"autorizzazione a trasmettere i seguenti dati",
+      "secondSectionNormalText":"all'autorità competente dell'UE:",
+      "firstName" : "Nome",
+      "lastName" : "Cognome",
+      "id": "Matricola",
+      "mail": "Mail istituzionale",
+      "studyProgram": "Programma di studio"
+    },
+    "authorize": "Autorizza",
+    "escModalInfo": "Tutte le impostazioni di gestione e revoca della carta si trovano nel Portale dell'istruzione."
+  },
+  "escModalInfo": {
+    "revoke": "Revoca autorizzazione",
+    "revokeConfirm": "Revocando l’autorizzazione a conservare i tuoi dati all’ESC-Router disattiverai questa card e quelle legate a tue eventuali carriere",
+    "text": "Per ottenere la tua European Student Card (ESC), hai autorizzato la trasmissione dei tuoi dati tramite ESC_router. Puoi revocare questa autorizzazione in qualsiasi momento.",
+    "title":"Dati ESC"
+  },
+  "europeanCardScreen": {
+    "title": "THE EUROPEAN STUDENT CARD",
+    "expiredTitle": "La tua Card è scaduta",
+    "expiredText": "Studente non iscritto all’a.a corrente",
+    "inactive": "La tua Card è sospesa"
+  },
   "eventPlacesScreen": {
     "title": "Luoghi evento"
   },
@@ -412,6 +481,18 @@
     "placeholder": "Inserisci qui le motivazioni della richiesta di sostenere l'esame anticipatamente",
     "title": "Puoi richiedere al titolare del corso di sostenere l'esame senza avere acquisito la frequenza"
   },
+  "examRescheduleScreen": {
+    "button": "Invia richiesta",
+    "ctaRescheduleSuccess": "Richiesta inviata",
+    "ctaRequest": "Richiedi cambio data appello",
+    "error": "Compilare il campo di testo prima di procedere con la richiesta",
+    "requestDetails": "Inserisci qui le date da suggerire",
+    "requestDetailsTitle": "Quale date consiglieresti al coordinatore?",
+    "responsibilityDeclaration": "Dichiaro di prendere la responsabilità di quanto dichiarato",
+    "requestReason": "Inserisci qui le tue motivazioni della richiesta di cambio data appello",
+    "requestReasonTitle": "Puoi chiedere al coordinatore del collegio di poter cambiare data del tuo appello",
+    "screenTitle": "Cambio data appello"
+  },
   "examScreen": {
     "bookedCount": "Studenti prenotati",
     "bookingEndsAt": "Prenotazione entro il",
@@ -423,8 +504,10 @@
     "location": "Luogo",
     "noClassroom": "Nessun luogo specificato per questo appello",
     "noLocation": "Aula da definire",
+    "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
-    "title": "Appello"
+    "title": "Appello",
+    "noBookedCount": "Dato non disponibile"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -433,7 +516,8 @@
   },
   "freeRoomsScreen": {
     "noFreeRooms": "Nessuna aula libera trovata",
-    "title": "Aule libere"
+    "title": "Aule libere",
+    "maxViewLimitMessage": "Raggiunto il limite massimo di visulizzazione"
   },
   "grades": {
     "absent": "Ass",
@@ -471,12 +555,16 @@
     "title": "Offerte di lavoro"
   },
   "lectureScreen": {
-    "courseFilesCta": "Vai al materiale del corso"
+    "courseFilesCta": "Vai al materiale del corso",
+    "hideEventAlertTitle": "Nascondi Evento",
+    "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
+    "hideEventButtonTitle": "Nascondi evendo dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"
   },
   "loginScreen": {
+    "onboarding" : "Onboarding",
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
@@ -488,7 +576,8 @@
     "title": "Accedi con le tue credenziali polito.it",
     "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola",
-    "usernameLabelAccessibility": "Inserisci qui il tuo username"
+    "usernameLabelAccessibility": "Inserisci qui il tuo username",
+    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
   },
   "messageScreen": {
     "backTitle": "Archivio",
@@ -505,6 +594,7 @@
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
   },
   "messagingView": {
+    "activeReplay": "Attivo, (tocca due volte per attivare)",
     "pickFile": "Scegli un file",
     "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
@@ -582,7 +672,9 @@
     "capacity": "{{count}} posto",
     "capacity_plural": "{{count}} posti",
     "placeNotFound": "Questo luogo non esiste",
-    "title": "Luogo"
+    "title": "Luogo",
+    "placeDetail": "Dettaglio luogo",
+    "getDirections": "Ottieni indicazioni"
   },
   "placesScreen": {
     "changeFloor": "Cambia piano",
@@ -592,7 +684,6 @@
     "noPlacesFound": "Nessun posto trovato",
     "searchCategories": "Cerca categorie",
     "title": "Luoghi",
-    "unwrappingMap": "Aprendo la mappa",
     "viewWholeCampus": "Vedi tutta la sede"
   },
   "placesSearchScreen": {
@@ -616,14 +707,28 @@
     "trainingOffer": "Offerta formativa"
   },
   "provisionalGradeScreen": {
-    "acceptGradeConfirmMessage": "Accettando il voto non potrai più cambiare la tua decisione",
+    "acceptGradeConfirmMessage": "Richiedendo la registrazione immediata la valutazione verrà inserita in libretto e non potrai più cambiare la tua decisione",
     "acceptGradeCta": "Richiedi la registrazione immediata",
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
-    "rejectGradeConfirmMessage": "Rifiutando il voto non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta la valutazione",
+    "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
+    "rejectGradeCta": "Rifiutabile entro il:<br><b>{{date}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
+    "teacherMessage": {
+      "title": "Messaggio del docente",
+      "readMore": " altro",
+      "readLess": " meno"
+    },
     "title": "Valutazione"
+  },
+  "recordedGradeScreen": {
+    "additionalPoint": "Punteggi aggiuntivi",
+    "recordedGradeTitle": "Valutazione Registrata",
+    "staff": "Docente",
+    "teacher": "Titolare",
+    "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
+    "titleOnTimePoint": "Punti Esame on-time",
+    "ctaButtonModal": "Accedi alla tua cariera"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",
@@ -632,7 +737,10 @@
   "servicesScreen": {
     "subTitleOne": "Servizi informativi",
     "subTitleTwo": "Servizi operativi",
-    "title": "Servizi"
+    "title": "Servizi",
+    "newElement": ", hai Un nuovo elemento da visualizzare",
+    "favoriteActive": "Imposta preferito, Attivo",
+    "favoriteInactive": "Imposta preferito, Non attivo"
   },
   "settingsScreen": {
     "appVersion": "Versione {{version}}",
@@ -662,9 +770,11 @@
     "headerBackTitle": "Nuovo",
     "noResultFound": "Non hai trovato quello che cerchi?",
     "title": "FAQ",
-    "writeTicket": "Scrivi ticket"
+    "writeTicket": "Scrivi ticket",
+    "writeTicketMessage": "Scrivi ticket se non hai trovato quello che cerchi"
   },
   "ticketFaqsScreen": {
+    "searchButton": "Attiva per cercare le parole chiave inserite tra le faq",
     "emptyState": "Nessun risultato trovato",
     "findFAQ": "Cerca tra le FAQ",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
@@ -675,6 +785,10 @@
     "writeTicket": "Scrivi ticket"
   },
   "ticketScreen": {
+    "incomingMessage": "la tua risposta",
+    "outgoingMessage": "Risposta da operatore numero",
+    "yourQuestion": "La tua domanda",
+    "send" : "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
@@ -695,6 +809,8 @@
     }
   },
   "ticketsScreen": {
+    "noOpenTickets": "Non ci sono ticket aperti",
+    "noClosedTickets": "Non ci sono ticket chiusi",
     "addNew": "Nuovo ticket",
     "closed": "Ticket chiusi",
     "closedEmptyState": "Non ci sono ticket chiusi",
@@ -706,13 +822,14 @@
     "title": "Valutazione"
   },
   "transcriptGradesScreen": {
+    "autoRegistration": "Registrazione automatica tra:",
     "emptyState": "Non hai sostenuto nessun esame",
     "expiredCountdown": "Scaduto",
     "provisionalEmptyState": "Non ci sono valutazioni provvisorie",
     "provisionalTitle": "Provvisorie",
     "recordedTitle": "Registrate",
     "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
-    "rejectionCountdown": "Rifiutabile entro:",
+    "rejectionCountdown": "Rifiutabile entro: <b>{{hours}}</b>",
     "title": "Valutazioni",
     "total": "Sono presenti {{total}} valutazioni"
   },
@@ -721,13 +838,33 @@
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
-    "estimatedFinalGrade": "Voto di laurea",
-    "estimatedFinalGradePurged": "Voto di laurea depurato",
-    "finalAverageLabel": "Media depurata",
-    "masterAdmissionAverage": "Media di ammissione al secondo livello",
+    "averageLabel": "Media di ammissione all’esame di laurea",
+    "finalAverageLabelDescription":{
+      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
+      "formula": "(somma (voto * crediti) / somma crediti) * (110/30),\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
+    },
+    "laude": "*Le lodi non concorrono al calcolo",
+    "masterAdmissionAverage": "Media di ammissione al II liv",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
+      "formula":"somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
+    },
+    "NB": "NB",
+    "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
+    "onTimeScores": "Punti Esami on-time",
+    "pointTitle": "Punteggi",
+    "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
-    "weightedAverageLabel": "Media ponderata",
+    "weightedAverageLabelDescription":{
+      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
+      "formula": "(somma (voto * crediti) / somma crediti) * (110/30)"
+    },
+    "weightedAverage": "Media pesata dei voti",
+    "weightedAverageDescription":{
+      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
+      "formula": "somma (voto * crediti) / somma crediti"
+    },
     "yourCareer": "La tua carriera"
   },
   "videoControls": {

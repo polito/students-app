@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
+  TextStyle,
   TouchableHighlight,
   TouchableHighlightProps,
   View,
@@ -18,6 +19,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { shadeColor } from '@lib/ui/utils/colors';
 
+import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
@@ -33,6 +35,7 @@ interface Props extends TouchableHighlightProps {
   destructive?: boolean;
   success?: boolean;
   hint?: string;
+  textStyle?: TextStyle;
 }
 
 /**
@@ -52,9 +55,11 @@ export const CtaButton = ({
   hint,
   containerStyle,
   variant = 'filled',
+  textStyle,
   ...rest
 }: Props) => {
-  const { palettes, colors, fontSizes, spacing, dark } = useTheme();
+  const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
+    useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
@@ -108,7 +113,14 @@ export const CtaButton = ({
         containerStyle,
       ]}
     >
-      {hint && <Text style={styles.hint}>{hint}</Text>}
+      {hint && (
+        <View
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={true}
+        >
+          <Text style={styles.hint}>{hint}</Text>
+        </View>
+      )}
       <TouchableHighlight
         accessibilityRole="button"
         underlayColor={underlayColor}
@@ -159,7 +171,7 @@ export const CtaButton = ({
                   style={{ marginRight: spacing[2] }}
                 />
               )}
-              <Text
+              <TextWithLinks
                 style={[
                   styles.textStyle,
                   variant === 'outlined' && {
@@ -168,10 +180,15 @@ export const CtaButton = ({
                   {
                     color: variant === 'filled' ? colors.white : color,
                   },
+                  disabled
+                    ? { color: success ? color : colors.disableTitle }
+                    : undefined,
+                  textStyle,
                 ]}
+                baseStyle={{ fontWeight: fontWeights.medium }}
               >
                 {title}
-              </Text>
+              </TextWithLinks>
               {rightExtra && rightExtra}
             </View>
           </Row>
@@ -190,13 +207,7 @@ export const CtaButtonSpacer = () => {
   return <View style={{ height: spacing[20] }} />;
 };
 
-const createStyles = ({
-  colors,
-  shapes,
-  spacing,
-  fontSizes,
-  fontWeights,
-}: Theme) =>
+const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[4],
@@ -222,7 +233,6 @@ const createStyles = ({
     },
     textStyle: {
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
       textAlign: 'center',
       color: colors.white,
     },
