@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import { faSadTear } from '@fortawesome/free-regular-svg-icons';
 import {
   faChevronLeft,
   faChevronRight,
@@ -305,7 +306,10 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
             isLoadingRooms ? (
               <ActivityIndicator style={{ marginVertical: spacing[8] }} />
             ) : (
-              <EmptyState message={t('freeRoomsScreen.noFreeRooms')} />
+              <EmptyState
+                message={t('freeRoomsScreen.noFreeRooms')}
+                icon={faSadTear}
+              />
             )
           }
         />
