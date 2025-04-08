@@ -11,6 +11,7 @@ import { FlatList, StyleSheet, View, ViewToken } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import useStateRef from 'react-usestateref';
 
+import { faSadTear } from '@fortawesome/free-regular-svg-icons';
 import {
   faCalendarDay,
   faEllipsisVertical,
@@ -252,7 +253,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         cancelText={t('common.cancel')}
       />
       {!data.length && isOffline && (
-        <EmptyState message={t('common.cacheMiss')} />
+        <EmptyState message={t('common.cacheMiss')} icon={faSadTear} />
       )}
 
       {(!data.length && isLoading) ||
