@@ -17,7 +17,7 @@ import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeC
 import { DegreeCourseScreen } from '../../features/offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../features/offering/screens/StaffScreen';
 import { PersonScreen } from '../../features/people/screens/PersonScreen';
-import { ImageModal } from '../../features/tickets/components/ImageModal';
+import { ImageScreen } from '../../features/tickets/components/ImageScreen';
 import { UnreadMessagesModal } from '../../features/user/screens/UnreadMessagesModal';
 
 export interface SharedScreensParamList extends ParamListBase {
@@ -36,7 +36,7 @@ export interface SharedScreensParamList extends ParamListBase {
     staff: OfferingCourseStaff[];
   };
   MessagesModal: undefined;
-  ImageModal: {
+  ImageScreen: {
     uri: string;
     width: number;
     height: number;
@@ -107,13 +107,12 @@ export const SharedScreens = (
         }}
       />
       <Stack.Screen
-        name="ImageModal"
-        component={ImageModal}
+        name="ImageScreen"
+        component={ImageScreen}
         options={{
-          headerShown: false,
-          presentation: 'modal',
-          gestureEnabled: false,
-          animationDuration: 0,
+          headerLargeTitle: false,
+          headerTitle: t('common.image'),
+          headerBackTitleVisible: false,
         }}
       />
     </>

@@ -69,7 +69,10 @@ export const ChatMessage = ({
             {t('common.agent')} {message.agentId}
           </Text>
         )}
-        <HtmlMessage message={message.message?.trim() ?? ''} />
+        <HtmlMessage
+          message={message.message?.trim() ?? ''}
+          baseStyle={styles.text}
+        />
         <Attachments />
       </ChatBubble>
     </Pressable>

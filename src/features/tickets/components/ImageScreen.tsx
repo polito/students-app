@@ -1,28 +1,28 @@
 import { useMemo, useState } from 'react';
-import { PixelRatio, StyleSheet, View } from 'react-native';
+import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { SharedScreensParamList } from 'src/shared/navigation/SharedScreens';
+import { SharedScreensParamList } from '../../../shared/navigation/SharedScreens';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
-import { useHideTabs } from '../../../core/hooks/useHideTabs';
+type Props = NativeStackScreenProps<SharedScreensParamList, 'ImageScreen'>;
 
-type Props = NativeStackScreenProps<SharedScreensParamList, 'ImageModal'>;
-
-export const ImageModal = ({ route }: Props) => {
+export const ImageScreen = ({ route }: Props) => {
   const { uri, width, height } = route.params;
   const styles = useStylesheet(createStyles);
   const [viewSize, setViewSize] = useState<
     { height: number; width: number } | undefined
   >();
+  const headerHeight = useHeaderHeight();
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
-  useHideTabs();
   const imageProps = useMemo(() => {
     if (!viewSize) return;
     const pixelDensity = PixelRatio.get();
@@ -39,16 +39,20 @@ export const ImageModal = ({ route }: Props) => {
     }
 
     return { zoomRatio, imageWidth, imageHeight };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewSize]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerWrapper}>
-        <HeaderCloseButton />
-      </View>
+    <View
+      style={{
+        ...styles.container,
+        paddingTop: Platform.OS === 'ios' ? headerHeight : 0,
+        paddingBottom: bottomTabBarHeight,
+      }}
+    >
       <View style={styles.screenWrapper}>
         <View
-          style={StyleSheet.compose(styles.zoomableViewContainer, {})}
+          style={styles.zoomableViewContainer}
           onLayout={event => setViewSize(event.nativeEvent.layout)}
         >
           {imageProps && (
@@ -79,10 +83,6 @@ const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-    },
-    headerWrapper: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
     },
     screenWrapper: {
       flex: 1,

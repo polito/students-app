@@ -22,11 +22,11 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { rendererProps } = useInternalRenderer('img', props);
   const uri = rendererProps.source.uri ?? '';
-  const [imageData, setImageData] = useState<undefined | ImageData>();
+  const [imageData, setImageData] = useState<ImageData>();
 
   const onPress = () => {
     if (imageData) {
-      navigation.navigate('ImageModal', {
+      navigation.navigate('ImageScreen', {
         ...imageData,
       });
     }
@@ -36,7 +36,8 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
     Image.getSize(uri, (width, height) => {
       setImageData({ width, height, uri });
     });
-  }, []);
+  }, [uri]);
+
   return (
     <ImageLoader
       source={{ uri: uri ?? '' }}
@@ -99,6 +100,7 @@ const createStyles = ({ spacing, fontWeights, colors }: Theme) =>
       justifyContent: 'flex-start',
     },
     link: {
-      color: 'white',
+      color: colors.white,
+      textDecorationColor: colors.white,
     },
   });
