@@ -96,7 +96,7 @@ const createStyles = ({ spacing, fontWeights, colors }: Theme) =>
     paragraph: { marginBottom: spacing[0], marginTop: spacing[3] },
     bold: { fontWeight: fontWeights.semibold },
     image: {
-      width: '50%', // width: 200
+      width: '50%',
       justifyContent: 'flex-start',
     },
     link: {
