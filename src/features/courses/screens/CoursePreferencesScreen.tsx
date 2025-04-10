@@ -146,6 +146,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         color,
                       },
                     });
+                    queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
                   }}
                 >
                   <ListItem
@@ -195,11 +196,8 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         files: value,
                       },
                     });
-                    queryClient
-                      .invalidateQueries([LECTURES_QUERY_PREFIX])
-                      .then(() => {
-                        queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
-                      });
+                    queryClient.invalidateQueries([LECTURES_QUERY_PREFIX]);
+                    queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
                   }}
                 />
               </OverviewList>

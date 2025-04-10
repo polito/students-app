@@ -6,6 +6,7 @@ import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import {
@@ -13,6 +14,7 @@ import {
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
+import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks.ts';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
 
@@ -26,6 +28,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const [searchFilter, setSearchFilter] = useState('');
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const { marginHorizontal } = useSafeAreaSpacing();
+  const queryClient = useQueryClient();
   const { uniqueShortcode } = route.params;
   const coursePrefs = useMemo(
     () => coursesPrefs[uniqueShortcode],
@@ -97,6 +100,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
                 icon: null,
               },
             } as PreferencesContextBase['courses']);
+            queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
             navigation.goBack();
           }}
         />
