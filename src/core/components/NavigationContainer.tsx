@@ -5,7 +5,7 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 
-import { routingInstrumentation } from '../../utils/sentry';
+import { navigationIntegration } from '../../utils/sentry';
 
 export const NavigationContainer = ({
   children,
@@ -18,7 +18,7 @@ export const NavigationContainer = ({
       ref={navigationRef}
       onReady={() => {
         // Register the navigation container with the instrumentation
-        routingInstrumentation.registerNavigationContainer(navigationRef);
+        navigationIntegration.registerNavigationContainer(navigationRef);
       }}
       {...rest}
     >
