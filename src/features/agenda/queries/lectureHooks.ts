@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import hex_md5 from 'react-native-uuid/dist/md5';
 
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
@@ -52,8 +53,12 @@ const getVisibleCourseIds = (
     .map(course => course.id as number);
 };
 
-const getLectureWeekQueryKey = (monday: DateTime) => {
-  return [LECTURES_QUERY_PREFIX, monday];
+const getLectureWeekQueryKey = (
+  monday: DateTime,
+  visibleCourseIds: number[],
+) => {
+  const val = hex_md5(JSON.stringify(visibleCourseIds));
+  return [LECTURES_QUERY_PREFIX, monday, val];
 };
 
 const getLectureWeekQueryFn = async (
@@ -86,7 +91,7 @@ export const useGetLectureWeek = (
   }, [courses, coursesPreferences]);
 
   return useQuery<Lecture[]>(
-    getLectureWeekQueryKey(since),
+    getLectureWeekQueryKey(since, visibleCourseIds),
     async () =>
       getLectureWeekQueryFn(lectureClient, since, courses!, visibleCourseIds),
     {
@@ -109,7 +114,7 @@ export const useGetLectureWeeks = (
 
   const queries = useQueries({
     queries: mondays.map(monday => ({
-      queryKey: getLectureWeekQueryKey(monday),
+      queryKey: getLectureWeekQueryKey(monday, visibleCourseIds),
       queryFn: async () =>
         getLectureWeekQueryFn(
           lectureClient,
@@ -124,8 +129,19 @@ export const useGetLectureWeeks = (
     return queries.some(query => query.isLoading);
   }, [queries]);
 
+  const refetch = async () => {
+    await Promise.all(
+      queries.map(q => {
+        if (q.refetch) {
+          return q.refetch();
+        }
+      }),
+    );
+  };
+
   return {
     data: queries.map(query => query.data!),
     isLoading,
+    refetch,
   };
 };
