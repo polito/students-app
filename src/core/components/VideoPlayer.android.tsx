@@ -5,13 +5,13 @@ import Video, {
   OnBufferData,
   OnLoadData,
   OnProgressData,
-  ReactVideoProps,
   VideoRef,
 } from 'react-native-video';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme.ts';
 import { useNavigation } from '@react-navigation/native';
 
 import { throttle } from 'lodash';
@@ -20,6 +20,7 @@ import { negate } from '../../utils/predicates';
 import { displayTabBar } from '../../utils/tab-bar';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
+import { VideoProps } from './VideoPlayer';
 
 const playbackRates = [1, 1.5, 2, 2.5];
 
@@ -29,19 +30,21 @@ const playbackRates = [1, 1.5, 2, 2.5];
  * In order for fullscreen to work correctly, this component's parent should
  * have a minHeight=100% of the available window height
  */
-export const VideoPlayer = (props: ReactVideoProps) => {
+export const VideoPlayer = (props: VideoProps) => {
   const [width, setWidth] = useState(Dimensions.get('screen').width);
   const [height, setHeight] = useState(Dimensions.get('screen').height);
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
   const playerRef = useRef<VideoRef>(null);
-  const [paused, setPaused] = useState(false);
+  // If there is a single video paused is initialized to false
+  const [paused, setPaused] = useState(props.currentIndex !== props.index);
   const [fullscreen, setFullscreen] = useState(false);
   const [duration, setDuration] = useState(0);
   const [ready, setReady] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const { toggleFullScreen } = props;
   useFullscreenUi(fullscreen);
 
   useEffect(() => {
@@ -61,6 +64,10 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   }, [navigation]);
 
   useEffect(() => {
+    setPaused(props.currentIndex !== props.index);
+  }, [props.currentIndex, props.index]);
+
+  useEffect(() => {
     const updateDimensions = () => {
       const { width: newWidth, height: newHeight } = Dimensions.get('screen');
       setWidth(newWidth);
@@ -76,6 +83,8 @@ export const VideoPlayer = (props: ReactVideoProps) => {
     } else {
       SystemNavigationBar.fullScreen(fullscreen);
     }
+    toggleFullScreen?.(fullscreen);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fullscreen]);
 
   const handleLoad = (meta: OnLoadData) => {
@@ -153,7 +162,6 @@ export const VideoPlayer = (props: ReactVideoProps) => {
         fullscreen={false}
         {...props}
       />
-
       {ready ? (
         <VideoControls
           buffering={buffering}
@@ -178,11 +186,10 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   );
 };
 
-const createStyles = () =>
+const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
-    // eslint-disable-next-line react-native/no-color-literals
     container: {
-      backgroundColor: 'black',
+      backgroundColor: colors.black,
     },
     fullHeight: {
       height: '100%',
