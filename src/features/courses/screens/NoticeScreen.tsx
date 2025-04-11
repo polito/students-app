@@ -7,11 +7,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { HtmlView } from '../../../core/components/HtmlView';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { linkUrls, sanitizeHtml } from '../../../utils/html';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { HtmlMessage } from '../../tickets/components/HtmlMessage';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Notice'>;
 
@@ -20,7 +20,8 @@ export const NoticeScreen = ({ route }: Props) => {
   const { spacing } = useTheme();
   const { clearNotificationScope } = useNotifications();
   const noticesQuery = useGetCourseNotices(courseId);
-  const html = useMemo(
+
+  const message = useMemo(
     () =>
       linkUrls(
         sanitizeHtml(
@@ -50,8 +51,8 @@ export const NoticeScreen = ({ route }: Props) => {
       refreshControl={<RefreshControl queries={[noticesQuery]} manual />}
     >
       <SafeAreaView>
-        <HtmlView
-          source={{ html }}
+        <HtmlMessage
+          message={message}
           baseStyle={{
             paddingTop: 0,
             paddingHorizontal: spacing[5],

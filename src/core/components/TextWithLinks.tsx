@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { TextProps } from 'react-native';
 import { MixedStyleDeclaration } from 'react-native-render-html';
 
-import { linkUrls, replaceImgWithAnchorTags } from '../../utils/html';
+import { linkUrls } from '../../utils/html';
 import { HtmlView } from './HtmlView';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 
 export const TextWithLinks = ({ baseStyle, children, style }: Props) => {
   if (!children || typeof children !== 'string') return null;
-  const html = linkUrls(replaceImgWithAnchorTags(children));
+  const html = linkUrls(children);
   return (
     <HtmlView
       source={{ html }}
