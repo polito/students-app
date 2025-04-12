@@ -17,7 +17,7 @@ import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeC
 import { DegreeCourseScreen } from '../../features/offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../features/offering/screens/StaffScreen';
 import { PersonScreen } from '../../features/people/screens/PersonScreen';
-import { WebView } from '../../features/services/screens/WebView.tsx';
+import { WebView } from '../../features/services/screens/WebView';
 import { ImageScreen } from '../../features/tickets/components/ImageScreen';
 import { UnreadMessagesModal } from '../../features/user/screens/UnreadMessagesModal';
 
@@ -120,9 +120,10 @@ export const SharedScreens = (
       <Stack.Screen
         name="WebView"
         component={WebView}
-        options={{
+        options={({ route }) => ({
           headerShown: true,
-        }}
+          headerTitle: route.params.title ?? t('webViewScreen.title'),
+        })}
       />
     </>
   );

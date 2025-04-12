@@ -12,8 +12,7 @@ import { ServiceStackParamList } from '../components/ServicesNavigator.tsx';
 type Props = NativeStackScreenProps<ServiceStackParamList, 'WebView'>;
 
 export const WebView = ({ navigation, route }: Props) => {
-  const { uri, title } = route.params;
-  navigation.setOptions({ title: title ?? 'WebView' });
+  const { uri } = route.params;
   const styles = useStylesheet(createStyles);
 
   useEffect(() => {
