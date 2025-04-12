@@ -32,7 +32,7 @@ import {
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { ChatMessage } from '../components/ChatMessage';
-import { TextMessage } from '../components/TextMessage';
+import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
@@ -184,7 +184,10 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                   accessibilityLabel={accessibilityMessageText}
                   style={styles.requestMessage}
                 >
-                  <TextMessage message={ticket?.message} />
+                  <HtmlMessage
+                    message={ticket?.message}
+                    baseStyle={styles.text}
+                  />
                   {ticket.hasAttachments && (
                     <View>
                       {ticket.attachments.map((item, index) => (
@@ -220,7 +223,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
   StyleSheet.create({
     separator: {
       height: spacing[3],
@@ -231,5 +234,11 @@ const createStyles = ({ spacing }: Theme) =>
     },
     icon: {
       marginRight: -spacing[3],
+    },
+    text: {
+      padding: 0,
+      fontSize: fontSizes.sm,
+      color: colors.white,
+      textDecorationColor: colors.white,
     },
   });
