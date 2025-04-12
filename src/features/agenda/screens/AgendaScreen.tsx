@@ -58,7 +58,9 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   const { params } = route;
   const today = useMemo(() => new Date(), []);
 
-  const selectedDate = params?.date ?? DateTime.now();
+  const selectedDate = params?.date
+    ? DateTime.fromISO(params.date)
+    : DateTime.now();
 
   const [nextDate, setNextDate, nextDateRef] =
     useStateRef<DateTime>(selectedDate);
@@ -137,7 +139,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       (
         navigation as NativeStackNavigationProp<AgendaStackParamList, 'Agenda'>
       ).replace('Agenda', {
-        date: newDate,
+        date: newDate.toISODate() ?? '',
         animated: false,
       });
     },
@@ -183,7 +185,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         layout: 'weekly',
       });
       navigation.replace('AgendaWeek', {
-        date: nextDate,
+        date: nextDate.toISODate() ?? '',
       });
     };
 
