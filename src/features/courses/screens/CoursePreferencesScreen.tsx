@@ -26,7 +26,6 @@ import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
@@ -38,8 +37,6 @@ import {
   useUpdateCoursePreferences,
 } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
-import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks';
-import { LECTURES_QUERY_PREFIX } from '../../agenda/queries/lectureHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
@@ -107,7 +104,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const courseQuery = useGetCourse(courseId);
   const { mutate: updateCoursePreferences } =
     useUpdateCoursePreferences(courseId);
-  const queryClient = useQueryClient();
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
     () => coursesPrefs[uniqueShortcode],
@@ -146,7 +142,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         color,
                       },
                     });
-                    queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
                   }}
                 >
                   <ListItem
@@ -196,8 +191,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         files: value,
                       },
                     });
-                    queryClient.invalidateQueries([LECTURES_QUERY_PREFIX]);
-                    queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
                   }}
                 />
               </OverviewList>
@@ -261,7 +254,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 <SwitchListItem
                   title={t('common.hideInAgenda')}
                   disabled={!coursePrefs}
-                  value={coursePrefs.isHiddenInAgenda}
+                  value={coursePrefs.isHiddenInAgenda || coursePrefs.isHidden}
                   leadingItem={
                     <Icon icon={faEyeSlash} size={fontSizes['2xl']} />
                   }

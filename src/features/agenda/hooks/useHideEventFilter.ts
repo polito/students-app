@@ -12,6 +12,8 @@ export const useHideEventFilter = (data: AgendaItem[]) => {
 
     const course = courses[item.uniqueShortcode];
 
+    if (course.isHidden) return false;
+
     if (course.isHiddenInAgenda) return false;
 
     if (!course.itemsToHideInAgenda) return true;
