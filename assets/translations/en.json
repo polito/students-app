@@ -850,5 +850,8 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
+  },
+  "webViewScreen": {
+    "title": "WebView"
   }
 }
