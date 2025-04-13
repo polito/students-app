@@ -9,6 +9,7 @@ import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { isCurrentMonth } from '../../../utils/dates';
+import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 import { formatNextLecture } from '../utils/formatters';
@@ -63,12 +64,12 @@ const getLectureWeekQueryFn = async (
   courses: CourseOverview[],
   visibleCourseIds: number[],
 ) => {
-  const until = monday.plus({ week: 1 });
+  const until = monday.endOf('week');
 
   return lectureClient
     .getLectures({
-      fromDate: monday.toJSDate(),
-      toDate: until.toJSDate(),
+      fromDate: toOASTruncable(monday),
+      toDate: toOASTruncable(until),
       courseIds: visibleCourseIds,
     })
     .then(pluckData)

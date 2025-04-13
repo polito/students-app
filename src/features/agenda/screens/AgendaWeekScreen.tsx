@@ -58,7 +58,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
 
   const { params } = route;
-  const date = params?.date;
+  const date = params?.date ? DateTime.fromISO(params.date) : DateTime.now();
   const today = useMemo(() => new Date(), []);
   const todayDateTime = useMemo(
     () => DateTime.fromJSDate(today, { zone: IANAZone.create('Europe/Rome') }),
@@ -161,7 +161,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         layout: 'daily',
       });
       navigation.replace('Agenda', {
-        date: selectedDate,
+        date: selectedDate.toISODate() ?? '',
       });
     };
 
@@ -326,11 +326,10 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     tabs: {
       alignItems: 'center',
-      paddingHorizontal: spacing[4],
-      paddingVertical: spacing[1],
     },
     headerContainer: {
-      paddingVertical: spacing[1],
+      paddingVertical: spacing[2],
+      paddingLeft: spacing[4],
     },
     container: {
       display: 'flex',

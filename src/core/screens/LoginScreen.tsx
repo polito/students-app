@@ -42,7 +42,11 @@ export const LoginScreen = () => {
   const language = useDeviceLanguage();
 
   const handleLogin = () =>
-    login({ username, password, preferences: { language } }).catch(e => {
+    login({
+      username,
+      password,
+      preferences: { language },
+    }).catch(e => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {

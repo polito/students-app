@@ -27,7 +27,6 @@ import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
 import { Polygon } from 'geojson';
-import { capitalize } from 'lodash';
 
 import { MAX_RECENT_SEARCHES } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -53,7 +52,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
-  const { placeId, isCrossNavigation } = route.params;
+  const { placeId, isCrossNavigation, long, lat, name } = route.params;
   const {
     data: place,
     isLoading: isLoadingPlace,
@@ -63,7 +62,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const siteId = place?.site.id;
   const placeFloorId = place?.floor.id;
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
-    siteId,
+    siteId: siteId,
     floorId: placeFloorId,
   });
 
@@ -77,12 +76,13 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const placeName =
     place?.room.name ??
     place?.category.subCategory?.name ??
+    name ??
     t('common.untitled');
 
   useScreenTitle(
-    (getPlaceError as ResponseError)?.response?.status === 404
+    (getPlaceError as ResponseError)?.response?.status === 404 && !name
       ? t('common.notFound')
-      : capitalize(placeName),
+      : t('placeScreen.placeDetail'),
   );
 
   useEffect(() => {
@@ -98,14 +98,14 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   }, [place, placesSearched, updatePreference, updatedRecentPlaces]);
 
   useLayoutEffect(() => {
+    const bounds: CameraPadding & Partial<CameraBounds> = {
+      paddingTop: headerHeight,
+      paddingLeft: 8,
+      paddingRight: 8,
+      paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
+    };
     if (place) {
       const { latitude, longitude } = place;
-      const bounds: CameraPadding & Partial<CameraBounds> = {
-        paddingTop: headerHeight,
-        paddingLeft: 8,
-        paddingRight: 8,
-        paddingBottom: Dimensions.get('window').height / 2 - headerHeight,
-      };
       if (place.geoJson?.geometry.type === 'Polygon') {
         const coordinates = (place.geoJson.geometry as Polygon).coordinates;
         if (coordinates?.length > 0) {
@@ -159,6 +159,55 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
           </>
         ),
       });
+    } else {
+      if (long && lat) {
+        places.push({
+          id: placeId,
+          name: name ?? '',
+          latitude: lat ? parseFloat(lat) : 0,
+          longitude: long ? parseFloat(long) : 0,
+          siteId: siteId ?? '',
+          category: { id: 'OTHER', name: '', markerUrl: 'pin' },
+        });
+        navigation.setOptions({
+          mapOptions: {
+            camera: {
+              centerCoordinate:
+                long && lat ? [parseFloat(long), parseFloat(lat)] : [],
+              padding: bounds.sw ? undefined : bounds,
+              bounds: bounds.sw ? (bounds as CameraBounds) : undefined,
+              zoomLevel: bounds.sw ? undefined : 19,
+            },
+          },
+          mapContent: () => (
+            <>
+              <MarkersLayer
+                selectedPoiId={placeId}
+                places={places}
+                isCrossNavigation={isCrossNavigation}
+                categoryId="OTHER"
+              />
+              <ShapeSource id="placeHighlightSource">
+                <LineLayer
+                  id="placeHighlightLine"
+                  aboveLayerID="indoor"
+                  style={{
+                    lineColor: palettes.secondary[600],
+                    lineWidth: 2,
+                  }}
+                />
+                <FillLayer
+                  id="placeHighlightFill"
+                  aboveLayerID="indoor"
+                  style={{
+                    fillColor: `${palettes.secondary[600]}33`,
+                  }}
+                />
+              </ShapeSource>
+            </>
+          ),
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -174,6 +223,56 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     spacing,
   ]);
 
+  if (long && lat && name && !place) {
+    return (
+      <View style={GlobalStyles.grow} pointerEvents="box-none">
+        <BottomSheet
+          middleSnapPoint={50}
+          handleStyle={{ paddingVertical: undefined }}
+        >
+          <BottomSheetScrollView>
+            <Col ph={5} mb={5}>
+              <Text variant="title" style={styles.title}>
+                {placeName}
+              </Text>
+            </Col>
+
+            <Section>
+              <OverviewList translucent>
+                <ListItem
+                  inverted
+                  multilineTitle
+                  title={t('placeScreen.getDirections')}
+                  trailingItem={
+                    <IconButton
+                      icon={faDiamondTurnRight}
+                      size={fontSizes.xl}
+                      adjustSpacing="right"
+                      accessibilityLabel={t('common.navigate')}
+                      onPress={() => {
+                        const scheme = Platform.select({
+                          ios: 'maps://0,0?q=',
+                          android: 'geo:0,0?q=',
+                        });
+                        const latLng = [lat, long].join(',');
+                        const label = name;
+                        const url = Platform.select({
+                          ios: `${scheme}${label}@${latLng}`,
+                          android: `${scheme}${latLng}(${label})`,
+                        })!;
+                        Linking.openURL(url);
+                      }}
+                    />
+                  }
+                />
+              </OverviewList>
+            </Section>
+          </BottomSheetScrollView>
+        </BottomSheet>
+      </View>
+    );
+  }
+
   if (isLoading) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -188,9 +287,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   }
 
   if (
-    !place ||
-    (getPlaceError &&
-      (getPlaceError as ResponseError)?.response?.status === 404)
+    (!place ||
+      (getPlaceError &&
+        (getPlaceError as ResponseError)?.response?.status === 404)) &&
+    !name
   ) {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -212,15 +312,17 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       <BottomSheet
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
+        index={1}
+        onAnimate={() => {}} // trigger animation with index = 1 when clicked
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
             <Text variant="title" style={styles.title}>
               {placeName}
             </Text>
-            <Text>{place.site.name}</Text>
+            <Text>{place?.site.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
-              {formatPlaceCategory(place.category.name)}
+              {formatPlaceCategory(place?.category.name)}
             </Text>
           </Col>
 
@@ -230,7 +332,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
-                title={place.site.name}
+                title={(place && place.site.name) ?? ''}
                 subtitle={t('common.campus')}
                 trailingItem={
                   <IconButton
@@ -243,10 +345,11 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                         ios: 'maps://0,0?q=',
                         android: 'geo:0,0?q=',
                       });
-                      const latLng = [place?.latitude, place?.longitude].join(
-                        ',',
-                      );
-                      const label = place?.room.name;
+                      const latLng = [
+                        place?.latitude || lat,
+                        place?.longitude || long,
+                      ].join(',');
+                      const label = place?.room.name ?? name;
                       const url = Platform.select({
                         ios: `${scheme}${label}@${latLng}`,
                         android: `${scheme}${latLng}(${label})`,
@@ -258,15 +361,17 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               />
               <ListItem
                 inverted
-                title={place.building.name}
+                title={(place && place.building.name) ?? ''}
                 subtitle={t('common.building')}
               />
               <ListItem
                 inverted
-                title={`${place.floor.level} - ${place.floor.name}`}
+                title={
+                  (place && `${place.floor.level} - ${place.floor.name}`) ?? ''
+                }
                 subtitle={t('common.floor')}
               />
-              {place.structure && (
+              {place?.structure && (
                 <ListItem
                   inverted
                   multilineTitle
@@ -277,7 +382,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
             </OverviewList>
           </Section>
 
-          {(place.capacity > 0 || place.resources?.length > 0) && (
+          {place && (place.capacity > 0 || place.resources?.length > 0) && (
             <Section>
               <SectionHeader title={t('common.facilities')} separator={false} />
               <OverviewList translucent>

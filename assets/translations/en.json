@@ -185,8 +185,8 @@
     "noValue": "No value",
     "notFound": "Not found",
     "notes": "Notes",
-    "notice": "Notice",
-    "notice_plural": "Notices",
+    "notice": "News",
+    "notice_plural": "News",
     "notifications": "Notifications",
     "now": "Now",
     "objectives": "Objectives",
@@ -352,8 +352,8 @@
     "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
-    "emptyState": "There are no notices here",
-    "title": "Notices"
+    "emptyState": "There are no news here",
+    "title": "News"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -363,7 +363,7 @@
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
+    "noticesSubtitle": "News sent by the professor",
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda"
   },
@@ -657,7 +657,10 @@
     "capacity": "{{count}} seat",
     "capacity_plural": "{{count}} seats",
     "placeNotFound": "Place not found",
-    "title": "Place"
+    "title": "Place",
+    "placeDetail": "Place detail",
+    "getDirections": "Obtain directions"
+
   },
   "placesScreen": {
     "changeFloor": "Change floor",
@@ -848,5 +851,8 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
+  },
+  "webViewScreen": {
+    "title": "WebView"
   }
 }

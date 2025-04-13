@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Linking,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -153,13 +152,19 @@ export const BookingScreen = ({ navigation, route }: Props) => {
 
   const onPressLocation = async (location: Booking['location']) => {
     if (location.type === 'virtualPlace') {
-      await Linking.openURL(location.url);
+      navigation.navigate('WebView', {
+        uri: location.url,
+        title: location.name,
+      });
     } else if (location.type === 'place') {
       navigation.navigate('PlacesAgendaStack', {
         screen: 'Place',
         params: {
           placeId: resolvePlaceId(location),
           isCrossNavigation: true,
+          lat: booking?.locationCheck?.latitude,
+          long: booking?.locationCheck?.longitude,
+          name: booking?.location?.name,
         },
       });
     }
