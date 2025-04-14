@@ -82,7 +82,7 @@ export const Splash = ({
         setIsSplashLoaded(true);
       });
     }
-  }, [containerOpacity, splashPhase]);
+  }, [containerOpacity, splashPhase, setIsSplashLoaded]);
 
   if (splashPhase === SplashPhases.HIDDEN) return null;
 

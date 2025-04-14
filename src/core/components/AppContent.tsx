@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -16,8 +15,6 @@ import { RootNavigator } from './RootNavigator';
 
 export const AppContent = () => {
   const { isLogged } = useApiContext();
-  const { mutateAsync: updateAppInfo } = useUpdateAppInfo();
-  const [clientPatchOk, setClientPatchOk] = useState(false);
   const preferences = usePreferencesContext();
   const queryClient = useQueryClient();
   const { isSplashLoaded } = useSplashContext();

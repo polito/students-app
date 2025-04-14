@@ -60,6 +60,7 @@
     "react-native-barcode-svg": "^0.0.15",
     "react-native-blob-util": "^0.19.11",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-check-version": "^1.3.0",
     "react-native-date-picker": "^5.0.7",
     "react-native-device-info": "^13.2.0",
     "react-native-document-picker": "^9.3.1",
@@ -95,13 +96,7 @@
     "react-string-replace": "^1.1.1",
     "react-usestateref": "^1.0.9",
     "semver": "^7.6.3",
-    "superjson": "^2.2.1",
-    "react-native-version-check": "^3.4.7",
-    "react-native-video": "^5.2.1",
-    "react-string-replace": "^1.1.0",
-    "react-usestateref": "^1.0.8",
-    "semver": "^7.5.4",
-    "superjson": "^1.13.1"
+    "superjson": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

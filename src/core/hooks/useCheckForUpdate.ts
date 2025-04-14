@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import VersionCheck from 'react-native-version-check';
+import { CheckVersionResponse, checkVersion } from 'react-native-check-version';
 
-import { isNil } from 'lodash';
-import semver from 'semver/preload';
-
-import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useSplashContext } from '../contexts/SplashContext.ts';
+import { useUpdateAppInfo } from '../queries/authHooks.ts';
 
 type UpdateInfo = {
   needsToUpdate?: boolean;
@@ -12,41 +10,54 @@ type UpdateInfo = {
   storeUrl?: string;
 };
 export const useCheckForUpdate = () => {
-  const { lastInstalledVersion } = usePreferencesContext();
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo>({});
+  const { mutateAsync: updateAppInfo } = useUpdateAppInfo();
+  const { isSplashLoaded } = useSplashContext();
 
   useEffect(() => {
+    if (!isSplashLoaded) return;
     async function getLatestVersion() {
       try {
-        if (!lastInstalledVersion || !semver.valid(lastInstalledVersion))
-          return;
-        const latestVersion = await VersionCheck.getLatestVersion();
-        if (!latestVersion || !semver.valid(latestVersion)) return;
-        const needsToUpdate = semver.neq(latestVersion, lastInstalledVersion);
-        if (needsToUpdate) {
-          const storeUrl = await VersionCheck.getStoreUrl({
-            appID: '6443913305',
-          });
-          setUpdateInfo({
-            needsToUpdate,
-            latestAppVersion: latestVersion,
-            storeUrl,
-          });
-        }
+        const checkVersionResponse = await new Promise<CheckVersionResponse>(
+          (ok, no) => {
+            // Timeout to ensure dependent modals are not blocked if this takes too long
+            const timeout = setTimeout(() => {
+              no(new Error('Timeout exceeded'));
+            }, 3000);
+
+            updateAppInfo()
+              .then(({ data }) => {
+                checkVersion()
+                  .then(res => {
+                    if (res.error) {
+                      no(new Error(res.error.message));
+                    }
+                    const needsUpdate = data.suggestUpdate && res.needsUpdate;
+                    ok({ ...res, needsUpdate });
+                  })
+                  .catch(no);
+              })
+              .catch(no)
+              .finally(() => {
+                clearTimeout(timeout);
+              });
+          },
+        );
+        setUpdateInfo({
+          needsToUpdate: checkVersionResponse.needsUpdate,
+          latestAppVersion: checkVersionResponse.version,
+          storeUrl: checkVersionResponse.url,
+        });
       } catch (e) {
         console.warn('Error while checking for updates', e);
+        setUpdateInfo(prev => ({
+          ...prev,
+          needsToUpdate: false,
+        }));
       }
     }
     getLatestVersion();
-  }, [lastInstalledVersion]);
+  }, [updateAppInfo, isSplashLoaded]);
 
-  const { needsToUpdate, latestAppVersion, storeUrl } = updateInfo;
-  const shouldUpdate =
-    needsToUpdate === true && !isNil(latestAppVersion) && !isNil(storeUrl);
-
-  return {
-    needsToUpdate: shouldUpdate,
-    latestAppVersion,
-    storeUrl,
-  };
+  return updateInfo;
 };

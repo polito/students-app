@@ -7,6 +7,8 @@ import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesF
 import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
 
 export const editablePreferenceKeys = [
+  // This version is used exclusively for migrations.
+  // For all other cases, use DeviceInfo from react-native-device-info.
   'lastInstalledVersion',
   'username',
   'campusId',

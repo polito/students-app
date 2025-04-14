@@ -30,13 +30,7 @@ import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';
 import { useNotifications } from '../hooks/useNotifications';
 import { useGetSites } from '../queries/placesHooks';
-import { useGetStudent } from '../queries/studentHooks';
-import {
-  useGetMessages,
-  useGetModalMessages,
-  useGetStudent,
-} from '../queries/studentHooks';
-import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
+import { useGetMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
