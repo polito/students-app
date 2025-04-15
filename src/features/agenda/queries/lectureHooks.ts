@@ -124,13 +124,8 @@ export const useGetLectureWeeks = (
     return queries.some(query => query.isLoading);
   }, [queries]);
 
-  const refetch = async () => {
-    await Promise.all(queries.map(q => q.refetch?.()));
-  };
-
   return {
     data: queries.map(query => query.data!),
     isLoading,
-    refetch,
   };
 };

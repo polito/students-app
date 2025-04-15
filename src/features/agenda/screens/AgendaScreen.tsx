@@ -54,7 +54,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   const { updatePreference, agendaScreen } = usePreferencesContext();
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
-  const { language, courses } = usePreferencesContext();
+  const { language } = usePreferencesContext();
   const { params } = route;
   const today = useMemo(() => new Date(), []);
 
@@ -69,7 +69,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     selectedDate.startOf('week'),
   ]);
 
-  const { isLoading, data, refetch } = useGetAgendaWeeks(weeks);
+  const { isLoading, data } = useGetAgendaWeeks(weeks);
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
 
@@ -177,13 +177,6 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       scrollToSelectedDay();
     }
   }, [isScrolling, scrollToSelectedDay]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      refetch();
-    }
-    // eslint-disable-next-line
-  }, [courses, isLoading]);
 
   useLayoutEffect(() => {
     const switchToWeekly = () => {

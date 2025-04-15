@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
@@ -39,7 +33,7 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
-import { useHideEventFilter } from '../hooks/useHideEventFilter';
+import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
 import {
   getAgendaWeekQueryKey,
   useGetAgendaWeek,
@@ -54,7 +48,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { updatePreference, agendaScreen, courses } = usePreferencesContext();
+  const { updatePreference, agendaScreen } = usePreferencesContext();
 
   const { language } = usePreferencesContext();
 
@@ -85,12 +79,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     data: weekData,
     isFetching /* , fetchPreviousPage, fetchNextPage*/,
     refetch,
-    isLoading,
   } = useGetAgendaWeek(currentWeek);
-
-  useEffect(() => {
-    if (!isLoading && !isFetching) refetch();
-  }, [courses, isFetching, isLoading, refetch]);
 
   const calendarData = useMemo(() => {
     return weekData?.data?.flatMap(week => week.items) ?? [];
@@ -104,7 +93,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     );
   }, [calendarData]);
 
-  const filteredCalendarData = useHideEventFilter(calendarData);
+  const filteredCalendarData = useProcessedLectures(calendarData);
 
   const weekLength = useMemo(() => {
     if (calendarMax && calendarMax.start.weekday > 5) {
