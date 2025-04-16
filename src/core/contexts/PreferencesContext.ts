@@ -78,7 +78,8 @@ export interface PreferencesContextBase {
       | 'dyslexie'
       | 'easy-reading'
       | 'sylexiad';
-    fontPlacement?: 'none' | 'long-text' | 'all-text';
+    fontPlacement?: 'none' | 'long-text';
+    // | 'all-text';
     highContrast?: boolean;
     grayscale?: boolean;
     lineHeight?: boolean;

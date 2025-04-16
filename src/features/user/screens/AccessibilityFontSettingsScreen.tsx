@@ -9,7 +9,6 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { Text } from '@lib/ui/components/Text';
-// import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { MenuAction, MenuView } from '@react-native-menu/menu';
 
 import { TFunction } from 'i18next';
@@ -26,7 +25,6 @@ interface AccessibilityItemProps {
 export const AccessibilitySettingsScreen = () => {
   const { t } = useTranslation();
   const { accessibility, updatePreference } = usePreferencesContext();
-
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -84,7 +82,14 @@ export const AccessibilitySettingsScreen = () => {
               /> */}
               <SwitchListItem
                 title={t('accessibilitySettingsScreen.lineHeightTitle')}
+                subtitle={t('accessibilitySettingsScreen.lineHeightSubtitle', {
+                  height:
+                    accessibility?.lineHeight === true
+                      ? t('common.less')
+                      : t('common.more'),
+                })}
                 value={accessibility?.lineHeight ?? false}
+                disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
@@ -94,7 +99,17 @@ export const AccessibilitySettingsScreen = () => {
               />
               <SwitchListItem
                 title={t('accessibilitySettingsScreen.paragraphSpacingTitle')}
+                subtitle={t(
+                  'accessibilitySettingsScreen.paragraphSpacingSubtitle',
+                  {
+                    height:
+                      accessibility?.paragraphSpacing === true
+                        ? t('common.less')
+                        : t('common.more'),
+                  },
+                )}
                 value={accessibility?.paragraphSpacing ?? false}
+                disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
@@ -104,7 +119,14 @@ export const AccessibilitySettingsScreen = () => {
               />
               <SwitchListItem
                 title={t('accessibilitySettingsScreen.wordSpacingTitle')}
+                subtitle={t('accessibilitySettingsScreen.wordSpacingSubtitle', {
+                  height:
+                    accessibility?.wordSpacing === true
+                      ? t('common.less')
+                      : t('common.more'),
+                })}
                 value={accessibility?.wordSpacing ?? false}
+                disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
@@ -118,13 +140,19 @@ export const AccessibilitySettingsScreen = () => {
             <SectionHeader
               title={t('accessibilitySettingsScreen.exampleText')}
             />
-            <Text variant="longProse" style={{ margin: 10 }}>
+            <Text
+              variant="longProse"
+              style={{ marginTop: 10, paddingHorizontal: 16 }}
+            >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo consequat
             </Text>
-            <Text variant="longProse" style={{ margin: 10 }}>
+            <Text
+              variant="longProse"
+              style={{ marginTop: 10, paddingHorizontal: 16 }}
+            >
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -240,10 +268,10 @@ const CustomFontPlacementListItem = ({
         label: 'Long text',
         value: 'long-text',
       },
-      {
-        label: 'All text',
-        value: 'all-text',
-      },
+      // {
+      //   label: 'All text',
+      //   value: 'all-text',
+      // },
     ];
   }, []);
 
