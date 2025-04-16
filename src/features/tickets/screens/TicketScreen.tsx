@@ -181,7 +181,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
       }));
     };
     changeStyle();
-  }, [accessibility]);
+  }, [accessibility, fontSizes]);
 
   return (
     <View style={GlobalStyles.grow}>
