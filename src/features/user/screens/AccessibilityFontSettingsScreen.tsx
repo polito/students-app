@@ -88,7 +88,11 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={accessibility?.lineHeight ?? false}
+                value={
+                  (accessibility?.lineHeight &&
+                    accessibility?.fontPlacement === 'long-text') ??
+                  false
+                }
                 disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
@@ -108,7 +112,11 @@ export const AccessibilitySettingsScreen = () => {
                         : t('common.more'),
                   },
                 )}
-                value={accessibility?.paragraphSpacing ?? false}
+                value={
+                  (accessibility?.paragraphSpacing &&
+                    accessibility?.fontPlacement === 'long-text') ??
+                  false
+                }
                 disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
@@ -125,7 +133,11 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={accessibility?.wordSpacing ?? false}
+                value={
+                  (accessibility?.wordSpacing &&
+                    accessibility?.fontPlacement === 'long-text') ??
+                  false
+                }
                 disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {

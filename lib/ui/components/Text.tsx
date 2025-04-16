@@ -63,13 +63,14 @@ export const Text = ({
 
   useEffect(() => {
     const getfontStyle = (fontSize: number) => {
-      return {
-        lineHeight: accessibility?.lineHeight ? fontSize * 1.5 : undefined,
-        letterSpacing: accessibility?.letterSpacing
-          ? fontSize * 0.12
-          : undefined,
-        marginBottom: accessibility?.paragraphSpacing ? fontSize * 2 : 0,
-      };
+      if (accessibility?.fontPlacement === 'long-text')
+        return {
+          lineHeight: accessibility?.lineHeight ? fontSize * 1.5 : undefined,
+          letterSpacing: accessibility?.letterSpacing
+            ? fontSize * 0.12
+            : undefined,
+          marginBottom: accessibility?.paragraphSpacing ? fontSize * 2 : 0,
+        };
     };
     const changeStyle = () => {
       setStyless({
