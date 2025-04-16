@@ -61,43 +61,62 @@ export const Text = ({
     return text.split(' ').join(' '.repeat(spacing));
   };
 
+  const getfontStyle = (fontSize: number) => {
+    return {
+      lineHeight: accessibility?.lineHeight ? fontSize * 1.5 : undefined,
+      letterSpacing: accessibility?.letterSpacing ? fontSize * 0.12 : undefined,
+      marginBottom: accessibility?.paragraphSpacing ? fontSize * 2 : 0,
+    };
+  };
+
   useEffect(() => {
     const changeStyle = () => {
       setStyless({
         heading: {
           fontSize: fontSizes.md,
+          ...getfontStyle(fontSizes.md),
         },
         subHeading: {
           fontSize: fontSizes.md,
           textTransform: 'uppercase',
+          ...getfontStyle(fontSizes.md),
         },
         title: {
           fontSize: fontSizes.xl,
+          ...getfontStyle(fontSizes.xl),
         },
         headline: {
           fontSize: fontSizes.md,
+          ...getfontStyle(fontSizes.md),
         },
         caption: {
           fontSize: fontSizes.sm,
           textTransform: 'uppercase',
+          ...getfontStyle(fontSizes.xl),
         },
         prose: {
           fontSize: fontSizes.md,
-          letterSpacing:
-            accessibility?.fontPlacement === 'long-text'
-              ? fontSizes.md * 0.12
-              : undefined,
+          ...getfontStyle(fontSizes.md),
         },
         longProse: {
           fontSize: fontSizes.md,
-          lineHeight: accessibility?.lineHeight
-            ? fontSizes.md * 1.5
-            : undefined,
+          lineHeight:
+            accessibility?.fontPlacement === 'long-text' &&
+            // accessibility?.fontPlacement === 'all-text') &&
+            accessibility?.lineHeight
+              ? fontSizes.md * 1.5
+              : undefined,
           letterSpacing:
             accessibility?.fontPlacement === 'long-text'
-              ? fontSizes.md * 0.12
+              ? // accessibility?.fontPlacement === 'all-text'
+                fontSizes.md * 0.12
               : undefined,
-          marginBottom: accessibility?.paragraphSpacing ? fontSizes.md * 2 : 0,
+          marginBottom:
+            accessibility?.fontPlacement === 'long-text' &&
+            // accessibility?.fontPlacement === 'all-text') &&
+            accessibility?.paragraphSpacing
+              ? fontSizes.md * 2
+              : 0,
         },
         secondaryText: {},
         link: {},
@@ -124,7 +143,7 @@ export const Text = ({
       {...rest}
     >
       {typeof children === 'string' &&
-      variant === 'longProse' &&
+      accessibility?.fontPlacement === 'long-text' &&
       accessibility?.wordSpacing
         ? addWordSpacing(children, wordSpacing)
         : children}
@@ -155,13 +174,9 @@ const createStyles = ({ fontSizes }: Theme) => {
     },
     prose: {
       fontSize: fontSizes.md,
-      // letterSpacing: accessibility?.fontPlacement === 'long-text' ? fontSizes.md * 0.12 : undefined,
     },
     longProse: {
       fontSize: fontSizes.md,
-      // lineHeight: accessibility?.lineHeight ? fontSizes.md * 1.5 : undefined,
-      // letterSpacing: accessibility?.fontPlacement === 'long-text' ? fontSizes.md * 0.12 : undefined,
-      // marginBottom: accessibility?.paragraphSpacing ? fontSizes.md * 2 : 0,
     },
     secondaryText: {},
     link: {},

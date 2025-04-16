@@ -9,7 +9,7 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
-import { AccessibilitySettingsScreen } from '../screens/AccessibilitySettingsScreen';
+import { AccessibilitySettingsScreen } from '../screens/AccessibilityFontSettingsScreen.tsx';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
@@ -83,7 +83,7 @@ export const UserNavigator = () => {
         name="AccessibilitySettings"
         component={AccessibilitySettingsScreen}
         options={{
-          headerTitle: t('accessibilitySettingsScreen.title'),
+          headerTitle: t('accessibilitySettingsScreen.fontSettingsTitle'),
           headerBackTitleVisible: false,
         }}
       />
