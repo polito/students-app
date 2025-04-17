@@ -156,12 +156,18 @@ export const LoginScreen = () => {
             loading={isLoading}
             disabled={!canLogin}
           />
-          <CtaButton
+          {/* <CtaButton
             absolute={false}
             title={t('loginScreen.SSO')}
             action={handleSSO}
             loading={isLoading}
-          />
+          /> */}
+          <TouchableOpacity
+            style={{ alignItems: 'center' }}
+            onPress={handleSSO}
+          >
+            <Text variant="link">{t('loginScreen.SSO')}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.link}
             onPress={() => {
@@ -201,6 +207,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       alignItems: 'flex-end',
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[2],
+      marginVertical: spacing[8],
     },
     passwordToggle: {
       marginRight: spacing[2],
