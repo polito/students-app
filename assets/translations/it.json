@@ -558,7 +558,7 @@
     "courseFilesCta": "Vai al materiale del corso",
     "hideEventAlertTitle": "Nascondi Evento",
     "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
-    "hideEventButtonTitle": "Nascondi evendo dall'agenda"
+    "hideEventButtonTitle": "Nascondi evento dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"
@@ -729,7 +729,7 @@
     "teacher": "Titolare",
     "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
     "titleOnTimePoint": "Punti Esame on-time",
-    "ctaButtonModal": "Accedi alla tua cariera"
+    "ctaButtonModal": "Accedi alla tua carriera"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",
