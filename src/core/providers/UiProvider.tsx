@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { initReactI18next } from 'react-i18next';
-import { Platform, StatusBar, useColorScheme } from 'react-native';
+import { Linking, Platform, StatusBar, useColorScheme } from 'react-native';
 import overrideColorScheme from 'react-native-override-color-scheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,9 +11,11 @@ import { Settings } from 'luxon';
 
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
+import { setDeepLink } from '../../../src/utils/linking';
 import { fromUiTheme } from '../../utils/navigation-theme';
 import { NavigationContainer } from '../components/NavigationContainer';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useSplashContext } from '../contexts/SplashContext';
 import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';
 
@@ -34,7 +36,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
   const { colorScheme, language } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useColorScheme();
-
+  const { isAppLoaded } = useSplashContext();
   useEffect(() => {
     if (colorScheme === 'dark' || colorScheme === 'light') {
       overrideColorScheme.setScheme(colorScheme);
@@ -59,6 +61,19 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
     Settings.defaultLocale = language;
   }, [language]);
 
+  useEffect(() => {
+    // Ottieni l'URL iniziale e naviga a `PlacesTab` con i parametri
+    const GoToUrlOnMap = () => {
+      Linking.getInitialURL().then(url => {
+        if (url) {
+          if (isAppLoaded) {
+            Linking.openURL(url);
+          }
+        }
+      });
+    };
+    GoToUrlOnMap();
+  }, [isAppLoaded]);
   return (
     <ThemeContext.Provider value={uiTheme}>
       <StatusBar
@@ -70,7 +85,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
           ios: theme === 'dark' ? 'light-content' : 'dark-content',
         })}
       />
-      <NavigationContainer theme={navigationTheme}>
+      <NavigationContainer linking={setDeepLink()} theme={navigationTheme}>
         {children}
       </NavigationContainer>
     </ThemeContext.Provider>
