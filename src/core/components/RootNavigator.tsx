@@ -16,8 +16,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { unreadMessages } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
@@ -29,30 +27,31 @@ import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
+import { useModalManager } from '../hooks/useModalManager';
 import { useNotifications } from '../hooks/useNotifications';
 import { useGetSites } from '../queries/placesHooks';
-import {
-  useGetMessages,
-  useGetModalMessages,
-  useGetStudent,
-} from '../queries/studentHooks';
-import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
+import { useGetMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 
-export const RootNavigator = () => {
+export const RootNavigator = ({
+  versionModalIsOpen,
+}: {
+  versionModalIsOpen?: boolean;
+}) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
-  const { onboardingStep, updatePreference } = usePreferencesContext();
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+  const { updatePreference } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
+
+  useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
 
   useEffect(() => {
@@ -72,28 +71,6 @@ export const RootNavigator = () => {
       updatePreference('campusId', sites?.data[0].id);
     }
   }, [campus, sites?.data, student, updatePreference]);
-
-  const { data: messages } = useGetModalMessages();
-
-  useEffect(() => {
-    if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
-    navigation.navigate('TeachingTab', {
-      screen: 'OnboardingModal',
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!onboardingStep || onboardingStep < ONBOARDING_STEPS - 1) {
-      return;
-    }
-
-    if (!messages || messages.length === 0) return;
-    navigation.navigate('TeachingTab', {
-      screen: 'MessagesModal',
-      initial: false,
-    });
-  }, [messages, navigation, onboardingStep]);
 
   const tabBarIconSize = 20;
 
