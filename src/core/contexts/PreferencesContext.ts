@@ -7,6 +7,7 @@ import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesF
 import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
 
 export const editablePreferenceKeys = [
+  'accessibility',
   'lastInstalledVersion',
   'username',
   'campusId',
@@ -29,6 +30,7 @@ export type PreferenceKey = (typeof editablePreferenceKeys)[number];
 
 // Specify here complex keys, that require serialization/deserialization
 export const objectPreferenceKeys = [
+  'accessibility',
   'courses',
   'notifications',
   'favoriteServices',
@@ -67,6 +69,23 @@ export interface PreferencesContextBase {
     filters: AgendaTypesFilterState;
   };
   filesScreen: 'filesView' | 'directoryView';
+  accessibility?: {
+    fontFamily?:
+      | 'default'
+      | 'open-dyslexic'
+      | 'dyslexie'
+      | 'easy-reading'
+      | 'sylexiad';
+    fontPlacement?: 'none' | 'long-text';
+    // | 'all-text';
+    highContrast?: boolean;
+    grayscale?: boolean;
+    lineHeight?: boolean;
+    wordSpacing?: boolean;
+    letterSpacing?: boolean;
+    paragraphSpacing?: boolean;
+    fontSize?: 100 | 125 | 150 | 175 | 200;
+  };
   hideGrades?: boolean;
   loginUid?: string;
 }

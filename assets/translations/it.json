@@ -1,4 +1,22 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontAction": "Seleziona un font",
+    "customFontDefault": "No custom font",
+    "customFontPlacement": "Usalo per",
+    "customFontSectionTitle": "Font accessibile",
+    "customThemeSectionTitle": "Tema accessibile",
+    "customFontSizeTitle": "Grandezza font",
+    "customFontTitle": "Font personalizzato",
+    "exampleText": "Testo di esempio",
+    "fontSettingsTitle": "Font",
+    "greyscaleTitle": "Scala di grigi",
+    "highContrastTitle": "Alto contrasto",
+    "lineHeightTitle": "Altezza riga",
+    "lineHeightSubtitle": "{{height}} spazio",
+    "paragraphSpacingTitle": "Spaziatura paragrafi",
+    "paragraphSpacingSubtitle": "{{height}} spazio",
+    "wordSpacingTitle": "Spaziatura parole"
+  },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
     "dailyLayout": "Layout giornaliero",
@@ -77,6 +95,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "accessibility": "Accessibilità",
     "active": "Attivo",
     "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
@@ -179,11 +198,13 @@
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "legend": "Legenda",
+    "less": "Meno",
     "loading": "Caricamento",
     "location": "Sede",
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",
+    "more": "Più",
     "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",

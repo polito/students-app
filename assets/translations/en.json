@@ -1,4 +1,23 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontAction": "Pick a font",
+    "customFontPlacement": "Use it for",
+    "customFontSectionTitle": "Accessible font",
+    "customThemeSectionTitle": "Accessible theme",
+    "customFontSizeTitle": "Font size",
+    "customFontTitle": "Custom font",
+    "exampleText": "Example text",
+    "fontSettingsTitle": "Font",
+    "greyscaleTitle": "Greyscale",
+    "highContrastTitle": "High contrast",
+    "lineHeightTitle": "Line height",
+    "lineHeightSubtitle": "{{height}} space",
+    "paragraphSpacingTitle": "Paragraph spacing",
+    "paragraphSpacingSubtitle": "{{height}} space",
+    "themeCustomizationTitle": "Theme customization",
+    "wordSpacingTitle": "Word spacing",
+    "wordSpacingSubtitle": "{{height}} space"
+  },
   "agendaScreen": {
     "backToToday": "Back to today",
     "dailyLayout": "Daily layout",
@@ -72,6 +91,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "accessibility": "Accessibility",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -171,12 +191,14 @@
     "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "less": "Less",
     "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
+    "more": "More",
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",

@@ -16,6 +16,7 @@ import {
   faCalendarDay,
   faCircleExclamation,
   faCircleHalfStroke,
+  faFont,
 } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
@@ -327,6 +328,18 @@ export const SettingsScreen = () => {
             <SectionHeader title={t('common.cache')} />
             <OverviewList indented>
               <CleanCacheListItem />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.accessibility')} />
+            <OverviewList indented>
+              <ListItem
+                isAction
+                title={t('accessibilitySettingsScreen.fontSettingsTitle')}
+                accessibilityRole="button"
+                linkTo={{ screen: 'AccessibilitySettings' }}
+                leadingItem={<Icon icon={faFont} size={20} />}
+              />
             </OverviewList>
           </Section>
           <Col ph={4}>
