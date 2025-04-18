@@ -42,7 +42,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Person'>;
 
 const profileImageSize = 120;
 
-export const PersonScreen = ({ navigation, route }: Props) => {
+export const PersonScreen = ({ route }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
@@ -105,12 +105,7 @@ export const PersonScreen = ({ navigation, route }: Props) => {
 
             {person?.profileUrl && (
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('WebView', {
-                    uri: person.profileUrl,
-                    title: person.lastName + ' ' + person.lastName,
-                  });
-                }}
+                onPress={() => Linking.openURL(person.profileUrl)}
                 accessible={true}
                 accessibilityRole="link"
               >

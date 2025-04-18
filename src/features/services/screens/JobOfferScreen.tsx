@@ -19,7 +19,7 @@ import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'JobOffer'>;
 
-export const JobOfferScreen = ({ navigation, route }: Props) => {
+export const JobOfferScreen = ({ route }: Props) => {
   const { id } = route?.params || {};
   const { t } = useTranslation();
   const useGetJobOfferQuery = useGetJobOffer(id);
@@ -39,6 +39,10 @@ export const JobOfferScreen = ({ navigation, route }: Props) => {
     requirements,
     salary,
   } = jobOffer || {};
+
+  const onPressUrl = (uri: string) => {
+    !!uri && Linking.openURL(uri);
+  };
 
   const onPressEmail = (mail: string) => {
     !!mail && Linking.openURL(`mailto:${mail}`);
@@ -132,12 +136,7 @@ export const JobOfferScreen = ({ navigation, route }: Props) => {
                 weight="semibold"
               >
                 {t('jobOfferScreen.url')}
-                <Text
-                  variant="link"
-                  onPress={() =>
-                    navigation.navigate('WebView', { uri: url, title: title })
-                  }
-                >
+                <Text variant="link" onPress={() => onPressUrl(url)}>
                   {url}
                 </Text>
               </Text>
