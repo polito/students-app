@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { Linking, SafeAreaView, ScrollView } from 'react-native';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -19,6 +19,9 @@ export const DeadlineScreen = ({ route }: Props) => {
   const { item: deadline } = route.params;
   const { t } = useTranslation();
   const { palettes, spacing } = useTheme();
+
+  const onPressDeadlineUrl = () =>
+    deadline.url ? Linking.openURL(deadline.url) : null;
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -42,10 +45,7 @@ export const DeadlineScreen = ({ route }: Props) => {
               }
               title={deadline?.type}
               subtitle={deadline?.title}
-              linkTo={{
-                screen: 'WebView',
-                params: { uri: deadline.url, title: deadline.title },
-              }}
+              onPress={onPressDeadlineUrl}
             />
           </OverviewList>
         )}
