@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { faSadTear } from '@fortawesome/free-regular-svg-icons';
+import { faFrown } from '@fortawesome/free-solid-svg-icons';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
@@ -65,7 +65,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
           <OverviewList style={styles.emptyMessage}>
             <EmptyState
               message={t('offeringScreen.emptyMessage')}
-              icon={faSadTear}
+              icon={faFrown}
             />
           </OverviewList>
         )}

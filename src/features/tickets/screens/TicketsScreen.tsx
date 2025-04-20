@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { faComments, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import { faComments } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -121,10 +121,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
             </OverviewList>
           ) : (
             <OverviewList>
-              <EmptyState
-                message={t('ticketsScreen.openEmptyState')}
-                icon={faFolderOpen}
-              />
+              <EmptyState message={t('ticketsScreen.openEmptyState')} />
             </OverviewList>
           ))}
       </Section>

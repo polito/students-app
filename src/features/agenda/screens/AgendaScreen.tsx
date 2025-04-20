@@ -11,10 +11,10 @@ import { FlatList, StyleSheet, View, ViewToken } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import useStateRef from 'react-usestateref';
 
-import { faSadTear } from '@fortawesome/free-regular-svg-icons';
 import {
   faCalendarDay,
   faEllipsisVertical,
+  faFrown,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -255,7 +255,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         cancelText={t('common.cancel')}
       />
       {!data.length && isOffline && (
-        <EmptyState message={t('common.cacheMiss')} icon={faSadTear} />
+        <EmptyState message={t('common.cacheMiss')} icon={faFrown} />
       )}
 
       {(!data.length && isLoading) ||

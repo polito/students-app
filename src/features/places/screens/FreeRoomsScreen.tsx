@@ -9,10 +9,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { faSadTear } from '@fortawesome/free-regular-svg-icons';
 import {
   faChevronLeft,
   faChevronRight,
+  faFrown,
   faMapPin,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -308,7 +308,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
             ) : (
               <EmptyState
                 message={t('freeRoomsScreen.noFreeRooms')}
-                icon={faSadTear}
+                icon={faFrown}
               />
             )
           }
