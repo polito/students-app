@@ -45,6 +45,9 @@ export type PlacesStackParamList = {
   Place: {
     placeId: string;
     isCrossNavigation?: boolean;
+    long?: string | null;
+    lat?: string | null;
+    name?: string;
   };
   EventPlaces: {
     placeIds: string[];
@@ -131,7 +134,6 @@ export const PlacesNavigator = () => {
       setFloorId(id);
     }
   };
-
   useEffect(() => {
     request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
     request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);

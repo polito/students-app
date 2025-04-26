@@ -160,6 +160,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
         params: {
           placeId: resolvePlaceId(location),
           isCrossNavigation: true,
+          lat: booking?.locationCheck?.latitude,
+          long: booking?.locationCheck?.longitude,
+          name: booking?.location?.name,
         },
       });
     }

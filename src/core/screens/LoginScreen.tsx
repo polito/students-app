@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
+import uuid from 'react-native-uuid';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -24,13 +25,21 @@ import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
+import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
 import { useLogin } from '../queries/authHooks';
 
+type LoginScreenRouteProp = RouteProp<
+  { Login: { uid: string; key: string } },
+  'Login'
+>;
+
 export const LoginScreen = () => {
   const { t } = useTranslation();
+  const { updatePreference, loginUid } = usePreferencesContext();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { mutateAsync: login, isLoading } = useLogin();
@@ -40,9 +49,11 @@ export const LoginScreen = () => {
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
   const language = useDeviceLanguage();
+  const route = useRoute<LoginScreenRouteProp>();
+  const { key } = route.params || {};
 
-  const handleLogin = () =>
-    login({ username, password, preferences: { language } }).catch(e => {
+  const handleLoginError = useCallback(
+    (e: Error) => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
@@ -51,8 +62,34 @@ export const LoginScreen = () => {
           t('loginScreen.authnErrorDescription'),
         );
       }
-    });
+    },
+    [t],
+  );
+  const handleLogin = () =>
+    login({
+      username,
+      password,
+      preferences: { language },
+      loginType: 'basic',
+    }).catch(handleLoginError);
+  const handleSSO = async () => {
+    const uid = uuid.v4();
+    await updatePreference('loginUid', uid);
+    const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
+    Linking.openURL(url);
+  };
 
+  useEffect(() => {
+    if (loginUid && key) {
+      login({
+        uid: loginUid,
+        key,
+        preferences: { language },
+        loginType: 'sso',
+      }).catch(handleLoginError);
+      updatePreference('loginUid', undefined);
+    }
+  }, [loginUid, key, login, language, updatePreference, handleLoginError]);
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -119,6 +156,18 @@ export const LoginScreen = () => {
             loading={isLoading}
             disabled={!canLogin}
           />
+          {/* <CtaButton
+            absolute={false}
+            title={t('loginScreen.SSO')}
+            action={handleSSO}
+            loading={isLoading}
+          /> */}
+          <TouchableOpacity
+            style={{ alignItems: 'center' }}
+            onPress={handleSSO}
+          >
+            <Text variant="link">{t('loginScreen.SSO')}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.link}
             onPress={() => {
@@ -158,6 +207,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       alignItems: 'flex-end',
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[2],
+      marginVertical: spacing[8],
     },
     passwordToggle: {
       marginRight: spacing[2],

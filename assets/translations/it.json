@@ -560,7 +560,7 @@
     "courseFilesCta": "Vai al materiale del corso",
     "hideEventAlertTitle": "Nascondi Evento",
     "hideEventAlertMessage": "Stai nascondendo l'evento di: {{ title }} di {{ day }} dalle {{ fromTime }} alle {{ toTime }}",
-    "hideEventButtonTitle": "Nascondi evendo dall'agenda"
+    "hideEventButtonTitle": "Nascondi evento dall'agenda"
   },
   "libraryScreen": {
     "title": "Biblioteca"
@@ -579,7 +579,8 @@
     "unsupportedUserType": "Tipo utente non supportato: PoliTO Students è accessibile solamente agli studenti.",
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
-    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
+    "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push.",
+    "SSO": "Oppure accedi con SSO"
   },
   "messageScreen": {
     "backTitle": "Archivio",
@@ -674,7 +675,9 @@
     "capacity": "{{count}} posto",
     "capacity_plural": "{{count}} posti",
     "placeNotFound": "Questo luogo non esiste",
-    "title": "Luogo"
+    "title": "Luogo",
+    "placeDetail": "Dettaglio luogo",
+    "getDirections": "Ottieni indicazioni"
   },
   "placesScreen": {
     "changeFloor": "Cambia piano",
@@ -728,7 +731,7 @@
     "teacher": "Titolare",
     "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 su un massimo di 4.\nPuoi consultate il totale dei tuoi punteggi on-time su carriera",
     "titleOnTimePoint": "Punti Esame on-time",
-    "ctaButtonModal": "Accedi alla tua cariera"
+    "ctaButtonModal": "Accedi alla tua carriera"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",

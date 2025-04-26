@@ -37,7 +37,7 @@ async function getFcmToken(): Promise<string | undefined> {
   return undefined;
 }
 
-const getClientId = async (): Promise<string> => {
+export const getClientId = async (): Promise<string> => {
   try {
     const credentials = await getCredentials();
     if (credentials && credentials.username) {
@@ -106,10 +106,13 @@ export const useLogin = () => {
         });
     },
     onSuccess: async data => {
-      const { token, clientId: clientIdentifier, username } = data;
-      updatePreference('username', username);
+      const { token, clientId, username } = data;
+      /* refreshing context now is just to speed up login,
+      and avoid waiting for the setCredentials & preferences update,
+      since it's already refreshed upon username change in prefs */
       refreshContext({ username, token });
-      await setCredentials(clientIdentifier, token);
+      await setCredentials(clientId, token);
+      updatePreference('username', username);
     },
   });
 };
@@ -140,15 +143,16 @@ export const useSwitchCareer = () => {
     mutationFn: (dto?: SwitchCareerRequest) =>
       authClient.switchCareer({ switchCareerRequest: dto }).then(pluckData),
     onSuccess: async data => {
-      const { token, username } = data;
-      refreshContext({
-        token,
-        username,
-      });
-      updatePreference('username', username);
+      const { token, username, clientId } = data;
+      /* refreshing context now is just to speed up career switch,
+      and avoid waiting for the setCredentials & preferences update,
+      since it's already refreshed upon username change in prefs */
+      refreshContext({ token, username });
       asyncStoragePersister.removeClient();
-      await queryClient.invalidateQueries([]);
-      await setCredentials(data.clientId, data.token);
+      queryClient.invalidateQueries([]);
+
+      await setCredentials(clientId, token);
+      updatePreference('username', username);
     },
   });
 };

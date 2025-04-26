@@ -185,8 +185,8 @@
     "noValue": "No value",
     "notFound": "Not found",
     "notes": "Notes",
-    "notice": "Notice",
-    "notice_plural": "Notices",
+    "notice": "News",
+    "notice_plural": "News",
     "notifications": "Notifications",
     "now": "Now",
     "objectives": "Objectives",
@@ -353,8 +353,8 @@
     "overbooking": "Overbooking"
   },
   "courseNoticesTab": {
-    "emptyState": "There are no notices here",
-    "title": "Notices"
+    "emptyState": "There are no news here",
+    "title": "News"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -364,7 +364,7 @@
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
+    "noticesSubtitle": "News sent by the professor",
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda"
   },
@@ -564,7 +564,8 @@
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here",
-    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
+    "SSO": "Or login with SSO"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -658,7 +659,10 @@
     "capacity": "{{count}} seat",
     "capacity_plural": "{{count}} seats",
     "placeNotFound": "Place not found",
-    "title": "Place"
+    "title": "Place",
+    "placeDetail": "Place detail",
+    "getDirections": "Obtain directions"
+
   },
   "placesScreen": {
     "changeFloor": "Change floor",
