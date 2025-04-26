@@ -19,10 +19,16 @@ import { AgendaStackParamList as AgendaStack } from './AgendaNavigator';
 interface Props {
   item: LectureItem;
   compact?: boolean;
-  notPress?: boolean;
+  nextLecture?: boolean;
+  nextDate?: string;
 }
 
-export const LectureCard = ({ item, compact = false, notPress }: Props) => {
+export const LectureCard = ({
+  item,
+  compact = false,
+  nextLecture = false,
+  nextDate,
+}: Props) => {
   const { navigate } = useNavigation<NavigationProp<AgendaStack, 'Lecture'>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -45,7 +51,7 @@ export const LectureCard = ({ item, compact = false, notPress }: Props) => {
       isCompact={compact}
       icon={item.icon}
       onPress={
-        !notPress
+        !nextLecture
           ? () =>
               navigate({
                 name: 'Lecture',
@@ -59,6 +65,8 @@ export const LectureCard = ({ item, compact = false, notPress }: Props) => {
         styles.card,
         { backgroundColor: item.color + (dark ? '80' : '30') },
       ]}
+      nextLecture={nextLecture}
+      nextDate={nextDate}
     >
       {item.virtualClassrooms?.map(vc => (
         <Row key={vc.id} align="center" style={styles.vcRow}>

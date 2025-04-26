@@ -339,7 +339,8 @@
     "teacherLabel": "Teacher",
     "title": "Info",
     "yearLabel": "Year",
-    "nextLectureLabel": "Course in agenda"
+    "nextLectureLabel": "Course in agenda",
+    "nextLectureEmptyState": "No course found in agenda"
   },
   "courseLecturesTab": {
     "emptyState": "There are no lectures here",

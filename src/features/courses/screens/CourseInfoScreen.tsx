@@ -226,33 +226,48 @@ export const CourseInfoScreen = () => {
             />
           </Grid>
         </Card>
-
         <Section>
           <SectionHeader title={t('courseInfoTab.nextLectureLabel')} />
-          <OverviewList indented loading={isLoadingNextLecture}>
-            <Row style={styles.nextLectureBox}>
-              <Col style={styles.dayColumn} align="stretch">
-                <View style={[styles.dayBox, styles.nextLecBox]}>
-                  <Text
-                    variant="heading"
-                    style={[styles.nextLec, styles.secondaryDay]}
-                  >
-                    {weekDay}
-                  </Text>
-                  <Text variant="heading" style={styles.nextLec}>
-                    {dayOfMonth}
-                  </Text>
-                  {monthOfYear && (
-                    <Text variant="heading" style={styles.nextLec}>
-                      {monthOfYear}
+          <OverviewList
+            indented
+            loading={isLoadingNextLecture}
+            emptyStateText={
+              isOffline && isLoadingNextLecture
+                ? t('common.cacheMiss')
+                : t('courseInfoTab.nextLectureEmptyState')
+            }
+          >
+            {nextLecture && (
+              <Row style={styles.nextLectureBox}>
+                <Col style={styles.dayColumn} align="stretch">
+                  <View style={[styles.dayBox, styles.nextLecBox]}>
+                    <Text
+                      variant="heading"
+                      style={[styles.nextLec, styles.secondaryDay]}
+                    >
+                      {weekDay}
                     </Text>
+                    <Text variant="heading" style={styles.nextLec}>
+                      {dayOfMonth}
+                    </Text>
+                    {monthOfYear && (
+                      <Text variant="heading" style={styles.nextLec}>
+                        {monthOfYear}
+                      </Text>
+                    )}
+                  </View>
+                </Col>
+                <Col flex={1}>
+                  {nextLecture && (
+                    <LectureCard
+                      item={nextLecture}
+                      nextLecture
+                      nextDate={`${weekDay}/${dayOfMonth}/${monthOfYear}`}
+                    />
                   )}
-                </View>
-              </Col>
-              <Col flex={1}>
-                {nextLecture && <LectureCard item={nextLecture} notPress />}
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            )}
           </OverviewList>
         </Section>
 
