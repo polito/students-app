@@ -184,6 +184,7 @@ export const AgendaCard = ({
                   size={isCompact && !isTablet ? fontSizes.xs : undefined}
                 />
                 <Text style={[styles.time, secondaryIfLecture]}>
+                  {' '}
                   {time && time}
                 </Text>
               </Row>
