@@ -263,7 +263,8 @@
     "yesterday": "Ieri",
     "fromTime" : "dalle",
     "toTime" : "alle",
-    "document" : "Allegato"
+    "document" : "Allegato",
+    "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -596,7 +597,7 @@
   },
   "messagingView": {
     "activeReplay": "Attivo, (tocca due volte per attivare)",
-    "pickFile": "Scegli un file",
+    "pickFile": "Scegli un file max 32MB",
     "pickFileHint": "Dal tuo dispositivo o dal cloud",
     "pickPhoto": "Scegli un'immagine",
     "pickPhotoHint": "Dalla tua galleria",
