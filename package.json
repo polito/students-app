@@ -60,6 +60,7 @@
     "react-native-barcode-svg": "^0.0.15",
     "react-native-blob-util": "^0.19.11",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-check-version": "^1.3.0",
     "react-native-date-picker": "^5.0.7",
     "react-native-device-info": "^13.2.0",
     "react-native-document-picker": "^9.3.1",
