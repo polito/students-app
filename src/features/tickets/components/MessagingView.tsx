@@ -1,13 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-  ViewProps,
-} from 'react-native';
+import { Platform, Pressable, StyleSheet, View, ViewProps } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { openCamera, openPicker } from 'react-native-image-crop-picker';
 
@@ -22,7 +15,6 @@ import { Theme } from '@lib/ui/types/Theme';
 import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
-import { IS_IOS } from '../../../core/constants';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { pdfSizes } from '../../courses/constants';
 import { Attachment } from '../../services/types/Attachment';
@@ -144,20 +136,10 @@ export const MessagingView = ({
       {translucent && <TranslucentView fallbackOpacity={1} />}
       <Col>
         {!!attachment && (
-          <FlatList
-            data={[attachment]}
-            contentContainerStyle={styles.attachmentContainer}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => {
-              return (
-                <AttachmentChip
-                  attachment={item}
-                  onClearAttachment={() => onAttachmentChange(undefined)}
-                />
-              );
-            }}
+          <AttachmentChip
+            attachment={attachment}
+            onClearAttachment={() => onAttachmentChange(undefined)}
+            style={styles.attachmentContainer}
           />
         )}
         <Row align="flex-end">
@@ -174,16 +156,12 @@ export const MessagingView = ({
                   subtitle: t('messagingView.pickFileHint'),
                   image: 'folder',
                 },
-                ...(IS_IOS
-                  ? [
-                      {
-                        id: 'pickPhoto',
-                        title: t('messagingView.pickPhoto'),
-                        subtitle: t('messagingView.pickPhotoHint'),
-                        image: 'photo',
-                      },
-                    ]
-                  : []),
+                {
+                  id: 'pickPhoto',
+                  title: t('messagingView.pickPhoto'),
+                  subtitle: t('messagingView.pickPhotoHint'),
+                  image: 'photo',
+                },
                 {
                   id: 'takePhoto',
                   title: t('messagingView.takePhoto'),
@@ -259,7 +237,8 @@ const createStyles = ({ spacing, colors, safeAreaInsets }: Theme) =>
       borderTopWidth: StyleSheet.hairlineWidth,
     },
     attachmentContainer: {
-      paddingLeft: spacing[10],
+      marginLeft: spacing[10],
+      marginRight: spacing[2],
       marginBottom: spacing[2],
     },
     actionButton: {
