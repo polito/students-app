@@ -1,3 +1,5 @@
+import { Linking } from 'react-native';
+
 import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Survey } from '@polito/api-client';
 
@@ -11,10 +13,7 @@ export const SurveyListItem = ({ survey, ...props }: Props) => {
       {...props}
       title={survey.title}
       subtitle={survey.subtitle ?? undefined}
-      linkTo={{
-        screen: 'WebView',
-        params: { uri: survey.url, title: survey.title },
-      }}
+      onPress={() => Linking.openURL(survey.url)}
       isAction
     />
   );

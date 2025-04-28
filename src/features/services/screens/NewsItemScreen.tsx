@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import {
+  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -38,7 +39,7 @@ import { ServiceStackParamList } from '../components/ServicesNavigator';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'NewsItem'>;
 
-export const NewsItemScreen = ({ navigation, route }: Props) => {
+export const NewsItemScreen = ({ route }: Props) => {
   const { id } = route?.params || {};
   const { palettes, spacing, colors } = useTheme();
   const { t } = useTranslation();
@@ -132,12 +133,7 @@ export const NewsItemScreen = ({ navigation, route }: Props) => {
                 {links?.map((link, index) => (
                   <TouchableHighlight
                     underlayColor={colors.touchableHighlight}
-                    onPress={() =>
-                      navigation.navigate('WebView', {
-                        uri: link.url,
-                        title: newsItem?.title,
-                      })
-                    }
+                    onPress={() => Linking.openURL(link.url)}
                     key={index}
                     accessible
                     accessibilityRole="link"

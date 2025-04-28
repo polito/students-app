@@ -42,7 +42,7 @@ export async function getFcmToken(
   return undefined;
 }
 
-const getClientId = async (): Promise<string> => {
+export const getClientId = async (): Promise<string> => {
   try {
     const credentials = await getCredentials();
     if (credentials && credentials.username) {

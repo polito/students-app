@@ -256,7 +256,8 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "year": "year",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "sizeExc": "Excessive file size, maximum 32 MB"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -566,7 +567,8 @@
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here",
-    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
+    "SSO": "Or login with SSO"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -583,7 +585,7 @@
     "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messagingView": {
-    "pickFile": "Pick file",
+    "pickFile": "Pick file max 32MB",
     "pickFileHint": "From your device or from the cloud",
     "pickPhoto": "Pick image",
     "pickPhotoHint": "From your library",
@@ -854,8 +856,5 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
-  },
-  "webViewScreen": {
-    "title": "WebView"
   }
 }

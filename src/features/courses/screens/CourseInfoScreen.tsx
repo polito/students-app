@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Linking,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { Platform } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
@@ -268,10 +274,7 @@ export const CourseInfoScreen = () => {
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
-                linkTo={{
-                  screen: 'WebView',
-                  params: { uri: link.url, title: courseQuery.data?.name },
-                }}
+                onPress={() => Linking.openURL(link.url)}
               />
             ))}
           </OverviewList>

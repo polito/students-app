@@ -134,7 +134,6 @@ export const PlacesNavigator = () => {
       setFloorId(id);
     }
   };
-
   useEffect(() => {
     request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
     request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
