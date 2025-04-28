@@ -24,14 +24,21 @@ export const AppContent = () => {
     open: showModal,
     modal: bottomModal,
   } = useBottomModal();
-  const { needsToUpdate, latestAppVersion, storeUrl } = useCheckForUpdate();
+  const { needsUpdate, version, url, source } = useCheckForUpdate();
   const [versionModalVisible, setVersionModalVisible] = useState<
     boolean | undefined
   >();
 
   useEffect(() => {
-    if (!isSplashLoaded || needsToUpdate === undefined) return;
-    if (needsToUpdate === false) {
+    if (!isSplashLoaded) return;
+    if (
+      needsUpdate === undefined ||
+      version === undefined ||
+      url === undefined ||
+      source === undefined
+    )
+      return;
+    if (needsUpdate === false) {
       setVersionModalVisible(false);
       return;
     }
@@ -39,17 +46,19 @@ export const AppContent = () => {
     showModal(
       <NewVersionModal
         close={closeModal}
-        newVersion={latestAppVersion!}
-        storeUrl={storeUrl!}
+        newVersion={version}
+        url={url}
+        source={source}
       />,
     );
   }, [
-    needsToUpdate,
+    needsUpdate,
     isSplashLoaded,
+    source,
     closeModal,
     showModal,
-    latestAppVersion,
-    storeUrl,
+    version,
+    url,
   ]);
 
   useEffect(() => {

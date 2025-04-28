@@ -29,3 +29,5 @@ export const courseColors = [
   { name: 'colors.pink', color: '#DB2777' },
   { name: 'colors.rose', color: '#E11D48' },
 ];
+export const GITHUB_URL =
+  'https://github.com/polito/students-app/releases/latest';

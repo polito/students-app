@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
-import { CheckVersionResponse, checkVersion } from 'react-native-check-version';
+import { checkVersion } from 'react-native-check-version';
 
+import { GITHUB_URL } from '../constants.ts';
 import { useSplashContext } from '../contexts/SplashContext.ts';
-import { useUpdateAppInfo } from '../queries/authHooks.ts';
+import { getFcmToken, useUpdateAppInfo } from '../queries/authHooks.ts';
 
 type UpdateInfo = {
-  needsToUpdate?: boolean;
-  latestAppVersion?: string;
-  storeUrl?: string;
+  needsUpdate?: boolean;
+  version?: string;
+  url?: string;
+  hasMessaging?: boolean;
+  source?: 'store' | 'github';
 };
 export const useCheckForUpdate = () => {
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo>({});
@@ -18,35 +21,44 @@ export const useCheckForUpdate = () => {
     if (!isSplashLoaded) return;
     async function getLatestVersion() {
       try {
-        const checkVersionResponse = await new Promise<CheckVersionResponse>(
-          (ok, no) => {
-            // Timeout to ensure dependent modals are not blocked if this takes too long
-            const timeout = setTimeout(() => {
-              no(new Error('Timeout exceeded'));
-            }, 3000);
-
-            updateAppInfo()
-              .then(({ data }) => {
+        let token: string | void | null = null;
+        try {
+          token = await getFcmToken(false);
+        } catch (_) {
+          // Ignore error
+        }
+        const checkVersionResponse = await new Promise<UpdateInfo>((ok, no) => {
+          // Timeout to ensure dependent modals are not blocked if this takes too long
+          const timeout = setTimeout(() => {
+            no(new Error('Timeout exceeded'));
+          }, 3000);
+          updateAppInfo(token)
+            .then(({ data }) => {
+              if (data.suggestUpdate) {
                 checkVersion()
                   .then(res => {
                     if (res.error) {
                       no(new Error(res.error.message));
                     }
-                    const needsUpdate = data.suggestUpdate && res.needsUpdate;
-                    ok({ ...res, needsUpdate });
+                    ok(res);
                   })
                   .catch(no);
-              })
-              .catch(no)
-              .finally(() => {
-                clearTimeout(timeout);
-              });
-          },
-        );
+              } else {
+                ok({
+                  needsUpdate: false,
+                });
+              }
+            })
+            .finally(() => {
+              clearTimeout(timeout);
+            });
+        });
         setUpdateInfo({
-          needsToUpdate: checkVersionResponse.needsUpdate,
-          latestAppVersion: checkVersionResponse.version,
-          storeUrl: checkVersionResponse.url,
+          needsUpdate: checkVersionResponse.needsUpdate,
+          version: checkVersionResponse.version,
+          url: token ? checkVersionResponse.url : GITHUB_URL,
+          source: token ? 'store' : 'github',
+          hasMessaging: !!token,
         });
       } catch (e) {
         console.warn('Error while checking for updates', e);
