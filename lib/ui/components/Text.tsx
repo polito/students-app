@@ -58,7 +58,9 @@ export const Text = ({
   const wordSpacing = fontSizes.md * 0.16;
 
   const addWordSpacing = (text: string, spacing: number) => {
-    return text.split(' ').join(' '.repeat(spacing));
+    if (variant === 'longProse')
+      return text.split(' ').join(' '.repeat(spacing));
+    else return text;
   };
 
   useEffect(() => {
@@ -76,49 +78,33 @@ export const Text = ({
       setStyless({
         heading: {
           fontSize: fontSizes.md,
-          ...getfontStyle(fontSizes.md),
+          // ...getfontStyle(fontSizes.md),
         },
         subHeading: {
           fontSize: fontSizes.md,
           textTransform: 'uppercase',
-          ...getfontStyle(fontSizes.md),
+          // ...getfontStyle(fontSizes.md),
         },
         title: {
           fontSize: fontSizes.xl,
-          ...getfontStyle(fontSizes.xl),
+          // ...getfontStyle(fontSizes.xl),
         },
         headline: {
           fontSize: fontSizes.md,
-          ...getfontStyle(fontSizes.md),
+          // ...getfontStyle(fontSizes.md),
         },
         caption: {
           fontSize: fontSizes.sm,
           textTransform: 'uppercase',
-          ...getfontStyle(fontSizes.xl),
+          // ...getfontStyle(fontSizes.xl),
         },
         prose: {
           fontSize: fontSizes.md,
-          ...getfontStyle(fontSizes.md),
+          // ...getfontStyle(fontSizes.md),
         },
         longProse: {
           fontSize: fontSizes.md,
-          lineHeight:
-            accessibility?.fontPlacement === 'long-text' &&
-            // accessibility?.fontPlacement === 'all-text') &&
-            accessibility?.lineHeight
-              ? fontSizes.md * 1.5
-              : undefined,
-          letterSpacing:
-            accessibility?.fontPlacement === 'long-text'
-              ? // accessibility?.fontPlacement === 'all-text'
-                fontSizes.md * 0.12
-              : undefined,
-          marginBottom:
-            accessibility?.fontPlacement === 'long-text' &&
-            // accessibility?.fontPlacement === 'all-text') &&
-            accessibility?.paragraphSpacing
-              ? fontSizes.md * 2
-              : 0,
+          ...getfontStyle(fontSizes.md),
         },
         secondaryText: {},
         link: {},

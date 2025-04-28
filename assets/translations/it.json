@@ -15,7 +15,8 @@
     "lineHeightSubtitle": "{{height}} spazio",
     "paragraphSpacingTitle": "Spaziatura paragrafi",
     "paragraphSpacingSubtitle": "{{height}} spazio",
-    "wordSpacingTitle": "Spaziatura parole"
+    "wordSpacingTitle": "Spaziatura parole",
+    "wordSpacingSubtitle": "{{height}} spazio"
   },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
@@ -516,7 +517,7 @@
     "requestDetailsTitle": "Quale date consiglieresti al coordinatore?",
     "responsibilityDeclaration": "Dichiaro di prendere la responsabilità di quanto dichiarato",
     "requestReason": "Inserisci qui le tue motivazioni della richiesta di cambio data appello",
-    "requestReasonTitle": "Puoi chiedere al coordinatore del collegio di poter cambiare data del tuo appello",
+    "requestReasonTitle": "Puoi chiedere al titolare del corso di poter cambiare data del tuo appello",
     "screenTitle": "Cambio data appello"
   },
   "examScreen": {
