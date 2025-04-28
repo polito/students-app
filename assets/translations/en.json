@@ -562,7 +562,8 @@
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here",
-    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
+    "SSO": "Or login with SSO"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -850,8 +851,5 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
-  },
-  "webViewScreen": {
-    "title": "WebView"
   }
 }
