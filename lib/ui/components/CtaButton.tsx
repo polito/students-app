@@ -186,6 +186,7 @@ export const CtaButton = ({
                   textStyle,
                 ]}
                 baseStyle={{ fontWeight: fontWeights.medium }}
+                isCta={true}
               >
                 {title}
               </TextWithLinks>

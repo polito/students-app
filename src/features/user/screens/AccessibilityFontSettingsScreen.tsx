@@ -52,7 +52,7 @@ export const AccessibilitySettingsScreen = () => {
                   }
                 }}
               /> */}
-              <CustomFontPlacementListItem
+              {/* <CustomFontPlacementListItem
                 t={t}
                 value={accessibility?.fontPlacement}
                 onUpdate={e => {
@@ -62,7 +62,7 @@ export const AccessibilitySettingsScreen = () => {
                       fontPlacement: e,
                     });
                 }}
-              />
+              /> */}
               {/* <CustomFontSizeListItem
                 t={t}
                 value={accessibility?.fontSize?.toString()}
@@ -93,10 +93,10 @@ export const AccessibilitySettingsScreen = () => {
                     accessibility?.fontPlacement === 'long-text') ??
                   false
                 }
-                disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
+                    fontPlacement: 'long-text',
                     lineHeight: value,
                   });
                 }}
@@ -117,10 +117,10 @@ export const AccessibilitySettingsScreen = () => {
                     accessibility?.fontPlacement === 'long-text') ??
                   false
                 }
-                disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
+                    fontPlacement: 'long-text',
                     paragraphSpacing: value,
                   });
                 }}
@@ -138,10 +138,10 @@ export const AccessibilitySettingsScreen = () => {
                     accessibility?.fontPlacement === 'long-text') ??
                   false
                 }
-                disabled={accessibility?.fontPlacement === 'none'}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
+                    fontPlacement: 'long-text',
                     wordSpacing: value,
                   });
                 }}

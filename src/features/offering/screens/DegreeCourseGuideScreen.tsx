@@ -37,8 +37,11 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
                   {section.title}
                 </Text>
                 <HtmlView
-                  source={{ html: sanitizeHtml(section.content) }}
-                  baseStyle={styles.html}
+                  props={{
+                    source: { html: sanitizeHtml(section.content) },
+                    baseStyle: styles.html,
+                  }}
+                  variant="longProse"
                 />
               </Col>
             ))}

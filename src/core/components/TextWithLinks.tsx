@@ -7,16 +7,25 @@ import { HtmlView } from './HtmlView';
 
 type Props = {
   baseStyle?: MixedStyleDeclaration;
+  isCta?: boolean;
 } & PropsWithChildren<TextProps>;
 
-export const TextWithLinks = ({ baseStyle, children, style }: Props) => {
+export const TextWithLinks = ({
+  baseStyle,
+  children,
+  style,
+  isCta = false,
+}: Props) => {
   if (!children || typeof children !== 'string') return null;
   const html = linkUrls(children);
   return (
     <HtmlView
-      source={{ html }}
-      baseStyle={{ padding: 0, ...baseStyle }}
-      defaultTextProps={{ style: style }}
+      props={{
+        source: { html },
+        baseStyle: { padding: 0, ...baseStyle },
+        defaultTextProps: { style },
+      }}
+      variant={isCta === true ? '' : 'longProse'}
     />
   );
 };

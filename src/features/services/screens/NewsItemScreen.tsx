@@ -96,7 +96,7 @@ export const NewsItemScreen = ({ route }: Props) => {
             )}
             {htmlContent && (
               <Card accessible>
-                <HtmlView source={{ dom }} />
+                <HtmlView props={{ source: { dom } }} variant="longProse" />
               </Card>
             )}
             <Card padded>

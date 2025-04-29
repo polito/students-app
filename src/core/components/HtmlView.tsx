@@ -13,6 +13,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../contexts/PreferencesContext';
+
 type ImageData = {
   width: number;
   height: number;
@@ -52,11 +54,40 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
 const renderers = {
   img: CustomImageRenderer,
 };
-export const HtmlView = (props: RenderHTMLProps) => {
+type HtmlViewProps = {
+  props: RenderHTMLProps;
+  variant: string;
+};
+export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
-
+  const [styless, setStyless] = useState({});
+  const { accessibility } = usePreferencesContext();
+  useEffect(() => {
+    const changeStyle = () => {
+      if (variant === 'longProse')
+        setStyless(() => {
+          return {
+            lineHeight:
+              accessibility?.fontPlacement === 'long-text' &&
+              accessibility?.lineHeight
+                ? fontSizes.sm * 1.5
+                : undefined,
+            letterSpacing:
+              accessibility?.fontPlacement === 'long-text'
+                ? fontSizes.sm * 0.12
+                : undefined,
+            marginBottom:
+              accessibility?.fontPlacement === 'long-text' &&
+              accessibility?.paragraphSpacing
+                ? fontSizes.sm * 2
+                : 0,
+          };
+        });
+    };
+    changeStyle();
+  }, [accessibility]);
   return (
     <RenderHTML
       contentWidth={width}
@@ -72,6 +103,7 @@ export const HtmlView = (props: RenderHTMLProps) => {
         fontFamily: 'Montserrat',
         fontSize: fontSizes.md,
         ...(props.baseStyle ?? {}),
+        ...styless,
       }}
       tagsStyles={{
         p: styles.paragraph,
