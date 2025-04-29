@@ -33,7 +33,7 @@ import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
 import { WeekFilter } from '../components/WeekFilter';
-import { useHideEventFilter } from '../hooks/useHideEventFilter';
+import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
 import {
   getAgendaWeekQueryKey,
   useGetAgendaWeek,
@@ -93,7 +93,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     );
   }, [calendarData]);
 
-  const filteredCalendarData = useHideEventFilter(calendarData);
+  const filteredCalendarData = useProcessedLectures(calendarData);
 
   const weekLength = useMemo(() => {
     if (calendarMax && calendarMax.start.weekday > 5) {

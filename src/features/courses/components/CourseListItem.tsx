@@ -15,8 +15,6 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
-import { AGENDA_QUERY_PREFIX } from '../../agenda/queries/agendaHooks';
-import { LECTURES_QUERY_PREFIX } from '../../agenda/queries/lectureHooks';
 import { getLatestCourseInfo, isCourseDetailed } from '../utils/courses';
 import { CourseIndicator } from './CourseIndicator';
 
@@ -37,7 +35,6 @@ const Menu = ({
 }>) => {
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
-  const queryClient = useQueryClient();
 
   const isHidden =
     preferences.courses[course.uniqueShortcode]?.isHidden ?? false;
@@ -60,9 +57,6 @@ const Menu = ({
             ...preferences.courses[course.uniqueShortcode],
             isHidden: !isHidden,
           },
-        });
-        queryClient.invalidateQueries([LECTURES_QUERY_PREFIX]).then(() => {
-          queryClient.invalidateQueries([AGENDA_QUERY_PREFIX]);
         });
       }}
     >
