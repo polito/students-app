@@ -1,26 +1,15 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
-import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { Text } from '@lib/ui/components/Text';
-import { MenuAction, MenuView } from '@react-native-menu/menu';
-
-import { TFunction } from 'i18next';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-
-interface AccessibilityItemProps {
-  t: TFunction;
-  value?: string;
-  onUpdate: (event: any) => void;
-}
 
 export const AccessibilitySettingsScreen = () => {
   const { t } = useTranslation();
@@ -263,69 +252,6 @@ export const AccessibilitySettingsScreen = () => {
 //     </MenuView>
 //   );
 // };
-
-const CustomFontPlacementListItem = ({
-  t,
-  value,
-  onUpdate,
-}: AccessibilityItemProps) => {
-  const choices = useMemo(() => {
-    // places in which to use the custom font for accessibility
-    return [
-      {
-        label: 'None',
-        value: 'none',
-      },
-      {
-        label: 'Long text',
-        value: 'long-text',
-      },
-      // {
-      //   label: 'All text',
-      //   value: 'all-text',
-      // },
-    ];
-  }, []);
-
-  const effectiveValue = useMemo(() => {
-    return value || 'none';
-  }, [value]);
-
-  const effectiveLabel = useMemo(() => {
-    return effectiveValue.replace('-', ' ');
-  }, [effectiveValue]);
-
-  const actions: MenuAction[] = useMemo(() => {
-    return choices.map(cc => {
-      const choiceId = cc.value.toLowerCase().replace(' ', '-');
-      return {
-        id: choiceId,
-        title: cc.label,
-        state: choiceId === effectiveValue ? 'on' : undefined,
-      };
-    });
-  }, [effectiveValue, choices]);
-
-  return (
-    <MenuView
-      title={t(`accessibilitySettingsScreen.customFontPlacement`)}
-      actions={actions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        onUpdate(event);
-      }}
-    >
-      <ListItem
-        isAction
-        title={t(`accessibilitySettingsScreen.customFontPlacement`)}
-        subtitle={effectiveLabel}
-        // subtitleProps={{ capitalize: true }}
-        /* TODO accessibilityLabel={`${t('common.language')}: ${t(
-          `common.${language}`,
-        )}. ${t('settingsScreen.openLanguageMenu')}`}*/
-      />
-    </MenuView>
-  );
-};
 // const CustomFontSizeListItem = ({
 //   t,
 //   value,

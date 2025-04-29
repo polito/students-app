@@ -45,7 +45,7 @@ export const TextMessage = ({ message }: TextMessageProps) => {
       }));
     };
     changeStyle();
-  }, [accessibility]);
+  }, [accessibility, fontSizes]);
   return <TextWithLinks style={styless.text}>{textMessage}</TextWithLinks>;
 };
 

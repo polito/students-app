@@ -87,7 +87,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         });
     };
     changeStyle();
-  }, [accessibility]);
+  }, [accessibility, variant, fontSizes]);
   return (
     <RenderHTML
       contentWidth={width}
