@@ -1,4 +1,23 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontAction": "Seleziona un font",
+    "customFontDefault": "No custom font",
+    "customFontPlacement": "Usalo per",
+    "customFontSectionTitle": "Spaziature testi lunghi",
+    "customThemeSectionTitle": "Tema accessibile",
+    "customFontSizeTitle": "Grandezza font",
+    "customFontTitle": "Font personalizzato",
+    "exampleText": "Testo di esempio",
+    "fontSettingsTitle": "Testo",
+    "greyscaleTitle": "Scala di grigi",
+    "highContrastTitle": "Alto contrasto",
+    "lineHeightTitle": "Interlinea",
+    "lineHeightSubtitle": "Aumenta lo spazio verticale tra le righe",
+    "paragraphSpacingTitle": "Paragrafi",
+    "paragraphSpacingSubtitle": "Aggiunge spazio extra tra un paragrafo e l’altro",
+    "wordSpacingTitle": "Parole",
+    "wordSpacingSubtitle": "Amplia la distanza tra le parole"
+  },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
     "dailyLayout": "Layout giornaliero",
@@ -77,6 +96,7 @@
     "yellow": "Giallo"
   },
   "common": {
+    "accessibility": "Accessibilità",
     "active": "Attivo",
     "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
@@ -181,11 +201,13 @@
     "lecture": "Lezione",
     "lecture_plural": "Lezioni",
     "legend": "Legenda",
+    "less": "Meno",
     "loading": "Caricamento",
     "location": "Sede",
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",
+    "more": "Più",
     "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
@@ -495,7 +517,7 @@
     "requestDetailsTitle": "Quale date consiglieresti al coordinatore?",
     "responsibilityDeclaration": "Dichiaro di prendere la responsabilità di quanto dichiarato",
     "requestReason": "Inserisci qui le tue motivazioni della richiesta di cambio data appello",
-    "requestReasonTitle": "Puoi chiedere al coordinatore del collegio di poter cambiare data del tuo appello",
+    "requestReasonTitle": "Puoi chiedere al titolare del corso di poter cambiare data del tuo appello",
     "screenTitle": "Cambio data appello"
   },
   "examScreen": {

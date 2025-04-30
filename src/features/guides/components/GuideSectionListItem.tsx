@@ -11,7 +11,14 @@ export const GuideSectionListItem = ({ section }: Props) => {
   return (
     <>
       <Text variant="subHeading">{section.title}</Text>
-      <HtmlView baseStyle={{ padding: 0 }} source={{ html: section.content }} />
+      <HtmlView
+        props={{
+          source: { html: section.content },
+          baseStyle: { padding: 0 },
+        }}
+        variant="longProse"
+      />
+      ;
     </>
   );
 };

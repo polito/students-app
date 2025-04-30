@@ -1,4 +1,23 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontAction": "Pick a font",
+    "customFontPlacement": "Use it for",
+    "customFontSectionTitle": "Long-text spacing",
+    "customThemeSectionTitle": "Accessible theme",
+    "customFontSizeTitle": "Font size",
+    "customFontTitle": "Custom font",
+    "exampleText": "Sample text",
+    "fontSettingsTitle": "Text",
+    "greyscaleTitle": "Greyscale",
+    "highContrastTitle": "High contrast",
+    "lineHeightTitle": "Line height",
+    "lineHeightSubtitle": "Enhance vertical spacing between lines",
+    "paragraphSpacingTitle": "Paragraph spacing",
+    "paragraphSpacingSubtitle": "Add extra space between paragraphs",
+    "themeCustomizationTitle": "Theme customization",
+    "wordSpacingTitle": "Word spacing",
+    "wordSpacingSubtitle": "Increase distance between words"
+  },
   "agendaScreen": {
     "backToToday": "Back to today",
     "dailyLayout": "Daily layout",
@@ -72,6 +91,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "accessibility": "Accessibility",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -173,12 +193,14 @@
     "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "less": "Less",
     "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
+    "more": "More",
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
@@ -481,7 +503,7 @@
     "requestDetailsTitle": "What dates would you recommend to the coordinator?",
     "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
     "requestReason": "Enter your reasons for requesting a change of exam call date here",
-    "requestReasonTitle": "You can ask the college coordinator if you can change the date of your exam call",
+    "requestReasonTitle": "You can ask the course holder if you can change the date of your exam call",
     "screenTitle": "Exam call date change"
   },
   "examScreen": {
