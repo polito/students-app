@@ -30,7 +30,10 @@ export const List = ({
             }
 
             const hasLeadingItem =
-              !!c.props?.leadingItem || !!c.props?.course || !!c.props?.exam;
+              !!c.props?.leadingItem ||
+              !!c.props?.course ||
+              !!c.props?.exam ||
+              c.props.ticket;
             const indent = spacing[5] + (hasLeadingItem ? 31 + spacing[2] : 0);
 
             return (
