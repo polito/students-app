@@ -29,12 +29,16 @@ export const List = ({
             if (!isValidElement(c)) {
               return null;
             }
+
+            const hasLeadingItem = !!c.props?.leadingItem;
+            const indent = spacing[5] + (hasLeadingItem ? 31 + spacing[2] : 0);
+
             return (
               <>
                 {c}
                 {i < Children.count(children) - 1 &&
                   (indented ? (
-                    <IndentedDivider key={`div-${i}`} />
+                    <IndentedDivider key={`div-${i}`} indent={indent} />
                   ) : (
                     <Divider
                       key={`div-${i}`}

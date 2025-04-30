@@ -2,21 +2,21 @@
   "accessibilitySettingsScreen": {
     "customFontAction": "Pick a font",
     "customFontPlacement": "Use it for",
-    "customFontSectionTitle": "Accessible font",
+    "customFontSectionTitle": "Long-text spacing",
     "customThemeSectionTitle": "Accessible theme",
     "customFontSizeTitle": "Font size",
     "customFontTitle": "Custom font",
     "exampleText": "Example text",
-    "fontSettingsTitle": "Font",
+    "fontSettingsTitle": "Text",
     "greyscaleTitle": "Greyscale",
     "highContrastTitle": "High contrast",
     "lineHeightTitle": "Line height",
-    "lineHeightSubtitle": "{{height}} space",
+    "lineHeightSubtitle": "Enhance vertical spacing between lines",
     "paragraphSpacingTitle": "Paragraph spacing",
-    "paragraphSpacingSubtitle": "{{height}} space",
+    "paragraphSpacingSubtitle": "Add extra space between paragraphs",
     "themeCustomizationTitle": "Theme customization",
     "wordSpacingTitle": "Word spacing",
-    "wordSpacingSubtitle": "{{height}} space"
+    "wordSpacingSubtitle": "Increase distance between words"
   },
   "agendaScreen": {
     "backToToday": "Back to today",
