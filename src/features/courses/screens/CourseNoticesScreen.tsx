@@ -15,7 +15,6 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -47,10 +46,6 @@ export const CourseNoticesScreen = () => {
     [courseId],
   );
 
-  useOnLeaveScreen(() => {
-    clearNotificationScope(noticesNotificationScope);
-  });
-
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
@@ -77,6 +72,15 @@ export const CourseNoticesScreen = () => {
               date: formatDate(notice.publishedAt),
             },
           }}
+          onPress={() =>
+            clearNotificationScope([
+              'teaching',
+              'courses',
+              courseId.toString(),
+              'notices',
+              notice.id,
+            ])
+          }
           unread={!!getUnreadsCount([...noticesNotificationScope, notice.id])}
         />
       )}
