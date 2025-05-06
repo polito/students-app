@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
@@ -14,6 +15,33 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 export const AccessibilitySettingsScreen = () => {
   const { t } = useTranslation();
   const { accessibility, updatePreference } = usePreferencesContext();
+  useEffect(() => {
+    if (
+      accessibility?.lineHeight === true ||
+      accessibility?.paragraphSpacing === true ||
+      accessibility?.wordSpacing === true
+    ) {
+      updatePreference('accessibility', {
+        ...accessibility,
+        fontPlacement: 'long-text',
+      });
+    } else if (
+      accessibility?.lineHeight === false &&
+      accessibility?.paragraphSpacing === false &&
+      accessibility?.wordSpacing === false
+    ) {
+      updatePreference('accessibility', {
+        ...accessibility,
+        fontPlacement: 'none',
+      });
+    }
+  }, [
+    accessibility?.fontPlacement,
+    accessibility?.lineHeight,
+    accessibility?.paragraphSpacing,
+    accessibility?.wordSpacing,
+    updatePreference,
+  ]);
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -39,7 +67,6 @@ export const AccessibilitySettingsScreen = () => {
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     lineHeight: value,
                   });
                 }}
@@ -63,7 +90,6 @@ export const AccessibilitySettingsScreen = () => {
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     paragraphSpacing: value,
                   });
                 }}
@@ -84,7 +110,6 @@ export const AccessibilitySettingsScreen = () => {
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     wordSpacing: value,
                   });
                 }}

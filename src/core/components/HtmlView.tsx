@@ -69,20 +69,15 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       if (variant === 'longProse')
         setStyless(() => {
           return {
-            lineHeight:
-              accessibility?.fontPlacement === 'long-text' &&
-              accessibility?.lineHeight
-                ? fontSizes.sm * 1.5
-                : undefined,
-            letterSpacing:
-              accessibility?.fontPlacement === 'long-text'
-                ? fontSizes.sm * 0.12
-                : undefined,
-            marginBottom:
-              accessibility?.fontPlacement === 'long-text' &&
-              accessibility?.paragraphSpacing
-                ? fontSizes.sm * 2
-                : 0,
+            ...(accessibility?.lineHeight
+              ? { lineHeight: fontSizes.md * 1.5 }
+              : {}),
+            ...(accessibility?.letterSpacing
+              ? { letterSpacing: fontSizes.md * 0.12 }
+              : {}),
+            ...(accessibility?.paragraphSpacing
+              ? { marginBottom: fontSizes.md * 2 }
+              : {}),
           };
         });
     };
@@ -123,7 +118,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   );
 };
 
-const createStyles = ({ spacing, fontWeights, colors }: Theme) =>
+const createStyles = ({ spacing, fontWeights, colors, dark }: Theme) =>
   StyleSheet.create({
     paragraph: { marginBottom: spacing[0], marginTop: spacing[3] },
     bold: { fontWeight: fontWeights.semibold },
@@ -132,7 +127,7 @@ const createStyles = ({ spacing, fontWeights, colors }: Theme) =>
       justifyContent: 'flex-start',
     },
     link: {
-      color: colors.white,
-      textDecorationColor: colors.white,
+      color: dark ? colors.white : colors.black,
+      textDecorationColor: dark ? colors.white : colors.black,
     },
   });

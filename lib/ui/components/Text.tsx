@@ -67,11 +67,13 @@ export const Text = ({
     const getfontStyle = (fontSize: number) => {
       if (accessibility?.fontPlacement === 'long-text')
         return {
-          lineHeight: accessibility?.lineHeight ? fontSize * 1.5 : undefined,
-          letterSpacing: accessibility?.letterSpacing
-            ? fontSize * 0.12
-            : undefined,
-          marginBottom: accessibility?.paragraphSpacing ? fontSize * 2 : 0,
+          ...(accessibility?.lineHeight ? { lineHeight: fontSize * 1.5 } : {}),
+          ...(accessibility?.letterSpacing
+            ? { letterSpacing: fontSize * 0.12 }
+            : {}),
+          ...(accessibility?.paragraphSpacing
+            ? { marginBottom: fontSize * 2 }
+            : {}),
         };
     };
     const changeStyle = () => {
