@@ -16,6 +16,7 @@ import {
   faFile,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
+import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -38,6 +39,7 @@ import {
 } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { ColorWheelModal } from '../components/ColorWheelModal.tsx';
 import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
@@ -109,6 +111,18 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     () => coursesPrefs[uniqueShortcode],
     [uniqueShortcode, coursesPrefs],
   );
+  
+const [colorWheelVisible, setColorWheelVisible] = useState(false);
+
+  const handleCustomColor = (color: string) => {
+    updatePreference('courses', {
+      ...coursesPrefs,
+      [uniqueShortcode]: {
+        ...coursePrefs,
+        color,
+      },
+    });
+  };
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -150,6 +164,21 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     leadingItem={<CourseIcon color={coursePrefs?.color} />}
                   />
                 </StatefulMenuView>
+                <ListItem
+                  title={t('common.customColor')}
+                  subtitle={t('common.customColorSubtitle')}
+                  isAction
+                  onPress={() => setColorWheelVisible(true)}
+                  leadingItem={
+                    <Icon icon={faPalette} size={fontSizes['2xl']} />
+                  }
+                />
+                <ColorWheelModal
+                  visible={colorWheelVisible}
+                  onClose={() => setColorWheelVisible(false)}
+                  onColorSelected={handleCustomColor}
+                  initialColor={coursePrefs?.color}
+                />
                 <ListItem
                   title={t('common.icon')}
                   isAction
