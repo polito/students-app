@@ -2,12 +2,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
+
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import {
+import ColorPicker, {
   OpacitySlider,
   Panel1,
   PreviewText,
@@ -48,16 +49,16 @@ export const ColorWheelModal = ({
           onStartShouldSetResponder={() => true}
         >
           <Text style={styles.title}>{t('common.selectColor')}</Text>
-
-          <View style={styles.picker}>
-            <Panel1 style={styles.panel} />
-            <OpacitySlider style={styles.slider} />
-            <PreviewText
-              style={[styles.previewText, { color: colors.prose }]}
-            />
-            <Swatches style={styles.swatches} />
-          </View>
-
+          <ColorPicker value={initialColor} onComplete={onSelect}>
+            <View style={styles.picker}>
+              <Panel1 style={styles.panel} />
+              <OpacitySlider style={styles.slider} />
+              <PreviewText
+                style={[styles.previewText, { color: colors.prose }]}
+              />
+              <Swatches style={styles.swatches} />
+            </View>
+          </ColorPicker>
           <Row justify="center" style={{ marginTop: spacing[4] }}>
             <ListItem title={t('common.cancel')} isAction onPress={onClose} />
           </Row>
