@@ -137,6 +137,8 @@
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
     "customColorWarning": "Colori a scelta",
+    "customColor": "Selettore di colori",
+    "customColorSubtitle": "Seleziona un colore personalizzato",
     "dateAndHours": "Data e ora",
     "dateToBeDefined": "Data da definire",
     "dateToBeDefinedShort": "Da definire",
@@ -334,13 +336,6 @@
   "courseAssignmentsTab": {
     "emptyState": "Non ci sono elaborati",
     "title": "Elaborati"
-  },
-  "courseColorPickerScreen": {
-    "title": "Seleziona un colore",
-    "accessibleColor": "Colori accessibili",
-    "customColorWarning": "Colori a scelta",
-    "areYouSureTitle": "Sei sicuro?",
-    "areYouSureMessage": "Il colore seelzionato non è stato testato per accessibilità."
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
