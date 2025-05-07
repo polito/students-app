@@ -127,6 +127,8 @@
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
+    "customColor":"Color picker",
+    "customColorSubtitle": "Select a custom color",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
     "dateToBeDefinedShort": "To be defined",
