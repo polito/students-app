@@ -115,12 +115,11 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const wrapText = (html: string): string => {
     if (!html) return '';
 
-    // Poi: wrappa i pezzi di testo nudi dentro <span>
     html = html.replace(
       /(^|>)([^<>\n]+)($|<)/g,
       (match, before, text, after) => {
         const trimmedText = text.trim();
-        if (!trimmedText) return match; // Se solo spazi o vuoto, non toccare
+        if (!trimmedText) return match;
         return `${before}<span>${trimmedText}</span>${after}`;
       },
     );
