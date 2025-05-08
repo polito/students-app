@@ -7,7 +7,6 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { Document } from 'react-native-render-html';
 
 import {
   faCalendarAlt,
@@ -29,8 +28,6 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { parseDocument } from 'htmlparser2';
-
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetNewsItem } from '../../../core/queries/newsHooks';
@@ -48,7 +45,6 @@ export const NewsItemScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { title, eventStartTime, createdAt, htmlContent } = newsItem || {};
 
-  const dom = parseDocument(htmlContent ?? '') as Document;
   const links = newsItem?.extras.filter(e => ['link', 'file'].includes(e.type));
   const logo = newsItem?.extras.find(
     e => e.type === 'image' && e.description === 'Logo1',
@@ -96,7 +92,10 @@ export const NewsItemScreen = ({ route }: Props) => {
             )}
             {htmlContent && (
               <Card accessible>
-                <HtmlView props={{ source: { dom } }} variant="longProse" />
+                <HtmlView
+                  props={{ source: { html: htmlContent } }}
+                  variant="longProse"
+                />
               </Card>
             )}
             <Card padded>

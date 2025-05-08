@@ -7,6 +7,7 @@ import RenderHTML, {
 } from 'react-native-render-html';
 
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
+import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -51,38 +52,92 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
   );
 };
 
+const CustomTextRenderer = (props: InternalRendererProps<any>) => {
+  const { accessibility } = usePreferencesContext();
+  const { fontSizes } = useTheme();
+  const [styledText, setStyledText] = useState('');
+  const [dynamicStyle, setDynamicStyle] = useState({});
+
+  const addWordSpacing = (text: string, spacing: number) => {
+    if (accessibility?.wordSpacing) {
+      return text.split(' ').join(' '.repeat(spacing));
+    }
+    return text;
+  };
+
+  useEffect(() => {
+    let originalText = props.tnode?.data ?? '';
+
+    originalText += ' ';
+
+    setStyledText(addWordSpacing(originalText, fontSizes.md * 0.16));
+
+    setDynamicStyle({
+      fontSize: fontSizes.md,
+      ...(accessibility?.letterSpacing && {
+        letterSpacing: fontSizes.md * 0.12,
+      }),
+      ...(accessibility?.lineHeight && { lineHeight: fontSizes.md * 1.5 }),
+      ...(accessibility?.paragraphSpacing && {
+        marginBottom: fontSizes.md * 2,
+      }),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    props.tnode?.data,
+    props.tnode?.parent?.children,
+    accessibility,
+    fontSizes,
+  ]);
+
+  return (
+    <Text selectable style={[props.style, dynamicStyle]}>
+      {styledText}
+    </Text>
+  );
+};
+
 const renderers = {
   img: CustomImageRenderer,
+  span: CustomTextRenderer,
 };
+
 type HtmlViewProps = {
   props: RenderHTMLProps;
   variant: string;
 };
+
 export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
-  const [styless, setStyless] = useState({});
-  const { accessibility } = usePreferencesContext();
-  useEffect(() => {
-    const changeStyle = () => {
-      if (variant === 'longProse')
-        setStyless(() => {
-          return {
-            ...(accessibility?.lineHeight
-              ? { lineHeight: fontSizes.md * 1.5 }
-              : {}),
-            ...(accessibility?.letterSpacing
-              ? { letterSpacing: fontSizes.md * 0.12 }
-              : {}),
-            ...(accessibility?.paragraphSpacing
-              ? { marginBottom: fontSizes.md * 2 }
-              : {}),
-          };
-        });
-    };
-    changeStyle();
-  }, [accessibility, variant, fontSizes]);
+
+  const wrapText = (html: string): string => {
+    if (!html) return '';
+
+    // Poi: wrappa i pezzi di testo nudi dentro <span>
+    html = html.replace(
+      /(^|>)([^<>\n]+)($|<)/g,
+      (match, before, text, after) => {
+        const trimmedText = text.trim();
+        if (!trimmedText) return match; // Se solo spazi o vuoto, non toccare
+        return `${before}<span>${trimmedText}</span>${after}`;
+      },
+    );
+
+    return html;
+  };
+  const processedSource =
+    variant === 'longProse'
+      ? {
+          ...props.source,
+          html:
+            'html' in props.source && props.source.html
+              ? wrapText(props.source.html)
+              : '',
+        }
+      : undefined;
+
   return (
     <RenderHTML
       contentWidth={width}
@@ -92,13 +147,13 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       }}
       systemFonts={['Montserrat']}
       {...props}
+      source={processedSource ?? props.source}
       baseStyle={{
         padding: spacing[4],
         color: colors.prose,
         fontFamily: 'Montserrat',
         fontSize: fontSizes.md,
         ...(props.baseStyle ?? {}),
-        ...styless,
       }}
       tagsStyles={{
         p: styles.paragraph,
