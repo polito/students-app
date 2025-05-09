@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
@@ -14,6 +15,33 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 export const AccessibilitySettingsScreen = () => {
   const { t } = useTranslation();
   const { accessibility, updatePreference } = usePreferencesContext();
+  useEffect(() => {
+    if (
+      accessibility?.lineHeight === true ||
+      accessibility?.paragraphSpacing === true ||
+      accessibility?.wordSpacing === true
+    ) {
+      updatePreference('accessibility', {
+        ...accessibility,
+      });
+    } else if (
+      accessibility?.lineHeight === false &&
+      accessibility?.paragraphSpacing === false &&
+      accessibility?.wordSpacing === false
+    ) {
+      updatePreference('accessibility', {
+        ...accessibility,
+        fontPlacement: 'none',
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    accessibility?.fontPlacement,
+    accessibility?.lineHeight,
+    accessibility?.paragraphSpacing,
+    accessibility?.wordSpacing,
+    updatePreference,
+  ]);
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -31,15 +59,10 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={
-                  (accessibility?.lineHeight &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.lineHeight ?? false}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     lineHeight: value,
                   });
                 }}
@@ -55,15 +78,10 @@ export const AccessibilitySettingsScreen = () => {
                         : t('common.more'),
                   },
                 )}
-                value={
-                  (accessibility?.paragraphSpacing &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.paragraphSpacing ?? false}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     paragraphSpacing: value,
                   });
                 }}
@@ -76,15 +94,10 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={
-                  (accessibility?.wordSpacing &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.wordSpacing ?? false}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     wordSpacing: value,
                   });
                 }}

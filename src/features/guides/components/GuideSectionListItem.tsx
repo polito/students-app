@@ -18,7 +18,6 @@ export const GuideSectionListItem = ({ section }: Props) => {
         }}
         variant="longProse"
       />
-      ;
     </>
   );
 };
