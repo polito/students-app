@@ -71,7 +71,6 @@ export const JobOfferScreen = ({ route }: Props) => {
       ),
     );
   }, [contactInformation]);
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -88,31 +87,31 @@ export const JobOfferScreen = ({ route }: Props) => {
         </Card>
         <Card accessible padded gapped>
           {!!contractType && (
-            <Text weight="semibold">
+            <Text variant="longProse" weight="semibold">
               {t('jobOfferScreen.contractType')}
               <Text>{contractType}</Text>
             </Text>
           )}
           {!!salary && (
-            <Text weight="semibold">
+            <Text variant="longProse" weight="semibold">
               {t('jobOfferScreen.salary')}
-              <Text>{salary}</Text>
+              <Text variant="longProse">{salary}</Text>
             </Text>
           )}
           {!!location && (
-            <Text weight="semibold">
+            <Text variant="longProse" weight="semibold">
               {t('jobOfferScreen.location')}
               <Text>{location}</Text>
             </Text>
           )}
           {!!endsAtDate && (
-            <Text weight="semibold">
+            <Text variant="longProse" weight="semibold">
               {t('jobOfferScreen.endsAtDate')}
               <Text>{formatDate(endsAtDate)}</Text>
             </Text>
           )}
           {!!freePositions && (
-            <Text weight="semibold">
+            <Text variant="longProse" weight="semibold">
               {t('jobOfferScreen.freePositions')}
               <Text>{freePositions}</Text>
             </Text>
@@ -121,14 +120,20 @@ export const JobOfferScreen = ({ route }: Props) => {
         <Card accessible padded gapped>
           <>
             <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
-            <Text>{companyMission ?? ' - '}</Text>
+            <Text variant="longProse">{companyMission ?? ' - '}</Text>
           </>
           <>
             <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
-            <Text>{requirements ? requirements : ' - '}</Text>
+            <Text variant="longProse">
+              {requirements ? requirements : ' - '}
+            </Text>
           </>
           <>
-            <Text variant="subHeading">{t('jobOfferScreen.application')}</Text>
+            {(contactInfo[0] || email || url) && (
+              <Text variant="subHeading">
+                {t('jobOfferScreen.application')}
+              </Text>
+            )}
             {!!url && (
               <Text
                 numberOfLines={1}
