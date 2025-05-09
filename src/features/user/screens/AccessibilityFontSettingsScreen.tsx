@@ -23,7 +23,6 @@ export const AccessibilitySettingsScreen = () => {
     ) {
       updatePreference('accessibility', {
         ...accessibility,
-        fontPlacement: 'long-text',
       });
     } else if (
       accessibility?.lineHeight === false &&
@@ -60,11 +59,7 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={
-                  (accessibility?.lineHeight &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.lineHeight ?? false}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
@@ -83,11 +78,7 @@ export const AccessibilitySettingsScreen = () => {
                         : t('common.more'),
                   },
                 )}
-                value={
-                  (accessibility?.paragraphSpacing &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.paragraphSpacing ?? false}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,
@@ -103,11 +94,7 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={
-                  (accessibility?.wordSpacing &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.wordSpacing ?? false}
                 onChange={value => {
                   return updatePreference('accessibility', {
                     ...accessibility,

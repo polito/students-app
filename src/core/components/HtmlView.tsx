@@ -3,6 +3,7 @@ import { Image, StyleSheet, useWindowDimensions } from 'react-native';
 import RenderHTML, {
   InternalRendererProps,
   RenderHTMLProps,
+  TNodeChildrenRenderer,
   useInternalRenderer,
 } from 'react-native-render-html';
 
@@ -13,6 +14,12 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { render as domToHtml } from 'dom-serializer';
+import { ChildNode, Document, Element, hasChildren } from 'domhandler';
+import { Text as domText } from 'domhandler';
+import { replaceElement } from 'domutils';
+import { parseDocument } from 'htmlparser2';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 
@@ -52,59 +59,75 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
   );
 };
 
-const CustomTextRenderer = (props: InternalRendererProps<any>) => {
+export const CustomTextRenderer = (props: InternalRendererProps<any>) => {
   const { accessibility } = usePreferencesContext();
   const { fontSizes } = useTheme();
-  const [styledText, setStyledText] = useState('');
-  const [dynamicStyle, setDynamicStyle] = useState({});
+  const tnode = props.tnode;
 
-  const addWordSpacing = (text: string, spacing: number) => {
-    if (accessibility?.wordSpacing) {
-      return text.split(' ').join(' '.repeat(spacing));
-    }
-    return text;
+  const isTextNode = tnode.type === 'text';
+
+  const originalText = isTextNode ? (tnode.data ?? '') : null;
+
+  const spacedText =
+    isTextNode && accessibility?.wordSpacing
+      ? originalText.split(' ').join(' '.repeat(fontSizes.md * 0.16))
+      : originalText;
+
+  const dynamicStyle = {
+    fontSize: fontSizes.md,
+    ...(accessibility?.letterSpacing && { letterSpacing: fontSizes.md * 0.12 }),
+    ...(accessibility?.lineHeight && { lineHeight: fontSizes.md * 1.5 }),
+    ...(accessibility?.paragraphSpacing && { marginBottom: fontSizes.md * 2 }),
   };
-
-  useEffect(() => {
-    let originalText = props.tnode?.data ?? '';
-
-    originalText += ' ';
-
-    setStyledText(addWordSpacing(originalText, fontSizes.md * 0.16));
-
-    setDynamicStyle({
-      fontSize: fontSizes.md,
-      ...(accessibility?.letterSpacing && {
-        letterSpacing: fontSizes.md * 0.12,
-      }),
-      ...(accessibility?.lineHeight && { lineHeight: fontSizes.md * 1.5 }),
-      ...(accessibility?.paragraphSpacing && {
-        marginBottom: fontSizes.md * 2,
-      }),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    props.tnode?.data,
-    props.tnode?.parent?.children,
-    accessibility,
-    fontSizes,
-  ]);
 
   return (
     <Text selectable style={[props.style, dynamicStyle]}>
-      {styledText}
+      {isTextNode ? spacedText : <TNodeChildrenRenderer tnode={tnode} />}
     </Text>
   );
 };
 
 const renderers = {
-  img: CustomImageRenderer,
+  text: CustomTextRenderer,
   span: CustomTextRenderer,
+  b: CustomTextRenderer,
+  strong: CustomTextRenderer,
+  i: CustomTextRenderer,
+  em: CustomTextRenderer,
+  p: CustomTextRenderer,
+  img: CustomImageRenderer,
 };
 
 type HtmlViewProps = {
   props: RenderHTMLProps;
   variant: string;
+};
+const INLINE_TAGS = new Set(['span', 'b', 'strong', 'i', 'em', 'a']);
+
+export const wrapText = (html: string): string => {
+  if (!html) return '';
+
+  const dom = parseDocument(html);
+
+  const walk = (nodes: ChildNode[], parentTag: string | null = null) => {
+    for (const node of nodes) {
+      if (node.type === 'text') {
+        const content = (node as domText).data?.trim();
+        const isSafeToWrap = content && !INLINE_TAGS.has(parentTag ?? '');
+        if (isSafeToWrap) {
+          const span = new Element('span', {});
+          span.children = [new domText(content)];
+          replaceElement(node, span);
+        }
+      } else if (hasChildren(node)) {
+        const currentTag = (node as Element).name;
+        walk(node.children as ChildNode[], currentTag);
+      }
+    }
+  };
+
+  walk((dom as Document).children as ChildNode[]);
+  return domToHtml(dom);
 };
 
 export const HtmlView = ({ variant, props }: HtmlViewProps) => {
@@ -112,20 +135,6 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
 
-  const wrapText = (html: string): string => {
-    if (!html) return '';
-
-    html = html.replace(
-      /(^|>)([^<>\n]+)($|<)/g,
-      (match, before, text, after) => {
-        const trimmedText = text.trim();
-        if (!trimmedText) return match;
-        return `${before}<span>${trimmedText}</span>${after}`;
-      },
-    );
-
-    return html;
-  };
   const processedSource =
     variant === 'longProse'
       ? {
