@@ -102,26 +102,73 @@ type HtmlViewProps = {
   props: RenderHTMLProps;
   variant: string;
 };
-const INLINE_TAGS = new Set(['span', 'b', 'strong', 'i', 'em', 'a']);
 
 export const wrapText = (html: string): string => {
   if (!html) return '';
 
   const dom = parseDocument(html);
 
+  const INLINE_TAGS = new Set(['span', 'b', 'strong', 'i', 'em', 'a']);
+
   const walk = (nodes: ChildNode[], parentTag: string | null = null) => {
-    for (const node of nodes) {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+
+      // === TEXT NODE: wrap in span if safe ===
       if (node.type === 'text') {
         const content = (node as domText).data?.trim();
         const isSafeToWrap = content && !INLINE_TAGS.has(parentTag ?? '');
+
         if (isSafeToWrap) {
           const span = new Element('span', {});
           span.children = [new domText(content)];
           replaceElement(node, span);
         }
-      } else if (hasChildren(node)) {
-        const currentTag = (node as Element).name;
-        walk(node.children as ChildNode[], currentTag);
+      }
+
+      // === STRONG/BOLD TAG: add space before/after if needed ===
+      else if (
+        node.type === 'tag' &&
+        (node as Element).name &&
+        (node as Element).name.match(/^(strong|b)$/)
+      ) {
+        const el = node as Element;
+        const siblings = (el.parent as Element)?.children ?? [];
+
+        const prev = siblings[i - 1];
+        const next = siblings[i + 1];
+
+        const isTextNode = (n: ChildNode) => n?.type === 'text';
+        const isInlineTag = (n: ChildNode) =>
+          n?.type === 'tag' && INLINE_TAGS.has((n as Element).name);
+
+        // ➕ Add space before
+        if (isTextNode(prev) || isInlineTag(prev)) {
+          const firstChild = el.children[0];
+          if (firstChild?.type === 'text') {
+            const txt = firstChild as domText;
+            if (!txt.data.startsWith(' ')) {
+              txt.data = ' ' + txt.data;
+            }
+          }
+        }
+
+        // ➕ Add space after
+        if (isTextNode(next) || isInlineTag(next)) {
+          const lastChild = el.children[el.children.length - 1];
+          if (lastChild?.type === 'text') {
+            const txt = lastChild as domText;
+            if (!txt.data.endsWith(' ')) {
+              txt.data = txt.data + ' ';
+            }
+          }
+        }
+      }
+
+      // === Recurse ===
+      if (hasChildren(node)) {
+        const currentTag = (node as Element).name ?? null;
+        walk((node as Element).children as ChildNode[], currentTag);
       }
     }
   };
