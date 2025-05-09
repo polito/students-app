@@ -14,7 +14,6 @@ import { Document } from 'react-native-render-html';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -157,9 +156,8 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                     );
                   })
                 : !ticketFaqsQuery.isFetching && (
-                    <EmptyState
-                      icon={faQuestionCircle}
-                      message={t('ticketFaqsScreen.emptyState')}
+                    <OverviewList
+                      emptyStateText={t('ticketFaqsScreen.emptyState')}
                     />
                   )}
             </OverviewList>
