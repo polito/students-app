@@ -114,7 +114,6 @@ export const wrapText = (html: string): string => {
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
 
-      // === TEXT NODE: wrap in span if safe ===
       if (node.type === 'text') {
         const content = (node as domText).data?.trim();
         const isSafeToWrap = content && !INLINE_TAGS.has(parentTag ?? '');
@@ -124,10 +123,7 @@ export const wrapText = (html: string): string => {
           span.children = [new domText(content)];
           replaceElement(node, span);
         }
-      }
-
-      // === STRONG/BOLD TAG: add space before/after if needed ===
-      else if (
+      } else if (
         node.type === 'tag' &&
         (node as Element).name &&
         (node as Element).name.match(/^(strong|b)$/)
@@ -142,7 +138,6 @@ export const wrapText = (html: string): string => {
         const isInlineTag = (n: ChildNode) =>
           n?.type === 'tag' && INLINE_TAGS.has((n as Element).name);
 
-        // ➕ Add space before
         if (isTextNode(prev) || isInlineTag(prev)) {
           const firstChild = el.children[0];
           if (firstChild?.type === 'text') {
@@ -153,7 +148,6 @@ export const wrapText = (html: string): string => {
           }
         }
 
-        // ➕ Add space after
         if (isTextNode(next) || isInlineTag(next)) {
           const lastChild = el.children[el.children.length - 1];
           if (lastChild?.type === 'text') {
@@ -165,7 +159,6 @@ export const wrapText = (html: string): string => {
         }
       }
 
-      // === Recurse ===
       if (hasChildren(node)) {
         const currentTag = (node as Element).name ?? null;
         walk((node as Element).children as ChildNode[], currentTag);
