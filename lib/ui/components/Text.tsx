@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Text as RNText, StyleSheet, TextProps } from 'react-native';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
@@ -46,12 +48,70 @@ export const Text = ({
   children,
   ...rest
 }: Props) => {
-  const { colors, fontFamilies, fontWeights } = useTheme();
+  const { colors, fontFamilies, fontWeights, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
+  const { accessibility } = usePreferencesContext();
+  const [styless, setStyless] = useState(styles);
+  const wordSpacing = fontSizes.md * 0.16;
 
+  const addWordSpacing = (text: string, spacing: number) => {
+    if (variant === 'longProse')
+      return text.split(' ').join(' '.repeat(spacing));
+    else return text;
+  };
+
+  useEffect(() => {
+    const getfontStyle = (fontSize: number) => {
+      if (accessibility?.fontPlacement === 'long-text')
+        return {
+          lineHeight: accessibility?.lineHeight ? fontSize * 1.5 : undefined,
+          letterSpacing: accessibility?.letterSpacing
+            ? fontSize * 0.12
+            : undefined,
+          marginBottom: accessibility?.paragraphSpacing ? fontSize * 2 : 0,
+        };
+    };
+    const changeStyle = () => {
+      setStyless({
+        heading: {
+          fontSize: fontSizes.md,
+          // ...getfontStyle(fontSizes.md),
+        },
+        subHeading: {
+          fontSize: fontSizes.md,
+          textTransform: 'uppercase',
+          // ...getfontStyle(fontSizes.md),
+        },
+        title: {
+          fontSize: fontSizes.xl,
+          // ...getfontStyle(fontSizes.xl),
+        },
+        headline: {
+          fontSize: fontSizes.md,
+          // ...getfontStyle(fontSizes.md),
+        },
+        caption: {
+          fontSize: fontSizes.sm,
+          textTransform: 'uppercase',
+          // ...getfontStyle(fontSizes.xl),
+        },
+        prose: {
+          fontSize: fontSizes.md,
+          // ...getfontStyle(fontSizes.md),
+        },
+        longProse: {
+          fontSize: fontSizes.md,
+          ...getfontStyle(fontSizes.md),
+        },
+        secondaryText: {},
+        link: {},
+      } as any);
+    };
+    changeStyle();
+  }, [accessibility, fontSizes]);
   return (
     <RNText
       style={[
@@ -63,20 +123,26 @@ export const Text = ({
         italic && {
           fontStyle: 'italic',
         },
-        styles[variant],
+        styless[variant],
         capitalize && { textTransform: 'capitalize' },
         uppercase && { textTransform: 'uppercase' },
         style,
       ]}
       {...rest}
     >
-      {children}
+      {typeof children === 'string' &&
+      accessibility?.fontPlacement === 'long-text' &&
+      accessibility?.wordSpacing
+        ? addWordSpacing(children, wordSpacing)
+        : children}
     </RNText>
   );
 };
 
-const createStyles = ({ fontSizes }: Theme) =>
-  StyleSheet.create({
+const createStyles = ({ fontSizes }: Theme) => {
+  // const { accessibility } = usePreferencesContext()
+
+  return StyleSheet.create({
     heading: {
       fontSize: fontSizes.md,
     },
@@ -99,8 +165,8 @@ const createStyles = ({ fontSizes }: Theme) =>
     },
     longProse: {
       fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.5,
     },
     secondaryText: {},
     link: {},
   });
+};

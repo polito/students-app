@@ -14,5 +14,13 @@ export const HtmlMessage = ({ message, baseStyle }: HtmlMessage) => {
     return linkUrls(sanitizeHtml(message));
   }, [message]);
 
-  return <HtmlView source={{ html }} baseStyle={baseStyle} />;
+  return (
+    <HtmlView
+      props={{
+        source: { html },
+        baseStyle: { padding: 0, ...baseStyle },
+      }}
+      variant="longProse"
+    />
+  );
 };

@@ -49,7 +49,10 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
         )}
         {!!text && (
           <View style={styles.textMessage}>
-            <HtmlView source={{ html }} baseStyle={{ padding: 0 }} />
+            <HtmlView
+              props={{ source: { html }, baseStyle: { padding: 0 } }}
+              variant="longProse"
+            />
           </View>
         )}
       </Section>

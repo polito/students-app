@@ -1,14 +1,24 @@
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Animated, StyleSheet, useWindowDimensions } from 'react-native';
 
 import { SplashContext } from '../contexts/SplashContext';
 
 export function SplashProvider({ children }: PropsWithChildren) {
   const [isAppLoaded, setIsAppLoaded] = useState(false);
+  const [isSplashLoaded, setIsSplashLoaded] = useState(false);
   return (
-    <SplashContext.Provider value={{ isAppLoaded, setIsAppLoaded }}>
+    <SplashContext.Provider
+      value={{ isAppLoaded, setIsAppLoaded, isSplashLoaded }}
+    >
       {children}
-      <Splash isAppLoaded={isAppLoaded} />
+      <Splash isAppLoaded={isAppLoaded} setIsSplashLoaded={setIsSplashLoaded} />
     </SplashContext.Provider>
   );
 }
@@ -19,7 +29,13 @@ enum SplashPhases {
   'HIDDEN',
 }
 
-export const Splash = ({ isAppLoaded }: { isAppLoaded: boolean }) => {
+export const Splash = ({
+  isAppLoaded,
+  setIsSplashLoaded,
+}: {
+  isAppLoaded: boolean;
+  setIsSplashLoaded: Dispatch<SetStateAction<boolean>>;
+}) => {
   const containerOpacity = useRef(new Animated.Value(1)).current;
   const [splashPhase, setSplashPhase] = useState<SplashPhases>(
     SplashPhases.SHOWN,
@@ -63,9 +79,10 @@ export const Splash = ({ isAppLoaded }: { isAppLoaded: boolean }) => {
         useNativeDriver: true,
       }).start(() => {
         setSplashPhase(SplashPhases.HIDDEN);
+        setIsSplashLoaded(true);
       });
     }
-  }, [containerOpacity, splashPhase]);
+  }, [containerOpacity, splashPhase, setIsSplashLoaded]);
 
   if (splashPhase === SplashPhases.HIDDEN) return null;
 

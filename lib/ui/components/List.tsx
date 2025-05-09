@@ -20,7 +20,6 @@ export const List = ({
   children,
 }: PropsWithChildren<Props>) => {
   const { spacing } = useTheme();
-
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
@@ -29,12 +28,20 @@ export const List = ({
             if (!isValidElement(c)) {
               return null;
             }
+            const hasLeadingItem =
+              !!c.props?.leadingItem ||
+              !!c.props?.course ||
+              !!c.props?.exam ||
+              !!c.props?.person ||
+              c.props.ticket;
+            const indent = spacing[5] + (hasLeadingItem ? 31 + spacing[2] : 0);
+
             return (
               <>
                 {c}
                 {i < Children.count(children) - 1 &&
                   (indented ? (
-                    <IndentedDivider key={`div-${i}`} />
+                    <IndentedDivider key={`div-${i}`} indent={indent} />
                   ) : (
                     <Divider
                       key={`div-${i}`}

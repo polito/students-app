@@ -35,7 +35,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
       <SafeAreaView>
         <Section>
           <SectionHeader title={faq.question} ellipsizeTitle={false} />
-          <HtmlView source={{ dom }} />
+          <HtmlView props={{ source: { dom } }} variant="longProse" />
         </Section>
 
         <CtaButton
