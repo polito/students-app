@@ -40,6 +40,7 @@ import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { PlacesContext } from '../contexts/PlacesContext';
+import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
@@ -55,14 +56,15 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const safeAreaInsets = useSafeAreaInsets();
   const { setFloorId, floorId } = useContext(PlacesContext);
   const { siteId, buildingId } = route.params;
+  const campus = useGetCurrentCampus();
   const {
     data: building,
     isLoading: isLoadingBuilding,
     error: getBuildingError,
-  } = useGetBuilding(siteId, buildingId);
+  } = useGetBuilding(siteId ?? campus?.id, buildingId);
   const site = useGetSite(siteId);
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
-    siteId,
+    siteId: siteId ?? campus?.id,
     floorId: floorId,
   });
   const isLoading = isLoadingBuilding || isLoadingPlaces;
