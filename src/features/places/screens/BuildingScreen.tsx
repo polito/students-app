@@ -195,7 +195,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
             <Text variant="title" style={styles.title}>
               {placeName}
             </Text>
-            <Text>{site?.name}</Text>
+            <Text>{site?.name || campus?.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
               {formatPlaceCategory(building?.category.name)}
             </Text>
@@ -207,7 +207,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
-                title={site?.name ?? '--'}
+                title={(site?.name || campus?.name) ?? '--'}
                 subtitle={t('common.campus')}
                 trailingItem={
                   <IconButton
