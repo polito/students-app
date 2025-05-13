@@ -77,11 +77,14 @@ export const PlacesBottomSheet = forwardRef<
         typing,
       ],
     );
-
     return (
       <BottomSheet
         ref={innerRef}
-        snapPoints={[64, '30%', '100%']}
+        snapPoints={[
+          Array.isArray(listItems) && listItems.length > 1 ? 64 : 120,
+          '30%',
+          '100%',
+        ]}
         android_keyboardInputMode="adjustResize"
         {...props}
       >
