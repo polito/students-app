@@ -82,7 +82,7 @@ export const PlacesBottomSheet = forwardRef<
         ref={innerRef}
         snapPoints={[
           Array.isArray(listItems) && listItems.length > 1 ? 64 : 120,
-          '30%',
+          Array.isArray(listItems) && listItems.length > 4 ? '40%' : '30%',
           '100%',
         ]}
         android_keyboardInputMode="adjustResize"
