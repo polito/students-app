@@ -65,3 +65,8 @@ npm-debug.*
 .npmrc
 android/sentry.properties
 ios/sentry.properties
+
+# Expo
+.expo
+dist/
+web-build/

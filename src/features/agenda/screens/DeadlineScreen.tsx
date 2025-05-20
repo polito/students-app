@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Linking, SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -10,6 +10,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { EventDetails } from '../../../core/components/EventDetails';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { convertMachineDateToFormatDate } from '../../../utils/dates';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
@@ -19,9 +20,10 @@ export const DeadlineScreen = ({ route }: Props) => {
   const { item: deadline } = route.params;
   const { t } = useTranslation();
   const { palettes, spacing } = useTheme();
+  const openInAppLink = useOpenInAppLink();
 
   const onPressDeadlineUrl = () =>
-    deadline.url ? Linking.openURL(deadline.url) : null;
+    deadline.url ? openInAppLink(deadline.url) : null;
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
