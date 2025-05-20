@@ -25,12 +25,12 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import {
-  GetWebmailLink,
-  WEBMAIL_LINK_QUERY_KEY,
   useGetUnreadEmails,
+  useGetWebmailLink,
 } from '../../../core/queries/webMailHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
@@ -49,6 +49,8 @@ export const ServicesScreen = () => {
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
   const unreadEmailsQuery = useGetUnreadEmails();
+  const urlEmailsQuery = useGetWebmailLink();
+  const openInAppLink = useOpenInAppLink();
 
   const services = useMemo(() => {
     return [
@@ -163,29 +165,24 @@ export const ServicesScreen = () => {
         unReadCount: unreadEmailsQuery.data
           ? unreadEmailsQuery.data.unreadEmails
           : 0,
-        onPress: () => {
-          queryClient
-            .fetchQuery(WEBMAIL_LINK_QUERY_KEY, GetWebmailLink, {
-              staleTime: 55 * 1000, // 55 seconds
-              cacheTime: 55 * 1000, // 55 seconds
-            })
-            .then(res => Linking.openURL(res.url ?? ''));
-        },
+        onPress: () => openInAppLink(urlEmailsQuery.data?.url ?? ''),
         accessibilityLabel: `${t('WebMail')} ${
           unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
         }`,
       },
     ];
   }, [
-    emailGuideRead,
-    getUnreadsCount,
-    isOffline,
-    peopleSearched?.length,
-    queryClient,
-    styles.badge,
     t,
+    isOffline,
+    queryClient,
     unreadTickets,
+    styles.badge,
+    getUnreadsCount,
+    peopleSearched?.length,
+    emailGuideRead,
     unreadEmailsQuery.data,
+    openInAppLink,
+    urlEmailsQuery.data?.url,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(
