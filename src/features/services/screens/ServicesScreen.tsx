@@ -29,8 +29,9 @@ import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import {
+  GetWebmailLink,
+  WEBMAIL_LINK_QUERY_KEY,
   useGetUnreadEmails,
-  useGetWebmailLink,
 } from '../../../core/queries/webMailHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
@@ -49,13 +50,16 @@ export const ServicesScreen = () => {
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
   const unreadEmailsQuery = useGetUnreadEmails();
-  const urlEmailsQuery = useGetWebmailLink();
   const openInAppLink = useOpenInAppLink();
 
   const openWebmailLink = useCallback(async () => {
-    const link = urlEmailsQuery.data?.url ?? '';
-    await openInAppLink(link);
-  }, [openInAppLink, urlEmailsQuery.data?.url]);
+    queryClient
+      .fetchQuery(WEBMAIL_LINK_QUERY_KEY, GetWebmailLink, {
+        staleTime: 55 * 1000, // 55 seconds
+        cacheTime: 55 * 1000, // 55 seconds
+      })
+      .then(res => openInAppLink(res.url));
+  }, [openInAppLink, queryClient]);
 
   const services = useMemo(() => {
     return [
