@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -51,6 +51,11 @@ export const ServicesScreen = () => {
   const unreadEmailsQuery = useGetUnreadEmails();
   const urlEmailsQuery = useGetWebmailLink();
   const openInAppLink = useOpenInAppLink();
+
+  const openWebmailLink = useCallback(async () => {
+    const link = urlEmailsQuery.data?.url ?? '';
+    await openInAppLink(link);
+  }, [openInAppLink, urlEmailsQuery.data?.url]);
 
   const services = useMemo(() => {
     return [
@@ -165,7 +170,7 @@ export const ServicesScreen = () => {
         unReadCount: unreadEmailsQuery.data
           ? unreadEmailsQuery.data.unreadEmails
           : 0,
-        onPress: () => openInAppLink(urlEmailsQuery.data?.url ?? ''),
+        onPress: () => openWebmailLink(),
         accessibilityLabel: `${t('WebMail')} ${
           unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
         }`,
@@ -181,8 +186,7 @@ export const ServicesScreen = () => {
     peopleSearched?.length,
     emailGuideRead,
     unreadEmailsQuery.data,
-    openInAppLink,
-    urlEmailsQuery.data?.url,
+    openWebmailLink,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(
