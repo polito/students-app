@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
@@ -18,64 +18,120 @@ import ColorPicker, {
 
 import { courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import CustomAlert from '../components/CourseColorWarningModal';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList,
   'CourseColorPicker'
 >;
 
-export const CourseColorPickerScreen = ({ route }: Props) => {
+export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const [isSafeColor, setIsSafeColor] = useState(true);
+  const { spacing, colors } = useTheme();
+  const {
+    courses: coursesPrefs,
+    updatePreference,
+    showColorWarning = true,
+  } = usePreferencesContext();
 
-  const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
-  const coursePrefs = useMemo(
-    () => coursesPrefs[route.params.uniqueShortcode],
-    [route.params.uniqueShortcode, coursesPrefs],
+  const [temporaryColor, setTemporaryColor] = useState(
+    coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
-  const confirm = useConfirmationDialog({
-    title: t('courseColorPickerScreen.areYouSureTitle'),
-    message: t('courseColorPickerScreen.areYouSureMessage'),
-  });
-  const handleColorWithConfirm = async (hex: string) => {
-    const confirmed = await confirm();
-    if (confirmed) {
-      updatePreference('courses', {
-        ...coursesPrefs,
-        [route.params.uniqueShortcode]: {
-          ...coursePrefs,
-          color: hex,
-        },
-      });
-    }
-  };
+  const [showModal, setShowModal] = useState(false);
+  const [navigationEvent, setNavigationEvent] = useState<any>(null);
+  const saveColor = useCallback(() => {
+    updatePreference('courses', {
+      ...coursesPrefs,
+      [route.params.uniqueShortcode]: {
+        ...coursesPrefs[route.params.uniqueShortcode],
+        color: temporaryColor,
+      },
+    });
+  }, [
+    coursesPrefs,
+    route.params.uniqueShortcode,
+    temporaryColor,
+    updatePreference,
+  ]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
+      if (
+        temporaryColor === coursesPrefs[route.params.uniqueShortcode]?.color
+      ) {
+        // No changes made, allow navigation
+        return;
+      }
+
+      if (!showColorWarning || isSafeColor) {
+        // If warnings are disabled or the color is from swatches, save and exit
+        saveColor();
+        return;
+      }
+
+      e.preventDefault();
+      setNavigationEvent(e);
+      setShowModal(true);
+    });
+    return unsubscribe;
+  }, [
+    navigation,
+    temporaryColor,
+    showColorWarning,
+    coursesPrefs,
+    route.params.uniqueShortcode,
+    isSafeColor,
+    saveColor,
+  ]);
+
+  const handleConfirm = useCallback(
+    (dontShowAgain: boolean) => {
+      setShowModal(false);
+      if (dontShowAgain) {
+        updatePreference('showColorWarning', false);
+      }
+      saveColor();
+      if (navigationEvent) {
+        navigation.dispatch(navigationEvent.data.action);
+      }
+    },
+    [saveColor, updatePreference, navigationEvent, navigation],
+  );
+
+  const handleCancel = useCallback(() => {
+    setShowModal(false);
+  }, []);
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
-    runOnJS(handleColorWithConfirm)(color.hex);
+    runOnJS(setIsSafeColor)(false);
+    runOnJS(setTemporaryColor)(color.hex);
   };
 
   const onSwatchColorChange = (color: { hex: string }) => {
     'worklet';
-    runOnJS(updatePreference)('courses', {
-      ...coursesPrefs,
-      [route.params.uniqueShortcode]: {
-        ...coursePrefs,
-        color: color.hex,
-      },
-    });
+    runOnJS(setIsSafeColor)(true);
+    runOnJS(setTemporaryColor)(color.hex);
   };
 
   return (
     <SafeAreaView>
+      <CustomAlert
+        visible={showModal}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        footer={t('courseColorPickerScreen.areYouSureTitle')}
+        message={t('courseColorPickerScreen.areYouSureMessage')}
+        dontShowAgainLabel={t('courseColorPickerScreen.dontShowAgain')}
+      />
       <View style={{ paddingVertical: spacing[5] }}>
         <Section>
           <SectionHeader title={t('courseColorPickerScreen.accessibleColor')} />
           <OverviewList indented>
             <ColorPicker
-              value={coursePrefs?.color}
+              value={temporaryColor}
               onComplete={onSwatchColorChange}
             >
               <View style={styles.picker}>
@@ -90,17 +146,37 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
         </Section>
         <Section>
           <SectionHeader
-            title={t('courseColorPickerScreen.customColorWarning')}
+            title={t('courseColorPickerScreen.customColorTitle')}
           />
           <OverviewList indented>
             <ColorPicker
-              value={coursePrefs?.color}
+              value={temporaryColor}
               onComplete={onCustomColorChange}
             >
               <Panel1 style={styles.panel} />
               <HueSlider style={styles.slider} />
               <View style={styles.widget}>
-                <InputWidget formats={['HEX']} />
+                <InputWidget
+                  defaultFormat="HEX"
+                  formats={['HEX']}
+                  disableAlphaChannel={true}
+                  containerStyle={{
+                    padding: spacing[3],
+                  }}
+                  inputStyle={{
+                    color: colors.prose,
+                    fontFamily: 'Montserrat',
+                  }}
+                  inputTitleStyle={{
+                    color: colors.title,
+                    fontSize: 14,
+                    fontFamily: 'Montserrat',
+                  }}
+                  iconColor={colors.link}
+                  inputProps={{
+                    placeholderTextColor: colors.secondaryText,
+                  }}
+                />
               </View>
             </ColorPicker>
           </OverviewList>
@@ -145,7 +221,6 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     marginBottom: 10,
   },
-
   widget: {
     marginTop: 10,
     marginBottom: 10,
