@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCircle,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faBell,
   faBroom,
   faCalendarDay,
   faChevronRight,
-  faEyeDropper,
   faFile,
-  faIcons,
   faVideoCamera,
+  faIcons,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -34,6 +37,7 @@ import {
 } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -127,7 +131,14 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     })
                   }
                   leadingItem={
-                    <Icon icon={faEyeDropper} size={fontSizes['2xl']} />
+                    <Icon
+                      icon={
+                        coursePrefs.icon && coursePrefs.icon in courseIcons
+                          ? courseIcons[coursePrefs.icon]
+                          : faCircle
+                      }
+                      size={fontSizes['2xl']}
+                    />
                   }
                 />
                 <ListItem
