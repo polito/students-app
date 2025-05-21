@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import replace from 'react-string-replace';
@@ -13,6 +13,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetJobOffer } from '../../../core/queries/jobOfferHooks';
 import { formatDate } from '../../../utils/dates';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -25,6 +26,7 @@ export const JobOfferScreen = ({ route }: Props) => {
   const useGetJobOfferQuery = useGetJobOffer(id);
   const { data: jobOffer } = useGetJobOfferQuery;
   const styles = useStylesheet(createStyles);
+  const openInAppLink = useOpenInAppLink();
   const {
     title,
     location,
@@ -41,12 +43,15 @@ export const JobOfferScreen = ({ route }: Props) => {
   } = jobOffer || {};
 
   const onPressUrl = (uri: string) => {
-    !!uri && Linking.openURL(uri);
+    !!uri && openInAppLink(uri);
   };
 
-  const onPressEmail = (mail: string) => {
-    !!mail && Linking.openURL(`mailto:${mail}`);
-  };
+  const onPressEmail = useCallback(
+    (mail: string) => {
+      !!mail && openInAppLink(`mailto:${mail}`);
+    },
+    [openInAppLink],
+  );
 
   const contactInfo = useMemo(() => {
     return replace(
@@ -70,7 +75,7 @@ export const JobOfferScreen = ({ route }: Props) => {
         </Text>
       ),
     );
-  }, [contactInformation]);
+  }, [contactInformation, onPressEmail]);
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
