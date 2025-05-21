@@ -7,7 +7,6 @@ export const useOpenInAppLink = () => {
 
   return async (url: string) => {
     await WebBrowser.openBrowserAsync(url, {
-      windowName: 'Polito-InApp-Browser',
       showTitle: true,
       controlsColor: colors.headersBackground,
       toolbarColor: colors.headersBackground,
