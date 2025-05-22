@@ -92,6 +92,7 @@
   },
   "common": {
     "accessibility": "Accessibility",
+    "accessibleColor": "Accessible colors",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -127,8 +128,7 @@
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
-    "customColor":"Color picker",
-    "customColorSubtitle": "Select a custom color",
+    "customColorWarning": "Custom colors",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
     "dateToBeDefinedShort": "To be defined",
