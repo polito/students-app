@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
-
-import { Text } from '@lib/ui/components/Text';
+import { Section } from '@lib/ui/components/Section';
+import { SectionHeader } from '@lib/ui/components/SectionHeader.tsx';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -23,7 +23,7 @@ type Props = NativeStackScreenProps<
   'CourseColorPicker'
 >;
 
-export const CourseColorPickerScreen = ({ navigation, route }: Props) => {
+export const CourseColorPickerScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
 
@@ -47,51 +47,64 @@ export const CourseColorPickerScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.surface }]}
-    >
-      <Text style={styles.title}>{t('common.selectColor')}</Text>
-      <ColorPicker value={coursePrefs?.color} onComplete={onColorChange}>
-        <View style={styles.picker}>
+    <SafeAreaView>
+      <View style={{ paddingVertical: spacing[5] }}>
+        <SectionHeader title={t('common.accessibleColor')} />
+      <Section style={[{ backgroundColor: colors.surface }]}>
+        <ColorPicker value={coursePrefs?.color} onComplete={onColorChange}>
+        <View style={styles.picker} >
           <Swatches style={styles.swatches} />
-          <Panel1 style={styles.panel} />
-          <HueSlider style={styles.slider} />
-          <InputWidget disableAlphaChannel formats={['HEX']} />
         </View>
       </ColorPicker>
+      </Section>
+        <SectionHeader title={t('common.customColorWarning')}/>
+
+        <Section style={[{ backgroundColor: colors.surface }]}>
+        <ColorPicker value={coursePrefs?.color} onComplete={onColorChange}>
+          <Panel1 style={styles.panel} />
+          <HueSlider style={styles.slider} />
+          <View style={styles.widget} >
+            <InputWidget  formats={['HEX']}/>
+          </View>
+          </ColorPicker>
+      </Section>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
   picker: {
-    width: '100%',
-    gap: 15,
+    marginTop:10,
+    marginBottom:10,
+    width: '95%',
+    alignSelf: 'center',
   },
   panel: {
+    marginTop:10,
+    marginBottom:10,
     height: 200,
     borderRadius: 8,
+    width: '95%',
+    alignSelf: 'center',
   },
   slider: {
+    marginTop:10,
+    marginBottom:10,
     height: 30,
     borderRadius: 8,
-  },
-  previewText: {
-    fontSize: 16,
-    textAlign: 'center',
+    width: '95%',
+    alignSelf: 'center',
   },
   swatches: {
     gap: 10,
-    padding: 10,
+    padding: 5,
   },
+  widget: {
+    marginTop:10,
+    marginBottom:10,
+    width: '95%',
+    alignSelf: 'center',
+  },
+
 });
