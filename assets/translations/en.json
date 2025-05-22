@@ -92,7 +92,6 @@
   },
   "common": {
     "accessibility": "Accessibility",
-    "accessibleColor": "Accessible colors",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
