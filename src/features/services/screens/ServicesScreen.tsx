@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -42,6 +42,7 @@ export const ServicesScreen = () => {
     favoriteServices: favoriteServiceIds,
     emailGuideRead,
     updatePreference,
+    accessibility,
   } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
   const styles = useStylesheet(createStyles);
@@ -50,7 +51,10 @@ export const ServicesScreen = () => {
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
   const unreadEmailsQuery = useGetUnreadEmails();
-  const openInAppLink = useOpenInAppLink();
+  const [fontSize, setFontSize] = useState(Number(accessibility?.fontSize));
+  useEffect(() => {
+    setFontSize(Number(accessibility?.fontSize) ?? 0);
+  }, [accessibility?.fontSize]);  const openInAppLink = useOpenInAppLink();
 
   const openWebmailLink = useCallback(async () => {
     queryClient
@@ -216,17 +220,15 @@ export const ServicesScreen = () => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         {favoriteServices.length > 0 && (
-          <Grid
-            numColumns={auto}
-            minColumnWidth={ServiceCard.minWidth}
-            maxColumnWidth={ServiceCard.maxWidth}
-            gap={4}
-            style={styles.grid}
-          >
+          <Grid numColumns={auto} gap={4} style={styles.grid}>
             {favoriteServices.map(service => (
               <ServiceCard
                 key={service.id}
-                name={service.name}
+                name={
+                  accessibility?.fontSize && accessibility.fontSize <= 125
+                    ? service.name
+                    : ''
+                }
                 icon={service.icon}
                 disabled={service.disabled}
                 linkTo={service.linkTo}
@@ -242,9 +244,7 @@ export const ServicesScreen = () => {
 
         {otherServices.length > 0 && (
           <Grid
-            numColumns={auto}
-            minColumnWidth={ServiceCard.minWidth}
-            maxColumnWidth={ServiceCard.maxWidth}
+            numColumns={fontSize && fontSize >= 125 ? 1 : auto}
             gap={4}
             style={styles.grid}
           >

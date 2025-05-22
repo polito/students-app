@@ -189,18 +189,32 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setMapFloorId(displayFloorId);
     }
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
-
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  const renderMapContent = useCallback(
+    () => (
+      <MarkersLayer
+        search={debouncedSearch}
+        places={places ?? []}
+        displayFloor={!displayFloorId}
+        categoryId={categoryId}
+        subCategoryId={subCategoryId}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+    ),
+    [
+      debouncedSearch,
+      places,
+      displayFloorId,
+      categoryId,
+      subCategoryId,
+      selectedId,
+      setSelectedId,
+    ],
+  );
   useLayoutEffect(() => {
     navigation.setOptions({
-      mapContent: () => (
-        <MarkersLayer
-          search={debouncedSearch}
-          places={places ?? []}
-          displayFloor={!displayFloorId}
-          categoryId={categoryId}
-          subCategoryId={subCategoryId}
-        />
-      ),
+      mapContent: renderMapContent,
     });
   }, [
     categoryId,
@@ -209,6 +223,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     navigation,
     places,
     subCategoryId,
+    renderMapContent,
   ]);
 
   useLayoutEffect(() => {

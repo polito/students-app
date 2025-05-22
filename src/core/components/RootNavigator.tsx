@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -36,7 +36,6 @@ import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator<RootParamList>();
-const tabBarIconSize = 20;
 const androidTabBarHeight = 60;
 
 export const RootNavigator = ({
@@ -49,11 +48,12 @@ export const RootNavigator = ({
   const { bottom } = useSafeAreaInsets();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
-  const { updatePreference } = usePreferencesContext();
+  const { updatePreference, accessibility } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
-
+  const [styless, setStyless] = useState();
+  const [tabBarIconSize, setTabBarIconSize] = useState(20);
   useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
 
@@ -74,6 +74,18 @@ export const RootNavigator = ({
       updatePreference('campusId', sites?.data[0].id);
     }
   }, [campus, sites?.data, student, updatePreference]);
+
+  useEffect(() => {
+    if (accessibility?.fontSize && accessibility.fontSize > 125) {
+      setStyless({
+        fontSize: 0,
+      } as any);
+      setTabBarIconSize(Number(accessibility.fontSize) === 150 ? 30 : 40);
+    } else {
+      setStyless(undefined);
+      setTabBarIconSize(20);
+    }
+  }, [accessibility?.fontSize]);
 
   const instantAnimation = {
     animation: 'timing' as const,
@@ -99,7 +111,7 @@ export const RootNavigator = ({
         tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
         tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarLabelStyle: [styles.tabBarLabelStyle, styless],
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}
