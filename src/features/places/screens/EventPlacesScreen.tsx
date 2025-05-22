@@ -20,6 +20,7 @@ import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { getBottomSheetScreenPadding } from '../utils/getBottomSheetScreenPadding';
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
@@ -39,6 +40,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const safeAreaInsets = useSafeAreaInsets();
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const { floorId, setFloorId } = useContext(PlacesContext);
   const { placeIds, eventName, isCrossNavigation } = route.params;
   const placesQueries = useGetMultiplePlaces(placeIds);
@@ -95,6 +97,8 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
               places={placesQueries.map(q => ({ type: 'place', ...q.data! }))}
               categoryId={places[0]?.category?.id}
               subCategoryId={places[0]?.category?.subCategory?.id}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
             />
             {eventsFloorId != null &&
               places.map(place => {
@@ -142,6 +146,8 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     safeAreaInsets.top,
     spacing,
     isCrossNavigation,
+    selectedId,
+    setSelectedId,
   ]);
 
   if (isLoading) {
