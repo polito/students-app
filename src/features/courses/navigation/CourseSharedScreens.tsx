@@ -202,7 +202,6 @@ export const CourseSharedScreens = (
         options={{
           title: t('courseColorPicker.title'),
           headerLargeTitle: false,
-          headerSearchBarOptions: {},
         }}
       />
     </>
