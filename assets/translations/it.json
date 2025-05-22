@@ -97,6 +97,7 @@
   },
   "common": {
     "accessibility": "Accessibilità",
+    "accessibleColor": "Colori accessibili",
     "active": "Attivo",
     "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
     "actionPotentiallyNotUndoable": "Questa azione potrebbe non essere annullabile",
@@ -110,7 +111,6 @@
     "appFeedback": "Segnalazioni App",
     "areYouSure?": "Sei sicuro?",
     "areYouSureColorAccessibility": "Sei sicuro? Il colore seelzionato non è stato testato per accessibilità.",
-
     "back": "Indietro",
     "booking": "Prenotazione",
     "booking_plural": "Prenotazioni",
@@ -406,8 +406,6 @@
     "cleanCacheFeedback": "I file sono stati rimossi correttamente",
     "cleanCourseFiles": "Rimuovi file del corso",
     "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
-    "colorSubtitle": "Seleziona un colore per il corso",
-    "iconSubtitle": "Seleziona un'icone per il corso",
     "filesSubtitle": "Nuovi materiali disponibili",
     "hideInExtracts": "Nascondi negli estratti",
     "lecturesSubtitle": "Nuove lezioni disponibili",
