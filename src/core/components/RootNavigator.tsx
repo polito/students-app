@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -46,11 +46,12 @@ export const RootNavigator = ({
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
-  const { updatePreference } = usePreferencesContext();
+  const { updatePreference, accessibility } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
-
+  const [styless, setStyless] = useState();
+  const [tabBarIconSize, setTabBarIconSize] = useState(20);
   useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
 
@@ -72,7 +73,17 @@ export const RootNavigator = ({
     }
   }, [campus, sites?.data, student, updatePreference]);
 
-  const tabBarIconSize = 20;
+  useEffect(() => {
+    if (accessibility?.fontSize && accessibility.fontSize > 125) {
+      setStyless({
+        fontSize: 0,
+      } as any);
+      setTabBarIconSize(Number(accessibility.fontSize) === 150 ? 30 : 40);
+    } else {
+      setStyless(undefined);
+      setTabBarIconSize(20);
+    }
+  }, [accessibility?.fontSize]);
 
   const instantAnimation = {
     animation: 'timing',
@@ -92,7 +103,7 @@ export const RootNavigator = ({
         tabBarStyle: styles.tabBarStyle,
         tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarLabelStyle: [styles.tabBarLabelStyle, styless],
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}

@@ -166,7 +166,29 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
 
   const categoryFilterActive = categoryId || subCategoryId;
-
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  const renderMapContent = useCallback(
+    () => (
+      <MarkersLayer
+        search={debouncedSearch}
+        places={places ?? []}
+        displayFloor={!displayFloorId}
+        categoryId={categoryId}
+        subCategoryId={subCategoryId}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+    ),
+    [
+      debouncedSearch,
+      places,
+      displayFloorId,
+      categoryId,
+      subCategoryId,
+      selectedId,
+      setSelectedId,
+    ],
+  );
   useLayoutEffect(() => {
     const mapInsetTop =
       headerHeight -
@@ -196,29 +218,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             : undefined,
         },
       },
-      mapContent: () => (
-        <MarkersLayer
-          search={debouncedSearch}
-          places={places ?? []}
-          displayFloor={!displayFloorId}
-          categoryId={categoryId}
-          subCategoryId={subCategoryId}
-        />
-      ),
+      mapContent: renderMapContent,
     });
-    // Including `navigation` here causes a rerender loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    navigation,
+    renderMapContent,
     campus,
     categoryFilterActive,
-    categoryId,
-    debouncedSearch,
-    displayFloorId,
     headerHeight,
-    places,
     safeAreaInsets.top,
-    spacing,
-    subCategoryId,
     tabsHeight,
   ]);
 
