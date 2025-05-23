@@ -79,7 +79,6 @@ export interface PreferencesContextBase {
       | 'easy-reading'
       | 'sylexiad';
     fontPlacement?: 'none';
-    // | 'all-text';
     highContrast?: boolean;
     grayscale?: boolean;
     lineHeight?: boolean;
