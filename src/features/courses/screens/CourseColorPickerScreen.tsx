@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader.tsx';
+import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -16,7 +16,9 @@ import ColorPicker, {
   Swatches,
 } from 'reanimated-color-picker';
 
+import { courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<
@@ -33,16 +35,34 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     () => coursesPrefs[route.params.uniqueShortcode],
     [route.params.uniqueShortcode, coursesPrefs],
   );
+  const confirm = useConfirmationDialog({
+    title: t('common.areYouSureColorAccessibility?'),
+  });
+  const handleColorWithConfirm = async (hex: string) => {
+    const confirmed = await confirm();
+    if (confirmed) {
+      updatePreference('courses', {
+        ...coursesPrefs,
+        [route.params.uniqueShortcode]: {
+          ...coursePrefs,
+          color: hex,
+        },
+      });
+    }
+  };
 
-  const onColorChange = (color: { hex: string }) => {
+  const onSwatchColorChange = (color: { hex: string }) => {
     'worklet';
-    const { hex } = color;
+    runOnJS(handleColorWithConfirm)(color.hex);
+  };
 
+  const onCustomColorChange = (color: { hex: string }) => {
+    'worklet';
     runOnJS(updatePreference)('courses', {
       ...coursesPrefs,
       [route.params.uniqueShortcode]: {
         ...coursePrefs,
-        color: hex,
+        color: color.hex,
       },
     });
   };
@@ -52,16 +72,28 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
       <View style={{ paddingVertical: spacing[5] }}>
         <SectionHeader title={t('common.accessibleColor')} />
         <Section style={[{ backgroundColor: colors.surface }]}>
-          <ColorPicker value={coursePrefs?.color} onComplete={onColorChange}>
+          <ColorPicker
+            value={coursePrefs?.color}
+            onComplete={onSwatchColorChange}
+          >
+            {' '}
             <View style={styles.picker}>
-              <Swatches style={styles.swatches} />
+              <Swatches
+                style={styles.swatchesContainer}
+                swatchStyle={styles.swatchItem}
+                colors={courseColors.map(c => c.color)}
+              />
             </View>
           </ColorPicker>
         </Section>
         <SectionHeader title={t('common.customColorWarning')} />
 
         <Section style={[{ backgroundColor: colors.surface }]}>
-          <ColorPicker value={coursePrefs?.color} onComplete={onColorChange}>
+          <ColorPicker
+            value={coursePrefs?.color}
+            onComplete={onCustomColorChange}
+          >
+            {' '}
             <Panel1 style={styles.panel} />
             <HueSlider style={styles.slider} />
             <View style={styles.widget}>
@@ -97,10 +129,19 @@ const styles = StyleSheet.create({
     width: '95%',
     alignSelf: 'center',
   },
-  swatches: {
-    gap: 10,
-    padding: 5,
+  swatchesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 10,
   },
+  swatchItem: {
+    width: '12%',
+    aspectRatio: 1,
+    borderRadius: 9999,
+    marginBottom: 10,
+  },
+
   widget: {
     marginTop: 10,
     marginBottom: 10,
