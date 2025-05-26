@@ -33,6 +33,9 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   longProse: 'normal',
   secondaryText: 'normal',
 };
+export const calculateValueOfPercentage = (fontSize: number, size: number) => {
+  return (size * fontSize) / 100;
+};
 
 /**
  * A wrapper around RN's Text component that applies basic theme
@@ -56,10 +59,6 @@ export const Text = ({
   const { accessibility, updatePreference } = usePreferencesContext();
   const [styless, setStyless] = useState(styles);
   const wordSpacing = fontSizes.md * 0.16;
-
-  const calculateValueOfPercentage = (fontSize: number, size: number) => {
-    return (size * fontSize) / 100;
-  };
 
   const addWordSpacing = (text: string, space: number) => {
     if (variant === 'longProse') return text.split(' ').join(' '.repeat(space));

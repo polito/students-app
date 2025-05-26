@@ -11,7 +11,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 
 export interface PillIconButtonProps extends PillButtonProps {
-  icon: IconDefinition;
+  icon?: IconDefinition;
 }
 
 export const PillIconButton = ({
@@ -29,7 +29,7 @@ export const PillIconButton = ({
         : {})}
     >
       <Row align="center" gap={1.5}>
-        <Icon icon={icon} color="white" />
+        {icon && <Icon icon={icon} color="white" />}
         <Text
           style={[
             styles.text,
