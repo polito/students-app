@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { faFileLines } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { List } from '@lib/ui/components/List';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
@@ -53,13 +52,12 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
                 ))}
               </List>
             ) : (
-              <EmptyState
-                message={t('courseAssignmentsTab.emptyState')}
-                icon={faFileLines}
+              <OverviewList
+                emptyStateText={t('courseAssignmentsTab.emptyState')}
               />
             ))}
           {isCacheMissing && (
-            <EmptyState message={t('common.cacheMiss')} icon={faFileLines} />
+            <OverviewList emptyStateText={t('common.cacheMiss')} />
           )}
           <BottomBarSpacer />
         </SafeAreaView>

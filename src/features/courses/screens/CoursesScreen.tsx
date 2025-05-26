@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
@@ -71,10 +69,7 @@ export const CoursesScreen = () => {
               </Section>
             ))
           ) : (
-            <EmptyState
-              message={t('coursesScreen.emptyState')}
-              icon={faChalkboardTeacher}
-            />
+            <OverviewList emptyStateText={t('coursesScreen.emptyState')} />
           ))}
         <BottomBarSpacer />
       </SafeAreaView>

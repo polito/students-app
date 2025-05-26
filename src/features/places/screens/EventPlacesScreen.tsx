@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { faSignsPost } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -170,7 +171,10 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
               linkTo: { screen: 'Place', params: { placeId: place.id } },
             })) ?? [],
           ListEmptyComponent: (
-            <EmptyState message={t('placesScreen.noPlacesFound')} />
+            <EmptyState
+              message={t('placesScreen.noPlacesFound')}
+              icon={faSignsPost}
+            />
           ),
         }}
       />

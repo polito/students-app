@@ -640,7 +640,7 @@
   },
   "offeringScreen": {
     "bachelor": "Bachelor degree",
-    "emptyMessage": "No course available",
+    "emptyState": "No course available",
     "master": "Master degree",
     "title": "Offering"
   },

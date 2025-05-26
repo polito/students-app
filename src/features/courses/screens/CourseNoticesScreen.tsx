@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
-import { faInbox } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
@@ -85,13 +84,10 @@ export const CourseNoticesScreen = () => {
       ListEmptyComponent={() => {
         if (!noticesQuery.isLoading) {
           return (
-            <EmptyState
-              icon={faInbox}
-              message={t('courseNoticesTab.emptyState')}
-            />
+            <OverviewList emptyStateText={t('courseNoticesTab.emptyState')} />
           );
         } else if (isCacheMissing) {
-          return <EmptyState icon={faInbox} message={t('common.cacheMiss')} />;
+          return <OverviewList emptyStateText={t('common.cacheMiss')} />;
         }
         return null;
       }}
