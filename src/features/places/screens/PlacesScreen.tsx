@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -85,7 +85,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const headerHeight = useHeaderHeight();
   const [tabsHeight, setTabsHeight] = useState(46);
   const campus = useGetCurrentCampus();
-  const { placesSearched } = usePreferencesContext();
+  const { placesSearched, accessibility } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =
@@ -235,7 +235,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       bottomSheetPosition.value,
       [0.65 * screenHeight, 0.7 * screenHeight],
       [0, 1],
-      Extrapolate.CLAMP,
+      Extrapolation.CLAMP,
     );
 
     return {
@@ -264,7 +264,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   );
 
   const floorSelectorButton = (
-    <TranslucentCard>
+    <TranslucentCard
+      {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
+        ? { style: { height: 55 } }
+        : {})}
+    >
       <TouchableOpacity
         accessibilityLabel={t('placesScreen.changeFloor')}
         disabled={!!debouncedSearch && displayFloorId != null}
@@ -274,11 +278,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <Text
             ellipsizeMode="tail"
             numberOfLines={1}
-            style={{
+            
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 55, marginVertical: -20 } }
+              : {
               flexShrink: 1,
               flexGrow: 1,
               marginRight: 20,
-            }}
+            })}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>
@@ -387,7 +395,12 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
         <Row gap={3} align="stretch" justify="space-between">
-          <TranslucentCard>
+          <TranslucentCard
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 40 } }
+              : {})}
+          >
             <IconButton
               icon={faCrosshairs}
               style={styles.icon}
