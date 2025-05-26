@@ -1,35 +1,30 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import {
-  faCircle,
-  faEye,
-  faEyeSlash,
-} from '@fortawesome/free-regular-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
   faBell,
   faBroom,
   faCalendarDay,
   faChevronRight,
+  faEyeDropper,
   faFile,
+  faIcons,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
-import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { courseColors } from '../../../core/constants';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -39,8 +34,6 @@ import {
 } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { ColorWheelModal } from '../components/ColorWheelModal.tsx';
-import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -111,18 +104,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     () => coursesPrefs[uniqueShortcode],
     [uniqueShortcode, coursesPrefs],
   );
-  
-const [colorWheelVisible, setColorWheelVisible] = useState(false);
-
-  const handleCustomColor = (color: string) => {
-    updatePreference('courses', {
-      ...coursesPrefs,
-      [uniqueShortcode]: {
-        ...coursePrefs,
-        color,
-      },
-    });
-  };
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -135,52 +116,23 @@ const [colorWheelVisible, setColorWheelVisible] = useState(false);
             <Section>
               <SectionHeader title={t('common.visualization')} />
               <OverviewList loading={courseQuery.isLoading} indented>
-                <StatefulMenuView
-                  actions={courseColors.map(cc => {
-                    return {
-                      id: cc.color,
-                      title: t(cc.name),
-                      image: Platform.select({
-                        ios: 'circle.fill',
-                        android: 'circle',
-                      }),
-                      imageColor: cc.color,
-                      state: cc.color === coursePrefs?.color ? 'on' : undefined,
-                    };
-                  })}
-                  onPressAction={({ nativeEvent: { event: color } }) => {
-                    updatePreference('courses', {
-                      ...coursesPrefs,
-                      [uniqueShortcode]: {
-                        ...coursePrefs,
-                        color,
-                      },
-                    });
-                  }}
-                >
-                  <ListItem
-                    title={t('common.color')}
-                    isAction
-                    leadingItem={<CourseIcon color={coursePrefs?.color} />}
-                  />
-                </StatefulMenuView>
                 <ListItem
-                  title={t('common.customColor')}
-                  subtitle={t('common.customColorSubtitle')}
+                  title={t('common.color')}
+                  subtitle={t('coursePreferencesScreen.colorSubtitle')}
                   isAction
-                  onPress={() => setColorWheelVisible(true)}
-                  leadingItem={
-                    <Icon icon={faPalette} size={fontSizes['2xl']} />
+                  onPress={() =>
+                    navigation.navigate('CourseColorPicker', {
+                      courseId,
+                      uniqueShortcode,
+                    })
                   }
-                />
-                <ColorWheelModal
-                  visible={colorWheelVisible}
-                  onClose={() => setColorWheelVisible(false)}
-                  onColorSelected={handleCustomColor}
-                  initialColor={coursePrefs?.color}
+                  leadingItem={
+                    <Icon icon={faEyeDropper} size={fontSizes['2xl']} />
+                  }
                 />
                 <ListItem
                   title={t('common.icon')}
+                  subtitle={t('coursePreferencesScreen.iconSubtitle')}
                   isAction
                   onPress={() =>
                     navigation.navigate('CourseIconPicker', {
@@ -193,7 +145,7 @@ const [colorWheelVisible, setColorWheelVisible] = useState(false);
                       icon={
                         coursePrefs.icon && coursePrefs.icon in courseIcons
                           ? courseIcons[coursePrefs.icon]
-                          : faCircle
+                          : faIcons
                       }
                       size={fontSizes['2xl']}
                     />

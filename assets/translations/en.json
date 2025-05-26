@@ -92,6 +92,7 @@
   },
   "common": {
     "accessibility": "Accessibility",
+    "accessibleColor": "Accessible colors",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -127,6 +128,7 @@
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
+    "customColorWarning": "Custom colors",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
     "dateToBeDefinedShort": "To be defined",
@@ -320,6 +322,13 @@
     "emptyState": "There are no assignments here",
     "title": "Assignments"
   },
+  "courseColorPickerScreen": {
+    "title": "Pick a color",
+    "accessibleColor": "Accessible colors",
+    "customColorWarning": "Custom colors",
+    "areYouSureTitle": "Are you sure?",
+    "areYouSureMessage": "The selected color has not been tested for accessibility."
+  },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
     "subtitle_plural": "{{count}} files"
@@ -389,6 +398,8 @@
     "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
+    "colorSubtitle": "Choose a color for the course",
+    "iconSubtitle": "Choose a color for the course",
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
