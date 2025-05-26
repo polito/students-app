@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
@@ -29,7 +28,7 @@ type Props = NativeStackScreenProps<
 
 export const CourseColorPickerScreen = ({ route }: Props) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
 
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
@@ -37,7 +36,8 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     [route.params.uniqueShortcode, coursesPrefs],
   );
   const confirm = useConfirmationDialog({
-    title: t('common.areYouSureColorAccessibility?'),
+    title: t('courseColorPickerScreen.areYouSureTitle'),
+    message: t('courseColorPickerScreen.areYouSureMessage'),
   });
   const handleColorWithConfirm = async (hex: string) => {
     const confirmed = await confirm();
@@ -72,7 +72,7 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     <SafeAreaView>
       <View style={{ paddingVertical: spacing[5] }}>
         <Section>
-          <SectionHeader title={t('common.accessibleColor')} />
+          <SectionHeader title={t('courseColorPickerScreen.accessibleColor')} />
           <OverviewList indented>
             <ColorPicker
               value={coursePrefs?.color}
@@ -89,7 +89,9 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
           </OverviewList>
         </Section>
         <Section>
-          <SectionHeader title={t('common.customColorWarning')} />
+          <SectionHeader
+            title={t('courseColorPickerScreen.customColorWarning')}
+          />
           <OverviewList indented>
             <ColorPicker
               value={coursePrefs?.color}
