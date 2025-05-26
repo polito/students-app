@@ -274,7 +274,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         disabled={!!debouncedSearch && displayFloorId != null}
       >
         <Row ph={3} pv={2.5} gap={1} align="center">
-          <Icon icon={faElevator} />
+          {accessibility?.fontSize && Number(accessibility?.fontSize) < 150 && (
+            <Icon icon={faElevator} />
+          )}
           <Text
             {...(accessibility?.fontSize &&
             Number(accessibility?.fontSize) >= 150
@@ -322,13 +324,21 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           }) => setTabsHeight(height)}
         >
           <PillIconButton
-            icon={faClock}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faClock
+                : undefined
+            }
             onPress={() => navigation.navigate('FreeRooms')}
           >
             {t('freeRoomsScreen.title')}
           </PillIconButton>
           <PillIconButton
-            icon={faChalkboardTeacher}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faChalkboardTeacher
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -339,7 +349,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             {t('placeCategories.classrooms')}
           </PillIconButton>
           <PillIconButton
-            icon={faBookReader}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faBookReader
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -350,7 +364,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             {t('placeCategories.studyRooms')}
           </PillIconButton>
           <PillIconButton
-            icon={faBookOpen}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faBookOpen
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -374,7 +392,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <PillButton onPress={() => setCategoriesPanelOpen(true)}>
             <ThemeContext.Provider value={darkTheme}>
               <Row align="center" gap={2}>
-                <Icon icon={faEllipsis} />
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) < 150 && (
+                    <Icon icon={faEllipsis} />
+                  )}
                 <Text weight="medium">More</Text>
               </Row>
             </ThemeContext.Provider>
@@ -433,7 +454,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   align="center"
                   style={{ opacity: 0.6 }}
                 >
-                  <Icon icon={faElevator} />
+                  {accessibility?.fontSize &&
+                    Number(accessibility?.fontSize) < 150 && (
+                      <Icon icon={faElevator} />
+                    )}
+
                   <Text
                     style={{
                       fontSize: fontSizes['2xs'],
