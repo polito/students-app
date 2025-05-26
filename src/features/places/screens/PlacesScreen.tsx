@@ -90,7 +90,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const headerHeight = useHeaderHeight();
   const [tabsHeight, setTabsHeight] = useState(48);
   const campus = useGetCurrentCampus();
-  const { placesSearched } = usePreferencesContext();
+  const { placesSearched, accessibility } = usePreferencesContext();
   const { cameraRef } = useContext(MapNavigatorContext);
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =
     useContext(PlacesContext);
@@ -281,7 +281,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
   }, [campus]);
   const floorSelectorButton = (
-    <TranslucentCard>
+    <TranslucentCard
+      {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
+        ? { style: { height: 55 } }
+        : {})}
+    >
       <TouchableOpacity
         accessibilityLabel={t('placesScreen.changeFloor')}
         disabled={!!debouncedSearch && displayFloorId != null}
@@ -291,11 +295,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <Text
             ellipsizeMode="tail"
             numberOfLines={1}
-            style={{
-              flexShrink: 1,
-              flexGrow: 1,
-              marginRight: 20,
-            }}
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 55, marginVertical: -20 } }
+              : {
+                  flexShrink: 1,
+                  flexGrow: 1,
+                  marginRight: 20,
+                })}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>
@@ -404,7 +411,12 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
         <Row gap={3} align="stretch" justify="space-between">
-          <TranslucentCard>
+          <TranslucentCard
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 40 } }
+              : {})}
+          >
             <IconButton
               icon={faCrosshairs}
               style={styles.icon}

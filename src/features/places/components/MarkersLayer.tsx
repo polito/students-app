@@ -43,7 +43,6 @@ export const MarkersLayer = ({
   const { dark, fontSizes, colors } = useTheme();
   const placeCategoriesMap = usePlaceCategoriesMap();
   const { accessibility } = usePreferencesContext();
-  // const [selectedId, setSelectedId] = useState<string>('');
 
   const pois = useMemo((): (SearchPlace &
     PlaceCategory & { siteId: string })[] => {
@@ -84,7 +83,7 @@ export const MarkersLayer = ({
           const dy = dLat * R;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          return distance > 200; // soglia minima in metri
+          return distance > 200;
         });
       }
     }
