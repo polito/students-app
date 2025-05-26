@@ -261,9 +261,17 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         accessibilityLabel={t('placesScreen.changeFloor')}
         disabled={!!debouncedSearch && displayFloorId != null}
       >
-        <Row ph={3} pv={2.5} gap={1} align="center">
+        <Row ph={3} pv={2.5} gap={1} align="center" flex={1}>
           <Icon icon={faElevator} />
-          <Text>{campus?.floors.find(f => f.id === floorId)?.name}</Text>
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            style={{
+              maxWidth: '80%',
+            }}
+          >
+            {campus?.floors.find(f => f.id === floorId)?.name}
+          </Text>
           <Icon icon={faChevronDown} size={fontSizes.xs} />
         </Row>
       </TouchableOpacity>
@@ -384,6 +392,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           {campus?.floors?.length ? (
             !debouncedSearch ? (
               <StatefulMenuView
+                style={{
+                  maxWidth: 200,
+                }}
                 onPressAction={({
                   nativeEvent: { event: selectedFloorId },
                 }) => {
