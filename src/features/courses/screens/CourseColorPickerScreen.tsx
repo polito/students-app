@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -70,33 +71,37 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
   return (
     <SafeAreaView>
       <View style={{ paddingVertical: spacing[5] }}>
-        <SectionHeader title={t('common.accessibleColor')} />
-        <Section style={[{ backgroundColor: colors.surface }]}>
-          <ColorPicker
-            value={coursePrefs?.color}
-            onComplete={onSwatchColorChange}
-          >
-            <View style={styles.picker}>
-              <Swatches
-                style={styles.swatchesContainer}
-                swatchStyle={styles.swatchItem}
-                colors={courseColors.map(c => c.color)}
-              />
-            </View>
-          </ColorPicker>
+        <Section>
+          <SectionHeader title={t('common.accessibleColor')} />
+          <OverviewList indented>
+            <ColorPicker
+              value={coursePrefs?.color}
+              onComplete={onSwatchColorChange}
+            >
+              <View style={styles.picker}>
+                <Swatches
+                  style={styles.swatchesContainer}
+                  swatchStyle={styles.swatchItem}
+                  colors={courseColors.map(c => c.color)}
+                />
+              </View>
+            </ColorPicker>
+          </OverviewList>
         </Section>
-        <SectionHeader title={t('common.customColorWarning')} />
-        <Section style={[{ backgroundColor: colors.surface }]}>
-          <ColorPicker
-            value={coursePrefs?.color}
-            onComplete={onCustomColorChange}
-          >
-            <Panel1 style={styles.panel} />
-            <HueSlider style={styles.slider} />
-            <View style={styles.widget}>
-              <InputWidget formats={['HEX']} />
-            </View>
-          </ColorPicker>
+        <Section>
+          <SectionHeader title={t('common.customColorWarning')} />
+          <OverviewList indented>
+            <ColorPicker
+              value={coursePrefs?.color}
+              onComplete={onCustomColorChange}
+            >
+              <Panel1 style={styles.panel} />
+              <HueSlider style={styles.slider} />
+              <View style={styles.widget}>
+                <InputWidget formats={['HEX']} />
+              </View>
+            </ColorPicker>
+          </OverviewList>
         </Section>
       </View>
     </SafeAreaView>
