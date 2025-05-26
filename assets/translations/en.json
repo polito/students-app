@@ -103,7 +103,6 @@
     "all": "All",
     "appFeedback": "App Feedback",
     "areYouSure?": "Are you sure?",
-    "areYouSureColorAccessibility": "Are you sure? The selected color has not been tested for accessibility",
     "back": "Back",
     "booking": "Booking",
     "booking_plural": "Bookings",
@@ -322,6 +321,13 @@
     "emptyState": "There are no assignments here",
     "title": "Assignments"
   },
+  "courseColorPickerScreen": {
+    "title": "Pick a color",
+    "accessibleColor": "Accessible colors",
+    "customColorWarning": "Custom colors",
+    "areYouSureTitle": "Are you sure?",
+    "areYouSureMessage": "The selected color has not been tested for accessibility."
+  },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
     "subtitle_plural": "{{count}} files"
@@ -389,6 +395,8 @@
     "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
+    "colorSubtitle": "Choose a color for the course",
+    "iconSubtitle": "Choose a color for the course",
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
