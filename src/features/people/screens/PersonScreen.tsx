@@ -34,6 +34,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { notNullish } from '../../../utils/predicates';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -49,6 +50,7 @@ export const PersonScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
   const { accessibilityListLabel } = useAccessibility();
+  const openInAppLink = useOpenInAppLink();
   const person = personQuery.data;
   const fullName = [person?.firstName, person?.lastName]
     .filter(notNullish)
@@ -105,7 +107,7 @@ export const PersonScreen = ({ route }: Props) => {
 
             {person?.profileUrl && (
               <TouchableOpacity
-                onPress={() => Linking.openURL(person.profileUrl)}
+                onPress={() => openInAppLink(person.profileUrl)}
                 accessible={true}
                 accessibilityRole="link"
               >
