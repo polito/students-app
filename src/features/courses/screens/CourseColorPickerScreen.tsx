@@ -28,7 +28,7 @@ type Props = NativeStackScreenProps<
 
 export const CourseColorPickerScreen = ({ route }: Props) => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
 
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(
