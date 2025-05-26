@@ -13,6 +13,7 @@ import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 import { formatNextLecture } from '../utils/formatters';
+import { LecturesApiExtended } from './lecturesApiExtended';
 
 export const LECTURES_QUERY_PREFIX = 'lectures';
 
@@ -136,34 +137,28 @@ export const useGetNextLecture = (
   courseId: number,
   coursesPreferences: CoursesPreferences,
 ) => {
-  const lectureClient = useLectureClient();
+  const lectureClient = new LecturesApiExtended();
   const { data: courses } = useGetCourses();
-  const [nextLectureQuery] = useQueries({
-    queries: [
-      {
-        queryKey: ['nextLecture', courseId],
-        queryFn: async () => {
-          const now = DateTime.now().setZone('Europe/Rome');
-          const fromDate = now.toJSDate();
-          const toDate = now.plus({ week: 3 }).toJSDate();
-          const lectures = await lectureClient
-            .getLectures({
-              fromDate,
-              toDate,
-              courseIds: [courseId],
-            })
-            .then(pluckData)
-            .then(l => addUniqueShortcodeToLectures(l, courses!));
-          if (lectures.length > 0) {
-            return formatNextLecture(lectures[0], coursesPreferences);
-          }
-          return undefined;
-        },
-        enabled: !!courseId,
-        staleTime: Infinity,
-      },
-    ],
-  });
+  const nextLectureQuery = useQuery(
+    ['nextLecture', courseId],
+    async () => {
+      if (!courseId) return undefined;
+      const response = await lectureClient.getNextLecture(courseId);
+      if (!response) return undefined;
+      let lecture = response as Lecture;
+      if (courses) {
+        const course = courses.find(c => c.id === lecture.courseId);
+        if (course) {
+          lecture = { ...lecture, uniqueShortcode: course.uniqueShortcode };
+        }
+      }
+      return formatNextLecture(lecture, coursesPreferences);
+    },
+    {
+      enabled: !!courseId,
+      staleTime: Infinity,
+    },
+  );
 
   const nextLecture = nextLectureQuery.data;
   const { dayOfMonth, weekDay, monthOfYear } = useMemo(() => {
