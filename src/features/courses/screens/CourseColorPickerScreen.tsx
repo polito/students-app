@@ -51,12 +51,12 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     }
   };
 
-  const onSwatchColorChange = (color: { hex: string }) => {
+  const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
     runOnJS(handleColorWithConfirm)(color.hex);
   };
 
-  const onCustomColorChange = (color: { hex: string }) => {
+  const onSwatchColorChange = (color: { hex: string }) => {
     'worklet';
     runOnJS(updatePreference)('courses', {
       ...coursesPrefs,
@@ -76,7 +76,6 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
             value={coursePrefs?.color}
             onComplete={onSwatchColorChange}
           >
-            {' '}
             <View style={styles.picker}>
               <Swatches
                 style={styles.swatchesContainer}
@@ -87,13 +86,11 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
           </ColorPicker>
         </Section>
         <SectionHeader title={t('common.customColorWarning')} />
-
         <Section style={[{ backgroundColor: colors.surface }]}>
           <ColorPicker
             value={coursePrefs?.color}
             onComplete={onCustomColorChange}
           >
-            {' '}
             <Panel1 style={styles.panel} />
             <HueSlider style={styles.slider} />
             <View style={styles.widget}>
