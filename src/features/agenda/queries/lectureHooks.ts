@@ -1,19 +1,22 @@
 import { useMemo } from 'react';
 
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
+import { ResponseError } from '@polito/api-client/runtime';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { DateTime, IANAZone } from 'luxon';
 
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
-import { useGetCourses } from '../../../core/queries/courseHooks';
+import {
+  useCoursesClient,
+  useGetCourses,
+} from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { isCurrentMonth } from '../../../utils/dates';
 import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 import { formatNextLecture } from '../utils/formatters';
-import { LecturesApiExtended } from './lecturesApiExtended';
 
 export const LECTURES_QUERY_PREFIX = 'lectures';
 
@@ -137,22 +140,29 @@ export const useGetNextLecture = (
   courseId: number,
   coursesPreferences: CoursesPreferences,
 ) => {
-  const lectureClient = new LecturesApiExtended();
+  const coursesClient = useCoursesClient();
   const { data: courses } = useGetCourses();
   const nextLectureQuery = useQuery(
     ['nextLecture', courseId],
     async () => {
       if (!courseId) return undefined;
-      const response = await lectureClient.getNextLecture(courseId);
-      if (!response) return undefined;
-      let lecture = response as Lecture;
-      if (courses) {
-        const course = courses.find(c => c.id === lecture.courseId);
-        if (course) {
-          lecture = { ...lecture, uniqueShortcode: course.uniqueShortcode };
+      try {
+        const response = await coursesClient.getNextLecture({ courseId });
+        if (!response?.data) return undefined;
+        let lecture = response.data as Lecture;
+        if (courses) {
+          const course = courses.find(c => c.id === lecture.courseId);
+          if (course) {
+            lecture = { ...lecture, uniqueShortcode: course.uniqueShortcode };
+          }
         }
+        return formatNextLecture(lecture, coursesPreferences);
+      } catch (e) {
+        if (e instanceof ResponseError && e.response.status === 404) {
+          return undefined;
+        }
+        throw e;
       }
-      return formatNextLecture(lecture, coursesPreferences);
     },
     {
       enabled: !!courseId,
