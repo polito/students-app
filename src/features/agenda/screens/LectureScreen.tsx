@@ -179,6 +179,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             isRecordedVC(playingVC[0]) && (
               <VideoPlayer
                 source={{ uri: playingVC[0]?.videoUrl }}
+                toggleFullScreen={toggleFullScreen}
                 poster={playingVC[0]?.coverUrl ?? undefined}
               />
             )}

@@ -17,7 +17,6 @@ import { useNavigation } from '@react-navigation/native';
 import { throttle } from 'lodash';
 
 import { negate } from '../../utils/predicates';
-import { displayTabBar } from '../../utils/tab-bar';
 import { useFullscreenUi } from '../hooks/useFullscreenUi';
 import { VideoControls } from './VideoControls';
 import { VideoProps } from './VideoPlayer';
@@ -34,7 +33,6 @@ export const VideoPlayer = (props: VideoProps) => {
   const [width, setWidth] = useState(Dimensions.get('screen').width);
   const [height, setHeight] = useState(Dimensions.get('screen').height);
   const styles = useStylesheet(createStyles);
-  const navigation = useNavigation();
   const playerRef = useRef<VideoRef>(null);
   // If there is a single video paused is initialized to false
   const [paused, setPaused] = useState(props.currentIndex !== props.index);
@@ -44,24 +42,21 @@ export const VideoPlayer = (props: VideoProps) => {
   const [buffering, setBuffering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const { addListener } = useNavigation();
   const { toggleFullScreen } = props;
   useFullscreenUi(fullscreen);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('blur', () => {
+    return addListener('blur', () => {
       setPaused(true);
     });
-
-    return unsubscribe;
-  }, [navigation]);
+  }, [addListener]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', _ => {
+    return addListener('beforeRemove', _ => {
       SystemNavigationBar.fullScreen(false);
     });
-
-    return unsubscribe;
-  }, [navigation]);
+  }, [addListener]);
 
   useEffect(() => {
     setPaused(props.currentIndex !== props.index);
@@ -90,11 +85,6 @@ export const VideoPlayer = (props: VideoProps) => {
   const handleLoad = (meta: OnLoadData) => {
     setDuration(meta.duration);
   };
-
-  useEffect(() => {
-    const navRoot = navigation.getParent()!;
-    return () => displayTabBar(navRoot);
-  }, [navigation]);
 
   const togglePlaybackRate = () => {
     const actualRateIndex = playbackRates.findIndex(
