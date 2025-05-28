@@ -125,16 +125,12 @@ export const VideoControls = ({
     }
   }, [paused, buffering, sliding]);
 
-  // TODO
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const reverse10Secs = () => {
     let newTime = currentTime.minus({ second: 10 }).toSeconds();
     newTime = Math.max(newTime, 0);
     onProgressChange(newTime / duration);
   };
 
-  // TODO
-  // eslint-disable-next-line unused-imports/no-unused-vars
   const advance10Secs = () => {
     let newTime = currentTime.plus({ second: 10 }).toSeconds();
     newTime = Math.min(newTime, duration);
