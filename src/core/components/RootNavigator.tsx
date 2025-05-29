@@ -74,7 +74,7 @@ export const RootNavigator = ({
   }, [campus, sites?.data, student, updatePreference]);
 
   useEffect(() => {
-    if (accessibility?.fontSize && accessibility.fontSize > 125) {
+    if (accessibility?.fontSize && Number(accessibility.fontSize) > 125) {
       setStyless({
         fontSize: 0,
       } as any);
@@ -94,6 +94,10 @@ export const RootNavigator = ({
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
+        tabBarShowLabel:
+          accessibility?.fontSize && Number(accessibility.fontSize) > 125
+            ? false
+            : true,
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarVisibilityAnimationConfig: {
