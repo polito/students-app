@@ -1,19 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import {
-  faCircle,
-  faEye,
-  faEyeSlash,
-} from '@fortawesome/free-regular-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
   faBell,
   faBroom,
   faCalendarDay,
   faChevronRight,
+  faCircle,
   faFile,
+  faIcons,
   faVideoCamera,
   faIcons,
 } from '@fortawesome/free-solid-svg-icons';
@@ -37,7 +35,6 @@ import {
 } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -104,10 +101,12 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
   const { mutate: updateCoursePreferences } =
     useUpdateCoursePreferences(courseId);
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
+
   const coursePrefs = useMemo(
     () => coursesPrefs[uniqueShortcode],
     [uniqueShortcode, coursesPrefs],
   );
+  const selectedColor = coursePrefs?.color;
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -132,12 +131,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   }
                   leadingItem={
                     <Icon
-                      icon={
-                        coursePrefs.icon && coursePrefs.icon in courseIcons
-                          ? courseIcons[coursePrefs.icon]
-                          : faCircle
-                      }
+                      icon={faCircle}
                       size={fontSizes['2xl']}
+                      color={selectedColor}
                     />
                   }
                 />
