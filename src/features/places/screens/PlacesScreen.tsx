@@ -299,7 +299,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             numberOfLines={1}
             {...(accessibility?.fontSize &&
             Number(accessibility?.fontSize) >= 150
-              ? { style: { height: 55, marginVertical: -20 } }
+              ? { style: { height: 75, marginVertical: -20, maxWidth: 250 } }
               : {
                   flexShrink: 1,
                   flexGrow: 1,
@@ -440,6 +440,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           >
             <IconButton
               icon={faCrosshairs}
+              size={spacing[6]}
               style={styles.icon}
               accessibilityLabel={t('placesScreen.goToMyPosition')}
               onPress={centerToUserLocation}
@@ -447,6 +448,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             <Divider style={styles.divider} size={1} />
             <IconButton
               icon={faExpand}
+              size={spacing[6]}
               style={styles.icon}
               accessibilityLabel={t('placesScreen.viewWholeCampus')}
               onPress={centerToCurrentCampus}
@@ -563,5 +565,6 @@ const createStyles = ({ spacing }: Theme) =>
     icon: {
       alignItems: 'center',
       paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
     },
   });
