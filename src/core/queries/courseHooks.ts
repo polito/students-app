@@ -38,7 +38,7 @@ import { useGetExams } from './examHooks';
 export const COURSES_QUERY_KEY = ['courses'];
 export const COURSE_QUERY_PREFIX = 'course';
 
-const useCoursesClient = (): CoursesApi => {
+export const useCoursesClient = (): CoursesApi => {
   return new CoursesApi();
 };
 

@@ -37,6 +37,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
@@ -48,6 +49,8 @@ import {
 } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { LectureCard } from '../../agenda/components/LectureCard';
+import { useGetNextLecture } from '../../agenda/queries/lectureHooks';
 import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { useCourseContext } from '../contexts/CourseContext';
@@ -64,6 +67,14 @@ export const CourseInfoScreen = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
+  const { courses: coursesPreferences } = usePreferencesContext();
+  const {
+    nextLecture,
+    dayOfMonth,
+    weekDay,
+    monthOfYear,
+    isLoadingNextLecture,
+  } = useGetNextLecture(courseId, coursesPreferences);
   const courseExamsQuery = useGetCourseExams(
     courseId,
     courseQuery.data?.shortcode,
@@ -215,10 +226,51 @@ export const CourseInfoScreen = () => {
             />
           </Grid>
         </Card>
-        {/*  <Section>
-          <SectionHeader title={t('courseInfoTab.agendaSectionTitle')} />
-          <OverviewList emptyStateText={t('common.comingSoon')}></OverviewList>
-        </Section>*/}
+        <Section>
+          <SectionHeader title={t('courseInfoTab.nextLectureLabel')} />
+          <OverviewList
+            indented
+            loading={isLoadingNextLecture}
+            emptyStateText={
+              isOffline && isLoadingNextLecture
+                ? t('common.cacheMiss')
+                : t('courseInfoTab.nextLectureEmptyState')
+            }
+          >
+            {nextLecture && (
+              <Row style={styles.nextLectureBox}>
+                <Col style={styles.dayColumn} align="stretch">
+                  <View style={[styles.dayBox, styles.nextLecBox]}>
+                    <Text
+                      variant="heading"
+                      style={[styles.nextLec, styles.secondaryDay]}
+                    >
+                      {weekDay}
+                    </Text>
+                    <Text variant="heading" style={styles.nextLec}>
+                      {dayOfMonth}
+                    </Text>
+                    {monthOfYear && (
+                      <Text variant="heading" style={styles.nextLec}>
+                        {monthOfYear}
+                      </Text>
+                    )}
+                  </View>
+                </Col>
+                <Col flex={1}>
+                  {nextLecture && (
+                    <LectureCard
+                      item={nextLecture}
+                      nextLecture
+                      nextDate={`${weekDay}/${dayOfMonth}/${monthOfYear}`}
+                    />
+                  )}
+                </Col>
+              </Row>
+            )}
+          </OverviewList>
+        </Section>
+
         <Section>
           <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
           <OverviewList
@@ -296,7 +348,13 @@ export const CourseInfoScreen = () => {
   );
 };
 
-const createStyles = ({ palettes, spacing }: Theme) =>
+const createStyles = ({
+  palettes,
+  spacing,
+  colors,
+  fontWeights,
+  shapes,
+}: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],
@@ -319,5 +377,33 @@ const createStyles = ({ palettes, spacing }: Theme) =>
     dotIcon: {
       marginBottom: spacing[2],
       color: palettes.rose['600'],
+    },
+    dayColumn: {
+      width: '15%',
+      maxWidth: 200,
+    },
+    secondaryDay: {
+      textTransform: 'capitalize',
+      fontWeight: fontWeights.medium,
+    },
+    dayBox: {
+      display: 'flex',
+      alignItems: 'center',
+      paddingVertical: spacing[2],
+    },
+    nextLecBox: {
+      display: 'flex',
+      backgroundColor: colors.heading,
+      borderRadius: shapes.lg,
+      marginLeft: spacing[1],
+      marginTop: spacing[2],
+    },
+    nextLec: {
+      color: colors.surface,
+    },
+    nextLectureBox: {
+      gap: spacing[4],
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[2],
     },
   });
