@@ -11,6 +11,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { AgendaIcon } from '../../../src/features/agenda/components/AgendaIcon';
 import { Card } from './Card';
 import { LiveIndicator } from './LiveIndicator';
@@ -84,7 +85,7 @@ export const AgendaCard = ({
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   const isTablet = useMemo(() => isTabletHelper(), []);
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
 
@@ -140,7 +141,16 @@ export const AgendaCard = ({
           {!isCompact && (
             <Row align="flex-end" justify="space-between" flexGrow={1}>
               <Row gap={2}>
-                <Text style={[styles.time, secondaryIfLecture]}>
+                <Text
+                  style={[
+                    styles.time,
+                    secondaryIfLecture,
+                    accessibility?.fontSize &&
+                    Number(accessibility?.fontSize) >= 150
+                      ? { marginTop: 30 }
+                      : undefined,
+                  ]}
+                >
                   {time && time}
                 </Text>
                 {!isCompact && live && <LiveIndicator showText />}
@@ -168,6 +178,10 @@ export const AgendaCard = ({
                   ? isTablet
                     ? styles.titleCompactTablet
                     : styles.titleCompact
+                  : undefined,
+                accessibility?.fontSize &&
+                Number(accessibility?.fontSize) >= 150
+                  ? { lineHeight: 30 }
                   : undefined,
               ]}
               numberOfLines={isCompact ? (isTablet ? 2 : 3) : undefined}

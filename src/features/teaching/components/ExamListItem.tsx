@@ -35,8 +35,9 @@ export const ExamListItem = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const { courses: coursesPreferences } = usePreferencesContext();
-  const { colors } = useTheme();
+  const { courses: coursesPreferences, accessibility } =
+    usePreferencesContext();
+  const { colors, spacing } = useTheme();
   const formatHHmm = dateFormatter('HH:mm');
   const listItemProps = useMemo(() => {
     let dateTime,
@@ -80,35 +81,75 @@ export const ExamListItem = ({
         />
       }
       trailingItem={
-        <Row align="center" pl={2}>
-          <ExamStatusBadge exam={exam} textOnly />
-          {IS_IOS ? <DisclosureIndicator /> : undefined}
-        </Row>
+        accessibility?.fontSize && accessibility.fontSize < 175 ? (
+          <Row align="center" pl={2}>
+            <ExamStatusBadge exam={exam} textOnly />
+            {IS_IOS ? <DisclosureIndicator /> : undefined}
+          </Row>
+        ) : undefined
       }
       subtitle={
-        <Row gap={2.5} pt={1}>
-          <Row gap={1}>
-            <Icon icon={faCalendar} color={colors.secondaryText} />
-            <Text variant="secondaryText">
-              {exam.examStartsAt && isValidDate(exam?.examStartsAt)
-                ? formatReadableDate(exam.examStartsAt, true)
-                : t('common.dateToBeDefinedShort')}
-            </Text>
-          </Row>
-          {(exam.places?.length ?? 0) > 0 && (
-            <Row gap={1} flexShrink={1}>
-              <Icon icon={faLocationDot} color={colors.secondaryText} />
-              <Text
-                variant="secondaryText"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={{ flexShrink: 1 }}
-              >
-                {exam.places?.map(place => place.name).join(', ')}
+        accessibility?.fontSize && accessibility.fontSize < 175 ? (
+          <Row gap={2.5} pt={1}>
+            <Row gap={1}>
+              <Icon icon={faCalendar} color={colors.secondaryText} />
+              <Text variant="secondaryText">
+                {exam.examStartsAt && isValidDate(exam?.examStartsAt)
+                  ? formatReadableDate(exam.examStartsAt, true)
+                  : t('common.dateToBeDefinedShort')}
               </Text>
             </Row>
-          )}
-        </Row>
+            {(exam.places?.length ?? 0) > 0 && (
+              <Row gap={1} flexShrink={1}>
+                <Icon icon={faLocationDot} color={colors.secondaryText} />
+                <Text
+                  variant="secondaryText"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={{ flexShrink: 1 }}
+                >
+                  {exam.places?.map(place => place.name).join(', ')}
+                </Text>
+              </Row>
+            )}
+          </Row>
+        ) : (
+          <>
+            <Row gap={1}>
+              <Icon
+                icon={faCalendar}
+                style={{ paddingVertical: spacing[8] }}
+                color={colors.secondaryText}
+              />
+              <Text variant="secondaryText">
+                {exam.examStartsAt && isValidDate(exam?.examStartsAt)
+                  ? formatReadableDate(exam.examStartsAt, true)
+                  : t('common.dateToBeDefinedShort')}
+              </Text>
+            </Row>
+            {(exam.places?.length ?? 0) > 0 && (
+              <Row gap={1} flexShrink={1}>
+                <Icon
+                  icon={faLocationDot}
+                  style={{ paddingVertical: spacing[8] }}
+                  color={colors.secondaryText}
+                />
+                <Text
+                  variant="secondaryText"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={{ flexShrink: 1 }}
+                >
+                  {exam.places?.map(place => place.name).join(', ')}
+                </Text>
+              </Row>
+            )}
+            <Row align="center" pl={2}>
+              <ExamStatusBadge exam={exam} textOnly />
+              {IS_IOS ? <DisclosureIndicator /> : undefined}
+            </Row>
+          </>
+        )
       }
       {...listItemProps}
       {...rest}
