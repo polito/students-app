@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { AccessibilityInfo, SafeAreaView, ScrollView } from 'react-native';
 
+import { faFile } from '@fortawesome/free-regular-svg-icons';
 import {
+  faBullhorn,
   faComments,
   faPersonCirclePlus,
+  faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
@@ -12,6 +15,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
+import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
