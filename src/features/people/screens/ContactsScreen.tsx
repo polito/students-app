@@ -49,7 +49,7 @@ export const ContactsScreen = () => {
         ].join(', '),
       );
     }
-  }, [people]);
+  }, [people, t]);
 
   return (
     <>
