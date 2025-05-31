@@ -269,11 +269,16 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             style={{
               flexShrink: 1,
               flexGrow: 1,
+              marginRight: 20,
             }}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>
-          <Icon icon={faChevronDown} size={fontSizes.xs} />
+          <Icon
+            icon={faChevronDown}
+            size={fontSizes.xs}
+            style={{ position: 'absolute', right: 15 }}
+          />
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
