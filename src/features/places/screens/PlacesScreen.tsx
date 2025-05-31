@@ -263,8 +263,22 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       >
         <Row ph={3} pv={2.5} gap={1} align="center">
           <Icon icon={faElevator} />
-          <Text>{campus?.floors.find(f => f.id === floorId)?.name}</Text>
-          <Icon icon={faChevronDown} size={fontSizes.xs} />
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            style={{
+              flexShrink: 1,
+              flexGrow: 1,
+              marginRight: 20,
+            }}
+          >
+            {campus?.floors.find(f => f.id === floorId)?.name}
+          </Text>
+          <Icon
+            icon={faChevronDown}
+            size={fontSizes.xs}
+            style={{ position: 'absolute', right: 15 }}
+          />
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
@@ -384,6 +398,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           {campus?.floors?.length ? (
             !debouncedSearch ? (
               <StatefulMenuView
+                style={{
+                  maxWidth: '60%',
+                }}
                 onPressAction={({
                   nativeEvent: { event: selectedFloorId },
                 }) => {
