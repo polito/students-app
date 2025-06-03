@@ -163,20 +163,10 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         ...prevStyles,
         text: {
           ...prevStyles.text,
-          lineHeight:
-            accessibility?.fontPlacement === 'long-text' &&
-            accessibility?.lineHeight
-              ? fontSizes.sm * 1.5
-              : undefined,
-          letterSpacing:
-            accessibility?.fontPlacement === 'long-text'
-              ? fontSizes.sm * 0.12
-              : undefined,
-          marginBottom:
-            accessibility?.fontPlacement === 'long-text' &&
-            accessibility?.paragraphSpacing
-              ? fontSizes.sm * 2
-              : 0,
+          lineHeight: accessibility?.lineHeight
+            ? fontSizes.sm * 1.5
+            : undefined,
+          marginBottom: accessibility?.paragraphSpacing ? fontSizes.sm * 2 : 0,
         },
       }));
     };

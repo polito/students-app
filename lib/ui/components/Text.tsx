@@ -65,13 +65,15 @@ export const Text = ({
 
   useEffect(() => {
     const getfontStyle = (fontSize: number) => {
-      if (accessibility?.fontPlacement === 'long-text')
+      if (variant === 'longProse')
         return {
-          lineHeight: accessibility?.lineHeight ? fontSize * 1.5 : undefined,
-          letterSpacing: accessibility?.letterSpacing
-            ? fontSize * 0.12
-            : undefined,
-          marginBottom: accessibility?.paragraphSpacing ? fontSize * 2 : 0,
+          ...(accessibility?.lineHeight ? { lineHeight: fontSize * 1.5 } : {}),
+          ...(accessibility?.letterSpacing
+            ? { letterSpacing: fontSize * 0.12 }
+            : {}),
+          ...(accessibility?.paragraphSpacing
+            ? { marginBottom: fontSize * 2 }
+            : {}),
         };
     };
     const changeStyle = () => {
@@ -111,7 +113,7 @@ export const Text = ({
       } as any);
     };
     changeStyle();
-  }, [accessibility, fontSizes]);
+  }, [accessibility, fontSizes, variant]);
   return (
     <RNText
       style={[
@@ -131,7 +133,7 @@ export const Text = ({
       {...rest}
     >
       {typeof children === 'string' &&
-      accessibility?.fontPlacement === 'long-text' &&
+      variant === 'longProse' &&
       accessibility?.wordSpacing
         ? addWordSpacing(children, wordSpacing)
         : children}

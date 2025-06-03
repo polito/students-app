@@ -14,6 +14,7 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 export const AccessibilitySettingsScreen = () => {
   const { t } = useTranslation();
   const { accessibility, updatePreference } = usePreferencesContext();
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -31,15 +32,10 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={
-                  (accessibility?.lineHeight &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.lineHeight ?? false}
                 onChange={value => {
-                  return updatePreference('accessibility', {
+                  updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     lineHeight: value,
                   });
                 }}
@@ -55,15 +51,10 @@ export const AccessibilitySettingsScreen = () => {
                         : t('common.more'),
                   },
                 )}
-                value={
-                  (accessibility?.paragraphSpacing &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.paragraphSpacing ?? false}
                 onChange={value => {
-                  return updatePreference('accessibility', {
+                  updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     paragraphSpacing: value,
                   });
                 }}
@@ -76,15 +67,10 @@ export const AccessibilitySettingsScreen = () => {
                       ? t('common.less')
                       : t('common.more'),
                 })}
-                value={
-                  (accessibility?.wordSpacing &&
-                    accessibility?.fontPlacement === 'long-text') ??
-                  false
-                }
+                value={accessibility?.wordSpacing ?? false}
                 onChange={value => {
-                  return updatePreference('accessibility', {
+                  updatePreference('accessibility', {
                     ...accessibility,
-                    fontPlacement: 'long-text',
                     wordSpacing: value,
                   });
                 }}
