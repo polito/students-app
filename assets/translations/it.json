@@ -656,7 +656,7 @@
   },
   "offeringScreen": {
     "bachelor": "Laurea triennale",
-    "emptyMessage": "Nessun corso disponibile",
+    "emptyState": "Nessun corso disponibile",
     "master": "Laurea magistrale",
     "title": "Offerta formativa"
   },

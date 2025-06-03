@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faClipboardQuestion } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
@@ -46,12 +44,9 @@ export const SurveysScreen = (_: Props) => {
               ))}
             </OverviewList>
           ) : (
-            <OverviewList>
-              <EmptyState
-                message={t('surveysScreen.toBeCompiledEmptyState')}
-                icon={faClipboardQuestion}
-              />
-            </OverviewList>
+            <OverviewList
+              emptyStateText={t('surveysScreen.toBeCompiledEmptyState')}
+            />
           ))}
       </Section>
     );
@@ -91,12 +86,9 @@ export const SurveysScreen = (_: Props) => {
               ))}
             </OverviewList>
           ) : (
-            <OverviewList>
-              <EmptyState
-                message={t('surveysScreen.compiledEmptyState')}
-                icon={faClipboardQuestion}
-              />
-            </OverviewList>
+            <OverviewList
+              emptyStateText={t('surveysScreen.compiledEmptyState')}
+            />
           ))}
       </Section>
     );

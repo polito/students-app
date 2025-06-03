@@ -14,7 +14,6 @@ import { Document } from 'react-native-render-html';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -125,45 +124,43 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
               />
             </Row>
           </OverviewList>
-          {hasSearchedOnce && (
-            <OverviewList indented>
-              {ticketFaqs.length > 0
-                ? ticketFaqs.map((faq, index) => {
-                    const dom = parseDocument(
-                      faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-                    ) as Document;
-                    const title = innerText(dom.children as any[]);
-                    const accessibilityLabel = [
-                      accessibilityListLabel(index, ticketFaqs?.length || 0),
-                      title,
-                    ].join(', ');
-                    return (
-                      <ListItem
-                        accessibilityLabel={accessibilityLabel}
-                        key={faq.id}
-                        leadingItem={
-                          <Icon
-                            icon={faQuestionCircle}
-                            size={fontSizes['2xl']}
-                          />
-                        }
-                        linkTo={{
-                          screen: 'TicketFaq',
-                          params: { faq },
-                        }}
-                        title={<Text numberOfLines={3}>{title}</Text>}
-                        accessibilityRole="button"
-                      />
-                    );
-                  })
-                : !ticketFaqsQuery.isFetching && (
-                    <EmptyState
-                      icon={faQuestionCircle}
-                      message={t('ticketFaqsScreen.emptyState')}
+          {hasSearchedOnce &&
+            (ticketFaqs.length > 0 ? (
+              <OverviewList indented>
+                {ticketFaqs.map((faq, index) => {
+                  const dom = parseDocument(
+                    faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+                  ) as Document;
+                  const title = innerText(dom.children as any[]);
+                  const accessibilityLabel = [
+                    accessibilityListLabel(index, ticketFaqs?.length || 0),
+                    title,
+                  ].join(', ');
+                  return (
+                    <ListItem
+                      accessibilityLabel={accessibilityLabel}
+                      key={faq.id}
+                      leadingItem={
+                        <Icon icon={faQuestionCircle} size={fontSizes['2xl']} />
+                      }
+                      linkTo={{
+                        screen: 'TicketFaq',
+                        params: { faq },
+                      }}
+                      title={<Text numberOfLines={3}>{title}</Text>}
+                      accessibilityRole="button"
                     />
-                  )}
-            </OverviewList>
-          )}
+                  );
+                })}
+              </OverviewList>
+            ) : (
+              !ticketFaqsQuery.isFetching && (
+                <OverviewList
+                  indented
+                  emptyStateText={t('ticketFaqsScreen.emptyState')}
+                />
+              )
+            ))}
         </Section>
 
         {hasSearchedOnce && !ticketFaqsQuery.isFetching && (

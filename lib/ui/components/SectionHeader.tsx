@@ -99,8 +99,7 @@ export const SectionHeader = ({
           )}
         </View>
         {trailingItem && trailingItem}
-
-        {linkTo && (
+        {linkTo && linkToMoreCount != null && linkToMoreCount > 0 && (
           <Link to={linkTo} accessible={true} accessibilityRole="button">
             <Text variant="link">
               {t('sectionHeader.cta')}

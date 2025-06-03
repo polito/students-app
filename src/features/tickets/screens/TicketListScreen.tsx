@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { TicketStatus } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -46,7 +46,7 @@ export const TicketListScreen = ({ route }: Props) => {
   useScreenTitle(labels.title);
 
   if (!ticketsQuery.isLoading && !tickets.length) {
-    return <EmptyState message={labels.emptyState} />;
+    return <OverviewList emptyStateText={labels.emptyState} />;
   }
 
   return (
@@ -60,6 +60,7 @@ export const TicketListScreen = ({ route }: Props) => {
         ios: IndentedDivider,
       })}
       ListFooterComponent={<BottomBarSpacer />}
+      ListEmptyComponent={<OverviewList emptyStateText={labels.emptyState} />}
     />
   );
 };
