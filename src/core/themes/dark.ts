@@ -23,7 +23,7 @@ export const darkTheme: Theme = {
     longProse: lightTheme.palettes.text[50],
     secondaryText: lightTheme.palettes.text[400],
     caption: lightTheme.palettes.text[500],
-    link: lightTheme.palettes.primary[400],
+    link: lightTheme.palettes.primary[300],
     translucentSurface: Platform.select({
       android: 'rgba(255, 255, 255, .1)',
       ios: 'rgba(0, 0, 0, .1)',
