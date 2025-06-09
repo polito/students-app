@@ -27,6 +27,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
@@ -60,7 +61,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
-
+  const { accessibility } = usePreferencesContext();
   const {
     open: showBottomModal,
     modal: bottomModal,
@@ -148,8 +149,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 >
                   {exam?.type}
                 </Text>
-                {exam?.status && <ExamStatusBadge exam={exam} />}
+                {exam?.status && Number(accessibility?.fontSize) < 150 && (
+                  <ExamStatusBadge exam={exam} />
+                )}
               </Row>
+              {exam?.status && Number(accessibility?.fontSize) >= 150 && (
+                <ExamStatusBadge exam={exam} />
+              )}
               <ScreenDateTime
                 accessible={true}
                 date={

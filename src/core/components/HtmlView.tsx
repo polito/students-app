@@ -188,9 +188,11 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
+  const { accessibility } = usePreferencesContext();
 
   const processedSource =
-    variant === 'longProse'
+    variant === 'longProse' ||
+    (variant === 'cta' && Number(accessibility?.fontSize) >= 150)
       ? {
           ...props.source,
           html:
