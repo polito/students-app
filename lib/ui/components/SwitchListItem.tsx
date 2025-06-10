@@ -3,6 +3,8 @@ import { Switch } from '@lib/ui/components/Switch';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+
 interface Props extends ListItemProps {
   title: string;
   value?: boolean;
@@ -17,7 +19,7 @@ export const SwitchListItem = ({
   ...rest
 }: Props) => {
   const { fontSizes } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   return (
     <ListItem
       title={
@@ -48,6 +50,11 @@ export const SwitchListItem = ({
       }
       disabled={disabled}
       {...rest}
+      subtitle={
+        accessibility?.fontSize && accessibility?.fontSize > 125
+          ? undefined
+          : rest.subtitle
+      }
     />
   );
 };

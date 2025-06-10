@@ -8,7 +8,7 @@ import RenderHTML, {
 } from 'react-native-render-html';
 
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
-import { Text } from '@lib/ui/components/Text';
+import { Text, calculateValueOfPercentage } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -75,9 +75,23 @@ export const CustomTextRenderer = (props: InternalRendererProps<any>) => {
 
   const dynamicStyle = {
     fontSize: fontSizes.md,
-    ...(accessibility?.letterSpacing && { letterSpacing: fontSizes.md * 0.12 }),
-    ...(accessibility?.lineHeight && { lineHeight: fontSizes.md * 1.5 }),
-    ...(accessibility?.paragraphSpacing && { marginBottom: fontSizes.md * 2 }),
+    ...(accessibility?.letterSpacing &&
+      accessibility.fontSize && {
+        letterSpacing:
+          calculateValueOfPercentage(accessibility.fontSize, fontSizes.md) *
+          0.12,
+      }),
+    ...(accessibility?.lineHeight &&
+      accessibility.fontSize && {
+        lineHeight:
+          calculateValueOfPercentage(accessibility.fontSize, fontSizes.md) *
+          1.5,
+      }),
+    ...(accessibility?.paragraphSpacing &&
+      accessibility.fontSize && {
+        marginBottom:
+          calculateValueOfPercentage(accessibility.fontSize, fontSizes.md) * 2,
+      }),
   };
 
   return (
@@ -174,9 +188,11 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
+  const { accessibility } = usePreferencesContext();
 
   const processedSource =
-    variant === 'longProse'
+    variant === 'longProse' ||
+    (variant === 'cta' && Number(accessibility?.fontSize) >= 150)
       ? {
           ...props.source,
           html:

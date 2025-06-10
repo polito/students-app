@@ -33,6 +33,9 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   longProse: 'normal',
   secondaryText: 'normal',
 };
+export const calculateValueOfPercentage = (fontSize: number, size: number) => {
+  return (size * fontSize) / 100;
+};
 
 /**
  * A wrapper around RN's Text component that applies basic theme
@@ -48,72 +51,105 @@ export const Text = ({
   children,
   ...rest
 }: Props) => {
-  const { colors, fontFamilies, fontWeights, fontSizes } = useTheme();
+  const { colors, fontFamilies, fontWeights, fontSizes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
-  const { accessibility } = usePreferencesContext();
+  const { accessibility, updatePreference } = usePreferencesContext();
   const [styless, setStyless] = useState(styles);
   const wordSpacing = fontSizes.md * 0.16;
 
-  const addWordSpacing = (text: string, spacing: number) => {
-    if (variant === 'longProse')
-      return text.split(' ').join(' '.repeat(spacing));
+  const addWordSpacing = (text: string, space: number) => {
+    if (variant === 'longProse') return text.split(' ').join(' '.repeat(space));
     else return text;
   };
 
   useEffect(() => {
-    const getfontStyle = (fontSize: number) => {
+    if (accessibility?.fontSize === undefined)
+      updatePreference('accessibility', {
+        ...accessibility,
+        fontSize: accessibility?.fontSize ?? 100,
+      });
+    const getfontStyle = () => {
       if (variant === 'longProse')
         return {
-          ...(accessibility?.lineHeight ? { lineHeight: fontSize * 1.5 } : {}),
-          ...(accessibility?.letterSpacing
-            ? { letterSpacing: fontSize * 0.12 }
+          ...(accessibility?.fontSize && accessibility.fontSize > 100
+            ? {
+                fontSize: calculateValueOfPercentage(
+                  accessibility.fontSize,
+                  fontSizes.md,
+                ),
+              }
+            : { fontSize: fontSizes.md }),
+          ...(accessibility?.fontSize && accessibility?.lineHeight
+            ? {
+                lineHeight:
+                  calculateValueOfPercentage(
+                    accessibility.fontSize,
+                    fontSizes.md,
+                  ) * 1.5,
+              }
             : {}),
-          ...(accessibility?.paragraphSpacing
-            ? { marginBottom: fontSize * 2 }
+          ...(accessibility?.paragraphSpacing && accessibility.fontSize
+            ? {
+                marginBottom:
+                  calculateValueOfPercentage(
+                    accessibility.fontSize,
+                    fontSizes.md,
+                  ) * 2,
+              }
             : {}),
         };
     };
     const changeStyle = () => {
       setStyless({
         heading: {
-          fontSize: fontSizes.md,
-          // ...getfontStyle(fontSizes.md),
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.md,
+          ),
         },
         subHeading: {
-          fontSize: fontSizes.md,
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.md,
+          ),
           textTransform: 'uppercase',
-          // ...getfontStyle(fontSizes.md),
         },
         title: {
-          fontSize: fontSizes.xl,
-          // ...getfontStyle(fontSizes.xl),
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.xl,
+          ),
         },
         headline: {
-          fontSize: fontSizes.md,
-          // ...getfontStyle(fontSizes.md),
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.md,
+          ),
         },
         caption: {
-          fontSize: fontSizes.sm,
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.sm,
+          ),
           textTransform: 'uppercase',
-          // ...getfontStyle(fontSizes.xl),
         },
         prose: {
-          fontSize: fontSizes.md,
-          // ...getfontStyle(fontSizes.md),
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.md,
+          ),
         },
         longProse: {
           fontSize: fontSizes.md,
-          ...getfontStyle(fontSizes.md),
+          ...getfontStyle(),
         },
-        secondaryText: {},
-        link: {},
       } as any);
     };
     changeStyle();
-  }, [accessibility, fontSizes, variant]);
+  }, [accessibility, fontSizes, variant, updatePreference]);
   return (
     <RNText
       style={[
@@ -129,6 +165,18 @@ export const Text = ({
         capitalize && { textTransform: 'capitalize' },
         uppercase && { textTransform: 'uppercase' },
         style,
+        {
+          fontSize: calculateValueOfPercentage(
+            accessibility?.fontSize ?? 100,
+            fontSizes.md,
+          ),
+        },
+        {
+          paddingTop:
+            accessibility?.fontSize && accessibility.fontSize <= 125
+              ? 0
+              : spacing[3.5],
+        },
       ]}
       {...rest}
     >

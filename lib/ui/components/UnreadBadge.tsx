@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextProps } from 'react-native';
 
@@ -10,6 +10,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { isNumber } from 'lodash';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { Text } from './Text';
 
 interface Props {
@@ -26,11 +27,24 @@ export const UnreadBadge = ({
   isNumeric = false,
 }: Props) => {
   const { t } = useTranslation();
-  const { colors, palettes } = useTheme();
+  const { colors, palettes, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const isOutlined = useMemo(() => variant === 'outlined', [variant]);
   const isDigit = isNumber(text);
+  const [styless, setStyless] = useState();
+  const { accessibility } = usePreferencesContext();
 
+  useEffect(() => {
+    const changeStyle = () => {
+      setStyless({
+        marginTop:
+          accessibility?.fontSize && accessibility.fontSize > 125
+            ? -spacing[3]
+            : 0,
+      } as any);
+    };
+    changeStyle();
+  }, [spacing, accessibility]);
   return (
     <Row
       ph={1}
@@ -59,6 +73,7 @@ export const UnreadBadge = ({
           style={[
             styles.badgeText,
             isOutlined && { color: palettes.orange[600] },
+            styless,
           ]}
         >
           {text}
@@ -73,8 +88,8 @@ export const UnreadBadge = ({
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights, shapes, palettes }: Theme) =>
-  StyleSheet.create({
+const createStyles = ({ fontSizes, fontWeights, shapes, palettes }: Theme) => {
+  return StyleSheet.create({
     badge: {
       borderRadius: shapes.xl,
       minWidth: 19,
@@ -97,3 +112,4 @@ const createStyles = ({ fontSizes, fontWeights, shapes, palettes }: Theme) =>
       textTransform: 'uppercase',
     },
   });
+};

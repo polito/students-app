@@ -21,6 +21,7 @@ import { shadeColor } from '@lib/ui/utils/colors';
 
 import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
 interface Props extends TouchableHighlightProps {
@@ -64,6 +65,7 @@ export const CtaButton = ({
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
+  const { accessibility } = usePreferencesContext();
 
   const outlined = variant === 'outlined';
 
@@ -139,6 +141,9 @@ export const CtaButton = ({
           },
           disabled && variant === 'filled' && styles.disabledButton,
           style,
+          ...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
+            ? [{ height: 120, paddingVertical: spacing[1] }]
+            : []),
         ]}
         accessibilityLabel={title}
         onPress={action}
