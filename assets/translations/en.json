@@ -128,7 +128,7 @@
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
-    "customColorWarning": "Custom colors",
+    "customColorTitle": "Custom colors",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
     "dateToBeDefinedShort": "To be defined",
@@ -322,11 +322,12 @@
     "title": "Assignments"
   },
   "courseColorPickerScreen": {
-    "title": "Pick a color",
     "accessibleColor": "Accessible colors",
-    "customColorWarning": "Custom colors",
+    "areYouSureMessage": "The selected color has not been tested for accessibility.",
     "areYouSureTitle": "Are you sure?",
-    "areYouSureMessage": "The selected color has not been tested for accessibility."
+    "customColorWarning": "Custom colors",
+    "dontShowAgain": "Don't show again",
+    "title": "Pick a color"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
