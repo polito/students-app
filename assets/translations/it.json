@@ -337,11 +337,12 @@
     "title": "Elaborati"
   },
   "courseColorPickerScreen": {
-    "title": "Seleziona un colore",
     "accessibleColor": "Colori accessibili",
-    "customColorWarning": "Colori a scelta",
+    "areYouSureMessage": "Il colore selezionato non è stato testato per accessibilità.",
     "areYouSureTitle": "Sei sicuro?",
-    "areYouSureMessage": "Il colore seelzionato non è stato testato per accessibilità."
+    "customColorTitle": "Colori a scelta",
+    "dontShowAgain": "Non mostrare più",
+    "title": "Seleziona un colore"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
