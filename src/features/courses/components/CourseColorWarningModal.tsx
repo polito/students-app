@@ -1,38 +1,47 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Modal, View, Text, Button, Switch } from 'react-native';
 
-const CustomAlert = () => {
-  const [visible, setVisible] = useState(true);
+type CustomAlertProps = {
+  visible: boolean;
+  onConfirm: (dontShowAgain: boolean) => void;
+  onCancel: () => void;
+  title?: string;
+  message?: string;
+  dontShowAgainLabel?: string;
+};
+
+const CustomAlert = ({
+                       visible,
+                       onConfirm,
+                       onCancel,
+                       title,
+                       message,
+                       dontShowAgainLabel,
+                     }: CustomAlertProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const handleOk = () => {
-    if (dontShowAgain) {
-      // Save to AsyncStorage or similar to not show again
-    }
-    setVisible(false);
+    onConfirm(dontShowAgain);
   };
 
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000aa' }}>
         <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-          <Text>
-            Do you want to proceed?
-          </Text>
+          <Text>{title}</Text>
+          <Text>{message}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
             <Switch value={dontShowAgain} onValueChange={setDontShowAgain} />
-          <Text style={{ marginLeft: 8 }}>
-            Don't show again
-          </Text>
+            <Text style={{ marginLeft: 8 }}>{dontShowAgainLabel}</Text>
           </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 20 }}>
-          <Button title="Cancel" onPress={() => setVisible(false)} />
-          <Button title="OK" onPress={handleOk} />
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 20 }}>
+            <Button title="Cancel" onPress={onCancel} />
+            <Button title="OK" onPress={handleOk} />
+          </View>
         </View>
       </View>
-      </View>
-  </Modal>
-);
+    </Modal>
+  );
 };
 
 export default CustomAlert;
