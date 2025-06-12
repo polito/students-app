@@ -1,4 +1,23 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontAction": "Pick a font",
+    "customFontPlacement": "Use it for",
+    "customFontSectionTitle": "Long-text spacing",
+    "customThemeSectionTitle": "Accessible theme",
+    "customFontSizeTitle": "Font size",
+    "customFontTitle": "Custom font",
+    "exampleText": "Sample text",
+    "fontSettingsTitle": "Text",
+    "greyscaleTitle": "Greyscale",
+    "highContrastTitle": "High contrast",
+    "lineHeightTitle": "Line height",
+    "lineHeightSubtitle": "Enhance vertical spacing between lines",
+    "paragraphSpacingTitle": "Paragraph spacing",
+    "paragraphSpacingSubtitle": "Add extra space between paragraphs",
+    "themeCustomizationTitle": "Theme customization",
+    "wordSpacingTitle": "Word spacing",
+    "wordSpacingSubtitle": "Increase distance between words"
+  },
   "agendaScreen": {
     "backToToday": "Back to today",
     "dailyLayout": "Daily layout",
@@ -72,6 +91,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "accessibility": "Accessibility",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -158,6 +178,8 @@
     "floor": "Floor",
     "follow": "Follow",
     "free": "Free",
+    "goToGithub": "Go to Github",
+    "goToStore": "Go to the store",
     "grade": "Grade",
     "hiddenEvents": "Hidden events",
     "hide": "Hide",
@@ -171,15 +193,19 @@
     "language": "Language",
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
+    "less": "Less",
     "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
+    "more": "More",
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
+    "newVersionTitle": "New version available!",
+    "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it to access all the new features and avoid malfunctions.",
     "next": "Next",
     "noInternet": "You are offline, some features may not be available",
     "noValue": "No value",
@@ -252,7 +278,8 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "year": "year",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "sizeExc": "Excessive file size, maximum 32 MB"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -478,7 +505,7 @@
     "requestDetailsTitle": "What dates would you recommend to the coordinator?",
     "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
     "requestReason": "Enter your reasons for requesting a change of exam call date here",
-    "requestReasonTitle": "You can ask the college coordinator if you can change the date of your exam call",
+    "requestReasonTitle": "You can ask the course holder if you can change the date of your exam call",
     "screenTitle": "Exam call date change"
   },
   "examScreen": {
@@ -582,7 +609,7 @@
     "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messagingView": {
-    "pickFile": "Pick file",
+    "pickFile": "Pick file max 32MB",
     "pickFileHint": "From your device or from the cloud",
     "pickPhoto": "Pick image",
     "pickPhotoHint": "From your library",
@@ -615,7 +642,7 @@
   },
   "offeringScreen": {
     "bachelor": "Bachelor degree",
-    "emptyMessage": "No course available",
+    "emptyState": "No course available",
     "master": "Master degree",
     "title": "Offering"
   },

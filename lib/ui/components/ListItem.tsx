@@ -116,7 +116,7 @@ export const ListItem = ({
           },
           subtitleStyle,
         ]}
-        numberOfLines={1}
+        numberOfLines={2}
         ellipsizeMode="tail"
         {...subtitleProps}
       >

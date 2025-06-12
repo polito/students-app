@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { Document } from 'react-native-render-html';
 
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -9,8 +8,6 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { parseDocument } from 'htmlparser2';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
@@ -23,10 +20,6 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
-  const dom = parseDocument(
-    faq.answer.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-  ) as Document;
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -35,7 +28,10 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
       <SafeAreaView>
         <Section>
           <SectionHeader title={faq.question} ellipsizeTitle={false} />
-          <HtmlView source={{ dom }} />
+          <HtmlView
+            props={{ source: { html: faq.answer } }}
+            variant="longProse"
+          />
         </Section>
 
         <CtaButton

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, ViewProps } from 'react-native';
+import { FlatList, StyleSheet, ViewProps } from 'react-native';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -49,13 +49,23 @@ export const AttachmentChip = ({
       ) : (
         <ActivityIndicator style={styles.space} />
       )}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="middle"
-        style={[styles.name, !!onClearAttachment && styles.space]}
-      >
-        {attachment.name ?? t('common.unnamedFile')}
-      </Text>
+      <FlatList
+        data={[attachment]}
+        horizontal={true}
+        showsHorizontalScrollIndicator={true}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => {
+          return (
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="middle"
+              style={[styles.name, !!onClearAttachment && styles.space]}
+            >
+              {item.name ?? t('common.unnamedFile')}
+            </Text>
+          );
+        }}
+      />
       {!!onClearAttachment && (
         <IconButton
           icon={faTimes}

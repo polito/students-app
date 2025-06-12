@@ -91,7 +91,7 @@ export const CalendarHeader = ({
                 {
                   height: cellHeight,
                   borderRadius: theme.shapes.md,
-                  paddingHorizontal: theme.spacing[1.5],
+                  paddingHorizontal: theme.spacing[1],
                   paddingVertical: theme.spacing[1],
                 },
                 shouldHighlight && {

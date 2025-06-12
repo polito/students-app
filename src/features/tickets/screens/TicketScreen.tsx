@@ -19,6 +19,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -113,6 +114,9 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
+  const [styless, setStyless] = useState(styles);
+  const { accessibility } = usePreferencesContext();
+  const { fontSizes } = useTheme();
   const accessibilityMessageText = [
     t('ticketScreen.yourQuestion'),
     ticket?.message,
@@ -153,6 +157,22 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     [ticket],
   );
 
+  useEffect(() => {
+    const changeStyle = () => {
+      setStyless(prevStyles => ({
+        ...prevStyles,
+        text: {
+          ...prevStyles.text,
+          lineHeight: accessibility?.lineHeight
+            ? fontSizes.sm * 1.5
+            : undefined,
+          marginBottom: accessibility?.paragraphSpacing ? fontSizes.sm * 2 : 0,
+        },
+      }));
+    };
+    changeStyle();
+  }, [accessibility, fontSizes]);
+
   return (
     <View style={GlobalStyles.grow}>
       <FlatList
@@ -182,11 +202,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 <ChatBubble
                   accessibilityRole="text"
                   accessibilityLabel={accessibilityMessageText}
-                  style={styles.requestMessage}
+                  style={styless.requestMessage}
                 >
                   <HtmlMessage
                     message={ticket?.message}
-                    baseStyle={styles.text}
+                    baseStyle={styless.text}
                   />
                   {ticket.hasAttachments && (
                     <View>
@@ -211,7 +231,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
             received={!!reply?.isFromAgent}
           />
         )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View style={styless.separator} />}
       />
       <TicketMessagingView
         ticketId={id}

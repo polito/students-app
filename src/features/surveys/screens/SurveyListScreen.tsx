@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { faClipboardQuestion } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -57,12 +56,7 @@ export const SurveyListScreen = ({ route }: Props) => {
       })}
       ListFooterComponent={<BottomBarSpacer />}
       ListEmptyComponent={
-        !surveysQuery.isLoading ? (
-          <EmptyState
-            message={t('surveysScreen.compiledEmptyState')}
-            icon={faClipboardQuestion}
-          />
-        ) : null
+        <OverviewList emptyStateText={t('surveysScreen.compiledEmptyState')} />
       }
     />
   );

@@ -12,7 +12,6 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -194,7 +193,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             <Card style={styles.transcriptCard}>
               {studentQuery.isLoading ? (
                 isOffline ? (
-                  <EmptyState message={t('common.cacheMiss')} />
+                  <OverviewList emptyStateText={t('common.cacheMiss')} />
                 ) : (
                   <ActivityIndicator style={styles.loader} />
                 )

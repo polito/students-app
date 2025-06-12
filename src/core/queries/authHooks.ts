@@ -25,12 +25,17 @@ const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
 
-async function getFcmToken(): Promise<string | undefined> {
+export async function getFcmToken(
+  catchException: boolean = true,
+): Promise<string | undefined> {
   if (!isEnvProduction) return undefined;
 
   try {
     return await messaging().getToken();
-  } catch (_) {
+  } catch (e) {
+    if (!catchException) {
+      throw e;
+    }
     Alert.alert(t('common.error'), t('loginScreen.fcmUnsupported'));
   }
 
@@ -161,12 +166,12 @@ export const useUpdateAppInfo = () => {
   const authClient = useAuthClient();
 
   return useMutation({
-    mutationFn: async (fcmToken: string | void) => {
+    mutationFn: async (fcmToken: string | void | null) => {
       // mutation requires a variable, an undefined string is not accepted
       return Promise.all([
         DeviceInfo.getBuildNumber(),
         DeviceInfo.getVersion(),
-        fcmToken || getFcmToken(),
+        fcmToken === null ? undefined : fcmToken || getFcmToken(),
       ]).then(([buildNumber, appVersion, fcmRegistrationToken]) => {
         const dto: AppInfoRequest = {
           buildNumber,
