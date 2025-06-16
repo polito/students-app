@@ -240,7 +240,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               }
             />
           </OverviewList>
-          {exam?.status !== 'requested' && (
+          {exam?.status === 'requested' && (
             <>
               <Section>
                 <SectionHeader title="Reschedule reason" />
@@ -254,7 +254,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   /* check using undefined since the fields can be 0 */
                   title={
                     <Text variant="longProse" style={{ marginTop: 10 }}>
-                      {exam?.requestReason ?? 'request reason'}
+                      {exam?.requestReason ?? ''}
                     </Text>
                   }
                   subtitle={t('examScreen.requestReasonTitle')}
@@ -264,7 +264,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   /* check using undefined since the fields can be 0 */
                   title={
                     <Text variant="longProse" style={{ marginTop: 10 }}>
-                      {exam?.requestDetails ?? 'request details'}
+                      {exam?.requestDetails ?? ''}
                     </Text>
                   }
                   subtitle={t('examScreen.requestDetailsTitle')}
