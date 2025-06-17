@@ -1,16 +1,22 @@
 import { useMemo } from 'react';
 
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
+import { ResponseError } from '@polito/api-client/runtime';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
-import { useGetCourses } from '../../../core/queries/courseHooks';
+import {
+  useCoursesClient,
+  useGetCourses,
+} from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
+import { isCurrentMonth } from '../../../utils/dates';
 import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
+import { formatNextLecture } from '../utils/formatters';
 
 export const LECTURES_QUERY_PREFIX = 'lectures';
 
@@ -127,5 +133,64 @@ export const useGetLectureWeeks = (
   return {
     data: queries.map(query => query.data!),
     isLoading,
+  };
+};
+
+export const useGetNextLecture = (
+  courseId: number,
+  coursesPreferences: CoursesPreferences,
+) => {
+  const coursesClient = useCoursesClient();
+  const { data: courses } = useGetCourses();
+  const nextLectureQuery = useQuery(
+    ['nextLecture', courseId],
+    async () => {
+      if (!courseId) return undefined;
+      try {
+        const response = await coursesClient.getNextLecture({ courseId });
+        if (!response?.data) return undefined;
+        let lecture = response.data as Lecture;
+        if (courses) {
+          const course = courses.find(c => c.id === lecture.courseId);
+          if (course) {
+            lecture = { ...lecture, uniqueShortcode: course.uniqueShortcode };
+          }
+        }
+        return formatNextLecture(lecture, coursesPreferences);
+      } catch (e) {
+        if (e instanceof ResponseError && e.response.status === 404) {
+          return undefined;
+        }
+        throw e;
+      }
+    },
+    {
+      enabled: !!courseId,
+      staleTime: Infinity,
+    },
+  );
+
+  const nextLecture = nextLectureQuery.data;
+  const { dayOfMonth, weekDay, monthOfYear } = useMemo(() => {
+    if (!nextLecture) return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
+    const lectureStart = DateTime.fromISO(nextLecture.date, {
+      zone: IANAZone.create('Europe/Rome'),
+    });
+    return {
+      dayOfMonth: lectureStart.toFormat('d'),
+      weekDay: lectureStart.toFormat('ccc'),
+      monthOfYear: isCurrentMonth(lectureStart)
+        ? ''
+        : lectureStart.toFormat('LLL'),
+    };
+  }, [nextLecture]);
+
+  return {
+    nextLecture,
+    dayOfMonth,
+    weekDay,
+    monthOfYear,
+    isLoadingNextLecture: nextLectureQuery.isLoading,
+    error: nextLectureQuery.error,
   };
 };

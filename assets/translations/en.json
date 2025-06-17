@@ -356,7 +356,7 @@
   },
   "courseInfoTab": {
     "agendaSectionEmptyState": "This course has no entries in the agenda",
-    "agendaSectionTitle": "This course in the agenda",
+    "agendaSectionTitle": "in the agenda",
     "creditsLabel": "Credits",
     "linkDefaultTitle": "Link to",
     "linksSectionEmptyState": "There are no links related to the course",
@@ -365,7 +365,9 @@
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
     "title": "Info",
-    "yearLabel": "Year"
+    "yearLabel": "Year",
+    "nextLectureLabel": "Course in agenda",
+    "nextLectureEmptyState": "No course found in agenda"
   },
   "courseLecturesTab": {
     "emptyState": "There are no lectures here",
@@ -520,7 +522,9 @@
     "notAvailable": "Booking not available",
     "notes": "Notes",
     "title": "Exam call",
-    "noBookedCount": "Data not available"
+    "noBookedCount": "Data not available",
+    "requestReasonTitle":"Request reason",
+    "requestDetailsTitle":"Request details"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
@@ -640,7 +644,7 @@
   },
   "offeringScreen": {
     "bachelor": "Bachelor degree",
-    "emptyMessage": "No course available",
+    "emptyState": "No course available",
     "master": "Master degree",
     "title": "Offering"
   },

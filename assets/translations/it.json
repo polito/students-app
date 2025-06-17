@@ -367,7 +367,7 @@
   },
   "courseInfoTab": {
     "agendaSectionEmptyState": "Non ci sono eventi relativi a questo corso",
-    "agendaSectionTitle": "Questo corso nell'agenda",
+    "agendaSectionTitle": "nell'agenda",
     "creditsLabel": "Crediti",
     "linkDefaultTitle": "Collegamento a",
     "linksSectionEmptyState": "Non ci sono link relativi al corso",
@@ -376,7 +376,9 @@
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
-    "yearLabel": "Anno"
+    "yearLabel": "Anno",
+    "nextLectureLabel": "Corso nell'agenda",
+    "nextLectureEmptyState": "Nessun corso trovato nell'agenda"
   },
   "courseLecturesTab": {
     "emptyState": "Non ci sono lezioni",
@@ -534,7 +536,9 @@
     "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
     "title": "Appello",
-    "noBookedCount": "Dato non disponibile"
+    "noBookedCount": "Dato non disponibile",
+    "requestReasonTitle":"Motivazioni della richiesta",
+    "requestDetailsTitle":"Dettagli della richiesta"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -656,7 +660,7 @@
   },
   "offeringScreen": {
     "bachelor": "Laurea triennale",
-    "emptyMessage": "Nessun corso disponibile",
+    "emptyState": "Nessun corso disponibile",
     "master": "Laurea magistrale",
     "title": "Offerta formativa"
   },

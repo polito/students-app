@@ -16,9 +16,9 @@ import {
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { IconButton } from '@lib/ui/components/IconButton';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -254,7 +254,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         cancelText={t('common.cancel')}
       />
       {!data.length && isOffline && (
-        <EmptyState message={t('common.cacheMiss')} />
+        <OverviewList emptyStateText={t('common.cacheMiss')} />
       )}
 
       {(!data.length && isLoading) ||

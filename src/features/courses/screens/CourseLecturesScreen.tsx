@@ -17,10 +17,10 @@ import {
   faChevronUp,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -120,18 +120,10 @@ export const CourseLecturesScreen = () => {
       ListEmptyComponent={() => {
         if (!courseLecturesQuery.isLoading) {
           return (
-            <EmptyState
-              message={t('courseLecturesTab.emptyState')}
-              icon={faChalkboardTeacher}
-            />
+            <OverviewList emptyStateText={t('courseLecturesTab.emptyState')} />
           );
         } else if (isCacheMissing) {
-          return (
-            <EmptyState
-              icon={faChalkboardTeacher}
-              message={t('common.cacheMiss')}
-            />
-          );
+          return <OverviewList emptyStateText={t('common.cacheMiss')} />;
         }
         return null;
       }}
