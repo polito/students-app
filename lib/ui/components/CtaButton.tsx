@@ -12,7 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -141,9 +140,6 @@ export const CtaButton = ({
           },
           disabled && variant === 'filled' && styles.disabledButton,
           style,
-          ...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
-            ? [{ height: 120, paddingVertical: spacing[1] }]
-            : []),
         ]}
         accessibilityLabel={title}
         onPress={action}
@@ -163,47 +159,45 @@ export const CtaButton = ({
               />
             )}
           </View>
-          <Row style={{ opacity: loading ? 0 : 1 }}>
-            {/* {!loading && ( */}
-            {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
-            {/* )} */}
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {icon && (
-                <Icon
-                  icon={icon}
-                  size={fontSizes.xl}
-                  color={variant === 'filled' ? colors.white : color}
-                  style={{ marginRight: spacing[2] }}
-                />
-              )}
-              <TextWithLinks
-                style={[
-                  styles.textStyle,
-                  variant === 'outlined' && {
-                    borderColor: palettes.primary[400],
-                  },
-                  {
-                    color: variant === 'filled' ? colors.white : color,
-                  },
-                  disabled
-                    ? { color: success ? color : colors.disableTitle }
-                    : undefined,
-                  textStyle,
-                ]}
-                baseStyle={{
-                  fontWeight: fontWeights.medium,
+          {/* {!loading && ( */}
+          {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
+          {/* )} */}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {icon && Number(accessibility?.fontSize) < 150 && (
+              <Icon
+                icon={icon}
+                size={fontSizes.xl}
+                color={variant === 'filled' ? colors.white : color}
+                style={{ marginRight: spacing[2] }}
+              />
+            )}
+            <TextWithLinks
+              style={[
+                styles.textStyle,
+                variant === 'outlined' && {
+                  borderColor: palettes.primary[400],
+                },
+                {
                   color: variant === 'filled' ? colors.white : color,
-                  ...(disabled && {
-                    color: success ? color : colors.disableTitle,
-                  }),
-                }}
-                isCta={true}
-              >
-                {title}
-              </TextWithLinks>
-              {rightExtra && rightExtra}
-            </View>
-          </Row>
+                },
+                disabled
+                  ? { color: success ? color : colors.disableTitle }
+                  : undefined,
+                textStyle,
+              ]}
+              baseStyle={{
+                fontWeight: fontWeights.medium,
+                color: variant === 'filled' ? colors.white : color,
+                ...(disabled && {
+                  color: success ? color : colors.disableTitle,
+                }),
+              }}
+              isCta={true}
+            >
+              {title}
+            </TextWithLinks>
+            {rightExtra && rightExtra}
+          </View>
         </View>
       </TouchableHighlight>
     </View>

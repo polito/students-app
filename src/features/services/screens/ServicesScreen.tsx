@@ -220,15 +220,15 @@ export const ServicesScreen = () => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         {favoriteServices.length > 0 && (
-          <Grid numColumns={auto} gap={4} style={styles.grid}>
+          <Grid
+            numColumns={fontSize && fontSize >= 125 ? 1 : auto}
+            gap={4}
+            style={styles.grid}
+          >
             {favoriteServices.map(service => (
               <ServiceCard
                 key={service.id}
-                name={
-                  accessibility?.fontSize && accessibility.fontSize <= 125
-                    ? service.name
-                    : ''
-                }
+                name={service.name}
                 icon={service.icon}
                 disabled={service.disabled}
                 linkTo={service.linkTo}
