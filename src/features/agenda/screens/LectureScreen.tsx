@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -258,6 +258,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               }}
             />
           </OverviewList>
+          <CtaButtonSpacer />
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
