@@ -280,15 +280,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <Text
             ellipsizeMode="tail"
             numberOfLines={1}
-            
             {...(accessibility?.fontSize &&
             Number(accessibility?.fontSize) >= 150
               ? { style: { height: 75, marginVertical: -20, maxWidth: 250 } }
               : {
-              flexShrink: 1,
-              flexGrow: 1,
-              marginRight: 20,
-            })}
+                  flexShrink: 1,
+                  flexGrow: 1,
+                  marginRight: 20,
+                })}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>

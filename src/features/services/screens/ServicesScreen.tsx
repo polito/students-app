@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -54,7 +54,8 @@ export const ServicesScreen = () => {
   const [fontSize, setFontSize] = useState(Number(accessibility?.fontSize));
   useEffect(() => {
     setFontSize(Number(accessibility?.fontSize) ?? 0);
-  }, [accessibility?.fontSize]);  const openInAppLink = useOpenInAppLink();
+  }, [accessibility?.fontSize]);
+  const openInAppLink = useOpenInAppLink();
 
   const openWebmailLink = useCallback(async () => {
     queryClient
