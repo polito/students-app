@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Linking,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Platform } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
@@ -40,6 +34,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import {
   CourseSectionEnum,
   getCourseKey,
@@ -75,6 +70,7 @@ export const CourseInfoScreen = () => {
     monthOfYear,
     isLoadingNextLecture,
   } = useGetNextLecture(courseId, coursesPreferences);
+  const openInAppLink = useOpenInAppLink();
   const courseExamsQuery = useGetCourseExams(
     courseId,
     courseQuery.data?.shortcode,
@@ -326,7 +322,7 @@ export const CourseInfoScreen = () => {
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
-                onPress={() => Linking.openURL(link.url)}
+                onPress={() => openInAppLink(link.url)}
               />
             ))}
           </OverviewList>
