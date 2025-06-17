@@ -522,7 +522,9 @@
     "notAvailable": "Booking not available",
     "notes": "Notes",
     "title": "Exam call",
-    "noBookedCount": "Data not available"
+    "noBookedCount": "Data not available",
+    "requestReasonTitle":"Request reason",
+    "requestDetailsTitle":"Request details"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",

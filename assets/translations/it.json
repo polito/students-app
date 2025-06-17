@@ -536,7 +536,9 @@
     "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
     "title": "Appello",
-    "noBookedCount": "Dato non disponibile"
+    "noBookedCount": "Dato non disponibile",
+    "requestReasonTitle":"Motivazioni della richiesta",
+    "requestDetailsTitle":"Dettagli della richiesta"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
