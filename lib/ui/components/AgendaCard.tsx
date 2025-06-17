@@ -261,10 +261,10 @@ export const AgendaCard = ({
                       : styles.titleCompact
                     : undefined,
                   accessibility?.fontSize &&
-                Number(accessibility?.fontSize) >= 150
-                  ? { lineHeight: 30 }
-                  : undefined,
-              ]}
+                  Number(accessibility?.fontSize) >= 150
+                    ? { lineHeight: 30 }
+                    : undefined,
+                ]}
                 numberOfLines={isCompact ? (isTablet ? 2 : 3) : undefined}
               >
                 {title}
