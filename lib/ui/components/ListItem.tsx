@@ -87,7 +87,7 @@ export const ListItem = ({
               lineHeight:
                 accessibility?.fontSize && accessibility.fontSize <= 125
                   ? fontSizes.sm * 1.4
-                  : fontSizes.sm * 2.5,
+                  : fontSizes.sm * 2,
             },
             unread && {
               fontWeight: fontWeights.semibold,
