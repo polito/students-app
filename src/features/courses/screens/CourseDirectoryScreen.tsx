@@ -19,6 +19,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
+import { useNotifications } from '../../../../src/core/hooks/useNotifications';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
@@ -64,6 +65,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
+  const { clearNotificationScope } = useNotifications();
 
   useEffect(() => {
     if (navigation.getId() !== 'FileTabNavigator') {
@@ -77,7 +79,6 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     if (a.type !== 'directory' && b.type !== 'directory') {
       const dateA = DateTime.fromJSDate(a.createdAt).startOf('minute');
       const dateB = DateTime.fromJSDate(b.createdAt).startOf('minute');
-
       if (dateA.equals(dateB)) {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
@@ -87,6 +88,12 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     return 0;
   });
 
+  useFocusEffect(() => {
+    const notificationTimeout = setTimeout(() => {
+      clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+    }, 10000);
+    return () => clearTimeout(notificationTimeout);
+  });
   return (
     <CourseContext.Provider value={courseId}>
       <CourseFilesCacheProvider>
