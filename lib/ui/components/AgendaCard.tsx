@@ -153,26 +153,47 @@ export const AgendaCard = ({
         >
           {/* Time and event type are only shown if the card is not compact */}
           {!isCompact && !nextLecture && (
-            <Row align="flex-end" justify="space-between" flexGrow={1}>
-              <Row gap={2}>
-                <Text
-                  style={[
-                    styles.time,
-                    secondaryIfLecture,
-                    accessibility?.fontSize &&
-                    Number(accessibility?.fontSize) >= 150
-                      ? { marginTop: 30 }
-                      : undefined,
-                  ]}
-                >
-                  {time && time}
-                </Text>
-                {!isCompact && live && <LiveIndicator showText />}
+            <>
+              <Row align="flex-end" justify="space-between" flexGrow={1}>
+                <Row gap={2}>
+                  <Text
+                    style={[
+                      styles.time,
+                      secondaryIfLecture,
+                      accessibility?.fontSize &&
+                      Number(accessibility?.fontSize) >= 150
+                        ? { marginTop: 30 }
+                        : undefined,
+                    ]}
+                  >
+                    {time && time}
+                  </Text>
+                  {!isCompact && live && <LiveIndicator showText />}
+                </Row>
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) < 150 && (
+                    <Text
+                      uppercase
+                      variant="caption"
+                      style={secondaryIfLecture}
+                    >
+                      {type}
+                    </Text>
+                  )}
               </Row>
-              <Text uppercase variant="caption" style={secondaryIfLecture}>
-                {type}
-              </Text>
-            </Row>
+              <Row>
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) >= 150 && (
+                    <Text
+                      uppercase
+                      variant="caption"
+                      style={secondaryIfLecture}
+                    >
+                      {type}
+                    </Text>
+                  )}
+              </Row>
+            </>
           )}
           {nextLecture && !isCompact && (
             <Col
