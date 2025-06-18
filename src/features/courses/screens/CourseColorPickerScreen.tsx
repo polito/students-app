@@ -42,10 +42,9 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
   });
   const [showModal, setShowModal] = useState(false);
   const [pendingColor, setPendingColor] = useState<string | null>(null);
-  const [skipConfirm, setSkipConfirm] = useState(false);
-
+  const { showColorWarning = true } = usePreferencesContext();
   const handleColorWithConfirm = (hex: string) => {
-    if (skipConfirm) {
+    if (!showColorWarning) {
       updatePreference('courses', {
         ...coursesPrefs,
         [route.params.uniqueShortcode]: {
@@ -53,16 +52,17 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
           color: hex,
         },
       });
-    } else {
-      setPendingColor(hex);
-      setShowModal(true);
+      return;
     }
+    setPendingColor(hex);
+    setShowModal(true);
   };
+
   const handleConfirm = (dontShowAgain: boolean) => {
     if (dontShowAgain) {
-      setSkipConfirm(true);
-      // Optionally persist with AsyncStorage
+      updatePreference('showColorWarning', false);
     }
+
     if (pendingColor) {
       updatePreference('courses', {
         ...coursesPrefs,
