@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import {useState, useEffect} from 'react';
 import { Button, Modal, Switch, Text, View } from 'react-native';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext.ts';
 
 type CustomAlertProps = {
   visible: boolean;
@@ -18,9 +19,17 @@ const CustomAlert = ({
   message,
   dontShowAgainLabel,
 }: CustomAlertProps) => {
-  const [dontShowAgain, setDontShowAgain] = useState(false);
+  const { updatePreference, showColorWarning = true } = usePreferencesContext();
+  const [dontShowAgain, setDontShowAgain] = useState(!showColorWarning);
+  
+  useEffect(() => {
+    setDontShowAgain(!showColorWarning);
+  }, [showColorWarning]);
 
   const handleOk = () => {
+    if (dontShowAgain) {
+      updatePreference('showColorWarning', false);
+    }
     onConfirm(dontShowAgain);
   };
 
