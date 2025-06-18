@@ -14,6 +14,7 @@ export const editablePreferenceKeys = [
   'username',
   'campusId',
   'colorScheme',
+  'showColorWarning',
   'courses',
   'language',
   'notifications',
@@ -88,6 +89,7 @@ export interface PreferencesContextBase {
     paragraphSpacing?: boolean;
     fontSize?: 100 | 125 | 150 | 175 | 200;
   };
+  showColorWarning?: boolean;
   hideGrades?: boolean;
   loginUid?: string;
 }
