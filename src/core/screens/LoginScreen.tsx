@@ -30,6 +30,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
+import { useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
 import { useLogin } from '../queries/authHooks';
 
 type LoginScreenRouteProp = RouteProp<
@@ -51,6 +52,7 @@ export const LoginScreen = () => {
   const language = useDeviceLanguage();
   const route = useRoute<LoginScreenRouteProp>();
   const { key } = route.params || {};
+  const openInAppLink = useOpenInAppLink();
 
   const handleLoginError = useCallback(
     (e: Error) => {
@@ -76,7 +78,7 @@ export const LoginScreen = () => {
     const uid = uuid.v4();
     await updatePreference('loginUid', uid);
     const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
-    Linking.openURL(url);
+    await openInAppLink(url);
   };
 
   useEffect(() => {
