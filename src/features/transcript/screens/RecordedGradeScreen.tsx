@@ -95,6 +95,21 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                       : ''
                   }`}</Text>
                 </View>
+                <Col
+                  flexGrow={1}
+                  flexShrink={1}
+                  gap={2}
+                  style={{ marginBottom: 20 }}
+                >
+                  <Text>
+                    {accessibility?.fontSize &&
+                    Number(accessibility.fontSize) >= 150
+                      ? t('common.creditsWithUnit', {
+                          credits: grade.credits,
+                        })
+                      : ''}
+                  </Text>
+                </Col>
               </Col>
               <Col
                 align="center"
