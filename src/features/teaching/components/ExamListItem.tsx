@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
@@ -26,17 +27,20 @@ interface Props {
   exam: Exam;
   accessible?: boolean;
   accessibilityLabel?: string;
+  bottomBorder?: boolean;
 }
 
 export const ExamListItem = ({
   exam,
   accessibilityLabel = '',
+  bottomBorder = true,
   ...rest
 }: Props) => {
   const { t } = useTranslation();
 
-  const { courses: coursesPreferences } = usePreferencesContext();
-  const { colors } = useTheme();
+  const { courses: coursesPreferences, accessibility } =
+    usePreferencesContext();
+  const { colors, spacing } = useTheme();
   const formatHHmm = dateFormatter('HH:mm');
   const listItemProps = useMemo(() => {
     let dateTime,
@@ -65,53 +69,107 @@ export const ExamListItem = ({
   }, [accessibilityLabel, exam, t, formatHHmm]);
 
   return (
-    <ListItem
-      linkTo={{
-        screen: 'Exam',
-        params: { id: exam.id },
-      }}
-      title={exam.courseName}
-      accessibilityRole="button"
-      leadingItem={
-        <CourseIcon
-          icon={coursesPreferences[exam.uniqueShortcode]?.icon}
-          color={coursesPreferences[exam.uniqueShortcode]?.color}
-          isHidden={coursesPreferences[exam.uniqueShortcode]?.isHidden}
-        />
-      }
-      trailingItem={
-        <Row align="center" pl={2}>
-          <ExamStatusBadge exam={exam} textOnly />
-          {IS_IOS ? <DisclosureIndicator /> : undefined}
-        </Row>
-      }
-      subtitle={
-        <Row gap={2.5} pt={1}>
-          <Row gap={1}>
-            <Icon icon={faCalendar} color={colors.secondaryText} />
-            <Text variant="secondaryText">
-              {exam.examStartsAt && isValidDate(exam?.examStartsAt)
-                ? formatReadableDate(exam.examStartsAt, true)
-                : t('common.dateToBeDefinedShort')}
-            </Text>
-          </Row>
-          {(exam.places?.length ?? 0) > 0 && (
-            <Row gap={1} flexShrink={1}>
-              <Icon icon={faLocationDot} color={colors.secondaryText} />
-              <Text
-                variant="secondaryText"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={{ flexShrink: 1 }}
-              >
-                {exam.places?.map(place => place.name).join(', ')}
-              </Text>
+    <View style={{ rowGap: spacing[3] }}>
+      <ListItem
+        linkTo={{
+          screen: 'Exam',
+          params: { id: exam.id },
+        }}
+        title={exam.courseName}
+        accessibilityRole="button"
+        leadingItem={
+          <CourseIcon
+            icon={coursesPreferences[exam.uniqueShortcode]?.icon}
+            color={coursesPreferences[exam.uniqueShortcode]?.color}
+            isHidden={coursesPreferences[exam.uniqueShortcode]?.isHidden}
+          />
+        }
+        trailingItem={
+          accessibility?.fontSize && accessibility.fontSize < 175 ? (
+            <Row align="center" pl={2}>
+              <ExamStatusBadge exam={exam} textOnly />
+              {IS_IOS ? <DisclosureIndicator /> : undefined}
             </Row>
-          )}
-        </Row>
-      }
-      {...listItemProps}
-      {...rest}
-    />
+          ) : undefined
+        }
+        subtitle={
+          accessibility?.fontSize && accessibility.fontSize < 175 ? (
+            <Row gap={2.5} pt={1}>
+              <Row gap={1}>
+                <Icon icon={faCalendar} color={colors.secondaryText} />
+                <Text variant="secondaryText">
+                  {exam.examStartsAt && isValidDate(exam?.examStartsAt)
+                    ? formatReadableDate(exam.examStartsAt, true)
+                    : t('common.dateToBeDefinedShort')}
+                </Text>
+              </Row>
+              {(exam.places?.length ?? 0) > 0 && (
+                <Row gap={1} flexShrink={1}>
+                  <Icon icon={faLocationDot} color={colors.secondaryText} />
+                  <Text
+                    variant="secondaryText"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{ flexShrink: 1 }}
+                  >
+                    {exam.places?.map(place => place.name).join(', ')}
+                  </Text>
+                </Row>
+              )}
+            </Row>
+          ) : (
+            <>
+              <Row gap={1}>
+                <Icon
+                  icon={faCalendar}
+                  style={{ paddingVertical: spacing[8] }}
+                  color={colors.secondaryText}
+                />
+                <Text variant="secondaryText">
+                  {exam.examStartsAt && isValidDate(exam?.examStartsAt)
+                    ? formatReadableDate(exam.examStartsAt, true)
+                    : t('common.dateToBeDefinedShort')}
+                </Text>
+              </Row>
+              {(exam.places?.length ?? 0) > 0 && (
+                <Row gap={1} flexShrink={1}>
+                  <Icon
+                    icon={faLocationDot}
+                    style={{ paddingVertical: spacing[8] }}
+                    color={colors.secondaryText}
+                  />
+                  <Text
+                    variant="secondaryText"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{ flexShrink: 1 }}
+                  >
+                    {exam.places?.map(place => place.name).join(', ')}
+                  </Text>
+                </Row>
+              )}
+              <Row align="center" pl={2}>
+                <ExamStatusBadge exam={exam} textOnly />
+                {IS_IOS ? <DisclosureIndicator /> : undefined}
+              </Row>
+            </>
+          )
+        }
+        {...listItemProps}
+        {...rest}
+      />
+
+      {bottomBorder &&
+        accessibility?.fontSize &&
+        Number(accessibility.fontSize) > 150 && (
+          <View
+            style={{
+              height: 1,
+              backgroundColor: colors.divider,
+              marginHorizontal: spacing[4],
+            }}
+          />
+        )}
+    </View>
   );
 };

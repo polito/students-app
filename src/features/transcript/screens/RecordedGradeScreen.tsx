@@ -22,6 +22,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
@@ -34,7 +35,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { grade } = route.params;
   const { fontSizes, colors } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   const teacherIds = grade.teacherId !== null ? grade.teacherId : undefined;
   const staffQueries = useGetPerson(teacherIds);
 
@@ -84,20 +85,44 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
               >
                 <ScreenTitle title={grade.courseName} />
                 <View>
-                  <Text>{`${formatDate(new Date(grade.date))} - ${t(
-                    'common.creditsWithUnit',
-                    {
-                      credits: grade.credits,
-                    },
-                  )}`}</Text>
+                  <Text>{`${formatDate(new Date(grade.date))} ${
+                    accessibility?.fontSize &&
+                    Number(accessibility.fontSize) < 150
+                      ? '-' +
+                        t('common.creditsWithUnit', {
+                          credits: grade.credits,
+                        })
+                      : ''
+                  }`}</Text>
                 </View>
+                <Col
+                  flexGrow={1}
+                  flexShrink={1}
+                  gap={2}
+                  style={{ marginBottom: 20 }}
+                >
+                  <Text>
+                    {accessibility?.fontSize &&
+                    Number(accessibility.fontSize) >= 150
+                      ? t('common.creditsWithUnit', {
+                          credits: grade.credits,
+                        })
+                      : ''}
+                  </Text>
+                </Col>
               </Col>
               <Col
                 align="center"
                 justify="center"
                 mt={2}
                 flexShrink={0}
-                style={styles.grade}
+                style={[
+                  styles.grade,
+                  accessibility?.fontSize &&
+                  Number(accessibility.fontSize) >= 150
+                    ? { padding: 0 }
+                    : {},
+                ]}
               >
                 <Text
                   style={

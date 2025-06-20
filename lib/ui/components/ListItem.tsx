@@ -16,6 +16,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { IS_IOS } from '../../../src/core/constants';
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { GlobalStyles } from '../../../src/core/styles/GlobalStyles';
 import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
@@ -71,7 +72,7 @@ export const ListItem = ({
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
+  const { accessibility } = usePreferencesContext();
   const titleElement =
     typeof title === 'string' ? (
       <Row align="center" gap={2}>
@@ -82,7 +83,10 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
-              lineHeight: fontSizes.md * 1.4,
+              lineHeight:
+                accessibility?.fontSize && accessibility.fontSize <= 125
+                  ? fontSizes.sm * 1.4
+                  : fontSizes.sm * 2,
             },
             unread && {
               fontWeight: fontWeights.semibold,
@@ -112,7 +116,10 @@ export const ListItem = ({
         style={[
           {
             fontSize: fontSizes.sm,
-            lineHeight: fontSizes.sm * 1.4,
+            lineHeight:
+              accessibility?.fontSize && accessibility.fontSize <= 125
+                ? fontSizes.sm * 1.4
+                : fontSizes.sm * 2.5,
           },
           subtitleStyle,
         ]}

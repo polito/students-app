@@ -325,12 +325,6 @@ export const SettingsScreen = () => {
             <Notifications />
           </Section>*/}
           <Section>
-            <SectionHeader title={t('common.cache')} />
-            <OverviewList indented>
-              <CleanCacheListItem />
-            </OverviewList>
-          </Section>
-          <Section>
             <SectionHeader title={t('common.accessibility')} />
             <OverviewList indented>
               <ListItem
@@ -340,6 +334,12 @@ export const SettingsScreen = () => {
                 linkTo={{ screen: 'AccessibilitySettings' }}
                 leadingItem={<Icon icon={faFont} size={20} />}
               />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.cache')} />
+            <OverviewList indented>
+              <CleanCacheListItem />
             </OverviewList>
           </Section>
           <Col ph={4}>

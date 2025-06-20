@@ -7,6 +7,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import color from 'color';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { uniformInsets } from '../../../utils/insets';
 
 type Props = ViewProps & {
@@ -28,7 +29,7 @@ export const ProgressChart = ({
   ...rest
 }: Props) => {
   const { dark, colors: themeColors, palettes, fontSizes } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   return (
     <View accessible={false} {...rest}>
       <RNCKProgressChart
@@ -89,6 +90,10 @@ export const ProgressChart = ({
               fontSize: fontSizes.xs,
               color: themeColors.secondaryText,
               textAlign: 'center',
+              fontWeight:
+                accessibility?.fontSize && accessibility.fontSize >= 150
+                  ? '600'
+                  : undefined,
             }}
           >
             {label}
