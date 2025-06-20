@@ -169,10 +169,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('examsScreen.emptyState')
             }
           >
-            {exams.map(exam => (
+            {exams.map((exam, index) => (
               <ExamListItem
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
+                bottomBorder={index < exams.length - 1}
               />
             ))}
           </OverviewList>

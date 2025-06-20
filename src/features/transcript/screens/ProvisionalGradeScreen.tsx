@@ -109,16 +109,30 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
             >
               <Col flexGrow={1} flexShrink={1} gap={2}>
                 <ScreenTitle title={grade.courseName} />
-                <Text>{`${formatDate(grade.date)} - ${t(
-                  'common.creditsWithUnit',
-                  {
-                    credits:
-                      accessibility?.fontSize &&
-                      Number(accessibility.fontSize) < 150
-                        ? grade.credits
-                        : '',
-                  },
-                )}`}</Text>
+                <Text>{`${formatDate(new Date(grade.date))} ${
+                  accessibility?.fontSize &&
+                  Number(accessibility.fontSize) < 150
+                    ? '-' +
+                      t('common.creditsWithUnit', {
+                        credits: grade.credits,
+                      })
+                    : ''
+                }`}</Text>
+                <Col
+                  flexGrow={1}
+                  flexShrink={1}
+                  gap={2}
+                  style={{ marginBottom: 20 }}
+                >
+                  <Text>
+                    {accessibility?.fontSize &&
+                    Number(accessibility.fontSize) >= 150
+                      ? t('common.creditsWithUnit', {
+                          credits: grade.credits,
+                        })
+                      : ''}
+                  </Text>
+                </Col>
               </Col>
               <Col
                 align="center"
