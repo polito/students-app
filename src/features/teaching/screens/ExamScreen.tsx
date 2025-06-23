@@ -218,7 +218,11 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   <Icon
                     icon={faTriangleExclamation}
                     color="red"
-                    size={fontSizes.md}
+                    size={
+                      accessibility?.fontSize && accessibility.fontSize < 150
+                        ? fontSizes.md
+                        : fontSizes['3xl']
+                    }
                   />
                 ) : undefined
               }
