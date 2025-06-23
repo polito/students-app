@@ -4,6 +4,8 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+
 type Props = {
   text: string;
   icon?: IconDefinition;
@@ -18,7 +20,7 @@ export const Badge = ({
   foregroundColor,
 }: Props) => {
   const { spacing, shapes, fontSizes } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   return (
     <Row
       gap={2}
@@ -30,6 +32,10 @@ export const Badge = ({
           paddingVertical: spacing[1],
           borderRadius: shapes.xl,
         },
+        accessibility?.fontSize &&
+          accessibility.fontSize >= 150 && {
+            alignSelf: 'flex-start',
+          },
         !icon && {
           paddingRight: spacing[1.5],
         },

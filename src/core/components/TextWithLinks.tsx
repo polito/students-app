@@ -25,7 +25,7 @@ export const TextWithLinks = ({
         baseStyle: { padding: 0, ...baseStyle },
         defaultTextProps: { style },
       }}
-      variant={isCta === true ? '' : 'longProse'}
+      variant={isCta === true ? 'cta' : 'longProse'}
     />
   );
 };

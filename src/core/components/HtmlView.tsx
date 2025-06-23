@@ -8,7 +8,7 @@ import RenderHTML, {
 } from 'react-native-render-html';
 
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
-import { Text } from '@lib/ui/components/Text';
+import { Text, calculateValueOfPercentage } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
@@ -59,43 +59,49 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
   );
 };
 
-export const CustomTextRenderer = (props: InternalRendererProps<any>) => {
-  const { accessibility } = usePreferencesContext();
-  const { fontSizes } = useTheme();
-  const tnode = props.tnode;
+const createCustomTextRenderer = (variant: string) => {
+  return (props: InternalRendererProps<any>) => {
+    const { accessibility } = usePreferencesContext();
+    const { fontSizes } = useTheme();
+    const tnode = props.tnode;
 
-  const isTextNode = tnode.type === 'text';
+    const isTextNode = tnode.type === 'text';
+    const originalText = isTextNode ? (tnode.data ?? '') : null;
 
-  const originalText = isTextNode ? (tnode.data ?? '') : null;
+    const spacedText =
+      isTextNode && accessibility?.wordSpacing
+        ? originalText.split(' ').join(' '.repeat(fontSizes.md * 0.16))
+        : originalText;
 
-  const spacedText =
-    isTextNode && accessibility?.wordSpacing
-      ? originalText.split(' ').join(' '.repeat(fontSizes.md * 0.16))
-      : originalText;
+    const dynamicStyle = {
+      fontSize: fontSizes.md,
+      ...(accessibility?.letterSpacing &&
+        accessibility.fontSize && {
+          letterSpacing:
+            calculateValueOfPercentage(accessibility.fontSize, fontSizes.md) *
+            0.12,
+        }),
+      ...(accessibility?.lineHeight &&
+        accessibility.fontSize && {
+          lineHeight:
+            calculateValueOfPercentage(accessibility.fontSize, fontSizes.md) *
+            1.5,
+        }),
+      ...(accessibility?.paragraphSpacing &&
+        accessibility.fontSize &&
+        variant !== 'cta' && {
+          marginBottom:
+            calculateValueOfPercentage(accessibility.fontSize, fontSizes.md) *
+            2,
+        }),
+    };
 
-  const dynamicStyle = {
-    fontSize: fontSizes.md,
-    ...(accessibility?.letterSpacing && { letterSpacing: fontSizes.md * 0.12 }),
-    ...(accessibility?.lineHeight && { lineHeight: fontSizes.md * 1.5 }),
-    ...(accessibility?.paragraphSpacing && { marginBottom: fontSizes.md * 2 }),
+    return (
+      <Text selectable style={[props.style, dynamicStyle]}>
+        {isTextNode ? spacedText : <TNodeChildrenRenderer tnode={tnode} />}
+      </Text>
+    );
   };
-
-  return (
-    <Text selectable style={[props.style, dynamicStyle]}>
-      {isTextNode ? spacedText : <TNodeChildrenRenderer tnode={tnode} />}
-    </Text>
-  );
-};
-
-const renderers = {
-  text: CustomTextRenderer,
-  span: CustomTextRenderer,
-  b: CustomTextRenderer,
-  strong: CustomTextRenderer,
-  i: CustomTextRenderer,
-  em: CustomTextRenderer,
-  p: CustomTextRenderer,
-  img: CustomImageRenderer,
 };
 
 type HtmlViewProps = {
@@ -174,9 +180,11 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
+  const { accessibility } = usePreferencesContext();
 
   const processedSource =
-    variant === 'longProse'
+    variant === 'longProse' ||
+    (variant === 'cta' && Number(accessibility?.fontSize) >= 150)
       ? {
           ...props.source,
           html:
@@ -186,6 +194,16 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         }
       : undefined;
 
+  const renderers = {
+    text: createCustomTextRenderer(variant),
+    span: createCustomTextRenderer(variant),
+    b: createCustomTextRenderer(variant),
+    strong: createCustomTextRenderer(variant),
+    i: createCustomTextRenderer(variant),
+    em: createCustomTextRenderer(variant),
+    p: createCustomTextRenderer(variant),
+    img: CustomImageRenderer,
+  };
   return (
     <RenderHTML
       contentWidth={width}

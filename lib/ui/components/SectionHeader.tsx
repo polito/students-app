@@ -16,6 +16,7 @@ import { Link, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
 import { Text } from './Text';
@@ -58,6 +59,7 @@ export const SectionHeader = ({
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { accessibility } = usePreferencesContext();
   const ellipsis: Partial<TextProps> = ellipsizeTitle
     ? {
         numberOfLines: 1,
@@ -82,7 +84,16 @@ export const SectionHeader = ({
               {title}
             </Text>
             {trailingIcon && (
-              <IconButton {...{ size: 16, ...trailingIcon, noPadding: true }} />
+              <IconButton
+                {...{
+                  size:
+                    accessibility?.fontSize && accessibility.fontSize >= 150
+                      ? 40
+                      : 16,
+                  ...trailingIcon,
+                  noPadding: true,
+                }}
+              />
             )}
           </View>
 
