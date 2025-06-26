@@ -38,7 +38,7 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
       case ProvisionalGradeStateEnum.Confirmed:
         if (grade.canBeRejected) {
           return (
-            <TextWithLinks style={styles.rejectableSubtitle}>
+            <TextWithLinks baseStyle={styles.rejectableSubtitle}>
               {t('transcriptGradesScreen.rejectionCountdown', {
                 hours: rejectionTime,
               })}

@@ -185,7 +185,13 @@ export const CtaButton = ({
                     : undefined,
                   textStyle,
                 ]}
-                baseStyle={{ fontWeight: fontWeights.medium }}
+                baseStyle={{
+                  fontWeight: fontWeights.medium,
+                  color: variant === 'filled' ? colors.white : color,
+                  ...(disabled && {
+                    color: success ? color : colors.disableTitle,
+                  }),
+                }}
                 isCta={true}
               >
                 {title}
