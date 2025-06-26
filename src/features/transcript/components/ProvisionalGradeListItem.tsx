@@ -4,14 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
+import { Text } from '@lib/ui/components/Text.tsx';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import { Theme } from '@lib/ui/types/Theme';
 import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
 } from '@polito/api-client/models/ProvisionalGrade';
 
-import { TextWithLinks } from '../../../core/components/TextWithLinks';
 import { IS_IOS } from '../../../core/constants';
 import { dateFormatter, formatDate } from '../../../utils/dates';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
@@ -26,6 +27,7 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
 
   const styles = useStylesheet(createStyles);
   const isRejected = grade.state === ProvisionalGradeStateEnum.Rejected;
+  const { fontWeights } = useTheme();
 
   const rejectionTime = useGetRejectionTime({
     rejectingExpiresAt: grade.rejectingExpiresAt,
@@ -38,11 +40,19 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
       case ProvisionalGradeStateEnum.Confirmed:
         if (grade.canBeRejected) {
           return (
-            <TextWithLinks baseStyle={styles.rejectableSubtitle}>
-              {t('transcriptGradesScreen.rejectionCountdown', {
-                hours: rejectionTime,
-              })}
-            </TextWithLinks>
+            <Row>
+              <Text style={styles.rejectableSubtitle}>
+                {t('transcriptGradesScreen.rejectionCountdown')}
+                <Text
+                  style={[
+                    styles.rejectableSubtitle,
+                    { fontWeight: fontWeights.bold },
+                  ]}
+                >
+                  {rejectionTime}
+                </Text>
+              </Text>
+            </Row>
           );
         }
         break;
@@ -55,13 +65,14 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
         return undefined;
     }
   }, [
-    grade.rejectedAt,
     grade.state,
-    rejectionTime,
+    grade.canBeRejected,
+    grade.rejectedAt,
     t,
     formatHHmm,
-    grade.canBeRejected,
     styles.rejectableSubtitle,
+    fontWeights.bold,
+    rejectionTime,
   ]);
 
   return (

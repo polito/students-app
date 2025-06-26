@@ -861,7 +861,7 @@
     "provisionalTitle": "Provvisorie",
     "recordedTitle": "Registrate",
     "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
-    "rejectionCountdown": "Rifiutabile entro: <b>{{hours}}</b>",
+    "rejectionCountdown": "Rifiutabile entro:",
     "title": "Valutazioni",
     "total": "Sono presenti {{total}} valutazioni"
   },
