@@ -36,7 +36,7 @@
       "available": "Available",
       "booked": "Booked",
       "full": "Full",
-      "notAvailable": "Not available"
+      "notAvailableBooking": "Not available"
     },
     "cancelBooking": "Cancel booking",
     "cancelBookingText": "Are you sure you want to cancel this booking?",
