@@ -835,7 +835,7 @@
     "provisionalTitle": "Provisional",
     "recordedTitle": "Recorded",
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
-    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
+    "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
     "total": "There are {{total}} grades"
   },
