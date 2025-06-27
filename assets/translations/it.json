@@ -225,6 +225,7 @@
     "objectives": "Obiettivi formativi",
     "of": "Su",
     "ok": "Ok",
+    "or": "oppure",
     "open": "Apri",
     "openSettings": "Apri impostazioni",
     "openSource": "Open Source",
@@ -609,7 +610,7 @@
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
     "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push.",
-    "SSO": "Oppure accedi con SSO"
+    "SSO": "Accedi con SSO"
   },
   "messageScreen": {
     "backTitle": "Archivio",
