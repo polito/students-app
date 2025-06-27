@@ -15,9 +15,6 @@ export const useFullscreenUi = (fullscreen: boolean) => {
       if (fullscreen) {
         hideTabBar(navRoot);
         navigation.setOptions({ headerShown: false });
-      } else {
-        navigation.setOptions({ headerShown: true });
-        displayTabBar(navRoot);
       }
     }
     return () => {
