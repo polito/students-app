@@ -744,7 +744,7 @@
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
     "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiutabile entro il:<br><b>{{date}}</b>",
+    "rejectGradeCta": "Rifiuta entro il:<br><b>{{date}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "teacherMessage": {
       "title": "Messaggio del docente",
