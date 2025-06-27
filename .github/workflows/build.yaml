@@ -215,6 +215,7 @@ jobs:
       env:
         STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
       run: bundle exec fastlane release
+      continue-on-error: true
     - name: Fastlane RELEASE lane [without Sentry]
       if: steps.fastlane_release_android.outcome == 'failure'
       working-directory: ./android
