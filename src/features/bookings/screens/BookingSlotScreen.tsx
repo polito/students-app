@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { AgendaCard } from '@lib/ui/components/AgendaCard';
+import { Col } from '@lib/ui/components/Col';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -45,7 +46,11 @@ import {
   getCalendarPropsFromTopic,
   isPastSlot,
 } from '../../../utils/bookings';
-import { formatDate } from '../../../utils/dates';
+import {
+  formatDate,
+  isCurrentMonth,
+  isCurrentYear,
+} from '../../../utils/dates';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
@@ -258,21 +263,32 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 <Text variant="heading">{title}</Text>
               </View>
             )}
-            renderItem={({ item }: { item: BookingCalendarEvent }) => {
-              // console.log(item);
-              // calcola stile e testo
-              const { backgroundColor } = getBookingStyle(
+            renderItem={({ item, index, section }) => {
+              // destrutturo la data
+              const dt = item.start;
+              const weekDay = dt.toFormat('EEE');
+              const dayOfMonth = dt.toFormat('d');
+              const monthOfYear = !isCurrentMonth(dt)
+                ? dt.toFormat('MMM')
+                : null;
+              const year = !isCurrentYear(dt) ? dt.toFormat('y') : null;
+
+              // controllo se è il primo item di questo giorno
+              const isFirstOfDay =
+                index === 0 ||
+                dt.toISODate() !== section.data[index - 1].start.toISODate();
+
+              // calcolo stile e testo per AgendaCard
+              const { backgroundColor: borderColor } = getBookingStyle(
                 item,
                 palettes,
                 colors,
                 dark,
               );
               const timeRange =
-                item.start.toFormat('cccc d LLL, HH:mm') +
-                ' - ' +
-                item.end.toFormat('HH:mm') +
-                ' ';
-              item.start.toFormat('HH:mm') + ' - ' + item.end.toFormat('HH:mm');
+                item.start.toFormat('HH:mm') +
+                ' – ' +
+                item.end.toFormat('HH:mm');
               const statusLabel = t(
                 getBookingSlotStatus(
                   item,
@@ -281,19 +297,63 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               );
 
               return (
-                <AgendaCard
-                  title={item.title}
-                  type={statusLabel}
-                  color={backgroundColor}
-                  time={timeRange}
-                  onPress={() => handlePress(item)}
-                >
-                  <Row align="center" justify="space-between">
-                    <Text>
-                      {item.bookedPlaces} / {item.places || 0}
-                    </Text>
-                  </Row>
-                </AgendaCard>
+                <Row style={{ marginVertical: 8 }}>
+                  {/* Colonna data: mostro solo se è il primo del giorno */}
+                  {isFirstOfDay ? (
+                    <Col style={styles.dayColumn}>
+                      {item.start.hasSame(DateTime.local(), 'day') ? (
+                        <View style={[styles.dayBox, styles.todayBox]}>
+                          <Text
+                            variant="heading"
+                            style={[styles.secondaryDay, styles.today]}
+                          >
+                            {weekDay}
+                          </Text>
+                          <Text variant="heading" style={styles.today}>
+                            {dayOfMonth}
+                          </Text>
+                        </View>
+                      ) : (
+                        <View style={styles.dayBox}>
+                          <Text variant="heading" style={styles.secondaryDay}>
+                            {weekDay}
+                          </Text>
+                          <Text variant="heading">{dayOfMonth}</Text>
+                          {monthOfYear && (
+                            <Text variant="heading" style={styles.secondaryDay}>
+                              {monthOfYear}
+                            </Text>
+                          )}
+                          {year && (
+                            <Text variant="heading" style={styles.secondaryDay}>
+                              {year}
+                            </Text>
+                          )}
+                        </View>
+                      )}
+                    </Col>
+                  ) : (
+                    // placeholder per mantenere l'allineamento
+                    <View style={styles.dayColumn} />
+                  )}
+
+                  {/* Colonna con la card */}
+                  <Col flex={1}>
+                    <AgendaCard
+                      title={item.title}
+                      type={statusLabel}
+                      color={borderColor}
+                      time={timeRange}
+                      onPress={() => handlePress(item)}
+                    >
+                      <Row align="center" justify="space-between">
+                        <Text>
+                          {item.bookedPlaces} / {item.places || 0}
+                        </Text>
+                      </Row>
+                    </AgendaCard>
+                  </Col>
+                </Row>
               );
             }}
             onEndReached={loadMore}
