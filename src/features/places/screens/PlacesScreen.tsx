@@ -156,13 +156,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       );
       return floorIds.size === 1 ? [...floorIds][0] : undefined;
     }
-    if (campus && campus?.floors.find(f => f.id === floorId) === undefined) {
-      setFloorId(
-        campus.floors[campus?.floors.findIndex(f => f.id === 'XPTE')].id,
-      );
-    }
     return floorId;
-  }, [debouncedSearch, floorId, places, campus]);
+  }, [debouncedSearch, floorId, places]);
 
   useEffect(() => {
     if (!isLoadingPlaces && mapFloorId !== floorId) {
@@ -261,7 +256,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     }),
     [search],
   );
-
+  useEffect(() => {
+    if (campus)
+      setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
+  }, [campus]);
   const floorSelectorButton = (
     <TranslucentCard>
       <TouchableOpacity
