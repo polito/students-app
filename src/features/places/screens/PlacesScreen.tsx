@@ -162,7 +162,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       );
     }
     return floorId;
-  }, [debouncedSearch, floorId, places]);
+  }, [debouncedSearch, floorId, places, campus]);
 
   useEffect(() => {
     if (!isLoadingPlaces && mapFloorId !== floorId) {
