@@ -156,6 +156,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       );
       return floorIds.size === 1 ? [...floorIds][0] : undefined;
     }
+    if (campus && campus?.floors.find(f => f.id === floorId) === undefined) {
+      setFloorId(
+        campus.floors[campus?.floors.findIndex(f => f.id === 'XPTE')].id,
+      );
+    }
     return floorId;
   }, [debouncedSearch, floorId, places]);
 
@@ -176,7 +181,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       headerLeft: !categoryFilterActive
         ? () => <HeaderLogo ml={5} />
         : undefined,
-      headerRight: () => <CampusSelector />,
+      headerRight: () => {
+        return <CampusSelector />;
+      },
       mapOptions: {
         camera: {
           padding: {
