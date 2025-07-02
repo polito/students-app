@@ -1,4 +1,10 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SectionList, StyleSheet, View } from 'react-native';
 
@@ -219,7 +225,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       };
     });
   }, [calendarEvents]);
-
+  useEffect(() => {
+    if (currentTopic.agendaView === true) {
+      setShowAgenda(true);
+    }
+  }, [currentTopic.agendaView]);
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
@@ -254,7 +264,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           <ActivityIndicator size="large" style={styles.loader} />
         )}
 
-        {showAgenda ? (
+        {showAgenda && currentTopic.agendaView ? (
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
             keyExtractor={item => item.id.toString()}
@@ -297,7 +307,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               );
 
               return (
-                <Row style={{ marginVertical: 8 }}>
+                <Row style={{ marginVertical: 8, marginHorizontal: 16 }}>
                   {/* Colonna data: mostro solo se è il primo del giorno */}
                   {isFirstOfDay ? (
                     <Col style={styles.dayColumn}>
@@ -343,6 +353,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                       title={item.title}
                       type={statusLabel}
                       color={borderColor}
+                      style={{
+                        backgroundColor: borderColor,
+                        borderColor: colors.surface,
+                        borderWidth: 3,
+                      }}
                       time={timeRange}
                       onPress={() => handlePress(item)}
                     >
@@ -360,7 +375,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             onEndReachedThreshold={0.5}
             ListEmptyComponent={
               <View style={styles.empty}>
-                <Text>{t('bookingScreen.noSlots')}</Text>
+                <Text>
+                  {!isLoading
+                    ? t('bookingScreen.bookingStatus.notAvailableBooking')
+                    : ''}
+                </Text>
               </View>
             }
           />
