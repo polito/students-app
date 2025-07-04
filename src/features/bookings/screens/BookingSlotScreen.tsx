@@ -99,13 +99,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     refetch,
     isRefetching,
   } = useGetBookingSlots(topicId, currentWeekStart);
-  // props topic
   const currentTopic = useMemo(
     () => getCalendarPropsFromTopic(topics, topicId),
     [topics, topicId],
   );
 
-  // calendario -> eventi
   const calendarEvents = useMemo<BookingCalendarEvent[]>(() => {
     if (!bookingSlots) return [];
     return bookingSlots.map(slot => {
@@ -125,7 +123,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     });
   }, [bookingSlots]);
 
-  // funzione comune onPress
   const handlePress = useCallback(
     (evtOrItem: BookingCalendarEvent) => {
       const booking = myBookings?.find(b => b.id === evtOrItem.id);
@@ -264,7 +261,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           <ActivityIndicator size="large" style={styles.loader} />
         )}
 
-        {showAgenda && currentTopic.agendaView ? (
+        {showAgenda && !currentTopic.agendaView ? (
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
             keyExtractor={item => item.id.toString()}
@@ -274,7 +271,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               </View>
             )}
             renderItem={({ item, index, section }) => {
-              // destrutturo la data
               const dt = item.start;
               const weekDay = dt.toFormat('EEE');
               const dayOfMonth = dt.toFormat('d');
@@ -283,13 +279,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 : null;
               const year = !isCurrentYear(dt) ? dt.toFormat('y') : null;
 
-              // controllo se è il primo item di questo giorno
               const isFirstOfDay =
                 index === 0 ||
                 dt.toISODate() !== section.data[index - 1].start.toISODate();
 
-              // calcolo stile e testo per AgendaCard
-              const { backgroundColor: borderColor } = getBookingStyle(
+              const { backgroundColor: borderColor, color } = getBookingStyle(
                 item,
                 palettes,
                 colors,
@@ -308,7 +302,6 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
 
               return (
                 <Row style={{ marginVertical: 8, marginHorizontal: 16 }}>
-                  {/* Colonna data: mostro solo se è il primo del giorno */}
                   {isFirstOfDay ? (
                     <Col style={styles.dayColumn}>
                       {item.start.hasSame(DateTime.local(), 'day') ? (
@@ -343,25 +336,24 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                       )}
                     </Col>
                   ) : (
-                    // placeholder per mantenere l'allineamento
                     <View style={styles.dayColumn} />
                   )}
 
-                  {/* Colonna con la card */}
                   <Col flex={1}>
                     <AgendaCard
                       title={item.title}
                       type={statusLabel}
                       color={borderColor}
-                      style={{
-                        backgroundColor: borderColor,
-                        borderColor: colors.surface,
-                        borderWidth: 3,
-                      }}
+                      style={{ backgroundColor: borderColor }}
                       time={timeRange}
                       onPress={() => handlePress(item)}
                     >
-                      <Row align="center" justify="space-between">
+                      <Row align="center">
+                        <Icon
+                          icon={faSeat}
+                          color={color}
+                          style={{ marginRight: 10 }}
+                        />
                         <Text>
                           {item.bookedPlaces} / {item.places || 0}
                         </Text>
