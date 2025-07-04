@@ -226,7 +226,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     if (currentTopic.agendaView === true) {
       setShowAgenda(true);
     }
-  }, [currentTopic.agendaView]);
+  }, []);
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
@@ -383,7 +383,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           calendarEvents.length > 0 && (
             <Calendar<BookingCalendarEvent>
               weekStartsOn={currentWeekStart.weekday as WeekNum}
-              mode={currentTopic.agendaView ? 'day' : 'custom'}
+              mode="custom"
               weekEndsOn={
                 currentWeekStart.plus({ days: currentTopic.daysPerWeek! - 1 })
                   .weekday as WeekNum
