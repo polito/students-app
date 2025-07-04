@@ -42,7 +42,7 @@ export const BottomModal = ({
       onBackButtonPress={handleCloseModal}
       style={{ margin: 0, justifyContent: 'flex-end' }}
       animationOutTiming={400}
-      animationInTiming={300}
+      animationInTiming={400}
       isVisible={visible}
       backdropOpacity={0.4}
       avoidKeyboard={true}
@@ -56,7 +56,7 @@ export const BottomModal = ({
       onBackdropPress={handleCloseModal}
       scrollTo={handleScrollTo}
       propagateSwipe
-      useNativeDriver={false}
+      useNativeDriver={true}
       useNativeDriverForBackdrop
       onSwipeComplete={handleCloseModal}
       scrollOffset={scrollOffset}
