@@ -224,7 +224,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               }
               containerStyle={{ paddingVertical: 0 }}
               destructive
-              style={{ marginBottom: 40 }}
+              style={{ marginBottom: Platform.OS === 'android' ? 40 : 0 }}
             />
           )}
         </CtaButtonContainer>
