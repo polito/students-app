@@ -226,7 +226,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     if (currentTopic.agendaView === true) {
       setShowAgenda(true);
     }
-  }, []);
+  }, [currentTopic.agendaView]);
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
