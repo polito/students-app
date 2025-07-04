@@ -261,7 +261,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           <ActivityIndicator size="large" style={styles.loader} />
         )}
 
-        {showAgenda && !currentTopic.agendaView ? (
+        {showAgenda ? (
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
             keyExtractor={item => item.id.toString()}
@@ -344,7 +344,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                       title={item.title}
                       type={statusLabel}
                       color={borderColor}
-                      style={{ backgroundColor: borderColor }}
+                      style={{
+                        backgroundColor: borderColor,
+                        borderColor: colors.surface,
+                        borderWidth: 3,
+                      }}
                       time={timeRange}
                       onPress={() => handlePress(item)}
                     >
