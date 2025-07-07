@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';

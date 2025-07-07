@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Col } from '@lib/ui/components/Col';
@@ -191,11 +192,11 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 })
               }
               absolute={false}
-              loading={acceptGradeQuery.isLoading}
+              loading={acceptGradeQuery.isPending}
               disabled={
                 isOffline ||
-                acceptGradeQuery.isLoading ||
-                rejectGradeQuery.isLoading
+                acceptGradeQuery.isPending ||
+                rejectGradeQuery.isPending
               }
               containerStyle={{ paddingVertical: 0 }}
             />
@@ -215,12 +216,12 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 })
               }
               absolute={false}
-              loading={rejectGradeQuery.isLoading}
+              loading={rejectGradeQuery.isPending}
               variant="outlined"
               disabled={
                 isOffline ||
-                acceptGradeQuery.isLoading ||
-                rejectGradeQuery.isLoading
+                acceptGradeQuery.isPending ||
+                rejectGradeQuery.isPending
               }
               containerStyle={{ paddingVertical: 0 }}
               destructive

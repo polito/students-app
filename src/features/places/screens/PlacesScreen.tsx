@@ -7,14 +7,19 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
-  Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -86,7 +91,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const [tabsHeight, setTabsHeight] = useState(46);
   const campus = useGetCurrentCampus();
   const { placesSearched } = usePreferencesContext();
-  const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =
     useContext(PlacesContext);
@@ -168,17 +172,22 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const categoryFilterActive = categoryId || subCategoryId;
 
   useLayoutEffect(() => {
-    const mapInsetTop =
-      headerHeight -
-      safeAreaInsets.top +
-      (!categoryFilterActive ? tabsHeight : 0);
+    const mapInsetTop = headerHeight + (!categoryFilterActive ? tabsHeight : 0);
     navigation.setOptions({
       headerLeft: !categoryFilterActive
-        ? () => <HeaderLogo ml={5} />
+        ? () => (
+            <HeaderLogo
+              ml={4}
+              style={Platform.select({
+                android: { marginRight: 0.5 },
+              })}
+            />
+          )
         : undefined,
       headerRight: () => {
         return <CampusSelector />;
       },
+
       mapOptions: {
         camera: {
           padding: {
@@ -218,7 +227,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     displayFloorId,
     headerHeight,
     places,
-    safeAreaInsets.top,
     spacing,
     subCategoryId,
     tabsHeight,
@@ -229,7 +237,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       bottomSheetPosition.value,
       [0.65 * screenHeight, 0.7 * screenHeight],
       [0, 1],
-      Extrapolate.CLAMP,
+      Extrapolation.CLAMP,
     );
 
     return {
@@ -302,7 +310,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   return (
     <View
-      style={GlobalStyles.grow}
+      style={GlobalStyles.absoluteVFull}
       pointerEvents="box-none"
       onLayout={({
         nativeEvent: {

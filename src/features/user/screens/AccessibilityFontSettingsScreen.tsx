@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Col } from '@lib/ui/components/Col';
 import { OverviewList } from '@lib/ui/components/OverviewList';

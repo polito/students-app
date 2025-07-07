@@ -61,7 +61,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           justify="space-between"
           style={{
             width: Platform.select({ android: width - 50, ios: width - 40 }),
-            left: Platform.select({ android: -25, ios: -15 }),
+            left: Platform.select({ android: -25, ios: 7 }),
           }}
         >
           <Row gap={2} align="center" flexShrink={1}>
@@ -128,13 +128,15 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseNoticesScreen}
             options={{
               title: t('courseNoticesTab.title'),
-              tabBarBadge: () =>
-                getUnreadsCount([
+              tabBarBadge: () => {
+                const count = getUnreadsCount([
                   'teaching',
                   'courses',
                   id.toString(),
                   'notices',
-                ]),
+                ]);
+                return <Text>{count && count > 0 ? count : ''}</Text>;
+              },
             }}
           />
           <TopTabs.Screen
@@ -142,13 +144,15 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={FileNavigator}
             options={{
               title: t('courseFilesTab.title'),
-              tabBarBadge: () =>
-                getUnreadsCount([
+              tabBarBadge: () => {
+                const count = getUnreadsCount([
                   'teaching',
                   'courses',
                   id.toString(),
                   'files',
-                ]),
+                ]);
+                return <Text>{count && count > 0 ? count : ''}</Text>;
+              },
             }}
           />
           <TopTabs.Screen
@@ -156,13 +160,15 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseLecturesScreen}
             options={{
               title: t('courseLecturesTab.title'),
-              tabBarBadge: () =>
-                getUnreadsCount([
+              tabBarBadge: () => {
+                const count = getUnreadsCount([
                   'teaching',
                   'courses',
                   id.toString(),
                   'lectures',
-                ]),
+                ]);
+                return <Text>{count && count > 0 ? count : ''}</Text>;
+              },
             }}
           />
           <TopTabs.Screen

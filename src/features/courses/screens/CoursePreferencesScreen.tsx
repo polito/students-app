@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   faCircle,

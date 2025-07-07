@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   ViewProps,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@lib/ui/components/Card.tsx';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
@@ -30,7 +30,7 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
   const styles = useStylesheet(createStyles);
   const { spacing } = useTheme();
   const { t } = useTranslation();
-  const { mutateAsync: requestEsc, isLoading: mutationsLoading } =
+  const { mutateAsync: requestEsc, isPending: mutationsLoading } =
     useRequestEsc();
 
   const onSubmit = async () => {

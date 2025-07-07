@@ -171,9 +171,9 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
           <CtaButton
             title={t('bookingScreen.cancelBooking')}
             action={onPressDelete}
-            loading={deleteBookingMutation.isLoading}
+            loading={deleteBookingMutation.isPending}
             absolute={false}
-            disabled={isDisabled || deleteBookingMutation.isLoading}
+            disabled={isDisabled || deleteBookingMutation.isPending}
             destructive={true}
           />
         )}

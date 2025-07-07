@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   ViewStyle,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -28,7 +28,7 @@ interface Props extends TouchableHighlightProps {
   icon?: any;
   absolute?: boolean;
   title: string;
-  rightExtra?: JSX.Element;
+  rightExtra?: ReactElement;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
   variant?: 'filled' | 'outlined';

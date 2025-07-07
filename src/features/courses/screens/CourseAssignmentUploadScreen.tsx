@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
-import DocumentPicker, { isInProgress } from 'react-native-document-picker';
 import { openCamera } from 'react-native-image-crop-picker';
 
 import { faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +9,11 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import {
+  isErrorWithCode,
+  keepLocalCopy,
+  pick,
+} from '@react-native-documents/picker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -54,22 +58,32 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
           title={t('courseAssignmentUploadScreen.ctaUploadFile')}
           subtitle={t('courseAssignmentUploadScreen.ctaUploadFileSubtitle')}
           leadingItem={<Icon icon={faUpload} size={fontSizes.xl} />}
-          onPress={() => {
-            DocumentPicker.pickSingle({
-              copyTo: 'cachesDirectory',
-            })
-              .then(response => {
-                handlePickedFile({
-                  uri: response.fileCopyUri!,
-                  name: response.name!,
-                  size: response.size!,
-                  type: response.type!,
-                });
-              })
-              .catch(e => {
-                if (DocumentPicker.isCancel(e) || isInProgress(e)) return;
-                console.error(e);
+          onPress={async () => {
+            try {
+              const [response] = await pick();
+              const [localCopy] = await keepLocalCopy({
+                files: [
+                  {
+                    uri: response.uri,
+                    fileName: response.name || '',
+                  },
+                ],
+                destination: 'cachesDirectory',
               });
+              if (localCopy.status !== 'success') {
+                throw new Error('File upload failed');
+              }
+              handlePickedFile({
+                uri: localCopy.localUri,
+                name: response.name || '',
+                size: response.size || 0,
+                type: response.type || '',
+              });
+            } catch (e) {
+              if (!isErrorWithCode(e)) {
+                console.error(e);
+              }
+            }
           }}
         />
         <ListItem
@@ -77,17 +91,16 @@ export const CourseAssignmentUploadScreen = ({ navigation, route }: Props) => {
           title={t('courseAssignmentUploadScreen.ctaCreatePDF')}
           subtitle={t('courseAssignmentUploadScreen.ctaCreatePDFSubtitle')}
           leadingItem={<Icon icon={faFilePdf} size={fontSizes.xl} />}
-          onPress={() => {
-            takePicture()
-              .then(image => {
-                navigation.navigate('CourseAssignmentPdfCreation', {
-                  courseId,
-                  firstImageUri: image.path,
-                });
-              })
-              .catch(e => {
-                console.error(e);
+          onPress={async () => {
+            try {
+              const image = await takePicture();
+              navigation.navigate('CourseAssignmentPdfCreation', {
+                courseId,
+                firstImageUri: image.path,
               });
+            } catch (e) {
+              console.error(e);
+            }
           }}
         />
       </OverviewList>

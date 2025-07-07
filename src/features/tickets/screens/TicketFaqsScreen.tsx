@@ -4,12 +4,12 @@ import {
   AccessibilityInfo,
   Alert,
   Keyboard,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
 import { Document } from 'react-native-render-html';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faSquareMinus } from '@fortawesome/free-regular-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator.tsx';

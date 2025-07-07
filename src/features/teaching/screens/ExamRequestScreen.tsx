@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -28,7 +29,7 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
 
-  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
+  const { mutateAsync: bookExam, isPending: isBooking } = useBookExam(id);
 
   const [state, setState] = useState<{ isError: boolean; value?: string }>({
     isError: false,

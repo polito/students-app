@@ -28,12 +28,13 @@ export const List = ({
             if (!isValidElement(c)) {
               return null;
             }
+            const props = c.props as any;
             const hasLeadingItem =
-              !!c.props?.leadingItem ||
-              !!c.props?.course ||
-              !!c.props?.exam ||
-              !!c.props?.person ||
-              c.props.ticket;
+              !!props?.leadingItem ||
+              !!props?.course ||
+              !!props?.exam ||
+              !!props?.person ||
+              props?.ticket;
             const indent = spacing[5] + (hasLeadingItem ? 31 + spacing[2] : 0);
 
             return (

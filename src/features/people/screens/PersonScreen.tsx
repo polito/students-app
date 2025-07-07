@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next';
 import {
   Image,
   Linking,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   faEnvelope,

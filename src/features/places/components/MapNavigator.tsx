@@ -9,8 +9,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
-import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { Image, Platform, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -38,6 +38,7 @@ import {
 import {
   NativeStackNavigationEventMap,
   NativeStackNavigationOptions,
+  NativeStackNavigatorProps,
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
 
@@ -103,7 +104,8 @@ export const MapNavigator = ({
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
-  const { dark } = useTheme();
+  const theme = useTheme();
+  const { dark } = theme;
   const headerBack = previousDescriptor
     ? {
         title: getHeaderTitle(
@@ -148,8 +150,16 @@ export const MapNavigator = ({
     headerBackTitle,
     headerBackTitleStyle,
     headerBackVisible,
-    headerBackTitleVisible,
   } = currentRoute.options;
+
+  const headerStileFixtures = Platform.select({
+    ios: {
+      transform: [{ translateY: -3 }],
+    },
+    android: {
+      maxHeight: 80,
+    },
+  });
 
   return (
     <NavigationContent>
@@ -164,7 +174,11 @@ export const MapNavigator = ({
             header={
               header !== undefined ? (
                 header({
-                  back: headerBack,
+                  back: headerBack
+                    ? 'href' in headerBack
+                      ? headerBack
+                      : { ...headerBack, href: '' }
+                    : undefined,
                   options: currentRoute.options,
                   route: currentRoute.route,
                   navigation: currentRoute.navigation,
@@ -200,12 +214,15 @@ export const MapNavigator = ({
                                     : undefined
                                 }
                                 onPress={navigation.goBack}
-                                canGoBack={canGoBack}
                                 label={
                                   headerBackTitle ??
                                   previousDescriptor?.options.title
                                 }
-                                labelVisible={IS_IOS && headerBackTitleVisible}
+                                displayMode={
+                                  IS_IOS && headerBackVisible
+                                    ? 'default'
+                                    : 'minimal'
+                                }
                                 labelStyle={headerBackTitleStyle}
                               />
                             )
@@ -228,12 +245,25 @@ export const MapNavigator = ({
                   headerTransparent={headerTransparent}
                   headerShadowVisible={headerShadowVisible}
                   headerBackground={headerBackground}
-                  headerStyle={headerStyle}
+                  headerStyle={[headerStyle, headerStileFixtures]}
+                  headerBackgroundContainerStyle={Platform.select({
+                    android: {
+                      boxShadow: '0 0 8px 3px #0003',
+                    },
+                  })}
                 />
               )
             }
           >
-            <HeaderBackContext.Provider value={headerBack}>
+            <HeaderBackContext.Provider
+              value={
+                headerBack
+                  ? 'href' in headerBack
+                    ? headerBack
+                    : { ...headerBack, href: '' }
+                  : undefined
+              }
+            >
               <MapView
                 ref={mapRef}
                 style={[GlobalStyles.grow, rotating && { display: 'none' }]}
@@ -301,12 +331,7 @@ export type MapNavigationOptions = NativeStackNavigationOptions & {
   mapDefaultContent?: ComponentType;
 };
 
-export const createMapNavigator = createNavigatorFactory<
-  StackNavigationState<ParamListBase>,
-  MapNavigationOptions,
-  NativeStackNavigationEventMap,
-  typeof MapNavigator
->(MapNavigator);
+export const createMapNavigator = createNavigatorFactory(MapNavigator);
 
 export type MapNavigationProp<
   ParamList extends ParamListBase,

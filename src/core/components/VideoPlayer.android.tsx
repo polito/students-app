@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import Video, {
   OnBufferData,
@@ -72,7 +74,7 @@ export const VideoPlayer = (props: ReactVideoProps) => {
   useEffect(() => {
     if (fullscreen) {
       SystemNavigationBar.stickyImmersive();
-      StatusBar.setHidden(true);
+      SystemBars.setHidden(true);
     } else {
       SystemNavigationBar.fullScreen(fullscreen);
     }

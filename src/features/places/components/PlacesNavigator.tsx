@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ImageURISource, StyleSheet, View } from 'react-native';
+import { ImageURISource, Platform, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { Divider } from '@lib/ui/components/Divider';
@@ -63,7 +63,7 @@ export type PlacesStackParamList = {
   FreeRooms: undefined;
 };
 
-const Map = createMapNavigator<PlacesStackParamList>();
+const Map = createMapNavigator();
 
 const MapDefaultContent = () => {
   const theme = useTheme();
@@ -135,8 +135,11 @@ export const PlacesNavigator = () => {
     }
   };
   useEffect(() => {
-    request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-    request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    const perm = Platform.select({
+      ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    });
+    if (perm) request(perm).catch(console.error);
   }, []);
 
   return (
@@ -146,7 +149,7 @@ export const PlacesNavigator = () => {
         key={`PlacesNavigator:${colorScheme}`}
         screenOptions={{
           orientation: 'portrait',
-          headerBackTitleVisible: true,
+          headerBackButtonDisplayMode: 'default',
           headerTransparent: true,
           headerBackground: () => (
             <View style={StyleSheet.absoluteFill}>
@@ -180,7 +183,7 @@ export const PlacesNavigator = () => {
           name="Places"
           component={PlacesScreen}
           options={{ title: t('placesScreen.title') }}
-          getId={({ params }) =>
+          getId={({ params }: { params: any }) =>
             [params?.categoryId, params?.subCategoryId].join()
           }
         />

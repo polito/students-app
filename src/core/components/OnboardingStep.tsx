@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Video from 'react-native-video';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';

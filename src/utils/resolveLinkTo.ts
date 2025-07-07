@@ -1,4 +1,9 @@
-import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
+export type To<ParamList = any> =
+  | string
+  | {
+      screen: keyof ParamList;
+      params?: ParamList[keyof ParamList];
+    };
 
 export const resolveLinkTo = (linkTo: To<any>) => ({
   name: typeof linkTo === 'string' ? linkTo : linkTo.screen,

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Platform, ScrollView, View } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -29,7 +32,7 @@ export const ExamRescheduleScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
   const bottomBarHeight = useSafeBottomBarHeight();
-  const { mutateAsync: request, isLoading: isBooking } =
+  const { mutateAsync: request, isPending: isBooking } =
     useRescheduleRequest(id);
 
   const [firstState, setFirstState] = useState<{

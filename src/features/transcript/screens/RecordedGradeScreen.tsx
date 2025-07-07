@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';

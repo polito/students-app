@@ -121,7 +121,9 @@ export const useNotifications = () => {
 
       return Promise.all(
         notificationsToClear.map(n => markNotificationAsRead(n.id)),
-      ).then(() => queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY));
+      ).then(() =>
+        queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY }),
+      );
     },
     [markNotificationAsRead, queryClient, unreadNotifications],
   );

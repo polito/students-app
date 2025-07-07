@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { ReactElement, useCallback } from 'react';
 import {
   Image,
   StyleProp,
@@ -27,7 +27,7 @@ import { HighlightedText } from './HighlightedText';
 interface Props {
   person: PersonOverview;
   searchString?: string;
-  trailingItem?: JSX.Element;
+  trailingItem?: ReactElement;
   index: number;
   totalData: number;
   containerStyle?: StyleProp<ViewStyle>;

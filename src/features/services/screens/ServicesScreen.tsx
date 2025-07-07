@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Linking, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -54,9 +55,11 @@ export const ServicesScreen = () => {
 
   const openWebmailLink = useCallback(async () => {
     queryClient
-      .fetchQuery(WEBMAIL_LINK_QUERY_KEY, GetWebmailLink, {
+      .fetchQuery({
+        queryKey: WEBMAIL_LINK_QUERY_KEY,
+        queryFn: GetWebmailLink,
         staleTime: 55 * 1000, // 55 seconds
-        cacheTime: 55 * 1000, // 55 seconds
+        gcTime: 55 * 1000, // 55 seconds (cacheTime is now gcTime)
       })
       .then(res => openInAppLink(res.url));
   }, [openInAppLink, queryClient]);

@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
@@ -8,7 +9,7 @@ import { Person } from '@polito/api-client/models/Person';
 
 interface Props {
   person: Person | undefined;
-  subtitle?: string | JSX.Element;
+  subtitle?: string | ReactElement;
   navigateEnabled?: boolean;
 }
 

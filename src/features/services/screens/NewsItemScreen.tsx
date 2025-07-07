@@ -1,12 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { ScrollView, StyleSheet, TouchableHighlight } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import FastImage from '@d11/react-native-fast-image';
 import {
   faCalendarAlt,
   faFileAlt,

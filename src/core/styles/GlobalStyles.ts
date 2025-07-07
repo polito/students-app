@@ -10,4 +10,9 @@ export const GlobalStyles = StyleSheet.create({
   relative: {
     position: 'relative',
   },
+  absoluteVFull: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+  },
 });

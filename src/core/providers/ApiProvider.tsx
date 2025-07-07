@@ -14,6 +14,7 @@ import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
+  QueryCache,
   QueryClient,
   QueryClientProvider,
   onlineManager,
@@ -85,18 +86,20 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   );
   const queryClientRef = useRef(
     new QueryClient({
+      queryCache: new QueryCache({
+        onError: error => {
+          if (error instanceof ResponseError) {
+            globalQueryErrorHandler(error, queryClientRef.current);
+          }
+        },
+      }),
       defaultOptions: {
         queries: {
-          cacheTime: 1000 * 60 * 60 * 24 * 3, // 3 days
+          gcTime: 1000 * 60 * 60 * 24 * 3, // 3 days
           staleTime: 300000, // 5 minutes
           // networkMode: 'always',
           retry: isEnvProduction ? 2 : 1,
           refetchOnWindowFocus: isEnvProduction,
-          onError(error) {
-            if (error instanceof ResponseError) {
-              globalQueryErrorHandler(error, queryClientRef.current);
-            }
-          },
         },
         mutations: {
           retry: 1,
@@ -117,13 +120,6 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       return;
     }
     queryClientRef.current.setDefaultOptions({
-      queries: {
-        onError(error) {
-          if (error instanceof ResponseError) {
-            globalQueryErrorHandler(error, queryClientRef.current);
-          }
-        },
-      },
       mutations: {
         onError(error) {
           if (error instanceof ResponseError) {

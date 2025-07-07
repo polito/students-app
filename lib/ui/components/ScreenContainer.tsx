@@ -1,10 +1,6 @@
 import { PropsWithChildren } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BottomBarSpacer } from '../../../src/core/components/BottomBarSpacer';
 

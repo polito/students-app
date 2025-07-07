@@ -20,11 +20,9 @@ export const GetWebmailLink = async () => {
 export const useGetUnreadEmails = () => {
   const webmailClient = useWebmailClient();
 
-  return useQuery(
-    UNREAD_MAIL_QUERY_KEY,
-    () => webmailClient.getUnreadEmailslNumber().then(pluckData),
-    {
-      refetchInterval: 5 * 60 * 1000, // 5 minutes
-    },
-  );
+  return useQuery({
+    queryKey: UNREAD_MAIL_QUERY_KEY,
+    queryFn: () => webmailClient.getUnreadEmailslNumber().then(pluckData),
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
 };

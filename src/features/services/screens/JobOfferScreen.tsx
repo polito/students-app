@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Linking, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import replace from 'react-string-replace';
 
 import { Card } from '@lib/ui/components/Card';

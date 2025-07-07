@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { RadioGroup } from '@lib/ui/components/RadioGroup';
@@ -26,7 +27,7 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
 
-  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
+  const { mutateAsync: bookExam, isPending: isBooking } = useBookExam(id);
 
   useEffect(() => {
     if (exam && !exam.question) navigation.goBack();

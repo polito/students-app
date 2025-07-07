@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   useColorScheme,
 } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import {

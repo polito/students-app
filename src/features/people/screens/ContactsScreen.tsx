@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';

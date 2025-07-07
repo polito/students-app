@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
 import FastImage, {
   FastImageProps,
   FastImageStaticProperties,
   ImageStyle,
   ResizeMode,
-} from 'react-native-fast-image';
-
+} from '@d11/react-native-fast-image';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 
 type Props = Partial<Omit<FastImageStaticProperties, 'resizeMode'>> &

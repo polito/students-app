@@ -38,7 +38,7 @@ export const VideoPlayer = (props: ReactVideoProps) => {
     <Video
       onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
       ignoreSilentSwitch="ignore"
-      pictureInPicture
+      allowsExternalPlayback={true}
       paused={paused}
       controls={true}
       style={{

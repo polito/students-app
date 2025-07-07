@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   faAngleDown,
@@ -234,14 +229,12 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               }
             />
             <OverviewList emptyStateText={t('degreeCourseScreen.noStaff')}>
-              {offeringCourse?.staff
-                .slice(0, 3)
-                .map(item => (
-                  <StaffListItem
-                    key={`${item.id}${item.courseId}`}
-                    staff={item}
-                  />
-                ))}
+              {offeringCourse?.staff.slice(0, 3).map(item => (
+                <StaffListItem
+                  key={`${item.id}${item.courseId}`}
+                  staff={item}
+                />
+              ))}
             </OverviewList>
           </Section>
           <Section>

@@ -49,7 +49,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   });
   const {
     mutateAsync: handleCreateTicket,
-    isLoading,
+    isPending,
     isSuccess,
     data,
   } = useCreateTicket();
@@ -202,7 +202,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             message: ticketBody?.message?.trim().replace(/\n/g, '<br>'),
           } as CreateTicketRequest)
         }
-        loading={isLoading}
+        loading={isPending}
         icon={faPaperPlane}
       />
     </ScreenContainer>

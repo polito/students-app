@@ -1,4 +1,5 @@
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';

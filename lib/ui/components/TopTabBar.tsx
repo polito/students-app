@@ -51,10 +51,14 @@ export const TopTabBar = ({
               key={route.key}
               selected={isFocused}
               accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
+              testID={route.key}
               onPress={onPress}
               onLongPress={onLongPress}
-              badge={options.tabBarBadge?.() as string | number}
+              badge={
+                options.tabBarBadge
+                  ? (options.tabBarBadge as unknown as string | number)
+                  : undefined
+              }
             >
               {label as string}
             </Tab>

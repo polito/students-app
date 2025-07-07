@@ -154,7 +154,7 @@ export const useSwitchCareer = () => {
       since it's already refreshed upon username change in prefs */
       refreshContext({ token, username });
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
+      queryClient.invalidateQueries();
 
       await setCredentials(clientId, token);
       updatePreference('username', username);

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { List } from '@lib/ui/components/List';
