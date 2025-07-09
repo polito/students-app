@@ -34,6 +34,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime, IANAZone } from 'luxon';
 
+import { EmptyWeek } from '../../../../src/features/agenda/components/EmptyWeek';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -370,13 +371,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
             ListEmptyComponent={
-              <View style={styles.empty}>
-                <Text>
-                  {!isLoading
-                    ? t('bookingScreen.bookingStatus.notAvailableBooking')
-                    : ''}
-                </Text>
-              </View>
+              <View style={styles.empty}>{!isLoading && <EmptyWeek />}</View>
             }
           />
         ) : (
