@@ -30,6 +30,8 @@ export const NOTIFICATIONS_PREFERENCES_QUERY_KEY = ['notificationsPreferences'];
 export const GUIDES_QUERY_KEY = ['guides'];
 export const DEADLINES_QUERY_PREFIX = 'deadlines';
 
+const UNREAD_MAIL_QUERY_KEY = ['unreadEmails'];
+
 const useStudentClient = (): StudentApi => {
   return new StudentApi();
 };
@@ -353,6 +355,18 @@ export const useUpdateNotificationPreference = () => {
           client.invalidateQueries([COURSE_QUERY_PREFIX]),
         ]);
       },
+    },
+  );
+};
+
+export const useGetUnreadEmails = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery(
+    UNREAD_MAIL_QUERY_KEY,
+    () => studentClient.getUnreadEmailslNumber().then(pluckData),
+    {
+      refetchInterval: 5 * 60 * 1000, // 5 minutes
     },
   );
 };
