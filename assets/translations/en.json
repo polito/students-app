@@ -326,9 +326,9 @@
   },
   "courseColorPickerScreen": {
     "accessibleColor": "Accessible colors",
-    "areYouSureMessage": "The selected color has not been tested for accessibility.",
-    "areYouSureTitle": "Are you sure?",
-    "customColorWarning": "Custom colors",
+    "areYouSureMessage": "The color selected by the picker is not part of the tested palette and may not provide ideal contrast.",
+    "areYouSureTitle": "Do you want to proceed?",
+    "customColorTitle": "Custom colors",
     "dontShowAgain": "Don't show again",
     "title": "Pick a color"
   },
