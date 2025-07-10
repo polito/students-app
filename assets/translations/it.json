@@ -338,8 +338,8 @@
   },
   "courseColorPickerScreen": {
     "accessibleColor": "Colori accessibili",
-    "areYouSureMessage": "Il colore selezionato non è stato testato per accessibilità.",
-    "areYouSureTitle": "Sei sicuro?",
+    "areYouSureMessage": "Il colore scelto dal selettore non fa parte della palette testata e potrebbe non garantire un contrasto ideale.",
+    "areYouSureTitle": "Vuoi procedere?",
     "customColorTitle": "Colori a scelta",
     "dontShowAgain": "Non mostrare più",
     "title": "Seleziona un colore"
