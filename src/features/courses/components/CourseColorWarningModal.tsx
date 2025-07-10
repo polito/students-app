@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Modal, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -9,7 +10,7 @@ type CustomAlertProps = {
   visible: boolean;
   onConfirm: (dontShowAgain: boolean) => void;
   onCancel: () => void;
-  title?: string;
+  footer?: string;
   message?: string;
   dontShowAgainLabel?: string;
 };
@@ -18,10 +19,11 @@ const CustomAlert = ({
   visible,
   onConfirm,
   onCancel,
-  title,
+  footer,
   message,
   dontShowAgainLabel,
 }: CustomAlertProps) => {
+  const { t } = useTranslation();
   const { updatePreference, showColorWarning = true } = usePreferencesContext();
   const { colors } = useTheme();
   const [dontShowAgain, setDontShowAgain] = useState(!showColorWarning);
@@ -75,8 +77,8 @@ const CustomAlert = ({
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Text style={styles.titleText}>{title}</Text>
           <Text style={styles.messageText}>{message}</Text>
+          <Text style={styles.titleText}>{footer}</Text>
           <View style={styles.switchContainer}>
             <Switch
               value={dontShowAgain}
@@ -91,8 +93,17 @@ const CustomAlert = ({
             <Text style={styles.switchLabel}>{dontShowAgainLabel}</Text>
           </View>
           <View style={styles.buttonContainer}>
-            <Button title="Cancel" onPress={onCancel} color={colors.link} />
-            <Button title="OK" onPress={handleOk} color={colors.link} />
+            <Button
+              title={t('common.cancel')}
+              onPress={onCancel}
+              color={colors.link}
+            />
+            <View style={{ width: 10 }} />
+            <Button
+              title={t('common.confirm')}
+              onPress={handleOk}
+              color={colors.link}
+            />
           </View>
         </View>
       </View>
