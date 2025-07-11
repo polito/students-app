@@ -13,7 +13,6 @@ import {
   faFile,
   faIcons,
   faVideoCamera,
-  faIcons,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
