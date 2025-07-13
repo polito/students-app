@@ -205,6 +205,7 @@
     "newItems": "New item",
     "newItems_plural": "New items",
     "newVersionTitle": "New version available!",
+    "none": "None",
     "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it to access all the new features and avoid malfunctions.",
     "next": "Next",
     "noInternet": "You are offline, some features may not be available",
@@ -682,6 +683,7 @@
   },
   "placeCategories": {
     "classrooms": "Classrooms",
+    "departments": "Departments",
     "libraries": "Libraries",
     "studyRooms": "Study rooms"
   },

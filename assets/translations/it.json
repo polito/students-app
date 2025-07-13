@@ -212,6 +212,7 @@
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "newVersionTitle": "Nuova versione disponibile!",
+    "none": "Nessuno",
     "newVersionBody": "È disponibile una nuova versione di PoliTO Students ({{newVersion}}).\n\nAggiornala per avere a disposizione tutte le nuove funzionalità e non incorrere in malfunzionamenti.",
     "next": "Avanti",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
@@ -698,6 +699,7 @@
   },
   "placeCategories": {
     "classrooms": "Aule",
+    "departments": "Dipartimenti",
     "libraries": "Biblioteche",
     "studyRooms": "Aule studio"
   },

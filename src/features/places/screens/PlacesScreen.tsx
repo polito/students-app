@@ -93,6 +93,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const searchPlaceToListItem = useSearchPlaceToListItem();
   const [search, setSearch] = useState('');
   const [floorId, setFloorId] = useState<string>();
+  const [selectedDepartment, setSelectedDepartment] = useState<string>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const bottomSheetPosition = useSharedValue(0);
   const [screenHeight, setScreenHeight] = useState(
@@ -101,11 +102,25 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: campus?.id,
-    search: debouncedSearch,
+    search: selectedDepartment || debouncedSearch,
     floorId,
     categoryId,
     subCategoryId,
   });
+
+  const departments = [
+    { id: 'DAD', name: 'DAD' },
+    { id: 'DAUIN', name: 'DAUIN' },
+    { id: 'DET', name: 'DET' },
+    { id: 'DIATI', name: 'DIATI' },
+    { id: 'DIGEP', name: 'DIGEP' },
+    { id: 'DIMEAS', name: 'DIMEAS' },
+    { id: 'DISEG', name: 'DISEG' },
+    { id: 'DISMA', name: 'DISMA' },
+    { id: 'DENERG', name: 'DENERG' },
+    { id: 'DIST', name: 'DIST' },
+    { id: 'DISAT', name: 'DISAT' },
+  ];
 
   const categoryFilterName = useMemo(
     () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
@@ -274,16 +289,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             style={{
               flexShrink: 1,
               flexGrow: 1,
-              marginRight: 20,
+              maxWidth: '75%',
             }}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>
-          <Icon
-            icon={faChevronDown}
-            size={fontSizes.xs}
-            style={{ position: 'absolute', right: 15 }}
-          />
+          <View style={{ width: 20, alignItems: 'center' }}>
+            <Icon icon={faChevronDown} size={fontSizes.xs} />
+          </View>
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
@@ -329,26 +342,55 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           </PillIconButton>
           <PillIconButton
             icon={faChalkboardTeacher}
-            onPress={() =>
+            onPress={() => {
               navigation.navigate({
                 name: 'Places',
                 params: { subCategoryId: 'AULA' },
-              })
-            }
+              });
+            }}
           >
             {t('placeCategories.classrooms')}
           </PillIconButton>
           <PillIconButton
             icon={faBookReader}
-            onPress={() =>
+            onPress={() => {
               navigation.navigate({
                 name: 'Places',
                 params: { subCategoryId: 'S_STUD' },
-              })
-            }
+              });
+            }}
           >
             {t('placeCategories.studyRooms')}
           </PillIconButton>
+          <StatefulMenuView
+            onPressAction={({ nativeEvent: { event: selectedDeptId } }) => {
+              setSelectedDepartment(
+                selectedDeptId === 'none' ? undefined : selectedDeptId,
+              );
+              // Set the search to the selected department
+              setSearch(selectedDeptId === 'none' ? '' : selectedDeptId);
+            }}
+            actions={[
+              { id: 'none', title: t('common.none') },
+              ...departments.map(dept => ({
+                id: dept.id,
+                title: dept.name,
+              })),
+            ]}
+          >
+            <PillButton>
+              <Row align="center" gap={2}>
+                <Text
+                  variant="prose"
+                  weight="medium"
+                  style={{ color: 'white' }}
+                >
+                  {selectedDepartment || t('placeCategories.departments')}
+                </Text>
+                <Icon icon={faChevronDown} size={fontSizes.xs} color="white" />
+              </Row>
+            </PillButton>
+          </StatefulMenuView>
           <PillIconButton
             icon={faBookOpen}
             onPress={() =>
