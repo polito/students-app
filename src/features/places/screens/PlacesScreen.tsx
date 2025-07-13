@@ -77,7 +77,7 @@ type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 export const PlacesScreen = ({ navigation, route }: Props) => {
   const { categoryId, subCategoryId } = route.params ?? {};
   const styles = useStylesheet(createStyles);
-  const { spacing, fontSizes } = useTheme();
+  const { spacing, fontSizes, colors } = useTheme();
   const { t } = useTranslation();
   const placeCategory = useGetPlaceCategory(categoryId);
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
@@ -380,14 +380,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           >
             <PillButton>
               <Row align="center" gap={1.5}>
-                <Text style={styles.text}>
+                <Text style={[styles.text, { color: colors.white }]}>
                   {selectedDepartment || t('placeCategories.departments')}
                 </Text>
                 <Icon
                   icon={faChevronDown}
                   size={fontSizes.xs}
-                  // eslint-disable-next-line react-native/no-color-literals
-                  color="white"
+                  color={colors.white}
                 />
               </Row>
             </PillButton>
@@ -550,7 +549,5 @@ const createStyles = ({ spacing, fontWeights }: Theme) =>
     },
     text: {
       fontWeight: fontWeights.medium,
-      // eslint-disable-next-line react-native/no-color-literals
-      color: 'white',
     },
   });
