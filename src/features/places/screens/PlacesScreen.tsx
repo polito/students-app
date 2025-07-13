@@ -379,12 +379,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             ]}
           >
             <PillButton>
-              <Row align="center" gap={2}>
-                <Text
-                  variant="prose"
-                  weight="medium"
-                  style={{ color: 'white' }}
-                >
+              <Row align="center" gap={1.5}>
+                <Text style={styles.text}>
                   {selectedDepartment || t('placeCategories.departments')}
                 </Text>
                 <Icon icon={faChevronDown} size={fontSizes.xs} color="white" />
@@ -528,7 +524,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, fontWeights }: Theme) =>
   StyleSheet.create({
     controls: {
       position: 'absolute',
@@ -546,5 +542,9 @@ const createStyles = ({ spacing }: Theme) =>
     icon: {
       alignItems: 'center',
       paddingHorizontal: spacing[3],
+    },
+    text: {
+      fontWeight: fontWeights.medium,
+      color: 'white',
     },
   });
