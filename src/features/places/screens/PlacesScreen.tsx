@@ -545,6 +545,7 @@ const createStyles = ({ spacing, fontWeights }: Theme) =>
     },
     text: {
       fontWeight: fontWeights.medium,
+      // eslint-disable-next-line react-native/no-color-literals
       color: 'white',
     },
   });
