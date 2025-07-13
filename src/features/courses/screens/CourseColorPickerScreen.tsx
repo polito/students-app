@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     height: 200,
     borderRadius: 8,
-    width: '95%',
+    width: '90%',
     alignSelf: 'center',
   },
   slider: {
