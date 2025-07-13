@@ -383,7 +383,12 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                 <Text style={styles.text}>
                   {selectedDepartment || t('placeCategories.departments')}
                 </Text>
-                <Icon icon={faChevronDown} size={fontSizes.xs} color="white" />
+                <Icon
+                  icon={faChevronDown}
+                  size={fontSizes.xs}
+                  // eslint-disable-next-line react-native/no-color-literals
+                  color="white"
+                />
               </Row>
             </PillButton>
           </StatefulMenuView>
