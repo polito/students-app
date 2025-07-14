@@ -3,6 +3,7 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -85,7 +86,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     START_DATE.startOf('week'),
   );
-
+  const [loadedWeeks, setLoadedWeeks] = useState<string[]>([
+    START_DATE.startOf('week').toISODate()!,
+  ]);
+  const [eventsByWeek, setEventsByWeek] = useState<
+    Record<string, BookingCalendarEvent[]>
+  >({});
   const {
     open: showBottomModal,
     modal: bottomModal,
@@ -165,10 +171,50 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [myBookings, navigation, showBottomModal, topicId, closeBottomModal],
   );
 
-  const [, setDates] = useState<DateTime[]>([START_DATE]);
-  const loadMore = () =>
-    setDates(d => [...d, d[d.length - 1].plus({ days: 1 })]);
+  useLayoutEffect(() => {
+    if (!bookingSlots) return;
+    const weekISO = currentWeekStart.toISODate()!;
+    const newEvents = bookingSlots.map(slot => {
+      const start = DateTime.fromJSDate(slot.startsAt as Date, {
+        zone: IANAZone.create('Europe/Rome'),
+      });
+      const end = DateTime.fromJSDate(slot.endsAt as Date, {
+        zone: IANAZone.create('Europe/Rome'),
+      });
+      return {
+        ...slot,
+        start,
+        end,
+        duration: end.diff(start, 'minutes').minutes,
+        title: slot.description || '',
+      };
+    });
 
+    setEventsByWeek(prev => ({
+      ...prev,
+      [weekISO]: newEvents,
+    }));
+
+    setLoadedWeeks(ws => (ws.includes(weekISO) ? ws : [...ws, weekISO]));
+    // if (currentTopic.agendaView) setShowAgenda(true);
+  }, [bookingSlots, currentWeekStart, currentTopic.agendaView]);
+
+  const hasAutoOpenedRef = useRef(false);
+
+  useEffect(() => {
+    if (
+      currentTopic.agendaView &&
+      bookingSlots &&
+      bookingSlots.length > 0 &&
+      !hasAutoOpenedRef.current
+    ) {
+      setShowAgenda(true);
+      hasAutoOpenedRef.current = true;
+    }
+  }, [currentTopic.agendaView, bookingSlots]);
+  useEffect(() => {
+    setCurrentWeekStart(START_DATE.startOf('week'));
+  }, [showAgenda]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -201,33 +247,19 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     data: BookingCalendarEvent[];
   };
   const weekSections = useMemo<WeekSection[]>(() => {
-    const map = new Map<string, BookingCalendarEvent[]>();
-
-    calendarEvents.forEach(evt => {
-      const weekStartISO = evt.start.startOf('week').toISODate()!;
-      if (!map.has(weekStartISO)) {
-        map.set(weekStartISO, []);
-      }
-      map.get(weekStartISO)!.push(evt);
-    });
-
-    return Array.from(map.entries()).map(([isoStart, evts]) => {
+    return loadedWeeks.map(isoStart => {
+      const evts = eventsByWeek[isoStart] || [];
       const start = DateTime.fromISO(isoStart);
       const end = start.plus({ days: 6 });
-      const sorted = evts.sort(
-        (a, b) => a.start.toMillis() - b.start.toMillis(),
-      );
+      const sorted = evts
+        .slice()
+        .sort((a, b) => a.start.toMillis() - b.start.toMillis());
       return {
         title: `${start.toFormat('d LLL')} - ${end.toFormat('d LLL')}`,
         data: sorted,
       };
     });
-  }, [calendarEvents]);
-  useEffect(() => {
-    if (currentTopic.agendaView === true) {
-      setShowAgenda(true);
-    }
-  }, [currentTopic.agendaView]);
+  }, [loadedWeeks, eventsByWeek]);
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
@@ -235,33 +267,31 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         <Tabs>
           <BookingSlotsStatusLegend />
         </Tabs>
-        <WeekFilter
-          current={currentWeekStart}
-          getNext={() =>
-            setCurrentWeekStart(w =>
-              currentTopic.agendaView
-                ? w.plus({ days: 1 })
-                : w.plus({ week: 1 }),
-            )
-          }
-          getPrev={() =>
-            setCurrentWeekStart(w =>
-              currentTopic.agendaView
-                ? w.minus({ days: 1 })
-                : w.minus({ week: 1 }),
-            )
-          }
-          isNextWeekDisabled={isOffline}
-          isPrevWeekDisabled={isOffline}
-          daysPerWeek={currentTopic.daysPerWeek! - 1}
-        />
+        {!showAgenda && (
+          <WeekFilter
+            current={currentWeekStart}
+            getNext={() =>
+              setCurrentWeekStart(w =>
+                currentTopic.agendaView
+                  ? w.plus({ days: 1 })
+                  : w.plus({ week: 1 }),
+              )
+            }
+            getPrev={() => {
+              setCurrentWeekStart(w =>
+                currentTopic.agendaView
+                  ? w.minus({ days: 1 })
+                  : w.minus({ week: 1 }),
+              );
+            }}
+            isNextWeekDisabled={isOffline}
+            isPrevWeekDisabled={isOffline}
+            daysPerWeek={currentTopic.daysPerWeek! - 1}
+          />
+        )}
       </HeaderAccessory>
 
       <View style={styles.container} onLayout={() => {}}>
-        {(isFetching || isLoading || isRefetching) && (
-          <ActivityIndicator size="large" style={styles.loader} />
-        )}
-
         {showAgenda ? (
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
@@ -271,6 +301,16 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 <Text variant="heading">{title}</Text>
               </View>
             )}
+            renderSectionFooter={({ section }) =>
+              section.data.length === 0 ? (
+                <Row style={{ marginVertical: 8, marginHorizontal: 16 }}>
+                  <View style={styles.dayColumn} />
+                  <Col flex={1}>
+                    <EmptyWeek message={t('bookingsScreen.emptyWeek')} />
+                  </Col>
+                </Row>
+              ) : null
+            }
             renderItem={({ item, index, section }) => {
               const dt = item.start;
               const weekDay = dt.toFormat('EEE');
@@ -368,79 +408,94 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 </Row>
               );
             }}
-            onEndReached={loadMore}
+            onEndReached={() => {
+              if (!isOffline) {
+                const nextWeek = currentWeekStart.plus({ week: 1 });
+                setCurrentWeekStart(nextWeek);
+              }
+            }}
             onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              isFetching || isLoading || isRefetching ? (
+                <ActivityIndicator size="large" style={styles.loader} />
+              ) : null
+            }
             ListEmptyComponent={
               <View style={styles.empty}>{!isLoading && <EmptyWeek />}</View>
             }
           />
         ) : (
-          calendarEvents.length > 0 && (
-            <Calendar<BookingCalendarEvent>
-              weekStartsOn={currentWeekStart.weekday as WeekNum}
-              mode="custom"
-              weekEndsOn={
-                currentWeekStart.plus({ days: currentTopic.daysPerWeek! - 1 })
-                  .weekday as WeekNum
-              }
-              headerContentStyle={styles.dayHeader}
-              weekDayHeaderHighlightColor={colors.background}
-              calendarCellStyle={styles.eventCellStyle}
-              date={currentWeekStart}
-              locale={language}
-              hours={hours}
-              bodyContainerStyle={{ backgroundColor: colors.yellow }}
-              cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
-              showAllDayEventCell={false}
-              swipeEnabled={false}
-              renderHeader={props => (
-                <CalendarHeader {...props} cellHeight={-1} />
-              )}
-              onPressEvent={handlePress}
-              events={calendarEvents}
-              height={styles.container.flex as number}
-              startHour={currentTopic.startHour || 8}
-              renderEvent={(item, touchableOpacityProps, key) => {
-                const isMini = item.duration <= 15;
-                const { color, backgroundColor } = getBookingStyle(
-                  item,
-                  palettes,
-                  colors,
-                  dark,
-                );
-                const dateStart = formatDate(item.start.toJSDate());
-                const timeStart = item.start.toFormat('HH:mm');
-                const timeEnd = item.end.toFormat('HH:mm');
-                const timeMessage = ` ${dateStart}, ${t('common.fromTime')} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
-                return (
-                  <Pressable
-                    key={key}
-                    {...touchableOpacityProps}
-                    style={[
-                      touchableOpacityProps.style,
-                      styles.event,
-                      { backgroundColor },
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      t(
-                        getBookingSlotStatus(
-                          item,
-                          'bookingScreen.bookingStatus.notAvailableBooking',
-                        ),
-                      ) + timeMessage
-                    }
-                    onPress={() => handlePress(item)}
-                  >
-                    {!isMini && <Icon icon={faSeat} color={color} />}
-                    <Text style={styles.placesText}>
-                      {item.bookedPlaces} / {item.places || 0}
-                    </Text>
-                  </Pressable>
-                );
-              }}
-            />
-          )
+          <>
+            {(isFetching || isLoading || isRefetching) && (
+              <ActivityIndicator size="large" style={styles.loader} />
+            )}
+            {calendarEvents.length > 0 && (
+              <Calendar<BookingCalendarEvent>
+                weekStartsOn={currentWeekStart.weekday as WeekNum}
+                mode="custom"
+                weekEndsOn={
+                  currentWeekStart.plus({ days: currentTopic.daysPerWeek! - 1 })
+                    .weekday as WeekNum
+                }
+                headerContentStyle={styles.dayHeader}
+                weekDayHeaderHighlightColor={colors.background}
+                calendarCellStyle={styles.eventCellStyle}
+                date={currentWeekStart}
+                locale={language}
+                hours={hours}
+                bodyContainerStyle={{ backgroundColor: colors.yellow }}
+                cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
+                showAllDayEventCell={false}
+                swipeEnabled={false}
+                renderHeader={props => (
+                  <CalendarHeader {...props} cellHeight={-1} />
+                )}
+                onPressEvent={handlePress}
+                events={calendarEvents}
+                height={styles.container.flex as number}
+                startHour={currentTopic.startHour || 8}
+                renderEvent={(item, touchableOpacityProps, key) => {
+                  const isMini = item.duration <= 15;
+                  const { color, backgroundColor } = getBookingStyle(
+                    item,
+                    palettes,
+                    colors,
+                    dark,
+                  );
+                  const dateStart = formatDate(item.start.toJSDate());
+                  const timeStart = item.start.toFormat('HH:mm');
+                  const timeEnd = item.end.toFormat('HH:mm');
+                  const timeMessage = ` ${dateStart}, ${t('common.fromTime')} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
+                  return (
+                    <Pressable
+                      key={key}
+                      {...touchableOpacityProps}
+                      style={[
+                        touchableOpacityProps.style,
+                        styles.event,
+                        { backgroundColor },
+                      ]}
+                      accessibilityRole="button"
+                      accessibilityLabel={
+                        t(
+                          getBookingSlotStatus(
+                            item,
+                            'bookingScreen.bookingStatus.notAvailableBooking',
+                          ),
+                        ) + timeMessage
+                      }
+                      onPress={() => handlePress(item)}
+                    >
+                      {!isMini && <Icon icon={faSeat} color={color} />}
+                      <Text style={styles.placesText}>
+                        {item.bookedPlaces} / {item.places || 0}
+                      </Text>
+                    </Pressable>
+                  );
+                }}
+              />
+            )}
+          </>
         )}
         <BottomBarSpacer />
       </View>
