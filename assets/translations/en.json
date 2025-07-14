@@ -402,7 +402,7 @@
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "colorSubtitle": "Choose a color for the course",
-    "iconSubtitle": "Choose a color for the course",
+    "iconSubtitle": "Choose an icon for the course",
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
