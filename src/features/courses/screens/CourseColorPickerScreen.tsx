@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     height: 30,
     borderRadius: 8,
-    width: '95%',
+    width: '85%',
     alignSelf: 'center',
   },
   swatchesContainer: {
