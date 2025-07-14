@@ -65,6 +65,7 @@
   },
   "bookingsScreen": {
     "emptyState": "You have no active bookings",
+    "emptyWeek": "You have no events available during this week",
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
