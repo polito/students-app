@@ -633,6 +633,9 @@
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
   },
+  "mfaScreen": {
+    "title": "Mfa"
+  },
   "newsScreen": {
     "createdAt": "Published on ",
     "eventStartTime": "Starts on ",
