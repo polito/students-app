@@ -5,6 +5,8 @@ import uuid from 'react-native-uuid';
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import type { AppInfoRequest } from '@polito/api-client/models';
 import messaging from '@react-native-firebase/messaging';
+import { useNavigation } from '@react-navigation/core';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { t } from 'i18next';
@@ -20,6 +22,7 @@ import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { asyncStoragePersister } from '../providers/ApiProvider';
+import { RootParamList } from '../types/navigation.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
 
@@ -192,4 +195,30 @@ export const GetWebmailLink = async () => {
   const authClient = useAuthClient();
 
   return authClient.getMailLink().then(pluckData);
+};
+
+export const useMfaStatus = () => {
+  const authClient = useAuthClient();
+  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+
+  return useMutation({
+    mutationFn: () =>
+      authClient
+        .getMfaStatus()
+        .then(pluckData)
+        .then(res => {
+          if (!res) {
+            throw new Error('Failed to get MFA status');
+          }
+          return res;
+        }),
+    onSuccess: data => {
+      if (data.status === 'available') {
+        navigation.navigate('TeachingTab', {
+          screen: 'MfaModal',
+          params: { mfaStatus: data.status },
+        });
+      }
+    },
+  });
 };
