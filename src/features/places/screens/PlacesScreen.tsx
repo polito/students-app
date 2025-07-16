@@ -176,7 +176,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       headerLeft: !categoryFilterActive
         ? () => <HeaderLogo ml={5} />
         : undefined,
-      headerRight: () => <CampusSelector />,
+      headerRight: () => {
+        return <CampusSelector />;
+      },
       mapOptions: {
         camera: {
           padding: {
@@ -254,7 +256,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     }),
     [search],
   );
-
+  useEffect(() => {
+    if (campus)
+      setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
+  }, [campus]);
   const floorSelectorButton = (
     <TranslucentCard>
       <TouchableOpacity
