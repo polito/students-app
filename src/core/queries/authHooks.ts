@@ -21,6 +21,8 @@ import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { asyncStoragePersister } from '../providers/ApiProvider';
 
+export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
+
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
 };
@@ -184,4 +186,10 @@ export const useUpdateAppInfo = () => {
       });
     },
   });
+};
+
+export const GetWebmailLink = async () => {
+  const authClient = useAuthClient();
+
+  return authClient.getMailLink().then(pluckData);
 };
