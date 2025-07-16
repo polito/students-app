@@ -25,10 +25,12 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
+import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';
 import { useNotifications } from '../hooks/useNotifications';
+import { useMfaStatus } from '../queries/authHooks';
 import { useGetSites } from '../queries/placesHooks';
 import { useGetMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
@@ -46,6 +48,7 @@ export const RootNavigator = ({
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
+  const { mutate: checkMfa } = useMfaStatus();
   const { updatePreference } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
@@ -53,6 +56,14 @@ export const RootNavigator = ({
 
   useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
+
+  const { token } = useApiContext();
+  useEffect(() => {
+    if (token) {
+      checkMfa();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   useEffect(() => {
     if (student?.smartCardPicture) {
