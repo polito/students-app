@@ -1,3 +1,9 @@
 import { VideoProperties } from 'react-native-video';
 
-declare function VideoPlayer(props: VideoProperties): JSX.Element;
+export type VideoProps = {
+  toggleFullScreen?: (value: boolean) => void;
+  currentIndex?: number;
+  index?: number;
+} & VideoProperties;
+
+declare function VideoPlayer(props: VideoProps): JSX.Element;
