@@ -26,13 +26,13 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
-import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import {
   GetWebmailLink,
   WEBMAIL_LINK_QUERY_KEY,
-  useGetUnreadEmails,
-} from '../../../core/queries/webMailHooks';
+} from '../../../core/queries/authHooks.ts';
+import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
+import { useGetUnreadEmails } from '../../../core/queries/studentHooks.ts';
+import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { split } from '../../../utils/reducers';
 import { ServiceCard } from '../components/ServiceCard';
 
