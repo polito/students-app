@@ -218,6 +218,7 @@
     "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
+    "or": "or",
     "open": "Open",
     "openSettings": "Open settings",
     "openSource": "Open Source",
@@ -594,7 +595,7 @@
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
-    "SSO": "Or login with SSO"
+    "SSO": "Login with SSO"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -835,7 +836,7 @@
     "provisionalTitle": "Provisional",
     "recordedTitle": "Recorded",
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
-    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
+    "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
     "total": "There are {{total}} grades"
   },

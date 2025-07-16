@@ -13,12 +13,14 @@ import {
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
+import { useCourseContext } from '../../../src/features/courses/contexts/CourseContext';
 import { CourseFilesCacheContext } from '../../features/courses/contexts/CourseFilesCacheContext';
 import { UnsupportedFileTypeError } from '../../features/courses/errors/UnsupportedFileTypeError';
 import { useCoursesFilesCachePath } from '../../features/courses/hooks/useCourseFilesCachePath';
 import { cleanupEmptyFolders } from '../../utils/files';
 import { useApiContext } from '../contexts/ApiContext';
 import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
+import { useNotifications } from './useNotifications';
 
 export const useDownloadCourseFile = (
   fromUrl: string,
@@ -29,6 +31,8 @@ export const useDownloadCourseFile = (
   const { t } = useTranslation();
   const coursesFilesCachePath = useCoursesFilesCachePath();
   const { downloadsRef, setDownloads } = useDownloadsContext();
+  const { clearNotificationScope } = useNotifications();
+  const courseId = useCourseContext();
   const {
     cache,
     isRefreshing: isCacheRefreshing,
@@ -178,15 +182,14 @@ export const useDownloadCourseFile = (
     });
   }, [toFile, updateDownload]);
 
-  const openFile = useCallback(
-    () =>
-      open(toFile).catch(async (e: Error) => {
-        if (e.message === 'No app associated with this mime type') {
-          throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
-        }
-      }),
-    [fromUrl, toFile],
-  );
+  const openFile = useCallback(async () => {
+    open(toFile).catch(async (e: Error) => {
+      if (e.message === 'No app associated with this mime type') {
+        throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
+      }
+    });
+    clearNotificationScope(['teaching', 'courses', courseId, 'files', fileId]);
+  }, [fromUrl, toFile, clearNotificationScope, courseId, fileId]);
 
   return {
     ...(download ?? {}),

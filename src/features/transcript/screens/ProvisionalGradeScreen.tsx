@@ -85,86 +85,88 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
   );
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl queries={[gradesQuery]} manual />}
-    >
-      {grade === undefined ? (
-        <ActivityIndicator />
-      ) : (
-        <SafeAreaView>
-          <Row
-            pb={
-              grade.state === ProvisionalGradeStateEnum.Confirmed &&
-              (grade.canBeAccepted || grade.canBeRejected) &&
-              rejectionTime
-                ? 0
-                : 5
-            }
-            ph={5}
-            pt={5}
-            gap={2}
-          >
-            <Col flexGrow={1} flexShrink={1} gap={2}>
-              <ScreenTitle title={grade.courseName} />
-              <Text>{`${formatDate(grade.date)} - ${t(
-                'common.creditsWithUnit',
-                {
-                  credits: grade.credits,
-                },
-              )}`}</Text>
-            </Col>
-            <Col
-              align="center"
-              justify="center"
-              mt={2}
-              flexShrink={0}
-              style={styles.grade}
+    <>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={<RefreshControl queries={[gradesQuery]} manual />}
+      >
+        {grade === undefined ? (
+          <ActivityIndicator />
+        ) : (
+          <SafeAreaView>
+            <Row
+              pb={
+                grade.state === ProvisionalGradeStateEnum.Confirmed &&
+                (grade.canBeAccepted || grade.canBeRejected) &&
+                rejectionTime
+                  ? 0
+                  : 5
+              }
+              ph={5}
+              pt={5}
+              gap={2}
             >
-              <Text
-                style={[
-                  grade.grade.length < 3
-                    ? styles.gradeText
-                    : styles.longGradeText,
-                  grade.isFailure || grade.isWithdrawn
-                    ? styles.failureGradeText
-                    : undefined,
-                ]}
-                numberOfLines={1}
+              <Col flexGrow={1} flexShrink={1} gap={2}>
+                <ScreenTitle title={grade.courseName} />
+                <Text>{`${formatDate(grade.date)} - ${t(
+                  'common.creditsWithUnit',
+                  {
+                    credits: grade.credits,
+                  },
+                )}`}</Text>
+              </Col>
+              <Col
+                align="center"
+                justify="center"
+                mt={2}
+                flexShrink={0}
+                style={styles.grade}
               >
-                {grade.grade}
-              </Text>
-            </Col>
-          </Row>
-          {grade.state === ProvisionalGradeStateEnum.Confirmed &&
-            grade.canBeAccepted &&
-            rejectionTime && (
-              <Row pl={5} pb={5}>
-                <Text style={styles.autoRegistration}>
-                  {t('transcriptGradesScreen.autoRegistration')}
-                  <Text
-                    style={[
-                      styles.autoRegistration,
-                      { fontWeight: fontWeights.medium },
-                    ]}
-                  >
-                    {rejectionTime}
-                  </Text>
+                <Text
+                  style={[
+                    grade.grade.length < 3
+                      ? styles.gradeText
+                      : styles.longGradeText,
+                    grade.isFailure || grade.isWithdrawn
+                      ? styles.failureGradeText
+                      : undefined,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {grade.grade}
                 </Text>
-              </Row>
+              </Col>
+            </Row>
+            {grade.state === ProvisionalGradeStateEnum.Confirmed &&
+              grade.canBeAccepted &&
+              rejectionTime && (
+                <Row pl={5} pb={5}>
+                  <Text style={styles.autoRegistration}>
+                    {t('transcriptGradesScreen.autoRegistration')}
+                    <Text
+                      style={[
+                        styles.autoRegistration,
+                        { fontWeight: fontWeights.medium },
+                      ]}
+                    >
+                      {rejectionTime}
+                    </Text>
+                  </Text>
+                </Row>
+              )}
+            {grade.teacherMessage && (
+              <TeacherMessage message={grade.teacherMessage} />
             )}
-          {grade.teacherMessage && (
-            <TeacherMessage message={grade.teacherMessage} />
-          )}
 
-          <GradeStates state={grade?.state} />
-          {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
+            <GradeStates state={grade?.state} />
+            {grade?.state === ProvisionalGradeStateEnum.Confirmed && (
+              <CtaButtonSpacer />
+            )}
             <CtaButtonSpacer />
-          )}
-          <CtaButtonSpacer />
-        </SafeAreaView>
-      )}
-      <BottomBarSpacer />
+          </SafeAreaView>
+        )}
+        <BottomBarSpacer />
+      </ScrollView>
       {grade?.state === ProvisionalGradeStateEnum.Published && (
         <CtaButton
           title={t('provisionalGradeScreen.contactProfessorCta')}
@@ -222,12 +224,12 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               }
               containerStyle={{ paddingVertical: 0 }}
               destructive
-              style={{ marginBottom: 40 }}
+              style={{ marginBottom: Platform.OS === 'android' ? 40 : 0 }}
             />
           )}
         </CtaButtonContainer>
       )}
-    </ScrollView>
+    </>
   );
 };
 const createStyles = ({

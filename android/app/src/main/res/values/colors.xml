@@ -2,4 +2,5 @@
 <resources>
     <color name="primary">#002B49</color>
     <color name="surfaceDark">#002B49</color>
+    <color name="notification">#002B49</color>
 </resources>

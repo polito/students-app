@@ -14,6 +14,7 @@ import {
 import uuid from 'react-native-uuid';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -30,6 +31,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
+import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink';
 import { useLogin } from '../queries/authHooks';
 
 type LoginScreenRouteProp = RouteProp<
@@ -65,6 +67,9 @@ export const LoginScreen = () => {
     },
     [t],
   );
+
+  const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
+
   const handleLogin = () =>
     login({
       username,
@@ -76,7 +81,7 @@ export const LoginScreen = () => {
     const uid = uuid.v4();
     await updatePreference('loginUid', uid);
     const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
-    Linking.openURL(url);
+    sessionOpener(url).catch(console.error);
   };
 
   useEffect(() => {
@@ -90,6 +95,7 @@ export const LoginScreen = () => {
       updatePreference('loginUid', undefined);
     }
   }, [loginUid, key, login, language, updatePreference, handleLoginError]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -156,18 +162,15 @@ export const LoginScreen = () => {
             loading={isLoading}
             disabled={!canLogin}
           />
-          {/* <CtaButton
+          <Col align="center">
+            <Text> - {t('common.or')} - </Text>
+          </Col>
+          <CtaButton
             absolute={false}
             title={t('loginScreen.SSO')}
             action={handleSSO}
             loading={isLoading}
-          /> */}
-          <TouchableOpacity
-            style={{ alignItems: 'center' }}
-            onPress={handleSSO}
-          >
-            <Text variant="link">{t('loginScreen.SSO')}</Text>
-          </TouchableOpacity>
+          />
           <TouchableOpacity
             style={styles.link}
             onPress={() => {
