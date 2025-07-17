@@ -108,6 +108,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
     palettes.primary,
     palettes.text,
     yearOptions,
+    accessibility?.fontSize,
   ]);
 
   return (
