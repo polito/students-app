@@ -3,7 +3,10 @@ import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
-import type { AppInfoRequest } from '@polito/api-client/models';
+import type {
+  AppInfoRequest,
+  EnrolMfaRequest,
+} from '@polito/api-client/models';
 import messaging from '@react-native-firebase/messaging';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -219,6 +222,38 @@ export const useMfaStatus = () => {
           params: { mfaStatus: data.status },
         });
       }
+    },
+  });
+};
+
+export const useMfaEnroll = () => {
+  const authClient = useAuthClient();
+
+  return useMutation({
+    mutationFn: (dto: EnrolMfaRequest) =>
+      authClient
+        .enrolMfa({ enrolMfaRequest: dto })
+        .then(pluckData)
+        .then(res => {
+          if (!res) {
+            throw new Error('Failed to get MFA status');
+          }
+          return res;
+        }),
+
+    onError: (error: any) => {
+      console.error('MFA enroll error:', error);
+      if (error?.response) {
+        console.error('Status code:', error.response.status);
+        console.error('Response body:', error.response);
+      }
+      Alert.alert(
+        t('common.error'),
+        t(
+          'mfaActivation.enrollError',
+          "Errore durante l'attivazione della MFA.",
+        ),
+      );
     },
   });
 };
