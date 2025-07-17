@@ -1,26 +1,31 @@
 // src/screens/mfa/MfaEnrollScreen.tsx
 import { useTranslation } from 'react-i18next';
 import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-type RootStackParamList = {
-  MfaActivation: undefined;
-  MfaSetup: undefined;
-};
+import { useMfaEnroll } from '../../../../src/core/queries/authHooks';
+import { keyGenerator } from '../../../../src/utils/crypto';
 
 export const MfaEnrollScreen = () => {
   const { t } = useTranslation();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { mutate: enrollMfa } = useMfaEnroll();
+  const { publicKey } = keyGenerator();
+  const navigation = useNavigation();
   const styles = useStylesheet(createStyles);
-
   const onNo = () => navigation.goBack();
-  const onYes = () => navigation.replace('MfaSetup');
+  const onYes = async () => {
+    const deviceId = DeviceInfo.getDeviceId();
+    const dtoMfa = {
+      description: deviceId,
+      pubkey: publicKey,
+    };
+    enrollMfa(dtoMfa);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
