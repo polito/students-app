@@ -13,6 +13,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getShortYear } from '../../../utils/offerings';
@@ -36,7 +37,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   const { id: degreeId, year: initialYear } = route.params;
   const [year, setYear] = useState(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
-
+  const { accessibility } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
 
   const yearOptions = useMemo(() => {
@@ -73,7 +74,15 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
             actions={yearOptions}
             onPressAction={({ nativeEvent: { event } }) => setYear(event)}
           >
-            <Row align="center">
+            <Row
+              align="center"
+              style={{
+                marginBottom:
+                  accessibility?.fontSize && accessibility.fontSize >= 150
+                    ? spacing[3]
+                    : 0,
+              }}
+            >
               <Text variant="prose">
                 {previousDegreeYear}/{getShortYear(degreeYear)}
               </Text>
