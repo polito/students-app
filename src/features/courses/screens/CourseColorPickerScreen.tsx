@@ -1,12 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { HeaderBackButton } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import ColorPicker, {
@@ -40,7 +47,8 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
   const [showModal, setShowModal] = useState(false);
-  const [navigationEvent, setNavigationEvent] = useState<any>(null);
+  const [navigationAction, setNavigationAction] = useState<'back' | null>(null);
+
   const saveColor = useCallback(() => {
     updatePreference('courses', {
       ...coursesPrefs,
@@ -56,35 +64,35 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     updatePreference,
   ]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      if (
-        temporaryColor === coursesPrefs[route.params.uniqueShortcode]?.color
-      ) {
-        // No changes made, allow navigation
-        return;
-      }
-
-      if (!showColorWarning || isSafeColor) {
-        // If warnings are disabled or the color is from swatches, save and exit
-        saveColor();
-        return;
-      }
-
-      e.preventDefault();
-      setNavigationEvent(e);
-      setShowModal(true);
-    });
-    return unsubscribe;
+  const onPressBack = useCallback(() => {
+    if (temporaryColor === coursesPrefs[route.params.uniqueShortcode]?.color) {
+      return navigation.goBack();
+    }
+    if (!showColorWarning || isSafeColor) {
+      saveColor();
+      return navigation.goBack();
+    }
+    setNavigationAction('back');
+    setShowModal(true);
   }, [
-    navigation,
     temporaryColor,
-    showColorWarning,
     coursesPrefs,
     route.params.uniqueShortcode,
+    showColorWarning,
     isSafeColor,
     saveColor,
+    navigation,
   ]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: Platform.OS === 'ios' ? false : true,
+      headerBackButtonMenuEnabled: false,
+      headerLeft: props => (
+        <HeaderBackButton {...props} onPress={onPressBack} />
+      ),
+    });
+  }, [navigation, onPressBack]);
 
   const handleConfirm = useCallback(
     (dontShowAgain: boolean) => {
@@ -93,11 +101,11 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
         updatePreference('showColorWarning', false);
       }
       saveColor();
-      if (navigationEvent) {
-        navigation.dispatch(navigationEvent.data.action);
+      if (navigationAction === 'back') {
+        navigation.goBack();
       }
     },
-    [saveColor, updatePreference, navigationEvent, navigation],
+    [saveColor, updatePreference, navigationAction, navigation],
   );
 
   const handleCancel = useCallback(() => {
