@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -77,9 +77,11 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
             <Row
               align="center"
               style={{
-                marginBottom:
-                  accessibility?.fontSize && accessibility.fontSize >= 150
-                    ? spacing[3]
+                marginTop:
+                  accessibility?.fontSize &&
+                  Number(accessibility.fontSize) >= 150 &&
+                  Platform.OS === 'ios'
+                    ? -spacing[3]
                     : 0,
               }}
             >
