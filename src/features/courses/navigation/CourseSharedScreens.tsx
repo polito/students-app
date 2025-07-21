@@ -14,6 +14,7 @@ import {
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
+import { CourseColorPickerScreen } from '../screens/CourseColorPickerScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
@@ -49,6 +50,7 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseAssignmentUpload: { courseId: number };
   CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
   CourseIconPicker: { courseId: number; uniqueShortcode: string };
+  CourseColorPicker: { courseId: number; uniqueShortcode: string };
   CourseHideEvent: { courseId: number; uniqueShortcode: string };
 }
 
@@ -191,6 +193,15 @@ export const CourseSharedScreens = (
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="CourseColorPicker"
+        component={CourseColorPickerScreen}
+        getId={({ params }) => `${params.courseId}`}
+        options={{
+          title: t('courseColorPickerScreen.title'),
+          headerLargeTitle: false,
         }}
       />
     </>
