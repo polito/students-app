@@ -7,8 +7,6 @@ import {
 } from '@polito/api-client/apis/PlacesApi';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { noop } from 'lodash';
-
 import { pluckData } from '../../utils/queries';
 
 export const SITES_QUERY_KEY = 'sites';
@@ -25,7 +23,9 @@ const usePlacesClient = (): PlacesApi => {
 export const useGetSites = () => {
   const placesClient = usePlacesClient();
 
-  return useQuery([SITES_QUERY_KEY], () => placesClient.getSites(), {
+  return useQuery({
+    queryKey: [SITES_QUERY_KEY],
+    queryFn: () => placesClient.getSites(),
     staleTime: Infinity,
   });
 };
@@ -36,14 +36,12 @@ export const useGetBuildings = (
 ) => {
   const placesClient = usePlacesClient();
 
-  return useQuery(
-    [BUILDINGS_QUERY_KEY, JSON.stringify(params)],
-    () => placesClient.getBuildings(params as GetBuildingsRequest),
-    {
-      staleTime: Infinity,
-      enabled: params.siteId != null,
-    },
-  );
+  return useQuery({
+    queryKey: [BUILDINGS_QUERY_KEY, JSON.stringify(params)],
+    queryFn: () => placesClient.getBuildings(params as GetBuildingsRequest),
+    staleTime: Infinity,
+    enabled: params.siteId != null,
+  });
 };
 
 export const useGetBuilding = (siteId: string, buildingId?: string) => {
@@ -74,7 +72,9 @@ export const useGetPlaces = (params: GetPlacesRequest) => {
   const placesClient = usePlacesClient();
   const key = [PLACES_QUERY_KEY, JSON.stringify(params)];
 
-  return useQuery(key, () => placesClient.getPlaces(params), {
+  return useQuery({
+    queryKey: key,
+    queryFn: () => placesClient.getPlaces(params),
     enabled: params.siteId != null,
     staleTime: Infinity,
   });
@@ -90,26 +90,22 @@ export const useGetFreeRooms = (params: Partial<GetFreeRoomsRequest>) => {
     params.timeTo,
   ];
 
-  return useQuery(
-    key,
-    () => placesClient.getFreeRooms(params as GetFreeRoomsRequest),
-    {
-      enabled: params.siteId != null,
-      staleTime: Infinity,
-    },
-  );
+  return useQuery({
+    queryKey: key,
+    queryFn: () => placesClient.getFreeRooms(params as GetFreeRoomsRequest),
+    enabled: params.siteId != null,
+    staleTime: Infinity,
+  });
 };
 
 export const useGetPlaceCategories = () => {
   const placesClient = usePlacesClient();
 
-  return useQuery(
-    [PLACE_CATEGORIES_QUERY_KEY],
-    () => placesClient.getPlaceCategories(),
-    {
-      staleTime: Infinity,
-    },
-  );
+  return useQuery({
+    queryKey: [PLACE_CATEGORIES_QUERY_KEY],
+    queryFn: () => placesClient.getPlaceCategories(),
+    staleTime: Infinity,
+  });
 };
 
 export const useGetPlaceCategory = (categoryId?: string) => {
@@ -137,15 +133,12 @@ export const useGetPlaceSubCategory = (subCategoryId?: string) => {
 export const useGetPlace = (placeId?: string) => {
   const placesClient = usePlacesClient();
 
-  return useQuery(
-    [PLACE_QUERY_KEY, placeId],
-    () => placesClient.getPlace({ placeId: placeId! }).then(pluckData),
-    {
-      enabled: placeId != null,
-      staleTime: Infinity,
-      onError: noop,
-    },
-  );
+  return useQuery({
+    queryKey: [PLACE_QUERY_KEY, placeId],
+    queryFn: () => placesClient.getPlace({ placeId: placeId! }).then(pluckData),
+    enabled: placeId != null,
+    staleTime: Infinity,
+  });
 };
 
 export const useGetMultiplePlaces = (placeIds?: string[]) => {
@@ -158,7 +151,6 @@ export const useGetMultiplePlaces = (placeIds?: string[]) => {
         queryFn: () => placesClient.getPlace({ placeId }).then(pluckData),
         enabled: placeId != null,
         staleTime: Infinity,
-        onError: noop,
       })) ?? [],
   });
 };

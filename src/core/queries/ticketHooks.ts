@@ -27,24 +27,23 @@ const useTicketsClient = (): TicketsApi => {
 export const useGetTickets = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(TICKETS_QUERY_KEY, () =>
-    ticketsClient.getTickets().then(pluckData),
-  );
+  return useQuery({
+    queryKey: TICKETS_QUERY_KEY,
+    queryFn: () => ticketsClient.getTickets().then(pluckData),
+  });
 };
 
 export const useCreateTicket = () => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
 
-  return useMutation(
-    (dto: CreateTicketRequest) =>
+  return useMutation({
+    mutationFn: (dto: CreateTicketRequest) =>
       ticketsClient.createTicket(dto).then(pluckData),
-    {
-      onSuccess() {
-        return client.invalidateQueries(TICKETS_QUERY_KEY);
-      },
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
     },
-  );
+  });
 };
 
 export const useReplyToTicket = (ticketId: number) => {
@@ -60,7 +59,9 @@ export const useReplyToTicket = (ticketId: number) => {
       return ticketsClient.replyToTicket(dto);
     },
     onSuccess() {
-      return invalidatesQueries.forEach(q => client.invalidateQueries(q));
+      return invalidatesQueries.forEach(q =>
+        client.invalidateQueries({ queryKey: q }),
+      );
     },
   });
 };
@@ -68,9 +69,10 @@ export const useReplyToTicket = (ticketId: number) => {
 export const useGetTicket = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery([TICKET_QUERY_PREFIX, ticketId], () =>
-    ticketsClient.getTicket({ ticketId }).then(pluckData),
-  );
+  return useQuery({
+    queryKey: [TICKET_QUERY_PREFIX, ticketId],
+    queryFn: () => ticketsClient.getTicket({ ticketId }).then(pluckData),
+  });
 };
 
 export const useMarkTicketAsClosed = (ticketId: number) => {
@@ -81,9 +83,12 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
     [TICKET_QUERY_PREFIX, ticketId],
   ];
 
-  return useMutation(() => ticketsClient.markTicketAsClosed({ ticketId }), {
+  return useMutation({
+    mutationFn: () => ticketsClient.markTicketAsClosed({ ticketId }),
     onSuccess() {
-      return invalidatesQueries.forEach(q => client.invalidateQueries(q));
+      return invalidatesQueries.forEach(q =>
+        client.invalidateQueries({ queryKey: q }),
+      );
     },
   });
 };
@@ -92,9 +97,10 @@ export const useMarkTicketAsRead = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
 
-  return useMutation(() => ticketsClient.markTicketAsRead({ ticketId }), {
+  return useMutation({
+    mutationFn: () => ticketsClient.markTicketAsRead({ ticketId }),
     onSuccess() {
-      return client.invalidateQueries(TICKETS_QUERY_KEY);
+      return client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
     },
   });
 };
@@ -102,9 +108,10 @@ export const useMarkTicketAsRead = (ticketId: number) => {
 export const useGetTicketTopics = () => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(TOPICS_QUERY_KEY, () =>
-    ticketsClient.getTicketTopics().then(pluckData),
-  );
+  return useQuery({
+    queryKey: TOPICS_QUERY_KEY,
+    queryFn: () => ticketsClient.getTicketTopics().then(pluckData),
+  });
 };
 
 export const useGetTicketReplyAttachment = (
@@ -114,9 +121,9 @@ export const useGetTicketReplyAttachment = (
 ) => {
   const { token } = useApiContext();
 
-  return useQuery(
-    [TICKETS_ATTACHMENTS_PREFIX, ticketId, replyId, attachmentId],
-    () =>
+  return useQuery({
+    queryKey: [TICKETS_ATTACHMENTS_PREFIX, ticketId, replyId, attachmentId],
+    queryFn: () =>
       ReactNativeBlobUtil.config({
         fileCache: true,
         path:
@@ -135,10 +142,8 @@ export const useGetTicketReplyAttachment = (
         .then(
           res => Platform.select({ android: 'file://', ios: '' }) + res.path(),
         ),
-    {
-      enabled,
-    },
-  );
+    enabled,
+  });
 };
 
 export const useGetTicketAttachment = (
@@ -148,9 +153,9 @@ export const useGetTicketAttachment = (
 ) => {
   const { token } = useApiContext();
 
-  return useQuery(
-    [TICKETS_ATTACHMENTS_PREFIX, ticketId, attachmentId],
-    () =>
+  return useQuery({
+    queryKey: [TICKETS_ATTACHMENTS_PREFIX, ticketId, attachmentId],
+    queryFn: () =>
       ReactNativeBlobUtil.config({
         fileCache: true,
         path:
@@ -168,22 +173,17 @@ export const useGetTicketAttachment = (
         .then(
           res => Platform.select({ android: 'file://', ios: '' }) + res.path(),
         ),
-    {
-      enabled,
-    },
-  );
+    enabled,
+  });
 };
 
 export const useSearchTicketFaqs = (search: string) => {
   const ticketsClient = useTicketsClient();
 
-  return useQuery(
-    FAQS_QUERY_KEY,
-    () => ticketsClient.searchTicketFAQs({ search }).then(pluckData),
-    {
-      enabled: false,
-      keepPreviousData: false,
-      staleTime: 0,
-    },
-  );
+  return useQuery({
+    queryKey: FAQS_QUERY_KEY,
+    queryFn: () => ticketsClient.searchTicketFAQs({ search }).then(pluckData),
+    enabled: false,
+    staleTime: 0,
+  });
 };

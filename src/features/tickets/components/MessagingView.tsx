@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, View, ViewProps } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
 import { openCamera, openPicker } from 'react-native-image-crop-picker';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
@@ -12,6 +11,7 @@ import { Row } from '@lib/ui/components/Row';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { pick, types } from '@react-native-documents/picker';
 import { MenuView } from '@react-native-menu/menu';
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
@@ -50,19 +50,25 @@ export const MessagingView = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const types = [
-    DocumentPicker.types.pdf,
-    DocumentPicker.types.images,
-    DocumentPicker.types.video,
-    DocumentPicker.types.zip,
-    DocumentPicker.types.doc,
-    DocumentPicker.types.docx,
-    DocumentPicker.types.xlsx,
-    DocumentPicker.types.xls,
+  const fileTypes = [
+    types.pdf,
+    types.images,
+    types.video,
+    types.zip,
+    types.doc,
+    types.docx,
+    types.xlsx,
+    types.xls,
   ];
   const { setFeedback } = useFeedbackContext();
   const pickFile = async () => {
-    DocumentPicker.pickSingle({ type: types }).then(res => {
+    try {
+      const result = await pick({
+        type: fileTypes,
+        allowMultiSelection: false,
+      });
+
+      const res = result[0];
       if (!res.name || !res.size || !res.type) return;
       if (res.size > 32 * 1000000) {
         setFeedback({
@@ -78,7 +84,9 @@ export const MessagingView = ({
         size: res.size,
         type: res.type,
       });
-    });
+    } catch (error) {
+      console.error('Cannot pick file', error);
+    }
   };
 
   const pickPhoto = async () => {

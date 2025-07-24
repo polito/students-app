@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
-import FastImage from 'react-native-fast-image';
 import Animated, {
   Extrapolation,
   SharedValue,
@@ -13,6 +12,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
+import FastImage from '@d11/react-native-fast-image';
 import { CtaButton } from '@lib/ui/components/CtaButton.tsx';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer.tsx';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';

@@ -9,7 +9,8 @@ const createOptions = (title: string, autoBackAction: boolean) => {
     headerTitle: title,
   };
   if (autoBackAction) {
-    options.headerBackTitleVisible = title.length <= maxLength;
+    options.headerBackButtonDisplayMode =
+      title.length <= maxLength ? 'default' : 'minimal';
   }
   return options;
 };

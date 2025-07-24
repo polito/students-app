@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 
-import { CourseOverviewPreviousEditionsInner } from '@polito/api-client';
+import {
+  CourseOverviewPreviousEditionsInner,
+  MessageType,
+} from '@polito/api-client';
 import { Notification } from '@polito/api-client/models/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -21,35 +24,25 @@ import {
   UnreadNotificationsByScope,
 } from '../types/notifications';
 
-type CourseTransactionId =
-  | 'avvisidoc'
-  | 'videolezioni'
-  | 'virtualclassroom'
-  | 'matdid';
+export const CourseTransactionId = {
+  avvisidoc: 'avvisidoc',
+  videolezioni: 'videolezioni',
+  virtualclassroom: 'virtualclassroom',
+  matdid: 'matdid',
+} as const;
 
-type MessageTransactionId =
-  | 'emergenze'
-  | 'eventi'
-  | 'esitiesami'
-  | 'individuale'
-  | 'messaggidoc'
-  | 'segreteria';
+export type CourseTransactionId =
+  (typeof CourseTransactionId)[keyof typeof CourseTransactionId];
 
-type TransactionId =
-  | MessageTransactionId
-  | CourseTransactionId
-  | 'ticket'
-  | 'booking'
-  | 'avvisi';
+export const TransactionId = {
+  ...MessageType,
+  ...CourseTransactionId,
+  ticket: 'ticket',
+  booking: 'booking',
+  avvisi: 'avvisi',
+} as const;
 
-// const messageTransactionIds: MessageTransactionId[] = [
-//   'emergenze',
-//   'eventi',
-//   'esitiesami',
-//   'individuale',
-//   'messaggidoc',
-//   'segreteria',
-// ];
+export type TransactionId = (typeof TransactionId)[keyof typeof TransactionId];
 
 const courseTransactionsMapping: Record<
   CourseTransactionId,
@@ -121,7 +114,9 @@ export const useNotifications = () => {
 
       return Promise.all(
         notificationsToClear.map(n => markNotificationAsRead(n.id)),
-      ).then(() => queryClient.invalidateQueries(NOTIFICATIONS_QUERY_KEY));
+      ).then(() =>
+        queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY }),
+      );
     },
     [markNotificationAsRead, queryClient, unreadNotifications],
   );
@@ -177,30 +172,30 @@ export const useNotifications = () => {
 
   const navigateToUpdate = useCallback(
     (notification?: RemoteMessage) => {
-      if (!notification || !notification.data?.polito_transazione) {
+      if (!notification || !notification.data?.polito_transaction) {
         return;
       }
       const payload = JSON.parse(
         notification.data?.payload ?? 'null',
       ) as PushNotificationPayload;
-      const transaction = notification.data.polito_transazione as TransactionId;
+      const transaction = notification.data.polito_transaction as TransactionId;
       // Course
-      if (courseTransactionsMapping[transaction as CourseTransactionId]) {
+      const mapping =
+        courseTransactionsMapping[transaction as CourseTransactionId];
+      if (mapping) {
         if (payload.inc) {
           navigation.navigate('TeachingTab', {
             screen: 'Course',
             params: {
               id: payload.inc,
-              screen:
-                courseTransactionsMapping[transaction as CourseTransactionId]
-                  .screen,
+              screen: mapping.screen,
             },
             initial: false,
           });
         }
       }
       // Tickets
-      if (transaction === 'ticket' && payload.idTicket) {
+      if (transaction === TransactionId.ticket && payload.idTicket) {
         navigation.navigate('ServicesTab', {
           screen: 'Ticket',
           params: {
@@ -211,7 +206,7 @@ export const useNotifications = () => {
       }
       // News
       if (
-        transaction === 'avvisi' &&
+        transaction === TransactionId.avvisi &&
         payload.origine !== 'personali' &&
         payload.idAvviso
       ) {

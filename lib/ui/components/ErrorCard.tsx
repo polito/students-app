@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactElement } from 'react';
 import { Platform, TextStyle, ViewProps, ViewStyle } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
@@ -10,7 +10,7 @@ type Props = PropsWithChildren<
     text?: string;
     style?: ViewStyle;
     testStyle?: TextStyle;
-    children?: JSX.Element;
+    children?: ReactElement;
     spaced?: boolean;
   }
 >;

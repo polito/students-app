@@ -12,6 +12,7 @@ export interface RemoteMessage extends FirebaseMessagingTypes.RemoteMessage {
     polito_title: string;
     polito_transazione: string;
     polito_utente: string;
+    polito_transaction: string;
     priority: string;
     sound: string;
     vibrationPattern: string;

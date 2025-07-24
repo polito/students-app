@@ -8,4 +8,4 @@ declare interface TranslucentViewProps {
   fallbackOpacity?: number;
 }
 
-declare function TranslucentView(props: TranslucentViewProps): JSX.Element;
+declare function TranslucentView(props: TranslucentViewProps): ReactElement;

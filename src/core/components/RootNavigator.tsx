@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import FastImage from 'react-native-fast-image';
 
+import FastImage from '@d11/react-native-fast-image';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
@@ -15,9 +15,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 
-import { unreadMessages } from '../../../src/utils/messages';
+import { filterUnread } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
 import { useGetCurrentCampus } from '../../features/places/hooks/useGetCurrentCampus';
@@ -75,9 +74,9 @@ export const RootNavigator = ({
   const tabBarIconSize = 20;
 
   const instantAnimation = {
-    animation: 'timing',
+    animation: 'timing' as const,
     config: { duration: 0 },
-  } as TimingKeyboardAnimationConfig;
+  };
 
   return (
     <TabNavigator.Navigator
@@ -148,12 +147,8 @@ export const RootNavigator = ({
           tabBarIcon: ({ color }) => (
             <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
-          tabBarBadge: (() => {
-            return profileMessages.data &&
-              unreadMessages(profileMessages.data).length > 0
-              ? unreadMessages(profileMessages.data).length
-              : undefined;
-          })(),
+          tabBarBadge:
+            filterUnread(profileMessages.data || []).length || undefined,
         }}
       />
     </TabNavigator.Navigator>

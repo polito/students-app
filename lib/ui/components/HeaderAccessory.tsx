@@ -4,8 +4,6 @@ import { Row, RowProps } from '@lib/ui/components/Row';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { useSafeAreaSpacing } from '../../../src/core/hooks/useSafeAreaSpacing';
-
 export type HeaderAccessoryProps = RowProps;
 
 export const HeaderAccessory = ({
@@ -14,10 +12,11 @@ export const HeaderAccessory = ({
   ...props
 }: HeaderAccessoryProps) => {
   const styles = useStylesheet(createStyles);
-  const { paddingHorizontal } = useSafeAreaSpacing();
 
+  // With transparent headers and react-navigation, the navigation system
+  // already handles safe area insets properly, so we don't need to add any
   return (
-    <Row {...props} style={[styles.container, paddingHorizontal, style]}>
+    <Row {...props} style={[styles.container, style]}>
       {children}
     </Row>
   );

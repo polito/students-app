@@ -290,14 +290,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                     : t('bookingScreen.checkIn')
                 }
                 action={onPressCheckIn}
-                loading={updateBookingMutation.isLoading}
+                loading={updateBookingMutation.isPending}
                 variant="outlined"
                 icon={completedCheckIn ? faCheckCircle : undefined}
                 absolute={false}
                 success={completedCheckIn}
                 disabled={
                   isDisabled ||
-                  updateBookingMutation.isLoading ||
+                  updateBookingMutation.isPending ||
                   completedCheckIn
                 }
                 containerStyle={{ paddingVertical: 0 }}
@@ -307,9 +307,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               <CtaButton
                 title={t('bookingScreen.cancelBooking')}
                 action={onPressDelete}
-                loading={deleteBookingMutation.isLoading}
+                loading={deleteBookingMutation.isPending}
                 absolute={false}
-                disabled={isDisabled || deleteBookingMutation.isLoading}
+                disabled={isDisabled || deleteBookingMutation.isPending}
                 destructive={true}
                 containerStyle={{ paddingVertical: 0 }}
               />

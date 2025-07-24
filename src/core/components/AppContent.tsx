@@ -31,6 +31,10 @@ export const AppContent = () => {
 
   useEffect(() => {
     if (!isSplashLoaded) return;
+    if (needsUpdate === false) {
+      setVersionModalVisible(false);
+      return;
+    }
     if (
       needsUpdate === undefined ||
       version === undefined ||
@@ -38,10 +42,6 @@ export const AppContent = () => {
       source === undefined
     )
       return;
-    if (needsUpdate === false) {
-      setVersionModalVisible(false);
-      return;
-    }
     setVersionModalVisible(true);
     showModal(
       <NewVersionModal

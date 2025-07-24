@@ -57,48 +57,49 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     navigation.setOptions({
       headerTitle: () => (
         <Row
+          gap={2}
           align="center"
-          justify="space-between"
-          style={{
-            width: Platform.select({ android: width - 50, ios: width - 40 }),
-            left: Platform.select({ android: -25, ios: -15 }),
-          }}
+          flexGrow={1}
+          style={Platform.select({
+            android: { marginLeft: -20 },
+            ios: { marginLeft: -35, marginRight: -10 },
+          })}
         >
-          <Row gap={2} align="center" flexShrink={1}>
-            <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
-            <Text
-              variant="title"
-              style={[
-                titleStyles.headerTitleStyle,
-                {
-                  fontSize: 17,
-                  flexShrink: 1,
-                },
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {course.name}
-            </Text>
-          </Row>
-          <IconButton
-            icon={faSliders}
-            color={palettes.primary[400]}
-            size={fontSizes.lg}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.preferences')}
-            hitSlop={{
-              left: +spacing[3],
-              right: +spacing[3],
-            }}
-            onPress={() => {
-              navigation.navigate('CoursePreferences', {
-                courseId: id,
-                uniqueShortcode: course.uniqueShortcode,
-              });
-            }}
-          />
+          <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
+          <Text
+            variant="title"
+            style={[
+              titleStyles.headerTitleStyle,
+              {
+                fontSize: 17,
+                flexShrink: 1,
+              },
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {course.name}
+          </Text>
         </Row>
+      ),
+      headerRight: () => (
+        <IconButton
+          icon={faSliders}
+          color={palettes.primary[400]}
+          size={fontSizes.lg}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.preferences')}
+          hitSlop={{
+            left: +spacing[3],
+            right: +spacing[3],
+          }}
+          onPress={() => {
+            navigation.navigate('CoursePreferences', {
+              courseId: id,
+              uniqueShortcode: course.uniqueShortcode,
+            });
+          }}
+        />
       ),
     });
   }, [
@@ -128,13 +129,15 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseNoticesScreen}
             options={{
               title: t('courseNoticesTab.title'),
-              tabBarBadge: () =>
-                getUnreadsCount([
+              tabBarBadge: () => {
+                const count = getUnreadsCount([
                   'teaching',
                   'courses',
                   id.toString(),
                   'notices',
-                ]),
+                ]);
+                return count && count > 0 ? <Text>{count}</Text> : <Text />;
+              },
             }}
           />
           <TopTabs.Screen
@@ -142,13 +145,15 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={FileNavigator}
             options={{
               title: t('courseFilesTab.title'),
-              tabBarBadge: () =>
-                getUnreadsCount([
+              tabBarBadge: () => {
+                const count = getUnreadsCount([
                   'teaching',
                   'courses',
                   id.toString(),
                   'files',
-                ]),
+                ]);
+                return count && count > 0 ? <Text>{count}</Text> : <Text />;
+              },
             }}
           />
           <TopTabs.Screen
@@ -156,13 +161,15 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
             component={CourseLecturesScreen}
             options={{
               title: t('courseLecturesTab.title'),
-              tabBarBadge: () =>
-                getUnreadsCount([
+              tabBarBadge: () => {
+                const count = getUnreadsCount([
                   'teaching',
                   'courses',
                   id.toString(),
                   'lectures',
-                ]),
+                ]);
+                return count && count > 0 ? <Text>{count}</Text> : <Text />;
+              },
             }}
           />
           <TopTabs.Screen

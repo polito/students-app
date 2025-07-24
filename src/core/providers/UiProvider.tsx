@@ -1,6 +1,7 @@
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { initReactI18next } from 'react-i18next';
-import { Linking, Platform, StatusBar, useColorScheme } from 'react-native';
+import { Linking, useColorScheme } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import overrideColorScheme from 'react-native-override-color-scheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -76,15 +77,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
   }, [isAppLoaded]);
   return (
     <ThemeContext.Provider value={uiTheme}>
-      <StatusBar
-        backgroundColor={Platform.select({
-          android: uiTheme.palettes.primary[700],
-        })}
-        barStyle={Platform.select({
-          android: 'light-content',
-          ios: theme === 'dark' ? 'light-content' : 'dark-content',
-        })}
-      />
+      <SystemBars style="auto" />
       <NavigationContainer linking={setDeepLink()} theme={navigationTheme}>
         {children}
       </NavigationContainer>

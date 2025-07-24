@@ -4,7 +4,7 @@ import uuid from 'react-native-uuid';
 
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import type { AppInfoRequest } from '@polito/api-client/models';
-import messaging from '@react-native-firebase/messaging';
+import { getApp } from '@react-native-firebase/app';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { t } from 'i18next';
@@ -33,7 +33,7 @@ export async function getFcmToken(
   if (!isEnvProduction) return undefined;
 
   try {
-    return await messaging().getToken();
+    return await getApp().messaging().getToken();
   } catch (e) {
     if (!catchException) {
       throw e;
@@ -156,7 +156,7 @@ export const useSwitchCareer = () => {
       since it's already refreshed upon username change in prefs */
       refreshContext({ token, username });
       asyncStoragePersister.removeClient();
-      queryClient.invalidateQueries([]);
+      queryClient.invalidateQueries();
 
       await setCredentials(clientId, token);
       updatePreference('username', username);
