@@ -27,7 +27,7 @@ export const TicketMessagingView = ({
 
   const {
     mutateAsync: reply,
-    isLoading,
+    isPending,
     isSuccess,
   } = useReplyToTicket(ticketId);
 
@@ -75,7 +75,7 @@ export const TicketMessagingView = ({
             onMessageChange={setMessage}
             attachment={attachment}
             onAttachmentChange={setAttachment}
-            loading={isLoading}
+            loading={isPending}
             disabled={disabled}
             onLayout={onLayout}
             onSend={onSend}

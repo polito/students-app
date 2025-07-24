@@ -19,9 +19,9 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
 import { uniformInsets } from '../../../utils/insets';
+import { To } from '../../../utils/resolveLinkTo';
 import { resolveLinkTo } from '../../../utils/resolveLinkTo';
 
 interface Props extends PropsWithChildren<TouchableCardProps> {
@@ -59,7 +59,12 @@ export const ServiceCard = ({
     <TouchableCard
       accessibilityRole="button"
       onPress={
-        linkTo ? () => navigation.navigate(resolveLinkTo(linkTo)) : onPress
+        linkTo
+          ? () => {
+              const resolved = resolveLinkTo(linkTo);
+              navigation.navigate(resolved.name as any, resolved.params);
+            }
+          : onPress
       }
       {...props}
       disabled={disabled}

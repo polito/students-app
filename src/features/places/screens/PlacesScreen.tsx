@@ -7,14 +7,19 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
-  Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -45,7 +50,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { PlaceOverview } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
-import Mapbox, { CameraPadding } from '@rnmapbox/maps';
+import Mapbox from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
 
@@ -83,10 +88,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
   const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
   const headerHeight = useHeaderHeight();
-  const [tabsHeight, setTabsHeight] = useState(46);
+  const [tabsHeight, setTabsHeight] = useState(48);
   const campus = useGetCurrentCampus();
   const { placesSearched } = usePreferencesContext();
-  const safeAreaInsets = useSafeAreaInsets();
   const { cameraRef } = useContext(MapNavigatorContext);
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =
     useContext(PlacesContext);
@@ -122,14 +126,23 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     }
   }, [cameraRef]);
 
+  const categoryFilterActive = useMemo(
+    () => categoryId || subCategoryId,
+    [categoryId, subCategoryId],
+  );
+
+  const mapInsetTop = useMemo(() => {
+    return headerHeight + (!categoryFilterActive ? tabsHeight : 0);
+  }, [categoryFilterActive, headerHeight, tabsHeight]);
+
   const centerToCurrentCampus = useCallback(async () => {
     if (!campus || !cameraRef.current) {
       return;
     }
-    const { latitude, longitude } = campus;
+    const { latitude, longitude, extent } = campus;
     cameraRef.current.fitBounds(
-      [longitude - campus.extent, latitude - campus.extent],
-      [longitude + campus.extent, latitude + campus.extent],
+      [longitude - extent, latitude - extent],
+      [longitude + extent, latitude + extent],
       undefined,
       2000,
     );
@@ -143,9 +156,21 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             campus.floors.find(f => f.level === 0)?.id,
         );
       }
-      centerToCurrentCampus();
+      const { latitude, longitude, extent } = campus;
+      requestAnimationFrame(() => {
+        navigation.setOptions({
+          mapOptions: {
+            camera: {
+              bounds: {
+                ne: [longitude + extent, latitude + extent],
+                sw: [longitude - extent, latitude - extent],
+              },
+            },
+          },
+        });
+      });
     }
-  }, [campus, centerToCurrentCampus, floorId]);
+  }, [campus, navigation, floorId, mapInsetTop]);
 
   const displayFloorId = useMemo(() => {
     if (debouncedSearch) {
@@ -165,39 +190,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     }
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
 
-  const categoryFilterActive = categoryId || subCategoryId;
-
   useLayoutEffect(() => {
-    const mapInsetTop =
-      headerHeight -
-      safeAreaInsets.top +
-      (!categoryFilterActive ? tabsHeight : 0);
     navigation.setOptions({
-      headerLeft: !categoryFilterActive
-        ? () => <HeaderLogo ml={5} />
-        : undefined,
-      headerRight: () => {
-        return <CampusSelector />;
-      },
-      mapOptions: {
-        camera: {
-          padding: {
-            paddingTop: mapInsetTop,
-          } as CameraPadding,
-          bounds: campus
-            ? {
-                ne: [
-                  campus.longitude - campus.extent,
-                  campus.latitude - campus.extent,
-                ],
-                sw: [
-                  campus.longitude + campus.extent,
-                  campus.latitude + campus.extent,
-                ],
-              }
-            : undefined,
-        },
-      },
       mapContent: () => (
         <MarkersLayer
           search={debouncedSearch}
@@ -208,28 +202,39 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         />
       ),
     });
-    // Including `navigation` here causes a rerender loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    campus,
-    categoryFilterActive,
     categoryId,
     debouncedSearch,
     displayFloorId,
-    headerHeight,
+    navigation,
     places,
-    safeAreaInsets.top,
-    spacing,
     subCategoryId,
-    tabsHeight,
   ]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: !categoryFilterActive
+        ? () => (
+            <HeaderLogo
+              ml={4}
+              style={Platform.select({
+                android: { marginRight: 0.5 },
+              })}
+            />
+          )
+        : undefined,
+      headerRight: () => {
+        return <CampusSelector />;
+      },
+    });
+  }, [categoryFilterActive, navigation]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
       bottomSheetPosition.value,
       [0.65 * screenHeight, 0.7 * screenHeight],
       [0, 1],
-      Extrapolate.CLAMP,
+      Extrapolation.CLAMP,
     );
 
     return {

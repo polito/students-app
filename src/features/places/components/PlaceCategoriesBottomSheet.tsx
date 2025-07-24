@@ -59,12 +59,8 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
             ),
             onPress: () => {
               sheetRef.current?.close();
-              navigation.navigate({
-                name: 'Places',
-                key: `Places:${sc.id}`,
-                params: {
-                  subCategoryId: sc.id,
-                },
+              navigation.navigate('Places', {
+                subCategoryId: sc.id,
               });
             },
           })),

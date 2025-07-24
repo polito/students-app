@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import Video, {
   OnBufferData,
@@ -44,6 +45,11 @@ export const VideoPlayer = (props: VideoProps) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const { addListener } = useNavigation();
   const { toggleFullScreen } = props;
+  const [videoAspectRatio, setVideoAspectRatio] = useState(16 / 9); // Default to 16:9
+
+  // Check if device is in landscape mode
+  const isLandscape = width > height;
+
   useFullscreenUi(fullscreen);
 
   useEffect(() => {
@@ -74,7 +80,7 @@ export const VideoPlayer = (props: VideoProps) => {
   useEffect(() => {
     if (fullscreen) {
       SystemNavigationBar.stickyImmersive();
-      StatusBar.setHidden(true);
+      SystemBars.setHidden(true);
     } else {
       SystemNavigationBar.fullScreen(fullscreen);
     }
@@ -84,6 +90,11 @@ export const VideoPlayer = (props: VideoProps) => {
 
   const handleLoad = (meta: OnLoadData) => {
     setDuration(meta.duration);
+    // Calculate the actual aspect ratio of the video
+    if (meta.naturalSize && meta.naturalSize.width && meta.naturalSize.height) {
+      const aspectRatio = meta.naturalSize.width / meta.naturalSize.height;
+      setVideoAspectRatio(aspectRatio);
+    }
   };
 
   const togglePlaybackRate = () => {
@@ -124,6 +135,8 @@ export const VideoPlayer = (props: VideoProps) => {
           width,
           height,
           zIndex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
         },
       ]}
     >
@@ -131,14 +144,18 @@ export const VideoPlayer = (props: VideoProps) => {
         ref={playerRef}
         controls={false}
         paused={paused}
-        style={
-          !fullscreen
-            ? {
-                width: '100%',
-                minHeight: (width / 16) * 9,
-              }
-            : styles.fullHeight
-        }
+        style={{
+          width:
+            fullscreen && isLandscape
+              ? Math.min(width, height * videoAspectRatio)
+              : '100%',
+          height:
+            fullscreen && isLandscape
+              ? Math.min(height, width / videoAspectRatio)
+              : isLandscape
+                ? height
+                : (width / 16) * 9,
+        }}
         rate={playbackRate}
         resizeMode="contain"
         onLoad={handleLoad}

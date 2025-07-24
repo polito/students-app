@@ -1,7 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faSignsPost } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -38,7 +37,6 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
-  const safeAreaInsets = useSafeAreaInsets();
   const { floorId, setFloorId } = useContext(PlacesContext);
   const { placeIds, eventName, isCrossNavigation } = route.params;
   const placesQueries = useGetMultiplePlaces(placeIds);
@@ -139,7 +137,6 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     palettes.secondary,
     places,
     placesQueries,
-    safeAreaInsets.top,
     spacing,
     isCrossNavigation,
   ]);

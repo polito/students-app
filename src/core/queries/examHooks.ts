@@ -24,67 +24,63 @@ const mapApiExamToExam = (exam: ApiExam): Exam => {
 export const useGetExams = () => {
   const examsClient = useExamsClient();
 
-  return useQuery<Exam[]>(EXAMS_QUERY_KEY, () =>
-    examsClient
-      .getExams()
-      .then(pluckData)
-      .then(exams =>
-        exams
-          .map(mapApiExamToExam)
-          .sort((a, b) =>
-            !a.examStartsAt || !isValidDate(a.examStartsAt)
-              ? 1
-              : !b.examStartsAt || !isValidDate(b.examStartsAt)
-                ? -1
-                : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
-          ),
-      ),
-  );
+  return useQuery<Exam[]>({
+    queryKey: EXAMS_QUERY_KEY,
+    queryFn: () =>
+      examsClient
+        .getExams()
+        .then(pluckData)
+        .then(exams =>
+          exams
+            .map(mapApiExamToExam)
+            .sort((a, b) =>
+              !a.examStartsAt || !isValidDate(a.examStartsAt)
+                ? 1
+                : !b.examStartsAt || !isValidDate(b.examStartsAt)
+                  ? -1
+                  : a.examStartsAt.valueOf() - b.examStartsAt.valueOf(),
+            ),
+        ),
+  });
 };
 
 export const useBookExam = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
-  return useMutation(
-    (dto: BookExamRequest) =>
+  return useMutation({
+    mutationFn: (dto: BookExamRequest) =>
       examsClient.bookExam({ examId: examId, bookExamRequest: dto }),
-    {
-      onSuccess() {
-        return client.invalidateQueries(EXAMS_QUERY_KEY);
-      },
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: EXAMS_QUERY_KEY });
     },
-  );
+  });
 };
 
 export const useCancelExamBooking = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
-  return useMutation(
-    () => examsClient.deleteExamBookingById({ examId: examId }),
-    {
-      onSuccess() {
-        return client.invalidateQueries(EXAMS_QUERY_KEY);
-      },
+  return useMutation({
+    mutationFn: () => examsClient.deleteExamBookingById({ examId: examId }),
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: EXAMS_QUERY_KEY });
     },
-  );
+  });
 };
 
 export const useRescheduleRequest = (examId: number) => {
   const examsClient = useExamsClient();
   const client = useQueryClient();
 
-  return useMutation(
-    (rescheduleReason: RescheduleExamRequest) =>
+  return useMutation({
+    mutationFn: (rescheduleReason: RescheduleExamRequest) =>
       examsClient.rescheduleExam({
         examId: examId,
         rescheduleExamRequest: rescheduleReason,
       }),
-    {
-      onSuccess() {
-        return client.invalidateQueries(EXAMS_QUERY_KEY);
-      },
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: EXAMS_QUERY_KEY });
     },
-  );
+  });
 };

@@ -26,7 +26,6 @@ export const FileNavigator = () => {
 
   return (
     <Stack.Navigator
-      id="FileTabNavigator"
       screenOptions={{
         headerShown: false,
         ...useTitlesStyles(theme),

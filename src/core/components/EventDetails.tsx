@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { View, ViewProps } from 'react-native';
 
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
@@ -9,7 +10,7 @@ import { dateFormatter } from '../../utils/dates';
 type Props = ViewProps & {
   title?: string;
   type?: string;
-  time?: string | JSX.Element;
+  time?: string | ReactElement;
   endTime?: Date;
   timeLabel?: string;
 };

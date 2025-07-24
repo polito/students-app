@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import BottomTabBarHeightContext from '@react-navigation/bottom-tabs/src/utils/BottomTabBarHeightContext';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 
 /**
  * A useBottomTabBarHeight alternative that doesn't throw when outside

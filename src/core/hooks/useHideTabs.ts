@@ -12,18 +12,21 @@ export const useHideTabs = (
   const navigation = useNavigation();
   useFocusEffect(
     useCallback(() => {
+      const parent = navigation.getParent();
       // Ios tab bar is hidden by default in modal context
-      if (Platform.OS === 'ios') return;
-      const parent = navigation.getParent()!;
-      parent.setOptions({
-        tabBarStyle: { display: 'none' },
-      });
-      onFocusIn && onFocusIn();
-      return () => {
-        parent.setOptions({
-          tabBarStyle,
+      if (Platform.OS === 'android') {
+        parent?.setOptions({
+          tabBarStyle: { display: 'none' },
         });
-        onFocusOut && onFocusOut();
+      }
+      onFocusIn?.();
+      return () => {
+        if (Platform.OS === 'android') {
+          parent?.setOptions({
+            tabBarStyle,
+          });
+        }
+        onFocusOut?.();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigation]),

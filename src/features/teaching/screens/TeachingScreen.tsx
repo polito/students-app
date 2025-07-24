@@ -1,12 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -117,7 +111,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         />
       }
     >
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         {surveyCategoriesQuery.data?.length ? (
           <SurveyTypesSection types={surveyCategoriesQuery.data} />
         ) : undefined}
@@ -268,7 +262,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             )}
           </View>
         </Section>
-      </SafeAreaView>
+      </View>
       <BottomBarSpacer />
     </ScrollView>
   );

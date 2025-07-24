@@ -1,6 +1,7 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
+import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
@@ -8,9 +9,9 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { MenuView } from '@react-native-menu/menu';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { IS_ANDROID } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
@@ -35,33 +36,38 @@ const Menu = ({
 }>) => {
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
+  const { dark } = useTheme();
 
   const isHidden =
     preferences.courses[course.uniqueShortcode]?.isHidden ?? false;
 
+  const handleMenuAction = useCallback(() => {
+    preferences.updatePreference('courses', {
+      ...preferences.courses,
+      [course.uniqueShortcode!]: {
+        ...preferences.courses[course.uniqueShortcode],
+        isHidden: !isHidden,
+      },
+    });
+  }, [preferences, course.uniqueShortcode, isHidden]);
+
   return (
-    <MenuView
-      shouldOpenOnLongPress={shouldOpenOnLongPress}
+    <ContextMenu
+      dropdownMenuMode={IS_ANDROID}
       title={`${t('common.course')} ${t('common.preferences').toLowerCase()}`}
       actions={[
         {
           title: isHidden ? t('common.follow') : t('common.stopFollowing'),
           subtitle: t('coursePreferencesScreen.showInExtractsSubtitle'),
-          image: isHidden ? 'eye' : 'eye.slash',
+          systemIcon: isHidden ? 'eye' : 'eye.slash',
+          titleColor: dark ? 'white' : 'black',
         },
       ]}
-      onPressAction={() => {
-        preferences.updatePreference('courses', {
-          ...preferences.courses,
-          [course.uniqueShortcode!]: {
-            ...preferences.courses[course.uniqueShortcode],
-            isHidden: !isHidden,
-          },
-        });
-      }}
+      onPress={handleMenuAction}
+      onPreviewPress={shouldOpenOnLongPress ? handleMenuAction : undefined}
     >
       {children}
-    </MenuView>
+    </ContextMenu>
   );
 };
 

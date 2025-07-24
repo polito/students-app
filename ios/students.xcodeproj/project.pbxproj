@@ -7,26 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* studentsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* studentsTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1403F19349234A0AB20B5ED6 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3ADB1A47BEB74AAA9FE28FB1 /* OFL.txt */; };
-		181FC27C6F0B87E63AA06F89 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3784A3A51BDEB7636EB7F8 /* ExpoModulesProvider.swift */; };
 		2BA0016F9B0543F5BBDA41F8 /* Montserrat-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */; };
+		3BD38132130B427D9D7E0DDD /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5315202ED4F04B8D9FE446E5 /* Colors.xcassets */; };
 		3EA6CBE673262FFC27683243 /* libPods-students.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E85B0FA3C69706291E4C7454 /* libPods-students.a */; };
 		41C88311FAB6499EBDE63ED5 /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B813406DDE44447AB8717E6E /* Montserrat-SemiBold.ttf */; };
 		421B0ABE59B5422AA80527B9 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */; };
-		4261CE84249426DA2AD8F7D3 /* libPods-students-studentsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BADEE9E139127DB51296F263 /* libPods-students-studentsTests.a */; };
 		708F733D8BE05D66EE3C3F87 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E527B64FCAF0F704887044D /* ExpoModulesProvider.swift */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		85D8E0ED2E21679200785302 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0915BB67F2D54C92A20F1CAC /* BootSplash.storyboard */; };
 		944531432DCE469C9F10AB4F /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */; };
 		96125A232AD6A8E600CF037A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 96125A222AD6A8E600CF037A /* GoogleService-Info.plist */; };
 		97547E738A1E444EB344D4D0 /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */; };
 		B047731DC8222E6BF13A50A0 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86260E904815F44C1CA7789 /* ExpoModulesProvider.swift */; };
-		B44D6C0A29F17BF2001BA0DC /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
-		B44D6C0B29F17BF2001BA0DC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		B44D6C0F29F17BF2001BA0DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B44D6C1029F17BF2001BA0DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		B44D6C1129F17BF2001BA0DC /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */; };
 		B44D6C1229F17BF2001BA0DC /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */; };
@@ -39,61 +32,48 @@
 		B44D6C1929F17BF2001BA0DC /* Montserrat-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */; };
 		B44D6C1A29F17BF2001BA0DC /* Montserrat-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DEB745DF9E648D188F2F671 /* Montserrat-ExtraBoldItalic.ttf */; };
 		B5ADF8A75E4777C5576F0C7A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0F8090A9A58B4C9E6CA78B9C /* PrivacyInfo.xcprivacy */; };
+		B7AEFC802E16ADE70081F87A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AEFC7F2E16ADE70081F87A /* AppDelegate.swift */; };
+		B7AEFC812E16ADE70081F87A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AEFC7F2E16ADE70081F87A /* AppDelegate.swift */; };
 		B7D759312BF2478B00178B49 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B7D759302BF2478B00178B49 /* PrivacyInfo.xcprivacy */; };
 		C7D2778AE095445F9F198F64 /* Montserrat-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0B4891BE01447A7B4765D31 /* Montserrat-Italic.ttf */; };
 		CB4BF40DED3EE2D517E92179 /* libPods-students-students dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ACC8FDE515D5BD1D8D01BAF8 /* libPods-students-students dev.a */; };
 		CE167CA0612F4CC8AF617FC2 /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 096DED1866D040D8BC255CC7 /* Montserrat-SemiBoldItalic.ttf */; };
 		E27CCBDF2F19415492F841F8 /* Montserrat-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DEB745DF9E648D188F2F671 /* Montserrat-ExtraBoldItalic.ttf */; };
 		F280CD371DF248D588A81ED1 /* Montserrat-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A28D4947060492C8F2FDEB8 /* Montserrat-MediumItalic.ttf */; };
+		F6F620C772764BF5B7787BD0 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0915BB67F2D54C92A20F1CAC /* BootSplash.storyboard */; };
 		FC383687308B444795D458C6 /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1FD970118329471A91194CCE /* Montserrat-Medium.ttf */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = students;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* studentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = studentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* studentsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = studentsTests.m; sourceTree = "<group>"; };
+		0915BB67F2D54C92A20F1CAC /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = students/BootSplash.storyboard; sourceTree = "<group>"; };
 		096DED1866D040D8BC255CC7 /* Montserrat-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBoldItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		09DBC5739A866119C85B68FC /* Pods-students-students dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-students dev.release.xcconfig"; path = "Target Support Files/Pods-students-students dev/Pods-students-students dev.release.xcconfig"; sourceTree = "<group>"; };
 		0F8090A9A58B4C9E6CA78B9C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* students.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = students.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = students/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = students/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = students/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = students/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = students/main.m; sourceTree = "<group>"; };
 		1DEB745DF9E648D188F2F671 /* Montserrat-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBoldItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		1FD970118329471A91194CCE /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
 		26B2C52A879BC7593943D303 /* Pods-students-students dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-students dev.debug.xcconfig"; path = "Target Support Files/Pods-students-students dev/Pods-students-students dev.debug.xcconfig"; sourceTree = "<group>"; };
 		2B8C6611CD99474EB542989F /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		2BFB747F5587852157976D00 /* Pods-students.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students.release.xcconfig"; path = "Target Support Files/Pods-students/Pods-students.release.xcconfig"; sourceTree = "<group>"; };
-		357F7B84A61240A55B98C650 /* Pods-students-studentsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-studentsTests.debug.xcconfig"; path = "Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3ADB1A47BEB74AAA9FE28FB1 /* OFL.txt */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = OFL.txt; path = ../assets/fonts/Montserrat/OFL.txt; sourceTree = "<group>"; };
 		424C348DF9254E8C89FEA6CA /* Montserrat-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBold.ttf"; path = "../assets/fonts/Montserrat/Montserrat-ExtraBold.ttf"; sourceTree = "<group>"; };
 		4D12524BABDE4FD7BA5DBD6E /* Montserrat-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-BoldItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-BoldItalic.ttf"; sourceTree = "<group>"; };
+		5315202ED4F04B8D9FE446E5 /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = students/Colors.xcassets; sourceTree = "<group>"; };
 		55241F502937B71E0009DF9A /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		5A28D4947060492C8F2FDEB8 /* Montserrat-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-MediumItalic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-MediumItalic.ttf"; sourceTree = "<group>"; };
-		5F3784A3A51BDEB7636EB7F8 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-students-studentsTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		7E527B64FCAF0F704887044D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-students/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		7EADBDA19E5649E5022A6C9F /* Pods-students-studentsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students-studentsTests.release.xcconfig"; path = "Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests.release.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = students/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		96125A222AD6A8E600CF037A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "./GoogleService-Info.plist"; sourceTree = "<group>"; };
 		96125A242AD6B04500CF037A /* students.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = students.entitlements; path = students/students.entitlements; sourceTree = "<group>"; };
 		ACC8FDE515D5BD1D8D01BAF8 /* libPods-students-students dev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students-students dev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B44D6C2229F17BF2001BA0DC /* students dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "students dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B44D6C2329F17BF2001BA0DC /* DevInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = students/DevInfo.plist; sourceTree = "<group>"; };
+		B7AEFC7F2E16ADE70081F87A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = students/AppDelegate.swift; sourceTree = "<group>"; };
 		B7D759302BF2478B00178B49 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B813406DDE44447AB8717E6E /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBold.ttf"; path = "../assets/fonts/Montserrat/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
-		BADEE9E139127DB51296F263 /* libPods-students-studentsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-students-studentsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C36BC2B3ADABFFA37BD69A86 /* Pods-students.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-students.debug.xcconfig"; path = "Target Support Files/Pods-students/Pods-students.debug.xcconfig"; sourceTree = "<group>"; };
 		D0B4891BE01447A7B4765D31 /* Montserrat-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Italic.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Italic.ttf"; sourceTree = "<group>"; };
 		DA6AD6D77E3B40548041A5A2 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Bold.ttf"; path = "../assets/fonts/Montserrat/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
@@ -103,14 +83,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00E356EB1AD99517003FC87E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4261CE84249426DA2AD8F7D3 /* libPods-students-studentsTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -150,24 +122,15 @@
 		13B07FAE1A68108700A75B9A /* students */ = {
 			isa = PBXGroup;
 			children = (
+				B7AEFC7F2E16ADE70081F87A /* AppDelegate.swift */,
 				96125A242AD6B04500CF037A /* students.entitlements */,
 				B44D6C2329F17BF2001BA0DC /* DevInfo.plist */,
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
-				13B07FB71A68108700A75B9A /* main.m */,
+				0915BB67F2D54C92A20F1CAC /* BootSplash.storyboard */,
+				5315202ED4F04B8D9FE446E5 /* Colors.xcassets */,
 			);
 			name = students;
-			sourceTree = "<group>";
-		};
-		145D53FDE29FB1191A8BDF58 /* studentsTests */ = {
-			isa = PBXGroup;
-			children = (
-				5F3784A3A51BDEB7636EB7F8 /* ExpoModulesProvider.swift */,
-			);
-			name = studentsTests;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -177,7 +140,6 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				E85B0FA3C69706291E4C7454 /* libPods-students.a */,
 				ACC8FDE515D5BD1D8D01BAF8 /* libPods-students-students dev.a */,
-				BADEE9E139127DB51296F263 /* libPods-students-studentsTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -229,7 +191,6 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* students.app */,
-				00E356EE1AD99517003FC87E /* studentsTests.xctest */,
 				B44D6C2229F17BF2001BA0DC /* students dev.app */,
 			);
 			name = Products;
@@ -258,7 +219,6 @@
 			children = (
 				803607901C5F2DE9BC13DDBB /* students */,
 				5C9EFDE93533F591688DC1A5 /* students dev */,
-				145D53FDE29FB1191A8BDF58 /* studentsTests */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -270,8 +230,6 @@
 				2BFB747F5587852157976D00 /* Pods-students.release.xcconfig */,
 				26B2C52A879BC7593943D303 /* Pods-students-students dev.debug.xcconfig */,
 				09DBC5739A866119C85B68FC /* Pods-students-students dev.release.xcconfig */,
-				357F7B84A61240A55B98C650 /* Pods-students-studentsTests.debug.xcconfig */,
-				7EADBDA19E5649E5022A6C9F /* Pods-students-studentsTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -279,28 +237,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* studentsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "studentsTests" */;
-			buildPhases = (
-				4F4FDD75712F8B02179E9450 /* [CP] Check Pods Manifest.lock */,
-				0A26D322F2F48A7B8E2E15B0 /* [Expo] Configure project */,
-				00E356EA1AD99517003FC87E /* Sources */,
-				00E356EB1AD99517003FC87E /* Frameworks */,
-				00E356EC1AD99517003FC87E /* Resources */,
-				F4FF47A03B6DF059C01CA411 /* [CP] Embed Pods Frameworks */,
-				660B634FB46505A6909EDF79 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E356F51AD99517003FC87E /* PBXTargetDependency */,
-			);
-			name = studentsTests;
-			productName = studentsTests;
-			productReference = 00E356EE1AD99517003FC87E /* studentsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		13B07F861A680F5B00A75B9A /* students */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "students" */;
@@ -357,10 +293,6 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
-					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
 					};
@@ -381,24 +313,16 @@
 			targets = (
 				B44D6C0629F17BF2001BA0DC /* students dev */,
 				13B07F861A680F5B00A75B9A /* students */,
-				00E356ED1AD99517003FC87E /* studentsTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		00E356EC1AD99517003FC87E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				85D8E0ED2E21679200785302 /* BootSplash.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				944531432DCE469C9F10AB4F /* Montserrat-Bold.ttf in Resources */,
 				B7D759312BF2478B00178B49 /* PrivacyInfo.xcprivacy in Resources */,
@@ -419,7 +343,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B44D6C0F29F17BF2001BA0DC /* LaunchScreen.storyboard in Resources */,
 				B44D6C1029F17BF2001BA0DC /* Images.xcassets in Resources */,
 				B44D6C1129F17BF2001BA0DC /* Montserrat-Bold.ttf in Resources */,
 				B44D6C1229F17BF2001BA0DC /* Montserrat-BoldItalic.ttf in Resources */,
@@ -433,6 +356,8 @@
 				B44D6C1A29F17BF2001BA0DC /* Montserrat-ExtraBoldItalic.ttf in Resources */,
 				B5ADF8A75E4777C5576F0C7A /* PrivacyInfo.xcprivacy in Resources */,
 				1403F19349234A0AB20B5ED6 /* OFL.txt in Resources */,
+				F6F620C772764BF5B7787BD0 /* BootSplash.storyboard in Resources */,
+				3BD38132130B427D9D7E0DDD /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,25 +416,6 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-students-students\\ dev/expo-configure-project.sh\"\n";
 		};
-		0A26D322F2F48A7B8E2E15B0 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-students-studentsTests/expo-configure-project.sh\"\n";
-		};
 		14C105749263A61312E46A67 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -547,45 +453,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4F4FDD75712F8B02179E9450 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-students-studentsTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		660B634FB46505A6909EDF79 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6EC3B1E45FAE83A62DD91F4C /* [CP] Check Pods Manifest.lock */ = {
@@ -711,23 +578,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-students dev/Pods-students-students dev-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F4FF47A03B6DF059C01CA411 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-students-studentsTests/Pods-students-studentsTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -750,21 +600,11 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00E356EA1AD99517003FC87E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E356F31AD99517003FC87E /* studentsTests.m in Sources */,
-				181FC27C6F0B87E63AA06F89 /* ExpoModulesProvider.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				B7AEFC812E16ADE70081F87A /* AppDelegate.swift in Sources */,
 				708F733D8BE05D66EE3C3F87 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -773,80 +613,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B44D6C0A29F17BF2001BA0DC /* AppDelegate.mm in Sources */,
-				B44D6C0B29F17BF2001BA0DC /* main.m in Sources */,
+				B7AEFC802E16ADE70081F87A /* AppDelegate.swift in Sources */,
 				B047731DC8222E6BF13A50A0 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* students */;
-			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
-		00E356F61AD99517003FC87E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 357F7B84A61240A55B98C650 /* Pods-students-studentsTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = studentsTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/students.app/students";
-			};
-			name = Debug;
-		};
-		00E356F71AD99517003FC87E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EADBDA19E5649E5022A6C9F /* Pods-students-studentsTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = studentsTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "it.polito.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/students.app/students";
-			};
-			name = Release;
-		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C36BC2B3ADABFFA37BD69A86 /* Pods-students.debug.xcconfig */;
@@ -933,6 +707,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				CCACHE_BINARY = /opt/homebrew/bin/ccache;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1019,6 +794,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				CCACHE_BINARY = /opt/homebrew/bin/ccache;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1173,15 +949,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "studentsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00E356F61AD99517003FC87E /* Debug */,
-				00E356F71AD99517003FC87E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "students" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -1,7 +1,5 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.EdgeToEdge">
         <!-- Customize your theme here. -->
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
@@ -10,5 +8,15 @@
         <item name="android:windowSplashScreenAnimationDuration">0</item>
         <item name="android:navigationBarColor">@color/surfaceDark</item>
         <item name="android:forceDarkAllowed">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="BootTheme" parent="Theme.BootSplash.EdgeToEdge">
+        <item name="bootSplashBackground">@color/surfaceDark</item>
+        <item name="bootSplashLogo">@drawable/bootsplash_logo</item>
+        <item name="postBootSplashTheme">@style/AppTheme</item>
     </style>
 </resources>

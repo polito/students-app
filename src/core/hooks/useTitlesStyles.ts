@@ -22,9 +22,6 @@ export const useTitlesStyles: (
     fontWeight: fontWeights.bold as string,
     color: colors.title,
   },
-  headerBackTitleStyle: {
-    fontFamily: fontFamilies.heading,
-  },
   headerBlurEffect: dark
     ? 'systemUltraThinMaterialDark'
     : 'systemUltraThinMaterialLight',

@@ -91,15 +91,13 @@ export const useGetLectureWeek = (
     return getVisibleCourseIds(courses!, coursesPreferences);
   }, [courses, coursesPreferences]);
 
-  return useQuery<Lecture[]>(
-    getLectureWeekQueryKey(since),
-    async () =>
+  return useQuery<Lecture[]>({
+    queryKey: getLectureWeekQueryKey(since),
+    queryFn: async () =>
       getLectureWeekQueryFn(lectureClient, since, courses!, visibleCourseIds),
-    {
-      enabled: !!courses && Array.isArray(visibleCourseIds),
-      staleTime: Infinity,
-    },
-  );
+    enabled: !!courses && Array.isArray(visibleCourseIds),
+    staleTime: Infinity,
+  });
 };
 
 export const useGetLectureWeeks = (
@@ -142,13 +140,14 @@ export const useGetNextLecture = (
 ) => {
   const coursesClient = useCoursesClient();
   const { data: courses } = useGetCourses();
-  const nextLectureQuery = useQuery(
-    ['nextLecture', courseId],
-    async () => {
-      if (!courseId) return undefined;
+
+  const nextLectureQuery = useQuery({
+    queryKey: ['nextLecture', courseId],
+    queryFn: async () => {
+      if (!courseId) return null;
       try {
         const response = await coursesClient.getNextLecture({ courseId });
-        if (!response?.data) return undefined;
+        if (!response?.data) return null;
         let lecture = response.data as Lecture;
         if (courses) {
           const course = courses.find(c => c.id === lecture.courseId);
@@ -159,30 +158,42 @@ export const useGetNextLecture = (
         return formatNextLecture(lecture, coursesPreferences);
       } catch (e) {
         if (e instanceof ResponseError && e.response.status === 404) {
-          return undefined;
+          return null;
         }
         throw e;
       }
     },
-    {
-      enabled: !!courseId,
-      staleTime: Infinity,
-    },
-  );
+    enabled: !!courseId && !!courses, // Aspetta anche che i corsi siano caricati
+    staleTime: Infinity,
+  });
 
-  const nextLecture = nextLectureQuery.data;
+  const nextLecture = nextLectureQuery.data ?? null;
+
   const { dayOfMonth, weekDay, monthOfYear } = useMemo(() => {
-    if (!nextLecture) return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
-    const lectureStart = DateTime.fromISO(nextLecture.date, {
-      zone: IANAZone.create('Europe/Rome'),
-    });
-    return {
-      dayOfMonth: lectureStart.toFormat('d'),
-      weekDay: lectureStart.toFormat('ccc'),
-      monthOfYear: isCurrentMonth(lectureStart)
-        ? ''
-        : lectureStart.toFormat('LLL'),
-    };
+    if (!nextLecture?.date) {
+      return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
+    }
+
+    try {
+      const lectureStart = DateTime.fromISO(nextLecture.date, {
+        zone: IANAZone.create('Europe/Rome'),
+      });
+
+      if (!lectureStart.isValid) {
+        return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
+      }
+
+      return {
+        dayOfMonth: lectureStart.toFormat('d'),
+        weekDay: lectureStart.toFormat('ccc'),
+        monthOfYear: isCurrentMonth(lectureStart)
+          ? ''
+          : lectureStart.toFormat('LLL'),
+      };
+    } catch (error) {
+      console.error('Error parsing lecture date:', error);
+      return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
+    }
   }, [nextLecture]);
 
   return {

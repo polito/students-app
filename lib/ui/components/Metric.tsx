@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
@@ -6,7 +7,7 @@ import { Text, Props as TextProps } from './Text';
 
 type Props = ViewProps & {
   title?: string;
-  value: string | number | JSX.Element;
+  value: string | number | ReactElement;
   color?: string;
   valueStyle?: TextProps['style'];
 };

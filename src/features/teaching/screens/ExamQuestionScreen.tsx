@@ -26,7 +26,7 @@ export const ExamQuestionScreen = ({ route, navigation }: Props) => {
   const examsQuery = useGetExams();
   const exam = examsQuery.data?.find(e => e.id === id);
 
-  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(id);
+  const { mutateAsync: bookExam, isPending: isBooking } = useBookExam(id);
 
   useEffect(() => {
     if (exam && !exam.question) navigation.goBack();
