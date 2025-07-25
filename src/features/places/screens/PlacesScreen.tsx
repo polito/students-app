@@ -453,40 +453,42 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         </Row>
       </Animated.View>
 
-      <PlacesBottomSheet
-        index={0}
-        animatedPosition={bottomSheetPosition}
-        search={search}
-        onSearchChange={setSearch}
-        onSearchTrigger={triggerSearch}
-        onSearchClear={() => {
-          setSearch('');
-          setDebouncedSearch('');
-        }}
-        searchFieldLabel={[
-          t('common.search'),
-          categoryFilterName,
-          'in',
-          campus?.name,
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        isLoading={isLoadingPlaces}
-        listProps={{
-          data: listItems,
-          ListEmptyComponent: (
-            <EmptyState
-              message={t('placesScreen.noPlacesFound')}
-              icon={faMagnifyingGlassLocation}
-            />
-          ),
-        }}
-      />
-
-      <PlaceCategoriesBottomSheet
-        index={categoriesPanelOpen ? 0 : -1}
-        onClose={() => setCategoriesPanelOpen(false)}
-      />
+      {(categoriesPanelOpen && (
+        <PlaceCategoriesBottomSheet
+          index={categoriesPanelOpen ? 0 : -1}
+          onClose={() => setCategoriesPanelOpen(false)}
+        />
+      )) || (
+        <PlacesBottomSheet
+          index={0}
+          animatedPosition={bottomSheetPosition}
+          search={search}
+          onSearchChange={setSearch}
+          onSearchTrigger={triggerSearch}
+          onSearchClear={() => {
+            setSearch('');
+            setDebouncedSearch('');
+          }}
+          searchFieldLabel={[
+            t('common.search'),
+            categoryFilterName,
+            'in',
+            campus?.name,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          isLoading={isLoadingPlaces}
+          listProps={{
+            data: listItems,
+            ListEmptyComponent: (
+              <EmptyState
+                message={t('placesScreen.noPlacesFound')}
+                icon={faMagnifyingGlassLocation}
+              />
+            ),
+          }}
+        />
+      )}
     </View>
   );
 };
