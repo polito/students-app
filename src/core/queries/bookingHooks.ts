@@ -20,17 +20,19 @@ const useBookingClient = (): BookingsApi => {
 export const useGetBookings = () => {
   const bookingClient = useBookingClient();
 
-  return useQuery(BOOKINGS_QUERY_KEY, () =>
-    bookingClient.getBookings().then(pluckData),
-  );
+  return useQuery({
+    queryKey: BOOKINGS_QUERY_KEY,
+    queryFn: () => bookingClient.getBookings().then(pluckData),
+  });
 };
 
 export const useGetBookingTopics = () => {
   const bookingClient = useBookingClient();
 
-  return useQuery(BOOKINGS_TOPICS_QUERY_KEY, () =>
-    bookingClient.getBookingTopics().then(pluckData),
-  );
+  return useQuery({
+    queryKey: BOOKINGS_TOPICS_QUERY_KEY,
+    queryFn: () => bookingClient.getBookingTopics().then(pluckData),
+  });
 };
 
 export const useGetBookingSlots = (
@@ -41,14 +43,14 @@ export const useGetBookingSlots = (
   const fromDate = weekStart.startOf('week');
   const toDate = weekStart.endOf('week');
 
-  return useQuery(
-    [
+  return useQuery({
+    queryKey: [
       ...BOOKINGS_SLOTS_QUERY_KEY,
       bookingTopicId,
       fromDate.toISODate(),
       toDate.toISODate(),
     ],
-    () =>
+    queryFn: () =>
       bookingClient
         .getBookingSlots({
           bookingTopicId,
@@ -56,10 +58,8 @@ export const useGetBookingSlots = (
           toDate: toDate.toJSDate(),
         })
         .then(pluckData),
-    {
-      enabled: true,
-    },
-  );
+    enabled: true,
+  });
 };
 
 /**
@@ -77,9 +77,14 @@ export const useGetBookingDetailSlots = (
 ) => {
   const bookingClient = useBookingClient();
 
-  return useQuery(
-    ['booking-detail', bookingTopicId, fromDate.toISO(), toDate.toISO()],
-    () =>
+  return useQuery({
+    queryKey: [
+      'booking-detail',
+      bookingTopicId,
+      fromDate.toISO(),
+      toDate.toISO(),
+    ],
+    queryFn: () =>
       bookingClient
         .getBookingSlots({
           bookingTopicId,
@@ -87,7 +92,7 @@ export const useGetBookingDetailSlots = (
           toDate: toDate.toJSDate(),
         })
         .then(pluckData),
-  );
+  });
 };
 
 export const useGetBookingSeats = (
@@ -96,20 +101,20 @@ export const useGetBookingSeats = (
 ) => {
   const bookingClient = useBookingClient();
 
-  return useQuery(
-    [...BOOKINGS_SEATS_QUERY_KEY, bookingTopicId, bookingSlotId],
-    () =>
+  return useQuery({
+    queryKey: [...BOOKINGS_SEATS_QUERY_KEY, bookingTopicId, bookingSlotId],
+    queryFn: () =>
       bookingClient
         .getBookingSeats({ bookingTopicId, bookingSlotId })
         .then(pluckData),
-  );
+  });
 };
 
 export const useUpdateBooking = () => {
   const bookingClient = useBookingClient();
   const queryClient = useQueryClient();
-  return useMutation(
-    ({
+  return useMutation({
+    mutationFn: ({
       bookingId,
       isLocationChecked,
     }: {
@@ -120,32 +125,28 @@ export const useUpdateBooking = () => {
         bookingId,
         updateBookingRequest: { isLocationChecked },
       }),
-    {
-      onSuccess() {
-        return queryClient.invalidateQueries(BOOKINGS_QUERY_KEY);
-      },
+    onSuccess() {
+      return queryClient.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY });
     },
-  );
+  });
 };
 
 export const useCreateBooking = () => {
   const bookingClient = useBookingClient();
   const client = useQueryClient();
 
-  return useMutation(
-    ({ slotId, seatId }: { slotId: number; seatId?: number }) =>
+  return useMutation({
+    mutationFn: ({ slotId, seatId }: { slotId: number; seatId?: number }) =>
       bookingClient.createBooking({
         createBookingRequest: {
           slotId,
           seatId,
         },
       }),
-    {
-      onSuccess() {
-        return client.invalidateQueries(BOOKINGS_QUERY_KEY);
-      },
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY });
     },
-  );
+  });
 };
 
 export const useDeleteBooking = (bookingId: number) => {
@@ -153,15 +154,16 @@ export const useDeleteBooking = (bookingId: number) => {
   const client = useQueryClient();
   const { t } = useTranslation();
 
-  return useMutation(() => bookingClient.deleteBookingRaw({ bookingId }), {
+  return useMutation({
+    mutationFn: () => bookingClient.deleteBookingRaw({ bookingId }),
     onSuccess() {
       setTimeoutAccessibilityInfoHelper(
         t('bookingScreen.cancelFeedback'),
         1200,
       );
       return Promise.all([
-        client.invalidateQueries(BOOKINGS_QUERY_KEY),
-        client.invalidateQueries(['agenda']),
+        client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: ['agenda'] }),
       ]);
     },
   });

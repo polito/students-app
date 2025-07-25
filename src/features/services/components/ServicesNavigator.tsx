@@ -101,7 +101,6 @@ export const ServicesNavigator = () => {
 
   return (
     <Stack.Navigator
-      id="ServicesTabNavigator"
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
@@ -142,9 +141,6 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
           headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
-          headerLargeStyle: {
-            backgroundColor: 'transparent',
-          },
         }}
       />
       <Stack.Screen
@@ -185,7 +181,7 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('jobOfferScreen.title'),
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -202,7 +198,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('newsScreen.title'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -227,7 +223,7 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -261,7 +257,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('common.booking'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -270,7 +266,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('bookingsScreen.newBooking'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -279,7 +275,7 @@ export const ServicesNavigator = () => {
         options={({ route }) => ({
           headerTitle: route.params.topicName,
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerTransparent: false,
           headerShadowVisible: false,
           headerLargeStyle: {
@@ -292,7 +288,7 @@ export const ServicesNavigator = () => {
         component={BookingSeatSelectionScreen}
         options={{
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerTitle: t('bookingSeatScreen.title'),
         }}
       />
@@ -301,7 +297,7 @@ export const ServicesNavigator = () => {
         component={BookingSeatScreen}
         options={{
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerTitle: t('common.seat'),
         }}
       />
@@ -319,7 +315,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('guideScreen.title'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -336,7 +332,7 @@ export const ServicesNavigator = () => {
         options={{
           headerTitle: t('surveysScreen.compiledTitle'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -347,7 +343,7 @@ export const ServicesNavigator = () => {
           headerShown: false,
         }}
       />
-      {SharedScreens(Stack as any)}
+      {SharedScreens()}
     </Stack.Navigator>
   );
 };

@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Pie as ProgressIndicator } from 'react-native-progress';
@@ -62,10 +63,10 @@ const getIconFromMimeType = (mimeType?: string) => {
 };
 
 interface Props {
-  title: string | JSX.Element;
+  title: string | ReactElement;
   subtitle?: string;
   sizeInKiloBytes?: number;
-  trailingItem?: JSX.Element;
+  trailingItem?: ReactElement;
   isDownloaded?: boolean;
   downloadProgress?: number;
   containerStyle?: StyleProp<ViewStyle>;

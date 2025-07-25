@@ -104,8 +104,10 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     ];
 
     setAgendaState(prev => ({ ...prev, isRefreshing: true }));
-    Promise.all(dependingQueryKeys.map(q => client.invalidateQueries(q)))
-      .then(_ => client.invalidateQueries([AGENDA_QUERY_PREFIX]))
+    Promise.all(
+      dependingQueryKeys.map(q => client.invalidateQueries({ queryKey: q })),
+    )
+      .then(_ => client.invalidateQueries({ queryKey: [AGENDA_QUERY_PREFIX] }))
       .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
   }, [client, setAgendaState]);
 

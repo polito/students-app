@@ -29,12 +29,12 @@ export const CourseIcon = ({ color, icon, isHidden }: Props) => {
         },
       ]}
     >
-      {isHidden && (
+      {(isHidden && (
         <Icon icon={faEyeSlash} color={styles.hiddenIcon.color} size={22} />
-      )}
-      {!isHidden && icon && icon in courseIcons && (
-        <Icon icon={courseIcons[icon]} color="white" />
-      )}
+      )) ||
+        (icon && icon in courseIcons && (
+          <Icon icon={courseIcons[icon]} color="white" />
+        ))}
     </View>
   );
 };

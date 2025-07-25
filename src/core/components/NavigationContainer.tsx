@@ -6,16 +6,17 @@ import {
 } from '@react-navigation/native';
 
 import { navigationIntegration } from '../../utils/sentry';
+import { RootParamList } from '../types/navigation';
 
 export const NavigationContainer = ({
   children,
   ...rest
 }: ComponentProps<typeof ReactNavigationContainer>) => {
-  const navigationRef = useNavigationContainerRef();
+  const navigationRef = useNavigationContainerRef<RootParamList>();
 
   return (
     <ReactNavigationContainer
-      ref={navigationRef}
+      ref={navigationRef as any}
       onReady={() => {
         // Register the navigation container with the instrumentation
         navigationIntegration.registerNavigationContainer(navigationRef);

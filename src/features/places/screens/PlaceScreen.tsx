@@ -1,7 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faDiamondTurnRight,
@@ -51,7 +50,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { floorId, setFloorId } = useContext(PlacesContext);
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
-  const safeAreaInsets = useSafeAreaInsets();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
   const {
     data: place,
@@ -76,6 +74,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const placeName =
     place?.room.name ??
     place?.category.subCategory?.name ??
+    place?.category.name ??
     name ??
     t('common.untitled');
 
@@ -219,7 +218,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     place,
     placeId,
     places,
-    safeAreaInsets.top,
     spacing,
   ]);
 

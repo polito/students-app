@@ -19,6 +19,7 @@ platform :ios do
   before_all do
     setup_ci if ENV['CI']
     sync_code_signing(type: "appstore", readonly: true)
+    cocoapods(use_bundle_exec: true)
   end
 
   lane :release do

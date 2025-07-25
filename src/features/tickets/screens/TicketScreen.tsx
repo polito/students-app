@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
@@ -109,7 +113,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const bottomBarHeight = useBottomTabBarHeight();
-  const [textFieldHeight, setTextFieldHeight] = useState(50);
   const ticket = ticketQuery.data;
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
@@ -173,14 +176,23 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     changeStyle();
   }, [accessibility, fontSizes]);
 
+  const keyboard = useAnimatedKeyboard();
+  const animatedBottomPadding = useAnimatedStyle(() => ({
+    paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
+  }));
+
+  // TODO: traslucent does not work anymore because now views
+  // are more linear: it's needed to recalculate layouts and set
+  // the flatlist to be absolutely positioned
+
   return (
-    <View style={GlobalStyles.grow}>
+    <Animated.View style={[GlobalStyles.grow, animatedBottomPadding]}>
       <FlatList
         keyboardShouldPersistTaps="handled"
         inverted
         contentContainerStyle={[
           {
-            paddingTop: textFieldHeight + bottomBarHeight + spacing[5],
+            paddingTop: spacing[5],
             paddingBottom: IS_IOS ? headerHeight + spacing[5] : undefined,
           },
           paddingHorizontal,
@@ -233,13 +245,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={() => <View style={styless.separator} />}
       />
-      <TicketMessagingView
-        ticketId={id}
-        onLayout={e => {
-          setTextFieldHeight(e.nativeEvent.layout.height);
-        }}
-      />
-    </View>
+      <TicketMessagingView ticketId={id} />
+    </Animated.View>
   );
 };
 

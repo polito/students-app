@@ -9,19 +9,20 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
-import { NativeStackNavigatorProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { Image, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
   HeaderBackButton,
   HeaderBackContext,
   Screen,
+  getDefaultHeaderHeight,
   getHeaderTitle,
+  useFrameSize,
   useHeaderHeight,
 } from '@react-navigation/elements';
 import {
@@ -38,6 +39,7 @@ import {
 import {
   NativeStackNavigationEventMap,
   NativeStackNavigationOptions,
+  NativeStackNavigatorProps,
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
 
@@ -103,7 +105,6 @@ export const MapNavigator = ({
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
-  const { dark } = useTheme();
   const headerBack = previousDescriptor
     ? {
         title: getHeaderTitle(
@@ -118,7 +119,7 @@ export const MapNavigator = ({
     state.routes[state.index].name,
   );
   const orientation = useDeviceOrientation();
-  const [rotating, setRotating] = useState(false);
+  const [rotating, setRotating] = useState(IS_IOS);
   const MapDefaultContent = currentRoute.options?.mapDefaultContent;
   const MapContent = currentRoute.options?.mapContent;
 
@@ -148,8 +149,19 @@ export const MapNavigator = ({
     headerBackTitle,
     headerBackTitleStyle,
     headerBackVisible,
-    headerBackTitleVisible,
   } = currentRoute.options;
+
+  const frame = useFrameSize(s => s, true);
+  const insets = useSafeAreaInsets();
+  const hdrHeight = getDefaultHeaderHeight(frame, false, insets.top);
+  const headerStyleFixtures = Platform.select({
+    ios: {
+      transform: [{ translateY: -3 }],
+    },
+    android: {
+      height: hdrHeight - 8,
+    },
+  });
 
   return (
     <NavigationContent>
@@ -164,7 +176,11 @@ export const MapNavigator = ({
             header={
               header !== undefined ? (
                 header({
-                  back: headerBack,
+                  back: headerBack
+                    ? 'href' in headerBack
+                      ? headerBack
+                      : { ...headerBack, href: '' }
+                    : undefined,
                   options: currentRoute.options,
                   route: currentRoute.route,
                   navigation: currentRoute.navigation,
@@ -200,12 +216,15 @@ export const MapNavigator = ({
                                     : undefined
                                 }
                                 onPress={navigation.goBack}
-                                canGoBack={canGoBack}
                                 label={
                                   headerBackTitle ??
                                   previousDescriptor?.options.title
                                 }
-                                labelVisible={IS_IOS && headerBackTitleVisible}
+                                displayMode={
+                                  IS_IOS && headerBackVisible
+                                    ? 'default'
+                                    : 'minimal'
+                                }
                                 labelStyle={headerBackTitleStyle}
                               />
                             )
@@ -228,23 +247,32 @@ export const MapNavigator = ({
                   headerTransparent={headerTransparent}
                   headerShadowVisible={headerShadowVisible}
                   headerBackground={headerBackground}
-                  headerStyle={headerStyle}
+                  headerStyle={[headerStyle, headerStyleFixtures]}
+                  headerBackgroundContainerStyle={Platform.select({
+                    android: {
+                      boxShadow: '0 0 8px 3px #0003',
+                    },
+                  })}
                 />
               )
             }
           >
-            <HeaderBackContext.Provider value={headerBack}>
+            <HeaderBackContext.Provider
+              value={
+                headerBack
+                  ? 'href' in headerBack
+                    ? headerBack
+                    : { ...headerBack, href: '' }
+                  : undefined
+              }
+            >
               <MapView
                 ref={mapRef}
-                style={[GlobalStyles.grow, rotating && { display: 'none' }]}
+                style={[GlobalStyles.grow, rotating && { opacity: 0 }]}
                 {...mapDefaultOptions}
                 {...mapOptions}
               >
-                <BackgroundLayer
-                  id="background"
-                  // eslint-disable-next-line react-native/no-color-literals
-                  style={{ backgroundColor: dark ? 'black' : 'white' }}
-                />
+                <BackgroundLayer id="background" />
                 <Camera
                   ref={cameraRef}
                   {...(mapDefaultOptions?.camera ?? {})}
@@ -301,12 +329,7 @@ export type MapNavigationOptions = NativeStackNavigationOptions & {
   mapDefaultContent?: ComponentType;
 };
 
-export const createMapNavigator = createNavigatorFactory<
-  StackNavigationState<ParamListBase>,
-  MapNavigationOptions,
-  NativeStackNavigationEventMap,
-  typeof MapNavigator
->(MapNavigator);
+export const createMapNavigator = createNavigatorFactory(MapNavigator);
 
 export type MapNavigationProp<
   ParamList extends ParamListBase,

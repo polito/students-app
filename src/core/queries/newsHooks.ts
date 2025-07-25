@@ -13,13 +13,17 @@ const useNewsClient = (): NewsApi => {
 export const useGetNews = () => {
   const newsClient = useNewsClient();
 
-  return useQuery(NEWS_QUERY_KEY, () => newsClient.getNews().then(pluckData));
+  return useQuery({
+    queryKey: NEWS_QUERY_KEY,
+    queryFn: () => newsClient.getNews().then(pluckData),
+  });
 };
 
 export const useGetNewsItem = (newsItemId: number) => {
   const newsClient = useNewsClient();
 
-  return useQuery([NEWS_ITEM_QUERY_PREFIX, newsItemId], () =>
-    newsClient.getNewsItem({ newsItemId }).then(pluckData),
-  );
+  return useQuery({
+    queryKey: [NEWS_ITEM_QUERY_PREFIX, newsItemId],
+    queryFn: () => newsClient.getNewsItem({ newsItemId }).then(pluckData),
+  });
 };

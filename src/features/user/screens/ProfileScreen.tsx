@@ -27,8 +27,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import {
+  filterUnread,
   hasUnreadMessages,
-  unreadMessages,
 } from '../../../../src/utils/messages';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { CardSwiper } from '../../../core/components/CardSwiper';
@@ -208,7 +208,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               disabled={areMessagesDisabled}
               trailingItem={
                 messages.data && hasUnreadMessages(messages.data) ? (
-                  <UnreadBadge text={unreadMessages(messages.data).length} />
+                  <UnreadBadge text={filterUnread(messages.data).length} />
                 ) : undefined
               }
             />

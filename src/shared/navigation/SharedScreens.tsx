@@ -1,15 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
 import { OfferingCourseStaff } from '@polito/api-client/models';
-import {
-  ParamListBase,
-  StackNavigationState,
-  TypedNavigator,
-} from '@react-navigation/native';
-import {
-  NativeStackNavigationEventMap,
-  NativeStackNavigationOptions,
-} from '@react-navigation/native-stack';
+import { ParamListBase } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../core/components/HeaderLogo';
@@ -42,15 +35,9 @@ export interface SharedScreensParamList extends ParamListBase {
     height: number;
   };
 }
-export const SharedScreens = (
-  Stack: TypedNavigator<
-    SharedScreensParamList,
-    StackNavigationState<ParamListBase>,
-    NativeStackNavigationOptions,
-    NativeStackNavigationEventMap,
-    any
-  >,
-) => {
+const Stack = createNativeStackNavigator<SharedScreensParamList>();
+
+export const SharedScreens = () => {
   const { t } = useTranslation();
 
   return (
@@ -69,7 +56,7 @@ export const SharedScreens = (
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -81,7 +68,7 @@ export const SharedScreens = (
         options={{
           headerTitle: t('degreeCourseScreen.title'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -92,7 +79,7 @@ export const SharedScreens = (
         }
         options={{
           headerTitle: t('courseGuideScreen.title'),
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -112,7 +99,7 @@ export const SharedScreens = (
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.image'),
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
     </>

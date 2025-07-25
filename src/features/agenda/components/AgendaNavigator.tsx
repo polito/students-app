@@ -56,7 +56,6 @@ export const AgendaNavigator = () => {
 
   return (
     <Stack.Navigator
-      id="AgendaTabNavigator"
       screenOptions={{
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
@@ -75,7 +74,7 @@ export const AgendaNavigator = () => {
           headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -91,7 +90,7 @@ export const AgendaNavigator = () => {
           headerTitle: t('agendaScreen.title'),
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -129,7 +128,7 @@ export const AgendaNavigator = () => {
         component={BookingSeatScreen}
         options={{
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerTitle: t('common.seat'),
         }}
       />
@@ -150,8 +149,8 @@ export const AgendaNavigator = () => {
           headerShown: false,
         }}
       />
-      {CourseSharedScreens(Stack as any)}
-      {SharedScreens(Stack as any)}
+      {CourseSharedScreens()}
+      {SharedScreens()}
     </Stack.Navigator>
   );
 };

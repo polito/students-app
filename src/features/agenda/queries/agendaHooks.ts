@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
-import { UseQueryResult, useQueries, useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { DateTime, IANAZone, Interval } from 'luxon';
 
@@ -273,9 +273,12 @@ export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
   const lecturesQuery = useGetLectureWeek(preferences.courses, startDate);
   const deadlinesQuery = useGetDeadlineWeek(startDate);
 
-  return useQuery<AgendaWeek>(
-    getAgendaWeekQueryKey(preferences.agendaScreen.filters, startDate),
-    async () =>
+  return useQuery<AgendaWeek>({
+    queryKey: getAgendaWeekQueryKey(
+      preferences.agendaScreen.filters,
+      startDate,
+    ),
+    queryFn: async () =>
       getAgendaWeekQueryFn({
         preferences,
         startDate,
@@ -284,16 +287,14 @@ export const useGetAgendaWeek = (startDate: DateTime = thisMonday) => {
         lecturesData: lecturesQuery.data!,
         deadlinesData: deadlinesQuery.data!,
       }),
-    {
-      enabled:
-        !!lecturesQuery.data &&
-        !!examsQuery.data &&
-        !!bookingsQuery.data &&
-        !!deadlinesQuery.data,
-      networkMode: 'always',
-      staleTime: 300000, // TODO define
-    },
-  );
+    enabled:
+      !!lecturesQuery.data &&
+      !!examsQuery.data &&
+      !!bookingsQuery.data &&
+      !!deadlinesQuery.data,
+    networkMode: 'always',
+    staleTime: 300000, // TODO define
+  });
 };
 
 export const useGetAgendaWeeks = (mondays: DateTime[]) => {
@@ -304,7 +305,7 @@ export const useGetAgendaWeeks = (mondays: DateTime[]) => {
   const lecturesQueries = useGetLectureWeeks(preferences.courses, mondays);
   const deadlinesQueries = useGetDeadlineWeeks(mondays);
 
-  const queries = useQueries<AgendaWeek[]>({
+  const queries = useQueries({
     queries: mondays.map((monday, index) => ({
       queryKey: getAgendaWeekQueryKey(preferences.agendaScreen.filters, monday),
       queryFn: () =>
@@ -332,8 +333,6 @@ export const useGetAgendaWeeks = (mondays: DateTime[]) => {
 
   return {
     isLoading,
-    data: (queries as UseQueryResult<AgendaWeek>[])
-      .filter(q => q.data)
-      .map(q => q.data!),
+    data: queries.filter(q => q.data).map(q => q.data as AgendaWeek),
   };
 };
