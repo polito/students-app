@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react';
 import { Image, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -19,7 +20,9 @@ import {
   HeaderBackButton,
   HeaderBackContext,
   Screen,
+  getDefaultHeaderHeight,
   getHeaderTitle,
+  useFrameSize,
   useHeaderHeight,
 } from '@react-navigation/elements';
 import {
@@ -148,12 +151,15 @@ export const MapNavigator = ({
     headerBackVisible,
   } = currentRoute.options;
 
-  const headerStileFixtures = Platform.select({
+  const frame = useFrameSize(s => s, true);
+  const insets = useSafeAreaInsets();
+  const hdrHeight = getDefaultHeaderHeight(frame, false, insets.top);
+  const headerStyleFixtures = Platform.select({
     ios: {
       transform: [{ translateY: -3 }],
     },
     android: {
-      maxHeight: 80,
+      height: hdrHeight - 8,
     },
   });
 
@@ -241,7 +247,7 @@ export const MapNavigator = ({
                   headerTransparent={headerTransparent}
                   headerShadowVisible={headerShadowVisible}
                   headerBackground={headerBackground}
-                  headerStyle={[headerStyle, headerStileFixtures]}
+                  headerStyle={[headerStyle, headerStyleFixtures]}
                   headerBackgroundContainerStyle={Platform.select({
                     android: {
                       boxShadow: '0 0 8px 3px #0003',

@@ -34,6 +34,7 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
       }}
       search={search}
       onSearchChange={setSearch}
+      onSearchClear={() => setSearch('')}
       isLoading={isLoading}
       listProps={{
         data: categories?.data
