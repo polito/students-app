@@ -52,6 +52,8 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
 
       if (objectPreferenceKeys.includes(key)) {
         storageValue = JSON.stringify(value);
+      } else if (typeof value === 'boolean') {
+        storageValue = value.toString();
       } else {
         storageValue = value as string;
       }
