@@ -54,12 +54,10 @@ export const BottomSheet = forwardRef(
 
     useEffect(() => {
       const backAction = () => {
-        if (currentIndex <= 0) {
+        if (currentIndex <= 0 || !ref || typeof ref !== 'object') {
           return false; // Allow default back action (e.g., navigating back)
         }
-        if (ref && typeof ref === 'object') {
-          ref.current?.snapToIndex(0);
-        }
+        ref.current?.snapToIndex(0);
         onClose?.();
         return true; // Prevent default back action
       };
