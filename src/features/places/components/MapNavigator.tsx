@@ -25,6 +25,7 @@ import {
   useFrameSize,
   useHeaderHeight,
 } from '@react-navigation/elements';
+import { StackActions } from '@react-navigation/native';
 import {
   DefaultRouterOptions,
   NavigationProp,
@@ -131,6 +132,22 @@ export const MapNavigator = ({
       }, 1500);
     }
   }, [orientation]);
+
+  useEffect(() =>
+    // reaped from @react-navigation/native-stack/src/navigators/createNativeStackNavigator
+    // @ts-expect-error: there may not be a tab navigator in parent
+    navigation?.addListener?.('tabPress', e => {
+      const isFocused = navigation.isFocused();
+      requestAnimationFrame(() => {
+        if (state.index > 0 && isFocused && !e.defaultPrevented) {
+          navigation.dispatch({
+            ...StackActions.popToTop(),
+            target: state.key,
+          });
+        }
+      });
+    }),
+  );
 
   const {
     header,
