@@ -429,72 +429,71 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
             {(isFetching || isLoading || isRefetching) && (
               <ActivityIndicator size="large" style={styles.loader} />
             )}
-            {calendarEvents.length > 0 && (
-              <Calendar<BookingCalendarEvent>
-                weekStartsOn={currentWeekStart.weekday as WeekNum}
-                mode="custom"
-                weekEndsOn={
-                  currentWeekStart.plus({ days: currentTopic.daysPerWeek! - 1 })
-                    .weekday as WeekNum
-                }
-                headerContentStyle={styles.dayHeader}
-                weekDayHeaderHighlightColor={colors.background}
-                calendarCellStyle={styles.eventCellStyle}
-                date={currentWeekStart}
-                locale={language}
-                hours={hours}
-                bodyContainerStyle={{ backgroundColor: colors.yellow }}
-                cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
-                showAllDayEventCell={false}
-                swipeEnabled={false}
-                renderHeader={props => (
-                  <CalendarHeader {...props} cellHeight={-1} />
-                )}
-                onPressEvent={handlePress}
-                events={calendarEvents}
-                height={styles.container.flex as number}
-                startHour={currentTopic.startHour || 8}
-                renderEvent={(item, touchableOpacityProps, key) => {
-                  const isMini = item.duration <= 15;
-                  const { color, backgroundColor } = getBookingStyle(
-                    item,
-                    palettes,
-                    colors,
-                    dark,
-                  );
-                  const dateStart = formatDate(item.start.toJSDate());
-                  const timeStart = item.start.toFormat('HH:mm');
-                  const timeEnd = item.end.toFormat('HH:mm');
-                  const timeMessage = ` ${dateStart}, ${t('common.fromTime')} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
-                  return (
-                    <Pressable
-                      key={key}
-                      {...touchableOpacityProps}
-                      style={[
-                        touchableOpacityProps.style,
-                        styles.event,
-                        { backgroundColor },
-                      ]}
-                      accessibilityRole="button"
-                      accessibilityLabel={
-                        t(
-                          getBookingSlotStatus(
-                            item,
-                            'bookingScreen.bookingStatus.notAvailableBooking',
-                          ),
-                        ) + timeMessage
-                      }
-                      onPress={() => handlePress(item)}
-                    >
-                      {!isMini && <Icon icon={faSeat} color={color} />}
-                      <Text style={styles.placesText}>
-                        {item.bookedPlaces} / {item.places || 0}
-                      </Text>
-                    </Pressable>
-                  );
-                }}
-              />
-            )}
+
+            <Calendar<BookingCalendarEvent>
+              weekStartsOn={currentWeekStart.weekday as WeekNum}
+              mode="custom"
+              weekEndsOn={
+                currentWeekStart.plus({ days: currentTopic.daysPerWeek! - 1 })
+                  .weekday as WeekNum
+              }
+              headerContentStyle={styles.dayHeader}
+              weekDayHeaderHighlightColor={colors.background}
+              calendarCellStyle={styles.eventCellStyle}
+              date={currentWeekStart}
+              locale={language}
+              hours={hours}
+              bodyContainerStyle={{ backgroundColor: colors.yellow }}
+              cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
+              showAllDayEventCell={false}
+              swipeEnabled={false}
+              renderHeader={props => (
+                <CalendarHeader {...props} cellHeight={-1} />
+              )}
+              onPressEvent={handlePress}
+              events={calendarEvents}
+              height={styles.container.flex as number}
+              startHour={currentTopic.startHour || 8}
+              renderEvent={(item, touchableOpacityProps, key) => {
+                const isMini = item.duration <= 15;
+                const { color, backgroundColor } = getBookingStyle(
+                  item,
+                  palettes,
+                  colors,
+                  dark,
+                );
+                const dateStart = formatDate(item.start.toJSDate());
+                const timeStart = item.start.toFormat('HH:mm');
+                const timeEnd = item.end.toFormat('HH:mm');
+                const timeMessage = ` ${dateStart}, ${t('common.fromTime')} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
+                return (
+                  <Pressable
+                    key={key}
+                    {...touchableOpacityProps}
+                    style={[
+                      touchableOpacityProps.style,
+                      styles.event,
+                      { backgroundColor },
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      t(
+                        getBookingSlotStatus(
+                          item,
+                          'bookingScreen.bookingStatus.notAvailableBooking',
+                        ),
+                      ) + timeMessage
+                    }
+                    onPress={() => handlePress(item)}
+                  >
+                    {!isMini && <Icon icon={faSeat} color={color} />}
+                    <Text style={styles.placesText}>
+                      {item.bookedPlaces} / {item.places || 0}
+                    </Text>
+                  </Pressable>
+                );
+              }}
+            />
           </>
         )}
         <BottomBarSpacer />
