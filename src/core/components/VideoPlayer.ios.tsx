@@ -19,9 +19,11 @@ export const VideoPlayer = (props: VideoProps) => {
   const [paused, setPaused] = useState(props.currentIndex !== props.index);
   const [isPiP, setIsPiP] = useState(false);
 
+  const { index, currentIndex } = props;
+
   useEffect(() => {
-    setPaused(props.currentIndex !== props.index);
-  }, [props.index, props.currentIndex]);
+    setPaused(currentIndex !== index);
+  }, [index, currentIndex]);
 
   useEffect(() => {
     return addListener('blur', () => {
@@ -44,9 +46,9 @@ export const VideoPlayer = (props: VideoProps) => {
   return (
     <Video
       onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
-      playInBackground={props.index === props.currentIndex}
+      playInBackground={index === currentIndex}
       ignoreSilentSwitch="ignore"
-      pictureInPicture={props.index === props.currentIndex}
+      enterPictureInPictureOnLeave={index === currentIndex}
       paused={paused}
       controls={true}
       style={{

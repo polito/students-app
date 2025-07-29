@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faCheckCircle,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useHideTabs } from '../../../core/hooks/useHideTabs';
@@ -33,7 +32,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { mutate } = useMarkMessageAsRead(false);
   const { isScreenReaderEnabled, announce } = useScreenReader();
 
-  const styles = useStylesheet(createStyles);
+  const { bottom } = useSafeAreaInsets();
 
   useEffect(() => {
     if (!messagesToReadCount) {
@@ -83,7 +82,11 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
           <MessageScreenContent message={currentMessage} modal />
         )}
       </ScrollView>
-      <View style={styles.buttonContainer}>
+      <View
+        style={{
+          paddingVertical: bottom,
+        }}
+      >
         <CtaButton
           absolute={false}
           title={t(
@@ -98,10 +101,3 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
     </>
   );
 };
-
-const createStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    buttonContainer: {
-      paddingVertical: spacing[2],
-    },
-  });
