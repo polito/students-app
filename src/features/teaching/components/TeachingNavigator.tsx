@@ -50,7 +50,12 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
 
-const Stack = createNativeStackNavigator<TeachingStackParamList>();
+export const TeachingNavigatorID = 'TeachingTabNavigator';
+
+const Stack = createNativeStackNavigator<
+  TeachingStackParamList,
+  typeof TeachingNavigatorID
+>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
@@ -59,6 +64,7 @@ export const TeachingNavigator = () => {
 
   return (
     <Stack.Navigator
+      id={TeachingNavigatorID}
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),

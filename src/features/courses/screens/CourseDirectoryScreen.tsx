@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet } from 'react-native';
 
@@ -34,7 +34,10 @@ import { CourseFileListItem } from '../components/CourseFileListItem';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
-import { FileStackParamList } from '../navigation/FileNavigator';
+import {
+  FileNavigatorID,
+  FileStackParamList,
+} from '../navigation/FileNavigator';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
@@ -65,13 +68,17 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
 
+  const isFileNavigator = useMemo(() => {
+    return navigation.getId() === FileNavigatorID;
+  }, [navigation]);
+
   useEffect(() => {
-    if (navigation.getId() !== 'FileTabNavigator') {
+    if (!isFileNavigator) {
       navigation.setOptions({
         headerTitle: directoryName ?? t('common.file_plural'),
       });
     }
-  }, [directoryName, navigation, t]);
+  }, [directoryName, isFileNavigator, navigation, t]);
 
   directoryQuery.data?.sort((a, b) => {
     if (a.type !== 'directory' && b.type !== 'directory') {
@@ -92,7 +99,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       <CourseFilesCacheProvider>
         <FileCacheChecker />
 
-        {navigation.getId() === 'FileTabNavigator' && (
+        {isFileNavigator && (
           <CourseSearchBar
             searchFilter={searchFilter}
             setSearchFilter={setSearchFilter}
@@ -136,7 +143,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
               !directoryQuery.isLoading ? (
                 <OverviewList
                   emptyStateText={
-                    navigation.getId() === 'FileTabNavigator'
+                    isFileNavigator
                       ? t('courseDirectoryScreen.emptyRootFolder')
                       : t('courseDirectoryScreen.emptyFolder')
                   }
@@ -146,12 +153,12 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
           />
         )}
       </CourseFilesCacheProvider>
-      {navigation.getId() === 'FileTabNavigator' && (
+      {isFileNavigator && navigation && (
         <CtaButton
           title={t('courseDirectoryScreen.navigateRecentFiles')}
           icon={faFile}
           action={() => {
-            navigation!.navigate('RecentFiles', { courseId });
+            navigation.replace('RecentFiles', { courseId });
             updatePreference('filesScreen', 'filesView');
           }}
         />

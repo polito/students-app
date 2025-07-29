@@ -44,7 +44,12 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
     PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
   };
 
-const Stack = createNativeStackNavigator<AgendaStackParamList>();
+export const AgendaNavigatorID = 'AgendaTabNavigator';
+
+const Stack = createNativeStackNavigator<
+  AgendaStackParamList,
+  typeof AgendaNavigatorID
+>();
 
 export const AgendaNavigator = () => {
   const theme = useTheme();
@@ -56,6 +61,7 @@ export const AgendaNavigator = () => {
 
   return (
     <Stack.Navigator
+      id={AgendaNavigatorID}
       screenOptions={{
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {

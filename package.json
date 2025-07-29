@@ -82,7 +82,7 @@
     "react-native-localize": "^3.3.0",
     "react-native-mime-types": "^2.5.0",
     "react-native-modal": "^14.0.0-rc.1",
-    "react-native-override-color-scheme": "^1.0.3",
+    "react-native-override-color-scheme": "^2.0.0",
     "react-native-pager-view": "^6.8.1",
     "react-native-path": "^0.0.5",
     "react-native-pdf-light": "^2.4.1",

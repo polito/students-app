@@ -8,6 +8,9 @@ import { PlaceRef } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { AgendaNavigatorID } from '~/features/agenda/components/AgendaNavigator';
+import { TeachingNavigatorID } from '~/features/teaching/components/TeachingNavigator';
+
 import { notNullish } from '../../../utils/predicates';
 
 type Props = {
@@ -45,7 +48,7 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
       onPress={
         placeIds?.length
           ? () => {
-              if (navigation.getId() === 'AgendaTabNavigator') {
+              if (navigation.getId() === AgendaNavigatorID) {
                 navigation.navigate('PlacesAgendaStack', {
                   screen: 'EventPlaces',
                   params: {
@@ -54,7 +57,7 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
                     isCrossNavigation: true,
                   },
                 });
-              } else if (navigation.getId() === 'TeachingTabNavigator') {
+              } else if (navigation.getId() === TeachingNavigatorID) {
                 navigation.navigate('PlacesTeachingStack', {
                   screen: 'EventPlaces',
                   params: {
