@@ -14,7 +14,7 @@ import { savePrivateKeyMFA } from '../../../../src/utils/keychain';
 
 export const MfaEnrollScreen = () => {
   const { t } = useTranslation();
-  const { mutate: enrolMfa, isLoading } = useMfaEnrol();
+  const { mutate: enrolMfa, isPending } = useMfaEnrol();
 
   const { publicKey, privateKey } = keyGenerator();
 
@@ -62,7 +62,7 @@ export const MfaEnrollScreen = () => {
             action={onYes}
             containerStyle={styles.primaryButtonContainer}
             style={styles.primaryButton}
-            loading={isLoading}
+            loading={isPending}
           />
         </View>
 

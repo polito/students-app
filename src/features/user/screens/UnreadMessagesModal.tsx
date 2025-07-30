@@ -85,7 +85,6 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
     }
   };
   return route.params?.mfa?.status === 'available' ? (
-    // Solo uno child: eliminato il fragment
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <MfaEnrollScreen />
     </ScrollView>
@@ -94,7 +93,6 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
       <MfaAuthScreen expirationTs={route.params.expirationTs} />
     </ScrollView>
   ) : (
-    // Due child, qui il fragment serve ancora
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {currentMessage && (

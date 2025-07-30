@@ -69,7 +69,7 @@ export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext();
-
+  const { mutate: checkMfaEnrollment } = useCheckMfa();
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
       return Promise.all([
@@ -127,6 +127,7 @@ export const useLogin = () => {
       refreshContext({ username, token });
       await setCredentials(clientId, token);
       updatePreference('username', username);
+      checkMfaEnrollment();
     },
   });
 };
@@ -201,7 +202,7 @@ export const GetWebmailLink = async () => {
   return authClient.getMailLink().then(pluckData);
 };
 
-export const useMfaStatus = () => {
+export const useCheckMfa = () => {
   const authClient = useAuthClient();
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
 

@@ -52,7 +52,7 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { nonce } = useRoute().params as RootStackParamList['MfaAuth'];
   const styles = useStylesheet(createStyles);
-  const { mutate: verifyMfa, isLoading } = useMfaAuth();
+  const { mutate: verifyMfa, isPending } = useMfaAuth();
 
   const onNo = async () => {
     navigation.goBack();
@@ -98,7 +98,7 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
             action={onNo}
             variant="outlined"
             containerStyle={styles.secondaryButtonContainer}
-            disabled={isLoading}
+            disabled={isPending}
             style={styles.secondaryButton}
             textStyle={styles.secondaryButton}
           />
@@ -107,7 +107,7 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
             title={t('mfaScreen.allowAccess')}
             action={onYes}
             containerStyle={styles.primaryButtonContainer}
-            disabled={isLoading}
+            disabled={isPending}
             style={styles.primaryButton}
           />
         </View>
