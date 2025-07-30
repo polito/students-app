@@ -80,7 +80,7 @@ export const LoginScreen = () => {
   const handleSSO = async () => {
     const uid = uuid.v4();
     await updatePreference('loginUid', uid);
-    const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
+    const url = `https://app.didattica.polito.it/auth/students/start?mfa&uid=${uid}&platform=${Platform.OS}`;
     sessionOpener(url).catch(console.error);
   };
 

@@ -25,7 +25,6 @@ import { ServicesNavigator } from '../../features/services/components/ServicesNa
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
 import { tabBarStyle } from '../../utils/tab-bar';
-import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';
@@ -57,13 +56,9 @@ export const RootNavigator = ({
   useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
 
-  const { token } = useApiContext();
   useEffect(() => {
-    if (token) {
-      checkMfa();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+    checkMfa();
+  }, [checkMfa]);
 
   useEffect(() => {
     if (student?.smartCardPicture) {

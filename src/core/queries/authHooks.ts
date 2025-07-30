@@ -6,6 +6,7 @@ import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import type {
   AppInfoRequest,
   EnrolMfaRequest,
+  ValidateMfaRequest,
 } from '@polito/api-client/models';
 import messaging from '@react-native-firebase/messaging';
 import { useNavigation } from '@react-navigation/core';
@@ -219,14 +220,14 @@ export const useMfaStatus = () => {
       if (data.status === 'available') {
         navigation.navigate('TeachingTab', {
           screen: 'MfaModal',
-          params: { mfaStatus: data.status },
+          params: { mfa: data },
         });
       }
     },
   });
 };
 
-export const useMfaEnroll = () => {
+export const useMfaEnrol = () => {
   const authClient = useAuthClient();
 
   return useMutation({
@@ -240,20 +241,59 @@ export const useMfaEnroll = () => {
           }
           return res;
         }),
+  });
+};
 
-    onError: (error: any) => {
-      console.error('MFA enroll error:', error);
-      if (error?.response) {
-        console.error('Status code:', error.response.status);
-        console.error('Response body:', error.response);
-      }
-      Alert.alert(
-        t('common.error'),
-        t(
-          'mfaActivation.enrollError',
-          "Errore durante l'attivazione della MFA.",
-        ),
-      );
+export const useMfaAuth = () => {
+  const authClient = useAuthClient();
+  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+
+  return useMutation({
+    mutationFn: (dto: ValidateMfaRequest) =>
+      authClient
+        .validateMfa({ validateMfaRequest: dto })
+        .then(pluckData)
+        .then(res => {
+          if (!res) throw new Error('MFA verification failed');
+          return res;
+        }),
+
+    onSuccess: async data => {
+      data.success === true && navigation.goBack();
     },
+
+    onError: () => {
+      Alert.alert(t('common.error'));
+    },
+  });
+};
+
+export const useMfaFetchChallenge = () => {
+  const authClient = useAuthClient();
+  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+
+  return useMutation({
+    mutationFn: () =>
+      authClient
+        .fetchChallenge()
+        .then(pluckData)
+        .then(res => {
+          if (!res) throw new Error('MFA verification failed');
+          return res;
+        }),
+
+    onSuccess: async data => {
+      data.challenge !== undefined
+        ? navigation.navigate('TeachingTab', {
+            screen: 'MfaModalAuth',
+            params: {
+              serial: data.serial,
+              nonce: data.challenge,
+              expirationTs: data.expirationTs,
+            },
+          })
+        : null;
+    },
+    onError: () => {},
   });
 };

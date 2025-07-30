@@ -634,7 +634,18 @@
     "takePhotoHint": "Take one or more photos and generate a file"
   },
   "mfaScreen": {
-    "title": "Mfa"
+    "headerTitle": "Authenticator",
+    "title": "MFA Activation",
+    "noteEnrol": "By activating PoliTO Authenticator, you will be able to access the University’s digital services more easily and securely. You will no longer have to wait for SMS messages or use external apps to confirm your identity. <br> You can deactivate PoliTO Authenticator at any time by logging out of the app or by visiting idp.polito.it > MFA Management.",
+    "promptEnrol": "Would you like to activate PoliTO Authenticator on this device?",
+    "yesEnrol": "Yes, activate",
+    "noEnrol": "Not now",
+    "promptAuth": "New multi‑factor authentication access request. Would you like to proceed?",
+    "noteAuth": "Didn’t request this access? It could be a suspicious attempt. Change your password immediately at idp.polito.it.",
+    "denyAccess":"Deny",
+    "allowAccess":"Allow",
+    "expirationTime": "Time remaining to authorize: {{time}}"
+
   },
   "newsScreen": {
     "createdAt": "Published on ",

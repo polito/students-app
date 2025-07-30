@@ -20,9 +20,13 @@ import {
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
 import { MessageScreenContent } from '../components/MessageScreenContent';
+import { MfaAuthScreen } from './MfaAuthScreen';
 import { MfaEnrollScreen } from './MfaEnrollScreen';
 
-type Props = NativeStackScreenProps<any, 'MessagesModal' | 'MfaModal'>;
+type Props = NativeStackScreenProps<
+  any,
+  'MessagesModal' | 'MfaModal' | 'MfaModalAuth'
+>;
 
 export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   const { data: messages } = useGetModalMessages();
@@ -34,7 +38,6 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   const messagesToReadCount = messagesToRead?.length || 0;
   const isLastMessageToRead = messagesReadCount + 1 === messagesToReadCount;
   const { isScreenReaderEnabled, announce } = useScreenReader();
-
   const styles = useStylesheet(createStyles);
 
   useEffect(() => {
@@ -53,12 +56,10 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   }, [announce, isScreenReaderEnabled, messages, t]);
 
   useEffect(() => {
-    if (route.params?.mfaStatus !== 'available')
+    if (route.params?.mfa?.status !== 'available')
       navigation.setOptions({
-        headerTitle: t('messagesScreen.unreadMessages', {
-          read: messagesReadCount + 1,
-          total: messagesToReadCount,
-        }),
+        headerTitle: t('mfaScreen.headerTitle'),
+        headerTitleAlign: 'center',
       });
   }, [
     t,
@@ -66,7 +67,7 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
     messagesReadCount,
     navigation,
     messagesToReadCount,
-    route.params?.mfaStatus,
+    route.params?.mfa?.status,
   ]);
 
   useHideTabs(undefined, () => invalidateMessages.run());
@@ -81,11 +82,14 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
       setMessageReadCount(messagesReadCount + 1);
     }
   };
-
-  return route.params?.mfaStatus === 'available' ? (
+  return route.params?.mfa?.status === 'available' ? (
     // Solo uno child: eliminato il fragment
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <MfaEnrollScreen />
+    </ScrollView>
+  ) : route.params?.nonce !== undefined ? (
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <MfaAuthScreen expirationTs={route.params.expirationTs} />
     </ScrollView>
   ) : (
     // Due child, qui il fragment serve ancora

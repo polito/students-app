@@ -110,11 +110,20 @@ export const SharedScreens = (
         name="MfaModal"
         component={UnreadMessagesModal}
         options={{
-          headerTitle: t('mfaScreen.title'),
+          headerTitle: t('mfaScreen.headerTitle'),
           headerLargeTitle: false,
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="MfaModalAuth"
+        component={UnreadMessagesModal}
+        options={{
+          headerTitle: t('mfaScreen.headerTitle'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
         }}
       />
       <Stack.Screen

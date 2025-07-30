@@ -36,11 +36,12 @@ export const keyGenerator = () => {
   };
 };
 
-export const authSign = () => {
-  const [serial, nonce] = ['in arrivo', 'da notifica'];
-  const privKeyRaw = '... B64 in entrata da secure storage...';
-
-  const privKey = new Uint8Array(Buffer.from(privKeyRaw, 'base64'));
+export function authSign(
+  serial: string,
+  nonce: string,
+  privateKeyB64: string,
+): string {
+  const privKey = new Uint8Array(Buffer.from(privateKeyB64, 'base64'));
 
   if (!secp256k1.utils.isValidSecretKey(privKey)) {
     throw new Error('Invalid private key');
@@ -53,4 +54,4 @@ export const authSign = () => {
   const signature = base32Encode(der, 'RFC4648');
 
   return signature;
-};
+}
