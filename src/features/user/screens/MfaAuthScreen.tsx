@@ -1,4 +1,3 @@
-// src/screens/mfa/MfaAuthScreen.tsx
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
