@@ -650,6 +650,20 @@
     "takePhoto": "Acquisisci con la fotocamera",
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
+  "mfaScreen": {
+    "headerTitle": "Authenticator",
+    "title": "Attivazione Mfa",
+    "noteEnrol": "Attivando PoliTO Authenticator potrai accedere in modo più semplice e sicuro ai servizi digitali dell’Ateneo. Non dovrai più attendere SMS o utilizzare app esterne per confermare la tua identità. Potrai disattivare PoliTO Authenticator in qualsiasi momento, effettuando il logout dall’app oppure accedendo a idp.polito.it > Gestione MFA.",
+    "promptEnrol": "Vuoi attivare PoliTO Authenticator su questo dispositivo?",
+    "yesEnrol": "Si, attiva",
+    "noEnrol": "Non ora",
+    "promptAuth": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
+    "noteAuth": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da idp.polito.it",
+    "denyAccess":"Nega accesso",
+    "allowAccess":"Si, autorizza",
+    "expirationTime": "Tempo rimanente per autorizzare: {{time}}"
+
+  },
   "newsScreen": {
     "createdAt": "Pubblicato il ",
     "eventStartTime": "Inizio evento",

@@ -18,9 +18,13 @@ import {
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
 import { MessageScreenContent } from '../components/MessageScreenContent';
+import { MfaAuthScreen } from './MfaAuthScreen';
 import { MfaEnrollScreen } from './MfaEnrollScreen';
 
-type Props = NativeStackScreenProps<any, 'MessagesModal' | 'MfaModal'>;
+type Props = NativeStackScreenProps<
+  any,
+  'MessagesModal' | 'MfaModal' | 'MfaModalAuth'
+>;
 
 export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   const { data: messages } = useGetModalMessages();
@@ -53,19 +57,17 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   }, [announce, isScreenReaderEnabled, t, messagesToReadCount]);
 
   useEffect(() => {
-    if (route.params?.mfaStatus !== 'available')
+    if (route.params?.mfa?.status !== 'available')
       navigation.setOptions({
-        headerTitle: t('messagesScreen.unreadMessages', {
-          read: messagesReadCount + 1,
-          total: messagesToReadCount,
-        }),
+        headerTitle: t('mfaScreen.headerTitle'),
+        headerTitleAlign: 'center',
       });
   }, [
     t,
     messagesReadCount,
     navigation,
     messagesToReadCount,
-    route.params?.mfaStatus,
+    route.params?.mfa?.status,
   ]);
 
   useHideTabs(undefined, () => invalidateMessages.run());
@@ -82,11 +84,14 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
       setMessageReadCount(m => m + 1);
     }
   };
-
-  return route.params?.mfaStatus === 'available' ? (
+  return route.params?.mfa?.status === 'available' ? (
     // Solo uno child: eliminato il fragment
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <MfaEnrollScreen />
+    </ScrollView>
+  ) : route.params?.nonce !== undefined ? (
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <MfaAuthScreen expirationTs={route.params.expirationTs} />
     </ScrollView>
   ) : (
     // Due child, qui il fragment serve ancora

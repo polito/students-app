@@ -1,72 +1,109 @@
+// src/screens/mfa/MfaAuthScreen.tsx
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { PolitoAuthenticatorLogo } from '../../../../src/core/components/PolitoAuthenticatorLogo';
-import { useMfaEnrol } from '../../../../src/core/queries/authHooks';
-import { keyGenerator } from '../../../../src/utils/crypto';
-import { savePrivateKeyMFA } from '../../../../src/utils/keychain';
+import { useMfaAuth } from '../../../../src/core/queries/authHooks';
+import { authSign } from '../../../../src/utils/crypto';
+import { getPrivateKeyMFA } from '../../../../src/utils/keychain';
 
-export const MfaEnrollScreen = () => {
+type RootStackParamList = {
+  MfaAuth: { serial: string; nonce: string };
+};
+type Props = {
+  expirationTs: string;
+};
+export const MfaAuthScreen = ({ expirationTs }: Props) => {
   const { t } = useTranslation();
-  const { mutate: enrolMfa, isLoading } = useMfaEnrol();
+  const expiryMs = new Date(expirationTs).getTime();
 
-  const { publicKey, privateKey } = keyGenerator();
+  const calcSeconds = useCallback(() => {
+    return Math.max(Math.ceil((expiryMs - Date.now()) / 1000), 0);
+  }, [expiryMs]);
 
-  const navigation = useNavigation();
+  const [remainingSeconds, setRemainingSeconds] = useState(calcSeconds);
+
+  useEffect(() => {
+    let cancelled = false;
+    const tick = () => {
+      if (cancelled) return;
+      setRemainingSeconds(calcSeconds());
+      setTimeout(tick, 1000);
+    };
+    tick();
+    return () => {
+      cancelled = true;
+    };
+  }, [expiryMs, calcSeconds]);
+
+  const formattedTime = `${Math.floor(remainingSeconds / 60)}:${(
+    remainingSeconds % 60
+  )
+    .toString()
+    .padStart(2, '0')}`;
+
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { nonce } = useRoute().params as RootStackParamList['MfaAuth'];
   const styles = useStylesheet(createStyles);
-  const onNo = () => navigation.goBack();
-  const onYes = async () => {
-    const deviceId = await DeviceInfo.getDeviceId();
-    const dtoMfa = { description: deviceId, pubkey: publicKey };
+  const { mutate: verifyMfa, isLoading } = useMfaAuth();
 
-    enrolMfa(dtoMfa, {
-      onSuccess: async res => {
-        const saved = await savePrivateKeyMFA(res.serial, privateKey);
-        if (!saved) {
-          console.error(
-            'Errore',
-            'Non è stato possibile salvare la chiave privata MFA.',
-          );
-          return;
-        }
-        navigation.goBack();
-      },
-      onError: () => {},
-    });
+  const onNo = () => navigation.goBack();
+
+  const onYes = async () => {
+    try {
+      const secret = await getPrivateKeyMFA();
+      if (secret) {
+        const secretParsed: any = JSON.parse(secret);
+        const signature = authSign(
+          secretParsed.serial,
+          nonce,
+          secretParsed.privateKeyB64,
+        );
+        verifyMfa({ serial: secretParsed.serial, nonce, signature });
+      }
+    } catch (err) {
+      Alert.alert(t('common.error'));
+    }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView>
       <View style={styles.container}>
         <PolitoAuthenticatorLogo style={styles.logo} />
-        <Text style={styles.subtitle}>{t('mfaScreen.promptEnrol')}</Text>
+        <Text style={styles.subtitle}>{t('mfaScreen.promptAuth')}</Text>
 
-        <View style={[styles.buttonsRow, { justifyContent: 'space-between' }]}>
+        <View style={styles.buttonsRow}>
           <CtaButton
             absolute={false}
-            title={t('mfaScreen.noEnrol')}
+            title={t('mfaScreen.denyAccess')}
             action={onNo}
             variant="outlined"
             containerStyle={styles.secondaryButtonContainer}
+            disabled={isLoading}
             style={styles.secondaryButton}
+            textStyle={styles.secondaryButton}
           />
           <CtaButton
             absolute={false}
-            title={t('mfaScreen.yesEnrol')}
+            title={t('mfaScreen.allowAccess')}
             action={onYes}
             containerStyle={styles.primaryButtonContainer}
+            disabled={isLoading}
             style={styles.primaryButton}
-            loading={isLoading}
           />
         </View>
-
-        <Text style={styles.note}>{t('mfaScreen.noteEnrol')}</Text>
+        <Text style={styles.time}>
+          {t('mfaScreen.expirationTime', { time: formattedTime })}
+        </Text>
+        <Text style={styles.note}>{t('mfaScreen.noteAuth')}</Text>
       </View>
     </SafeAreaView>
   );
@@ -116,6 +153,7 @@ const createStyles = ({ colors, spacing, palettes }: Theme) =>
     primaryButton: {
       backgroundColor: palettes.primary[500],
       borderColor: palettes.primary[500],
+      borderRadius: 12,
       width: spacing[40],
     },
     secondaryButtonContainer: {
@@ -123,6 +161,7 @@ const createStyles = ({ colors, spacing, palettes }: Theme) =>
       gap: 8,
     },
     secondaryButton: {
+      borderRadius: 12,
       borderColor: palettes.primary[500],
       color: palettes.primary[500],
       width: spacing[40],
