@@ -6,7 +6,7 @@ module.exports = {
   "bracketSpacing": true,
   "endOfLine": "auto",
   "semi": true,
-  "importOrder": ["react-native-gesture-handler", "^react", "^@(?!ui/)(.*)$", "^\\w", "^@ui/(.*)$", "^[./]"],
+  "importOrder": ["react-native-gesture-handler", "^react", "^@(?!ui/)(.*)$", "^~", "^\\w", "^@ui/(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

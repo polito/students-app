@@ -1,15 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import {
-  ParamListBase,
-  StackNavigationState,
-  TypedNavigator,
-} from '@react-navigation/native';
-import {
-  NativeStackNavigationEventMap,
-  NativeStackNavigationOptions,
-} from '@react-navigation/native-stack';
+import { ParamListBase } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
@@ -54,15 +47,9 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseHideEvent: { courseId: number; uniqueShortcode: string };
 }
 
-export const CourseSharedScreens = (
-  Stack: TypedNavigator<
-    CourseSharedScreensParamList,
-    StackNavigationState<ParamListBase>,
-    NativeStackNavigationOptions,
-    NativeStackNavigationEventMap,
-    any
-  >,
-) => {
+const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
+
+export const CourseSharedScreens = () => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -71,22 +58,24 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="Course"
         component={CourseNavigator}
-        getId={({ params }) => `${params.id}`}
-        options={({ route: { params } }) => ({
+        getId={({ params }: { params: any }) => `${params.id}`}
+        options={({ route: { params } }: { route: { params: any } }) => ({
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
       />
       <Stack.Screen
         name="Notice"
         component={NoticeScreen}
-        getId={({ params }) => `${params.courseId}${params.noticeId}`}
+        getId={({ params }: { params: any }) =>
+          `${params.courseId}${params.noticeId}`
+        }
         options={{
           headerBackTitle: t('common.course'),
           headerTitle: t('common.notice'),
@@ -95,7 +84,7 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CoursePreferences"
         component={CoursePreferencesScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
           title: t('common.preferences'),
           headerLargeTitle: false,
@@ -105,7 +94,7 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseIconPicker"
         component={CourseIconPickerScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
           title: t('courseIconPickerScreen.title'),
           headerLargeTitle: false,
@@ -115,16 +104,16 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseDirectory"
         component={CourseDirectoryScreen}
-        getId={({ params }) => `${params?.directoryId}`}
+        getId={({ params }: { params: any }) => `${params?.directoryId}`}
         options={{
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeTitle: false,
         }}
       />
       <Stack.Screen
         name="CourseHideEvent"
         component={CourseHideEventScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
           title: t('common.hiddenEvents'),
           headerLargeTitle: false,
@@ -133,7 +122,7 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseGuide"
         component={CourseGuideScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
           headerTitle: t('courseGuideScreen.title'),
           headerBackTitle: t('common.course'),
@@ -142,7 +131,9 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseVideolecture"
         component={CourseVideolectureScreen}
-        getId={({ params }) => `${params.courseId}${params.lectureId}`}
+        getId={({ params }: { params: any }) =>
+          `${params.courseId}${params.lectureId}`
+        }
         options={{
           headerLargeTitle: false,
           headerBackTitle: t('common.course'),
@@ -152,7 +143,9 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseVirtualClassroom"
         component={CourseVirtualClassroomScreen}
-        getId={({ params }) => `${params.courseId}${params.lectureId}`}
+        getId={({ params }: { params: any }) =>
+          `${params.courseId}${params.lectureId}`
+        }
         options={{
           headerLargeTitle: false,
           headerBackTitle: t('common.course'),
@@ -162,9 +155,9 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseAssignmentPdfCreation"
         component={CourseAssignmentPdfCreationScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerTitle: t('courseAssignmentPdfCreationScreen.title'),
           headerLargeTitle: false,
           headerTransparent: false,
@@ -173,7 +166,7 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseAssignmentUpload"
         component={CourseAssignmentUploadScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
           headerBackTitle: t('common.course'),
           headerTitle: t('courseAssignmentUploadScreen.title'),
@@ -183,7 +176,7 @@ export const CourseSharedScreens = (
       <Stack.Screen
         name="CourseAssignmentUploadConfirmation"
         component={CourseAssignmentUploadConfirmationScreen}
-        getId={({ params }) => `${params.courseId}`}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
         options={{
           headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
           headerTitle: t('courseAssignmentUploadScreen.title'),

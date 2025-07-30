@@ -30,7 +30,7 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
   const styles = useStylesheet(createStyles);
   const { spacing } = useTheme();
   const { t } = useTranslation();
-  const { mutateAsync: requestEsc, isLoading: mutationsLoading } =
+  const { mutateAsync: requestEsc, isPending: mutationsLoading } =
     useRequestEsc();
 
   const onSubmit = async () => {

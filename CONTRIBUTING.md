@@ -52,7 +52,6 @@ the `DOWNLOADS:READ` scope. Paste the generated token in the following files:
 $ git clone https://github.com/polito/students-app.git # Clone the repo
 $ cd students-app
 $ npm install # Install dependencies
-$ npx pod-install # Install pods
 $ npm run start # Start React Native server
 ```
 

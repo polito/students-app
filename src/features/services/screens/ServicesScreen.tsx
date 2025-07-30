@@ -54,9 +54,11 @@ export const ServicesScreen = () => {
 
   const openWebmailLink = useCallback(async () => {
     queryClient
-      .fetchQuery(WEBMAIL_LINK_QUERY_KEY, GetWebmailLink, {
+      .fetchQuery({
+        queryKey: WEBMAIL_LINK_QUERY_KEY,
+        queryFn: GetWebmailLink,
         staleTime: 55 * 1000, // 55 seconds
-        cacheTime: 55 * 1000, // 55 seconds
+        gcTime: 55 * 1000, // 55 seconds
       })
       .then(res => openInAppLink(res.url));
   }, [openInAppLink, queryClient]);

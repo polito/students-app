@@ -44,7 +44,7 @@ export const LoginScreen = () => {
   const { updatePreference, loginUid } = usePreferencesContext();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { mutateAsync: login, isLoading } = useLogin();
+  const { mutateAsync: login, isPending: isLoading } = useLogin();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);

@@ -1,7 +1,6 @@
 import { useContext, useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faDiamondTurnRight,
@@ -53,7 +52,6 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
-  const safeAreaInsets = useSafeAreaInsets();
   const { setFloorId, floorId } = useContext(PlacesContext);
   const { siteId, buildingId } = route.params;
   const campus = useGetCurrentCampus();
@@ -144,7 +142,6 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
     navigation,
     palettes.secondary,
     places,
-    safeAreaInsets.top,
     spacing,
   ]);
 

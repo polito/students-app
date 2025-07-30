@@ -1,5 +1,5 @@
-import { Ref, forwardRef } from 'react';
-import { Platform } from 'react-native';
+import { Ref, forwardRef, useEffect, useState } from 'react';
+import { BackHandler, Platform } from 'react-native';
 import {
   Extrapolation,
   interpolate,
@@ -9,6 +9,7 @@ import {
 
 import BaseBottomSheet, {
   BottomSheetProps as BaseBottomSheetProps,
+  SNAP_POINT_TYPE,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -28,6 +29,7 @@ export const BottomSheet = forwardRef(
       children,
       style,
       animatedPosition,
+      onClose,
       ...props
     }: BottomSheetProps,
     ref: Ref<BottomSheetMethods>,
@@ -35,6 +37,7 @@ export const BottomSheet = forwardRef(
     const { colors, palettes, shapes, spacing } = useTheme();
     const defaultPosition = useSharedValue(0);
     const panelPosition = animatedPosition ?? defaultPosition;
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const cornerStyles = useAnimatedStyle(() => {
       const radius = interpolate(
@@ -48,6 +51,24 @@ export const BottomSheet = forwardRef(
         borderTopRightRadius: radius,
       };
     });
+
+    useEffect(() => {
+      const backAction = () => {
+        if (currentIndex <= 0 || !ref || typeof ref !== 'object') {
+          return false; // Allow default back action (e.g., navigating back)
+        }
+        ref.current?.snapToIndex(0);
+        onClose?.();
+        return true; // Prevent default back action
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
+
+      return () => backHandler.remove();
+    }, [currentIndex, ref, onClose]);
 
     return (
       <BaseBottomSheet
@@ -81,6 +102,10 @@ export const BottomSheet = forwardRef(
         )}
         animatedPosition={panelPosition}
         {...props}
+        onChange={(i: number, position: number, type: SNAP_POINT_TYPE) => {
+          setCurrentIndex(i);
+          props.onChange?.(i, position, type);
+        }}
       >
         {children}
       </BaseBottomSheet>

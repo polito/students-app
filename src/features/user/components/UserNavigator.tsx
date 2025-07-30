@@ -38,7 +38,6 @@ export const UserNavigator = () => {
 
   return (
     <Stack.Navigator
-      id="UserTabNavigator"
       screenOptions={{
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
@@ -84,7 +83,7 @@ export const UserNavigator = () => {
         component={AccessibilitySettingsScreen}
         options={{
           headerTitle: t('accessibilitySettingsScreen.fontSettingsTitle'),
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -112,13 +111,13 @@ export const UserNavigator = () => {
           headerLargeTitle: false,
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
         }}
       />
-      {SharedScreens(Stack as any)}
+      {SharedScreens()}
     </Stack.Navigator>
   );
 };

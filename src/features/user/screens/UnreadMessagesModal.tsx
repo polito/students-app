@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faCheckCircle,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
-import { Message } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useHideTabs } from '../../../core/hooks/useHideTabs';
@@ -25,31 +23,33 @@ type Props = NativeStackScreenProps<any, 'MessagesModal'>;
 
 export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { data: messages } = useGetModalMessages();
+
   const invalidateMessages = useInvalidateMessages();
-  const { mutate } = useMarkMessageAsRead(false);
   const { t } = useTranslation();
-  const [messagesToRead, setMessagesToRead] = useState<Message[]>([]);
   const [messagesReadCount, setMessageReadCount] = useState(0);
-  const messagesToReadCount = messagesToRead?.length || 0;
+  const messagesToReadCount = messages?.length || 0;
   const isLastMessageToRead = messagesReadCount + 1 === messagesToReadCount;
+  const { mutate } = useMarkMessageAsRead(false);
   const { isScreenReaderEnabled, announce } = useScreenReader();
 
-  const styles = useStylesheet(createStyles);
+  const { bottom } = useSafeAreaInsets();
 
   useEffect(() => {
-    if (!messages) return;
+    if (!messagesToReadCount) {
+      navigation.goBack();
+    }
+  }, [messagesToReadCount, navigation]);
 
-    setMessagesToRead(messages);
+  useEffect(() => {
     isScreenReaderEnabled().then(isEnabled => {
-      if (isEnabled) {
-        announce(
-          t('messagesScreen.youHaveUnreadMessages', {
-            total: messages.length,
-          }),
-        );
-      }
+      if (!isEnabled) return;
+      announce(
+        t('messagesScreen.youHaveUnreadMessages', {
+          total: messagesToReadCount,
+        }),
+      );
     });
-  }, [announce, isScreenReaderEnabled, messages, t]);
+  }, [announce, isScreenReaderEnabled, t, messagesToReadCount]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -58,18 +58,20 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         total: messagesToReadCount,
       }),
     });
-  }, [t, messagesToRead, messagesReadCount, navigation, messagesToReadCount]);
+  }, [t, messagesReadCount, navigation, messagesToReadCount]);
 
   useHideTabs(undefined, () => invalidateMessages.run());
 
-  const currentMessage = messagesToRead?.[messagesReadCount];
+  const currentMessage = messages?.[messagesReadCount];
 
-  const onConfirm = () => {
-    mutate(currentMessage?.id);
+  const onConfirm = async () => {
+    if (currentMessage) {
+      await new Promise(ok => mutate(currentMessage.id, { onSettled: ok }));
+    }
     if (isLastMessageToRead) {
       navigation.goBack();
     } else {
-      setMessageReadCount(messagesReadCount + 1);
+      setMessageReadCount(m => m + 1);
     }
   };
 
@@ -80,7 +82,11 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
           <MessageScreenContent message={currentMessage} modal />
         )}
       </ScrollView>
-      <View style={styles.buttonContainer}>
+      <View
+        style={{
+          paddingVertical: bottom,
+        }}
+      >
         <CtaButton
           absolute={false}
           title={t(
@@ -95,10 +101,3 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
     </>
   );
 };
-
-const createStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    buttonContainer: {
-      paddingVertical: spacing[2],
-    },
-  });

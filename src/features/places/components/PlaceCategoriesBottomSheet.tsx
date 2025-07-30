@@ -34,6 +34,7 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
       }}
       search={search}
       onSearchChange={setSearch}
+      onSearchClear={() => setSearch('')}
       isLoading={isLoading}
       listProps={{
         data: categories?.data
@@ -59,12 +60,8 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
             ),
             onPress: () => {
               sheetRef.current?.close();
-              navigation.navigate({
-                name: 'Places',
-                key: `Places:${sc.id}`,
-                params: {
-                  subCategoryId: sc.id,
-                },
+              navigation.navigate('Places', {
+                subCategoryId: sc.id,
               });
             },
           })),

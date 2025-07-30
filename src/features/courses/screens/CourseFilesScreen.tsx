@@ -82,12 +82,12 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
           ) : null
         }
       />
-      {recentFilesQuery.data && (
+      {recentFilesQuery.data && navigation && (
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
           action={() => {
-            navigation!.navigate('DirectoryFiles', { courseId });
+            navigation.replace('DirectoryFiles', { courseId });
             updatePreference('filesScreen', 'directoryView');
           }}
         />

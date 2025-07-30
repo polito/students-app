@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { Platform, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import FastImage from '@d11/react-native-fast-image';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
@@ -15,9 +16,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TimingKeyboardAnimationConfig } from '@react-navigation/bottom-tabs/src/types';
 
-import { unreadMessages } from '../../../src/utils/messages';
+import { filterUnread } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
 import { useGetCurrentCampus } from '../../features/places/hooks/useGetCurrentCampus';
@@ -36,6 +36,8 @@ import { HeaderLogo } from './HeaderLogo';
 import { TranslucentView } from './TranslucentView';
 
 const TabNavigator = createBottomTabNavigator<RootParamList>();
+const tabBarIconSize = 20;
+const androidTabBarHeight = 60;
 
 export const RootNavigator = ({
   versionModalIsOpen,
@@ -44,6 +46,7 @@ export const RootNavigator = ({
 }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
   const styles = useStylesheet(createStyles);
   const { data: student } = useGetStudent();
   const { updatePreference } = usePreferencesContext();
@@ -72,12 +75,16 @@ export const RootNavigator = ({
     }
   }, [campus, sites?.data, student, updatePreference]);
 
-  const tabBarIconSize = 20;
-
   const instantAnimation = {
-    animation: 'timing',
+    animation: 'timing' as const,
     config: { duration: 0 },
-  } as TimingKeyboardAnimationConfig;
+  };
+
+  const androidTabBarBottom = useMemo(
+    () =>
+      Platform.select({ android: { height: androidTabBarHeight + bottom } }),
+    [bottom],
+  );
 
   return (
     <TabNavigator.Navigator
@@ -89,7 +96,7 @@ export const RootNavigator = ({
           show: instantAnimation,
           hide: instantAnimation,
         },
-        tabBarStyle: styles.tabBarStyle,
+        tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
         tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarLabelStyle: styles.tabBarLabelStyle,
@@ -148,12 +155,8 @@ export const RootNavigator = ({
           tabBarIcon: ({ color }) => (
             <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
-          tabBarBadge: (() => {
-            return profileMessages.data &&
-              unreadMessages(profileMessages.data).length > 0
-              ? unreadMessages(profileMessages.data).length
-              : undefined;
-          })(),
+          tabBarBadge:
+            filterUnread(profileMessages.data || []).length || undefined,
         }}
       />
     </TabNavigator.Navigator>

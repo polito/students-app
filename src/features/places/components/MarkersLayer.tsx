@@ -8,6 +8,9 @@ import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
+import { AgendaNavigatorID } from '~/features/agenda/components/AgendaNavigator';
+import { TeachingNavigatorID } from '~/features/teaching/components/TeachingNavigator';
+
 import { capitalize } from 'lodash';
 
 import { notNullish } from '../../../utils/predicates';
@@ -136,7 +139,7 @@ export const MarkersLayer = ({
         if (selectedPoi) {
           const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
           if (isCrossNavigation) {
-            if (navigation.getId() === 'AgendaTabNavigator') {
+            if (navigation.getId() === AgendaNavigatorID) {
               navigation.navigate('PlacesAgendaStack', {
                 screen,
                 params:
@@ -147,7 +150,7 @@ export const MarkersLayer = ({
                         buildingId: selectedPoi.id,
                       },
               });
-            } else if (navigation.getId() === 'TeachingTabNavigator') {
+            } else if (navigation.getId() === TeachingNavigatorID) {
               navigation.navigate('PlacesTeachingStack', {
                 screen,
                 params:

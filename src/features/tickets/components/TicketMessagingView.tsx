@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Keyboard, View, ViewProps } from 'react-native';
-import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { Alert, Keyboard, ViewProps } from 'react-native';
 
 import { useReplyToTicket } from '../../../core/queries/ticketHooks';
 import { Attachment } from '../../services/types/Attachment';
@@ -21,13 +18,12 @@ export const TicketMessagingView = ({
   onLayout,
 }: Props) => {
   const { t } = useTranslation();
-  const bottomBarHeight = useBottomTabBarHeight();
   const [message, setMessage] = useState<string>('');
   const [attachment, setAttachment] = useState<Attachment>();
 
   const {
     mutateAsync: reply,
-    isLoading,
+    isPending,
     isSuccess,
   } = useReplyToTicket(ticketId);
 
@@ -50,43 +46,16 @@ export const TicketMessagingView = ({
   }, [isSuccess]);
 
   return (
-    <View
-      style={{
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        right: 0,
-      }}
-    >
-      <KeyboardAccessoryView
-        androidAdjustResize
-        avoidKeyboard
-        alwaysVisible
-        hideBorder
-        heightProperty="minHeight"
-        // eslint-disable-next-line react-native/no-color-literals
-        style={{
-          backgroundColor: 'transparent',
-        }}
-      >
-        {({ isKeyboardVisible }) => (
-          <MessagingView
-            message={message}
-            onMessageChange={setMessage}
-            attachment={attachment}
-            onAttachmentChange={setAttachment}
-            loading={isLoading}
-            disabled={disabled}
-            onLayout={onLayout}
-            onSend={onSend}
-            style={
-              !isKeyboardVisible && {
-                marginBottom: bottomBarHeight,
-              }
-            }
-          />
-        )}
-      </KeyboardAccessoryView>
-    </View>
+    <MessagingView
+      message={message}
+      onMessageChange={setMessage}
+      attachment={attachment}
+      onAttachmentChange={setAttachment}
+      loading={isPending}
+      disabled={disabled}
+      onLayout={onLayout}
+      onSend={onSend}
+      numberOfLines={8}
+    />
   );
 };

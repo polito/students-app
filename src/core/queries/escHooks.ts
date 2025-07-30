@@ -13,26 +13,23 @@ export const useEscClient = (): EscApi => {
 export const useEscGet = () => {
   const escClient = useEscClient();
 
-  return useQuery(
-    ESC_QUERY_KEY,
-    () => {
-      escClient.escGet().then(pluckData);
-    },
-    {
-      cacheTime: Infinity,
-    },
-  );
+  return useQuery({
+    queryKey: ESC_QUERY_KEY,
+    queryFn: () => escClient.escGet().then(pluckData),
+    gcTime: Infinity,
+  });
 };
 
 export const useRequestEsc = () => {
   const escClient = useEscClient();
   const client = useQueryClient();
 
-  return useMutation(() => escClient.escRequest(), {
+  return useMutation({
+    mutationFn: () => escClient.escRequest(),
     onSuccess: () => {
       return Promise.all([
-        client.invalidateQueries(ESC_QUERY_KEY),
-        client.invalidateQueries(STUDENT_QUERY_KEY),
+        client.invalidateQueries({ queryKey: ESC_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: STUDENT_QUERY_KEY }),
       ]);
     },
   });
@@ -42,11 +39,12 @@ export const useDeleteEsc = () => {
   const escClient = useEscClient();
   const client = useQueryClient();
 
-  return useMutation(() => escClient.escDelete(), {
+  return useMutation({
+    mutationFn: () => escClient.escDelete(),
     onSuccess: () => {
       return Promise.all([
-        client.invalidateQueries(ESC_QUERY_KEY),
-        client.invalidateQueries(STUDENT_QUERY_KEY),
+        client.invalidateQueries({ queryKey: ESC_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: STUDENT_QUERY_KEY }),
       ]);
     },
   });

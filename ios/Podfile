@@ -1,3 +1,5 @@
+# ENV['RCT_NEW_ARCH_ENABLED'] = '0'
+
 require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 # from zoontek/react-native-permissions
 def node_require(script)
@@ -8,8 +10,6 @@ def node_require(script)
       {paths: [process.argv[1]]},
     )", __dir__]).strip
 end
-
-ENV['RCT_NEW_ARCH_ENABLED'] = '0'
 
 # Use it to require both react-native's and this package's scripts:
 node_require('react-native/scripts/react_native_pods.rb')
@@ -60,8 +60,6 @@ target 'students' do
 
   config = use_native_modules!(config_command)
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
   pod 'Firebase', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
@@ -69,23 +67,9 @@ target 'students' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    # Upcoming versions of React Native may rely on get_default_flags(), but
-    # we make it explicit here to aid in the React Native upgrade process.
-    :hermes_enabled => flags[:hermes_enabled],
-    :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-
-  target 'students dev' do
-    inherit! :complete
-  end
-
-  target 'studentsTests' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
@@ -93,20 +77,14 @@ target 'students' do
       installer,
       config[:reactNativePath],
       :mac_catalyst_enabled => false,
-      :ccache_enabled => true
+      # :ccache_enabled => true
     )
 
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13'
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
-        if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
-          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
-        end
-      end
-    end
-
     $RNMapboxMaps.post_install(installer)
+  end
+
+  target 'students dev' do
+    inherit! :complete
   end
 end
 

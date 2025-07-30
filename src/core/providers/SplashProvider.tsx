@@ -1,112 +1,62 @@
-import {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { Animated, StyleSheet, useWindowDimensions } from 'react-native';
+import { PropsWithChildren, useState } from 'react';
+import { Animated, Easing, Image } from 'react-native';
+import BootSplash from 'react-native-bootsplash';
 
 import { SplashContext } from '../contexts/SplashContext';
 
 export function SplashProvider({ children }: PropsWithChildren) {
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [isSplashLoaded, setIsSplashLoaded] = useState(false);
+
   return (
     <SplashContext.Provider
       value={{ isAppLoaded, setIsAppLoaded, isSplashLoaded }}
     >
       {children}
-      <Splash isAppLoaded={isAppLoaded} setIsSplashLoaded={setIsSplashLoaded} />
+      {isAppLoaded && !isSplashLoaded && (
+        <AnimatedBootSplash onAnimationEnd={() => setIsSplashLoaded(true)} />
+      )}
     </SplashContext.Provider>
   );
 }
 
-enum SplashPhases {
-  'SHOWN',
-  'FADING',
-  'HIDDEN',
-}
+type Props = {
+  onAnimationEnd: () => void;
+};
 
-export const Splash = ({
-  isAppLoaded,
-  setIsSplashLoaded,
-}: {
-  isAppLoaded: boolean;
-  setIsSplashLoaded: Dispatch<SetStateAction<boolean>>;
-}) => {
-  const containerOpacity = useRef(new Animated.Value(1)).current;
-  const [splashPhase, setSplashPhase] = useState<SplashPhases>(
-    SplashPhases.SHOWN,
-  );
+const AnimatedBootSplash = ({ onAnimationEnd }: Props) => {
+  const [opacity] = useState(() => new Animated.Value(1));
+  const [scale] = useState(() => new Animated.Value(1));
 
-  const dimensions = useWindowDimensions();
-  const [imageStyle, setImageStyle] = useState({});
+  const { container, logo } = BootSplash.useHideAnimation({
+    manifest: require('../../../assets/bootsplash/manifest.json'),
+    logo: require('../../../assets/bootsplash/logo.png'),
 
-  // Splash image height / width
-  const splashImageRatio = 1.476;
-
-  // Resize image based on screen rotation
-  useEffect(() => {
-    if (dimensions.height > dimensions.width) {
-      setImageStyle({
-        width: dimensions.width / 3,
-        height: (dimensions.width / 3) * splashImageRatio,
-      });
-    } else {
-      setImageStyle({
-        width: dimensions.height / 3 / splashImageRatio,
-        height: dimensions.height / 3,
-      });
-    }
-  }, [dimensions]);
-
-  useEffect(() => {
-    if (splashPhase === SplashPhases.SHOWN) {
-      if (isAppLoaded) {
-        setSplashPhase(SplashPhases.FADING);
-      }
-    }
-  }, [isAppLoaded, splashPhase]);
-
-  useEffect(() => {
-    if (splashPhase === SplashPhases.FADING) {
-      Animated.timing(containerOpacity, {
-        toValue: 0,
-        duration: 500, // Fade out duration
-        delay: 500, // Minimum time the logo will stay visible
+    animate: () => {
+      // Perform animations and call onAnimationEnd
+      Animated.timing(opacity, {
         useNativeDriver: true,
+        toValue: 0,
+        duration: 300,
+        easing: Easing.inOut(Easing.ease),
+      }).start();
+      Animated.timing(scale, {
+        useNativeDriver: true,
+        toValue: 4,
+        duration: 500,
+        easing: Easing.inOut(Easing.ease),
       }).start(() => {
-        setSplashPhase(SplashPhases.HIDDEN);
-        setIsSplashLoaded(true);
+        onAnimationEnd();
       });
-    }
-  }, [containerOpacity, splashPhase, setIsSplashLoaded]);
-
-  if (splashPhase === SplashPhases.HIDDEN) return null;
+    },
+  });
 
   return (
     <Animated.View
-      collapsable={false}
-      style={[style.container, { opacity: containerOpacity }]}
+      {...container}
+      style={[container.style, { opacity, transform: [{ scale }] }]}
     >
-      <Animated.Image
-        source={require('../../../assets/images/splash.png')}
-        fadeDuration={0}
-        style={imageStyle}
-        resizeMode="contain"
-      />
+      <Image {...logo} />
     </Animated.View>
   );
 };
-
-const style = StyleSheet.create({
-  // eslint-disable-next-line react-native/no-color-literals
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#002B49', // Must be hardcoded as theme is not initialized yet on Splash appearance
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

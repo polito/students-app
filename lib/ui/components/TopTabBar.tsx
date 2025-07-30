@@ -46,15 +46,21 @@ export const TopTabBar = ({
             });
           };
 
+          const badgeElement = options.tabBarBadge?.();
+          const badgeText =
+            badgeElement && 'props' in badgeElement
+              ? ((badgeElement as any).props.children as string | number)
+              : undefined;
+
           return (
             <Tab
               key={route.key}
               selected={isFocused}
               accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
+              testID={route.key}
               onPress={onPress}
               onLongPress={onLongPress}
-              badge={options.tabBarBadge?.() as string | number}
+              badge={badgeText}
             >
               {label as string}
             </Tab>

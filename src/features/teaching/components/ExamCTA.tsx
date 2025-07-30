@@ -27,8 +27,8 @@ export const ExamCTA = ({ exam, absolute = false }: Props) => {
   const { navigate, reset } =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList, any>>();
 
-  const { mutateAsync: bookExam, isLoading: isBooking } = useBookExam(exam.id);
-  const { mutateAsync: cancelBooking, isLoading: isCancelingBooking } =
+  const { mutateAsync: bookExam, isPending: isBooking } = useBookExam(exam.id);
+  const { mutateAsync: cancelBooking, isPending: isCancelingBooking } =
     useCancelExamBooking(exam.id);
 
   const examRequestable = exam?.status === ExamStatusEnum.Requestable;

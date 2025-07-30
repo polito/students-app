@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   StyleProp,
@@ -12,10 +13,10 @@ import {
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Separator } from '@lib/ui/components/Separator';
-import { Link, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { To } from '../../../src/utils/resolveLinkTo';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
 import { Text } from './Text';
@@ -31,7 +32,7 @@ interface Props {
   accessible?: boolean;
   accessibilityLabel?: string | undefined;
   linkTo?: To<any>;
-  trailingItem?: JSX.Element;
+  trailingItem?: ReactElement;
   trailingIcon?: Pick<FAProps, 'size' | 'icon' | 'color'> &
     TouchableOpacityProps & {
       iconStyle?: FAProps['style'];
@@ -100,7 +101,17 @@ export const SectionHeader = ({
         </View>
         {trailingItem && trailingItem}
         {linkTo && linkToMoreCount != null && linkToMoreCount > 0 && (
-          <Link to={linkTo} accessible={true} accessibilityRole="button">
+          <TouchableOpacity
+            accessible={true}
+            accessibilityRole="button"
+            onPress={() => {
+              if (typeof linkTo === 'string') {
+                navigation.navigate(linkTo as any);
+              } else {
+                navigation.navigate(linkTo.screen as any, linkTo.params);
+              }
+            }}
+          >
             <Text variant="link">
               {t('sectionHeader.cta')}
               {(linkToMoreCount ?? 0) > 0 &&
@@ -109,7 +120,7 @@ export const SectionHeader = ({
                     count: linkToMoreCount,
                   })}
             </Text>
-          </Link>
+          </TouchableOpacity>
         )}
       </View>
     );
@@ -135,14 +146,13 @@ export const SectionHeader = ({
       accessibilityRole={linkTo ? 'button' : 'header'}
       accessibilityLabel={accessibilityLabel}
       onPress={() => {
-        linkTo &&
-          navigation.navigate({
-            name: typeof linkTo === 'string' ? linkTo : linkTo.screen,
-            params:
-              typeof linkTo === 'object' && 'params' in linkTo
-                ? linkTo.params
-                : undefined,
-          });
+        if (linkTo) {
+          if (typeof linkTo === 'string') {
+            navigation.navigate(linkTo as any);
+          } else {
+            navigation.navigate(linkTo.screen as any, linkTo.params);
+          }
+        }
       }}
     >
       <Header />

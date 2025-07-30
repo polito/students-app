@@ -71,7 +71,7 @@ export const BookingSeatsCta = ({
             })
         }
         disabled={!ctaEnabled}
-        loading={createBookingMutation.isLoading}
+        loading={createBookingMutation.isPending}
         containerStyle={{ paddingTop: 0 }}
       />
     </CtaButtonContainer>

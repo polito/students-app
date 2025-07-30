@@ -15,13 +15,11 @@ const usePeopleClient = (): PeopleApi => {
 export const useGetPeople = (search: string, enabled: boolean) => {
   const peopleClient = usePeopleClient();
 
-  return useQuery(
-    [PEOPLE_QUERY_PREFIX, search],
-    () => peopleClient.getPeople({ search }).then(pluckData),
-    {
-      enabled: enabled,
-    },
-  );
+  return useQuery({
+    queryKey: [PEOPLE_QUERY_PREFIX, search],
+    queryFn: () => peopleClient.getPeople({ search }).then(pluckData),
+    enabled: enabled,
+  });
 };
 
 export const getPersonKey = (personId: number) => [
@@ -32,18 +30,16 @@ export const getPersonKey = (personId: number) => [
 export const useGetPerson = (personId: number | undefined) => {
   const peopleClient = usePeopleClient();
 
-  return useQuery(
-    getPersonKey(personId!),
-    () =>
+  return useQuery({
+    queryKey: getPersonKey(personId!),
+    queryFn: () =>
       peopleClient
         .getPerson({ personId: personId! })
         .then(pluckData)
         .catch(ignoreNotFound),
-    {
-      enabled: personId !== undefined,
-      staleTime: Infinity,
-    },
-  );
+    enabled: personId !== undefined,
+    staleTime: Infinity,
+  });
 };
 
 export const useGetPersons = (personIds: number[] | undefined) => {
