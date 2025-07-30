@@ -54,7 +54,19 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
   const styles = useStylesheet(createStyles);
   const { mutate: verifyMfa, isLoading } = useMfaAuth();
 
-  const onNo = () => navigation.goBack();
+  const onNo = async () => {
+    navigation.goBack();
+    const secret = await getPrivateKeyMFA();
+    if (secret) {
+      const secretParsed: any = JSON.parse(secret);
+      const signature = authSign(
+        secretParsed.serial + '|denied',
+        nonce,
+        secretParsed.privateKeyB64,
+      );
+      verifyMfa({ serial: secretParsed.serial, nonce, signature });
+    }
+  };
 
   const onYes = async () => {
     try {
@@ -152,7 +164,6 @@ const createStyles = ({ colors, spacing, palettes }: Theme) =>
     primaryButton: {
       backgroundColor: palettes.primary[500],
       borderColor: palettes.primary[500],
-      borderRadius: 12,
       width: spacing[40],
     },
     secondaryButtonContainer: {
@@ -160,7 +171,6 @@ const createStyles = ({ colors, spacing, palettes }: Theme) =>
       gap: 8,
     },
     secondaryButton: {
-      borderRadius: 12,
       borderColor: palettes.primary[500],
       color: palettes.primary[500],
       width: spacing[40],
