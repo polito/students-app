@@ -53,6 +53,7 @@ import { LectureCard } from '../../agenda/components/LectureCard';
 import { useGetNextLecture } from '../../agenda/queries/lectureHooks';
 import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { CourseStatisticsFilterType } from '../components/CourseStatisticsFilters.tsx';
 import { useCourseContext } from '../contexts/CourseContext';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
@@ -351,6 +352,7 @@ export const CourseInfoScreen = () => {
                   courseShortcode: courseQuery.data?.shortcode,
                   year: courseQuery.data?.year,
                   teacherId: courseQuery.data?.teacherId,
+                  filter: CourseStatisticsFilterType.YEAR,
                 },
               }}
               disabled={isStatisticsDisabled}

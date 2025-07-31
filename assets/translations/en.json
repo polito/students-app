@@ -361,81 +361,75 @@
     "title": "Course guide"
   },
   "courseStatisticsScreen": {
-    "title": "TODO",
-    "subtitle": "TODO",
-    "noData": "TODO",
-    "period": "TODO",
-    "teacher": "TODO",
-    "enrolledExamTitle": "TODO",
-    "enrolledExamInfo": "TODO",
-    "enrolledExamDetailTitle": "TODO",
-    "enrolledExamDetailInfo": "TODO",
-    "examGradeDetailTitle": "TODO",
-    "examGradeDetailInfo": "TODO",
+    "title": "Statistics",
+    "subtitle": "Access exam statistics",
+    "noData": "Data not available",
+    "period": "Period",
+    "teacher": "Professor",
+    "enrolledExamTitle": "Passed exam",
+    "enrolledExamInfo": "Information on passing the exam",
+    "enrolledExamDetailTitle": "Exam passing details",
+    "enrolledExamDetailInfo": "Detailed information on passing the exam",
+    "examGradeDetailTitle": "Details of votes",
+    "examGradeDetailInfo": "Vote detail information",
     "enrolledExamBottomSheet":  {
-      "title": "TODO",
-      "content": "TODO",
+      "title": "Passed exam",
+      "content": "Statistics regarding the total number of exam passes with two types of display:",
       "item1": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "Single",
+        "content": "statistics for the selected single year."
       },
       "item2": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "Comparative",
+        "content": "comparison between the selected year and the two previous years."
       }
     },
     "enrolledExamDetailBottomSheet":  {
-      "title": "TODO",
-      "content": "TODO",
+      "title": "Exam passing details",
+      "content": "Statistics regarding the number of exam passers divided into three subgroups:",
       "item1": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "1st year students",
+        "content": " students who registered for the exam during their first year of attendance."
       },
       "item2": {
-        "title": "TODO",
-        "content": "TODO"
-      },
-      "item3": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "enrolled from the 2nd year onwards",
+        "content": " students who registered for the exam during their second or subsequent year of attendance."
       }
     },
     "gradesDetailBottomSheet":  {
-      "title": "TODO",
-      "content": "TODO",
+      "title": "Details of votes",
+      "content": "Statistics regarding the details of exam grades divided into three subgroups:",
       "item1": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "1st year students",
+        "content": " students who registered for the exam during their first year of attendance."
       },
       "item2": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "enrolled in the 2nd year onwards",
+        "content": " students who registered for the exam during their second year of attendance onwards."
       },
       "item3": {
-        "title": "TODO",
-        "content": "TODO"
+        "title": "enrolled from the 3rd year onwards",
+        "content": " students who registered for the exam from the third year of attendance onwards."
       }
     },
     "gradesDetailLegend": {
-      "averageGrade": "TODO",
-      "firstYear": "TODO",
-      "secondYear": "TODO",
-      "otherYears": "TODO"
+      "averageGrade": "Average rating",
+      "firstYear": "Enrolled in the 1st year",
+      "otherYears": "Enrolled from the 2nd year onwards"
     },
     "enrolledExamChartLabel": {
-      "firstYear": "TODO",
-      "secondYear": "TODO",
-      "otherYears": "TODO"
+      "firstYear": "1st year",
+      "otherYears": "2nd year onwards"
     },
     "enrolledExamChartLegend": {
-      "passed": "TODO",
-      "failed": "TODO"
+      "passed": "Exam passed",
+      "failed": "Exam failed"
     },
     "enrolledExamVisualization": {
-      "title": "TODO",
-      "single": "TODO",
-      "compare": "TODO",
-      "error": "TODO"
+      "title": "Visualization",
+      "single": "Single",
+      "compare": "Comparative",
+      "error": "Comparative view not available due to lack of data in previous periods"
     }
   },
   "courseHideEventScreen": {

@@ -11,7 +11,6 @@ import {
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { Card } from '@lib/ui/components/Card';
-import { IconButton } from '@lib/ui/components/IconButton.tsx';
 import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -23,22 +22,20 @@ import { BottomModal } from '../../../core/components/BottomModal.tsx';
 import { useBottomModal } from '../../../core/hooks/useBottomModal.ts';
 import { useGetCourseStatistics } from '../../../core/queries/offeringHooks';
 import { SharedScreensParamList } from '../../../shared/navigation/SharedScreens';
-import {
-  CourseGradesChart,
-  EnrolledExamChart,
-  EnrolledExamDetailChart,
-} from '../components/CourseChart';
+import { CourseGradesChart } from '../components/CourseGradesChart.tsx';
 import { CourseStatisticsFilters } from '../components/CourseStatisticsFilters';
 import {
   CourseStatisticsModal,
   CourseStatisticsTypes,
 } from '../components/CourseStatisticsModal.tsx';
+import { EnrolledExamChart } from '../components/EnrolledExamChart.tsx';
+import { EnrolledExamDetailChart } from '../components/EnrolledExamDetailChart.tsx';
 import { computeStatisticsFilters } from '../utils/computeStatisticsFilters';
 
 type Props = NativeStackScreenProps<SharedScreensParamList, 'CourseStatistics'>;
 export const CourseStatisticsScreen = ({ route }: Props) => {
   const { t } = useTranslation();
-  const { courseShortcode: shortCode, year, teacherId } = route.params;
+  const { courseShortcode: shortCode, year, teacherId, filter } = route.params;
 
   const { spacing, colors } = useTheme();
   const [currentFilters, setCurrentFilters] = useState<{
@@ -125,6 +122,7 @@ export const CourseStatisticsScreen = ({ route }: Props) => {
                 currentYear: nextYear,
               }));
             }}
+            filterType={filter}
           />
           <View style={styles.container}>
             <View>
@@ -134,18 +132,12 @@ export const CourseStatisticsScreen = ({ route }: Props) => {
                   'courseStatisticsScreen.enrolledExamTitle',
                 )}
                 title={t('courseStatisticsScreen.enrolledExamTitle')}
-                trailingItem={
-                  <IconButton
-                    icon={faQuestionCircle}
-                    color={colors.link}
-                    onPress={() =>
-                      openModal(CourseStatisticsTypes.enrolledExamBottomSheet)
-                    }
-                    accessibilityLabel={t(
-                      'courseStatisticsScreen.enrolledExamInfo',
-                    )}
-                  />
-                }
+                trailingIcon={{
+                  onPress: () =>
+                    openModal(CourseStatisticsTypes.enrolledExamBottomSheet),
+                  icon: faQuestionCircle,
+                  color: colors.link,
+                }}
               />
               <Card>
                 <LoadingContainer loading={isFetching}>
@@ -164,20 +156,14 @@ export const CourseStatisticsScreen = ({ route }: Props) => {
                   'courseStatisticsScreen.enrolledExamDetailTitle',
                 )}
                 title={t('courseStatisticsScreen.enrolledExamDetailTitle')}
-                trailingItem={
-                  <IconButton
-                    icon={faQuestionCircle}
-                    color={colors.link}
-                    onPress={() =>
-                      openModal(
-                        CourseStatisticsTypes.enrolledExamDetailBottomSheet,
-                      )
-                    }
-                    accessibilityLabel={t(
-                      'courseStatisticsScreen.enrolledExamDetailInfo',
-                    )}
-                  />
-                }
+                trailingIcon={{
+                  onPress: () =>
+                    openModal(
+                      CourseStatisticsTypes.enrolledExamDetailBottomSheet,
+                    ),
+                  icon: faQuestionCircle,
+                  color: colors.link,
+                }}
               />
               <Card>
                 <LoadingContainer loading={isFetching}>
@@ -197,18 +183,14 @@ export const CourseStatisticsScreen = ({ route }: Props) => {
                   'courseStatisticsScreen.examGradeDetailTitle',
                 )}
                 title={t('courseStatisticsScreen.examGradeDetailTitle')}
-                trailingItem={
-                  <IconButton
-                    icon={faQuestionCircle}
-                    color={colors.link}
-                    onPress={() =>
-                      openModal(CourseStatisticsTypes.gradesDetailBottomSheet)
-                    }
-                    accessibilityLabel={t(
-                      'courseStatisticsScreen.examGradeDetailInfo',
-                    )}
-                  />
-                }
+                trailingIcon={{
+                  onPress: () =>
+                    openModal(
+                      CourseStatisticsTypes.enrolledExamDetailBottomSheet,
+                    ),
+                  icon: faQuestionCircle,
+                  color: colors.link,
+                }}
               />
               <Card>
                 <LoadingContainer loading={isFetching}>

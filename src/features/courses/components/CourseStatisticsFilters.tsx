@@ -14,6 +14,12 @@ import { Theme } from '@lib/ui/types/Theme';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { StatisticsFilters } from '../utils/computeStatisticsFilters';
 
+export enum CourseStatisticsFilterType {
+  TEACHER = 'teacher',
+  YEAR = 'year',
+  DEFAULT = 'default',
+}
+
 export const CourseStatisticsFilters = ({
   teachers,
   years,
@@ -21,9 +27,11 @@ export const CourseStatisticsFilters = ({
   onYearChanged,
   currentYear,
   currentTeacher,
+  filterType = CourseStatisticsFilterType.DEFAULT,
 }: StatisticsFilters & {
   onTeacherChanged: (teacherId: string) => void;
   onYearChanged: (year: string) => void;
+  filterType?: CourseStatisticsFilterType;
 }) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -37,12 +45,26 @@ export const CourseStatisticsFilters = ({
           >
             {t('courseStatisticsScreen.period')}
           </Text>
-          <StatefulMenuView
-            onPressAction={({ nativeEvent }) => {
-              onYearChanged(nativeEvent.event);
-            }}
-            actions={years}
-          >
+          {filterType === CourseStatisticsFilterType.YEAR ||
+          filterType === CourseStatisticsFilterType.DEFAULT ? (
+            <StatefulMenuView
+              onPressAction={({ nativeEvent }) => {
+                onYearChanged(nativeEvent.event);
+              }}
+              actions={years}
+            >
+              <Row>
+                <Text
+                  accessibilityLabel={currentYear?.title ?? '--'}
+                  style={styles.dropdownText}
+                  weight="semibold"
+                >
+                  {currentYear?.title ?? '--'}
+                </Text>
+                <Icon icon={faChevronDown} style={styles.chevronStyle} />
+              </Row>
+            </StatefulMenuView>
+          ) : (
             <Row>
               <Text
                 accessibilityLabel={currentYear?.title ?? '--'}
@@ -51,9 +73,8 @@ export const CourseStatisticsFilters = ({
               >
                 {currentYear?.title ?? '--'}
               </Text>
-              <Icon icon={faChevronDown} style={styles.chevronStyle} />
             </Row>
-          </StatefulMenuView>
+          )}
         </View>
         <View style={GlobalStyles.grow}>
           <Text
@@ -62,12 +83,26 @@ export const CourseStatisticsFilters = ({
           >
             {t('courseStatisticsScreen.teacher')}
           </Text>
-          <StatefulMenuView
-            onPressAction={({ nativeEvent }) => {
-              onTeacherChanged(nativeEvent.event);
-            }}
-            actions={teachers}
-          >
+          {filterType === CourseStatisticsFilterType.TEACHER ||
+          filterType === CourseStatisticsFilterType.DEFAULT ? (
+            <StatefulMenuView
+              onPressAction={({ nativeEvent }) => {
+                onTeacherChanged(nativeEvent.event);
+              }}
+              actions={teachers}
+            >
+              <Row>
+                <Text
+                  style={styles.dropdownText}
+                  accessibilityLabel={currentTeacher?.title ?? '--'}
+                  weight="semibold"
+                >
+                  {currentTeacher?.title ?? '--'}
+                </Text>
+                <Icon icon={faChevronDown} style={styles.chevronStyle} />
+              </Row>
+            </StatefulMenuView>
+          ) : (
             <Row>
               <Text
                 style={styles.dropdownText}
@@ -76,9 +111,8 @@ export const CourseStatisticsFilters = ({
               >
                 {currentTeacher?.title ?? '--'}
               </Text>
-              <Icon icon={faChevronDown} style={styles.chevronStyle} />
             </Row>
-          </StatefulMenuView>
+          )}
         </View>
       </Grid>
     </Card>

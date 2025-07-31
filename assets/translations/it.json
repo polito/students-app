@@ -404,12 +404,8 @@
         "content": " studenti che si sono iscritti all’esame durante il primo anno di frequenza."
       },
       "item2": {
-        "title": "iscritti al 2° anno",
-        "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza."
-      },
-      "item3": {
-        "title": "iscritti dal 3° anno in poi",
-        "content": " studenti che si sono iscritti all’esame dal terzo anno di frequenza in poi."
+        "title": "iscritti dal 2° anno in poi",
+        "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza o i successivi."
       }
     },
     "gradesDetailBottomSheet":  {
@@ -420,8 +416,8 @@
         "content": " studenti che si sono iscritti all’esame durante il primo anno di frequenza."
       },
       "item2": {
-        "title": "iscritti al 2° anno",
-        "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza."
+        "title": "iscritti al 2° anno in poi",
+        "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza in poi."
       },
       "item3": {
         "title": "iscritti dal 3° anno in poi",
@@ -431,13 +427,11 @@
     "gradesDetailLegend": {
       "averageGrade": "Votazione media",
       "firstYear": "Iscritti al 1° anno",
-      "secondYear": "Iscritti al 2° anno",
-      "otherYears": "Iscritti dal 3° anno in poi"
+      "otherYears": "Iscritti dal 2° anno in poi"
     },
     "enrolledExamChartLabel": {
       "firstYear": "1° anno",
-      "secondYear": "2° anno",
-      "otherYears": "3° anno in poi"
+      "otherYears": "2° anno in poi"
     },
     "enrolledExamChartLegend": {
       "passed": "Esame superato",

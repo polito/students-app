@@ -40,6 +40,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { CourseStatisticsFilterType } from '../../courses/components/CourseStatisticsFilters.tsx';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { StaffListItem } from '../components/StaffListItem';
 
@@ -225,6 +226,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                       screen: 'CourseStatistics',
                       params: {
                         courseShortcode: offeringCourse.shortcode,
+                        filter: CourseStatisticsFilterType.TEACHER,
                       },
                     }}
                     leadingItem={<Icon size={20} icon={faChartLine} />}
