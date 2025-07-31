@@ -4,8 +4,16 @@ import { faCouch } from '@fortawesome/free-solid-svg-icons';
 
 import { EmptyCard } from './EmptyCard';
 
-export const EmptyWeek = () => {
+type EmptyWeekProps = {
+  message?: string;
+};
+export const EmptyWeek = ({ message }: EmptyWeekProps) => {
   const { t } = useTranslation();
 
-  return <EmptyCard icon={faCouch} message={t('agendaScreen.emptyWeek')} />;
+  return (
+    <EmptyCard
+      icon={faCouch}
+      message={message ?? t('agendaScreen.emptyWeek')}
+    />
+  );
 };
