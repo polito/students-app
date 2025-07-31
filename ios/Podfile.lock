@@ -1653,6 +1653,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-get-random-values (1.11.0):
+    - React-Core
   - react-native-html-to-pdf (0.12.0):
     - React-Core
   - react-native-menu (1.2.3):
@@ -2726,6 +2728,7 @@ DEPENDENCIES:
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - "react-native-document-picker (from `../node_modules/@react-native-documents/picker`)"
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -2912,6 +2915,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-documents/picker"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-html-to-pdf:
     :path: "../node_modules/react-native-html-to-pdf"
   react-native-menu:
@@ -3034,8 +3039,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: 1dca942403ed9342f98334bf4c3621f011aa7946
-  DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
+  boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
+  DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   Expo: c4afae95ee841ee5c30bde11937ec6732dee3169
   ExpoModulesCore: e0409d8c674a651a183e941be663e1966b49e2a2
   ExpoWebBrowser: dc39a88485f007e61a3dff05d6a75f22ab4a2e92
@@ -3048,8 +3053,8 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: 29d7b3af4aaf0b8f3ed20b568c13df399b06f68c
   FirebaseInstallations: 0ee9074f2c1e86561ace168ee1470dc67aabaf02
   FirebaseMessaging: 195bbdb73e6ca1dbc76cd46e73f3552c084ef6e4
-  fmt: 01b82d4ca6470831d1cc0852a1af644be019e8f6
-  glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
+  fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
+  glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   GoogleAppMeasurement: 0dfca1a4b534d123de3945e28f77869d10d0d600
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
@@ -3100,6 +3105,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: d0f7b5c8c7c85932dec43c4e4725abc45b309ef1
   react-native-document-picker: e9f5be30dc886748b9d448338ee45f4f1f23851f
   react-native-geolocation: d43962eb0be1b0056ba5c1f95e94fb7907494268
+  react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-html-to-pdf: 7a49e6c58ac5221bcc093027b195f4b214f27a9d
   react-native-menu: be9bce4eb201a4d13734744763d36d56e6df8b4a
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
