@@ -61,14 +61,6 @@ export const CourseStatisticsModal = ({ type, onDismiss }: Props) => {
             'courseStatisticsScreen.enrolledExamDetailBottomSheet.item2.content',
           ),
         },
-        {
-          title: t(
-            'courseStatisticsScreen.enrolledExamDetailBottomSheet.item3.title',
-          ),
-          content: t(
-            'courseStatisticsScreen.enrolledExamDetailBottomSheet.item3.content',
-          ),
-        },
       ],
     },
     {
@@ -89,14 +81,6 @@ export const CourseStatisticsModal = ({ type, onDismiss }: Props) => {
           ),
           content: t(
             'courseStatisticsScreen.gradesDetailBottomSheet.item2.content',
-          ),
-        },
-        {
-          title: t(
-            'courseStatisticsScreen.gradesDetailBottomSheet.item3.title',
-          ),
-          content: t(
-            'courseStatisticsScreen.gradesDetailBottomSheet.item3.content',
           ),
         },
       ],

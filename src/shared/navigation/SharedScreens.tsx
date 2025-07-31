@@ -13,6 +13,7 @@ import {
 
 import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../core/components/HeaderLogo';
+import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
 import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../../features/offering/screens/DegreeCourseScreen';
@@ -36,6 +37,7 @@ export interface SharedScreensParamList extends ParamListBase {
     courseId: number;
     teacherId?: string;
     year?: string;
+    filter?: CourseStatisticsFilterType;
   };
   Staff: {
     courseShortcode: string;
