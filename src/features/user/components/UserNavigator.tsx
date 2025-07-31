@@ -29,7 +29,12 @@ export type UserStackParamList = OfferingStackParamList & {
   Notifications: undefined;
   Person: { id: number };
 };
-const Stack = createNativeStackNavigator<UserStackParamList>();
+
+export const UserNavigatorID = 'UserTabNavigator';
+const Stack = createNativeStackNavigator<
+  UserStackParamList,
+  typeof UserNavigatorID
+>();
 
 export const UserNavigator = () => {
   const { t } = useTranslation();
@@ -38,6 +43,7 @@ export const UserNavigator = () => {
 
   return (
     <Stack.Navigator
+      id={UserNavigatorID}
       screenOptions={{
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),

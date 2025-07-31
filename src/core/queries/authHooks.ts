@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
@@ -11,7 +12,9 @@ import type {
 import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { UserStackParamList } from '~/features/user/components/UserNavigator.tsx';
 
 import { t } from 'i18next';
 
@@ -29,6 +32,7 @@ import { asyncStoragePersister } from '../providers/ApiProvider';
 import { RootParamList } from '../types/navigation.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
+export const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
 
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
@@ -69,7 +73,6 @@ export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext();
-  const { mutate: checkMfaEnrollment } = useCheckMfa();
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
       return Promise.all([
@@ -127,7 +130,6 @@ export const useLogin = () => {
       refreshContext({ username, token });
       await setCredentials(clientId, token);
       updatePreference('username', username);
-      checkMfaEnrollment();
     },
   });
 };
@@ -204,10 +206,10 @@ export const GetWebmailLink = async () => {
 
 export const useCheckMfa = () => {
   const authClient = useAuthClient();
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
 
-  return useMutation({
-    mutationFn: () =>
+  return useQuery({
+    queryKey: ['mfaStatus'],
+    queryFn: () =>
       authClient
         .getMfaStatus()
         .then(pluckData)
@@ -217,14 +219,6 @@ export const useCheckMfa = () => {
           }
           return res;
         }),
-    onSuccess: data => {
-      if (data.status === 'available') {
-        navigation.navigate('TeachingTab', {
-          screen: 'MfaModal',
-          params: { mfa: data },
-        });
-      }
-    },
   });
 };
 
@@ -262,19 +256,18 @@ export const useMfaAuth = () => {
     onSuccess: async data => {
       data.success === true && navigation.goBack();
     },
-
-    onError: () => {
-      Alert.alert(t('common.error'));
-    },
   });
 };
 
 export const useMfaFetchChallenge = () => {
   const authClient = useAuthClient();
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
+  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: () =>
+  const { data } = useQuery({
+    queryKey: MFA_CHALLENGE_QUERY_KEY,
+    queryFn: () =>
       authClient
         .fetchChallenge()
         .then(pluckData)
@@ -282,19 +275,24 @@ export const useMfaFetchChallenge = () => {
           if (!res) throw new Error('MFA verification failed');
           return res;
         }),
-
-    onSuccess: async data => {
-      data.challenge !== undefined
-        ? navigation.navigate('TeachingTab', {
-            screen: 'MfaModalAuth',
-            params: {
-              serial: data.serial,
-              nonce: data.challenge,
-              expirationTs: data.expirationTs,
-            },
-          })
-        : null;
-    },
-    onError: () => {},
   });
+
+  useEffect(() => {
+    if (data?.challenge !== undefined) {
+      navigation.navigate('ProfileTab', {
+        screen: 'PolitoAuthenticator',
+        params: {
+          activeView: 'auth',
+          challenge: data,
+        },
+      });
+    }
+  }, [data, navigation]);
+
+  return {
+    refresh: () =>
+      queryClient.invalidateQueries({
+        queryKey: MFA_CHALLENGE_QUERY_KEY,
+      }),
+  };
 };

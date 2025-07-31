@@ -18,13 +18,8 @@ import {
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
 import { MessageScreenContent } from '../components/MessageScreenContent';
-import { MfaAuthScreen } from './MfaAuthScreen';
-import { MfaEnrollScreen } from './MfaEnrollScreen';
 
-type Props = NativeStackScreenProps<
-  any,
-  'MessagesModal' | 'MfaModal' | 'MfaModalAuth'
->;
+type Props = NativeStackScreenProps<any, 'MessagesModal'>;
 
 export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   const { data: messages } = useGetModalMessages();
@@ -84,15 +79,7 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
       setMessageReadCount(m => m + 1);
     }
   };
-  return route.params?.mfa?.status === 'available' ? (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <MfaEnrollScreen />
-    </ScrollView>
-  ) : route.params?.nonce !== undefined ? (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <MfaAuthScreen expirationTs={route.params.expirationTs} />
-    </ScrollView>
-  ) : (
+  return (
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {currentMessage && (

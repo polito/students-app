@@ -130,7 +130,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const student = studentQuery.data;
   const queryClient = useQueryClient();
   const messages = useGetMessages();
-  const { mutate: fetchChallenge } = useMfaFetchChallenge();
+  const { refresh: refreshChallenge } = useMfaFetchChallenge();
 
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
@@ -159,9 +159,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
       refreshControl={
         <RefreshControl
           manual
-          onRefresh={() => {
-            fetchChallenge();
-          }}
+          onRefresh={refreshChallenge}
           queries={[studentQuery]}
         />
       }

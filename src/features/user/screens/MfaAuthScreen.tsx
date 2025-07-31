@@ -5,7 +5,8 @@ import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { FetchChallenge200ResponseData } from '@polito/api-client';
+import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { PolitoAuthenticatorLogo } from '../../../../src/core/components/PolitoAuthenticatorLogo';
@@ -17,11 +18,14 @@ type RootStackParamList = {
   MfaAuth: { serial: string; nonce: string };
 };
 type Props = {
-  expirationTs: string;
+  challenge: FetchChallenge200ResponseData;
 };
-export const MfaAuthScreen = ({ expirationTs }: Props) => {
+export const MfaAuthScreen = ({ challenge }: Props) => {
   const { t } = useTranslation();
-  const expiryMs = new Date(expirationTs).getTime();
+  const { challenge: nonce } = challenge;
+  const expiryMs = challenge?.expirationTs
+    ? new Date(challenge.expirationTs).getTime()
+    : 0;
 
   const calcSeconds = useCallback(() => {
     return Math.max(Math.ceil((expiryMs - Date.now()) / 1000), 0);
@@ -50,7 +54,6 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { nonce } = useRoute().params as RootStackParamList['MfaAuth'];
   const styles = useStylesheet(createStyles);
   const { mutate: verifyMfa, isPending } = useMfaAuth();
 
@@ -64,7 +67,11 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
         nonce,
         secretParsed.privateKeyB64,
       );
-      verifyMfa({ serial: secretParsed.serial, nonce, signature });
+      verifyMfa({
+        serial: secretParsed.serial,
+        nonce,
+        signature,
+      });
     }
   };
 
@@ -78,7 +85,11 @@ export const MfaAuthScreen = ({ expirationTs }: Props) => {
           nonce,
           secretParsed.privateKeyB64,
         );
-        verifyMfa({ serial: secretParsed.serial, nonce, signature });
+        verifyMfa({
+          serial: secretParsed.serial,
+          nonce,
+          signature,
+        });
       }
     } catch (err) {
       Alert.alert(t('common.error'));
