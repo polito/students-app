@@ -59,14 +59,14 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
       return [
         {
           title: t('tickets.close'),
-          titleColor: dark ? 'white' : 'black',
+          titleColor: dark ? colors.white : colors.black,
           iconColor: 'red',
           systemIcon: 'trash.fill',
         },
       ];
     }
     return [];
-  }, [markTicketAsClosedEnabled, t, dark]);
+  }, [markTicketAsClosedEnabled, t, dark, colors]);
 
   const UnReadCount = () => {
     return (
@@ -148,7 +148,7 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
       <ContextMenu
         title={t('tickets.menuAction')}
         actions={actions}
-        onPreviewPress={actions.length > 0 ? onPressCloseTicket : undefined}
+        onPress={actions.length > 0 ? onPressCloseTicket : undefined}
       >
         <Item />
       </ContextMenu>
