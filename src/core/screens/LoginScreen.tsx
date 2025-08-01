@@ -57,7 +57,7 @@ export const LoginScreen = () => {
 
   const handleLoginError = useCallback(
     (e: Error) => {
-      console.error('Login error:', e);
+      console.error('Login error:', { ...e });
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
@@ -90,7 +90,6 @@ export const LoginScreen = () => {
         preferences: { language },
         loginType: 'sso',
       }).catch(handleLoginError);
-      updatePreference('loginUid', undefined);
     }
   }, [loginUid, key, login, language, updatePreference, handleLoginError]);
 

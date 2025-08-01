@@ -9,10 +9,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
+import { ApiError } from '~/utils/queries';
 
 import {
   MFA_STATUS_QUERY_KEY,
   useMfaEnrol,
+  useSSOLoginInitiator,
 } from '../../../core/queries/authHooks';
 import { generateSecp256k1KeyPair } from '../../../utils/crypto';
 import { savePrivateKeyMFA } from '../../../utils/keychain';
@@ -21,6 +23,7 @@ export const MfaEnrollScreen = () => {
   const { t } = useTranslation();
   const { mutateAsync: enrolMfa, isPending } = useMfaEnrol();
   const queryClient = useQueryClient();
+  const handleSSO = useSSOLoginInitiator();
 
   const { publicKey, privateKey } = generateSecp256k1KeyPair();
 
@@ -35,15 +38,22 @@ export const MfaEnrollScreen = () => {
     const deviceId = DeviceInfo.getDeviceId();
     const dtoMfa = { description: deviceId, pubkey: publicKey };
 
-    const res = await enrolMfa(dtoMfa);
-
-    const saved = await savePrivateKeyMFA(res.serial, privateKey, {
-      title: t('mfaScreen.biometricPrompt'),
-    });
-    if (!saved) {
-      Alert.alert(t('common.error'), t('mfaScreen.enroll.saveFailure'));
-    } else {
+    try {
+      const res = await enrolMfa(dtoMfa);
+      await savePrivateKeyMFA(res.serial, privateKey, {
+        title: t('mfaScreen.biometricPrompt'),
+      });
       queryClient.invalidateQueries({ queryKey: MFA_STATUS_QUERY_KEY });
+    } catch (e) {
+      if (e instanceof ApiError) {
+        if (e.error === 'secureSessionExpired') {
+          Alert.alert(t('common.error'), t('mfaScreen.enroll.expired'), [
+            { text: t('common.ok'), onPress: () => handleSSO(true) },
+          ]);
+          return;
+        }
+      }
+      Alert.alert(t('common.error'), t('mfaScreen.enroll.failure'));
     }
     navigation.goBack();
   };

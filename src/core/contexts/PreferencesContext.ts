@@ -90,7 +90,7 @@ export interface PreferencesContextBase {
   };
   showColorWarning?: boolean;
   hideGrades?: boolean;
-  loginUid?: string;
+  loginUid?: string | null;
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {

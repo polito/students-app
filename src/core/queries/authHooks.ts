@@ -24,7 +24,7 @@ import {
   resetCredentials,
   setCredentials,
 } from '../../utils/keychain.ts';
-import { pluckData } from '../../utils/queries';
+import { pluckData, rethrowApiError } from '../../utils/queries';
 import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -117,13 +117,15 @@ export const useLogin = () => {
         .then(() => authClient.login({ loginRequest: dto }))
         .then(pluckData)
         .then(res => {
+          updatePreference('loginUid', null); // needed to exit from login screen
           if (res?.type !== 'student') {
             throw new UnsupportedUserTypeError(
               `User type ${res?.type} not supported by this app`,
             );
           }
           return res;
-        });
+        })
+        .catch(rethrowApiError);
     },
     onSuccess: async data => {
       const { token, clientId, username } = data;
@@ -235,12 +237,7 @@ export const useMfaEnrol = () => {
       authClient
         .enrolMfa({ enrolMfaRequest: dto })
         .then(pluckData)
-        .then(res => {
-          if (!res) {
-            throw new Error('Failed to get MFA status');
-          }
-          return res;
-        }),
+        .catch(rethrowApiError),
   });
 };
 

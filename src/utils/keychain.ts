@@ -64,20 +64,15 @@ export async function savePrivateKeyMFA(
   privateKeyB64: string,
   authenticationPrompt: Keychain.AuthenticationPrompt,
 ): Promise<boolean> {
-  try {
-    const privateKey = new AuthenticatorPrivKey(serial, privateKeyB64);
+  const privateKey = new AuthenticatorPrivKey(serial, privateKeyB64);
 
-    await Keychain.setGenericPassword('mfa-key', privateKey.serialize(), {
-      service: MFA_SERVICE,
-      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
-      accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-      authenticationPrompt,
-    });
-    return true;
-  } catch (error) {
-    console.error('Error while saving MFA private key', error);
-    return false;
-  }
+  await Keychain.setGenericPassword(serial, privateKey.serialize(), {
+    service: MFA_SERVICE,
+    accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+    accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+    authenticationPrompt,
+  });
+  return true;
 }
 
 export async function getPrivateKeyMFA(
