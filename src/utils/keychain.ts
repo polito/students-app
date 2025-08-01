@@ -38,39 +38,55 @@ export async function setCredentials(
   ));
 }
 
+export class AuthenticatorPrivKey {
+  constructor(
+    public readonly serial: string,
+    public readonly privateKeyB64: string,
+    public readonly type: 'secp256k1' = 'secp256k1',
+  ) {}
+
+  serialize(): string {
+    return JSON.stringify({
+      serial: this.serial,
+      privateKeyB64: this.privateKeyB64,
+      type: this.type,
+    });
+  }
+
+  static fromJSON(json: string): AuthenticatorPrivKey {
+    const data = JSON.parse(json) as AuthenticatorPrivKey;
+    return new AuthenticatorPrivKey(data.serial, data.privateKeyB64, data.type);
+  }
+}
+
 export async function savePrivateKeyMFA(
   serial: string,
   privateKeyB64: string,
+  authenticationPrompt: Keychain.AuthenticationPrompt,
 ): Promise<boolean> {
   try {
-    const privateKey = {
-      serial: serial,
-      privateKeyB64: privateKeyB64,
-      type: 'secp256k1',
-    };
+    const privateKey = new AuthenticatorPrivKey(serial, privateKeyB64);
 
-    await Keychain.setGenericPassword('mfa-key', JSON.stringify(privateKey), {
+    await Keychain.setGenericPassword('mfa-key', privateKey.serialize(), {
       service: MFA_SERVICE,
       accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
-      accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED,
-      authenticationPrompt: {
-        title: 'Autenticazione richiesta per salvare la chiave MFA',
-      },
+      accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+      authenticationPrompt,
     });
     return true;
   } catch (error) {
-    console.error('Errore salvataggio chiave MFA:', error);
+    console.error('Error while saving MFA private key', error);
     return false;
   }
 }
 
-export async function getPrivateKeyMFA(): Promise<string | null> {
+export async function getPrivateKeyMFA(
+  authenticationPrompt: Keychain.AuthenticationPrompt,
+): Promise<string | null> {
   try {
     const credentials = await Keychain.getGenericPassword({
       service: MFA_SERVICE,
-      authenticationPrompt: {
-        title: 'Autenticati per accedere alla chiave MFA',
-      },
+      authenticationPrompt,
     });
 
     if (credentials !== false && credentials.password) {

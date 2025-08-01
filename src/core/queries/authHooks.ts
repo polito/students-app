@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
@@ -25,14 +25,17 @@ import {
   setCredentials,
 } from '../../utils/keychain.ts';
 import { pluckData } from '../../utils/queries';
+import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
+import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
 import { asyncStoragePersister } from '../providers/ApiProvider';
 import { RootParamList } from '../types/navigation.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
 export const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
+export const MFA_STATUS_QUERY_KEY = ['mfaStatus'];
 
 const useAuthClient = (): AuthApi => {
   return new AuthApi();
@@ -208,7 +211,9 @@ export const useCheckMfa = () => {
   const authClient = useAuthClient();
 
   return useQuery({
-    queryKey: ['mfaStatus'],
+    queryKey: MFA_STATUS_QUERY_KEY,
+    staleTime: Infinity,
+    gcTime: Infinity,
     queryFn: () =>
       authClient
         .getMfaStatus()
@@ -295,4 +300,33 @@ export const useMfaFetchChallenge = () => {
         queryKey: MFA_CHALLENGE_QUERY_KEY,
       }),
   };
+};
+
+export const useSSOLoginInitiator = () => {
+  const { updatePreference } = usePreferencesContext();
+
+  const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
+
+  return useCallback(
+    async (forceMfa: boolean = false) => {
+      const uid = uuid.v4();
+      updatePreference('loginUid', uid);
+
+      const urlParts = [DEFAULT_SSO_LOGIN_URL, `uid=${uid}`];
+      if (forceMfa) {
+        urlParts.push('mfa');
+      }
+
+      await sessionOpener(urlParts.join('&')).catch(console.error);
+    },
+    [sessionOpener, updatePreference],
+  );
+};
+
+export const useVisitChpass = () => {
+  const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
+
+  return useCallback(async () => {
+    await sessionOpener(DEFAULT_CHPASS_URL).catch(console.error);
+  }, [sessionOpener]);
 };

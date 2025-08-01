@@ -6,7 +6,7 @@ import { sha256 } from '@noble/hashes/sha2';
 import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
 import base32Encode from 'base32-encode';
 
-export const keyGenerator = () => {
+export const generateSecp256k1KeyPair = () => {
   const pemOUT = (key: any) => Buffer.from(key.toBER(false)).toString('base64');
 
   const privKey = secp256k1.utils.randomSecretKey();
