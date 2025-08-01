@@ -1,8 +1,13 @@
 import { useTranslation } from 'react-i18next';
 
-import { OfferingCourseStaff } from '@polito/api-client/models';
+import {
+  FetchChallenge200ResponseData,
+  OfferingCourseStaff,
+} from '@polito/api-client/models';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { PolitoAuthenticatorScreen } from '~/features/user/screens/PolitoAuthenticatorScreen';
 
 import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../core/components/HeaderLogo';
@@ -33,6 +38,10 @@ export interface SharedScreensParamList extends ParamListBase {
     uri: string;
     width: number;
     height: number;
+  };
+  PolitoAuthenticator: {
+    activeView: 'enroll' | 'auth';
+    challenge?: FetchChallenge200ResponseData;
   };
 }
 const Stack = createNativeStackNavigator<SharedScreensParamList>();
@@ -91,6 +100,16 @@ export const SharedScreens = () => {
           presentation: 'modal',
           headerLeft: () => <HeaderLogo />,
           headerRight: () => <HeaderCloseButton />,
+        }}
+      />
+      <Stack.Screen
+        name="PolitoAuthenticator"
+        component={PolitoAuthenticatorScreen}
+        options={{
+          headerTitle: t('mfaScreen.headerTitle'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: () => <HeaderLogo />,
         }}
       />
       <Stack.Screen

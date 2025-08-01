@@ -3,6 +3,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Mapbox from '@rnmapbox/maps';
 import * as Sentry from '@sentry/react-native';
 
+import { Buffer } from 'buffer';
+
 import { AppContent } from './core/components/AppContent';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';
@@ -12,6 +14,8 @@ import { SplashProvider } from './core/providers/SplashProvider';
 import { UiProvider } from './core/providers/UiProvider';
 import { initSentry } from './utils/sentry';
 import { extendSuperJSON } from './utils/superjson';
+
+global.Buffer = Buffer;
 
 initSentry();
 extendSuperJSON();
