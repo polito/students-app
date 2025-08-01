@@ -1681,7 +1681,7 @@ PODS:
     - Yoga
   - react-native-netinfo (11.4.1):
     - React-Core
-  - react-native-override-color-scheme (1.0.3):
+  - react-native-override-color-scheme (2.0.0):
     - React-Core
   - react-native-pager-view (6.8.1):
     - DoubleConversion
@@ -1786,7 +1786,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-video (6.16.0):
+  - react-native-video (6.16.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1801,7 +1801,7 @@ PODS:
     - React-hermes
     - React-ImageManager
     - React-jsi
-    - react-native-video/Video (= 6.16.0)
+    - react-native-video/Video (= 6.16.1)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1811,7 +1811,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-video/Fabric (6.16.0):
+  - react-native-video/Fabric (6.16.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1835,7 +1835,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-video/Video (6.16.0):
+  - react-native-video/Video (6.16.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3103,12 +3103,12 @@ SPEC CHECKSUMS:
   react-native-html-to-pdf: 7a49e6c58ac5221bcc093027b195f4b214f27a9d
   react-native-menu: be9bce4eb201a4d13734744763d36d56e6df8b4a
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
-  react-native-override-color-scheme: ffee175f44cafe12c6264aed171e6039b7c64bfe
+  react-native-override-color-scheme: 53dc74663e03040074efbfb81cfb35b97d9bbaa5
   react-native-pager-view: 919534782a0489f7e2aeeb9a8b8959edfd3f067a
   react-native-pdf-light: bf37b7f2ed2ac57493bbda9a85ed43d195866d2d
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: 091add53da15b67c76b176724725581b29a1cde3
-  react-native-video: 2c776b85ade8405853b34453a608044b679d69f0
+  react-native-video: 8b867791128487bf82c9b6070ceddd2697bfabec
   React-NativeModulesApple: 1ecb83880dd11baf2228f8dd89d8419c387e03ad
   React-oscompat: 0592889a9fcf0eacb205532028e4a364e22907dd
   React-perflogger: c584fa50e422a46f37404d083fad12eb289d5de4
