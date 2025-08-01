@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
+import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 import { stat } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
 
@@ -14,12 +15,10 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
-import { MenuView } from '@react-native-menu/menu';
-import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 import { useNavigation } from '@react-navigation/native';
 
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
-import { IS_IOS } from '../../../core/constants';
+import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
@@ -42,41 +41,36 @@ export interface Props extends Partial<ListItemProps> {
   onSwipeEnd?: () => void;
 }
 
-interface MenuProps extends Partial<MenuComponentProps> {
+interface MenuProps extends Partial<ContextMenuProps> {
   onRefreshDownload: () => void;
   onRemoveDownload: () => void;
 }
 
-const Menu = ({
-  shouldOpenOnLongPress = false,
-  children,
-  onRefreshDownload,
-  onRemoveDownload,
-}: MenuProps) => {
+const Menu = ({ children, onRefreshDownload, onRemoveDownload }: MenuProps) => {
   const { t } = useTranslation();
+  const { dark, colors } = useTheme();
+
   return (
-    <MenuView
-      shouldOpenOnLongPress={shouldOpenOnLongPress}
+    <ContextMenu
+      dropdownMenuMode={IS_ANDROID}
       title={t('common.file')}
       actions={[
         {
-          id: 'refresh',
           title: t('common.refresh'),
+          titleColor: dark ? colors.white : colors.black,
         },
         {
-          id: 'delete',
           title: t('common.delete'),
-          attributes: {
-            destructive: true,
-          },
+          titleColor: dark ? colors.white : colors.black,
+          destructive: true,
         },
       ]}
-      onPressAction={({ nativeEvent }) => {
-        switch (nativeEvent.event) {
-          case 'refresh':
+      onPress={({ nativeEvent: { index } }) => {
+        switch (index) {
+          case 0:
             onRefreshDownload();
             break;
-          case 'delete':
+          case 1:
             onRemoveDownload();
             break;
           default:
@@ -84,7 +78,7 @@ const Menu = ({
       }}
     >
       {children}
-    </MenuView>
+    </ContextMenu>
   );
 };
 
@@ -300,7 +294,6 @@ export const CourseFileListItem = memo(
     if (IS_IOS) {
       return (
         <Menu
-          shouldOpenOnLongPress
           onRefreshDownload={refreshDownload}
           onRemoveDownload={removeDownload}
         >

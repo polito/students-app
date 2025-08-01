@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -11,7 +12,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { PersonOverview } from '@polito/api-client/models';
-import { MenuView } from '@react-native-menu/menu';
 
 import { IS_ANDROID } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -19,32 +19,27 @@ import { PersonOverviewListItem } from './PersonOverviewListItem';
 
 type MenuProps = PropsWithChildren<{
   person: PersonOverview;
-  shouldOpenOnLongPress?: boolean;
 }>;
 
-export const Menu = ({
-  person,
-  shouldOpenOnLongPress,
-  children,
-}: MenuProps) => {
+export const Menu = ({ person, children }: MenuProps) => {
   const { t } = useTranslation();
   const { palettes } = useTheme();
   const { peopleSearched, updatePreference } = usePreferencesContext();
 
   return (
-    <MenuView
-      shouldOpenOnLongPress={shouldOpenOnLongPress}
+    <ContextMenu
+      dropdownMenuMode={IS_ANDROID}
       title={t('contactsScreen.recentSearch')}
       actions={[
         {
           title: t('contactsScreen.cancelRecentSearch'),
           subtitle: t('contactsScreen.cancelRecentSearchText'),
-          image: 'trash',
+          systemIcon: 'trash',
           titleColor: palettes.error['500'],
-          imageColor: palettes.error['500'],
+          destructive: true,
         },
       ]}
-      onPressAction={() => {
+      onPress={() => {
         const newPeopleSearched = peopleSearched.filter(
           p => p.id !== person.id,
         );
@@ -52,7 +47,7 @@ export const Menu = ({
       }}
     >
       {children}
-    </MenuView>
+    </ContextMenu>
   );
 };
 
@@ -116,7 +111,7 @@ export const RecentSearch = () => {
           />
         ) : (
           <View key={person.id} accessible={true} accessibilityRole="button">
-            <Menu person={person} shouldOpenOnLongPress={true}>
+            <Menu person={person}>
               <PersonOverviewListItem
                 totalData={peopleSearched.length}
                 index={index}

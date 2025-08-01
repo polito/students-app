@@ -28,15 +28,13 @@ interface Props {
 
 const Menu = ({
   course,
-  shouldOpenOnLongPress,
   children,
 }: PropsWithChildren<{
   course: CourseOverview;
-  shouldOpenOnLongPress?: boolean;
 }>) => {
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
-  const { dark } = useTheme();
+  const { dark, colors } = useTheme();
 
   const isHidden =
     preferences.courses[course.uniqueShortcode]?.isHidden ?? false;
@@ -60,11 +58,10 @@ const Menu = ({
           title: isHidden ? t('common.follow') : t('common.stopFollowing'),
           subtitle: t('coursePreferencesScreen.showInExtractsSubtitle'),
           systemIcon: isHidden ? 'eye' : 'eye.slash',
-          titleColor: dark ? 'white' : 'black',
+          titleColor: dark ? colors.white : colors.black,
         },
       ]}
       onPress={handleMenuAction}
-      onPreviewPress={shouldOpenOnLongPress ? handleMenuAction : undefined}
     >
       {children}
     </ContextMenu>
@@ -173,9 +170,7 @@ export const CourseListItem = ({
         accessibilityRole="button"
         accessibilityLabel={`${accessibilityLabel} ${course.name},  ${course.cfu}`}
       >
-        <Menu course={course} shouldOpenOnLongPress={true}>
-          {listItem}
-        </Menu>
+        <Menu course={course}>{listItem}</Menu>
       </View>
     );
   }

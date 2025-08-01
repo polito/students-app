@@ -1,13 +1,15 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Platform, TouchableHighlightProps } from 'react-native';
+import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseAssignment } from '@polito/api-client';
-import { MenuView } from '@react-native-menu/menu';
+
+import { IS_ANDROID } from '~/core/constants';
 
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize } from '../../../utils/files';
@@ -17,27 +19,23 @@ interface Props {
   accessibilityListLabel?: string;
 }
 
-const Menu = ({
-  shouldOpenOnLongPress = false,
-  children,
-}: PropsWithChildren<{ shouldOpenOnLongPress?: boolean }>) => {
+const Menu = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
+  const { dark, colors } = useTheme();
 
   return (
-    <MenuView
-      shouldOpenOnLongPress={shouldOpenOnLongPress}
+    <ContextMenu
+      dropdownMenuMode={IS_ANDROID}
       actions={[
         {
-          id: 'retract',
           title: t('common.retract'),
-          attributes: {
-            destructive: true,
-          },
+          titleColor: dark ? colors.white : colors.black,
+          destructive: true,
         },
       ]}
-      onPressAction={({ nativeEvent }) => {
-        switch (nativeEvent.event) {
-          case 'retract':
+      onPress={({ nativeEvent: { index } }) => {
+        switch (index) {
+          case 0:
             // TODO retract assignment
             break;
           default:
@@ -45,7 +43,7 @@ const Menu = ({
       }}
     >
       {children}
-    </MenuView>
+    </ContextMenu>
   );
 };
 
@@ -109,7 +107,7 @@ export const CourseAssignmentListItem = ({
   );
 
   if (Platform.OS === 'ios') {
-    return <Menu shouldOpenOnLongPress={true}>{listItem}</Menu>;
+    return <Menu>{listItem}</Menu>;
   }
   return listItem;
 };
