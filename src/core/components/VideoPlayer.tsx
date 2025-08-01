@@ -1,25 +1,27 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import Video from 'react-native-video';
+import Video, { ReactVideoProps } from 'react-native-video';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VideoProps } from './VideoPlayer';
+import { IS_IOS } from '../constants';
+
+type VideoProps = {
+  toggleFullScreen?: (value: boolean) => void;
+  currentIndex?: number;
+  index?: number;
+} & ReactVideoProps;
 
 /**
- * Wraps react-native-video with custom controls for Android
+ * Wraps react-native-video with support to multiple videos
  *
- * In order for fullscreen to work correctly, this component's parent should
- * be able to grow (i.e. with flex: 1)
  */
-export const VideoPlayer = (props: VideoProps) => {
+export const VideoPlayer = ({ currentIndex, index, ...props }: VideoProps) => {
   const { width } = useWindowDimensions();
   const { addListener } = useNavigation();
   // If there is a single video paused is initialized to false
-  const [paused, setPaused] = useState(props.currentIndex !== props.index);
+  const [paused, setPaused] = useState(currentIndex !== index);
   const [isPiP, setIsPiP] = useState(false);
-
-  const { index, currentIndex } = props;
 
   useEffect(() => {
     setPaused(currentIndex !== index);
@@ -46,9 +48,9 @@ export const VideoPlayer = (props: VideoProps) => {
   return (
     <Video
       onPictureInPictureStatusChanged={onPictureInPictureStatusChanged}
-      playInBackground={index === currentIndex}
+      playInBackground={IS_IOS && index === currentIndex}
       ignoreSilentSwitch="ignore"
-      enterPictureInPictureOnLeave={index === currentIndex}
+      enterPictureInPictureOnLeave={IS_IOS && index === currentIndex}
       paused={paused}
       controls={true}
       style={{
