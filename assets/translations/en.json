@@ -156,6 +156,7 @@
     "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
+    "enabled": "Enabled",
     "enableLocationPermissionFeedback": "Enable location permission to complete the operation",
     "enableLocationServiceFeedback": "Enable location service to complete the operation",
     "endRefresh": "Refresh completed",
@@ -796,7 +797,9 @@
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "openLanguageMenu": "Tap twice to open the language selection menu",
     "openThemeMenu": "Tap twice to open the theme selection menu",
-    "title": "Settings"
+    "title": "Settings",
+    "securityTitle":"Security",
+    "authenticatorTitle":"PoliTO Authenticator"
   },
   "surveysScreen": {
     "compiledEmptyState": "There are no compiled surveys",

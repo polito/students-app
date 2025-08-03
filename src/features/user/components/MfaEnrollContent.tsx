@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
+import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
 import { ApiError } from '~/utils/queries';
 
 import {
@@ -24,6 +25,7 @@ export const MfaEnrollScreen = () => {
   const { mutateAsync: enrolMfa, isPending } = useMfaEnrol();
   const queryClient = useQueryClient();
   const handleSSO = useSSOLoginInitiator();
+  const { setFeedback } = useFeedbackContext();
 
   const { publicKey, privateKey } = generateSecp256k1KeyPair();
 
@@ -56,6 +58,10 @@ export const MfaEnrollScreen = () => {
       Alert.alert(t('common.error'), t('mfaScreen.enroll.failure'));
     }
     navigation.goBack();
+    setFeedback({
+      text: t('mfaScreen.enrolSuccess'),
+      isPersistent: false,
+    });
   };
 
   return (

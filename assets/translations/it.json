@@ -163,6 +163,7 @@
     "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
+    "enabled": "Abilitato",
     "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
     "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
     "endRefresh": "Caricamento terminato",
@@ -815,7 +816,9 @@
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
-    "title": "Impostazioni"
+    "title": "Impostazioni",
+    "securityTitle":"Sicurezza",
+    "authenticatorTitle":"PoliTO Authenticator"
   },
   "surveysScreen": {
     "compiledEmptyState": "Non ci sono questionari compilati",

@@ -17,8 +17,11 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
   faFont,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -30,6 +33,10 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { useNavigation } from '@react-navigation/core';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useCheckMfa } from '~/core/queries/authHooks';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
@@ -47,6 +54,7 @@ import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
+import { UserStackParamList } from '../components/UserNavigator';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
@@ -300,7 +308,10 @@ const Notifications = () => {
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-
+  const { data: mfaStatus } = useCheckMfa();
+  const { palettes } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -324,6 +335,43 @@ export const SettingsScreen = () => {
             />
             <Notifications />
           </Section>*/}
+          <Section>
+            <SectionHeader title={t('settingsScreen.securityTitle')} />
+            <OverviewList indented>
+              <ListItem
+                title={t('settingsScreen.authenticatorTitle')}
+                subtitle=""
+                // value={mfaEnabled ?? false}
+                // onChange={value => {
+                //   updatePreference('mfaEnabled', value);
+                // }}
+                leadingItem={<Icon icon={faLock} size={20} />}
+                trailingItem={
+                  mfaStatus?.status !== 'active' ? (
+                    <CtaButton
+                      title="Enable"
+                      absolute={false}
+                      action={() =>
+                        navigation.navigate('ProfileTab', {
+                          screen: 'PolitoAuthenticator',
+                          params: {
+                            activeView: 'enroll',
+                          },
+                        })
+                      }
+                    ></CtaButton>
+                  ) : (
+                    <Badge
+                      icon={faLock}
+                      backgroundColor={palettes.success[500]}
+                      foregroundColor={palettes.success[100]}
+                      text={t('common.enabled')}
+                    />
+                  )
+                }
+              />
+            </OverviewList>
+          </Section>
           <Section>
             <SectionHeader title={t('common.cache')} />
             <OverviewList indented>
