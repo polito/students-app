@@ -35,7 +35,7 @@ import { CardSwiper } from '../../../core/components/CardSwiper';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import {
   useLogout,
-  useMfaFetchChallenge,
+  useMfaChallengeHandler,
   useSwitchCareer,
 } from '../../../core/queries/authHooks';
 import {
@@ -130,7 +130,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const student = studentQuery.data;
   const queryClient = useQueryClient();
   const messages = useGetMessages();
-  const { refresh: refreshChallenge } = useMfaFetchChallenge();
+  const mfaChallengeQuery = useMfaChallengeHandler();
 
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
@@ -157,11 +157,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
-        <RefreshControl
-          manual
-          onRefresh={refreshChallenge}
-          queries={[studentQuery]}
-        />
+        <RefreshControl manual queries={[studentQuery, mfaChallengeQuery]} />
       }
     >
       <SafeAreaView>

@@ -294,9 +294,9 @@
     "visualization": "Visualizzazione",
     "year": "anno",
     "yesterday": "Ieri",
-    "fromTime" : "dalle",
-    "toTime" : "alle",
-    "document" : "Allegato",
+    "fromTime": "dalle",
+    "toTime": "alle",
+    "document": "Allegato",
     "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
@@ -491,11 +491,11 @@
       "fourth": "Accesso a sconti e promozioni riservati agli studenti di vari Paesi europei."
     },
     "cardRequest": {
-      "firstSectionNormalText":"Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
-      "sectionBoldText":"autorizzazione a trasmettere i seguenti dati",
-      "secondSectionNormalText":"all'autorità competente dell'UE:",
-      "firstName" : "Nome",
-      "lastName" : "Cognome",
+      "firstSectionNormalText": "Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
+      "sectionBoldText": "autorizzazione a trasmettere i seguenti dati",
+      "secondSectionNormalText": "all'autorità competente dell'UE:",
+      "firstName": "Nome",
+      "lastName": "Cognome",
       "id": "Matricola",
       "mail": "Mail istituzionale",
       "studyProgram": "Programma di studio"
@@ -507,7 +507,7 @@
     "revoke": "Revoca autorizzazione",
     "revokeConfirm": "Revocando l’autorizzazione a conservare i tuoi dati all’ESC-Router disattiverai questa card e quelle legate a tue eventuali carriere",
     "text": "Per ottenere la tua European Student Card (ESC), hai autorizzato la trasmissione dei tuoi dati tramite ESC_router. Puoi revocare questa autorizzazione in qualsiasi momento.",
-    "title":"Dati ESC"
+    "title": "Dati ESC"
   },
   "europeanCardScreen": {
     "title": "THE EUROPEAN STUDENT CARD",
@@ -554,8 +554,8 @@
     "notes": "Note",
     "title": "Appello",
     "noBookedCount": "Dato non disponibile",
-    "requestReasonTitle":"Motivazioni della richiesta",
-    "requestDetailsTitle":"Dettagli della richiesta"
+    "requestReasonTitle": "Motivazioni della richiesta",
+    "requestDetailsTitle": "Dettagli della richiesta"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -612,7 +612,7 @@
     "title": "Biblioteca"
   },
   "loginScreen": {
-    "onboarding" : "Onboarding",
+    "onboarding": "Onboarding",
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
@@ -662,13 +662,15 @@
       "saveFailure": "Attenzione. Non è stato possibile salvare la chiave di autenticazione su questo dispositivo. È necassario rimuovere il metodo appena aggiunto visitando idp.polito.it > Gestione MFA e riprovare.",
       "cancel": "Non ora",
       "expired": "Sessione scaduta. È necessario riautenticarsi.",
-      "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo."
+      "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo.",
+      "devicePrompt": "Il nome sottostante verrà utilizzato per <b>identificare questo dispositivo</b> tra i tuoi fattori di autenticazione. <b>Puoi cambiarlo</b> se vuoi renderlo più riconoscibile.",
+      "deviceName": "Nome dispositivo"
     },
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
       "note": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da idp.polito.it",
-      "allow":"Si, autorizza",
-      "denyAccess":"Nega accesso",
+      "allow": "Si, autorizza",
+      "denyAccess": "Nega accesso",
       "expiration": "Tempo rimanente per autorizzare: {{time}}"
     }
   },
@@ -818,8 +820,8 @@
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni",
-    "securityTitle":"Sicurezza",
-    "authenticatorTitle":"PoliTO Authenticator"
+    "securityTitle": "Sicurezza",
+    "authenticatorTitle": "PoliTO Authenticator"
   },
   "surveysScreen": {
     "compiledEmptyState": "Non ci sono questionari compilati",
@@ -860,7 +862,7 @@
     "incomingMessage": "la tua risposta",
     "outgoingMessage": "Risposta da operatore numero",
     "yourQuestion": "La tua domanda",
-    "send" : "Invia",
+    "send": "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
@@ -911,15 +913,15 @@
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
     "averageLabel": "Media di ammissione all’esame di laurea",
-    "finalAverageLabelDescription":{
-      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
+    "finalAverageLabelDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
       "formula": "(somma (voto * crediti) / somma crediti) * (110/30),\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
     },
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
-    "masterAdmissionAverageLabelDescription":{
-      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
-      "formula":"somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
+    "masterAdmissionAverageLabelDescription": {
+      "description": "È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
+      "formula": "somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
@@ -928,13 +930,13 @@
     "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
-    "weightedAverageLabelDescription":{
-      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
+    "weightedAverageLabelDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
       "formula": "(somma (voto * crediti) / somma crediti) * (110/30)"
     },
     "weightedAverage": "Media pesata dei voti",
-    "weightedAverageDescription":{
-      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
+    "weightedAverageDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
       "formula": "somma (voto * crediti) / somma crediti"
     },
     "yourCareer": "La tua carriera"

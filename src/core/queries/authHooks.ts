@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
@@ -24,7 +24,7 @@ import {
   resetCredentials,
   setCredentials,
 } from '../../utils/keychain.ts';
-import { pluckData, rethrowApiError } from '../../utils/queries';
+import { ApiError, pluckData, rethrowApiError } from '../../utils/queries';
 import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -261,42 +261,39 @@ export const useMfaAuth = () => {
   });
 };
 
-export const useMfaFetchChallenge = () => {
+export const useMfaChallengeHandler = () => {
   const authClient = useAuthClient();
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
-  const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  return useQuery({
     queryKey: MFA_CHALLENGE_QUERY_KEY,
+    enabled: false,
+    refetchOnWindowFocus: false,
     queryFn: () =>
       authClient
         .fetchChallenge()
         .then(pluckData)
-        .then(res => {
-          if (!res) throw new Error('MFA verification failed');
-          return res;
+        .then(data => {
+          if (data?.challenge) {
+            navigation.navigate('ProfileTab', {
+              screen: 'PolitoAuthenticator',
+              params: {
+                activeView: 'auth',
+                challenge: data,
+              },
+            });
+          }
+          return data;
+        })
+        .catch(rethrowApiError)
+        .catch(e => {
+          if (e instanceof ApiError && e.responseCode === 404) {
+            return {};
+          }
+          throw e;
         }),
   });
-
-  useEffect(() => {
-    if (data?.challenge !== undefined) {
-      navigation.navigate('ProfileTab', {
-        screen: 'PolitoAuthenticator',
-        params: {
-          activeView: 'auth',
-          challenge: data,
-        },
-      });
-    }
-  }, [data, navigation]);
-
-  return {
-    refresh: () =>
-      queryClient.invalidateQueries({
-        queryKey: MFA_CHALLENGE_QUERY_KEY,
-      }),
-  };
 };
 
 export const useSSOLoginInitiator = () => {

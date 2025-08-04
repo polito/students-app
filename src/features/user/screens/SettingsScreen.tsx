@@ -350,6 +350,7 @@ export const SettingsScreen = () => {
                   mfaStatus?.status !== 'active' ? (
                     <CtaButton
                       title="Enable"
+                      style={{ elevation: 0 }}
                       absolute={false}
                       action={() =>
                         navigation.navigate('ProfileTab', {
