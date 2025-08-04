@@ -46,6 +46,10 @@ export const MfaEnrollScreen = () => {
         title: t('mfaScreen.biometricPrompt'),
       });
       queryClient.invalidateQueries({ queryKey: MFA_STATUS_QUERY_KEY });
+      setFeedback({
+        text: t('mfaScreen.enroll.Success'),
+        isPersistent: false,
+      });
     } catch (e) {
       if (e instanceof ApiError) {
         if (e.error === 'secureSessionExpired') {
@@ -58,10 +62,6 @@ export const MfaEnrollScreen = () => {
       Alert.alert(t('common.error'), t('mfaScreen.enroll.failure'));
     }
     navigation.goBack();
-    setFeedback({
-      text: t('mfaScreen.enrolSuccess'),
-      isPersistent: false,
-    });
   };
 
   return (

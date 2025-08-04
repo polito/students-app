@@ -661,7 +661,8 @@
       "confirm": "Si, attiva",
       "saveFailure": "Attenzione. Non è stato possibile salvare la chiave di autenticazione su questo dispositivo. È necassario rimuovere il metodo appena aggiunto visitando idp.polito.it > Gestione MFA e riprovare.",
       "cancel": "Non ora",
-      "expired": "Sessione scaduta. È necessario riautenticarsi."
+      "expired": "Sessione scaduta. È necessario riautenticarsi.",
+      "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo."
     },
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",

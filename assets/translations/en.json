@@ -644,7 +644,8 @@
       "confirm": "Yes, proceed",
       "saveFailure": "Warning. The authentication key could not be saved on your device. Please visit idp.polito.it > MFA Management to remove the newly created authentication factor.",
       "cancel": "Not now",
-      "expired": "The session has expired, please log in again to continue"
+      "expired": "The session has expired, please log in again to continue",
+      "Success": "Polito Authenticator has been successfully activated on this device"
     },
     "auth": {
       "prompt": "New login request with multi-factor authentication. Do you want to proceed?",
