@@ -226,7 +226,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                       screen: 'CourseStatistics',
                       params: {
                         courseShortcode: offeringCourse.shortcode,
-                        filter: CourseStatisticsFilterType.TEACHER,
+                        filter: CourseStatisticsFilterType.DEFAULT,
                         nameCourse: offeringCourse.name,
                       },
                     }}

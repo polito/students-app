@@ -91,15 +91,19 @@ export const CourseStatisticsFilters = ({
               }}
               actions={teachers}
             >
-              <Row>
+              <Row style={{ alignItems: 'center' }}>
                 <Text
-                  style={styles.dropdownText}
+                  style={[styles.dropdownText, { flexShrink: 1 }]}
                   accessibilityLabel={currentTeacher?.title ?? '--'}
                   weight="semibold"
+                  numberOfLines={1}
                 >
                   {currentTeacher?.title ?? '--'}
                 </Text>
-                <Icon icon={faChevronDown} style={styles.chevronStyle} />
+                <Icon
+                  icon={faChevronDown}
+                  style={[styles.chevronStyle, { flexShrink: 0 }]}
+                />
               </Row>
             </StatefulMenuView>
           ) : (
@@ -108,6 +112,7 @@ export const CourseStatisticsFilters = ({
                 style={styles.dropdownText}
                 accessibilityLabel={currentTeacher?.title ?? '--'}
                 weight="semibold"
+                numberOfLines={1}
               >
                 {currentTeacher?.title ?? '--'}
               </Text>
@@ -130,7 +135,7 @@ const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
     },
     dropdownText: {
       color: colors.heading,
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.sm,
     },
     chevronStyle: {
       marginLeft: 10,

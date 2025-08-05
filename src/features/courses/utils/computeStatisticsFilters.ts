@@ -8,7 +8,7 @@ const teachersToMenuAction = (
   teachers.map(t => {
     return {
       id: String(t.id),
-      title: `${t.lastName}`,
+      title: `${t.lastName || ''} ${t.firstName || ''}`.trim(),
       state: currentTeacherId === t.id.toString() ? 'on' : 'off',
     };
   });
