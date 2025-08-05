@@ -130,7 +130,7 @@ export const CourseGradesChart = ({
       return '';
     }
 
-    const barWidth = (percentage / maxPercentage) * (maxBarWidth - 10); // (-10)for the percentage
+    const barWidth = (percentage / maxPercentage) * (maxBarWidth - 15); // (-15)for the percentage
 
     if (isNaN(barWidth) || barWidth <= 0) {
       return '';
@@ -175,7 +175,7 @@ export const CourseGradesChart = ({
   };
 
   const getPositionPercentage = (percentage: number, isLeft: boolean) => {
-    const barWidth = (percentage / maxPercentage) * (maxBarWidth - 10);
+    const barWidth = (percentage / maxPercentage) * (maxBarWidth - 14);
     return isLeft
       ? centerX - barWidth - centralGap / 2
       : centerX + barWidth + centralGap / 2;
