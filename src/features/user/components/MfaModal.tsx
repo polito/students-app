@@ -23,24 +23,17 @@ export const MfaModal = ({
   return (
     <ModalContent close={onDismiss} title={title}>
       <View style={styles.content} accessible>
-        <Text style={styles.headerTitle}>
-          {t('common.enroll.serial') + ' : ' + details.serial}
-        </Text>
-        <Text style={styles.headerTitle}>
-          {t('common.enroll.device') + ' : ' + details.description}
-        </Text>
-        <Text style={styles.headerTitle}>
-          <RTFTrans
-            i18nKey="mfaScreen.description"
-            style={styles.headerTitle}
-          />
+        <Text>{t('common.enroll.serial') + ' : ' + details.serial}</Text>
+        <Text>{t('common.enroll.device') + ' : ' + details.description}</Text>
+        <Text>
+          <RTFTrans i18nKey="mfaScreen.description" />
         </Text>
       </View>
     </ModalContent>
   );
 };
 
-const createStyles = ({ dark, fontSizes, colors, spacing }: Theme) =>
+const createStyles = ({ dark, colors, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       backgroundColor: colors.surface,
@@ -50,9 +43,6 @@ const createStyles = ({ dark, fontSizes, colors, spacing }: Theme) =>
       alignItems: 'center',
       backgroundColor: dark ? colors.surfaceDark : colors.background,
       paddingVertical: spacing[2],
-    },
-    headerTitle: {
-      fontSize: fontSizes.lg,
     },
     content: {
       padding: spacing[7],
