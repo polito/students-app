@@ -36,10 +36,11 @@ import { Theme } from '@lib/ui/types/Theme';
 import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
+import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled.ts';
+import { useGetOfferingCourse } from '~/core/queries/offeringHooks.ts';
+import { GlobalStyles } from '~/core/styles/GlobalStyles.ts';
+
 import { CourseStatisticsFilterType } from '../../courses/components/CourseStatisticsFilters.tsx';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { StaffListItem } from '../components/StaffListItem';

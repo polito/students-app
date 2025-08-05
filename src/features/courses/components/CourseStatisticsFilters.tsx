@@ -11,7 +11,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { GlobalStyles } from '~/core/styles/GlobalStyles.ts';
+
 import { StatisticsFilters } from '../utils/computeStatisticsFilters';
 
 export enum CourseStatisticsFilterType {
