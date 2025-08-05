@@ -100,20 +100,17 @@ export const useGetCourseStatistics = ({
 }: GetCourseStatisticsRequest) => {
   const offeringClient = useOfferingClient();
 
-  return useQuery<CourseStatistics>(
-    compact([
+  return useQuery<CourseStatistics>({
+    queryKey: compact([
       DEGREES_QUERY_PREFIX,
       COURSES_QUERY_PREFIX,
       courseShortcode,
       year,
       teacherId,
     ]),
-    () =>
+    queryFn: () =>
       offeringClient
         .getCourseStatistics({ courseShortcode, teacherId, year })
         .then(pluckData),
-    {
-      cacheTime: 0,
-    },
-  );
+  });
 };

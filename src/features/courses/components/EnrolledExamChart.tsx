@@ -10,7 +10,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import type { Theme } from '@lib/ui/types/Theme.ts';
 import type { CourseStatistics } from '@polito/api-client';
 
-import { useFeedbackContext } from '../../../core/contexts/FeedbackContext.ts';
+import { useFeedbackContext } from '~/core/contexts/FeedbackContext.ts';
+
 import { emptyChartData, kChartAnimationDuration } from '../chartConstant.ts';
 import { LegendItem } from './LegendItem.tsx';
 import { NoChartDataContainer } from './NoChartDataContainer.tsx';
