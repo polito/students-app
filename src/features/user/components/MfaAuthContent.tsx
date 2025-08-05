@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Text, View } from 'react-native';
 
@@ -9,8 +9,11 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useMfaAuth } from '../../../core/queries/authHooks';
-import { authSign } from '../../../utils/crypto';
-import { getPrivateKeyMFA } from '../../../utils/keychain';
+import { signSecp256k1 } from '../../../utils/crypto';
+import {
+  AuthenticatorPrivKey,
+  getPrivateKeyMFA,
+} from '../../../utils/keychain';
 import { createStyles } from './MfaEnrollContent';
 
 type RootStackParamList = {
@@ -26,9 +29,10 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     ? new Date(challenge.expirationTs).getTime()
     : 0;
 
-  const calcSeconds = useCallback(() => {
-    return Math.max(Math.ceil((expiryMs - Date.now()) / 1000), 0);
-  }, [expiryMs]);
+  const calcSeconds = useCallback(
+    () => Math.max(Math.ceil((expiryMs - Date.now()) / 1000), 0),
+    [expiryMs],
+  );
 
   const [remainingSeconds, setRemainingSeconds] = useState(calcSeconds);
 
@@ -45,48 +49,69 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     };
   }, [expiryMs, calcSeconds]);
 
-  const formattedTime = `${Math.floor(remainingSeconds / 60)}:${(
-    remainingSeconds % 60
-  )
-    .toString()
-    .padStart(2, '0')}`;
+  const formattedTime = useMemo(() => {
+    const mis = Math.floor(remainingSeconds / 60);
+    const secs = (remainingSeconds % 60).toString().padStart(2, '0');
+    return `${mis}:${secs}`;
+  }, [remainingSeconds]);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const styles = useStylesheet(createStyles);
   const { mutate: verifyMfa, isPending } = useMfaAuth();
 
+  const [authPk, setAuthPk] = useState<AuthenticatorPrivKey | null | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    if (authPk) return;
+    if (authPk === null) {
+      navigation.goBack();
+    }
+
+    const fetchPrivateKey = async () => {
+      try {
+        const secret = await getPrivateKeyMFA({
+          title: t('mfaScreen.biometricPrompt'),
+        });
+        if (secret) {
+          setAuthPk(AuthenticatorPrivKey.fromJSON(secret));
+        } else {
+          setAuthPk(null);
+        }
+      } catch (err) {
+        Alert.alert(t('common.error'));
+      }
+    };
+    fetchPrivateKey();
+  }, [t, navigation, authPk]);
+
   const onNo = async () => {
-    navigation.goBack();
+    if (!authPk) return;
+    const signature = signSecp256k1(nonce, authPk, true);
     verifyMfa({
-      nonce,
       decline: true,
-      serial: 'nil',
-      signature: 'nil',
+      serial: authPk.serial,
+      nonce,
+      signature,
     });
+    navigation.goBack();
   };
 
   const onYes = async () => {
+    if (!authPk) return;
     try {
-      const secret = await getPrivateKeyMFA({
-        title: t('mfaScreen.biometricPrompt'),
+      const signature = signSecp256k1(nonce, authPk);
+      verifyMfa({
+        serial: authPk.serial,
+        nonce,
+        signature,
       });
-      if (secret) {
-        const secretParsed: any = JSON.parse(secret);
-        const signature = authSign(
-          secretParsed.serial,
-          nonce,
-          secretParsed.privateKeyB64,
-        );
-        verifyMfa({
-          serial: secretParsed.serial,
-          nonce,
-          signature,
-        });
-      }
     } catch (err) {
       Alert.alert(t('common.error'));
     }
+    navigation.goBack();
   };
 
   return (

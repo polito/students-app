@@ -253,7 +253,8 @@ export const useMfaAuth = () => {
         .then(res => {
           if (!res) throw new Error('MFA verification failed');
           return res;
-        }),
+        })
+        .catch(rethrowApiError),
 
     onSuccess: async data => {
       data.success === true && navigation.goBack();

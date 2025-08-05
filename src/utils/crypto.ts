@@ -6,10 +6,14 @@ import { sha256 } from '@noble/hashes/sha2';
 import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
 import base32Encode from 'base32-encode';
 
+import { AuthenticatorPrivKey } from './keychain';
+
+export const generateSecp256k1PrivKey = () => secp256k1.utils.randomSecretKey();
+
 export const generateSecp256k1KeyPair = () => {
   const pemOUT = (key: any) => Buffer.from(key.toBER(false)).toString('base64');
 
-  const privKey = secp256k1.utils.randomSecretKey();
+  const privKey = generateSecp256k1PrivKey();
   const pubKey = secp256k1.getPublicKey(privKey);
 
   const publicKeyInfo = new Sequence({
@@ -36,18 +40,26 @@ export const generateSecp256k1KeyPair = () => {
   };
 };
 
-export function authSign(
-  serial: string,
+export function signSecp256k1(
   nonce: string,
-  privateKeyB64: string,
+  pk: AuthenticatorPrivKey,
+  decline: boolean = false,
 ): string {
-  const privKey = new Uint8Array(Buffer.from(privateKeyB64, 'base64'));
+  if (pk.type !== 'secp256k1') {
+    throw new Error(`Unsupported key type: ${pk.type}`);
+  }
+
+  const privKey = new Uint8Array(Buffer.from(pk.privateKeyB64, 'base64'));
 
   if (!secp256k1.utils.isValidSecretKey(privKey)) {
     throw new Error('Invalid private key');
   }
 
-  const message = new TextEncoder().encode(`${nonce}|${serial}`);
+  const messageParts = [nonce, pk.serial];
+  if (decline) {
+    messageParts.push('decline');
+  }
+  const message = new TextEncoder().encode(messageParts.join('|'));
   const digest = sha256(message);
 
   const der = secp256k1.sign(digest, privKey).toBytes('der');
