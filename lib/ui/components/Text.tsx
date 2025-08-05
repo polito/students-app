@@ -33,8 +33,11 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   longProse: 'normal',
   secondaryText: 'normal',
 };
-export const calculateValueOfPercentage = (fontSize: number, size: number) => {
-  return (size * fontSize) / 100;
+export const calculateValueOfPercentage = (
+  fontSize?: number,
+  size?: number,
+) => {
+  return ((size || 16) * (fontSize || 1)) / 100;
 };
 
 /**

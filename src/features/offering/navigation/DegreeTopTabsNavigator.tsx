@@ -79,7 +79,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
               style={{
                 marginTop:
                   accessibility?.fontSize &&
-                  Number(accessibility.fontSize) >= 150 &&
+                  accessibility.fontSize >= 150 &&
                   Platform.OS === 'ios'
                     ? -spacing[3]
                     : 0,

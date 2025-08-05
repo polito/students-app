@@ -52,7 +52,6 @@ export const RootNavigator = ({
   const { getUnreadsCount } = useNotifications();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
-  const [styless, setStyless] = useState();
   const [tabBarIconSize, setTabBarIconSize] = useState(20);
   useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
@@ -76,13 +75,9 @@ export const RootNavigator = ({
   }, [campus, sites?.data, student, updatePreference]);
 
   useEffect(() => {
-    if (accessibility?.fontSize && Number(accessibility.fontSize) > 125) {
-      setStyless({
-        fontSize: 0,
-      } as any);
-      setTabBarIconSize(Number(accessibility.fontSize) === 150 ? 30 : 40);
+    if (accessibility?.fontSize && accessibility.fontSize > 125) {
+      setTabBarIconSize(accessibility.fontSize === 150 ? 30 : 40);
     } else {
-      setStyless(undefined);
       setTabBarIconSize(20);
     }
   }, [accessibility?.fontSize]);
@@ -103,7 +98,7 @@ export const RootNavigator = ({
       backBehavior="history"
       screenOptions={{
         tabBarShowLabel:
-          accessibility?.fontSize && Number(accessibility.fontSize) > 125
+          accessibility?.fontSize && accessibility.fontSize > 125
             ? false
             : true,
         headerShown: false,
@@ -115,7 +110,7 @@ export const RootNavigator = ({
         tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
         tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: [styles.tabBarLabelStyle, styless],
+        tabBarLabelStyle: [styles.tabBarLabelStyle],
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}

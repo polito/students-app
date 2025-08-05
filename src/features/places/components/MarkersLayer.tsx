@@ -65,7 +65,7 @@ export const MarkersLayer = ({
     }
     if (
       accessibility?.fontSize &&
-      Number(accessibility.fontSize) >= 150 &&
+      accessibility.fontSize >= 150 &&
       selectedId
     ) {
       const selected = result.find(x => x.id === selectedId);
@@ -166,7 +166,7 @@ export const MarkersLayer = ({
           : null;
 
         const isAccessibleFont =
-          accessibility?.fontSize && Number(accessibility.fontSize) >= 150;
+          accessibility?.fontSize && accessibility.fontSize >= 150;
 
         if (selectedPoi) {
           if (isAccessibleFont) {

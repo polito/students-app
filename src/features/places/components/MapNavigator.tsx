@@ -291,7 +291,7 @@ export const MapNavigator = ({
                 onPress={() => {
                   if (
                     accessibility?.fontSize &&
-                    Number(accessibility.fontSize) >= 150
+                    accessibility.fontSize >= 150
                   ) {
                     setSelectedId('');
                   }
