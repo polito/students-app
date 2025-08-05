@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
+import { useCheckMfa } from '../queries/authHooks';
 import { useGetModalMessages } from '../queries/studentHooks';
 import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
@@ -20,9 +21,22 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
 
   const { data: messages } = useGetModalMessages();
 
+  const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
+
+  useEffect(() => {
+    if (!isSplashLoaded) return;
+    if (!mfaStatusPending && mfaStatus?.status === 'available') {
+      navigation.navigate('TeachingTab', {
+        screen: 'PolitoAuthenticator',
+        params: { activeView: 'enroll' },
+      });
+    }
+  }, [mfaStatus, mfaStatusPending, navigation, isSplashLoaded]);
+
   useEffect(() => {
     if (!isSplashLoaded) return;
     if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
+    if (mfaStatusPending || mfaStatus?.status === 'available') return;
     if (versionModalIsOpen === false) {
       navigation.navigate('TeachingTab', {
         screen: 'OnboardingModal',
