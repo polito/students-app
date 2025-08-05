@@ -372,6 +372,78 @@
   "courseGuideScreen": {
     "title": "Guida del corso"
   },
+  "courseStatisticsScreen": {
+    "title": "Statistiche",
+    "subtitle": "Accedi alle statistiche d'esame",
+    "noData": "Dati non disponibili",
+    "period": "Periodo",
+    "teacher": "Docente",
+    "enrolledExamTitle": "Superamento esame",
+    "enrolledExamInfo": "Informazioni superamento esame",
+    "enrolledExamDetailTitle": "Dettaglio superamento esame",
+    "enrolledExamDetailInfo": "Informazioni dettaglio superamento esame",
+    "examGradeDetailTitle": "Dettaglio voti",
+    "examGradeDetailInfo": "Informazioni dettaglio voti",
+    "enrolledExamBottomSheet":  {
+      "title": "Superamento esame",
+      "content": "Statistica riguardante il numero di superi totali all’esame con due tipi di visualizzazione:",
+      "item1": {
+        "title": "Singola",
+        "content": "statistica del singolo anno selezionato."
+      },
+      "item2": {
+        "title": "Comparativa",
+        "content": "comparazione tra l’anno selezionato e i due anni precedenti."
+      }
+    },
+    "enrolledExamDetailBottomSheet":  {
+      "title": "Dettaglio superamento esame",
+      "content": "Statistica riguardante il numero di superi all’esame suddiviso in tre sotto gruppi:",
+      "item1": {
+        "title": "iscritti al 1° anno",
+        "content": " studenti che si sono iscritti all’esame durante il primo anno di frequenza."
+      },
+      "item2": {
+        "title": "iscritti dal 2° anno in poi",
+        "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza o i successivi."
+      }
+    },
+    "gradesDetailBottomSheet":  {
+      "title": "Dettaglio voti",
+      "content": "Statistica riguardante il dettaglio delle valutazioni d’esame suddiviso in tre sotto gruppi:",
+      "item1": {
+        "title": "iscritti al 1° anno",
+        "content": " studenti che si sono iscritti all’esame durante il primo anno di frequenza."
+      },
+      "item2": {
+        "title": "iscritti al 2° anno in poi",
+        "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza in poi."
+      },
+      "item3": {
+        "title": "iscritti dal 3° anno in poi",
+        "content": " studenti che si sono iscritti all’esame dal terzo anno di frequenza in poi."
+      }
+    },
+    "gradesDetailLegend": {
+      "averageGrade": "Votazione media",
+      "firstYear": "Iscritti al 1° anno",
+      "otherYears": "Iscritti dal 2° anno in poi"
+    },
+    "enrolledExamChartLabel": {
+      "firstYear": "1° anno",
+      "otherYears": "2° anno in poi"
+    },
+    "enrolledExamChartLegend": {
+      "passed": "Esame superato",
+      "failed": "Esame non superato"
+    },
+    "enrolledExamVisualization": {
+      "title": "Visualizzazione",
+      "single": "Singola",
+      "compare": "Comparativa",
+      "error": "Visualizzazione comparativa non disponibile per mancanza di dati nei periodi precedenti"
+    }
+  },
   "courseHideEventScreen": {
     "button": "Mostra in Agenda",
     "selectItems": "Seleziona tutti"
@@ -467,7 +539,9 @@
     "period": "Periodo",
     "staff": "Docenti",
     "title": "Corso",
-    "tutoring": "Tutoraggio"
+    "tutoring": "Tutoraggio",
+    "statistics": "Statistiche",
+    "statisticsSubtitle": "Accedi alle statistiche d'esame"
   },
   "degreeScreen": {
     "cohort": "Coorte",

@@ -11,6 +11,7 @@ import {
 import {
   faAngleDown,
   faBriefcase,
+  faChartLine,
   faFlaskVial,
   faMicroscope,
   faPersonChalkboard,
@@ -39,6 +40,7 @@ import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { CourseStatisticsFilterType } from '../../courses/components/CourseStatisticsFilters.tsx';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { StaffListItem } from '../components/StaffListItem';
 
@@ -214,8 +216,26 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     leadingItem={<Icon size={20} icon={faPersonChalkboard} />}
                   />
                 )}
+                {offeringCourse && (
+                  <ListItem
+                    title={t('degreeCourseScreen.statistics')}
+                    titleStyle={styles.title}
+                    titleProps={listTitleProps}
+                    subtitle={t('degreeCourseScreen.statistics')}
+                    linkTo={{
+                      screen: 'CourseStatistics',
+                      params: {
+                        courseShortcode: offeringCourse.shortcode,
+                        filter: CourseStatisticsFilterType.TEACHER,
+                        nameCourse: offeringCourse.name,
+                      },
+                    }}
+                    leadingItem={<Icon size={20} icon={faChartLine} />}
+                  />
+                )}
               </OverviewList>
             )}
+
           <Section style={styles.staffSection}>
             <SectionHeader
               title={t('degreeCourseScreen.staff')}

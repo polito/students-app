@@ -1,4 +1,9 @@
-import { Degree as ApiDegree, OfferingApi } from '@polito/api-client';
+import {
+  Degree as ApiDegree,
+  CourseStatistics,
+  OfferingApi,
+} from '@polito/api-client';
+import { GetCourseStatisticsRequest } from '@polito/api-client/apis/OfferingApi';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 
@@ -85,5 +90,27 @@ export const useGetOfferingCourse = ({
           }
           return course;
         }),
+  });
+};
+
+export const useGetCourseStatistics = ({
+  courseShortcode,
+  teacherId,
+  year,
+}: GetCourseStatisticsRequest) => {
+  const offeringClient = useOfferingClient();
+
+  return useQuery<CourseStatistics>({
+    queryKey: compact([
+      DEGREES_QUERY_PREFIX,
+      COURSES_QUERY_PREFIX,
+      courseShortcode,
+      year,
+      teacherId,
+    ]),
+    queryFn: () =>
+      offeringClient
+        .getCourseStatistics({ courseShortcode, teacherId, year })
+        .then(pluckData),
   });
 };

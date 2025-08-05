@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
 import { HeaderLogo } from '../../core/components/HeaderLogo';
+import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
+import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../../features/offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../features/offering/screens/StaffScreen';
@@ -22,6 +24,14 @@ export interface SharedScreensParamList extends ParamListBase {
   DegreeCourseGuide: {
     courseShortcode: string;
     year?: string;
+  };
+  CourseStatistics: {
+    courseShortcode: string;
+    nameCourse?: string;
+    courseId: number;
+    teacherId?: string;
+    year?: string;
+    filter?: CourseStatisticsFilterType;
   };
   Staff: {
     courseShortcode: string;
@@ -80,6 +90,15 @@ export const SharedScreens = () => {
         options={{
           headerTitle: t('courseGuideScreen.title'),
           headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+      <Stack.Screen
+        name="CourseStatistics"
+        component={CourseStatisticsScreen}
+        getId={({ params }) => `${params.courseId}${params.courseShortcode}`}
+        options={{
+          headerTitle: t('courseStatisticsScreen.title'),
+          headerBackTitle: t('common.course'),
         }}
       />
       <Stack.Screen
