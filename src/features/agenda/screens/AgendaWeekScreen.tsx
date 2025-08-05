@@ -50,7 +50,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const { updatePreference, agendaScreen } = usePreferencesContext();
 
-  const { language } = usePreferencesContext();
+  const { language, accessibility } = usePreferencesContext();
 
   const { t } = useTranslation();
   const { palettes, fontSizes } = useTheme();
@@ -239,7 +239,15 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   return (
     <>
-      <HeaderAccessory justify="space-between" style={styles.headerContainer}>
+      <HeaderAccessory
+        justify="space-between"
+        style={[
+          styles.headerContainer,
+          accessibility?.fontSize && Number(accessibility?.fontSize) > 150
+            ? { flexDirection: 'column' }
+            : {},
+        ]}
+      >
         <Tabs contentContainerStyle={styles.tabs}>
           <AgendaTypeFilter />
         </Tabs>

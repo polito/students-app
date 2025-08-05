@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
@@ -42,6 +42,7 @@ export const ServicesScreen = () => {
     favoriteServices: favoriteServiceIds,
     emailGuideRead,
     updatePreference,
+    accessibility,
   } = usePreferencesContext();
   const { getUnreadsCount } = useNotifications();
   const styles = useStylesheet(createStyles);
@@ -50,6 +51,10 @@ export const ServicesScreen = () => {
   const { peopleSearched } = usePreferencesContext();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
   const unreadEmailsQuery = useGetUnreadEmails();
+  const [fontSize, setFontSize] = useState(Number(accessibility?.fontSize));
+  useEffect(() => {
+    setFontSize(Number(accessibility?.fontSize) ?? 0);
+  }, [accessibility?.fontSize]);
   const openInAppLink = useOpenInAppLink();
 
   const openWebmailLink = useCallback(async () => {
@@ -217,9 +222,7 @@ export const ServicesScreen = () => {
       <SafeAreaView>
         {favoriteServices.length > 0 && (
           <Grid
-            numColumns={auto}
-            minColumnWidth={ServiceCard.minWidth}
-            maxColumnWidth={ServiceCard.maxWidth}
+            numColumns={fontSize && fontSize >= 125 ? 1 : auto}
             gap={4}
             style={styles.grid}
           >
@@ -242,9 +245,7 @@ export const ServicesScreen = () => {
 
         {otherServices.length > 0 && (
           <Grid
-            numColumns={auto}
-            minColumnWidth={ServiceCard.minWidth}
-            maxColumnWidth={ServiceCard.maxWidth}
+            numColumns={fontSize && fontSize >= 125 ? 1 : auto}
             gap={4}
             style={styles.grid}
           >

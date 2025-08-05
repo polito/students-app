@@ -11,6 +11,7 @@ import { Badge } from '@lib/ui/components/Badge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { lightTheme } from '../../../core/themes/light';
 import { Exam } from '../../../core/types/api';
 
@@ -22,7 +23,7 @@ interface Props {
 export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
   const { t } = useTranslation();
   const { dark, palettes } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   const statusIcon = useMemo(() => {
     switch (exam.status) {
       case ExamStatusEnum.Booked:
@@ -83,7 +84,11 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
       text={t(`common.examStatus.${exam.status}`)}
       backgroundColor={backgroundColor}
       foregroundColor={foregroundColor}
-      icon={textOnly ? undefined : statusIcon}
+      icon={
+        textOnly || Number(accessibility?.fontSize) >= 150
+          ? undefined
+          : statusIcon
+      }
     />
   );
 };

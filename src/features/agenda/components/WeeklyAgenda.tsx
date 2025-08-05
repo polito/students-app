@@ -9,6 +9,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { DateTime } from 'luxon';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { DailyAgenda } from './DailyAgenda';
 import { EmptyWeek } from './EmptyWeek';
@@ -25,7 +26,7 @@ export const WeeklyAgenda = ({
   currentDay,
 }: Props) => {
   const styles = useStylesheet(createStyles);
-
+  const { accessibility } = usePreferencesContext();
   const newDay = useMemo(
     () =>
       currentDay ? currentDay.startOf('day') : DateTime.now().startOf('day'),
@@ -55,7 +56,14 @@ export const WeeklyAgenda = ({
       {!agendaWeek.data.length && (
         <Row>
           <Col style={styles.dayColumn}></Col>
-          <Col style={styles.itemsColumn}>
+          <Col
+            style={[
+              styles.itemsColumn,
+              accessibility?.fontSize && accessibility.fontSize >= 150
+                ? { paddingRight: '15%' }
+                : {},
+            ]}
+          >
             <EmptyWeek />
           </Col>
         </Row>
