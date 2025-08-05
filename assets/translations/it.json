@@ -163,6 +163,10 @@
     "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
+    "enroll": {
+      "device": "ID Dispositivo",
+      "serial": "Seriale"
+    },
     "enabled": "Abilitato",
     "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
     "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
@@ -652,6 +656,7 @@
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "mfaScreen": {
+    "description": "<b>Polito Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per conferma. Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo. Le seguenti azioni rimuoveranno questa installazione di Polito Authenticator dal tuo dispositivo: <br/><br/> - Effettuare il logout <br/> - Disinstallare l'app <br/> - Cancellare i dati dell'app tramite le impostazioni del dispositivo",
     "headerTitle": "Authenticator",
     "biometricPrompt": "Sblocca per utilizzare PoliTO Authenticator",
     "enroll": {

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { TextField } from '@lib/ui/components/TextField';
@@ -30,22 +29,18 @@ export const MfaEnrollScreen = () => {
   const handleSSO = useSSOLoginInitiator();
   const { setFeedback } = useFeedbackContext();
   const [step, setStep] = useState(0);
-  const [deviceName, setDeviceName] = useState('');
   const { publicKey, privateKey } = generateSecp256k1KeyPair();
-  const animatedHeight = useAnimatedStyle(() => ({
-    height: '100%',
-    transform: [{ translateY: 100 }],
-  }));
   const navigation = useNavigation();
   const styles = useStylesheet(createStyles);
+  const deviceId = DeviceInfo.getDeviceNameSync();
+  const [deviceName, setDeviceName] = useState(deviceId);
   const onNo = () => {
     navigation.goBack();
     queryClient.setQueryData(MFA_STATUS_QUERY_KEY, undefined);
   };
 
   const onYes = async () => {
-    const deviceId = DeviceInfo.getDeviceId();
-    const dtoMfa = { description: deviceId, pubkey: publicKey };
+    const dtoMfa = { description: deviceName ?? deviceId, pubkey: publicKey };
 
     try {
       if (step === 0) {
@@ -74,61 +69,69 @@ export const MfaEnrollScreen = () => {
     }
     navigation.goBack();
   };
-  return (
-    <Animated.View style={animatedHeight}>
-      <RTFTrans
-        i18nKey="mfaScreen.enroll.prompt"
-        style={[
-          styles.subtitle,
-          {
-            height: step > 0 ? 0 : undefined,
-          },
-        ]}
-      />
-      <RTFTrans
-        i18nKey="mfaScreen.enroll.devicePrompt"
-        style={styles.subtitle}
-      />
-      <View style={[styles.buttonsRow, { justifyContent: 'space-between' }]}>
-        <CtaButton
-          absolute={false}
-          title={t('mfaScreen.enroll.cancel')}
-          action={onNo}
-          variant="outlined"
-          containerStyle={styles.secondaryButtonContainer}
-          style={styles.secondaryButton}
+  if (step === 0)
+    return (
+      <>
+        <RTFTrans
+          i18nKey="mfaScreen.enroll.prompt"
+          style={[
+            styles.subtitle,
+            {
+              height: step > 0 ? 0 : undefined,
+            },
+          ]}
         />
-        <CtaButton
-          absolute={false}
-          title={t('mfaScreen.enroll.confirm')}
-          action={onYes}
-          containerStyle={styles.primaryButtonContainer}
-          style={styles.primaryButton}
-          loading={isPending}
+        <RTFTrans
+          i18nKey="mfaScreen.enroll.devicePrompt"
+          style={styles.subtitle}
         />
-      </View>
-
-      <RTFTrans i18nKey="mfaScreen.enroll.note" style={styles.note} />
-
-      <TextField
-        accessible={true}
-        label={t('mfaScreen.enroll.deviceName')}
-        value={deviceName}
-        onChangeText={setDeviceName}
-        inputStyle={styles.textFieldInput}
-        style={{ flex: 1 }}
-      />
-      <View style={{ width: '100%', alignItems: 'center' }}>
-        <CtaButton
-          absolute={false}
-          title={t('common.confirm')}
-          action={onYes}
-          containerStyle={styles.confirmButtonContainer}
-          loading={isPending}
-        />
-      </View>
-    </Animated.View>
-  );
+        <View style={[styles.buttonsRow, { justifyContent: 'space-between' }]}>
+          <CtaButton
+            absolute={false}
+            title={t('mfaScreen.enroll.cancel')}
+            action={onNo}
+            variant="outlined"
+            containerStyle={styles.secondaryButtonContainer}
+            style={styles.secondaryButton}
+          />
+          <CtaButton
+            absolute={false}
+            title={t('mfaScreen.enroll.confirm')}
+            action={onYes}
+            containerStyle={styles.primaryButtonContainer}
+            style={styles.primaryButton}
+            loading={isPending}
+          />
+        </View>
+      </>
+    );
+  else
+    return (
+      <>
+        <RTFTrans i18nKey="mfaScreen.enroll.note" style={styles.note} />
+        <View style={{ width: '100%', alignItems: 'center' }}>
+          {/* TextField centrato e largo l'80% */}
+          <View style={{ width: '80%', alignItems: 'center' }}>
+            <TextField
+              accessible={true}
+              label={t('mfaScreen.enroll.deviceName')}
+              value={deviceName}
+              onChangeText={setDeviceName}
+              inputStyle={styles.textFieldInput}
+            />
+          </View>
+          <View style={{ width: '80%', alignItems: 'center' }}>
+            <CtaButton
+              absolute={false}
+              title={t('common.confirm')}
+              action={onYes}
+              containerStyle={styles.confirmButtonContainer}
+              loading={isPending}
+            />
+          </View>
+        </View>
+      </>
+    );
 };
 
 export const createStyles = ({ colors, spacing, palettes }: Theme) =>

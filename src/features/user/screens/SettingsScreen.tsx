@@ -10,14 +10,17 @@ import {
 } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCalendarCheck,
+  faQuestionCircle,
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faBroom,
   faCalendarDay,
   faCircleExclamation,
   faCircleHalfStroke,
   faFont,
-  faLock,
+  faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
@@ -36,6 +39,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { BottomModal } from '~/core/components/BottomModal';
+import { useBottomModal } from '~/core/hooks/useBottomModal';
 import { useCheckMfa } from '~/core/queries/authHooks';
 
 import i18next from 'i18next';
@@ -54,6 +59,7 @@ import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
+import { MfaModal } from '../components/MfaModal';
 import { UserStackParamList } from '../components/UserNavigator';
 
 const CleanCacheListItem = () => {
@@ -309,95 +315,116 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { data: mfaStatus } = useCheckMfa();
-  const { palettes } = useTheme();
+  const { palettes, colors } = useTheme();
+  const {
+    open: showBottomModal,
+    modal: bottomModal,
+    close: closeBottomModal,
+  } = useBottomModal();
+  const onPressSecurityMfa = () => {
+    showBottomModal(
+      <MfaModal title="Mfa" mfa={mfaStatus} onDismiss={closeBottomModal} />,
+    );
+  };
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <SafeAreaView>
-        <View style={styles.container}>
-          <Section>
-            <SectionHeader title={t('common.theme')} />
-            <OverviewList indented>
-              <VisualizationListItem />
-            </OverviewList>
-          </Section>
-          <Section>
-            <SectionHeader title={t('common.language')} />
-            <OverviewList indented>
-              <LanguageListItem />
-            </OverviewList>
-          </Section>
-          {/* <Section>
-            <SectionHeader
-              title={t('common.notifications')}
-              trailingItem={<Badge text={t('common.comingSoon')} />}
-            />
-            <Notifications />
-          </Section>*/}
-          <Section>
-            <SectionHeader title={t('settingsScreen.securityTitle')} />
-            <OverviewList indented>
-              <ListItem
-                title={t('settingsScreen.authenticatorTitle')}
-                subtitle=""
-                // value={mfaEnabled ?? false}
-                // onChange={value => {
-                //   updatePreference('mfaEnabled', value);
-                // }}
-                leadingItem={<Icon icon={faLock} size={20} />}
-                trailingItem={
-                  mfaStatus?.status !== 'active' ? (
-                    <CtaButton
-                      title="Enable"
-                      style={{ elevation: 0 }}
-                      absolute={false}
-                      action={() =>
-                        navigation.navigate('ProfileTab', {
-                          screen: 'PolitoAuthenticator',
-                          params: {
-                            activeView: 'enroll',
-                          },
-                        })
-                      }
-                    ></CtaButton>
-                  ) : (
-                    <Badge
-                      icon={faLock}
-                      backgroundColor={palettes.success[500]}
-                      foregroundColor={palettes.success[100]}
-                      text={t('common.enabled')}
-                    />
-                  )
-                }
+    <>
+      <BottomModal dismissable {...bottomModal} />
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <SafeAreaView>
+          <View style={styles.container}>
+            <Section>
+              <SectionHeader title={t('common.theme')} />
+              <OverviewList indented>
+                <VisualizationListItem />
+              </OverviewList>
+            </Section>
+            <Section>
+              <SectionHeader title={t('common.language')} />
+              <OverviewList indented>
+                <LanguageListItem />
+              </OverviewList>
+            </Section>
+            {/* <Section>
+              <SectionHeader
+                title={t('common.notifications')}
+                trailingItem={<Badge text={t('common.comingSoon')} />}
               />
-            </OverviewList>
-          </Section>
-          <Section>
-            <SectionHeader title={t('common.cache')} />
-            <OverviewList indented>
-              <CleanCacheListItem />
-            </OverviewList>
-          </Section>
-          <Section>
-            <SectionHeader title={t('common.accessibility')} />
-            <OverviewList indented>
-              <ListItem
-                isAction
-                title={t('accessibilitySettingsScreen.fontSettingsTitle')}
-                accessibilityRole="button"
-                linkTo={{ screen: 'AccessibilitySettings' }}
-                leadingItem={<Icon icon={faFont} size={20} />}
-              />
-            </OverviewList>
-          </Section>
-          <Col ph={4}>
-            <Text>{t('settingsScreen.appVersion', { version })}</Text>
-          </Col>
-        </View>
-        <BottomBarSpacer />
-      </SafeAreaView>
-    </ScrollView>
+              <Notifications />
+            </Section>*/}
+            <Section>
+              {mfaStatus?.status === 'active' && (
+                <SectionHeader
+                  title={t('settingsScreen.securityTitle')}
+                  trailingIcon={{
+                    onPress: onPressSecurityMfa,
+                    icon: faQuestionCircle,
+                    color: colors.link,
+                  }}
+                />
+              )}
+              <OverviewList indented>
+                <ListItem
+                  title={t('settingsScreen.authenticatorTitle')}
+                  subtitle=""
+                  // value={mfaEnabled ?? false}
+                  // onChange={value => {
+                  //   updatePreference('mfaEnabled', value);
+                  // }}
+                  leadingItem={<Icon icon={faShieldHalved} size={20} />}
+                  trailingItem={
+                    mfaStatus?.status !== 'active' ? (
+                      <CtaButton
+                        title="Enable"
+                        style={{ elevation: 0 }}
+                        absolute={false}
+                        action={() =>
+                          navigation.navigate('ProfileTab', {
+                            screen: 'PolitoAuthenticator',
+                            params: {
+                              activeView: 'enroll',
+                            },
+                          })
+                        }
+                      ></CtaButton>
+                    ) : (
+                      <Badge
+                        backgroundColor={palettes.success[500]}
+                        foregroundColor={palettes.success[100]}
+                        text={t('common.enabled')}
+                      />
+                    )
+                  }
+                />
+              </OverviewList>
+            </Section>
+            <Section>
+              <SectionHeader title={t('common.cache')} />
+              <OverviewList indented>
+                <CleanCacheListItem />
+              </OverviewList>
+            </Section>
+            <Section>
+              <SectionHeader title={t('common.accessibility')} />
+              <OverviewList indented>
+                <ListItem
+                  isAction
+                  title={t('accessibilitySettingsScreen.fontSettingsTitle')}
+                  accessibilityRole="button"
+                  linkTo={{ screen: 'AccessibilitySettings' }}
+                  leadingItem={<Icon icon={faFont} size={20} />}
+                />
+              </OverviewList>
+            </Section>
+            <Col ph={4}>
+              <Text>{t('settingsScreen.appVersion', { version })}</Text>
+            </Col>
+          </View>
+          <BottomBarSpacer />
+        </SafeAreaView>
+      </ScrollView>
+    </>
   );
 };
 

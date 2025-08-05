@@ -156,6 +156,10 @@
     "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
+    "enroll": {
+      "device": "Device ID",
+      "serial": "Serial"
+    },
     "enabled": "Enabled",
     "enableLocationPermissionFeedback": "Enable location permission to complete the operation",
     "enableLocationServiceFeedback": "Enable location service to complete the operation",
@@ -637,6 +641,7 @@
   "mfaScreen": {
     "headerTitle": "Authenticator",
     "biometricPrompt": "Unlock to use PoliTO Authenticator",
+    "description": "<b>Polito Authenticator</b> is a second-factor authentication method that enables secure and fast access to university services by sending a notification to your device for confirmation. It relies on asymmetric cryptography and is <b>installed per device</b>: each installation is independent and tied to a single device. The following actions will remove this Polito Authenticator installation from your device: <br/><br/> - Logging out <br/> - Uninstalling the app <br/> - Clearing the app’s data via your device settings",
     "enroll": {
       "title": "MFA Activation",
       "prompt": "Do you want to activate <b>PoliTO Authenticator</b> on this device?",
