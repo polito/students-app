@@ -143,6 +143,7 @@ export const EnrolledExamDetailChart = ({
           xAxisColor={colors.divider}
           rulesType="solid"
           noOfSections={noOfSections}
+          maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
         />
       </NoChartDataContainer>
 

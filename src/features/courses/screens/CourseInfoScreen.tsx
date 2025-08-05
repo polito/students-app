@@ -353,6 +353,7 @@ export const CourseInfoScreen = () => {
                   year: courseQuery.data?.year,
                   teacherId: courseQuery.data?.teacherId,
                   filter: CourseStatisticsFilterType.YEAR,
+                  nameCourse: courseQuery.data?.name,
                 },
               }}
               disabled={isStatisticsDisabled}

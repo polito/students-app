@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -33,9 +33,21 @@ import { EnrolledExamDetailChart } from '../components/EnrolledExamDetailChart.t
 import { computeStatisticsFilters } from '../utils/computeStatisticsFilters';
 
 type Props = NativeStackScreenProps<SharedScreensParamList, 'CourseStatistics'>;
-export const CourseStatisticsScreen = ({ route }: Props) => {
+export const CourseStatisticsScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
-  const { courseShortcode: shortCode, year, teacherId, filter } = route.params;
+  const {
+    courseShortcode: shortCode,
+    year,
+    teacherId,
+    filter,
+    nameCourse,
+  } = route.params;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: nameCourse ?? t('courseStatisticsScreen.title'),
+    });
+  }, [nameCourse, navigation, t]);
 
   const { spacing, colors } = useTheme();
   const [currentFilters, setCurrentFilters] = useState<{
@@ -81,9 +93,18 @@ export const CourseStatisticsScreen = ({ route }: Props) => {
 
   const styles = useStylesheet(createStyles);
 
-  const graphWidth =
-    Dimensions.get('window').width -
-    Platform.select({ ios: 128, android: 100 })!;
+  const [graphWidth, setGraphWidth] = useState(
+    Dimensions.get('screen').width -
+      Platform.select({ ios: 128, android: 100 })!,
+  );
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      const { width: newWidth } = Dimensions.get('screen');
+      setGraphWidth(newWidth - Platform.select({ ios: 128, android: 100 })!);
+    };
+    Dimensions.addEventListener('change', updateDimensions);
+  }, []);
 
   const {
     open: showBottomModal,

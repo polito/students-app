@@ -27,6 +27,7 @@ export interface SharedScreensParamList extends ParamListBase {
   };
   CourseStatistics: {
     courseShortcode: string;
+    nameCourse?: string;
     courseId: number;
     teacherId?: string;
     year?: string;
