@@ -30,6 +30,8 @@ import { isToday } from '@lib/ui/utils/calendar';
 import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { PlacesAgendaStackID } from '~/core/types/navigation.ts';
+
 import { inRange } from 'lodash';
 import { DateTime, IANAZone } from 'luxon';
 
@@ -156,7 +158,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
     if (location.type === 'virtualPlace') {
       await openInAppLink(location.url);
     } else if (location.type === 'place') {
-      navigation.navigate('PlacesAgendaStack', {
+      navigation.navigate(PlacesAgendaStackID, {
         screen: 'Place',
         params: {
           placeId: resolvePlaceId(location),

@@ -5,6 +5,11 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import {
+  AgendaNavigatorID,
+  PlacesAgendaStackID,
+} from '~/core/types/navigation';
+
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
@@ -43,8 +48,6 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
     };
     PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
   };
-
-export const AgendaNavigatorID = 'AgendaTabNavigator';
 
 const Stack = createNativeStackNavigator<
   AgendaStackParamList,
@@ -148,7 +151,7 @@ export const AgendaNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="PlacesAgendaStack"
+        name={PlacesAgendaStackID}
         component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),

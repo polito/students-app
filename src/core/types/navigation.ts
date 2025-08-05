@@ -12,3 +12,10 @@ export type RootParamList = {
   ServicesTab: NavigatorScreenParams<ServiceStackParamList>;
   ProfileTab: NavigatorScreenParams<UserStackParamList>;
 };
+
+export const FileNavigatorID = 'FileTabNavigator';
+export const AgendaNavigatorID = 'AgendaTabNavigator';
+export const TeachingNavigatorID = 'TeachingTabNavigator';
+
+export const PlacesAgendaStackID = 'PlacesAgendaStack';
+export const PlacesTeachingStackID = 'PlacesTeachingStack';

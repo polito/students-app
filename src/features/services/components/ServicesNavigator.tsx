@@ -7,6 +7,8 @@ import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { PlacesAgendaStackID } from '~/core/types/navigation';
+
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
@@ -336,7 +338,7 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="PlacesAgendaStack"
+        name={PlacesAgendaStackID}
         component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),

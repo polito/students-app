@@ -22,6 +22,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { PlacesAgendaStackID } from '~/core/types/navigation.ts';
+
 import { DateTime, WeekdayNumbers } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer.tsx';
@@ -227,7 +229,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
                 }
                 isAction
                 onPress={() => {
-                  navigation.navigate('PlacesAgendaStack', {
+                  navigation.navigate(PlacesAgendaStackID, {
                     screen: 'Place',
                     params: {
                       placeId: resolvePlaceId(lecture.place!),

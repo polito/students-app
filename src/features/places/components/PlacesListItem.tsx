@@ -8,8 +8,11 @@ import { PlaceRef } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { AgendaNavigatorID } from '~/features/agenda/components/AgendaNavigator';
-import { TeachingNavigatorID } from '~/features/teaching/components/TeachingNavigator';
+import {
+  AgendaNavigatorID,
+  PlacesTeachingStackID,
+  TeachingNavigatorID,
+} from '~/core/types/navigation';
 
 import { notNullish } from '../../../utils/predicates';
 
@@ -49,7 +52,7 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
         placeIds?.length
           ? () => {
               if (navigation.getId() === AgendaNavigatorID) {
-                navigation.navigate('PlacesAgendaStack', {
+                navigation.navigate(PlacesTeachingStackID, {
                   screen: 'EventPlaces',
                   params: {
                     placeIds,
@@ -58,7 +61,7 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
                   },
                 });
               } else if (navigation.getId() === TeachingNavigatorID) {
-                navigation.navigate('PlacesTeachingStack', {
+                navigation.navigate(PlacesTeachingStackID, {
                   screen: 'EventPlaces',
                   params: {
                     placeIds,

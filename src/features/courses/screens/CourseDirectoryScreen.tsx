@@ -17,6 +17,8 @@ import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { FileNavigatorID } from '~/core/types/navigation';
+
 import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -34,10 +36,7 @@ import { CourseFileListItem } from '../components/CourseFileListItem';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
-import {
-  FileNavigatorID,
-  FileStackParamList,
-} from '../navigation/FileNavigator';
+import { FileStackParamList } from '../navigation/FileNavigator';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 

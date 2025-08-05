@@ -7,6 +7,12 @@ import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
+import {
+  AgendaNavigatorID,
+  PlacesAgendaStackID,
+  PlacesTeachingStackID,
+} from '~/core/types/navigation';
+
 import { capitalize } from 'lodash';
 
 import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
@@ -185,9 +191,9 @@ export const MarkersLayer = ({
                     };
 
               const stackName = isCrossNavigation
-                ? navigation.getId() === 'AgendaTabNavigator'
-                  ? 'PlacesAgendaStack'
-                  : 'PlacesTeachingStack'
+                ? navigation.getId() === AgendaNavigatorID
+                  ? PlacesAgendaStackID
+                  : PlacesTeachingStackID
                 : 'PlacesTab';
               navigation.navigate(stackName, {
                 screen,
@@ -210,9 +216,9 @@ export const MarkersLayer = ({
                   };
 
             const stackName = isCrossNavigation
-              ? navigation.getId() === 'AgendaTabNavigator'
-                ? 'PlacesAgendaStack'
-                : 'PlacesTeachingStack'
+              ? navigation.getId() === AgendaNavigatorID
+                ? PlacesAgendaStackID
+                : PlacesTeachingStackID
               : 'PlacesTab';
 
             navigation.navigate(stackName, {
