@@ -90,7 +90,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const headerHeight = useHeaderHeight();
   const [tabsHeight, setTabsHeight] = useState(48);
   const campus = useGetCurrentCampus();
-  const { placesSearched } = usePreferencesContext();
+  const { placesSearched, accessibility } = usePreferencesContext();
   const { cameraRef } = useContext(MapNavigatorContext);
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =
     useContext(PlacesContext);
@@ -189,18 +189,32 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setMapFloorId(displayFloorId);
     }
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
-
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  const renderMapContent = useCallback(
+    () => (
+      <MarkersLayer
+        search={debouncedSearch}
+        places={places ?? []}
+        displayFloor={!displayFloorId}
+        categoryId={categoryId}
+        subCategoryId={subCategoryId}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+    ),
+    [
+      debouncedSearch,
+      places,
+      displayFloorId,
+      categoryId,
+      subCategoryId,
+      selectedId,
+      setSelectedId,
+    ],
+  );
   useLayoutEffect(() => {
     navigation.setOptions({
-      mapContent: () => (
-        <MarkersLayer
-          search={debouncedSearch}
-          places={places ?? []}
-          displayFloor={!displayFloorId}
-          categoryId={categoryId}
-          subCategoryId={subCategoryId}
-        />
-      ),
+      mapContent: renderMapContent,
     });
   }, [
     categoryId,
@@ -209,6 +223,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     navigation,
     places,
     subCategoryId,
+    renderMapContent,
   ]);
 
   useLayoutEffect(() => {
@@ -266,21 +281,30 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
   }, [campus]);
   const floorSelectorButton = (
-    <TranslucentCard>
+    <TranslucentCard
+      {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
+        ? { style: { height: 55 } }
+        : {})}
+    >
       <TouchableOpacity
         accessibilityLabel={t('placesScreen.changeFloor')}
         disabled={!!debouncedSearch && displayFloorId != null}
       >
         <Row ph={3} pv={2.5} gap={1} align="center">
-          <Icon icon={faElevator} />
+          {accessibility?.fontSize && Number(accessibility?.fontSize) < 150 && (
+            <Icon icon={faElevator} />
+          )}
           <Text
             ellipsizeMode="tail"
             numberOfLines={1}
-            style={{
-              flexShrink: 1,
-              flexGrow: 1,
-              marginRight: 20,
-            }}
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 75, marginVertical: -20, maxWidth: 250 } }
+              : {
+                  flexShrink: 1,
+                  flexGrow: 1,
+                  marginRight: 20,
+                })}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>
@@ -327,13 +351,21 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           }) => setTabsHeight(height)}
         >
           <PillIconButton
-            icon={faClock}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faClock
+                : undefined
+            }
             onPress={() => navigation.navigate('FreeRooms')}
           >
             {t('freeRoomsScreen.title')}
           </PillIconButton>
           <PillIconButton
-            icon={faChalkboardTeacher}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faChalkboardTeacher
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -344,7 +376,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             {t('placeCategories.classrooms')}
           </PillIconButton>
           <PillIconButton
-            icon={faBookReader}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faBookReader
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -355,7 +391,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             {t('placeCategories.studyRooms')}
           </PillIconButton>
           <PillIconButton
-            icon={faBookOpen}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faBookOpen
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -379,7 +419,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <PillButton onPress={() => setCategoriesPanelOpen(true)}>
             <ThemeContext.Provider value={darkTheme}>
               <Row align="center" gap={2}>
-                <Icon icon={faEllipsis} />
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) < 150 && (
+                    <Icon icon={faEllipsis} />
+                  )}
                 <Text weight="medium">More</Text>
               </Row>
             </ThemeContext.Provider>
@@ -389,9 +432,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
         <Row gap={3} align="stretch" justify="space-between">
-          <TranslucentCard>
+          <TranslucentCard
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 40 } }
+              : {})}
+          >
             <IconButton
               icon={faCrosshairs}
+              size={spacing[6]}
               style={styles.icon}
               accessibilityLabel={t('placesScreen.goToMyPosition')}
               onPress={centerToUserLocation}
@@ -399,6 +448,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             <Divider style={styles.divider} size={1} />
             <IconButton
               icon={faExpand}
+              size={spacing[6]}
               style={styles.icon}
               accessibilityLabel={t('placesScreen.viewWholeCampus')}
               onPress={centerToCurrentCampus}
@@ -436,7 +486,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   align="center"
                   style={{ opacity: 0.6 }}
                 >
-                  <Icon icon={faElevator} />
+                  {accessibility?.fontSize &&
+                    Number(accessibility?.fontSize) < 150 && (
+                      <Icon icon={faElevator} />
+                    )}
+
                   <Text
                     style={{
                       fontSize: fontSizes['2xs'],
@@ -511,5 +565,6 @@ const createStyles = ({ spacing }: Theme) =>
     icon: {
       alignItems: 'center',
       paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
     },
   });

@@ -16,6 +16,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext.ts';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -38,7 +39,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
   const { fontWeights } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   const confirmAcceptance = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('provisionalGradeScreen.acceptGradeConfirmMessage'),
@@ -108,19 +109,43 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
             >
               <Col flexGrow={1} flexShrink={1} gap={2}>
                 <ScreenTitle title={grade.courseName} />
-                <Text>{`${formatDate(grade.date)} - ${t(
-                  'common.creditsWithUnit',
-                  {
-                    credits: grade.credits,
-                  },
-                )}`}</Text>
+                <Text>{`${formatDate(new Date(grade.date))} ${
+                  accessibility?.fontSize &&
+                  Number(accessibility.fontSize) < 150
+                    ? '-' +
+                      t('common.creditsWithUnit', {
+                        credits: grade.credits,
+                      })
+                    : ''
+                }`}</Text>
+                <Col
+                  flexGrow={1}
+                  flexShrink={1}
+                  gap={2}
+                  style={{ marginBottom: 20 }}
+                >
+                  <Text>
+                    {accessibility?.fontSize &&
+                    Number(accessibility.fontSize) >= 150
+                      ? t('common.creditsWithUnit', {
+                          credits: grade.credits,
+                        })
+                      : ''}
+                  </Text>
+                </Col>
               </Col>
               <Col
                 align="center"
                 justify="center"
                 mt={2}
                 flexShrink={0}
-                style={styles.grade}
+                style={[
+                  styles.grade,
+                  accessibility?.fontSize &&
+                  Number(accessibility.fontSize) >= 150
+                    ? { padding: 0 }
+                    : {},
+                ]}
               >
                 <Text
                   style={[

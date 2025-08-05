@@ -44,6 +44,7 @@ import {
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
 import { useKeyboardVisibile } from '../../../core/hooks/useKeyboardVisibile';
@@ -106,6 +107,8 @@ export const MapNavigator = ({
   const previousKey = state.routes[state.index - 1]?.key;
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
+  const { accessibility } = usePreferencesContext();
+
   const headerBack = previousDescriptor
     ? {
         title: getHeaderTitle(
@@ -123,6 +126,7 @@ export const MapNavigator = ({
   const [rotating, setRotating] = useState(IS_IOS);
   const MapDefaultContent = currentRoute.options?.mapDefaultContent;
   const MapContent = currentRoute.options?.mapContent;
+  const [selectedId, setSelectedId] = useState<string>('');
 
   useEffect(() => {
     if (IS_IOS) {
@@ -284,6 +288,14 @@ export const MapNavigator = ({
               }
             >
               <MapView
+                onPress={() => {
+                  if (
+                    accessibility?.fontSize &&
+                    Number(accessibility.fontSize) >= 150
+                  ) {
+                    setSelectedId('');
+                  }
+                }}
                 ref={mapRef}
                 style={[GlobalStyles.grow, rotating && { opacity: 0 }]}
                 {...mapDefaultOptions}
@@ -299,7 +311,9 @@ export const MapNavigator = ({
                 {MapContent && <MapContent />}
               </MapView>
 
-              <MapNavigatorContext.Provider value={{ mapRef, cameraRef }}>
+              <MapNavigatorContext.Provider
+                value={{ mapRef, cameraRef, selectedId, setSelectedId }}
+              >
                 {!rotating ? (
                   <Route renderRoute={currentRoute.render} />
                 ) : (
@@ -338,7 +352,6 @@ type MapOptions = Partial<
     insets?: Insets;
   }
 >;
-
 export type MapNavigationOptions = NativeStackNavigationOptions & {
   mapOptions?: MapOptions;
   mapDefaultOptions?: MapOptions;

@@ -8,8 +8,10 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+
 export interface PillIconButtonProps extends PillButtonProps {
-  icon: IconDefinition;
+  icon?: IconDefinition;
 }
 
 export const PillIconButton = ({
@@ -18,11 +20,16 @@ export const PillIconButton = ({
   ...props
 }: PillIconButtonProps) => {
   const styles = useStylesheet(createStyles);
-
+  const { accessibility } = usePreferencesContext();
   return (
-    <PillButton {...props}>
+    <PillButton
+      {...props}
+      {...(accessibility?.fontSize && accessibility.fontSize >= 150
+        ? { style: { paddingVertical: 0 } }
+        : {})}
+    >
       <Row align="center" gap={1.5}>
-        <Icon icon={icon} color="white" />
+        {icon && <Icon icon={icon} color="white" />}
         <Text
           style={[
             styles.text,
