@@ -23,13 +23,13 @@ export const MfaModal = ({
   return (
     <ModalContent close={onDismiss} title={title}>
       <View style={styles.content} accessible>
-        <Text style={styles.headerTitle} accessibilityRole="header">
+        <Text style={styles.headerTitle}>
           {t('common.enroll.serial') + ' : ' + details.serial}
         </Text>
-        <Text style={styles.headerTitle} accessibilityRole="header">
+        <Text style={styles.headerTitle}>
           {t('common.enroll.device') + ' : ' + details.description}
         </Text>
-        <Text style={styles.headerTitle} accessibilityRole="header">
+        <Text style={styles.headerTitle}>
           <RTFTrans
             i18nKey="mfaScreen.description"
             style={styles.headerTitle}

@@ -323,7 +323,11 @@ export const SettingsScreen = () => {
   } = useBottomModal();
   const onPressSecurityMfa = () => {
     showBottomModal(
-      <MfaModal title="Mfa" mfa={mfaStatus} onDismiss={closeBottomModal} />,
+      <MfaModal
+        title={t('mfaScreen.modalTitle')}
+        mfa={mfaStatus}
+        onDismiss={closeBottomModal}
+      />,
     );
   };
   const navigation =

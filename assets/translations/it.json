@@ -656,7 +656,8 @@
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "mfaScreen": {
-    "description": "<b>Polito Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per conferma. Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo. Le seguenti azioni rimuoveranno questa installazione di Polito Authenticator dal tuo dispositivo: <br/><br/> - Effettuare il logout <br/> - Disinstallare l'app <br/> - Cancellare i dati dell'app tramite le impostazioni del dispositivo",
+    "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per conferma. <br/><br/> Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>:ogni installazione è indipendente e legata a un singolo dispositivo. <br/><br/> Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo: <br/><br/> - Effettuare il logout <br/> - Disinstallare l’app <br/> - Cancellare i dati dell’app tramite le impostazioni del dispositivo",
+    "modalTitle": "PoliTO Authenticator",
     "headerTitle": "Authenticator",
     "biometricPrompt": "Sblocca per utilizzare PoliTO Authenticator",
     "enroll": {
