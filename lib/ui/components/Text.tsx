@@ -168,12 +168,16 @@ export const Text = ({
         capitalize && { textTransform: 'capitalize' },
         uppercase && { textTransform: 'uppercase' },
         style,
-        {
-          fontSize: calculateValueOfPercentage(
-            accessibility?.fontSize ?? 100,
-            fontSizes.md,
-          ),
-        },
+        ...(accessibility?.fontSize && accessibility.fontSize > 100
+          ? [
+              {
+                fontSize: calculateValueOfPercentage(
+                  accessibility.fontSize,
+                  fontSizes.sm,
+                ),
+              },
+            ]
+          : []),
         {
           paddingTop:
             accessibility?.fontSize && accessibility.fontSize <= 125
