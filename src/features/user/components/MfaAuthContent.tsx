@@ -15,6 +15,7 @@ import {
   getPrivateKeyMFA,
 } from '../../../utils/keychain';
 import { createStyles } from './MfaEnrollContent';
+import { UserStackParamList } from './UserNavigator';
 
 type RootStackParamList = {
   MfaAuth: { serial: string; nonce: string };
@@ -56,7 +57,9 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
   }, [remainingSeconds]);
 
   const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList & UserStackParamList>
+    >();
   const styles = useStylesheet(createStyles);
   const { mutate: verifyMfa, isPending } = useMfaAuth();
 
@@ -64,10 +67,21 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     undefined,
   );
 
+  const goBack = useCallback(() => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('ProfileTab', {
+        screen: 'Profile',
+      });
+    }
+  }, [navigation]);
+
   useEffect(() => {
     if (authPk) return;
     if (authPk === null) {
-      navigation.goBack();
+      goBack();
+      return;
     }
 
     const fetchPrivateKey = async () => {
@@ -81,11 +95,13 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
           setAuthPk(null);
         }
       } catch (err) {
-        Alert.alert(t('common.error'));
+        console.error(err);
+        Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
+        goBack();
       }
     };
     fetchPrivateKey();
-  }, [t, navigation, authPk]);
+  }, [t, goBack, authPk]);
 
   const onNo = async () => {
     if (!authPk) return;
@@ -96,7 +112,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
       nonce,
       signature,
     });
-    navigation.goBack();
+    goBack();
   };
 
   const onYes = async () => {
@@ -111,7 +127,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     } catch (err) {
       Alert.alert(t('common.error'));
     }
-    navigation.goBack();
+    goBack();
   };
 
   return (

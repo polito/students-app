@@ -10,7 +10,7 @@ const NO_TOKEN = '__EMPTY__';
 const kcSettings: BaseOptions = { service: 'it.polito.students-app' };
 const kcSessingsMfa: SetOptions | GetOptions = {
   service: 'it.polito.students-app.mfa',
-  accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+  accessible: Keychain.ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
   accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
 };
 
@@ -99,21 +99,16 @@ export async function savePrivateKeyMFA(
 export async function getPrivateKeyMFA(
   authenticationPrompt: AuthenticationPrompt,
 ): Promise<string | null> {
-  try {
-    const credentials = await Keychain.getGenericPassword({
-      ...kcSessingsMfa,
-      authenticationPrompt,
-    });
+  const credentials = await Keychain.getGenericPassword({
+    ...kcSessingsMfa,
+    authenticationPrompt,
+  });
 
-    if (credentials !== false && credentials.password) {
-      return credentials.password;
-    }
-
-    return null;
-  } catch (error) {
-    console.error('Errore recupero chiave MFA:', error);
-    return null;
+  if (credentials !== false && credentials.password) {
+    return credentials.password;
   }
+
+  return null;
 }
 
 export async function resetPrivateKeyMFA(): Promise<void> {

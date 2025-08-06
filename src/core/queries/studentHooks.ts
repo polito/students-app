@@ -23,7 +23,7 @@ import { toOASTruncable } from '../../utils/dates.ts';
 import { filterUnread } from '../../utils/messages';
 import { pluckData } from '../../utils/queries';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
-import { MFA_CHALLENGE_QUERY_KEY } from './authHooks.ts';
+import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
 
 export const STUDENT_QUERY_KEY = ['student'];
@@ -231,6 +231,8 @@ export const useGetMessages = () => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
+  const { refetch: refetchMfaChallenge } = useMfaChallengeHandler();
+
   return useQuery({
     queryKey: MESSAGES_QUERY_KEY,
     queryFn: () =>
@@ -250,9 +252,7 @@ export const useGetMessages = () => {
           });
 
           if (hasMfaMessages) {
-            queryClient.invalidateQueries({
-              queryKey: MFA_CHALLENGE_QUERY_KEY,
-            });
+            refetchMfaChallenge();
           }
 
           if (
