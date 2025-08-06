@@ -86,8 +86,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                 <ScreenTitle title={grade.courseName} />
                 <View>
                   <Text>{`${formatDate(new Date(grade.date))} ${
-                    accessibility?.fontSize &&
-                    Number(accessibility.fontSize) < 150
+                    accessibility?.fontSize && accessibility.fontSize < 150
                       ? '-' +
                         t('common.creditsWithUnit', {
                           credits: grade.credits,
@@ -102,8 +101,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                   style={{ marginBottom: 20 }}
                 >
                   <Text>
-                    {accessibility?.fontSize &&
-                    Number(accessibility.fontSize) >= 150
+                    {accessibility?.fontSize && accessibility.fontSize >= 150
                       ? t('common.creditsWithUnit', {
                           credits: grade.credits,
                         })
@@ -118,8 +116,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                 flexShrink={0}
                 style={[
                   styles.grade,
-                  accessibility?.fontSize &&
-                  Number(accessibility.fontSize) >= 150
+                  accessibility?.fontSize && accessibility.fontSize >= 150
                     ? { padding: 0 }
                     : {},
                 ]}

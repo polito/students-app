@@ -33,8 +33,11 @@ const defaultWeights: { [key: string]: keyof Theme['fontWeights'] } = {
   longProse: 'normal',
   secondaryText: 'normal',
 };
-export const calculateValueOfPercentage = (fontSize: number, size: number) => {
-  return (size * fontSize) / 100;
+export const calculateValueOfPercentage = (
+  fontSize?: number,
+  size?: number,
+) => {
+  return ((size || 16) * (fontSize || 1)) / 100;
 };
 
 /**
@@ -165,12 +168,16 @@ export const Text = ({
         capitalize && { textTransform: 'capitalize' },
         uppercase && { textTransform: 'uppercase' },
         style,
-        {
-          fontSize: calculateValueOfPercentage(
-            accessibility?.fontSize ?? 100,
-            fontSizes.md,
-          ),
-        },
+        ...(accessibility?.fontSize && accessibility.fontSize > 100
+          ? [
+              {
+                fontSize: calculateValueOfPercentage(
+                  accessibility.fontSize,
+                  fontSizes.sm,
+                ),
+              },
+            ]
+          : []),
         {
           paddingTop:
             accessibility?.fontSize && accessibility.fontSize <= 125

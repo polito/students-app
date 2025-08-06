@@ -161,7 +161,7 @@ export const ExamListItem = ({
 
       {bottomBorder &&
         accessibility?.fontSize &&
-        Number(accessibility.fontSize) > 150 && (
+        accessibility.fontSize > 150 && (
           <View
             style={{
               height: 1,

@@ -110,8 +110,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
               <Col flexGrow={1} flexShrink={1} gap={2}>
                 <ScreenTitle title={grade.courseName} />
                 <Text>{`${formatDate(new Date(grade.date))} ${
-                  accessibility?.fontSize &&
-                  Number(accessibility.fontSize) < 150
+                  accessibility?.fontSize && accessibility.fontSize < 150
                     ? '-' +
                       t('common.creditsWithUnit', {
                         credits: grade.credits,
@@ -125,8 +124,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                   style={{ marginBottom: 20 }}
                 >
                   <Text>
-                    {accessibility?.fontSize &&
-                    Number(accessibility.fontSize) >= 150
+                    {accessibility?.fontSize && accessibility.fontSize >= 150
                       ? t('common.creditsWithUnit', {
                           credits: grade.credits,
                         })
@@ -141,8 +139,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 flexShrink={0}
                 style={[
                   styles.grade,
-                  accessibility?.fontSize &&
-                  Number(accessibility.fontSize) >= 150
+                  accessibility?.fontSize && accessibility.fontSize >= 150
                     ? { padding: 0 }
                     : {},
                 ]}
