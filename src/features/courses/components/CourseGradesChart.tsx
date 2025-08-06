@@ -194,16 +194,18 @@ export const CourseGradesChart = ({
       <NoChartDataContainer hasData={hasData}>
         <View style={styles.chartContainer}>
           <Svg width={chartWidth} height={chartHeight}>
-            {/* Center line - always visible */}
-            <Line
-              x1={centerX}
-              y1={0}
-              x2={centerX}
-              y2={chartHeight}
-              stroke={colors.divider}
-              strokeWidth="1"
-              opacity="0.5"
-            />
+            {/* Center line */}
+            {hasData && (
+              <Line
+                x1={centerX}
+                y1={0}
+                x2={centerX}
+                y2={chartHeight}
+                stroke={colors.divider}
+                strokeWidth="1"
+                opacity="0.5"
+              />
+            )}
 
             {pyramidData.map((item, index) => {
               const y = 10 + index * barHeight;
@@ -236,17 +238,19 @@ export const CourseGradesChart = ({
                     />
                   )}
 
-                  {/* Vote label in the center - always visible */}
-                  <SvgText
-                    x={centerX}
-                    y={y + barHeight / 2 + 2}
-                    fontSize={labelFontSize}
-                    fill={colors.title}
-                    textAnchor="middle"
-                    fontWeight="bold"
-                  >
-                    {item.grade}
-                  </SvgText>
+                  {/* Vote label in the center */}
+                  {hasData && (
+                    <SvgText
+                      x={centerX}
+                      y={y + barHeight / 2 + 2}
+                      fontSize={labelFontSize}
+                      fill={colors.title}
+                      textAnchor="middle"
+                      fontWeight="bold"
+                    >
+                      {item.grade}
+                    </SvgText>
+                  )}
 
                   {/* Percentages - only if there is data */}
                   {hasData &&

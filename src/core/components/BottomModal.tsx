@@ -56,7 +56,7 @@ export const BottomModal = ({
       onBackdropPress={handleCloseModal}
       scrollTo={handleScrollTo}
       propagateSwipe
-      useNativeDriver={true}
+      useNativeDriver={false}
       useNativeDriverForBackdrop
       onSwipeComplete={handleCloseModal}
       scrollOffset={scrollOffset}
