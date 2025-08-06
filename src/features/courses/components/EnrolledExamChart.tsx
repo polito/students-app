@@ -90,6 +90,9 @@ export const EnrolledExamChart = ({
   }
 
   if (mode === 'compare') {
+    const betweenYearsSpacing = graphSpacing;
+    const withinYearSpacing = 2;
+
     const prevYears =
       statistics?.previousYearsToCompare
         ?.sort((a, b) => a.year - b.year)
@@ -98,14 +101,12 @@ export const EnrolledExamChart = ({
             {
               year: prevYear.year,
               value: prevYear.succeeded,
-              label: `${prevYear.year - 1} - ${prevYear.year}`,
-              spacing: 2,
-              labelWidth: 100,
+              label: `${prevYear.year - 1}/${prevYear.year.toString().slice(-2)}`,
+              spacing: withinYearSpacing,
+              labelWidth: barWidth * 2,
               labelTextStyle: {
                 fontSize: fontSizes['2xs'],
-                position: 'relative',
-                textAlign: 'left',
-                left: barWidth / 2 + (barWidth > 60 ? 10 : 0),
+                textAlign: 'center',
                 color: colors.title,
               },
               frontColor: `${palettes.green[500]}a6`,
@@ -123,6 +124,7 @@ export const EnrolledExamChart = ({
             },
             {
               value: prevYear.failed,
+              spacing: betweenYearsSpacing,
               frontColor: `${palettes.red[500]}a6`,
               topLabelComponent: () => (
                 <Text
@@ -143,16 +145,14 @@ export const EnrolledExamChart = ({
       ...prevYears,
       {
         value: statistics?.totalSucceeded ?? 0,
-        label: `${statistics ? statistics?.year - 1 : 0} - ${
-          statistics?.year ?? 0
+        label: `${statistics ? statistics?.year - 1 : 0}/${
+          statistics?.year.toString().slice(-2) ?? 0
         }`,
-        spacing: 2,
-        labelWidth: 100,
+        spacing: withinYearSpacing,
+        labelWidth: barWidth * 2,
         labelTextStyle: {
           fontSize: fontSizes['2xs'],
-          position: 'relative',
-          textAlign: 'left',
-          left: barWidth / 2 + (barWidth > 60 ? 10 : 0),
+          textAlign: 'center',
           color: colors.title,
         },
         frontColor: palettes.green[500],
@@ -170,6 +170,7 @@ export const EnrolledExamChart = ({
       },
       {
         value: statistics?.totalFailed ?? 0,
+        spacing: betweenYearsSpacing,
         frontColor: palettes.red[500],
         topLabelComponent: () => (
           <Text
