@@ -1,8 +1,18 @@
-import Keychain from 'react-native-keychain';
+import { Platform } from 'react-native';
+import Keychain, {
+  AuthenticationPrompt,
+  BaseOptions,
+  GetOptions,
+  SetOptions,
+} from 'react-native-keychain';
 
 const NO_TOKEN = '__EMPTY__';
-const kcSettings: Keychain.Options = { service: 'it.polito.students-app' };
-const MFA_SERVICE = 'it.polito.students-app.mfa';
+const kcSettings: BaseOptions = { service: 'it.polito.students-app' };
+const kcSessingsMfa: SetOptions | GetOptions = {
+  service: 'it.polito.students-app.mfa',
+  accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+  accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+};
 
 export interface KeychainServiceCredentials {
   username: string;
@@ -59,28 +69,39 @@ export class AuthenticatorPrivKey {
   }
 }
 
+export async function checkCanSavePrivateKeyMFA() {
+  return Platform.select({
+    android: Keychain.getSecurityLevel({
+      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+    }).then(ret => ret !== null && ret !== Keychain.SECURITY_LEVEL.ANY),
+    ios: Keychain.canImplyAuthentication({
+      authenticationType:
+        Keychain.AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
+    }),
+    default: Promise.resolve(false),
+  });
+}
+
 export async function savePrivateKeyMFA(
   serial: string,
   privateKeyB64: string,
-  authenticationPrompt: Keychain.AuthenticationPrompt,
+  authenticationPrompt: AuthenticationPrompt,
 ): Promise<boolean> {
   const privateKey = new AuthenticatorPrivKey(serial, privateKeyB64);
 
   await Keychain.setGenericPassword(serial, privateKey.serialize(), {
-    service: MFA_SERVICE,
-    accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
-    accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+    ...kcSessingsMfa,
     authenticationPrompt,
   });
   return true;
 }
 
 export async function getPrivateKeyMFA(
-  authenticationPrompt: Keychain.AuthenticationPrompt,
+  authenticationPrompt: AuthenticationPrompt,
 ): Promise<string | null> {
   try {
     const credentials = await Keychain.getGenericPassword({
-      service: MFA_SERVICE,
+      ...kcSessingsMfa,
       authenticationPrompt,
     });
 
@@ -96,9 +117,5 @@ export async function getPrivateKeyMFA(
 }
 
 export async function resetPrivateKeyMFA(): Promise<void> {
-  try {
-    await Keychain.resetGenericPassword({ service: MFA_SERVICE });
-  } catch (error) {
-    console.error('Errore reset chiave MFA:', error);
-  }
+  await Keychain.resetGenericPassword({ service: kcSessingsMfa.service });
 }

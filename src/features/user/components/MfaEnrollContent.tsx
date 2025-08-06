@@ -20,7 +20,10 @@ import {
   useSSOLoginInitiator,
 } from '../../../core/queries/authHooks';
 import { generateSecp256k1KeyPair } from '../../../utils/crypto';
-import { savePrivateKeyMFA } from '../../../utils/keychain';
+import {
+  checkCanSavePrivateKeyMFA,
+  savePrivateKeyMFA,
+} from '../../../utils/keychain';
 
 export const MfaEnrollScreen = () => {
   const { t } = useTranslation();
@@ -44,6 +47,11 @@ export const MfaEnrollScreen = () => {
 
     try {
       if (step === 0) {
+        if (!(await checkCanSavePrivateKeyMFA())) {
+          Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
+          navigation.goBack();
+          return;
+        }
         setStep(s => s + 1);
         return;
       }
@@ -57,6 +65,7 @@ export const MfaEnrollScreen = () => {
         isPersistent: false,
       });
     } catch (e) {
+      console.error(e);
       if (e instanceof ApiError) {
         if (e.error === 'secureSessionExpired') {
           Alert.alert(t('common.error'), t('mfaScreen.enroll.expired'), [
@@ -65,7 +74,7 @@ export const MfaEnrollScreen = () => {
           return;
         }
       }
-      Alert.alert(t('common.error'), t('mfaScreen.enroll.failure'));
+      Alert.alert(t('common.error'), t('mfaScreen.enroll.saveFailure'));
     }
     navigation.goBack();
   };

@@ -314,13 +314,14 @@ const Notifications = () => {
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { data: mfaStatus } = useCheckMfa();
+  const { data: mfaStatus } = useCheckMfa(true);
   const { palettes, colors } = useTheme();
   const {
     open: showBottomModal,
     modal: bottomModal,
     close: closeBottomModal,
   } = useBottomModal();
+
   const onPressSecurityMfa = () => {
     showBottomModal(
       <MfaModal
@@ -330,8 +331,10 @@ export const SettingsScreen = () => {
       />,
     );
   };
+
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
+
   return (
     <>
       <BottomModal dismissable {...bottomModal} />

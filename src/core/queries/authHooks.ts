@@ -209,13 +209,13 @@ export const GetWebmailLink = async () => {
   return authClient.getMailLink().then(pluckData);
 };
 
-export const useCheckMfa = () => {
+export const useCheckMfa = (autoFetch = false) => {
   const authClient = useAuthClient();
 
   return useQuery({
     queryKey: MFA_STATUS_QUERY_KEY,
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: autoFetch ? undefined : Infinity,
+    gcTime: autoFetch ? undefined : Infinity,
     queryFn: () =>
       authClient
         .getMfaStatus()
