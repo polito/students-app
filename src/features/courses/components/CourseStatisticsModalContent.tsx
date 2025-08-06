@@ -50,6 +50,7 @@ const createStyles = ({ dark, fontSizes, colors, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       backgroundColor: colors.surface,
+      paddingBottom: spacing[4],
     },
     header: {
       flexDirection: 'row',
