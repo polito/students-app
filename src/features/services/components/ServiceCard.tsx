@@ -1,6 +1,6 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
@@ -19,9 +19,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { uniformInsets } from '../../../utils/insets';
+import { To } from '../../../utils/resolveLinkTo';
 import { resolveLinkTo } from '../../../utils/resolveLinkTo';
 
 interface Props extends PropsWithChildren<TouchableCardProps> {
@@ -51,15 +52,35 @@ export const ServiceCard = ({
   ...props
 }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const styles = useStylesheet(createStyles);
   const { dark, colors, palettes } = useTheme();
   const { t } = useTranslation();
+  const { accessibility } = usePreferencesContext();
 
+  const [minWidth, setMinWidth] = useState(0);
+  const [maxWidth, setMaxWidth] = useState(0);
+
+  const styles = useStylesheet(theme =>
+    createStyles(theme, minWidth, maxWidth),
+  );
+  useEffect(() => {
+    if (Number(accessibility?.fontSize) !== 100) {
+      setMinWidth(Dimensions.get('window').width - 32);
+      setMaxWidth(Dimensions.get('window').width - 32);
+    } else {
+      setMinWidth(110);
+      setMaxWidth(110);
+    }
+  }, [accessibility?.fontSize]);
   return (
     <TouchableCard
       accessibilityRole="button"
       onPress={
-        linkTo ? () => navigation.navigate(resolveLinkTo(linkTo)) : onPress
+        linkTo
+          ? () => {
+              const resolved = resolveLinkTo(linkTo);
+              navigation.navigate(resolved.name as any, resolved.params);
+            }
+          : onPress
       }
       {...props}
       disabled={disabled}
@@ -104,15 +125,19 @@ export const ServiceCard = ({
 };
 
 ServiceCard.minWidth = 110;
-ServiceCard.maxWidth = 184;
+ServiceCard.maxWidth = 384;
 
-const createStyles = ({ spacing, fontSizes }: Theme) =>
+const createStyles = (
+  { spacing, fontSizes }: Theme,
+  minWidth: number,
+  maxWidth: number,
+) =>
   StyleSheet.create({
     touchable: {
       flex: 1,
       height: ServiceCard.minWidth,
-      minWidth: ServiceCard.minWidth,
-      maxWidth: ServiceCard.maxWidth,
+      minWidth,
+      maxWidth,
     },
     card: {
       flex: 1,

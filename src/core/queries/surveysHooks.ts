@@ -16,9 +16,10 @@ const useSurveysClient = (): SurveysApi => {
 export const useGetSurveys = () => {
   const surveysClient = useSurveysClient();
 
-  return useQuery(SURVEYS_QUERY_KEY, () =>
-    surveysClient.getSurveys().then(pluckData),
-  );
+  return useQuery({
+    queryKey: SURVEYS_QUERY_KEY,
+    queryFn: () => surveysClient.getSurveys().then(pluckData),
+  });
 };
 
 const filterMandatoryNotCompiledSurveys = (surveys: Survey[]): Survey[] => {
@@ -28,13 +29,11 @@ const filterMandatoryNotCompiledSurveys = (surveys: Survey[]): Survey[] => {
 export const useGetCpdSurveys = () => {
   const surveysQuery = useGetSurveys();
 
-  return useQuery(
-    CPD_QUERY_KEY,
-    () => filterMandatoryNotCompiledSurveys(surveysQuery.data!),
-    {
-      enabled: surveysQuery.data !== undefined,
-    },
-  );
+  return useQuery({
+    queryKey: CPD_QUERY_KEY,
+    queryFn: () => filterMandatoryNotCompiledSurveys(surveysQuery.data!),
+    enabled: surveysQuery.data !== undefined,
+  });
 };
 
 const filterMandatorySurveys = (surveys: Survey[]): Survey[] => {
@@ -45,13 +44,11 @@ const filterMandatorySurveys = (surveys: Survey[]): Survey[] => {
 export const useGetAllCpdSurveys = () => {
   const surveysQuery = useGetSurveys();
 
-  return useQuery(
-    CPD_ALL_QUERY_KEY,
-    () => filterMandatorySurveys(surveysQuery.data!),
-    {
-      enabled: surveysQuery.data !== undefined,
-    },
-  );
+  return useQuery({
+    queryKey: CPD_ALL_QUERY_KEY,
+    queryFn: () => filterMandatorySurveys(surveysQuery.data!),
+    enabled: surveysQuery.data !== undefined,
+  });
 };
 
 const groupSurveysIntoTypes = (surveys: Survey[]): SurveyType[] => {
@@ -89,11 +86,9 @@ const groupSurveysIntoTypes = (surveys: Survey[]): SurveyType[] => {
 export const useGetSurveyCategories = () => {
   const cpdSurveys = useGetCpdSurveys();
 
-  return useQuery(
-    CPD_CATEGORIES_QUERY_KEY,
-    () => groupSurveysIntoTypes(cpdSurveys.data!),
-    {
-      enabled: cpdSurveys.data !== undefined,
-    },
-  );
+  return useQuery({
+    queryKey: CPD_CATEGORIES_QUERY_KEY,
+    queryFn: () => groupSurveysIntoTypes(cpdSurveys.data!),
+    enabled: cpdSurveys.data !== undefined,
+  });
 };

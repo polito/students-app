@@ -3,6 +3,7 @@ import { ViewStyle } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 
 export const tabBarStyle: ViewStyle = {
+  position: 'absolute',
   display: 'flex',
 };
 

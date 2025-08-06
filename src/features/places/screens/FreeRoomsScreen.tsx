@@ -12,6 +12,7 @@ import { View } from 'react-native';
 import {
   faChevronLeft,
   faChevronRight,
+  faFrown,
   faMapPin,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -45,6 +46,7 @@ import {
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { FREE_ROOMS_TIME_WINDOW_SIZE_HOURS } from '../constants';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
@@ -112,6 +114,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { floorId, setFloorId } = useContext(PlacesContext);
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
 
   const today = useMemo(() => DateTime.now().startOf('day'), []);
 
@@ -231,10 +234,23 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
       headerRight: () => <CampusSelector />,
       mapOptions,
       mapContent: () => (
-        <MarkersLayer places={places ?? []} displayFloor={!displayFloorId} />
+        <MarkersLayer
+          places={places ?? []}
+          displayFloor={!displayFloorId}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
       ),
     });
-  }, [displayFloorId, navigation, places, tabBarHeight, headerHeight]);
+  }, [
+    displayFloorId,
+    navigation,
+    places,
+    tabBarHeight,
+    headerHeight,
+    selectedId,
+    setSelectedId,
+  ]);
 
   return (
     <View style={GlobalStyles.grow} pointerEvents="box-none">
@@ -305,7 +321,10 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
             isLoadingRooms ? (
               <ActivityIndicator style={{ marginVertical: spacing[8] }} />
             ) : (
-              <EmptyState message={t('freeRoomsScreen.noFreeRooms')} />
+              <EmptyState
+                message={t('freeRoomsScreen.noFreeRooms')}
+                icon={faFrown}
+              />
             )
           }
         />

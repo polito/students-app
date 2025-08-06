@@ -38,7 +38,7 @@ import { useGetExams } from './examHooks';
 export const COURSES_QUERY_KEY = ['courses'];
 export const COURSE_QUERY_PREFIX = 'course';
 
-const useCoursesClient = (): CoursesApi => {
+export const useCoursesClient = (): CoursesApi => {
   return new CoursesApi();
 };
 
@@ -98,13 +98,15 @@ export const useGetCourses = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     usePreferencesContext();
 
-  return useQuery<CourseOverview[]>(COURSES_QUERY_KEY, () =>
-    coursesClient
-      .getCourses()
-      .then(pluckData)
-      .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
-      .then(c => setupCourses(c, coursePreferences, updatePreference)),
-  );
+  return useQuery<CourseOverview[]>({
+    queryKey: COURSES_QUERY_KEY,
+    queryFn: () =>
+      coursesClient
+        .getCourses()
+        .then(pluckData)
+        .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
+        .then(c => setupCourses(c, coursePreferences, updatePreference)),
+  });
 };
 
 export const CourseSectionEnum = {
@@ -127,9 +129,9 @@ export const getCourseKey = (
 export const useGetCourse = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery(
-    getCourseKey(courseId),
-    () => {
+  return useQuery({
+    queryKey: getCourseKey(courseId),
+    queryFn: () => {
       return coursesClient
         .getCourse({ courseId: courseId })
         .then(pluckData)
@@ -142,18 +144,16 @@ export const useGetCourse = (courseId: number) => {
           return course;
         });
     },
-    {
-      staleTime: Infinity,
-    },
-  );
+    staleTime: Infinity,
+  });
 };
 
 export const useGetCourseEditions = (courseId: number) => {
   const coursesQuery = useGetCourses();
 
-  return useQuery(
-    getCourseKey(courseId, CourseSectionEnum.Editions),
-    () => {
+  return useQuery({
+    queryKey: getCourseKey(courseId, CourseSectionEnum.Editions),
+    queryFn: () => {
       const course = coursesQuery.data?.find(
         c =>
           c.id === courseId || c.previousEditions.some(e => e.id === courseId),
@@ -175,61 +175,43 @@ export const useGetCourseEditions = (courseId: number) => {
       }
       return editions;
     },
-    {
-      enabled: !!coursesQuery.data,
-    },
-  );
+    enabled: !!coursesQuery.data,
+  });
 };
 
 const courseFilesStaleTime = 60000; // 1 minute
 
 export const useGetCourseFiles = (courseId: number) => {
   const coursesClient = useCoursesClient();
-  const client = useQueryClient();
 
-  return useQuery(
-    getCourseKey(courseId, CourseSectionEnum.Files),
-    () => {
+  return useQuery({
+    queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+    queryFn: () => {
       return coursesClient
         .getCourseFiles({ courseId: courseId })
         .then(pluckData)
         .then(computeFileLocations);
     },
-    {
-      staleTime: courseFilesStaleTime,
-      onSuccess: () => {
-        return Promise.all([
-          client.invalidateQueries([
-            COURSE_QUERY_PREFIX,
-            courseId,
-            'recentFiles',
-          ]),
-          client.invalidateQueries([
-            COURSE_QUERY_PREFIX,
-            courseId,
-            'directories',
-          ]),
-        ]);
-      },
-    },
-  );
+    staleTime: courseFilesStaleTime,
+  });
 };
 
 export const useGetCourseFilesRecent = (courseId: number) => {
   const filesQuery = useGetCourseFiles(courseId);
 
-  const recentFilesQuery = useQuery(
-    [COURSE_QUERY_PREFIX, courseId, 'recentFiles'],
-    () => sortRecentFiles(filesQuery.data!),
-    {
-      enabled: !!filesQuery.data && !filesQuery.isRefetching,
-      staleTime: courseFilesStaleTime,
-    },
-  );
+  const recentFilesQuery = useQuery({
+    queryKey: [COURSE_QUERY_PREFIX, courseId, 'recentFiles'],
+    queryFn: () => sortRecentFiles(filesQuery.data!),
+    enabled: !!filesQuery.data && !filesQuery.isRefetching,
+    staleTime: courseFilesStaleTime,
+  });
 
   return {
     ...recentFilesQuery,
-    refetch: () => filesQuery.refetch().then(recentFilesQuery.refetch),
+    refetch: async () => {
+      await filesQuery.refetch();
+      return recentFilesQuery.refetch();
+    },
   };
 };
 
@@ -311,9 +293,14 @@ export const useGetCourseDirectory = (
 
   const rootDirectoryContent = filesQuery.data;
 
-  const directoryQuery = useQuery(
-    [COURSE_QUERY_PREFIX, courseId, 'directories', directoryId ?? 'root'],
-    () => {
+  const directoryQuery = useQuery({
+    queryKey: [
+      COURSE_QUERY_PREFIX,
+      courseId,
+      'directories',
+      directoryId ?? 'root',
+    ],
+    queryFn: () => {
       if (!directoryId) {
         // Root directory
         return new Promise<CourseDirectoryContentInner[]>(resolve => {
@@ -326,14 +313,15 @@ export const useGetCourseDirectory = (
         resolve(directory);
       });
     },
-    {
-      enabled: !!rootDirectoryContent && !filesQuery.isRefetching,
-      staleTime: courseFilesStaleTime,
-    },
-  );
+    enabled: !!rootDirectoryContent && !filesQuery.isRefetching,
+    staleTime: courseFilesStaleTime,
+  });
   return {
     ...directoryQuery,
-    refetch: () => filesQuery.refetch().then(directoryQuery.refetch),
+    refetch: async () => {
+      await filesQuery.refetch();
+      return directoryQuery.refetch();
+    },
   };
 };
 
@@ -373,52 +361,60 @@ const findDirectory = (
 export const useGetCourseAssignments = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery(getCourseKey(courseId, CourseSectionEnum.Assignments), () =>
-    coursesClient.getCourseAssignments({ courseId: courseId }).then(pluckData),
-  );
+  return useQuery({
+    queryKey: getCourseKey(courseId, CourseSectionEnum.Assignments),
+    queryFn: () =>
+      coursesClient
+        .getCourseAssignments({ courseId: courseId })
+        .then(pluckData),
+  });
 };
 
 export const useUploadAssignment = (courseId: number) => {
   const coursesClient = useCoursesClient();
   const client = useQueryClient();
 
-  return useMutation(
-    (dto: UploadCourseAssignmentRequest) =>
+  return useMutation({
+    mutationFn: (dto: UploadCourseAssignmentRequest) =>
       coursesClient.uploadCourseAssignment(dto),
-    {
-      onSuccess() {
-        return client.invalidateQueries(
-          getCourseKey(courseId, CourseSectionEnum.Assignments),
-        );
-      },
+    onSuccess() {
+      return client.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Assignments),
+      });
     },
-  );
+  });
 };
 
 export const useGetCourseGuide = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery(getCourseKey(courseId, CourseSectionEnum.Guide), () =>
-    coursesClient.getCourseGuide({ courseId: courseId }).then(pluckData),
-  );
+  return useQuery({
+    queryKey: getCourseKey(courseId, CourseSectionEnum.Guide),
+    queryFn: () =>
+      coursesClient.getCourseGuide({ courseId: courseId }).then(pluckData),
+  });
 };
 
 export const useGetCourseNotices = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery(getCourseKey(courseId, CourseSectionEnum.Notices), () =>
-    coursesClient.getCourseNotices({ courseId: courseId }).then(pluckData),
-  );
+  return useQuery({
+    queryKey: getCourseKey(courseId, CourseSectionEnum.Notices),
+    queryFn: () =>
+      coursesClient.getCourseNotices({ courseId: courseId }).then(pluckData),
+  });
 };
 
 export const useGetCourseVirtualClassrooms = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_PREFIX, courseId, 'virtual-classrooms'], () =>
-    coursesClient
-      .getCourseVirtualClassrooms({ courseId: courseId })
-      .then(pluckData),
-  );
+  return useQuery({
+    queryKey: [COURSE_QUERY_PREFIX, courseId, 'virtual-classrooms'],
+    queryFn: () =>
+      coursesClient
+        .getCourseVirtualClassrooms({ courseId: courseId })
+        .then(pluckData),
+  });
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
@@ -453,11 +449,13 @@ export const useGetCourseRelatedVirtualClassrooms = (
 export const useGetCourseVideolectures = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
-  return useQuery([COURSE_QUERY_PREFIX, courseId, 'videolectures'], () =>
-    coursesClient
-      .getCourseVideolectures({ courseId: courseId })
-      .then(pluckData),
-  );
+  return useQuery({
+    queryKey: [COURSE_QUERY_PREFIX, courseId, 'videolectures'],
+    queryFn: () =>
+      coursesClient
+        .getCourseVideolectures({ courseId: courseId })
+        .then(pluckData),
+  });
 };
 
 export const useGetCourseLectures = (courseId: number) => {
@@ -478,9 +476,9 @@ export const useGetCourseLectures = (courseId: number) => {
 
   const { t } = useTranslation();
 
-  return useQuery<CourseLectureSection[]>(
-    [COURSE_QUERY_PREFIX, courseId, 'lectures'],
-    () => {
+  return useQuery<CourseLectureSection[]>({
+    queryKey: [COURSE_QUERY_PREFIX, courseId, 'lectures'],
+    queryFn: () => {
       const lectureSections: CourseLectureSection[] = [];
 
       virtualClassroomsQuery.data?.length &&
@@ -515,47 +513,43 @@ export const useGetCourseLectures = (courseId: number) => {
 
       return lectureSections;
     },
-    {
-      enabled: !(
-        courseQuery.isLoading ||
-        videoLecturesQuery.isLoading ||
-        virtualClassroomsQuery.isLoading ||
-        relatedVCQueries.isLoading
-      ),
-    },
-  );
+    enabled: !(
+      courseQuery.isLoading ||
+      videoLecturesQuery.isLoading ||
+      virtualClassroomsQuery.isLoading ||
+      relatedVCQueries.isLoading
+    ),
+  });
 };
 export const useGetCourseExams = (
   courseId: number,
   courseShortcode: string | undefined,
 ) => {
   const { data: exams } = useGetExams();
-  return useQuery(
-    getCourseKey(courseId, CourseSectionEnum.Exams),
-    () =>
+  return useQuery({
+    queryKey: getCourseKey(courseId, CourseSectionEnum.Exams),
+    queryFn: () =>
       exams!.filter(exam => {
         return exam.courseShortcode === courseShortcode;
       }),
-    {
-      enabled: courseShortcode !== undefined && exams !== undefined,
-    },
-  );
+    enabled: courseShortcode !== undefined && exams !== undefined,
+  });
 };
 
 export const useUpdateCoursePreferences = (courseId: number) => {
   const coursesClient = useCoursesClient();
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (preferences: CoursePreferencesRequest) =>
+  return useMutation({
+    mutationFn: (preferences: CoursePreferencesRequest) =>
       coursesClient.updateCoursePreferences({
         courseId,
         coursePreferencesRequest: preferences,
       }),
-    {
-      onSuccess() {
-        return queryClient.invalidateQueries(getCourseKey(courseId));
-      },
+    onSuccess() {
+      return queryClient.invalidateQueries({
+        queryKey: getCourseKey(courseId),
+      });
     },
-  );
+  });
 };

@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Linking,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -39,6 +38,7 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
   useDeleteBooking,
@@ -75,6 +75,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   });
   const isDisabled = useOfflineDisabled();
   const styles = useStylesheet(createStyles);
+  const openInAppLink = useOpenInAppLink();
   const booking = bookingsQuery.data?.find((e: Booking) => e.id === id);
   const title = booking?.topic?.title ?? '';
   const subTopicTitle = booking?.subtopic?.title ?? '';
@@ -153,7 +154,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
 
   const onPressLocation = async (location: Booking['location']) => {
     if (location.type === 'virtualPlace') {
-      await Linking.openURL(location.url);
+      await openInAppLink(location.url);
     } else if (location.type === 'place') {
       navigation.navigate('PlacesAgendaStack', {
         screen: 'Place',
@@ -289,14 +290,14 @@ export const BookingScreen = ({ navigation, route }: Props) => {
                     : t('bookingScreen.checkIn')
                 }
                 action={onPressCheckIn}
-                loading={updateBookingMutation.isLoading}
+                loading={updateBookingMutation.isPending}
                 variant="outlined"
                 icon={completedCheckIn ? faCheckCircle : undefined}
                 absolute={false}
                 success={completedCheckIn}
                 disabled={
                   isDisabled ||
-                  updateBookingMutation.isLoading ||
+                  updateBookingMutation.isPending ||
                   completedCheckIn
                 }
                 containerStyle={{ paddingVertical: 0 }}
@@ -306,9 +307,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               <CtaButton
                 title={t('bookingScreen.cancelBooking')}
                 action={onPressDelete}
-                loading={deleteBookingMutation.isLoading}
+                loading={deleteBookingMutation.isPending}
                 absolute={false}
-                disabled={isDisabled || deleteBookingMutation.isLoading}
+                disabled={isDisabled || deleteBookingMutation.isPending}
                 destructive={true}
                 containerStyle={{ paddingVertical: 0 }}
               />

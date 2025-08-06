@@ -1,12 +1,12 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet } from 'react-native';
 
-import { faFile, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
@@ -35,7 +35,10 @@ import { CourseFileListItem } from '../components/CourseFileListItem';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
-import { FileStackParamList } from '../navigation/FileNavigator';
+import {
+  FileNavigatorID,
+  FileStackParamList,
+} from '../navigation/FileNavigator';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
@@ -67,13 +70,17 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const { updatePreference } = usePreferencesContext();
   const { clearNotificationScope } = useNotifications();
 
+  const isFileNavigator = useMemo(() => {
+    return navigation.getId() === FileNavigatorID;
+  }, [navigation]);
+
   useEffect(() => {
-    if (navigation.getId() !== 'FileTabNavigator') {
+    if (!isFileNavigator) {
       navigation.setOptions({
         headerTitle: directoryName ?? t('common.file_plural'),
       });
     }
-  }, [directoryName, navigation, t]);
+  }, [directoryName, isFileNavigator, navigation, t]);
 
   directoryQuery.data?.sort((a, b) => {
     if (a.type !== 'directory' && b.type !== 'directory') {
@@ -99,7 +106,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       <CourseFilesCacheProvider>
         <FileCacheChecker />
 
-        {navigation.getId() === 'FileTabNavigator' && (
+        {isFileNavigator && (
           <CourseSearchBar
             searchFilter={searchFilter}
             setSearchFilter={setSearchFilter}
@@ -141,25 +148,24 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
             ListFooterComponent={<BottomBarSpacer />}
             ListEmptyComponent={
               !directoryQuery.isLoading ? (
-                <EmptyState
-                  message={
-                    navigation.getId() === 'FileTabNavigator'
+                <OverviewList
+                  emptyStateText={
+                    isFileNavigator
                       ? t('courseDirectoryScreen.emptyRootFolder')
                       : t('courseDirectoryScreen.emptyFolder')
                   }
-                  icon={faFolderOpen}
                 />
               ) : null
             }
           />
         )}
       </CourseFilesCacheProvider>
-      {navigation.getId() === 'FileTabNavigator' && (
+      {isFileNavigator && navigation && (
         <CtaButton
           title={t('courseDirectoryScreen.navigateRecentFiles')}
           icon={faFile}
           action={() => {
-            navigation!.navigate('RecentFiles', { courseId });
+            navigation.replace('RecentFiles', { courseId });
             updatePreference('filesScreen', 'filesView');
           }}
         />

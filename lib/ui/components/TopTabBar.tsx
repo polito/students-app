@@ -3,11 +3,14 @@ import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+
 export const TopTabBar = ({
   state,
   descriptors,
   navigation,
 }: MaterialTopTabBarProps) => {
+  const { accessibility } = usePreferencesContext();
   return (
     <HeaderAccessory>
       <Tabs>
@@ -46,15 +49,26 @@ export const TopTabBar = ({
             });
           };
 
+          const badgeElement = options.tabBarBadge?.();
+          const badgeText =
+            badgeElement && 'props' in badgeElement
+              ? ((badgeElement as any).props.children as string | number)
+              : undefined;
+
           return (
             <Tab
               key={route.key}
               selected={isFocused}
               accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
+              testID={route.key}
               onPress={onPress}
               onLongPress={onLongPress}
-              badge={options.tabBarBadge?.() as string | number}
+              badge={badgeText}
+              style={
+                accessibility?.fontSize && accessibility.fontSize > 125
+                  ? { paddingVertical: 0 }
+                  : undefined
+              }
             >
               {label as string}
             </Tab>

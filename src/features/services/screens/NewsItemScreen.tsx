@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import {
-  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
 
+import FastImage from '@d11/react-native-fast-image';
 import {
   faCalendarAlt,
   faFileAlt,
@@ -30,6 +29,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { HtmlView } from '../../../core/components/HtmlView';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetNewsItem } from '../../../core/queries/newsHooks';
 import { formatDate, formatDateFromString } from '../../../utils/dates';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -43,6 +43,7 @@ export const NewsItemScreen = ({ route }: Props) => {
   const useNewsItemQuery = useGetNewsItem(id);
   const { data: newsItem, isLoading } = useNewsItemQuery;
   const styles = useStylesheet(createStyles);
+  const openInAppLink = useOpenInAppLink();
   const { title, eventStartTime, createdAt, htmlContent } = newsItem || {};
 
   const links = newsItem?.extras.filter(e => ['link', 'file'].includes(e.type));
@@ -132,7 +133,7 @@ export const NewsItemScreen = ({ route }: Props) => {
                 {links?.map((link, index) => (
                   <TouchableHighlight
                     underlayColor={colors.touchableHighlight}
-                    onPress={() => Linking.openURL(link.url)}
+                    onPress={() => openInAppLink(link.url)}
                     key={index}
                     accessible
                     accessibilityRole="link"

@@ -1,18 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -118,7 +111,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
         />
       }
     >
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         {surveyCategoriesQuery.data?.length ? (
           <SurveyTypesSection types={surveyCategoriesQuery.data} />
         ) : undefined}
@@ -176,10 +169,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('examsScreen.emptyState')
             }
           >
-            {exams.map(exam => (
+            {exams.map((exam, index) => (
               <ExamListItem
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
+                bottomBorder={index < exams.length - 1}
               />
             ))}
           </OverviewList>
@@ -194,7 +188,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             <Card style={styles.transcriptCard}>
               {studentQuery.isLoading ? (
                 isOffline ? (
-                  <EmptyState message={t('common.cacheMiss')} />
+                  <OverviewList emptyStateText={t('common.cacheMiss')} />
                 ) : (
                   <ActivityIndicator style={styles.loader} />
                 )
@@ -269,7 +263,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             )}
           </View>
         </Section>
-      </SafeAreaView>
+      </View>
       <BottomBarSpacer />
     </ScrollView>
   );

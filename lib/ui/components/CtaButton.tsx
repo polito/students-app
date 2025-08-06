@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -12,7 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -21,6 +20,7 @@ import { shadeColor } from '@lib/ui/utils/colors';
 
 import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
 interface Props extends TouchableHighlightProps {
@@ -28,7 +28,7 @@ interface Props extends TouchableHighlightProps {
   icon?: any;
   absolute?: boolean;
   title: string;
-  rightExtra?: JSX.Element;
+  rightExtra?: ReactElement;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
   variant?: 'filled' | 'outlined';
@@ -64,6 +64,7 @@ export const CtaButton = ({
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
+  const { accessibility } = usePreferencesContext();
 
   const outlined = variant === 'outlined';
 
@@ -158,41 +159,45 @@ export const CtaButton = ({
               />
             )}
           </View>
-          <Row style={{ opacity: loading ? 0 : 1 }}>
-            {/* {!loading && ( */}
-            {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
-            {/* )} */}
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {icon && (
-                <Icon
-                  icon={icon}
-                  size={fontSizes.xl}
-                  color={variant === 'filled' ? colors.white : color}
-                  style={{ marginRight: spacing[2] }}
-                />
-              )}
-              <TextWithLinks
-                style={[
-                  styles.textStyle,
-                  variant === 'outlined' && {
-                    borderColor: palettes.primary[400],
-                  },
-                  {
-                    color: variant === 'filled' ? colors.white : color,
-                  },
-                  disabled
-                    ? { color: success ? color : colors.disableTitle }
-                    : undefined,
-                  textStyle,
-                ]}
-                baseStyle={{ fontWeight: fontWeights.medium }}
-                isCta={true}
-              >
-                {title}
-              </TextWithLinks>
-              {rightExtra && rightExtra}
-            </View>
-          </Row>
+          {/* {!loading && ( */}
+          {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
+          {/* )} */}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {icon && Number(accessibility?.fontSize) < 150 && (
+              <Icon
+                icon={icon}
+                size={fontSizes.xl}
+                color={variant === 'filled' ? colors.white : color}
+                style={{ marginRight: spacing[2] }}
+              />
+            )}
+            <TextWithLinks
+              style={[
+                styles.textStyle,
+                variant === 'outlined' && {
+                  borderColor: palettes.primary[400],
+                },
+                {
+                  color: variant === 'filled' ? colors.white : color,
+                },
+                disabled
+                  ? { color: success ? color : colors.disableTitle }
+                  : undefined,
+                textStyle,
+              ]}
+              baseStyle={{
+                fontWeight: fontWeights.medium,
+                color: variant === 'filled' ? colors.white : color,
+                ...(disabled && {
+                  color: success ? color : colors.disableTitle,
+                }),
+              }}
+              isCta={true}
+            >
+              {title}
+            </TextWithLinks>
+            {rightExtra && rightExtra}
+          </View>
         </View>
       </TouchableHighlight>
     </View>

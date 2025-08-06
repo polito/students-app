@@ -2,7 +2,11 @@ import { PropsWithChildren, useMemo } from 'react';
 import { StyleSheet, TouchableHighlight, ViewProps } from 'react-native';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import {
+  faClock,
+  faLocationDot,
+  faVideo,
+} from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
@@ -11,6 +15,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { AgendaIcon } from '../../../src/features/agenda/components/AgendaIcon';
 import { Card } from './Card';
 import { LiveIndicator } from './LiveIndicator';
@@ -57,11 +62,19 @@ export interface AgendaCardProps {
    * On card pressed handler
    */
   onPress?: () => void;
-
+  /**
   /**
    * If true, the card will be compact
    */
   isCompact?: boolean;
+  /**
+   * If true, the card will be a next lecture card
+   */
+  nextLecture?: boolean;
+  /**
+   * The date of the next lecture
+   */
+  nextDate?: string;
   style?: ViewProps['style'];
 }
 
@@ -81,10 +94,12 @@ export const AgendaCard = ({
   location,
   onPress,
   style,
+  nextLecture = false,
+  nextDate,
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
-
+  const { accessibility } = usePreferencesContext();
   const isTablet = useMemo(() => isTabletHelper(), []);
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
 
@@ -137,44 +152,146 @@ export const AgendaCard = ({
           }
         >
           {/* Time and event type are only shown if the card is not compact */}
-          {!isCompact && (
-            <Row align="flex-end" justify="space-between" flexGrow={1}>
-              <Row gap={2}>
+          {!isCompact && !nextLecture && (
+            <>
+              <Row align="flex-end" justify="space-between" flexGrow={1}>
+                <Row gap={2}>
+                  <Text
+                    style={[
+                      styles.time,
+                      secondaryIfLecture,
+                      accessibility?.fontSize &&
+                      Number(accessibility?.fontSize) >= 150
+                        ? { marginTop: 30 }
+                        : undefined,
+                    ]}
+                  >
+                    {time && time}
+                  </Text>
+                  {!isCompact && live && <LiveIndicator showText />}
+                </Row>
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) < 150 && (
+                    <Text
+                      uppercase
+                      variant="caption"
+                      style={secondaryIfLecture}
+                    >
+                      {type}
+                    </Text>
+                  )}
+              </Row>
+              <Row>
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) >= 150 && (
+                    <Text
+                      uppercase
+                      variant="caption"
+                      style={secondaryIfLecture}
+                    >
+                      {type}
+                    </Text>
+                  )}
+              </Row>
+            </>
+          )}
+          {nextLecture && !isCompact && (
+            <Col
+              align="flex-start"
+              justify="space-between"
+              flexGrow={1}
+              gap={2}
+            >
+              <Row gap={1} align="center" justify="space-between">
+                <Text uppercase variant="caption" style={secondaryIfLecture}>
+                  {type}
+                </Text>
+              </Row>
+              {!isCompact && live && <LiveIndicator showText />}
+              <Row gap={1} mt={1.5} align="center">
+                <Icon
+                  icon={faClock}
+                  color={palettes.gray[dark ? 300 : 600]}
+                  size={isCompact && !isTablet ? fontSizes.xs : undefined}
+                />
                 <Text style={[styles.time, secondaryIfLecture]}>
+                  {' '}
                   {time && time}
+                </Text>
+              </Row>
+            </Col>
+          )}
+          {nextLecture && isCompact && (
+            <Col
+              align="flex-start"
+              justify="space-between"
+              flexGrow={1}
+              gap={2}
+            >
+              <Row gap={1} align="center" justify="space-between">
+                <Text uppercase variant="caption" style={secondaryIfLecture}>
+                  {type}
                 </Text>
                 {!isCompact && live && <LiveIndicator showText />}
               </Row>
-              <Text uppercase variant="caption" style={secondaryIfLecture}>
-                {type}
-              </Text>
-            </Row>
-          )}
+              <Row gap={1} mt={1.5} align="center">
+                <Icon
+                  icon={faVideo}
+                  color={palettes.gray[dark ? 300 : 600]}
+                  size={isCompact && !isTablet ? fontSizes.xs : undefined}
+                />
+                <Text
+                  variant="secondaryText"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={{ color: palettes.gray[dark ? 100 : 700] }}
+                >
+                  {nextDate}
+                </Text>
+              </Row>
 
-          <Stack
-            {...(isCompact
-              ? {
-                  direction: !isTablet ? 'column' : 'row',
-                  flexGrow: 1,
-                  gap: isTablet ? 2 : undefined,
-                }
-              : { align: 'center', gap: 2 })}
-          >
-            {showsIcon && <AgendaIcon icon={icon} color={iconColor!} />}
-            <Text
-              style={[
-                styles.title,
-                isCompact
-                  ? isTablet
-                    ? styles.titleCompactTablet
-                    : styles.titleCompact
-                  : undefined,
-              ]}
-              numberOfLines={isCompact ? (isTablet ? 2 : 3) : undefined}
+              <Row gap={1} mt={1.5} align="center">
+                <Icon
+                  icon={faClock}
+                  color={palettes.gray[dark ? 300 : 600]}
+                  size={isCompact && !isTablet ? fontSizes.xs : undefined}
+                />
+                <Text style={[styles.time, secondaryIfLecture]}>
+                  {time && time}
+                </Text>
+              </Row>
+            </Col>
+          )}
+          {!nextLecture && (
+            <Stack
+              {...(isCompact
+                ? {
+                    direction: !isTablet ? 'column' : 'row',
+                    flexGrow: 1,
+                    gap: isTablet ? 2 : undefined,
+                  }
+                : { align: 'center', gap: 2 })}
             >
-              {title}
-            </Text>
-          </Stack>
+              {showsIcon && <AgendaIcon icon={icon} color={iconColor!} />}
+              <Text
+                style={[
+                  styles.title,
+                  isCompact
+                    ? isTablet
+                      ? styles.titleCompactTablet
+                      : styles.titleCompact
+                    : undefined,
+                  accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) >= 150
+                    ? { lineHeight: 30 }
+                    : undefined,
+                ]}
+                numberOfLines={isCompact ? (isTablet ? 2 : 3) : undefined}
+              >
+                {title}
+              </Text>
+            </Stack>
+          )}
 
           {/* Extra children are only shown if the card is not compact */}
           {!isCompact && children}

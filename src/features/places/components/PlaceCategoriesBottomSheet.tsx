@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image } from 'react-native';
 
-import { faMapLocation } from '@fortawesome/free-solid-svg-icons';
+import { faFrown, faMapLocation } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
@@ -34,6 +34,7 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
       }}
       search={search}
       onSearchChange={setSearch}
+      onSearchClear={() => setSearch('')}
       isLoading={isLoading}
       listProps={{
         data: categories?.data
@@ -59,17 +60,16 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
             ),
             onPress: () => {
               sheetRef.current?.close();
-              navigation.navigate({
-                name: 'Places',
-                key: `Places:${sc.id}`,
-                params: {
-                  subCategoryId: sc.id,
-                },
+              navigation.navigate('Places', {
+                subCategoryId: sc.id,
               });
             },
           })),
         ListEmptyComponent: (
-          <EmptyState message={t('placesScreen.noCategoriesFound')} />
+          <EmptyState
+            message={t('placesScreen.noCategoriesFound')}
+            icon={faFrown}
+          />
         ),
       }}
       {...props}

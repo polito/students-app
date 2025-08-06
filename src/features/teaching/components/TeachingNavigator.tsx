@@ -50,7 +50,12 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
 
-const Stack = createNativeStackNavigator<TeachingStackParamList>();
+export const TeachingNavigatorID = 'TeachingTabNavigator';
+
+const Stack = createNativeStackNavigator<
+  TeachingStackParamList,
+  typeof TeachingNavigatorID
+>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
@@ -59,7 +64,7 @@ export const TeachingNavigator = () => {
 
   return (
     <Stack.Navigator
-      id="TeachingTabNavigator"
+      id={TeachingNavigatorID}
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
@@ -135,7 +140,7 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
           headerTransparent: false,
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -147,7 +152,7 @@ export const TeachingNavigator = () => {
         options={{
           headerTitle: t('transcriptGradeScreen.title'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -156,7 +161,7 @@ export const TeachingNavigator = () => {
         options={{
           headerTitle: t('recordedGradeScreen.recordedGradeTitle'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -184,11 +189,11 @@ export const TeachingNavigator = () => {
         options={{
           title: t('teachingScreen.cpdTitle'),
           headerLargeTitle: false,
-          headerBackTitleVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
-      {CourseSharedScreens(Stack as any)}
-      {SharedScreens(Stack as any)}
+      {CourseSharedScreens()}
+      {SharedScreens()}
     </Stack.Navigator>
   );
 };

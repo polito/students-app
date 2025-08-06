@@ -20,11 +20,14 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
+import { Section } from '@lib/ui/components/Section';
+import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
 import { useBottomModal } from '../../../core/hooks/useBottomModal';
@@ -58,7 +61,7 @@ export const ExamScreen = ({ route, navigation }: Props) => {
   const exam = examsQuery.data?.find(e => e.id === id);
   const teacherQuery = useGetPerson(exam?.teacherId);
   const routes = navigation.getState()?.routes;
-
+  const { accessibility } = usePreferencesContext();
   const {
     open: showBottomModal,
     modal: bottomModal,
@@ -121,7 +124,6 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       <ExamCpdModalContent surveys={requirements} close={closeBottomModal} />,
     );
   }, [cpdSurveysQuery.data, exam, showBottomModal, closeBottomModal]);
-
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
@@ -147,8 +149,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                 >
                   {exam?.type}
                 </Text>
-                {exam?.status && <ExamStatusBadge exam={exam} />}
+                {exam?.status && Number(accessibility?.fontSize) < 150 && (
+                  <ExamStatusBadge exam={exam} />
+                )}
               </Row>
+              {exam?.status && Number(accessibility?.fontSize) >= 150 && (
+                <ExamStatusBadge exam={exam} />
+              )}
               <ScreenDateTime
                 accessible={true}
                 date={
@@ -211,7 +218,11 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   <Icon
                     icon={faTriangleExclamation}
                     color="red"
-                    size={fontSizes.md}
+                    size={
+                      accessibility?.fontSize && accessibility.fontSize < 150
+                        ? fontSizes.md
+                        : fontSizes['3xl']
+                    }
                   />
                 ) : undefined
               }
@@ -239,6 +250,38 @@ export const ExamScreen = ({ route, navigation }: Props) => {
               }
             />
           </OverviewList>
+          {exam?.status === 'requested' && (
+            <>
+              <Section>
+                <SectionHeader title="Reschedule reason" />
+              </Section>
+              <OverviewList
+                loading={!isOffline && teacherQuery.isLoading}
+                indented
+              >
+                <ListItem
+                  inverted
+                  /* check using undefined since the fields can be 0 */
+                  title={
+                    <Text variant="longProse" style={{ marginTop: 10 }}>
+                      {exam?.requestReason ?? ''}
+                    </Text>
+                  }
+                  subtitle={t('examScreen.requestReasonTitle')}
+                />
+                <ListItem
+                  inverted
+                  /* check using undefined since the fields can be 0 */
+                  title={
+                    <Text variant="longProse" style={{ marginTop: 10 }}>
+                      {exam?.requestDetails ?? ''}
+                    </Text>
+                  }
+                  subtitle={t('examScreen.requestDetailsTitle')}
+                />
+              </OverviewList>
+            </>
+          )}
           {exam?.feedback && exam?.status === ExamStatusEnum.Unavailable && (
             <ErrorCard text={exam.feedback} />
           )}
@@ -250,7 +293,9 @@ export const ExamScreen = ({ route, navigation }: Props) => {
         {exam?.isReschedulable &&
           exam?.status === ExamStatusEnum.Available &&
           exam && <ExamRescheduleCTA exam={exam} />}
-        {exam && <ExamCTA exam={exam} absolute={false} />}
+        {exam && exam.status !== 'requested' && (
+          <ExamCTA exam={exam} absolute={false} />
+        )}
       </CtaButtonContainer>
       <CtaButtonSpacer />
     </>

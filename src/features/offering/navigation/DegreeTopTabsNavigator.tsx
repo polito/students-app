@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -13,6 +13,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { getShortYear } from '../../../utils/offerings';
@@ -36,7 +37,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   const { id: degreeId, year: initialYear } = route.params;
   const [year, setYear] = useState(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
-
+  const { accessibility } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
 
   const yearOptions = useMemo(() => {
@@ -73,7 +74,17 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
             actions={yearOptions}
             onPressAction={({ nativeEvent: { event } }) => setYear(event)}
           >
-            <Row align="center">
+            <Row
+              align="center"
+              style={{
+                marginTop:
+                  accessibility?.fontSize &&
+                  accessibility.fontSize >= 150 &&
+                  Platform.OS === 'ios'
+                    ? -spacing[3]
+                    : 0,
+              }}
+            >
               <Text variant="prose">
                 {previousDegreeYear}/{getShortYear(degreeYear)}
               </Text>
@@ -99,6 +110,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
     palettes.primary,
     palettes.text,
     yearOptions,
+    accessibility?.fontSize,
   ]);
 
   return (

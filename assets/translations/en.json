@@ -127,6 +127,10 @@
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
+    "customColor":"Color picker",
+    "customColorSubtitle": "Select a custom color",
+    "customColorWarning": "Custom colors",
+    "customColorTitle": "Custom colors",
     "dateAndHours": "Date and hour",
     "dateToBeDefined": "Date to be defined",
     "dateToBeDefinedShort": "To be defined",
@@ -218,6 +222,7 @@
     "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
+    "or": "or",
     "open": "Open",
     "openSettings": "Open settings",
     "openSource": "Open Source",
@@ -319,6 +324,14 @@
     "emptyState": "There are no assignments here",
     "title": "Assignments"
   },
+  "courseColorPickerScreen": {
+    "accessibleColor": "Accessible colors",
+    "areYouSureMessage": "The color selected by the picker is not part of the tested palette and may not provide ideal contrast.",
+    "areYouSureTitle": "Do you want to proceed?",
+    "customColorTitle": "Custom colors",
+    "dontShowAgain": "Don't show again",
+    "title": "Pick a color"
+  },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
     "subtitle_plural": "{{count}} files"
@@ -356,7 +369,7 @@
   },
   "courseInfoTab": {
     "agendaSectionEmptyState": "This course has no entries in the agenda",
-    "agendaSectionTitle": "This course in the agenda",
+    "agendaSectionTitle": "in the agenda",
     "creditsLabel": "Credits",
     "linkDefaultTitle": "Link to",
     "linksSectionEmptyState": "There are no links related to the course",
@@ -365,7 +378,9 @@
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
     "title": "Info",
-    "yearLabel": "Year"
+    "yearLabel": "Year",
+    "nextLectureLabel": "Course in agenda",
+    "nextLectureEmptyState": "No course found in agenda"
   },
   "courseLecturesTab": {
     "emptyState": "There are no lectures here",
@@ -386,6 +401,8 @@
     "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
+    "colorSubtitle": "Choose a color for the course",
+    "iconSubtitle": "Choose an icon for the course",
     "filesSubtitle": "New material available",
     "hideInExtracts": "Hide in extracts",
     "lecturesSubtitle": "New lectures available",
@@ -520,7 +537,9 @@
     "notAvailable": "Booking not available",
     "notes": "Notes",
     "title": "Exam call",
-    "noBookedCount": "Data not available"
+    "noBookedCount": "Data not available",
+    "requestReasonTitle":"Request reason",
+    "requestDetailsTitle":"Request details"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
@@ -590,7 +609,7 @@
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
-    "SSO": "Or login with SSO"
+    "SSO": "Login with SSO"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -640,7 +659,7 @@
   },
   "offeringScreen": {
     "bachelor": "Bachelor degree",
-    "emptyMessage": "No course available",
+    "emptyState": "No course available",
     "master": "Master degree",
     "title": "Offering"
   },
@@ -831,7 +850,7 @@
     "provisionalTitle": "Provisional",
     "recordedTitle": "Recorded",
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
-    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
+    "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
     "total": "There are {{total}} grades"
   },

@@ -234,14 +234,12 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               }
             />
             <OverviewList emptyStateText={t('degreeCourseScreen.noStaff')}>
-              {offeringCourse?.staff
-                .slice(0, 3)
-                .map(item => (
-                  <StaffListItem
-                    key={`${item.id}${item.courseId}`}
-                    staff={item}
-                  />
-                ))}
+              {offeringCourse?.staff.slice(0, 3).map(item => (
+                <StaffListItem
+                  key={`${item.id}${item.courseId}`}
+                  staff={item}
+                />
+              ))}
             </OverviewList>
           </Section>
           <Section>

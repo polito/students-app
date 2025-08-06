@@ -1,7 +1,6 @@
 import { useContext, useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faDiamondTurnRight,
@@ -39,6 +38,7 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
@@ -53,10 +53,10 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
-  const safeAreaInsets = useSafeAreaInsets();
   const { setFloorId, floorId } = useContext(PlacesContext);
   const { siteId, buildingId } = route.params;
   const campus = useGetCurrentCampus();
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const {
     data: building,
     isLoading: isLoadingBuilding,
@@ -110,7 +110,12 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
         },
         mapContent: () => (
           <>
-            <MarkersLayer selectedPoiId={buildingId} places={places} />
+            <MarkersLayer
+              selectedPoiId={buildingId}
+              places={places}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+            />
             {building?.geoJson != null && (
               <ShapeSource
                 id="placeHighlightSource"
@@ -144,8 +149,9 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
     navigation,
     palettes.secondary,
     places,
-    safeAreaInsets.top,
     spacing,
+    selectedId,
+    setSelectedId,
   ]);
 
   if (isLoading) {

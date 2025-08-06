@@ -30,7 +30,7 @@ export const EscInfoBottomModal = ({ onClose, scrollTo, ...rest }: Props) => {
   const { palettes, dark } = useTheme();
   const style = useStylesheet(createStyle);
   const deviceOrientation = useDeviceOrientation();
-  const { mutateAsync: deleteEsc, isLoading: mutationsLoading } =
+  const { mutateAsync: deleteEsc, isPending: mutationsLoading } =
     useDeleteEsc();
 
   const handleBackCloseModal = useCallback(() => {
@@ -61,8 +61,9 @@ export const EscInfoBottomModal = ({ onClose, scrollTo, ...rest }: Props) => {
             };
             Alert.alert(
               t('common.error'),
-              message + ' on ' + e.response.careerId ??
-                t('common.somethingWentWrong'),
+              message && e.response.careerId
+                ? message + ' on ' + e.response.careerId
+                : t('common.somethingWentWrong'),
             );
           }
         });

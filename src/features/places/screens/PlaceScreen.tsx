@@ -1,7 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faDiamondTurnRight,
@@ -36,6 +35,7 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
@@ -51,7 +51,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const { floorId, setFloorId } = useContext(PlacesContext);
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
-  const safeAreaInsets = useSafeAreaInsets();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
   const {
     data: place,
@@ -61,6 +60,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
   const siteId = place?.site.id;
   const placeFloorId = place?.floor.id;
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: siteId,
     floorId: placeFloorId,
@@ -76,6 +76,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const placeName =
     place?.room.name ??
     place?.category.subCategory?.name ??
+    place?.category.name ??
     name ??
     t('common.untitled');
 
@@ -133,6 +134,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               categoryId={place?.category?.id}
               subCategoryId={place?.category?.subCategory?.id}
               isCrossNavigation={isCrossNavigation}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
             />
             {place.geoJson != null && (
               <ShapeSource
@@ -186,6 +189,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 places={places}
                 isCrossNavigation={isCrossNavigation}
                 categoryId="OTHER"
+                selectedId={selectedId}
+                setSelectedId={setSelectedId}
               />
               <ShapeSource id="placeHighlightSource">
                 <LineLayer
@@ -219,7 +224,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     place,
     placeId,
     places,
-    safeAreaInsets.top,
     spacing,
   ]);
 

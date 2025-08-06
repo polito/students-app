@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
 
+import FastImage from '@d11/react-native-fast-image';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';

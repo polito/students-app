@@ -18,9 +18,10 @@ const useOfferingClient = (): OfferingApi => {
 export const useGetOffering = () => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(OFFERING_QUERY_KEY, () =>
-    offeringClient.getOffering().then(pluckData),
-  );
+  return useQuery({
+    queryKey: OFFERING_QUERY_KEY,
+    queryFn: () => offeringClient.getOffering().then(pluckData),
+  });
 };
 
 const mapDegreeToOfferingDegree = (degree: ApiDegree): Degree => ({
@@ -46,12 +47,14 @@ export const useGetOfferingDegree = ({
 }) => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(compact([DEGREES_QUERY_PREFIX, degreeId, year]), () =>
-    offeringClient
-      .getOfferingDegree({ degreeId, year })
-      .then(pluckData)
-      .then(mapDegreeToOfferingDegree),
-  );
+  return useQuery({
+    queryKey: compact([DEGREES_QUERY_PREFIX, degreeId, year]),
+    queryFn: () =>
+      offeringClient
+        .getOfferingDegree({ degreeId, year })
+        .then(pluckData)
+        .then(mapDegreeToOfferingDegree),
+  });
 };
 
 export const useGetOfferingCourse = ({
@@ -63,14 +66,14 @@ export const useGetOfferingCourse = ({
 }) => {
   const offeringClient = useOfferingClient();
 
-  return useQuery(
-    compact([
+  return useQuery({
+    queryKey: compact([
       DEGREES_QUERY_PREFIX,
       COURSES_QUERY_PREFIX,
       courseShortcode,
       year,
     ]),
-    () =>
+    queryFn: () =>
       offeringClient
         .getOfferingCourse({ courseShortcode, year })
         .then(pluckData)
@@ -82,5 +85,5 @@ export const useGetOfferingCourse = ({
           }
           return course;
         }),
-  );
+  });
 };

@@ -14,7 +14,7 @@ import {
 import { DateTime } from 'luxon';
 
 import { toOASTruncable } from '../../utils/dates.ts';
-import { unreadMessages } from '../../utils/messages';
+import { filterUnread } from '../../utils/messages';
 import { pluckData } from '../../utils/queries';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
@@ -29,6 +29,8 @@ export const NOTIFICATIONS_QUERY_KEY = ['notifications'];
 export const NOTIFICATIONS_PREFERENCES_QUERY_KEY = ['notificationsPreferences'];
 export const GUIDES_QUERY_KEY = ['guides'];
 export const DEADLINES_QUERY_PREFIX = 'deadlines';
+
+const UNREAD_MAIL_QUERY_KEY = ['unreadEmails'];
 
 const useStudentClient = (): StudentApi => {
   return new StudentApi();
@@ -45,9 +47,9 @@ const handleAcquiredCredits = (student: Student) => {
 export const useGetStudent = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(
-    STUDENT_QUERY_KEY,
-    () =>
+  const query = useQuery({
+    queryKey: STUDENT_QUERY_KEY,
+    queryFn: () =>
       studentClient
         .getStudent()
         .then(pluckData)
@@ -56,19 +58,21 @@ export const useGetStudent = () => {
           s.degreeLevel = s.degreeLevel.replace(/ in$/, '');
           return s;
         }),
-    {
-      onSuccess: async data => {
-        Sentry.setTag('student_degree_id', data.degreeName);
-        Sentry.setTag('student_degree_name', data.degreeId);
-        Sentry.setTag('student_status', data.status);
-        Sentry.setTag(
-          'student_is_currently_enrolled',
-          data.isCurrentlyEnrolled,
-        );
-      },
-      cacheTime: Infinity,
-    },
-  );
+    gcTime: Infinity,
+  });
+
+  // Handle success logic with useEffect or similar pattern if needed
+  if (query.data && query.isSuccess) {
+    Sentry.setTag('student_degree_id', query.data.degreeName);
+    Sentry.setTag('student_degree_name', query.data.degreeId);
+    Sentry.setTag('student_status', query.data.status);
+    Sentry.setTag(
+      'student_is_currently_enrolled',
+      query.data.isCurrentlyEnrolled,
+    );
+  }
+
+  return query;
 };
 
 const sortGrades = (response: ExamGrade[]) => {
@@ -79,70 +83,75 @@ const sortGrades = (response: ExamGrade[]) => {
 export const useGetGrades = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(GRADES_QUERY_KEY, () =>
-    studentClient.getStudentGrades().then(pluckData).then(sortGrades),
-  );
+  return useQuery({
+    queryKey: GRADES_QUERY_KEY,
+    queryFn: () =>
+      studentClient.getStudentGrades().then(pluckData).then(sortGrades),
+  });
 };
 
 export const useGetProvisionalGrades = () => {
   const studentClient = useStudentClient();
   const queryClient = useQueryClient();
 
-  return useQuery(PROVISIONAL_GRADES_QUERY_KEY, () =>
-    studentClient
-      .getStudentProvisionalGrades()
-      .then(r => {
-        queryClient.setQueryData(PROVISIONAL_GRADE_STATES_QUERY_KEY, r.states);
-        return r;
-      })
-      .then(pluckData),
-  );
+  return useQuery({
+    queryKey: PROVISIONAL_GRADES_QUERY_KEY,
+    queryFn: () =>
+      studentClient
+        .getStudentProvisionalGrades()
+        .then(r => {
+          queryClient.setQueryData(
+            PROVISIONAL_GRADE_STATES_QUERY_KEY,
+            r.states,
+          );
+          return r;
+        })
+        .then(pluckData),
+  });
 };
 
 export const useGetProvisionalGradeStates = () => {
   const provisionalGrades = useGetProvisionalGrades();
 
-  return useQuery<ProvisionalGradeState[]>(
-    PROVISIONAL_GRADE_STATES_QUERY_KEY,
-    () => [],
-    {
-      enabled: !!provisionalGrades.data,
-      staleTime: Infinity,
-    },
-  );
+  return useQuery<ProvisionalGradeState[]>({
+    queryKey: PROVISIONAL_GRADE_STATES_QUERY_KEY,
+    queryFn: () => [],
+    enabled: !!provisionalGrades.data,
+    staleTime: Infinity,
+  });
 };
 
 export const useAcceptProvisionalGrade = () => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
-  return useMutation(
-    (id: number) =>
+  return useMutation({
+    mutationFn: (id: number) =>
       studentClient.acceptProvisionalGrade({ provisionalGradeId: id }),
-    {
-      onSuccess: () =>
-        Promise.all([
-          queryClient.invalidateQueries(PROVISIONAL_GRADES_QUERY_KEY),
-          queryClient.invalidateQueries(GRADES_QUERY_KEY),
-        ]),
-    },
-  );
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: PROVISIONAL_GRADES_QUERY_KEY,
+        }),
+        queryClient.invalidateQueries({ queryKey: GRADES_QUERY_KEY }),
+      ]),
+  });
 };
 
 export const useRejectProvisionalGrade = () => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
-  return useMutation(
-    (id: number) =>
+  return useMutation({
+    mutationFn: (id: number) =>
       studentClient.rejectProvisionalGrade({ provisionalGradeId: id }),
-    {
-      onSuccess: () =>
-        Promise.all([
-          queryClient.invalidateQueries(PROVISIONAL_GRADES_QUERY_KEY),
-        ]),
-    },
-  );
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: PROVISIONAL_GRADES_QUERY_KEY,
+        }),
+      ]),
+  });
 };
 
 const getDeadlineWeekQueryKey = (since: DateTime) => [
@@ -169,13 +178,11 @@ export const useGetDeadlineWeek = (
 ) => {
   const studentClient = useStudentClient();
 
-  return useQuery(
-    getDeadlineWeekQueryKey(since),
-    async () => getDeadlineWeekQueryFn(studentClient, since),
-    {
-      staleTime: Infinity,
-    },
-  );
+  return useQuery({
+    queryKey: getDeadlineWeekQueryKey(since),
+    queryFn: async () => getDeadlineWeekQueryFn(studentClient, since),
+    staleTime: Infinity,
+  });
 };
 
 export const useGetDeadlineWeeks = (
@@ -204,24 +211,22 @@ export const useUpdateDevicePreferences = () => {
   const studentClient = useStudentClient();
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (dto: UpdateDevicePreferencesRequest) =>
+  return useMutation({
+    mutationFn: (dto: UpdateDevicePreferencesRequest) =>
       studentClient.updateDevicePreferences(dto),
-    {
-      onSuccess: () => {
-        return queryClient.invalidateQueries();
-      },
+    onSuccess: () => {
+      return queryClient.invalidateQueries();
     },
-  );
+  });
 };
 
 export const useGetMessages = () => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
-  return useQuery(
-    MESSAGES_QUERY_KEY,
-    () =>
+  return useQuery({
+    queryKey: MESSAGES_QUERY_KEY,
+    queryFn: () =>
       studentClient
         .getMessages()
         .then(pluckData)
@@ -229,41 +234,42 @@ export const useGetMessages = () => {
           const previousMessages =
             queryClient.getQueryData<Message[]>(MESSAGES_QUERY_KEY);
 
+          const unreadMessages = filterUnread(messages);
+
           if (
             previousMessages &&
-            unreadMessages(previousMessages).length >=
-              unreadMessages(messages).length
+            filterUnread(previousMessages).length >= unreadMessages.length
           ) {
             return messages;
           }
 
           queryClient.setQueryData(
             [MESSAGES_QUERY_PREFIX, 'modal'],
-            unreadMessages(messages),
+            unreadMessages,
           );
 
           return messages;
         }),
-    {
-      staleTime: 300000, // 5 minutes
-      refetchInterval: 300000, // 5 minutes
-      refetchOnWindowFocus: 'always',
-    },
-  );
+    staleTime: 300000, // 5 minutes
+    refetchInterval: 300000, // 5 minutes
+    refetchOnWindowFocus: 'always',
+  });
 };
 
 export const useInvalidateMessages = () => {
   const queryClient = useQueryClient();
 
   return {
-    run: () => queryClient.invalidateQueries(MESSAGES_QUERY_KEY),
+    run: () => queryClient.invalidateQueries({ queryKey: MESSAGES_QUERY_KEY }),
   };
 };
 
 export const useGetModalMessages = () => {
   const messagesQuery = useGetMessages();
 
-  return useQuery([MESSAGES_QUERY_PREFIX, 'modal'], () => [], {
+  return useQuery<Message[]>({
+    queryKey: [MESSAGES_QUERY_PREFIX, 'modal'],
+    queryFn: () => [],
     enabled: !!messagesQuery.data,
     staleTime: Infinity,
   });
@@ -273,66 +279,68 @@ export const useMarkMessageAsRead = (invalidate: boolean = true) => {
   const studentClient = useStudentClient();
   const client = useQueryClient();
 
-  return useMutation(
-    (messageId: number) => studentClient.markMessageAsRead({ messageId }),
-    {
-      onSuccess() {
-        return invalidate && client.invalidateQueries(MESSAGES_QUERY_KEY);
-      },
+  return useMutation({
+    mutationFn: (messageId: number) =>
+      studentClient.markMessageAsRead({ messageId }),
+    onSettled() {
+      return (
+        invalidate && client.invalidateQueries({ queryKey: MESSAGES_QUERY_KEY })
+      );
     },
-  );
+  });
 };
 
 export const useGetGuides = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(GUIDES_QUERY_KEY, () =>
-    studentClient.getGuides().then(pluckData),
-  );
+  return useQuery({
+    queryKey: GUIDES_QUERY_KEY,
+    queryFn: () => studentClient.getGuides().then(pluckData),
+  });
 };
 
 export const useGetNotifications = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(
-    NOTIFICATIONS_QUERY_KEY,
-    () => studentClient.getNotifications(),
-    {
-      staleTime: Infinity,
-      refetchOnWindowFocus: true,
-    },
-  );
+  return useQuery({
+    queryKey: NOTIFICATIONS_QUERY_KEY,
+    queryFn: () => studentClient.getNotifications(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: true,
+  });
 };
 
 export const useMarkNotificationAsRead = (invalidate: boolean = true) => {
   const studentClient = useStudentClient();
   const client = useQueryClient();
 
-  return useMutation(
-    (notificationId: number) =>
+  return useMutation({
+    mutationFn: (notificationId: number) =>
       studentClient.markNotificationAsRead({ notificationId }),
-    {
-      onSuccess() {
-        return invalidate && client.invalidateQueries(NOTIFICATIONS_QUERY_KEY);
-      },
+    onSuccess() {
+      return (
+        invalidate &&
+        client.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY })
+      );
     },
-  );
+  });
 };
 
 export const useGetNotificationPreferences = () => {
   const studentClient = useStudentClient();
 
-  return useQuery(NOTIFICATIONS_PREFERENCES_QUERY_KEY, () =>
-    studentClient.getNotificationPreferences().then(pluckData),
-  );
+  return useQuery({
+    queryKey: NOTIFICATIONS_PREFERENCES_QUERY_KEY,
+    queryFn: () => studentClient.getNotificationPreferences().then(pluckData),
+  });
 };
 
 export const useUpdateNotificationPreference = () => {
   const studentClient = useStudentClient();
   const client = useQueryClient();
 
-  return useMutation(
-    ({
+  return useMutation({
+    mutationFn: ({
       notificationType,
       targetValue,
     }: {
@@ -346,13 +354,23 @@ export const useUpdateNotificationPreference = () => {
           },
         },
       }),
-    {
-      onSuccess() {
-        return Promise.all([
-          client.invalidateQueries(NOTIFICATIONS_PREFERENCES_QUERY_KEY),
-          client.invalidateQueries([COURSE_QUERY_PREFIX]),
-        ]);
-      },
+    onSuccess() {
+      return Promise.all([
+        client.invalidateQueries({
+          queryKey: NOTIFICATIONS_PREFERENCES_QUERY_KEY,
+        }),
+        client.invalidateQueries({ queryKey: [COURSE_QUERY_PREFIX] }),
+      ]);
     },
-  );
+  });
+};
+
+export const useGetUnreadEmails = () => {
+  const studentClient = useStudentClient();
+
+  return useQuery({
+    queryKey: UNREAD_MAIL_QUERY_KEY,
+    queryFn: () => studentClient.getUnreadEmailslNumber().then(pluckData),
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
 };

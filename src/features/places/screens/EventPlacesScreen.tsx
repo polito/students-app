@@ -1,8 +1,8 @@
 import { useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { faSignsPost } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { EmptyState } from '@lib/ui/components/EmptyState';
@@ -19,6 +19,7 @@ import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { getBottomSheetScreenPadding } from '../utils/getBottomSheetScreenPadding';
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
@@ -27,17 +28,13 @@ type Props = MapScreenProps<PlacesStackParamList, 'EventPlaces'>;
 
 const initialBottomSheetHeightRatio = 0.5;
 
-/**
- * A screen used to highlight the locations of events that happen in multiple
- * rooms such as first year exams
- */
 export const EventPlacesScreen = ({ navigation, route }: Props) => {
   const { palettes } = useTheme();
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
-  const safeAreaInsets = useSafeAreaInsets();
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const { floorId, setFloorId } = useContext(PlacesContext);
   const { placeIds, eventName, isCrossNavigation } = route.params;
   const placesQueries = useGetMultiplePlaces(placeIds);
@@ -58,90 +55,105 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
     if (isLoading) {
       return undefined;
     }
-    const floorIds = new Set(placesQueries.map(p => p.data?.floor.id));
+    const floorIds = new Set(places.map(p => p.floor.id));
     return floorIds.size === 1 ? [...floorIds][0] : undefined;
-  }, [isLoading, placesQueries]);
+  }, [isLoading, places]);
 
   useEffect(() => {
-    if (!isLoading && floorId !== eventsFloorId) {
+    if (!isLoading && eventsFloorId != null && floorId !== eventsFloorId) {
       setFloorId(eventsFloorId);
     }
   }, [eventsFloorId, floorId, isLoading, setFloorId]);
 
   useScreenTitle(eventName);
 
+  const coordsKey = useMemo(
+    () => places.map(p => `${p.longitude},${p.latitude}`).join(';'),
+    [places],
+  );
+
+  const idKey = useMemo(() => places.map(p => p.id).join(';'), [places]);
+
+  const cameraBounds = useMemo(() => {
+    if (isLoading) {
+      return undefined;
+    }
+    return {
+      ...getBottomSheetScreenPadding({
+        headerHeight,
+        tabBarHeight,
+        initialBottomSheetHeightRatio,
+      }),
+      ...getCoordinatesBounds(
+        places.map(place => [place.longitude, place.latitude]),
+      ),
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, headerHeight, tabBarHeight, coordsKey]);
+
+  const mapContent = useMemo(
+    () => () => (
+      <>
+        <MarkersLayer
+          isCrossNavigation={isCrossNavigation}
+          places={places.map(p => ({ type: 'place', ...p }))}
+          categoryId={places[0]?.category?.id}
+          subCategoryId={places[0]?.category?.subCategory?.id}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
+        {eventsFloorId != null &&
+          places.map(place => {
+            if (!place.geoJson) {
+              return null;
+            }
+            return (
+              <ShapeSource
+                key={`placeOutline:${place.id}`}
+                id={`placeOutline:${place.id}`}
+                shape={place.geoJson as any}
+                existing={false}
+              >
+                <LineLayer
+                  id={`placeHighlightLine:${place.id}`}
+                  aboveLayerID="indoor"
+                  style={{
+                    lineColor: palettes.secondary[600],
+                    lineWidth: 2,
+                  }}
+                />
+                <FillLayer
+                  id={`placeHighlightFill:${place.id}`}
+                  aboveLayerID="indoor"
+                  style={{
+                    fillColor: `${palettes.secondary[600]}33`,
+                  }}
+                />
+              </ShapeSource>
+            );
+          })}
+      </>
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      eventsFloorId,
+      isCrossNavigation,
+      palettes.secondary,
+      selectedId,
+      setSelectedId,
+      coordsKey,
+      idKey,
+    ],
+  );
+
   useLayoutEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && cameraBounds) {
       navigation.setOptions({
-        mapOptions: {
-          camera: {
-            bounds: {
-              ...getBottomSheetScreenPadding({
-                headerHeight,
-                tabBarHeight,
-                initialBottomSheetHeightRatio,
-              }),
-              ...getCoordinatesBounds(
-                places.map(place => [place.longitude, place.latitude]),
-              ),
-            },
-          },
-        },
-        mapContent: () => (
-          <>
-            <MarkersLayer
-              isCrossNavigation={isCrossNavigation}
-              places={placesQueries.map(q => ({ type: 'place', ...q.data! }))}
-              categoryId={places[0]?.category?.id}
-              subCategoryId={places[0]?.category?.subCategory?.id}
-            />
-            {eventsFloorId != null &&
-              places.map(place => {
-                if (!place.geoJson) {
-                  return null;
-                }
-                return (
-                  <ShapeSource
-                    key={`placeOutline:${place.id}`}
-                    id={`placeOutline:${place.id}`}
-                    shape={place.geoJson as any} // TODO fix incompatible types
-                    existing={false}
-                  >
-                    <LineLayer
-                      id={`placeHighlightLine:${place.id}`}
-                      aboveLayerID="indoor"
-                      style={{
-                        lineColor: palettes.secondary[600],
-                        lineWidth: 2,
-                      }}
-                    />
-                    <FillLayer
-                      id={`placeHighlightFill:${place.id}`}
-                      aboveLayerID="indoor"
-                      style={{
-                        fillColor: `${palettes.secondary[600]}33`,
-                      }}
-                    />
-                  </ShapeSource>
-                );
-              })}
-          </>
-        ),
+        mapOptions: { camera: { bounds: cameraBounds } },
+        mapContent,
       });
     }
-  }, [
-    eventsFloorId,
-    tabBarHeight,
-    headerHeight,
-    isLoading,
-    navigation,
-    palettes.secondary,
-    places,
-    placesQueries,
-    safeAreaInsets.top,
-    spacing,
-    isCrossNavigation,
-  ]);
+  }, [isLoading, cameraBounds, mapContent, navigation, coordsKey, idKey]);
 
   if (isLoading) {
     return (
@@ -170,7 +182,10 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
               linkTo: { screen: 'Place', params: { placeId: place.id } },
             })) ?? [],
           ListEmptyComponent: (
-            <EmptyState message={t('placesScreen.noPlacesFound')} />
+            <EmptyState
+              message={t('placesScreen.noPlacesFound')}
+              icon={faSignsPost}
+            />
           ),
         }}
       />

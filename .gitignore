@@ -33,6 +33,9 @@ local.properties
 *.iml
 *.hprof
 .cxx/
+*.keystore
+!debug.keystore
+.kotlin/
 
 # node.js
 #
@@ -65,3 +68,8 @@ npm-debug.*
 .npmrc
 android/sentry.properties
 ios/sentry.properties
+
+# Expo
+.expo
+dist/
+web-build/

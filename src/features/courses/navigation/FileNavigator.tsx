@@ -18,7 +18,12 @@ export type FileStackParamList = {
   };
 };
 
-const Stack = createNativeStackNavigator<FileStackParamList>();
+export const FileNavigatorID = 'FileTabNavigator';
+
+const Stack = createNativeStackNavigator<
+  FileStackParamList,
+  typeof FileNavigatorID
+>();
 export const FileNavigator = () => {
   const theme = useTheme();
   const { filesScreen } = usePreferencesContext();
@@ -26,7 +31,7 @@ export const FileNavigator = () => {
 
   return (
     <Stack.Navigator
-      id="FileTabNavigator"
+      id={FileNavigatorID}
       screenOptions={{
         headerShown: false,
         ...useTitlesStyles(theme),

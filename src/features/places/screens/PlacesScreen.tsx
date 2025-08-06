@@ -7,14 +7,19 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
-  Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -45,7 +50,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { PlaceOverview } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
-import Mapbox, { CameraPadding } from '@rnmapbox/maps';
+import Mapbox from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
 
@@ -83,10 +88,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
   const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
   const headerHeight = useHeaderHeight();
-  const [tabsHeight, setTabsHeight] = useState(46);
+  const [tabsHeight, setTabsHeight] = useState(48);
   const campus = useGetCurrentCampus();
-  const { placesSearched } = usePreferencesContext();
-  const safeAreaInsets = useSafeAreaInsets();
+  const { placesSearched, accessibility } = usePreferencesContext();
   const { cameraRef } = useContext(MapNavigatorContext);
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =
     useContext(PlacesContext);
@@ -122,14 +126,23 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     }
   }, [cameraRef]);
 
+  const categoryFilterActive = useMemo(
+    () => categoryId || subCategoryId,
+    [categoryId, subCategoryId],
+  );
+
+  const mapInsetTop = useMemo(() => {
+    return headerHeight + (!categoryFilterActive ? tabsHeight : 0);
+  }, [categoryFilterActive, headerHeight, tabsHeight]);
+
   const centerToCurrentCampus = useCallback(async () => {
     if (!campus || !cameraRef.current) {
       return;
     }
-    const { latitude, longitude } = campus;
+    const { latitude, longitude, extent } = campus;
     cameraRef.current.fitBounds(
-      [longitude - campus.extent, latitude - campus.extent],
-      [longitude + campus.extent, latitude + campus.extent],
+      [longitude - extent, latitude - extent],
+      [longitude + extent, latitude + extent],
       undefined,
       2000,
     );
@@ -143,9 +156,21 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             campus.floors.find(f => f.level === 0)?.id,
         );
       }
-      centerToCurrentCampus();
+      const { latitude, longitude, extent } = campus;
+      requestAnimationFrame(() => {
+        navigation.setOptions({
+          mapOptions: {
+            camera: {
+              bounds: {
+                ne: [longitude + extent, latitude + extent],
+                sw: [longitude - extent, latitude - extent],
+              },
+            },
+          },
+        });
+      });
     }
-  }, [campus, centerToCurrentCampus, floorId]);
+  }, [campus, navigation, floorId, mapInsetTop]);
 
   const displayFloorId = useMemo(() => {
     if (debouncedSearch) {
@@ -164,70 +189,67 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setMapFloorId(displayFloorId);
     }
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
-
-  const categoryFilterActive = categoryId || subCategoryId;
-
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  const renderMapContent = useCallback(
+    () => (
+      <MarkersLayer
+        search={debouncedSearch}
+        places={places ?? []}
+        displayFloor={!displayFloorId}
+        categoryId={categoryId}
+        subCategoryId={subCategoryId}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+    ),
+    [
+      debouncedSearch,
+      places,
+      displayFloorId,
+      categoryId,
+      subCategoryId,
+      selectedId,
+      setSelectedId,
+    ],
+  );
   useLayoutEffect(() => {
-    const mapInsetTop =
-      headerHeight -
-      safeAreaInsets.top +
-      (!categoryFilterActive ? tabsHeight : 0);
     navigation.setOptions({
-      headerLeft: !categoryFilterActive
-        ? () => <HeaderLogo ml={5} />
-        : undefined,
-      headerRight: () => <CampusSelector />,
-      mapOptions: {
-        camera: {
-          padding: {
-            paddingTop: mapInsetTop,
-          } as CameraPadding,
-          bounds: campus
-            ? {
-                ne: [
-                  campus.longitude - campus.extent,
-                  campus.latitude - campus.extent,
-                ],
-                sw: [
-                  campus.longitude + campus.extent,
-                  campus.latitude + campus.extent,
-                ],
-              }
-            : undefined,
-        },
-      },
-      mapContent: () => (
-        <MarkersLayer
-          search={debouncedSearch}
-          places={places ?? []}
-          displayFloor={!displayFloorId}
-          categoryId={categoryId}
-          subCategoryId={subCategoryId}
-        />
-      ),
+      mapContent: renderMapContent,
     });
-    // Including `navigation` here causes a rerender loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    campus,
-    categoryFilterActive,
     categoryId,
     debouncedSearch,
     displayFloorId,
-    headerHeight,
+    navigation,
     places,
-    safeAreaInsets.top,
-    spacing,
     subCategoryId,
-    tabsHeight,
+    renderMapContent,
   ]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: !categoryFilterActive
+        ? () => (
+            <HeaderLogo
+              ml={4}
+              style={Platform.select({
+                android: { marginRight: 0.5 },
+              })}
+            />
+          )
+        : undefined,
+      headerRight: () => {
+        return <CampusSelector />;
+      },
+    });
+  }, [categoryFilterActive, navigation]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
       bottomSheetPosition.value,
       [0.65 * screenHeight, 0.7 * screenHeight],
       [0, 1],
-      Extrapolate.CLAMP,
+      Extrapolation.CLAMP,
     );
 
     return {
@@ -254,17 +276,43 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     }),
     [search],
   );
-
+  useEffect(() => {
+    if (campus)
+      setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
+  }, [campus]);
   const floorSelectorButton = (
-    <TranslucentCard>
+    <TranslucentCard
+      {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
+        ? { style: { height: 55 } }
+        : {})}
+    >
       <TouchableOpacity
         accessibilityLabel={t('placesScreen.changeFloor')}
         disabled={!!debouncedSearch && displayFloorId != null}
       >
         <Row ph={3} pv={2.5} gap={1} align="center">
-          <Icon icon={faElevator} />
-          <Text>{campus?.floors.find(f => f.id === floorId)?.name}</Text>
-          <Icon icon={faChevronDown} size={fontSizes.xs} />
+          {accessibility?.fontSize && Number(accessibility?.fontSize) < 150 && (
+            <Icon icon={faElevator} />
+          )}
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 75, marginVertical: -20, maxWidth: 250 } }
+              : {
+                  flexShrink: 1,
+                  flexGrow: 1,
+                  marginRight: 20,
+                })}
+          >
+            {campus?.floors.find(f => f.id === floorId)?.name}
+          </Text>
+          <Icon
+            icon={faChevronDown}
+            size={fontSizes.xs}
+            style={{ position: 'absolute', right: 15 }}
+          />
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
@@ -303,13 +351,21 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           }) => setTabsHeight(height)}
         >
           <PillIconButton
-            icon={faClock}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faClock
+                : undefined
+            }
             onPress={() => navigation.navigate('FreeRooms')}
           >
             {t('freeRoomsScreen.title')}
           </PillIconButton>
           <PillIconButton
-            icon={faChalkboardTeacher}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faChalkboardTeacher
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -320,7 +376,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             {t('placeCategories.classrooms')}
           </PillIconButton>
           <PillIconButton
-            icon={faBookReader}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faBookReader
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -331,7 +391,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             {t('placeCategories.studyRooms')}
           </PillIconButton>
           <PillIconButton
-            icon={faBookOpen}
+            icon={
+              accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                ? faBookOpen
+                : undefined
+            }
             onPress={() =>
               navigation.navigate({
                 name: 'Places',
@@ -355,7 +419,10 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           <PillButton onPress={() => setCategoriesPanelOpen(true)}>
             <ThemeContext.Provider value={darkTheme}>
               <Row align="center" gap={2}>
-                <Icon icon={faEllipsis} />
+                {accessibility?.fontSize &&
+                  Number(accessibility?.fontSize) < 150 && (
+                    <Icon icon={faEllipsis} />
+                  )}
                 <Text weight="medium">More</Text>
               </Row>
             </ThemeContext.Provider>
@@ -365,9 +432,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
         <Row gap={3} align="stretch" justify="space-between">
-          <TranslucentCard>
+          <TranslucentCard
+            {...(accessibility?.fontSize &&
+            Number(accessibility?.fontSize) >= 150
+              ? { style: { height: 40 } }
+              : {})}
+          >
             <IconButton
               icon={faCrosshairs}
+              size={spacing[6]}
               style={styles.icon}
               accessibilityLabel={t('placesScreen.goToMyPosition')}
               onPress={centerToUserLocation}
@@ -375,6 +448,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
             <Divider style={styles.divider} size={1} />
             <IconButton
               icon={faExpand}
+              size={spacing[6]}
               style={styles.icon}
               accessibilityLabel={t('placesScreen.viewWholeCampus')}
               onPress={centerToCurrentCampus}
@@ -384,6 +458,9 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           {campus?.floors?.length ? (
             !debouncedSearch ? (
               <StatefulMenuView
+                style={{
+                  maxWidth: '60%',
+                }}
                 onPressAction={({
                   nativeEvent: { event: selectedFloorId },
                 }) => {
@@ -409,7 +486,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   align="center"
                   style={{ opacity: 0.6 }}
                 >
-                  <Icon icon={faElevator} />
+                  {accessibility?.fontSize &&
+                    Number(accessibility?.fontSize) < 150 && (
+                      <Icon icon={faElevator} />
+                    )}
+
                   <Text
                     style={{
                       fontSize: fontSizes['2xs'],
@@ -426,40 +507,42 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         </Row>
       </Animated.View>
 
-      <PlacesBottomSheet
-        index={0}
-        animatedPosition={bottomSheetPosition}
-        search={search}
-        onSearchChange={setSearch}
-        onSearchTrigger={triggerSearch}
-        onSearchClear={() => {
-          setSearch('');
-          setDebouncedSearch('');
-        }}
-        searchFieldLabel={[
-          t('common.search'),
-          categoryFilterName,
-          'in',
-          campus?.name,
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        isLoading={isLoadingPlaces}
-        listProps={{
-          data: listItems,
-          ListEmptyComponent: (
-            <EmptyState
-              message={t('placesScreen.noPlacesFound')}
-              icon={faMagnifyingGlassLocation}
-            />
-          ),
-        }}
-      />
-
-      <PlaceCategoriesBottomSheet
-        index={categoriesPanelOpen ? 0 : -1}
-        onClose={() => setCategoriesPanelOpen(false)}
-      />
+      {(categoriesPanelOpen && (
+        <PlaceCategoriesBottomSheet
+          index={categoriesPanelOpen ? 0 : -1}
+          onClose={() => setCategoriesPanelOpen(false)}
+        />
+      )) || (
+        <PlacesBottomSheet
+          index={0}
+          animatedPosition={bottomSheetPosition}
+          search={search}
+          onSearchChange={setSearch}
+          onSearchTrigger={triggerSearch}
+          onSearchClear={() => {
+            setSearch('');
+            setDebouncedSearch('');
+          }}
+          searchFieldLabel={[
+            t('common.search'),
+            categoryFilterName,
+            'in',
+            campus?.name,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          isLoading={isLoadingPlaces}
+          listProps={{
+            data: listItems,
+            ListEmptyComponent: (
+              <EmptyState
+                message={t('placesScreen.noPlacesFound')}
+                icon={faMagnifyingGlassLocation}
+              />
+            ),
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -482,5 +565,6 @@ const createStyles = ({ spacing }: Theme) =>
     icon: {
       alignItems: 'center',
       paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
     },
   });

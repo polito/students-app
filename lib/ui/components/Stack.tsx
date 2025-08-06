@@ -52,9 +52,7 @@ const spacingShorthands: Record<keyof SpacingShorthands, string> = {
   pv: 'paddingVertical',
 } as const;
 
-export type StackProps<
-  T extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,
-> = {
+export type StackProps<T extends JSXElementConstructor<any>> = {
   direction?: 'row' | 'column';
   component?: T;
   /**
@@ -84,11 +82,7 @@ export type StackProps<
  *
  * See `Row` and `Col` for shorthand alternatives
  */
-export const Stack = <
-  T extends
-    | keyof JSX.IntrinsicElements
-    | JSXElementConstructor<any> = typeof View,
->({
+export const Stack = <T extends JSXElementConstructor<any> = typeof View>({
   component: Component = View,
   direction = 'row',
   align = 'stretch',

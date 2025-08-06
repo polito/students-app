@@ -4,8 +4,8 @@ import { FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useFocusEffect } from '@react-navigation/native';
@@ -78,19 +78,16 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
         }
         ListEmptyComponent={
           !recentFilesQuery.isLoading ? (
-            <EmptyState
-              message={t('courseFilesTab.empty')}
-              icon={faFolderOpen}
-            />
+            <OverviewList emptyStateText={t('courseFilesTab.empty')} />
           ) : null
         }
       />
-      {recentFilesQuery.data && (
+      {recentFilesQuery.data && navigation && (
         <CtaButton
           title={t('courseFilesTab.navigateFolders')}
           icon={faFolderOpen}
           action={() => {
-            navigation!.navigate('DirectoryFiles', { courseId });
+            navigation.replace('DirectoryFiles', { courseId });
             updatePreference('filesScreen', 'directoryView');
           }}
         />

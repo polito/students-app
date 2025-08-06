@@ -64,7 +64,7 @@ export const useCheckForUpdate = () => {
         console.warn('Error while checking for updates', e);
         setUpdateInfo(prev => ({
           ...prev,
-          needsToUpdate: false,
+          needsUpdate: false,
         }));
       }
     }

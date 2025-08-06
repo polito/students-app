@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import ContextMenu from 'react-native-context-menu-view';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -18,7 +19,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
-import { MenuView } from '@react-native-menu/menu';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { IS_IOS } from '../../../core/constants';
@@ -36,7 +36,7 @@ interface TicketListItemProps extends Partial<ListItemProps> {
 }
 
 export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
-  const { fontSizes, colors, palettes, spacing } = useTheme();
+  const { fontSizes, colors, palettes, spacing, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
@@ -59,14 +59,14 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
       return [
         {
           title: t('tickets.close'),
-          color: 'red',
-          image: 'trash.fill',
-          imageColor: 'red',
+          titleColor: dark ? colors.white : colors.black,
+          iconColor: 'red',
+          systemIcon: 'trash.fill',
         },
       ];
     }
     return [];
-  }, [markTicketAsClosedEnabled, t]);
+  }, [markTicketAsClosedEnabled, t, dark, colors]);
 
   const UnReadCount = () => {
     return (
@@ -123,11 +123,11 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
               />
             )}
             {!IS_IOS && markTicketAsClosedEnabled && (
-              <MenuView
+              <ContextMenu
                 title={t('tickets.menuAction')}
                 actions={actions}
-                onPressAction={onPressCloseTicket}
-                isAnchoredToRight={true}
+                onPress={onPressCloseTicket}
+                dropdownMenuMode
               >
                 <IconButton
                   style={styles.icon}
@@ -135,7 +135,7 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
                   color={colors.secondaryText}
                   size={fontSizes.xl}
                 />
-              </MenuView>
+              </ContextMenu>
             )}
           </Row>
         }
@@ -145,14 +145,13 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
 
   if (IS_IOS) {
     return (
-      <MenuView
+      <ContextMenu
         title={t('tickets.menuAction')}
         actions={actions}
-        onPressAction={onPressCloseTicket}
-        shouldOpenOnLongPress={IS_IOS}
+        onPress={actions.length > 0 ? onPressCloseTicket : undefined}
       >
         <Item />
-      </MenuView>
+      </ContextMenu>
     );
   }
 
