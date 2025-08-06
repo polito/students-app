@@ -46,7 +46,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
       backgroundColor: colors.background,
       width: '100%',
       paddingHorizontal: spacing[4],
-      paddingVertical: '50%',
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
