@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Dimensions, Platform, StyleSheet, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { OverviewList } from '@lib/ui/components/OverviewList';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
@@ -121,13 +122,15 @@ export const MfaEnrollScreen = () => {
         <View style={{ width: '100%', alignItems: 'center' }}>
           {/* TextField centrato e largo l'80% */}
           <View style={{ width: '80%', alignItems: 'center' }}>
-            <TextField
-              accessible={true}
-              label={t('mfaScreen.enroll.deviceName')}
-              value={deviceName}
-              onChangeText={setDeviceName}
-              inputStyle={styles.textFieldInput}
-            />
+            <OverviewList style={styles.sectionList} accessible={false}>
+              <TextField
+                accessible={true}
+                label={t('mfaScreen.enroll.deviceName')}
+                value={deviceName}
+                onChangeText={setDeviceName}
+                inputStyle={styles.textFieldInput}
+              />
+            </OverviewList>
           </View>
           <View style={{ width: '80%', alignItems: 'center' }}>
             <CtaButton
@@ -194,6 +197,10 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     },
     textFieldInput: {
       textAlign: 'center',
-      width: '100%',
+      minWidth: Dimensions.get('window').width - spacing[4],
+    },
+    sectionList: {
+      paddingBottom: Platform.select({ android: spacing[4] }),
+      paddingHorizontal: spacing[5],
     },
   });
