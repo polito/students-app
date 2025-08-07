@@ -82,7 +82,6 @@
     "react-native-get-random-values": "^1.11.0",
     "react-native-html-to-pdf": "^0.12.0",
     "react-native-image-crop-picker": "^0.42.0",
-    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-keychain": "^10.0.0",
     "react-native-localize": "^3.3.0",
     "react-native-mime-types": "^2.5.0",
