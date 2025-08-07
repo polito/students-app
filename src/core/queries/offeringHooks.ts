@@ -1,12 +1,17 @@
-import { Degree as ApiDegree, OfferingApi } from '@polito/api-client';
+import {
+  Degree as ApiDegree,
+  CourseStatistics,
+  OfferingApi,
+} from '@polito/api-client';
+import { GetCourseStatisticsRequest } from '@polito/api-client/apis/OfferingApi';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 
-import { compact } from 'lodash';
+import { Degree } from '~/features/offering/types/Degree.ts';
+import { getShortYear } from '~/utils/offerings.ts';
+import { pluckData } from '~/utils/queries.ts';
 
-import { Degree } from '../../features/offering/types/Degree';
-import { getShortYear } from '../../utils/offerings';
-import { pluckData } from '../../utils/queries';
+import { compact } from 'lodash';
 
 export const OFFERING_QUERY_KEY = ['offering'];
 export const DEGREES_QUERY_PREFIX = 'degrees';
@@ -85,5 +90,27 @@ export const useGetOfferingCourse = ({
           }
           return course;
         }),
+  });
+};
+
+export const useGetCourseStatistics = ({
+  courseShortcode,
+  teacherId,
+  year,
+}: GetCourseStatisticsRequest) => {
+  const offeringClient = useOfferingClient();
+
+  return useQuery<CourseStatistics>({
+    queryKey: compact([
+      DEGREES_QUERY_PREFIX,
+      COURSES_QUERY_PREFIX,
+      courseShortcode,
+      year,
+      teacherId,
+    ]),
+    queryFn: () =>
+      offeringClient
+        .getCourseStatistics({ courseShortcode, teacherId, year })
+        .then(pluckData),
   });
 };

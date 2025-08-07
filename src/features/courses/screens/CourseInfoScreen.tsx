@@ -53,6 +53,7 @@ import { LectureCard } from '../../agenda/components/LectureCard';
 import { useGetNextLecture } from '../../agenda/queries/lectureHooks';
 import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { CourseStatisticsFilterType } from '../components/CourseStatisticsFilters.tsx';
 import { useCourseContext } from '../contexts/CourseContext';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
@@ -140,6 +141,7 @@ export const CourseInfoScreen = () => {
     [courseId, queryClient],
   );
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
+  const isStatisticsDisabled = !courseQuery.data?.shortcode;
 
   return (
     <ScrollView
@@ -340,6 +342,21 @@ export const CourseInfoScreen = () => {
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
               disabled={isGuideDisabled}
+            />
+            <ListItem
+              title={t('courseStatisticsScreen.title')}
+              subtitle={t('courseStatisticsScreen.subtitle')}
+              linkTo={{
+                screen: 'CourseStatistics',
+                params: {
+                  courseShortcode: courseQuery.data?.shortcode,
+                  year: courseQuery.data?.year,
+                  teacherId: courseQuery.data?.teacherId,
+                  filter: CourseStatisticsFilterType.YEAR,
+                  nameCourse: courseQuery.data?.name,
+                },
+              }}
+              disabled={isStatisticsDisabled}
             />
           </OverviewList>
         </Section>

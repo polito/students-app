@@ -69,6 +69,7 @@ const createStyles = ({
   shapes,
   fontSizes,
   fontWeights,
+  dark,
 }: Theme) =>
   StyleSheet.create({
     container: {
@@ -81,6 +82,7 @@ const createStyles = ({
       borderTopRightRadius: shapes.md,
       borderTopLeftRadius: shapes.md,
       paddingVertical: spacing[1],
+      backgroundColor: dark ? colors.background : colors.surface,
     },
     headerLeft: { padding: spacing[3] },
     modalTitle: {
