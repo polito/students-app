@@ -361,16 +361,14 @@ export const SettingsScreen = () => {
               <Notifications />
             </Section>*/}
             <Section>
-              {mfaStatus?.status === 'active' && (
-                <SectionHeader
-                  title={t('settingsScreen.securityTitle')}
-                  trailingIcon={{
-                    onPress: onPressSecurityMfa,
-                    icon: faQuestionCircle,
-                    color: colors.link,
-                  }}
-                />
-              )}
+              <SectionHeader
+                title={t('settingsScreen.securityTitle')}
+                trailingIcon={{
+                  onPress: onPressSecurityMfa,
+                  icon: faQuestionCircle,
+                  color: colors.link,
+                }}
+              />
               <OverviewList indented>
                 <ListItem
                   title={t('settingsScreen.authenticatorTitle')}

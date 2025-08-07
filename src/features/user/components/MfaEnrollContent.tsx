@@ -83,9 +83,12 @@ export const MfaEnrollScreen = () => {
             { text: t('common.ok'), onPress: () => handleSSO(true) },
           ]);
           return;
+        } else {
+          Alert.alert(t('common.error'), t('common.somethingWentWrong'));
         }
+      } else {
+        Alert.alert(t('common.error'), t('mfaScreen.enroll.saveFailure'));
       }
-      Alert.alert(t('common.error'), t('mfaScreen.enroll.saveFailure'));
     }
     navigation.goBack();
   };

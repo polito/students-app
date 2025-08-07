@@ -76,6 +76,8 @@ export const useLogin = () => {
   const authClient = useAuthClient();
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
       return Promise.all([
@@ -123,6 +125,7 @@ export const useLogin = () => {
               `User type ${res?.type} not supported by this app`,
             );
           }
+          queryClient.invalidateQueries({ queryKey: MFA_STATUS_QUERY_KEY });
           return res;
         })
         .catch(rethrowApiError);

@@ -23,11 +23,15 @@ export const MfaModal = ({
   return (
     <ModalContent close={onDismiss} title={title}>
       <View style={styles.content} accessible>
-        <Text>{t('common.enroll.serial') + ' : ' + details.serial}</Text>
-        <Text>{t('common.enroll.device') + ' : ' + details.description}</Text>
-        <Text>
-          <RTFTrans i18nKey="mfaScreen.description" />
-        </Text>
+        {details && (
+          <>
+            <Text>{t('common.enroll.serial') + ' : ' + details.serial}</Text>
+            <Text>
+              {t('common.enroll.device') + ' : ' + details.description}
+            </Text>
+          </>
+        )}
+        <RTFTrans i18nKey="mfaScreen.description" />
       </View>
     </ModalContent>
   );
