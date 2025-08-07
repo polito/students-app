@@ -2,12 +2,17 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Dimensions, Platform, StyleSheet, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -38,6 +43,11 @@ export const MfaEnrollScreen = () => {
   const styles = useStylesheet(createStyles);
   const deviceId = DeviceInfo.getDeviceNameSync();
   const [deviceName, setDeviceName] = useState(deviceId);
+  const bottomBarHeight = useBottomTabBarHeight();
+  const keyboard = useAnimatedKeyboard();
+  const animatedBottomPadding = useAnimatedStyle(() => ({
+    paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
+  }));
   const onNo = () => {
     navigation.goBack();
     queryClient.setQueryData(MFA_STATUS_QUERY_KEY, undefined);
@@ -119,7 +129,12 @@ export const MfaEnrollScreen = () => {
     return (
       <>
         <RTFTrans i18nKey="mfaScreen.enroll.note" style={styles.note} />
-        <View style={{ width: '100%', alignItems: 'center' }}>
+        <Animated.View
+          style={[
+            { width: '100%', alignItems: 'center' },
+            animatedBottomPadding,
+          ]}
+        >
           {/* TextField centrato e largo l'80% */}
           <View style={{ width: '80%', alignItems: 'center' }}>
             <OverviewList style={styles.sectionList} accessible={false}>
@@ -141,7 +156,7 @@ export const MfaEnrollScreen = () => {
               loading={isPending}
             />
           </View>
-        </View>
+        </Animated.View>
       </>
     );
 };
@@ -201,6 +216,5 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     },
     sectionList: {
       paddingBottom: Platform.select({ android: spacing[4] }),
-      paddingHorizontal: spacing[5],
     },
   });
