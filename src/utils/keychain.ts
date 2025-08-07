@@ -10,8 +10,14 @@ const NO_TOKEN = '__EMPTY__';
 const kcSettings: BaseOptions = { service: 'it.polito.students-app' };
 const kcSessingsMfa: SetOptions | GetOptions = {
   service: 'it.polito.students-app.mfa',
-  accessible: Keychain.ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
-  accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+  accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+  accessControl: Platform.select({
+    android: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
+    // on ios BIOMETRY_ANY_OR_DEVICE_PASSCODE is done as weird combination
+    // to reach the same behavior that should have USER_PRESENCE
+    // but it doesn't work. USER_PRESENCE seems not to be implemented for Android
+    ios: Keychain.ACCESS_CONTROL.USER_PRESENCE,
+  }),
 };
 
 export interface KeychainServiceCredentials {

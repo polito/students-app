@@ -96,7 +96,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
         }
       } catch (err) {
         console.error(err);
-        Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
+        Alert.alert(t('common.error'), t('mfaScreen.auth.unlockFailure'));
         goBack();
       }
     };

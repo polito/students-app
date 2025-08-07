@@ -43,6 +43,8 @@
 	<dict/>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan documents</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Save PoliTO Authenticator MFA private key in Secure Enclave</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -77,8 +79,6 @@
 	</array>
 	<key>UISupportsDocumentBrowser</key>
 	<true/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Save PoliTO Authenticator MFA private key in Secure Enclave</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

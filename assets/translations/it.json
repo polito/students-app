@@ -675,6 +675,7 @@
     },
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
+      "unlockFailure": "Operazione annullata. Fai pull-down sulla pagina del profilo personale per riprovare.",
       "note": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da idp.polito.it",
       "allow": "Si, autorizza",
       "denyAccess": "Nega accesso",
