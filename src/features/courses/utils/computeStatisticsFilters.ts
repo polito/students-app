@@ -21,14 +21,24 @@ export const formatYearPeriod = (year: number) => {
 const yearsToMenuAction = (
   years: number[],
   selectedYear?: string,
-): MenuAction[] =>
-  years.map(y => {
-    return {
-      id: String(y),
-      title: formatYearPeriod(y),
-      state: selectedYear && parseInt(selectedYear, 10) === y ? 'on' : 'off',
-    };
-  });
+): MenuAction[] => {
+  if (selectedYear && years.indexOf(parseInt(selectedYear, 10)) !== -1) {
+    return years.map(y => {
+      return {
+        id: String(y),
+        title: formatYearPeriod(y),
+        state: selectedYear && parseInt(selectedYear, 10) === y ? 'on' : 'off',
+      };
+    });
+  }
+  return [
+    {
+      id: selectedYear ?? '',
+      title: selectedYear ? formatYearPeriod(parseInt(selectedYear, 10)) : '',
+      state: selectedYear === undefined ? 'off' : 'on',
+    },
+  ];
+};
 
 export type StatisticsFilters = {
   currentTeacher?: MenuAction;

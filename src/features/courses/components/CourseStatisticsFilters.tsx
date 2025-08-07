@@ -46,8 +46,9 @@ export const CourseStatisticsFilters = ({
           >
             {t('courseStatisticsScreen.period')}
           </Text>
-          {filterType === CourseStatisticsFilterType.YEAR ||
-          filterType === CourseStatisticsFilterType.DEFAULT ? (
+          {(filterType === CourseStatisticsFilterType.YEAR ||
+            filterType === CourseStatisticsFilterType.DEFAULT) &&
+          years.length > 1 ? (
             <StatefulMenuView
               onPressAction={({ nativeEvent }) => {
                 onYearChanged(nativeEvent.event);
