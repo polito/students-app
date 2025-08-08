@@ -121,6 +121,7 @@
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
     "contact": "Contact",
+    "correct": "Fix",
     "course": "Course",
     "course_plural": "Courses",
     "createdAt": "Created at",
@@ -642,7 +643,6 @@
     "headerTitle": "Authenticator",
     "biometricPrompt": "Unlock to use PoliTO Authenticator",
     "modalTitle": "PoliTO Authenticator",
-    "description": "<b>PoliTO Authenticator</b> is a second-factor authentication method that enables secure and fast access to University services by sending a notification to your device for confirmation. <br/><br/>It relies on asymmetric cryptography and is <b>installed per device</b>:each installation is independent and tied to a single device. <br/><br/>The following actions will remove this Polito Authenticator installation from your device: <br/><br/>- Logging out <br/>- Uninstalling the app <br/>- Clearing the app’s data via your device settings",
     "enroll": {
       "title": "MFA Activation",
       "prompt": "Do you want to activate <b>PoliTO Authenticator</b> on this device?",
@@ -663,6 +663,10 @@
       "allow": "Yes, authorize",
       "denyAccess": "Deny access",
       "expiration": "Time remaining to authorize: {{time}}"
+    },
+    "settings": {
+      "description": "<b>PoliTO Authenticator</b> is a second-factor authentication method that enables secure and fast access to University services by sending a notification to your device for confirmation.<br/><br/>It relies on asymmetric cryptography and is <b>installed per device</b>:each installation is independent and tied to a single device.<br/><br/>The following actions will remove this Polito Authenticator installation from your device: <br/>- Logging out <br/>- Uninstalling the app <br/>- Clearing the app’s data via your device settings",
+      "notAccessible": "The cryptographic key for the PoliTo Authenticator on this device is not accessible.<br/>This can happen if errors occurred during activation or if the device credentials (PIN/password/biometric authentication) have been changed."
     }
   },
   "newsScreen": {

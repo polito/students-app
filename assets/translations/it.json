@@ -129,6 +129,7 @@
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
     "contact": "Contatto",
+    "correct": "Correggi",
     "course": "Corso",
     "course_plural": "Corsi",
     "createdAt": "Creato il",
@@ -656,7 +657,7 @@
     "takePhotoHint": "Scatta una o più foto e genera un file"
   },
   "mfaScreen": {
-    "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per conferma. <br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>:ogni installazione è indipendente e legata a un singolo dispositivo. <br/><br/>Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo: <br/><br/>- Effettuare il logout <br/>- Disinstallare l’app <br/>- Cancellare i dati dell’app tramite le impostazioni del dispositivo",
+    "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo:<br/>- Effettuare il logout <br/>- Disinstallare l’app <br/>- Cancellare i dati dell’app tramite le impostazioni del dispositivo",
     "modalTitle": "PoliTO Authenticator",
     "headerTitle": "Authenticator",
     "biometricPrompt": "Sblocca PoliTO Authenticator per continuare",
@@ -680,6 +681,10 @@
       "allow": "Si, autorizza",
       "denyAccess": "Nega accesso",
       "expiration": "Tempo rimanente per autorizzare: {{time}}"
+    },
+    "settings": {
+      "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell'Università inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo",
+      "notAccessible": "La chiave crittografica per il PoliTO Authenticator su questo dispositivo non è accessibile.<br/>Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate."
     }
   },
   "newsScreen": {

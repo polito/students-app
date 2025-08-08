@@ -20,11 +20,8 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
   faFont,
-  faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
-import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -36,12 +33,11 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useNavigation } from '@react-navigation/core';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { BottomModal } from '~/core/components/BottomModal';
 import { useBottomModal } from '~/core/hooks/useBottomModal';
 import { useCheckMfa } from '~/core/queries/authHooks';
+import { hasPrivateKeyMFA } from '~/utils/keychain';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
@@ -59,8 +55,7 @@ import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
-import { MfaModal } from '../components/MfaModal';
-import { UserStackParamList } from '../components/UserNavigator';
+import { MfaModal, MfaSettings } from '../components/MfaSettings';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
@@ -315,25 +310,28 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { data: mfaStatus } = useCheckMfa(true);
-  const { palettes, colors } = useTheme();
+  const { colors } = useTheme();
   const {
     open: showBottomModal,
     modal: bottomModal,
     close: closeBottomModal,
   } = useBottomModal();
 
+  const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
+  useEffect(() => {
+    hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
+  }, [mfaStatus]);
+
   const onPressSecurityMfa = () => {
     showBottomModal(
       <MfaModal
         title={t('mfaScreen.modalTitle')}
         mfa={mfaStatus}
+        hasLocalMfaKey={localMfaKey}
         onDismiss={closeBottomModal}
       />,
     );
   };
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
 
   return (
     <>
@@ -369,40 +367,7 @@ export const SettingsScreen = () => {
                   color: colors.link,
                 }}
               />
-              <OverviewList indented>
-                <ListItem
-                  title={t('settingsScreen.authenticatorTitle')}
-                  subtitle=""
-                  // value={mfaEnabled ?? false}
-                  // onChange={value => {
-                  //   updatePreference('mfaEnabled', value);
-                  // }}
-                  leadingItem={<Icon icon={faShieldHalved} size={20} />}
-                  trailingItem={
-                    mfaStatus?.status !== 'active' ? (
-                      <CtaButton
-                        title="Enable"
-                        style={{ elevation: 0 }}
-                        absolute={false}
-                        action={() =>
-                          navigation.navigate('ProfileTab', {
-                            screen: 'PolitoAuthenticator',
-                            params: {
-                              activeView: 'enroll',
-                            },
-                          })
-                        }
-                      ></CtaButton>
-                    ) : (
-                      <Badge
-                        backgroundColor={palettes.success[500]}
-                        foregroundColor={palettes.success[100]}
-                        text={t('common.enabled')}
-                      />
-                    )
-                  }
-                />
-              </OverviewList>
+              <MfaSettings mfa={mfaStatus} localMfaKey={localMfaKey} />
             </Section>
             <Section>
               <SectionHeader title={t('common.cache')} />

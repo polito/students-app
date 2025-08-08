@@ -157,6 +157,7 @@ export const MfaEnrollScreen = () => {
               action={onYes}
               containerStyle={styles.confirmButtonContainer}
               loading={isPending}
+              disabled={deviceName.length === 0}
             />
           </View>
         </Animated.View>

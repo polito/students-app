@@ -4,6 +4,7 @@ import Keychain, {
   BaseOptions,
   GetOptions,
   SetOptions,
+  hasGenericPassword,
 } from 'react-native-keychain';
 
 const NO_TOKEN = '__EMPTY__';
@@ -31,6 +32,7 @@ export async function resetCredentials(): Promise<void> {
     await Keychain.resetGenericPassword(kcSettings);
     await setCredentials(credentials.username, NO_TOKEN);
   }
+  await resetPrivateKeyMFA();
 }
 
 export async function getCredentials(): Promise<
@@ -76,16 +78,7 @@ export class AuthenticatorPrivKey {
 }
 
 export async function checkCanSavePrivateKeyMFA() {
-  return Platform.select({
-    android: Keychain.getSecurityLevel({
-      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
-    }).then(ret => ret !== null && ret !== Keychain.SECURITY_LEVEL.ANY),
-    ios: Keychain.canImplyAuthentication({
-      authenticationType:
-        Keychain.AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
-    }),
-    default: Promise.resolve(false),
-  });
+  return Keychain.isPasscodeAuthAvailable();
 }
 
 export async function savePrivateKeyMFA(
@@ -119,4 +112,8 @@ export async function getPrivateKeyMFA(
 
 export async function resetPrivateKeyMFA(): Promise<void> {
   await Keychain.resetGenericPassword({ service: kcSessingsMfa.service });
+}
+
+export async function hasPrivateKeyMFA(): Promise<boolean> {
+  return hasGenericPassword(kcSessingsMfa);
 }
