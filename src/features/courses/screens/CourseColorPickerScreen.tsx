@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
@@ -41,7 +41,6 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
   const [showModal, setShowModal] = useState(false);
-  const [navigationAction, setNavigationAction] = useState<'back' | null>(null);
 
   const saveColor = useCallback(() => {
     updatePreference('courses', {
@@ -58,24 +57,22 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     updatePreference,
   ]);
 
-  const onPressBack = useCallback(() => {
-    if (temporaryColor === coursesPrefs[route.params.uniqueShortcode]?.color) {
-      return navigation.goBack();
+  useEffect(() => {
+    const originalColor = coursesPrefs[route.params.uniqueShortcode]?.color;
+    if (temporaryColor !== originalColor) {
+      if (!isSafeColor && showColorWarning) {
+        setShowModal(true);
+      } else {
+        saveColor();
+      }
     }
-    if (!showColorWarning || isSafeColor) {
-      saveColor();
-      return navigation.goBack();
-    }
-    setNavigationAction('back');
-    setShowModal(true);
   }, [
     temporaryColor,
+    isSafeColor,
+    showColorWarning,
+    saveColor,
     coursesPrefs,
     route.params.uniqueShortcode,
-    showColorWarning,
-    isSafeColor,
-    saveColor,
-    navigation,
   ]);
 
   const handleConfirm = useCallback(
@@ -85,16 +82,17 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
         updatePreference('showColorWarning', false);
       }
       saveColor();
-      if (navigationAction === 'back') {
-        navigation.goBack();
-      }
     },
-    [saveColor, updatePreference, navigationAction, navigation],
+    [saveColor, updatePreference],
   );
 
   const handleCancel = useCallback(() => {
     setShowModal(false);
-  }, []);
+    setTemporaryColor(
+      coursesPrefs[route.params.uniqueShortcode]?.color ??
+        courseColors[0].color,
+    );
+  }, [coursesPrefs, route.params.uniqueShortcode]);
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
