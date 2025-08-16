@@ -27,7 +27,7 @@ type Props = NativeStackScreenProps<
   'CourseColorPicker'
 >;
 
-export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
+export const CourseColorPickerScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const { spacing, colors } = useTheme();
   const {
