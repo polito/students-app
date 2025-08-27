@@ -271,11 +271,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const triggerSearch = useCallback(
-    debounce(() => setDebouncedSearch(search.trim().toLowerCase()), 100, {
-      leading: true,
-    }),
+    debounce(() => setDebouncedSearch(search.trim().toLowerCase()), 300),
     [search],
   );
+
+  useEffect(() => {
+    triggerSearch();
+  }, [search, triggerSearch]);
+
   useEffect(() => {
     if (campus)
       setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
