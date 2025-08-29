@@ -10,18 +10,18 @@ import {
 } from 'react-native';
 import { stat, unlink } from 'react-native-fs';
 
-import {
-  faCalendarCheck,
-  faQuestionCircle,
-} from '@fortawesome/free-regular-svg-icons';
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import {
   faBroom,
   faCalendarDay,
   faCircleExclamation,
   faCircleHalfStroke,
   faFont,
+  faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
+import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -34,8 +34,6 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { BottomModal } from '~/core/components/BottomModal';
-import { useBottomModal } from '~/core/hooks/useBottomModal';
 import { useCheckMfa } from '~/core/queries/authHooks';
 import { hasPrivateKeyMFA } from '~/utils/keychain';
 
@@ -55,7 +53,6 @@ import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
-import { MfaModal, MfaSettings } from '../components/MfaSettings';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
@@ -310,91 +307,102 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { data: mfaStatus } = useCheckMfa(true);
-  const { colors } = useTheme();
-  const {
-    open: showBottomModal,
-    modal: bottomModal,
-    close: closeBottomModal,
-  } = useBottomModal();
+  const { palettes } = useTheme();
 
   const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
   useEffect(() => {
     hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
   }, [mfaStatus]);
 
-  const onPressSecurityMfa = () => {
-    showBottomModal(
-      <MfaModal
-        title={t('mfaScreen.modalTitle')}
-        mfa={mfaStatus}
-        hasLocalMfaKey={localMfaKey}
-        onDismiss={closeBottomModal}
-      />,
-    );
-  };
-
   return (
-    <>
-      <BottomModal dismissable {...bottomModal} />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <SafeAreaView>
-          <View style={styles.container}>
-            <Section>
-              <SectionHeader title={t('common.theme')} />
-              <OverviewList indented>
-                <VisualizationListItem />
-              </OverviewList>
-            </Section>
-            <Section>
-              <SectionHeader title={t('common.language')} />
-              <OverviewList indented>
-                <LanguageListItem />
-              </OverviewList>
-            </Section>
-            {/* <Section>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <SafeAreaView>
+        <View style={styles.container}>
+          <Section>
+            <SectionHeader title={t('common.theme')} />
+            <OverviewList indented>
+              <VisualizationListItem />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.language')} />
+            <OverviewList indented>
+              <LanguageListItem />
+            </OverviewList>
+          </Section>
+          {/* <Section>
               <SectionHeader
                 title={t('common.notifications')}
                 trailingItem={<Badge text={t('common.comingSoon')} />}
               />
               <Notifications />
             </Section>*/}
-            <Section>
-              <SectionHeader
-                title={t('settingsScreen.securityTitle')}
-                trailingIcon={{
-                  onPress: onPressSecurityMfa,
-                  icon: faQuestionCircle,
-                  color: colors.link,
+          <Section>
+            <SectionHeader title={t('settingsScreen.securityTitle')} />
+            <OverviewList indented>
+              <ListItem
+                title={t('settingsScreen.authenticatorTitle')}
+                accessibilityRole="button"
+                linkTo={{
+                  screen: 'MfaSettings',
+                  params: {
+                    mfa: mfaStatus,
+                    hasLocalMfaKey: localMfaKey,
+                  },
                 }}
+                leadingItem={<Icon icon={faShieldHalved} size={20} />}
+                trailingItem={
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {localMfaKey ? (
+                      <Badge
+                        backgroundColor={palettes.success[500]}
+                        foregroundColor={palettes.success[100]}
+                        text={t('common.enabled')}
+                      />
+                    ) : mfaStatus?.status === 'available' ? (
+                      <Badge
+                        backgroundColor={palettes.warning[500]}
+                        foregroundColor={palettes.warning[100]}
+                        text={t('mfaScreen.settings.disabled')}
+                      />
+                    ) : (
+                      <Badge
+                        backgroundColor={palettes.error[500]}
+                        foregroundColor={palettes.error[100]}
+                        text={t('common.error')}
+                      />
+                    )}
+                    {Platform.OS === 'ios' && <DisclosureIndicator />}
+                  </View>
+                }
               />
-              <MfaSettings mfa={mfaStatus} localMfaKey={localMfaKey} />
-            </Section>
-            <Section>
-              <SectionHeader title={t('common.cache')} />
-              <OverviewList indented>
-                <CleanCacheListItem />
-              </OverviewList>
-            </Section>
-            <Section>
-              <SectionHeader title={t('common.accessibility')} />
-              <OverviewList indented>
-                <ListItem
-                  isAction
-                  title={t('accessibilitySettingsScreen.fontSettingsTitle')}
-                  accessibilityRole="button"
-                  linkTo={{ screen: 'AccessibilitySettings' }}
-                  leadingItem={<Icon icon={faFont} size={20} />}
-                />
-              </OverviewList>
-            </Section>
-            <Col ph={4}>
-              <Text>{t('settingsScreen.appVersion', { version })}</Text>
-            </Col>
-          </View>
-          <BottomBarSpacer />
-        </SafeAreaView>
-      </ScrollView>
-    </>
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.accessibility')} />
+            <OverviewList indented>
+              <ListItem
+                isAction
+                title={t('accessibilitySettingsScreen.fontSettingsTitle')}
+                accessibilityRole="button"
+                linkTo={{ screen: 'AccessibilitySettings' }}
+                leadingItem={<Icon icon={faFont} size={20} />}
+              />
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader title={t('common.cache')} />
+            <OverviewList indented>
+              <CleanCacheListItem />
+            </OverviewList>
+          </Section>
+          <Col ph={4}>
+            <Text>{t('settingsScreen.appVersion', { version })}</Text>
+          </Col>
+        </View>
+        <BottomBarSpacer />
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 

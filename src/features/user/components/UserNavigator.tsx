@@ -16,6 +16,7 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { MfaSettings } from './MfaSettings.tsx';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: { firstRequest?: boolean };
@@ -97,6 +98,13 @@ export const UserNavigator = () => {
         component={MessagesScreen}
         options={{
           headerTitle: t('messagesScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="MfaSettings"
+        component={MfaSettings}
+        options={{
+          headerTitle: t('settingsScreen.authenticatorTitle'),
         }}
       />
       <Stack.Screen
