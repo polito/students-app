@@ -1,7 +1,9 @@
-import Keychain from 'react-native-keychain';
+import Keychain, { BaseOptions } from 'react-native-keychain';
 
 const NO_TOKEN = '__EMPTY__';
-const kcSettings: Keychain.Options = { service: 'it.polito.students-app' };
+const kcSettings: BaseOptions = {
+  service: 'it.polito.students-app',
+};
 
 export interface KeychainServiceCredentials {
   username: string;
