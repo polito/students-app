@@ -16,6 +16,7 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { MfaSettings } from './MfaSettings.tsx';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: { firstRequest?: boolean };
@@ -29,7 +30,12 @@ export type UserStackParamList = OfferingStackParamList & {
   Notifications: undefined;
   Person: { id: number };
 };
-const Stack = createNativeStackNavigator<UserStackParamList>();
+
+export const UserNavigatorID = 'UserTabNavigator';
+const Stack = createNativeStackNavigator<
+  UserStackParamList,
+  typeof UserNavigatorID
+>();
 
 export const UserNavigator = () => {
   const { t } = useTranslation();
@@ -38,6 +44,7 @@ export const UserNavigator = () => {
 
   return (
     <Stack.Navigator
+      id={UserNavigatorID}
       screenOptions={{
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
@@ -91,6 +98,13 @@ export const UserNavigator = () => {
         component={MessagesScreen}
         options={{
           headerTitle: t('messagesScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="MfaSettings"
+        component={MfaSettings}
+        options={{
+          headerTitle: t('settingsScreen.authenticatorTitle'),
         }}
       />
       <Stack.Screen

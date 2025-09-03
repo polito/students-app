@@ -74,7 +74,7 @@ export const AppContent = () => {
         {...bottomModal}
         onModalHide={() => setVersionModalVisible(false)}
       />
-      {isLogged ? (
+      {isLogged && !preferences.loginUid ? (
         <RootNavigator versionModalIsOpen={versionModalVisible} />
       ) : (
         <GuestNavigator />
