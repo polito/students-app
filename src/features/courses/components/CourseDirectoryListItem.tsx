@@ -4,7 +4,7 @@ import { TouchableHighlightProps } from 'react-native';
 import { extension, lookup } from 'react-native-mime-types';
 
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
-import { CourseDirectory } from '@polito/api-client';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { BASE_PATH } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,6 +15,10 @@ import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { splitNameAndExtension } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+
+const isFile = (item: {
+  type: string;
+}): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
 
 interface Props {
   courseId: number;
@@ -37,7 +41,7 @@ export const CourseDirectoryListItem = ({
 
   const isInQueue = useMemo(() => {
     // Check if any file from this specific directory is in the queue
-    const directoryFiles = item.files.filter(file => file.type === 'file');
+    const directoryFiles = item.files.filter(isFile);
 
     return directoryFiles.some(file =>
       downloadQueue.files.some(queuedFile => queuedFile.id === file.id),
@@ -45,7 +49,7 @@ export const CourseDirectoryListItem = ({
   }, [downloadQueue.files, item]);
 
   const allFilesDownloaded = useMemo(() => {
-    const directoryFiles = item.files.filter(file => file.type === 'file');
+    const directoryFiles = item.files.filter(isFile);
 
     if (directoryFiles.length === 0) return false;
 
@@ -78,7 +82,7 @@ export const CourseDirectoryListItem = ({
 
   const handleSelection = useCallback(() => {
     // Use the files directly from the directory item (this was working before)
-    const directoryFiles = item.files.filter(file => file.type === 'file');
+    const directoryFiles = item.files.filter(isFile);
 
     if (isInQueue) {
       // Remove all files from this specific directory from the queue
