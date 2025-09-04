@@ -17,8 +17,11 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 
+import { Checkbox } from '~/core/components/Checkbox';
+
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
+import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
@@ -39,6 +42,7 @@ export interface Props extends Partial<ListItemProps> {
   showCreatedDate?: boolean;
   onSwipeStart?: () => void;
   onSwipeEnd?: () => void;
+  enableMultiSelect?: boolean;
 }
 
 interface MenuProps extends Partial<ContextMenuProps> {
@@ -95,6 +99,7 @@ export const CourseFileListItem = memo(
     showSize = true,
     showLocation = false,
     showCreatedDate = true,
+    enableMultiSelect,
     ...rest
   }: Props) => {
     const { t } = useTranslation();
@@ -116,6 +121,9 @@ export const CourseFileListItem = memo(
       [courseId, item.id],
     );
     const [isCorrupted, setIsCorrupted] = useState(false);
+    const { downloadQueue, addToQueue, removeFromQueue } =
+      useDownloadsContext();
+    const isInQueue = downloadQueue.files.some(f => f.id === item.id);
     const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
     const cachedFilePath = useMemo(() => {
       let ext: string | null = extension(item.mimeType!);
@@ -220,17 +228,38 @@ export const CourseFileListItem = memo(
       () =>
         !isDownloaded ? (
           downloadProgress == null ? (
-            <IconButton
-              icon={faCloudArrowDown}
-              accessibilityLabel={t('common.download')}
-              adjustSpacing="right"
-              onPress={downloadFile}
-              {...iconProps}
-              hitSlop={{
-                left: +spacing[2],
-                right: +spacing[2],
-              }}
-            />
+            enableMultiSelect === false ? (
+              <IconButton
+                icon={faCloudArrowDown}
+                accessibilityLabel={t('common.download')}
+                adjustSpacing="right"
+                onPress={downloadFile}
+                {...iconProps}
+                hitSlop={{
+                  left: +spacing[2],
+                  right: +spacing[2],
+                }}
+              />
+            ) : (
+              <Checkbox
+                isChecked={isInQueue}
+                onPress={() => {
+                  if (isInQueue) {
+                    removeFromQueue(item.id);
+                  } else {
+                    addToQueue({
+                      id: item.id,
+                      name: item.name,
+                      url: fileUrl,
+                      filePath: cachedFilePath,
+                      courseId,
+                    });
+                  }
+                }}
+                textStyle={{ marginHorizontal: 0 }}
+                containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
+              ></Checkbox>
+            )
           ) : (
             <IconButton
               icon={faXmark}
@@ -274,6 +303,15 @@ export const CourseFileListItem = memo(
         refreshDownload,
         removeDownload,
         stopDownload,
+        enableMultiSelect,
+        isInQueue,
+        addToQueue,
+        removeFromQueue,
+        item.id,
+        item.name,
+        fileUrl,
+        cachedFilePath,
+        courseId,
       ],
     );
 
@@ -287,7 +325,25 @@ export const CourseFileListItem = memo(
               : t('common.stop')
             : t('common.open')
         }
-        onPress={downloadFile}
+        onPress={
+          !enableMultiSelect
+            ? () => {
+                downloadFile();
+              }
+            : () => {
+                if (isInQueue) {
+                  removeFromQueue(item.id);
+                } else {
+                  addToQueue({
+                    id: item.id,
+                    name: item.name,
+                    url: fileUrl,
+                    filePath: cachedFilePath,
+                    courseId,
+                  });
+                }
+              }
+        }
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
         title={item.name ?? t('common.unnamedFile')}
