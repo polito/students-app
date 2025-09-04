@@ -271,12 +271,16 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const triggerSearch = useCallback(
-    debounce(() => setDebouncedSearch(search.trim().toLowerCase()), 300),
-    [search],
+    debounce(
+      (searchTerm: string) =>
+        setDebouncedSearch(searchTerm.trim().toLowerCase()),
+      300,
+    ),
+    [],
   );
 
   useEffect(() => {
-    triggerSearch();
+    triggerSearch(search);
   }, [search, triggerSearch]);
 
   useEffect(() => {
@@ -521,7 +525,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           animatedPosition={bottomSheetPosition}
           search={search}
           onSearchChange={setSearch}
-          onSearchTrigger={triggerSearch}
+          onSearchTrigger={() => triggerSearch(search)}
           onSearchClear={() => {
             setSearch('');
             setDebouncedSearch('');
