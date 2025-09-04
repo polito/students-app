@@ -231,13 +231,10 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     switch (event) {
       case screenOptions[0].id:
         if (enableMultiSelect) {
-          // Exit multi-select mode and clear queue
           setEnableMultiSelect(false);
           clearQueue();
         } else {
-          // Enter multi-select mode
           setEnableMultiSelect(true);
-          // Reset hasCompleted when entering selection mode
           setDownloadQueue(prev => ({
             ...prev,
             hasCompleted: false,
@@ -264,13 +261,13 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
 
     // eslint-disable-next-line default-case
     switch (event) {
-      case sortOptions[0].id: // A-Z
+      case sortOptions[0].id:
         setSortedData(sortByNameAsc(directoryQuery.data));
         break;
-      case sortOptions[1].id: // Z-A
+      case sortOptions[1].id:
         setSortedData(sortByNameDesc(directoryQuery.data));
         break;
-      case sortOptions[2].id: // Download status
+      case sortOptions[2].id:
         setSortedData(
           sortWithDirectoriesFirstByDownloadStatus(
             directoryQuery.data,
@@ -293,14 +290,14 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           ),
         );
         break;
-      case sortOptions[3].id: // Newest
+      case sortOptions[3].id:
         setSortedData(
           sortWithDirectoriesFirstByDate(directoryQuery.data, item =>
             item.type === 'file' ? item.createdAt : new Date(0),
           ),
         );
         break;
-      case sortOptions[4].id: // Oldest
+      case sortOptions[4].id:
         setSortedData(
           sortWithDirectoriesFirstByDate(directoryQuery.data, item =>
             item.type === 'file' ? item.createdAt : new Date(0),
