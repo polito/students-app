@@ -9,7 +9,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View, ViewToken } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import useStateRef from 'react-usestateref';
 
 import {
   faCalendarDay,
@@ -67,8 +66,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     ? DateTime.fromISO(params.date)
     : DateTime.now().setZone(APP_TIMEZONE);
 
-  const [nextDate, setNextDate, nextDateRef] =
-    useStateRef<DateTime>(selectedDate);
+  const [nextDate, setNextDate] = useState<DateTime>(selectedDate);
 
   const [weeks, setWeeks] = useState<DateTime[]>([
     selectedDate.startOf('week'),
@@ -89,16 +87,15 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
-  const [agendaState, setAgendaState, agendaStateRef] =
-    useStateRef<AgendaState>({
-      contentHeight: 0, // the total height of scrollview content
-      currentOffset: 0, // current scrollview offset
-      isRefreshing: false, // is refreshing all agenda data
-      shouldLoadNext: false, // should retrieve the previous page of data
-      shouldLoadPrevious: true, // should retrieve the next page of data
-      dayOffsetInWeek: 0, // the offset of day inside its week
-      dayOffsetOverall: 0, // the offset of day, based on contentHeight
-    });
+  const [agendaState, setAgendaState] = useState<AgendaState>({
+    contentHeight: 0, // the total height of scrollview content
+    currentOffset: 0, // current scrollview offset
+    isRefreshing: false, // is refreshing all agenda data
+    shouldLoadNext: false, // should retrieve the previous page of data
+    shouldLoadPrevious: true, // should retrieve the next page of data
+    dayOffsetInWeek: 0, // the offset of day inside its week
+    dayOffsetOverall: 0, // the offset of day, based on contentHeight
+  });
 
   const refreshQueries = useCallback(() => {
     const dependingQueryKeys = [
@@ -130,11 +127,14 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       if (!viewableItems.length) return;
       const startDate = (viewableItems[0].item as AgendaWeek).dateRange.start;
       if (startDate === null) return;
-      if (startDate.startOf('week').equals(nextDateRef.current.startOf('week')))
-        return;
-      setNextDate(startDate);
+      setNextDate(prevDate => {
+        if (startDate.startOf('week').equals(prevDate.startOf('week'))) {
+          return prevDate;
+        }
+        return startDate;
+      });
     },
-    [nextDateRef, setNextDate],
+    [],
   );
 
   const getSelectedWeek = useCallback(
@@ -154,13 +154,17 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   );
 
   const scrollToSelectedDay = useCallback(() => {
-    agendaStateRef.current.dayOffsetOverall > 0 &&
-      flatListRef.current?.scrollToOffset({
-        offset: agendaStateRef.current.dayOffsetOverall,
-        animated: true,
-      });
+    setAgendaState(prevState => {
+      if (prevState.dayOffsetOverall > 0) {
+        flatListRef.current?.scrollToOffset({
+          offset: prevState.dayOffsetOverall,
+          animated: true,
+        });
+      }
+      return prevState;
+    });
     setIsScrolling(false);
-  }, [agendaStateRef]);
+  }, []);
 
   // TODO try to scroll backwards
   // https://github.com/polito/students-app/blob/v1.6.9/src/features/agenda/screens/AgendaScreen.tsx#L155
