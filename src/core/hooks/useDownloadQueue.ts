@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { downloadFile, stopDownload as fsStopDownload } from 'react-native-fs';
 
@@ -17,6 +17,37 @@ export const useDownloadQueue = () => {
   downloadQueueRef.current = downloadQueue;
 
   const downloadResultsRef = useRef({ successCount: 0, errorCount: 0 });
+  const pendingFeedbackRef = useRef<{
+    successCount: number;
+    errorCount: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (
+      pendingFeedbackRef.current &&
+      !downloadQueue.isDownloading &&
+      downloadQueue.hasCompleted
+    ) {
+      const { successCount, errorCount } = pendingFeedbackRef.current;
+
+      if (errorCount === 0) {
+        setFeedback({
+          text: t('courseDirectoryScreen.downloadCompleted'),
+          isPersistent: false,
+        });
+      } else {
+        setFeedback({
+          text: t('courseDirectoryScreen.downloadCompletedWithErrors', {
+            successCount,
+            errorCount,
+          }),
+          isPersistent: false,
+        });
+      }
+
+      pendingFeedbackRef.current = null;
+    }
+  }, [downloadQueue.isDownloading, downloadQueue.hasCompleted, setFeedback, t]);
 
   const downloadNextFile = useCallback(async () => {
     const currentQueue = downloadQueueRef.current;
@@ -106,31 +137,13 @@ export const useDownloadQueue = () => {
         },
       }));
 
-      // Increment success counter
       downloadResultsRef.current.successCount++;
 
       setDownloadQueue(prev => {
         const newIndex = prev.currentFileIndex + 1;
 
         if (prev.currentFileIndex >= prev.files.length - 1) {
-          // Calculate feedback at the end of all downloads
-          // Show feedback using the counters
-          const { successCount, errorCount } = downloadResultsRef.current;
-
-          if (errorCount === 0) {
-            setFeedback({
-              text: t('courseDirectoryScreen.downloadCompleted'),
-              isPersistent: false,
-            });
-          } else {
-            setFeedback({
-              text: t('courseDirectoryScreen.downloadCompletedWithErrors', {
-                successCount,
-                errorCount,
-              }),
-              isPersistent: false,
-            });
-          }
+          pendingFeedbackRef.current = { ...downloadResultsRef.current };
 
           return {
             ...prev,
@@ -150,7 +163,6 @@ export const useDownloadQueue = () => {
           isProcessingFile: false,
         };
 
-        // Continue with next file
         setTimeout(() => {
           downloadNextFile();
         }, 0);
@@ -167,31 +179,13 @@ export const useDownloadQueue = () => {
         },
       }));
 
-      // Increment error counter
       downloadResultsRef.current.errorCount++;
 
       setDownloadQueue(prev => {
         const newIndex = prev.currentFileIndex + 1;
 
         if (prev.currentFileIndex >= prev.files.length - 1) {
-          // Calculate feedback at the end of all downloads
-          // Show feedback using the counters
-          const { successCount, errorCount } = downloadResultsRef.current;
-
-          if (errorCount === 0) {
-            setFeedback({
-              text: t('courseDirectoryScreen.downloadCompleted'),
-              isPersistent: false,
-            });
-          } else {
-            setFeedback({
-              text: t('courseDirectoryScreen.downloadCompletedWithErrors', {
-                successCount,
-                errorCount,
-              }),
-              isPersistent: false,
-            });
-          }
+          pendingFeedbackRef.current = { ...downloadResultsRef.current };
 
           return {
             ...prev,
@@ -211,7 +205,6 @@ export const useDownloadQueue = () => {
           isProcessingFile: false,
         };
 
-        // Continue with next file
         setTimeout(() => {
           downloadNextFile();
         }, 0);
@@ -219,13 +212,12 @@ export const useDownloadQueue = () => {
         return newState;
       });
     }
-  }, [token, t, setDownloadQueue, setDownloads, setFeedback]);
+  }, [token, t, setDownloadQueue, setDownloads]);
 
   const startQueueDownload = useCallback(() => {
     const currentQueue = downloadQueueRef.current;
     if (currentQueue.files.length === 0) return;
 
-    // Reset counters for new download session
     downloadResultsRef.current = { successCount: 0, errorCount: 0 };
 
     setDownloadQueue(prev => ({
@@ -235,7 +227,6 @@ export const useDownloadQueue = () => {
       overallProgress: 0,
     }));
 
-    // Start the first download
     setTimeout(() => {
       downloadNextFile();
     }, 0);

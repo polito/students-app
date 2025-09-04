@@ -40,7 +40,6 @@ export const CourseDirectoryListItem = ({
   const [courseFilesCache] = useCourseFilesCachePath();
 
   const isInQueue = useMemo(() => {
-    // Check if any file from this specific directory is in the queue
     const directoryFiles = item.files.filter(isFile);
 
     return directoryFiles.some(file =>
@@ -53,7 +52,6 @@ export const CourseDirectoryListItem = ({
 
     if (directoryFiles.length === 0) return false;
 
-    // Check if all files in the directory are downloaded
     return directoryFiles.every(file => {
       const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${file.id}`;
       const [filenameFromName, extensionFromName] = splitNameAndExtension(
@@ -81,20 +79,16 @@ export const CourseDirectoryListItem = ({
   }, [item, courseId, courseFilesCache, downloads]);
 
   const handleSelection = useCallback(() => {
-    // Use the files directly from the directory item (this was working before)
     const directoryFiles = item.files.filter(isFile);
 
     if (isInQueue) {
-      // Remove all files from this specific directory from the queue
       directoryFiles.forEach(file => {
         removeFromQueue(file.id);
       });
     } else {
-      // Add all files from this specific directory to the queue
       directoryFiles.forEach(file => {
         const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${file.id}`;
 
-        // Use the same logic as CourseFileListItem for consistency
         let ext: string | null = extension(file.mimeType!);
         const [filenameFromName, extensionFromName] = splitNameAndExtension(
           file.name,
@@ -103,13 +97,11 @@ export const CourseDirectoryListItem = ({
           ext = extensionFromName;
         }
 
-        // Construct the file path based on the directory name
-        // Since we're in a directory, the path should be /directoryName
         const fileLocation = `/${item.name}`;
 
         const cachedFilePath = [
           courseFilesCache,
-          fileLocation.substring(1), // Remove leading slash
+          fileLocation.substring(1),
           [filenameFromName ? `${filenameFromName} (${file.id})` : file.id, ext]
             .filter(Boolean)
             .join('.'),
