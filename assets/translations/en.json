@@ -127,7 +127,7 @@
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
-    "customColor":"Color picker",
+    "customColor": "Color picker",
     "customColorSubtitle": "Select a custom color",
     "customColorWarning": "Custom colors",
     "customColorTitle": "Custom colors",
@@ -141,6 +141,13 @@
     "department": "Department",
     "desk": "Desk",
     "done": "Done",
+    "cancelSelection": "Cancel selection",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "selectDirectories": "Select directories",
+    "hideFolders": "Hide folders",
+    "showFolders": "Show folders",
+    "selectEverything": "Select everything",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
     "doubleTapToDeactivate": "Tap twice to deactivate",
@@ -206,6 +213,7 @@
     "minutes": "Minutes",
     "more": "More",
     "navigate": "Navigate",
+    "newest": "Newest",
     "newItems": "New item",
     "newItems_plural": "New items",
     "newVersionTitle": "New version available!",
@@ -222,6 +230,7 @@
     "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
+    "oldest": "Oldest",
     "or": "or",
     "open": "Open",
     "openSettings": "Open settings",
@@ -235,6 +244,8 @@
       "true": "Double tap to close"
     },
     "options": "Options",
+    "orderByNameAZ": "Name A-Z",
+    "orderByNameZA": "Name Z-A",
     "other": "Other",
     "pause": "Pause",
     "period": "Period",
@@ -252,6 +263,7 @@
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
     "search": "Search",
+    "select": "Select",
     "seat": "Seat",
     "selectAnOption": "Please select an option",
     "services": "Services",
@@ -342,7 +354,12 @@
     "emptyFolder": "The folder is empty",
     "noResult": "No results found",
     "navigateRecentFiles": "View recent",
-    "search": "Search"
+    "search": "Search",
+    "downloadSelected": "Download selected files",
+    "stopDownload": "Stop download",
+    "downloadProgress": "Downloading {{current}} of {{total}}",
+    "downloadCompleted": "All files downloaded successfully",
+    "downloadCompletedWithErrors": "{{successCount}} files downloaded, {{errorCount}} failed"
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
@@ -372,7 +389,7 @@
     "enrolledExamDetailInfo": "Detailed information on passing the exam",
     "examGradeDetailTitle": "Details of votes",
     "examGradeDetailInfo": "Vote detail information",
-    "enrolledExamBottomSheet":  {
+    "enrolledExamBottomSheet": {
       "title": "Passed exam",
       "content": "Statistics regarding the total number of exam passes with two types of display:",
       "item1": {
@@ -384,7 +401,7 @@
         "content": "comparison between the selected year and the two previous years."
       }
     },
-    "enrolledExamDetailBottomSheet":  {
+    "enrolledExamDetailBottomSheet": {
       "title": "Exam passing details",
       "content": "Statistics regarding the number of exam passers divided into three subgroups:",
       "item1": {
@@ -396,7 +413,7 @@
         "content": " students who registered for the exam during their second or subsequent year of attendance."
       }
     },
-    "gradesDetailBottomSheet":  {
+    "gradesDetailBottomSheet": {
       "title": "Details of votes",
       "content": "Statistics regarding the details of exam grades divided into three subgroups:",
       "item1": {
@@ -549,9 +566,9 @@
       "fourth": "Access to discounts and promotions reserved for students in various European countries."
     },
     "cardRequest": {
-      "firstSectionNormalText":"To activate your Card for each of your careers, we need ",
-      "sectionBoldText":"authorization to transmit the following data ",
-      "secondSectionNormalText":"to the relevant EU authority:",
+      "firstSectionNormalText": "To activate your Card for each of your careers, we need ",
+      "sectionBoldText": "authorization to transmit the following data ",
+      "secondSectionNormalText": "to the relevant EU authority:",
       "firstName": "First name",
       "lastName": "Last name",
       "id": "Student ID number",
@@ -565,7 +582,7 @@
     "revoke": "Revoke authorisation",
     "revokeConfirm": "Revoking the authorization to keep your data in the ESC-Router will deactivate this card and any other cards linked to your academic careers, if any",
     "text": "To obtain your European Student Card (ESC), you authorized the transmission of your data through ESC_router. You can revoke this authorization at any time.",
-    "title":"ESC Data Settings"
+    "title": "ESC Data Settings"
   },
   "europeanCardScreen": {
     "title": "THE EUROPEAN STUDENT CARD",
@@ -612,8 +629,8 @@
     "notes": "Notes",
     "title": "Exam call",
     "noBookedCount": "Data not available",
-    "requestReasonTitle":"Request reason",
-    "requestDetailsTitle":"Request details"
+    "requestReasonTitle": "Request reason",
+    "requestDetailsTitle": "Request details"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
@@ -780,7 +797,6 @@
     "title": "Place",
     "placeDetail": "Place detail",
     "getDirections": "Obtain directions"
-
   },
   "placesScreen": {
     "changeFloor": "Change floor",
@@ -934,15 +950,15 @@
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
     "averageLabel": "Average grade for admission to the Final Examination",
-    "finalAverageLabelDescription":{
-      "description":  "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
+    "finalAverageLabelDescription": {
+      "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
       "formula": "(sum (grade * credits) / sum of credits) * (110/30) ,\nexcluding the {{-excludedCreditsNumber}} worst credits"
     },
     "laude": "*Honours does not count toward the calculation",
     "masterAdmissionAverage": "Master admission average grade",
-    "masterAdmissionAverageLabelDescription":{
-      "description":"It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
-      "formula":"sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
+    "masterAdmissionAverageLabelDescription": {
+      "description": "It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
+      "formula": "sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
     },
     "NB": "Note",
     "NBDescription": "These definitions are indicative. To find out more, refer to the Student Guide.\nOnly graded exams are considered in all average grade above.",
@@ -951,13 +967,13 @@
     "pointModal": "The total of the Exam on-time points earned. This value can never exceed the maximum allowed by the degree program.\nTo find out more, refer to the Student Guide.",
     "thisYear": "This academic year",
     "title": "Career",
-    "weightedAverageLabelDescription":{
-      "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
+    "weightedAverageLabelDescription": {
+      "description": "This is the average, weighted according to the credits relating to each exam with a grade*",
       "formula": "(sum (grade * credits) / sum of credits) * (110/30)"
     },
     "weightedAverage": "Weighted average of grades",
-    "weightedAverageDescription":{
-      "description":"It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
+    "weightedAverageDescription": {
+      "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
       "formula": "sum (grade * credits) / sum of credits"
     },
     "yourCareer": "Your career"

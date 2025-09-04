@@ -148,6 +148,13 @@
     "department": "Dipartimento",
     "desk": "Cattedra",
     "done": "Fatto",
+    "cancelSelection": "Annulla selezione",
+    "selectAll": "Seleziona tutto",
+    "deselectAll": "Deseleziona tutto",
+    "selectDirectories": "Seleziona directory",
+    "hideFolders": "Nascondi cartelle",
+    "showFolders": "Mostra cartelle",
+    "selectEverything": "Seleziona tutto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
@@ -213,6 +220,7 @@
     "minutes": "Minuti",
     "more": "Più",
     "navigate": "Naviga",
+    "newest": "Più recente",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "newVersionTitle": "Nuova versione disponibile!",
@@ -229,6 +237,7 @@
     "objectives": "Obiettivi formativi",
     "of": "Su",
     "ok": "Ok",
+    "oldest": "Meno recente",
     "or": "oppure",
     "open": "Apri",
     "openSettings": "Apri impostazioni",
@@ -243,6 +252,8 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "orderByNameAZ": "Nome A-Z",
+    "orderByNameZA": "Nome Z-A",
     "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
@@ -261,6 +272,7 @@
     "roleHolder": "Titolare",
     "search": "Cerca",
     "seat": "Postazione",
+    "select": "Seleziona",
     "selectAnOption": "Seleziona una delle opzioni",
     "selectColor": "Seleziona il colore",
     "services": "Servizi",
@@ -293,9 +305,9 @@
     "visualization": "Visualizzazione",
     "year": "anno",
     "yesterday": "Ieri",
-    "fromTime" : "dalle",
-    "toTime" : "alle",
-    "document" : "Allegato",
+    "fromTime": "dalle",
+    "toTime": "alle",
+    "document": "Allegato",
     "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
@@ -354,7 +366,12 @@
     "emptyFolder": "La cartella è vuota",
     "noResult": "Nessun risultato trovato",
     "navigateRecentFiles": "Sfoglia file recenti",
-    "search": "Cerca"
+    "search": "Cerca",
+    "downloadSelected": "Scarica file selezionati",
+    "stopDownload": "Ferma download",
+    "downloadProgress": "Scaricando {{current}} di {{total}}",
+    "downloadCompleted": "Tutti i file scaricati con successo",
+    "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
@@ -384,7 +401,7 @@
     "enrolledExamDetailInfo": "Informazioni dettaglio superamento esame",
     "examGradeDetailTitle": "Dettaglio voti",
     "examGradeDetailInfo": "Informazioni dettaglio voti",
-    "enrolledExamBottomSheet":  {
+    "enrolledExamBottomSheet": {
       "title": "Superamento esame",
       "content": "Statistica riguardante il numero di superi totali all’esame con due tipi di visualizzazione:",
       "item1": {
@@ -396,7 +413,7 @@
         "content": "comparazione tra l’anno selezionato e i due anni precedenti."
       }
     },
-    "enrolledExamDetailBottomSheet":  {
+    "enrolledExamDetailBottomSheet": {
       "title": "Dettaglio superamento esame",
       "content": "Statistica riguardante il numero di superi all’esame suddiviso in tre sotto gruppi:",
       "item1": {
@@ -408,7 +425,7 @@
         "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza o i successivi."
       }
     },
-    "gradesDetailBottomSheet":  {
+    "gradesDetailBottomSheet": {
       "title": "Dettaglio voti",
       "content": "Statistica riguardante il dettaglio delle valutazioni d’esame suddiviso in tre sotto gruppi:",
       "item1": {
@@ -564,11 +581,11 @@
       "fourth": "Accesso a sconti e promozioni riservati agli studenti di vari Paesi europei."
     },
     "cardRequest": {
-      "firstSectionNormalText":"Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
-      "sectionBoldText":"autorizzazione a trasmettere i seguenti dati",
-      "secondSectionNormalText":"all'autorità competente dell'UE:",
-      "firstName" : "Nome",
-      "lastName" : "Cognome",
+      "firstSectionNormalText": "Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
+      "sectionBoldText": "autorizzazione a trasmettere i seguenti dati",
+      "secondSectionNormalText": "all'autorità competente dell'UE:",
+      "firstName": "Nome",
+      "lastName": "Cognome",
       "id": "Matricola",
       "mail": "Mail istituzionale",
       "studyProgram": "Programma di studio"
@@ -580,7 +597,7 @@
     "revoke": "Revoca autorizzazione",
     "revokeConfirm": "Revocando l’autorizzazione a conservare i tuoi dati all’ESC-Router disattiverai questa card e quelle legate a tue eventuali carriere",
     "text": "Per ottenere la tua European Student Card (ESC), hai autorizzato la trasmissione dei tuoi dati tramite ESC_router. Puoi revocare questa autorizzazione in qualsiasi momento.",
-    "title":"Dati ESC"
+    "title": "Dati ESC"
   },
   "europeanCardScreen": {
     "title": "THE EUROPEAN STUDENT CARD",
@@ -627,8 +644,8 @@
     "notes": "Note",
     "title": "Appello",
     "noBookedCount": "Dato non disponibile",
-    "requestReasonTitle":"Motivazioni della richiesta",
-    "requestDetailsTitle":"Dettagli della richiesta"
+    "requestReasonTitle": "Motivazioni della richiesta",
+    "requestDetailsTitle": "Dettagli della richiesta"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -685,7 +702,7 @@
     "title": "Biblioteca"
   },
   "loginScreen": {
-    "onboarding" : "Onboarding",
+    "onboarding": "Onboarding",
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
@@ -910,7 +927,7 @@
     "incomingMessage": "la tua risposta",
     "outgoingMessage": "Risposta da operatore numero",
     "yourQuestion": "La tua domanda",
-    "send" : "Invia",
+    "send": "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
@@ -961,15 +978,15 @@
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
     "averageLabel": "Media di ammissione all’esame di laurea",
-    "finalAverageLabelDescription":{
-      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
+    "finalAverageLabelDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
       "formula": "(somma (voto * crediti) / somma crediti) * (110/30),\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
     },
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
-    "masterAdmissionAverageLabelDescription":{
-      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
-      "formula":"somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
+    "masterAdmissionAverageLabelDescription": {
+      "description": "È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
+      "formula": "somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
@@ -978,13 +995,13 @@
     "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
-    "weightedAverageLabelDescription":{
-      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
+    "weightedAverageLabelDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
       "formula": "(somma (voto * crediti) / somma crediti) * (110/30)"
     },
     "weightedAverage": "Media pesata dei voti",
-    "weightedAverageDescription":{
-      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
+    "weightedAverageDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
       "formula": "somma (voto * crediti) / somma crediti"
     },
     "yourCareer": "La tua carriera"
