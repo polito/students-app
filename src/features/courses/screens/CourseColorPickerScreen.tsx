@@ -27,7 +27,7 @@ type Props = NativeStackScreenProps<
   'CourseColorPicker'
 >;
 
-export const CourseColorPickerScreen = ({ route }: Props) => {
+export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { spacing, colors } = useTheme();
   const {
@@ -41,6 +41,7 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
   const [showModal, setShowModal] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
 
   const saveColor = useCallback(() => {
     updatePreference('courses', {
@@ -58,15 +59,26 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
   ]);
 
   useEffect(() => {
-    const originalColor = coursesPrefs[route.params.uniqueShortcode]?.color;
-    if (temporaryColor !== originalColor) {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
+      const originalColor =
+        coursesPrefs[route.params.uniqueShortcode]?.color ??
+        courseColors[0].color;
+      if (temporaryColor === originalColor) {
+        return;
+      }
+      e.preventDefault();
       if (!isSafeColor && showColorWarning) {
+        setIsLeaving(true);
         setShowModal(true);
       } else {
         saveColor();
+        navigation.dispatch(e.data.action);
       }
-    }
+    });
+
+    return unsubscribe;
   }, [
+    navigation,
     temporaryColor,
     isSafeColor,
     showColorWarning,
@@ -82,17 +94,34 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
         updatePreference('showColorWarning', false);
       }
       saveColor();
+
+      if (isLeaving) {
+        setIsLeaving(false);
+        navigation.goBack();
+      }
     },
-    [saveColor, updatePreference],
+    [saveColor, updatePreference, isLeaving, navigation],
   );
 
   const handleCancel = useCallback(() => {
     setShowModal(false);
-    setTemporaryColor(
-      coursesPrefs[route.params.uniqueShortcode]?.color ??
-        courseColors[0].color,
-    );
-  }, [coursesPrefs, route.params.uniqueShortcode]);
+
+    if (isLeaving) {
+      // If we were leaving, revert color and continue navigation
+      setIsLeaving(false);
+      setTemporaryColor(
+        coursesPrefs[route.params.uniqueShortcode]?.color ??
+          courseColors[0].color,
+      );
+      navigation.goBack();
+    } else {
+      // If not leaving, just revert the color
+      setTemporaryColor(
+        coursesPrefs[route.params.uniqueShortcode]?.color ??
+          courseColors[0].color,
+      );
+    }
+  }, [coursesPrefs, route.params.uniqueShortcode, isLeaving, navigation]);
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
