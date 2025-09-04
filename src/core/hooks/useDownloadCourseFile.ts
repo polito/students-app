@@ -30,7 +30,7 @@ export const useDownloadCourseFile = (
   const { token } = useApiContext();
   const { t } = useTranslation();
   const coursesFilesCachePath = useCoursesFilesCachePath();
-  const { downloadsRef, setDownloads } = useDownloadsContext();
+  const { downloads, setDownloads } = useDownloadsContext();
   const { clearNotificationScope } = useNotifications();
   const courseId = useCourseContext();
   const {
@@ -41,12 +41,12 @@ export const useDownloadCourseFile = (
   const key = `${fromUrl}:${toFile}`;
   const download = useMemo(
     () =>
-      downloadsRef.current?.[key] ?? {
+      downloads[key] ?? {
         isDownloaded: false,
         downloadProgress: undefined,
       },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [downloadsRef.current?.[key], key],
+    [downloads[key], key],
   );
 
   const updateDownload = useCallback(
