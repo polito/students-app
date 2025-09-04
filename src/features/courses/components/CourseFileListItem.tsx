@@ -133,7 +133,7 @@ export const CourseFileListItem = memo(
       }
       return [
         courseFilesCache,
-        item.location?.substring(1), // Files in the top-level directory have an empty location, hence the `filter(Boolean)` below
+        item.location?.substring(1),
         [filename ? `${filename} (${item.id})` : item.id, ext]
           .filter(notNullish)
           .join('.'),
