@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -24,6 +24,7 @@ interface Props {
   description?: string;
   disabled?: boolean;
   accessibilityLabel?: string;
+  hideChevron?: boolean;
 }
 
 export const Select = ({
@@ -34,6 +35,7 @@ export const Select = ({
   label,
   description,
   disabled,
+  hideChevron,
 }: Props) => {
   const displayedValue = useMemo(() => {
     return options?.find(opt => opt?.id === value)?.title;
@@ -57,7 +59,13 @@ export const Select = ({
           disabled={disabled}
           title={displayedValue || label}
           subtitle={description}
-          trailingItem={IS_ANDROID ? <Icon icon={faChevronDown} /> : undefined}
+          trailingItem={
+            hideChevron ? (
+              <View />
+            ) : IS_ANDROID ? (
+              <Icon icon={faChevronDown} />
+            ) : undefined
+          }
         />
       </StatefulMenuView>
     </Pressable>

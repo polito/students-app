@@ -146,6 +146,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             options={topicOptions}
             onSelectOption={updateTopicId}
             disabled={!!initialTopicId}
+            hideChevron={!!initialTopicId}
             value={topicId}
           />
         </OverviewList>
@@ -156,6 +157,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
+            hideChevron={!!initialSubtopicId}
             value={ticketBody?.subtopicId?.toString()}
             label={t('createTicketScreen.subtopicDropdownLabel')}
             description={t('createTicketScreen.subtopicDescription')}
