@@ -7,6 +7,7 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { usePreventRemove } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import ColorPicker, {
@@ -33,7 +34,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const {
     courses: coursesPrefs,
     updatePreference,
-    showColorWarning = true,
+    showColorWarning,
   } = usePreferencesContext();
 
   const [isSafeColor, setIsSafeColor] = useState(true);
@@ -41,7 +42,6 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
   const [showModal, setShowModal] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
 
   const saveColor = useCallback(() => {
     updatePreference('courses', {
@@ -58,34 +58,34 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     updatePreference,
   ]);
 
+  const originalColor =
+    coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color;
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      const originalColor =
-        coursesPrefs[route.params.uniqueShortcode]?.color ??
-        courseColors[0].color;
-      if (temporaryColor === originalColor) {
-        return;
-      }
-      e.preventDefault();
-      if (!isSafeColor && showColorWarning) {
-        setIsLeaving(true);
-        setShowModal(true);
-      } else {
-        saveColor();
-        navigation.dispatch(e.data.action);
-      }
-    });
+    const hasChanged = temporaryColor !== originalColor;
+    if (hasChanged && isSafeColor) {
+      saveColor();
+    }
+  }, [temporaryColor, originalColor, isSafeColor, saveColor]);
 
-    return unsubscribe;
-  }, [
-    navigation,
-    temporaryColor,
-    isSafeColor,
-    showColorWarning,
-    saveColor,
-    coursesPrefs,
-    route.params.uniqueShortcode,
-  ]);
+  const hasChanged = temporaryColor !== originalColor;
+  const isUnsafeChange = hasChanged && !isSafeColor;
+  const shouldWarn = isUnsafeChange && showColorWarning !== false;
+  const shouldPrevent = hasChanged && shouldWarn;
+
+  usePreventRemove(shouldPrevent, ({ data: _data }) => {
+    if (shouldPrevent) {
+      setShowModal(true);
+    }
+  });
+
+  const shouldAutoSave =
+    hasChanged && !isSafeColor && showColorWarning === false;
+  usePreventRemove(shouldAutoSave, ({ data }) => {
+    if (shouldAutoSave) {
+      saveColor();
+      navigation.dispatch(data.action);
+    }
+  });
 
   const handleConfirm = useCallback(
     (dontShowAgain: boolean) => {
@@ -94,34 +94,16 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
         updatePreference('showColorWarning', false);
       }
       saveColor();
-
-      if (isLeaving) {
-        setIsLeaving(false);
-        navigation.goBack();
-      }
+      navigation.goBack();
     },
-    [saveColor, updatePreference, isLeaving, navigation],
+    [saveColor, updatePreference, navigation],
   );
 
   const handleCancel = useCallback(() => {
     setShowModal(false);
-
-    if (isLeaving) {
-      // If we were leaving, revert color and continue navigation
-      setIsLeaving(false);
-      setTemporaryColor(
-        coursesPrefs[route.params.uniqueShortcode]?.color ??
-          courseColors[0].color,
-      );
-      navigation.goBack();
-    } else {
-      // If not leaving, just revert the color
-      setTemporaryColor(
-        coursesPrefs[route.params.uniqueShortcode]?.color ??
-          courseColors[0].color,
-      );
-    }
-  }, [coursesPrefs, route.params.uniqueShortcode, isLeaving, navigation]);
+    setTemporaryColor(originalColor);
+    navigation.goBack();
+  }, [originalColor, navigation]);
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
