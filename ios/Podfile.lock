@@ -1,5 +1,7 @@
 PODS:
   - boost (1.84.0)
+  - BVLinearGradient (2.8.3):
+    - React-Core
   - DoubleConversion (1.1.6)
   - Expo (53.0.16):
     - DoubleConversion
@@ -1707,7 +1709,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-pdf-light (2.4.1):
+  - react-native-pdf-light (2.4.2):
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
@@ -2256,7 +2258,7 @@ PODS:
     - Yoga
   - RNDeviceInfo (14.0.4):
     - React-Core
-  - RNFastImage (8.9.2):
+  - RNFastImage (8.11.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2321,17 +2323,83 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNImageCropPicker (0.42.0):
+  - RNImageCropPicker (0.51.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.42.0)
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNImageCropPicker/QBImagePickerController (= 0.51.0)
     - TOCropViewController (~> 2.7.4)
-  - RNImageCropPicker/QBImagePickerController (0.42.0):
+    - Yoga
+  - RNImageCropPicker/QBImagePickerController (0.51.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-RCTImage
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
     - TOCropViewController (~> 2.7.4)
-  - RNKeychain (8.2.0):
+    - Yoga
+  - RNKeychain (10.0.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNLocalize (3.3.0):
     - DoubleConversion
     - glog
@@ -2356,13 +2424,13 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - rnmapbox-maps (10.1.39):
+  - rnmapbox-maps (10.1.41):
     - MapboxMaps (~> 10.19.0)
     - React
     - React-Core
-    - rnmapbox-maps/DynamicLibrary (= 10.1.39)
+    - rnmapbox-maps/DynamicLibrary (= 10.1.41)
     - Turf
-  - rnmapbox-maps/DynamicLibrary (10.1.39):
+  - rnmapbox-maps/DynamicLibrary (10.1.41):
     - DoubleConversion
     - hermes-engine
     - MapboxMaps (~> 10.19.0)
@@ -2384,7 +2452,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Turf
     - Yoga
-  - RNPermissions (5.4.1):
+  - RNPermissions (5.4.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2674,6 +2742,7 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Expo (from `../node_modules/expo`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -2819,6 +2888,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
+  BVLinearGradient:
+    :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   Expo:
@@ -3035,6 +3106,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
+  BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   Expo: c4afae95ee841ee5c30bde11937ec6732dee3169
   ExpoModulesCore: e0409d8c674a651a183e941be663e1966b49e2a2
@@ -3105,7 +3177,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-override-color-scheme: 53dc74663e03040074efbfb81cfb35b97d9bbaa5
   react-native-pager-view: 919534782a0489f7e2aeeb9a8b8959edfd3f067a
-  react-native-pdf-light: bf37b7f2ed2ac57493bbda9a85ed43d195866d2d
+  react-native-pdf-light: 53139b084304650c3495dd8765e43d363d30bfce
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: 091add53da15b67c76b176724725581b29a1cde3
   react-native-video: 8b867791128487bf82c9b6070ceddd2697bfabec
@@ -3144,17 +3216,17 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: a1c8cc8a99c32de1244a9cf707bf9d83d0de0f71
   RNCClipboard: ea6045252d5c0753cf17f62290f647dc0096f6ac
   RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
-  RNFastImage: 72769fac450a8a7d111378433111d8e52f2b251e
+  RNFastImage: 8e45ecf1bb6d298fc77932ad85f99d0073229e6a
   RNFBApp: 557f15b87d602ed5879a1cbd6dc574481bccb278
   RNFBMessaging: e6480aaf434826565d5a40b01c422fb0f58fc8a9
   RNFileViewer: 4b5d83358214347e4ab2d4ca8d5c1c90d869e251
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: 9205e0a9649ef6fcfd71e86992ecfb21eefab3d3
-  RNImageCropPicker: b0afedeefd8655254a15c34103718455fde6ce59
-  RNKeychain: bbe2f6d5cc008920324acb49ef86ccc03d3b38e4
+  RNImageCropPicker: eb9dcf7deca0d16cd267147fad3099899adc2198
+  RNKeychain: 943b4dbceef4b3a310c9122c99d1e5b0bd66b9f3
   RNLocalize: f185be418d6c1c6f9af54a7e84590614819fc994
-  rnmapbox-maps: 26417e288996af6636099dd50fb84661a7444ee9
-  RNPermissions: ba2d41f3ff879713cb7e374122cf9362aa3b7739
+  rnmapbox-maps: c12fe3d018f747cc3069e9a5495c377d30c2cf51
+  RNPermissions: 80777ea1b89df81be475044e2d7effad5fc788ea
   RNReanimated: ac0cfc5da50d769ec1e3c6ccb362c1bf7d08ac87
   RNScreens: 7e56b051227a1a11c3068849d1a9a5dd457537df
   RNSentry: 710e534a84ed2faed8a95f4d25c743d3543af0ee
@@ -3168,6 +3240,6 @@ SPEC CHECKSUMS:
   Turf: aa2ede4298009639d10db36aba1a7ebaad072a5e
   Yoga: adb397651e1c00672c12e9495babca70777e411e
 
-PODFILE CHECKSUM: 38f354f8c5063329716c535b9a3f21f185b3f008
+PODFILE CHECKSUM: 090d68700bdff9f4d022d4a68c16ad6a3e99221a
 
 COCOAPODS: 1.15.2
