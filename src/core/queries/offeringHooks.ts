@@ -16,6 +16,7 @@ import { compact } from 'lodash';
 export const OFFERING_QUERY_KEY = ['offering'];
 export const DEGREES_QUERY_PREFIX = 'degrees';
 export const COURSES_QUERY_PREFIX = 'courses';
+export const STATISTICS_QUERY_PREFIX = 'statistics';
 const useOfferingClient = (): OfferingApi => {
   return new OfferingApi();
 };
@@ -104,6 +105,7 @@ export const useGetCourseStatistics = ({
     queryKey: compact([
       DEGREES_QUERY_PREFIX,
       COURSES_QUERY_PREFIX,
+      STATISTICS_QUERY_PREFIX,
       courseShortcode,
       year,
       teacherId,
