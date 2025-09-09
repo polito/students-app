@@ -28,6 +28,9 @@ import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
+import { IndicationsScreen } from '../screens/IndicationsScreen';
+import { ItineraryScreen } from '../screens/ItineraryScreen';
+import { PlaceOverview } from '@polito/api-client';
 
 export type ServiceStackParamList = {
   Places: undefined;
@@ -56,6 +59,14 @@ export type PlacesStackParamList = {
   Building: {
     siteId: string;
     buildingId: string;
+  };
+  Indications: {
+    fromPlace?: string;     
+    toPlace: string;        
+  };
+  Itinerary: {
+    startRoom: string;
+    destRoom: string;
   };
   PlaceCategories: undefined;
   MessagesModal: undefined;
@@ -126,22 +137,72 @@ export const PlacesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [floorId, setFloorId] = useState<string>();
+  const [lines, setLines] = useState<string[]>([]);
+  const [selectedLine, setSelectedLine] = useState<string>();
+  const [itineraryMode, setItineraryMode] = useState<boolean>(false);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(null);
+  const [selectionIcon, setSelectionIcon] = useState<string | null>(null);
 
   const checkAndSetFloorId = (id?: string) => {
     if (id) {
       setFloorId(id);
     }
   };
+
+  const handleSelectSegment = (label: string, floor: string) => {
+    const lineLayer = label;
+
+    if(selectedLine === lineLayer){
+      setLine(undefined);
+    }
+    else{
+      setLine(lineLayer);
+      checkAndSetFloorId(floor);
+    }
+  };
+
+  const handleSelectedPlace = (place: PlaceOverview | null) => {
+    if(place){
+      setSelectedPlace(place);
+    }
+    else
+      setSelectedPlace(null);
+  }
+
+  const setAllLines = (line: string) => {
+    setLines((prev) => {
+      if(prev.length > 0)
+        return [...prev, line];
+      else
+        return [line];
+    })
+  };
+
+  const setLine = (line?: string) => {
+    setSelectedLine(line);
+  }
+
+  const setMode = (mode?: boolean) => {
+    if(mode !== undefined){
+      setItineraryMode(mode);
+    }
+    else{
+      setItineraryMode(false);
+    }
+  }
+
+
   useEffect(() => {
     const perm = Platform.select({
       ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
       android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     });
     if (perm) request(perm).catch(console.error);
+    setMode(false); 
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId }}>
+    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine, itineraryMode, setItineraryMode: setMode, handleSelectSegment: handleSelectSegment, selectedPlace: selectedPlace, setSelectedPlace: handleSelectedPlace, selectionIcon: selectionIcon, setSelectionIcon: setSelectionIcon }}>
       <Map.Navigator
         id="PlacesTabNavigator"
         screenOptions={{
@@ -215,6 +276,20 @@ export const PlacesNavigator = () => {
             headerLeft: HeaderLogoNoProps,
             headerRight: createHeaderCloseButton(navigation),
           })}
+        />
+        <Map.Screen
+          name="Indications"
+          component={IndicationsScreen}
+          options={{
+            title: t('indicationsScreen.title'),
+          }}
+        />
+        <Map.Screen
+          name="Itinerary"
+          component={ItineraryScreen}
+          options={{
+            title: t('itineraryScreen.title'),
+          }}
         />
         <Map.Screen
           name="FreeRooms"

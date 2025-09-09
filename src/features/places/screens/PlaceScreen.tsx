@@ -1,6 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
 import {
   faDiamondTurnRight,
@@ -48,7 +48,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { placesSearched, updatePreference } = usePreferencesContext();
-  const { floorId, setFloorId } = useContext(PlacesContext);
+  const { floorId, setFloorId, setItineraryMode } = useContext(PlacesContext);
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
@@ -254,18 +254,9 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       adjustSpacing="right"
                       accessibilityLabel={t('common.navigate')}
                       onPress={() => {
-                        const scheme = Platform.select({
-                          ios: 'maps://0,0?q=',
-                          android: 'geo:0,0?q=',
-                        });
-                        const latLng = [lat, long].join(',');
-                        const label = name;
-                        const url = Platform.select({
-                          ios: `${scheme}${label}@${latLng}`,
-                          android: `${scheme}${latLng}(${label})`,
-                        })!;
-                        Linking.openURL(url);
-                      }}
+                        setItineraryMode(true);
+                        navigation.navigate('Indications', { toPlace: placeName });
+                    }}
                     />
                   }
                 />
@@ -345,20 +336,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     adjustSpacing="right"
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
-                      const scheme = Platform.select({
-                        ios: 'maps://0,0?q=',
-                        android: 'geo:0,0?q=',
-                      });
-                      const latLng = [
-                        place?.latitude || lat,
-                        place?.longitude || long,
-                      ].join(',');
-                      const label = place?.room.name ?? name;
-                      const url = Platform.select({
-                        ios: `${scheme}${label}@${latLng}`,
-                        android: `${scheme}${latLng}(${label})`,
-                      })!;
-                      Linking.openURL(url);
+                      setItineraryMode(true);
+                      navigation.navigate('Indications', { toPlace: placeName });
                     }}
                   />
                 }

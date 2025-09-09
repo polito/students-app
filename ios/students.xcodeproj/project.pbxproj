@@ -705,7 +705,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				CC = "";
 				CCACHE_BINARY = /opt/homebrew/bin/ccache;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -733,7 +733,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CXX = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
+				CXX = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -755,8 +755,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
-				LDPLUSPLUS = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -792,7 +792,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				CC = "";
 				CCACHE_BINARY = /opt/homebrew/bin/ccache;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -820,7 +820,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CXX = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
+				CXX = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -838,8 +838,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
-				LDPLUSPLUS = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -879,7 +879,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RS2Y9A4G25;
+				DEVELOPMENT_TEAM = V8Z44H399S;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = students/DevInfo.plist;
@@ -916,7 +916,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RS2Y9A4G25;
+				DEVELOPMENT_TEAM = V8Z44H399S;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = students/DevInfo.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "PoliTO Students dev";

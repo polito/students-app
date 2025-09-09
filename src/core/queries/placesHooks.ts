@@ -8,6 +8,8 @@ import {
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
+import data from '../../utils/pathFinale.json';
+import path from 'path';
 
 export const SITES_QUERY_KEY = 'sites';
 export const BUILDINGS_QUERY_KEY = 'buildings';
@@ -19,6 +21,10 @@ export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
 };
+
+export const useGetPath = () => {
+  return data;
+}
 
 export const useGetSites = () => {
   const placesClient = usePlacesClient();
