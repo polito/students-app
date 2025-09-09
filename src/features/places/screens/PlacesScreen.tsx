@@ -192,15 +192,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const renderMapContent = useCallback(
     () => (
-      <MarkersLayer
-        search={debouncedSearch}
-        places={places ?? []}
-        displayFloor={!displayFloorId}
-        categoryId={categoryId}
-        subCategoryId={subCategoryId}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-      />
+        <MarkersLayer
+          search={debouncedSearch}
+          places={places ?? []}
+          displayFloor={!displayFloorId}
+          categoryId={categoryId}
+          subCategoryId={subCategoryId}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
     ),
     [
       debouncedSearch,
