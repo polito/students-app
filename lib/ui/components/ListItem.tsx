@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { memo, ReactElement } from 'react';
 import {
   StyleProp,
   TextProps,
@@ -49,7 +49,7 @@ export interface ListItemProps extends TouchableHighlightProps {
  * elements. If a linkTo is provided, a forward icon is automatically
  * displayed as a trailing element on iOS.
  */
-export const ListItem = ({
+const ListItemComponent = ({
   title,
   titleStyle,
   subtitle,
@@ -200,3 +200,5 @@ export const ListItem = ({
     </TouchableHighlight>
   );
 };
+
+export const ListItem = memo(ListItemComponent);
