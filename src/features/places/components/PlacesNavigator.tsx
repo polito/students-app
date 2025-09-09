@@ -127,12 +127,28 @@ export const PlacesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [floorId, setFloorId] = useState<string>();
+  const [lines, setLines] = useState<string[]>([]);
+  const [selectedLine, setSelectedLine] = useState<string>();
 
   const checkAndSetFloorId = (id?: string) => {
     if (id) {
       setFloorId(id);
     }
   };
+
+  const setAllLines = (line: string) => {
+    setLines((prev) => {
+      if(prev.length > 0)
+        return [...prev, line];
+      else
+        return [line];
+    })
+  };
+
+  const setLine = (line?: string) => {
+    setSelectedLine(line);
+  }
+
   useEffect(() => {
     const perm = Platform.select({
       ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
@@ -142,7 +158,7 @@ export const PlacesNavigator = () => {
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId }}>
+    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine }}>
       <Map.Navigator
         id="PlacesTabNavigator"
         screenOptions={{

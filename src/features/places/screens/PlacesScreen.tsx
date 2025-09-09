@@ -66,6 +66,7 @@ import { darkTheme } from '../../../core/themes/dark';
 import { CampusSelector } from '../components/CampusSelector';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
+import { PathLayer } from '../components/PathLayer';
 import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
@@ -192,15 +193,18 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const renderMapContent = useCallback(
     () => (
-      <MarkersLayer
-        search={debouncedSearch}
-        places={places ?? []}
-        displayFloor={!displayFloorId}
-        categoryId={categoryId}
-        subCategoryId={subCategoryId}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-      />
+      <>
+            <MarkersLayer
+              search={debouncedSearch}
+              places={places ?? []}
+              displayFloor={!displayFloorId}
+              categoryId={categoryId}
+              subCategoryId={subCategoryId}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+            />
+            <PathLayer />
+      </>
     ),
     [
       debouncedSearch,
