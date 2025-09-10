@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -9,30 +10,71 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MfaStatusResponse } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/core';
-import { useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
+import { useCheckMfa } from '~/core/queries/authHooks';
+import { hasPrivateKeyMFA } from '~/utils/keychain';
 
 import { UserStackParamList } from './UserNavigator';
 
-type MfaStatus = {
-  mfa?: MfaStatusResponse;
-  localMfaKey?: boolean;
-  hasLocalMfaKey?: boolean;
-};
 export const MfaSettings = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontSizes, palettes, colors, spacing } = useTheme();
-  const route = useRoute();
-  const { mfa, hasLocalMfaKey } = route.params as MfaStatus;
+  const { data: mfa } = useCheckMfa(true);
+  const [hasLocalMfaKey, setHasLocalMfaKey] = useState<boolean>(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
 
+  useEffect(() => {
+    hasPrivateKeyMFA().then(res => setHasLocalMfaKey(res));
+  }, [mfa]);
+
   const buttonHeight = spacing[4];
+
+  const getStatusText = () => {
+    if (mfa?.status === 'available') {
+      return t('mfaScreen.settings.disabled');
+    }
+    if (hasLocalMfaKey) {
+      return t('mfaScreen.settings.active');
+    }
+    return t('common.error');
+  };
+
+  const getStatusColor = () => {
+    if (mfa?.status === 'locked') {
+      return palettes.error[500];
+    }
+    if (mfa?.status === 'available') {
+      return palettes.warning[500];
+    }
+    if (hasLocalMfaKey) {
+      return palettes.success[500];
+    }
+    return palettes.error[500];
+  };
+
+  const renderErrorBlock = (i18nKey: string) => (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorLabel}>{t('mfaScreen.settings.textError')}</Text>
+      <View style={styles.errorTextContainer}>
+        <RTFTrans
+          style={[
+            styles.text,
+            {
+              fontSize: fontSizes.md,
+              color: colors.longProse,
+              marginLeft: spacing[5],
+            },
+          ]}
+          i18nKey={i18nKey}
+        />
+      </View>
+    </View>
+  );
 
   return (
     <>
@@ -47,78 +89,57 @@ export const MfaSettings = () => {
               <ListItem
                 title={t('mfaScreen.settings.status')}
                 trailingItem={
-                  <Text style={styles.infoValue}>
-                    {mfa?.status === 'available'
-                      ? t('mfaScreen.settings.disabled')
-                      : hasLocalMfaKey
-                        ? t('mfaScreen.settings.active')
-                        : t('common.error')}
+                  <Text style={[styles.infoValue, { color: getStatusColor() }]}>
+                    {getStatusText()}
                   </Text>
                 }
               />
-              {(mfa?.status === 'available' ||
-                (mfa?.status === 'active' && hasLocalMfaKey)) && (
-                <>
-                  <ListItem
-                    title={t('common.enroll.serial')}
-                    trailingItem={
-                      <Text
-                        style={[
-                          styles.infoValue,
-                          {
-                            color: !mfa?.details?.serial
-                              ? palettes.gray[400]
-                              : colors.longProse,
-                          },
-                        ]}
-                      >
-                        {mfa?.details?.serial ?? t('mfaScreen.settings.none')}
-                      </Text>
-                    }
-                  />
-                  <ListItem
-                    title={t('common.enroll.device')}
-                    trailingItem={
-                      <Text
-                        style={[
-                          styles.infoValue,
-                          {
-                            color: !mfa?.details?.description
-                              ? palettes.gray[400]
-                              : colors.longProse,
-                          },
-                        ]}
-                      >
-                        {mfa?.details?.description ??
-                          t('mfaScreen.settings.notSet')}
-                      </Text>
-                    }
-                  />
-                </>
-              )}
-              {!(
-                mfa?.status === 'available' ||
-                (mfa?.status === 'active' && hasLocalMfaKey)
-              ) && (
-                <View style={styles.errorContainer}>
-                  <Text style={styles.errorLabel}>
-                    {t('mfaScreen.settings.textError')}
-                  </Text>
-                  <View style={styles.errorTextContainer}>
-                    <RTFTrans
-                      style={[
-                        styles.text,
-                        {
-                          fontSize: fontSizes.md,
-                          color: colors.longProse,
-                          marginLeft: spacing[5],
-                        },
-                      ]}
-                      i18nKey="mfaScreen.settings.notAccessible"
+              {mfa?.status !== 'locked' &&
+                (hasLocalMfaKey || mfa?.status === 'available') && (
+                  <>
+                    <ListItem
+                      title={t('common.enroll.serial')}
+                      trailingItem={
+                        <Text
+                          style={[
+                            styles.infoValue,
+                            {
+                              color: !mfa?.details?.serial
+                                ? palettes.gray[400]
+                                : colors.longProse,
+                            },
+                          ]}
+                        >
+                          {mfa?.details?.serial ?? t('mfaScreen.settings.none')}
+                        </Text>
+                      }
                     />
-                  </View>
-                </View>
-              )}
+                    <ListItem
+                      title={t('common.enroll.device')}
+                      trailingItem={
+                        <Text
+                          style={[
+                            styles.infoValue,
+                            {
+                              color: !mfa?.details?.description
+                                ? palettes.gray[400]
+                                : colors.longProse,
+                            },
+                          ]}
+                        >
+                          {mfa?.details?.description ??
+                            t('mfaScreen.settings.notSet')}
+                        </Text>
+                      }
+                    />
+                  </>
+                )}
+              {mfa?.status === 'locked' &&
+                renderErrorBlock('mfaScreen.settings.lockedDescription')}
+              {mfa?.status !== 'locked' &&
+                mfa?.status !== 'active' &&
+                mfa?.status !== 'available' &&
+                renderErrorBlock('mfaScreen.settings.notAccessible')}
             </OverviewList>
           </Section>
 
@@ -135,7 +156,7 @@ export const MfaSettings = () => {
           </Section>
         </View>
       </ScrollView>
-      {mfa?.status !== 'active' && (
+      {mfa?.status !== 'active' && mfa?.status !== 'locked' && (
         <View style={styles.buttonContainer}>
           <CtaButton
             title={

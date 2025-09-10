@@ -768,7 +768,11 @@
       "enableNow": "Attiva ora",
       "none": "Nessuno",
       "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell'Università inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo",
-      "notAccessible": "La chiave crittografica per <b>PoliTO Authenticator</b> non è accessibile su questo dispositivo. Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate."
+      "notAccessible": "La chiave crittografica per <b>PoliTO Authenticator</b> non è accessibile su questo dispositivo. Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate.",
+      "lockedDescription": "PoliTO Authenticator su questo dispositivo è stato bloccato per ragioni di sicurezza. Contattare al più presto il supporto tecnico mediante i riferimenti presenti su idp.polito.it/help",
+      "locked": "Bloccato",
+      "removed": "PoliTO Authenticator su questo dispositivo è stato rimosso dal pannello di Gestione MFA. È possibile riaggiungerlo entrando nella sezione dedicata presente su questa schermata.",
+      "removedTitle": "Authenticator Rimosso"
     }
   },
   "newsScreen": {

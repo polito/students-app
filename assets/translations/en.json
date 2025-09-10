@@ -750,7 +750,11 @@
       "notSet": "Not set",
       "textError": "Text error",
       "description": "<b>PoliTO Authenticator</b> is a second-factor authentication method that enables secure and fast access to University services by sending a notification to your device for confirmation.<br/><br/>It relies on asymmetric cryptography and is <b>installed per device</b>:each installation is independent and tied to a single device.<br/><br/>The following actions will remove this Polito Authenticator installation from your device: <br/>- Logging out <br/>- Uninstalling the app <br/>- Clearing the app’s data via your device settings",
-      "notAccessible": "The cryptographic key for <b>PoliTo Authenticator</b> is not accessible on this device.<br/>This may occur due to activation errors or changes in device credentials (PIN/password/biometric)."
+      "notAccessible": "The cryptographic key for <b>PoliTo Authenticator</b> is not accessible on this device.<br/>This may occur due to activation errors or changes in device credentials (PIN/password/biometric).",
+      "lockedDescription": "PoliTO Authenticator on this device has been blocked for security reasons. Contact technical support as soon as possible using the references available at idp.polito.it/help",
+      "locked": "Blocked",
+      "removed": "PoliTO Authenticator on this device has been removed from the MFA Management panel. You can re-add it by entering the dedicated section available on this screen.",
+      "removedTitle": "Authenticator Removed"
     }
   },
   "newsScreen": {
