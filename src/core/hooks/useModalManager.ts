@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { hasPrivateKeyMFA } from '../../utils/keychain';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 import { useCheckMfa } from '../queries/authHooks';
@@ -22,15 +23,26 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   const { data: messages } = useGetModalMessages();
 
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
+  const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
+
+  useEffect(() => {
+    hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
+  }, [mfaStatus]);
 
   useEffect(() => {
     if (!isSplashLoaded) return;
-    if (!mfaStatusPending && mfaStatus?.status === 'available') {
+    if (
+      !mfaStatusPending &&
+      mfaStatus?.status === 'available' &&
+      !localMfaKey
+    ) {
       navigation.navigate('TeachingTab', {
         screen: 'PolitoAuthenticator',
         params: { activeView: 'enroll' },
       });
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mfaStatus, mfaStatusPending, navigation, isSplashLoaded]);
 
   useEffect(() => {

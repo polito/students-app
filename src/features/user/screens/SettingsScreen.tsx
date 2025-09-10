@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -35,7 +36,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { useCheckMfa } from '~/core/queries/authHooks';
-import { hasPrivateKeyMFA } from '~/utils/keychain';
+import { hasPrivateKeyMFA, resetPrivateKeyMFA } from '~/utils/keychain';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
@@ -314,6 +315,30 @@ export const SettingsScreen = () => {
     hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
   }, [mfaStatus]);
 
+  const handleKeyRemoval = useCallback(async () => {
+    try {
+      await resetPrivateKeyMFA();
+      setLocalMfaKey(false);
+      Alert.alert(
+        t('mfaScreen.settings.removedTitle'),
+        t('mfaScreen.settings.removed'),
+        [{ text: t('common.ok') }],
+      );
+    } catch (error) {
+      console.error('Error removing MFA key:', error);
+    }
+  }, [t]);
+
+  useEffect(() => {
+    if (
+      (mfaStatus?.status === 'available' ||
+        mfaStatus?.status === 'needsReauth') &&
+      localMfaKey
+    ) {
+      handleKeyRemoval();
+    }
+  }, [mfaStatus?.status, localMfaKey, handleKeyRemoval]);
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
@@ -337,47 +362,53 @@ export const SettingsScreen = () => {
               />
               <Notifications />
             </Section>*/}
-          <Section>
-            <SectionHeader title={t('settingsScreen.securityTitle')} />
-            <OverviewList indented>
-              <ListItem
-                title={t('settingsScreen.authenticatorTitle')}
-                accessibilityRole="button"
-                linkTo={{
-                  screen: 'MfaSettings',
-                  params: {
-                    mfa: mfaStatus,
-                    hasLocalMfaKey: localMfaKey,
-                  },
-                }}
-                leadingItem={<Icon icon={faShieldHalved} size={20} />}
-                trailingItem={
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {localMfaKey ? (
-                      <Badge
-                        backgroundColor={palettes.success[500]}
-                        foregroundColor={palettes.success[100]}
-                        text={t('common.enabled')}
-                      />
-                    ) : mfaStatus?.status === 'available' ? (
-                      <Badge
-                        backgroundColor={palettes.warning[500]}
-                        foregroundColor={palettes.warning[100]}
-                        text={t('mfaScreen.settings.disabled')}
-                      />
-                    ) : (
-                      <Badge
-                        backgroundColor={palettes.error[500]}
-                        foregroundColor={palettes.error[100]}
-                        text={t('common.error')}
-                      />
-                    )}
-                    {Platform.OS === 'ios' && <DisclosureIndicator />}
-                  </View>
-                }
-              />
-            </OverviewList>
-          </Section>
+          {mfaStatus?.status !== 'unavailable' && (
+            <Section>
+              <SectionHeader title={t('settingsScreen.securityTitle')} />
+              <OverviewList indented>
+                <ListItem
+                  title={t('settingsScreen.authenticatorTitle')}
+                  accessibilityRole="button"
+                  linkTo={{
+                    screen: 'MfaSettings',
+                  }}
+                  leadingItem={<Icon icon={faShieldHalved} size={20} />}
+                  trailingItem={
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                    >
+                      {mfaStatus?.status === 'locked' ? (
+                        <Badge
+                          backgroundColor={palettes.error[500]}
+                          foregroundColor={palettes.error[100]}
+                          text={t('mfaScreen.settings.locked')}
+                        />
+                      ) : localMfaKey ? (
+                        <Badge
+                          backgroundColor={palettes.success[500]}
+                          foregroundColor={palettes.success[100]}
+                          text={t('common.enabled')}
+                        />
+                      ) : mfaStatus?.status === 'available' ? (
+                        <Badge
+                          backgroundColor={palettes.warning[500]}
+                          foregroundColor={palettes.warning[100]}
+                          text={t('mfaScreen.settings.disabled')}
+                        />
+                      ) : (
+                        <Badge
+                          backgroundColor={palettes.error[500]}
+                          foregroundColor={palettes.error[100]}
+                          text={t('common.error')}
+                        />
+                      )}
+                      {Platform.OS === 'ios' && <DisclosureIndicator />}
+                    </View>
+                  }
+                />
+              </OverviewList>
+            </Section>
+          )}
           <Section>
             <SectionHeader title={t('common.accessibility')} />
             <OverviewList indented>
