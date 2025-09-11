@@ -389,7 +389,7 @@ export const SettingsScreen = () => {
                           foregroundColor={palettes.success[100]}
                           text={t('common.enabled')}
                         />
-                      ) : mfaStatus?.status === 'available' ? (
+                      ) : mfaStatus?.status === 'available' && !localMfaKey ? (
                         <Badge
                           backgroundColor={palettes.warning[500]}
                           foregroundColor={palettes.warning[100]}

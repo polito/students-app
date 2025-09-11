@@ -44,19 +44,6 @@ export const MfaSettings = () => {
     return t('common.error');
   };
 
-  const getStatusColor = () => {
-    if (mfa?.status === 'locked') {
-      return palettes.error[500];
-    }
-    if (mfa?.status === 'available') {
-      return palettes.warning[500];
-    }
-    if (hasLocalMfaKey) {
-      return palettes.success[500];
-    }
-    return palettes.error[500];
-  };
-
   const renderErrorBlock = (i18nKey: string) => (
     <View style={styles.errorContainer}>
       <Text style={styles.errorLabel}>{t('mfaScreen.settings.textError')}</Text>
@@ -89,9 +76,7 @@ export const MfaSettings = () => {
               <ListItem
                 title={t('mfaScreen.settings.status')}
                 trailingItem={
-                  <Text style={[styles.infoValue, { color: getStatusColor() }]}>
-                    {getStatusText()}
-                  </Text>
+                  <Text style={styles.infoValue}>{getStatusText()}</Text>
                 }
               />
               {mfa?.status !== 'locked' &&
@@ -115,7 +100,7 @@ export const MfaSettings = () => {
                       }
                     />
                     <ListItem
-                      title={t('common.enroll.device')}
+                      title={t('mfaScreen.enroll.deviceName')}
                       trailingItem={
                         <Text
                           style={[
@@ -240,5 +225,6 @@ const createStyles = ({ dark, colors, spacing, fontSizes }: Theme) =>
     },
     infoValue: {
       color: colors.longProse,
+      fontWeight: 'bold',
     },
   });
