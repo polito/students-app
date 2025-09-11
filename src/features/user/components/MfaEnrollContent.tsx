@@ -104,10 +104,6 @@ export const MfaEnrollScreen = () => {
             },
           ]}
         />
-        <RTFTrans
-          i18nKey="mfaScreen.enroll.devicePrompt"
-          style={styles.subtitle}
-        />
         <View style={[styles.buttonsRow, { justifyContent: 'space-between' }]}>
           <CtaButton
             absolute={false}
@@ -126,12 +122,13 @@ export const MfaEnrollScreen = () => {
             loading={isPending}
           />
         </View>
+        <RTFTrans i18nKey="mfaScreen.enroll.note" style={styles.enrollNote} />
       </>
     );
   else
     return (
       <>
-        <RTFTrans i18nKey="mfaScreen.enroll.note" style={styles.note} />
+        <RTFTrans i18nKey="mfaScreen.enroll.devicePrompt" style={styles.note} />
         <Animated.View
           style={[
             { width: '100%', alignItems: 'center' },
@@ -205,6 +202,7 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
       color: colors.caption,
       textAlign: 'center',
       marginTop: spacing[5],
+      marginBottom: spacing[3],
       paddingHorizontal: spacing[5],
     },
     time: {
@@ -220,5 +218,12 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     },
     sectionList: {
       paddingBottom: Platform.select({ android: spacing[4] }),
+    },
+    enrollNote: {
+      fontSize: 16,
+      color: colors.caption,
+      textAlign: 'center',
+      marginTop: spacing[3],
+      marginHorizontal: spacing[5],
     },
   });
