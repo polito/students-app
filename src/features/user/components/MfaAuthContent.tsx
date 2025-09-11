@@ -142,6 +142,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
           variant="outlined"
           containerStyle={styles.secondaryButtonContainer}
           disabled={isPending}
+          loading={isPending}
           style={styles.secondaryButton}
           textStyle={styles.secondaryButton}
         />
@@ -151,6 +152,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
           action={onYes}
           containerStyle={styles.primaryButtonContainer}
           disabled={isPending}
+          loading={isPending}
           style={styles.primaryButton}
         />
       </View>

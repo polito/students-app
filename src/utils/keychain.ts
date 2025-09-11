@@ -115,5 +115,10 @@ export async function resetPrivateKeyMFA(): Promise<void> {
 }
 
 export async function hasPrivateKeyMFA(): Promise<boolean> {
-  return hasGenericPassword(kcSessingsMfa);
+  const [isPasscodeAvailable, hasPassword] = await Promise.all([
+    Keychain.isPasscodeAuthAvailable(),
+    hasGenericPassword(kcSessingsMfa),
+  ]);
+
+  return isPasscodeAvailable && hasPassword;
 }
