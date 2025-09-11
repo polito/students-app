@@ -125,6 +125,9 @@ export const MfaSettings = () => {
                 mfa?.status !== 'active' &&
                 mfa?.status !== 'available' &&
                 renderErrorBlock('mfaScreen.settings.notAccessible')}
+              {mfa?.status === 'active' &&
+                !hasLocalMfaKey &&
+                renderErrorBlock('mfaScreen.settings.notAccessible')}
             </OverviewList>
           </Section>
 
@@ -141,7 +144,8 @@ export const MfaSettings = () => {
           </Section>
         </View>
       </ScrollView>
-      {mfa?.status !== 'active' && mfa?.status !== 'locked' && (
+      {((mfa?.status !== 'active' && mfa?.status !== 'locked') ||
+        (mfa?.status === 'active' && !hasLocalMfaKey)) && (
         <View style={styles.buttonContainer}>
           <CtaButton
             title={

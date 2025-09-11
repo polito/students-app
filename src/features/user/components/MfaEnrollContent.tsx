@@ -214,7 +214,7 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     },
     textFieldInput: {
       textAlign: 'center',
-      minWidth: Dimensions.get('window').width - spacing[4],
+      minWidth: Dimensions.get('window').width,
     },
     sectionList: {
       paddingBottom: Platform.select({ android: spacing[4] }),
