@@ -1,12 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { HeaderBackButton } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import ColorPicker, {
@@ -16,7 +23,6 @@ import ColorPicker, {
   Swatches,
 } from 'reanimated-color-picker';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -27,8 +33,9 @@ type Props = NativeStackScreenProps<
   'CourseColorPicker'
 >;
 
-export const CourseColorPickerScreen = ({ route }: Props) => {
+export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
+  const [isSafeColor, setIsSafeColor] = useState(true);
   const { spacing, colors } = useTheme();
   const {
     courses: coursesPrefs,
@@ -36,11 +43,11 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     showColorWarning = true,
   } = usePreferencesContext();
 
-  const [isSafeColor, setIsSafeColor] = useState(true);
   const [temporaryColor, setTemporaryColor] = useState(
     coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
   const [showModal, setShowModal] = useState(false);
+  const [navigationAction, setNavigationAction] = useState<'back' | null>(null);
 
   const saveColor = useCallback(() => {
     updatePreference('courses', {
@@ -57,23 +64,35 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
     updatePreference,
   ]);
 
-  useEffect(() => {
-    const originalColor = coursesPrefs[route.params.uniqueShortcode]?.color;
-    if (temporaryColor !== originalColor) {
-      if (!isSafeColor && showColorWarning) {
-        setShowModal(true);
-      } else {
-        saveColor();
-      }
+  const onPressBack = useCallback(() => {
+    if (temporaryColor === coursesPrefs[route.params.uniqueShortcode]?.color) {
+      return navigation.goBack();
     }
+    if (!showColorWarning || isSafeColor) {
+      saveColor();
+      return navigation.goBack();
+    }
+    setNavigationAction('back');
+    setShowModal(true);
   }, [
     temporaryColor,
-    isSafeColor,
-    showColorWarning,
-    saveColor,
     coursesPrefs,
     route.params.uniqueShortcode,
+    showColorWarning,
+    isSafeColor,
+    saveColor,
+    navigation,
   ]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: Platform.OS === 'ios' ? false : true,
+      headerBackButtonMenuEnabled: false,
+      headerLeft: props => (
+        <HeaderBackButton {...props} onPress={onPressBack} />
+      ),
+    });
+  }, [navigation, onPressBack]);
 
   const handleConfirm = useCallback(
     (dontShowAgain: boolean) => {
@@ -82,17 +101,16 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
         updatePreference('showColorWarning', false);
       }
       saveColor();
+      if (navigationAction === 'back') {
+        navigation.goBack();
+      }
     },
-    [saveColor, updatePreference],
+    [saveColor, updatePreference, navigationAction, navigation],
   );
 
   const handleCancel = useCallback(() => {
     setShowModal(false);
-    setTemporaryColor(
-      coursesPrefs[route.params.uniqueShortcode]?.color ??
-        courseColors[0].color,
-    );
-  }, [coursesPrefs, route.params.uniqueShortcode]);
+  }, []);
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
@@ -107,79 +125,76 @@ export const CourseColorPickerScreen = ({ route }: Props) => {
   };
 
   return (
-    <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <SafeAreaView>
-          <View style={{ paddingVertical: spacing[5] }}>
-            <Section>
-              <SectionHeader
-                title={t('courseColorPickerScreen.accessibleColor')}
-              />
-              <OverviewList indented>
-                <ColorPicker
-                  value={temporaryColor}
-                  onComplete={onSwatchColorChange}
-                >
-                  <View style={styles.picker}>
-                    <Swatches
-                      style={styles.swatchesContainer}
-                      swatchStyle={styles.swatchItem}
-                      colors={courseColors.map(c => c.color)}
-                    />
-                  </View>
-                </ColorPicker>
-              </OverviewList>
-            </Section>
-            <Section>
-              <SectionHeader
-                title={t('courseColorPickerScreen.customColorTitle')}
-              />
-              <OverviewList indented>
-                <ColorPicker
-                  value={temporaryColor}
-                  onComplete={onCustomColorChange}
-                >
-                  <Panel1 style={styles.panel} />
-                  <HueSlider style={styles.slider} />
-                  <View style={styles.widget}>
-                    <InputWidget
-                      defaultFormat="HEX"
-                      formats={['HEX']}
-                      disableAlphaChannel={true}
-                      containerStyle={{
-                        padding: spacing[3],
-                      }}
-                      inputStyle={{
-                        color: colors.prose,
-                        fontFamily: 'Montserrat',
-                      }}
-                      inputTitleStyle={{
-                        color: colors.title,
-                        fontSize: 14,
-                        fontFamily: 'Montserrat',
-                      }}
-                      iconColor={colors.link}
-                      inputProps={{
-                        placeholderTextColor: colors.secondaryText,
-                      }}
-                    />
-                  </View>
-                </ColorPicker>
-              </OverviewList>
-            </Section>
-          </View>
-          <BottomBarSpacer />
-        </SafeAreaView>
-      </ScrollView>
-      <CustomAlert
-        visible={showModal}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        footer={t('courseColorPickerScreen.areYouSureTitle')}
-        message={t('courseColorPickerScreen.areYouSureMessage')}
-        dontShowAgainLabel={t('courseColorPickerScreen.dontShowAgain')}
-      />
-    </>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <SafeAreaView>
+        <CustomAlert
+          visible={showModal}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+          footer={t('courseColorPickerScreen.areYouSureTitle')}
+          message={t('courseColorPickerScreen.areYouSureMessage')}
+          dontShowAgainLabel={t('courseColorPickerScreen.dontShowAgain')}
+        />
+        <View style={{ paddingVertical: spacing[5] }}>
+          <Section>
+            <SectionHeader
+              title={t('courseColorPickerScreen.accessibleColor')}
+            />
+            <OverviewList indented>
+              <ColorPicker
+                value={temporaryColor}
+                onComplete={onSwatchColorChange}
+              >
+                <View style={styles.picker}>
+                  <Swatches
+                    style={styles.swatchesContainer}
+                    swatchStyle={styles.swatchItem}
+                    colors={courseColors.map(c => c.color)}
+                  />
+                </View>
+              </ColorPicker>
+            </OverviewList>
+          </Section>
+          <Section>
+            <SectionHeader
+              title={t('courseColorPickerScreen.customColorTitle')}
+            />
+            <OverviewList indented>
+              <ColorPicker
+                value={temporaryColor}
+                onComplete={onCustomColorChange}
+              >
+                <Panel1 style={styles.panel} />
+                <HueSlider style={styles.slider} />
+                <View style={styles.widget}>
+                  <InputWidget
+                    defaultFormat="HEX"
+                    formats={['HEX']}
+                    disableAlphaChannel={true}
+                    containerStyle={{
+                      padding: spacing[3],
+                    }}
+                    inputStyle={{
+                      color: colors.prose,
+                      fontFamily: 'Montserrat',
+                    }}
+                    inputTitleStyle={{
+                      color: colors.title,
+                      fontSize: 14,
+                      fontFamily: 'Montserrat',
+                    }}
+                    iconColor={colors.link}
+                    inputProps={{
+                      placeholderTextColor: colors.secondaryText,
+                    }}
+                  />
+                </View>
+              </ColorPicker>
+            </OverviewList>
+          </Section>
+        </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
