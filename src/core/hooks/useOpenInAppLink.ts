@@ -25,7 +25,8 @@ export const useOpenInAppLink = (type: WebviewType = WebviewType.NORMAL) => {
         toolbarColor: colors.headersBackground,
         secondaryToolbarColor: colors.headersBackground,
         enableBarCollapsing: true,
-        showInRecents: true,
+        showInRecents: false,
+        createTask: false,
         readerMode: false,
       };
       if (type === WebviewType.LOGIN) {

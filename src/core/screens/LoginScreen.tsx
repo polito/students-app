@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Keyboard,
-  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -11,7 +10,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import uuid from 'react-native-uuid';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -31,8 +29,11 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
-import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink';
-import { useLogin } from '../queries/authHooks';
+import {
+  useLogin,
+  useSSOLoginInitiator,
+  useVisitChpass,
+} from '../queries/authHooks';
 
 type LoginScreenRouteProp = RouteProp<
   { Login: { uid: string; key: string } },
@@ -56,6 +57,7 @@ export const LoginScreen = () => {
 
   const handleLoginError = useCallback(
     (e: Error) => {
+      console.error('Login error:', { ...e });
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
@@ -68,8 +70,6 @@ export const LoginScreen = () => {
     [t],
   );
 
-  const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
-
   const handleLogin = () =>
     login({
       username,
@@ -77,12 +77,10 @@ export const LoginScreen = () => {
       preferences: { language },
       loginType: 'basic',
     }).catch(handleLoginError);
-  const handleSSO = async () => {
-    const uid = uuid.v4();
-    await updatePreference('loginUid', uid);
-    const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
-    sessionOpener(url).catch(console.error);
-  };
+
+  const handleSSO = useSSOLoginInitiator();
+
+  const viewChpass = useVisitChpass();
 
   useEffect(() => {
     if (loginUid && key) {
@@ -92,7 +90,6 @@ export const LoginScreen = () => {
         preferences: { language },
         loginType: 'sso',
       }).catch(handleLoginError);
-      updatePreference('loginUid', undefined);
     }
   }, [loginUid, key, login, language, updatePreference, handleLoginError]);
 
@@ -171,14 +168,7 @@ export const LoginScreen = () => {
             action={handleSSO}
             loading={isLoading}
           />
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => {
-              Linking.openURL(
-                'https://idp.polito.it/Chpass/chpassservlet/main.htm?p_reset=Y',
-              );
-            }}
-          >
+          <TouchableOpacity style={styles.link} onPress={viewChpass}>
             <Text variant="link">{t('loginScreen.forgotYourPassword')}</Text>
           </TouchableOpacity>
         </Section>
