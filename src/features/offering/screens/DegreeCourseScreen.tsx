@@ -65,8 +65,8 @@ export const DegreeCourseScreen = ({ route }: Props) => {
 
   const moreStaffCount = useMemo(() => {
     if (!offeringCourse) return undefined;
-    return offeringCourse.staff?.length > 3
-      ? offeringCourse.staff?.length - 3
+    return offeringCourse.staff.length > 3
+      ? offeringCourse.staff.length - 3
       : undefined;
   }, [offeringCourse]);
 
@@ -163,16 +163,16 @@ export const DegreeCourseScreen = ({ route }: Props) => {
             </Row>
           </Card>
           {offeringCourse?.hours &&
-            (offeringCourse.hours?.lecture ||
-              offeringCourse.hours?.classroomExercise ||
-              offeringCourse.hours?.labExercise ||
-              offeringCourse.hours?.tutoring) && (
+            (offeringCourse.hours.lecture ||
+              offeringCourse.hours.classroomExercise ||
+              offeringCourse.hours.labExercise ||
+              offeringCourse.hours.tutoring) && (
               <OverviewList>
-                {!!offeringCourse?.hours?.lecture && (
+                {!!offeringCourse.hours.lecture && (
                   <ListItem
                     inverted
                     title={t('degreeCourseScreen.hours', {
-                      hours: offeringCourse?.hours?.lecture?.toString(),
+                      hours: offeringCourse.hours.lecture.toString(),
                     })}
                     titleStyle={styles.title}
                     titleProps={listTitleProps}
@@ -184,8 +184,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   <ListItem
                     inverted
                     title={t('degreeCourseScreen.hours', {
-                      hours:
-                        offeringCourse?.hours?.classroomExercise?.toString(),
+                      hours: offeringCourse.hours.classroomExercise.toString(),
                     })}
                     titleStyle={styles.title}
                     titleProps={listTitleProps}
@@ -209,7 +208,7 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                   <ListItem
                     inverted
                     title={t('degreeCourseScreen.hours', {
-                      hours: offeringCourse?.hours?.tutoring?.toString(),
+                      hours: offeringCourse.hours.tutoring.toString(),
                     })}
                     titleStyle={styles.title}
                     titleProps={listTitleProps}
@@ -242,20 +241,20 @@ export const DegreeCourseScreen = ({ route }: Props) => {
               title={t('degreeCourseScreen.staff')}
               linkToMoreCount={moreStaffCount}
               linkTo={
-                moreStaffCount
+                moreStaffCount && offeringCourse
                   ? {
                       screen: 'Staff',
                       params: {
-                        courseShortcode: offeringCourse?.shortcode,
+                        courseShortcode: offeringCourse.shortcode,
                         year: initialYear,
-                        staff: offeringCourse!.staff,
+                        staff: offeringCourse.staff,
                       },
                     }
                   : undefined
               }
             />
             <OverviewList emptyStateText={t('degreeCourseScreen.noStaff')}>
-              {offeringCourse?.staff.slice(0, 3).map(item => (
+              {offeringCourse?.staff?.slice(0, 3).map(item => (
                 <StaffListItem
                   key={`${item.id}${item.courseId}`}
                   staff={item}
