@@ -13,6 +13,8 @@ import { signSecp256k1 } from '../../../utils/crypto';
 import {
   AuthenticatorPrivKey,
   getPrivateKeyMFA,
+  hasPrivateKeyMFA,
+  resetPrivateKeyMFA,
 } from '../../../utils/keychain';
 import { createStyles } from './MfaEnrollContent';
 import { UserStackParamList } from './UserNavigator';
@@ -96,12 +98,31 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
         }
       } catch (err) {
         console.error(err);
-        Alert.alert(t('common.error'), t('mfaScreen.auth.unlockFailure'));
+        const hasKey = await hasPrivateKeyMFA();
+        if (hasKey) {
+          Alert.alert(
+            t('common.error'),
+            t('mfaScreen.settings.notAccessible'),
+            [
+              {
+                text: t('common.ok'),
+                onPress: async () => {
+                  await resetPrivateKeyMFA();
+                  navigation.navigate('ProfileTab', {
+                    screen: 'Settings',
+                  });
+                },
+              },
+            ],
+          );
+        } else {
+          Alert.alert(t('common.error'), t('mfaScreen.auth.unlockFailure'));
+        }
         goBack();
       }
     };
     fetchPrivateKey();
-  }, [t, goBack, authPk]);
+  }, [t, goBack, authPk, navigation]);
 
   const onNo = async () => {
     if (!authPk) return;
