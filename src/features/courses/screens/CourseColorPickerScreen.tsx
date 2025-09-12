@@ -1,6 +1,11 @@
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from 'react-native-gesture-handler';
+
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -70,7 +75,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const hasChanged = temporaryColor !== originalColor;
   const isUnsafeChange = hasChanged && !isSafeColor;
   const shouldWarn = isUnsafeChange && showColorWarning !== false;
-  const shouldPrevent = hasChanged && shouldWarn;
+  const shouldPrevent = hasChanged && shouldWarn && !showModal;
 
   usePreventRemove(shouldPrevent, ({ data: _data }) => {
     if (shouldPrevent) {
@@ -119,69 +124,74 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
 
   return (
     <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <SafeAreaView>
-          <View style={{ paddingVertical: spacing[5] }}>
-            <Section>
-              <SectionHeader
-                title={t('courseColorPickerScreen.accessibleColor')}
-              />
-              <OverviewList indented>
-                <ColorPicker
-                  value={temporaryColor}
-                  onComplete={onSwatchColorChange}
-                >
-                  <View style={styles.picker}>
-                    <Swatches
-                      style={styles.swatchesContainer}
-                      swatchStyle={styles.swatchItem}
-                      colors={courseColors.map(c => c.color)}
-                    />
-                  </View>
-                </ColorPicker>
-              </OverviewList>
-            </Section>
-            <Section>
-              <SectionHeader
-                title={t('courseColorPickerScreen.customColorTitle')}
-              />
-              <OverviewList indented>
-                <ColorPicker
-                  value={temporaryColor}
-                  onComplete={onCustomColorChange}
-                >
-                  <Panel1 style={styles.panel} />
-                  <HueSlider style={styles.slider} />
-                  <View style={styles.widget}>
-                    <InputWidget
-                      defaultFormat="HEX"
-                      formats={['HEX']}
-                      disableAlphaChannel={true}
-                      containerStyle={{
-                        padding: spacing[3],
-                      }}
-                      inputStyle={{
-                        color: colors.prose,
-                        fontFamily: 'Montserrat',
-                      }}
-                      inputTitleStyle={{
-                        color: colors.title,
-                        fontSize: 14,
-                        fontFamily: 'Montserrat',
-                      }}
-                      iconColor={colors.link}
-                      inputProps={{
-                        placeholderTextColor: colors.secondaryText,
-                      }}
-                    />
-                  </View>
-                </ColorPicker>
-              </OverviewList>
-            </Section>
-          </View>
-          <BottomBarSpacer />
-        </SafeAreaView>
-      </ScrollView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          decelerationRate="fast"
+        >
+          <SafeAreaView>
+            <View style={{ paddingVertical: spacing[5] }}>
+              <Section>
+                <SectionHeader
+                  title={t('courseColorPickerScreen.accessibleColor')}
+                />
+                <OverviewList indented>
+                  <ColorPicker
+                    value={temporaryColor}
+                    onComplete={onSwatchColorChange}
+                  >
+                    <View style={styles.picker}>
+                      <Swatches
+                        style={styles.swatchesContainer}
+                        swatchStyle={styles.swatchItem}
+                        colors={courseColors.map(c => c.color)}
+                      />
+                    </View>
+                  </ColorPicker>
+                </OverviewList>
+              </Section>
+              <Section>
+                <SectionHeader
+                  title={t('courseColorPickerScreen.customColorTitle')}
+                />
+                <OverviewList indented>
+                  <ColorPicker
+                    value={temporaryColor}
+                    onComplete={onCustomColorChange}
+                  >
+                    <Panel1 style={styles.panel} />
+                    <HueSlider style={styles.slider} />
+                    <View style={styles.widget}>
+                      <InputWidget
+                        defaultFormat="HEX"
+                        formats={['HEX']}
+                        disableAlphaChannel={true}
+                        containerStyle={{
+                          padding: spacing[3],
+                        }}
+                        inputStyle={{
+                          color: colors.prose,
+                          fontFamily: 'Montserrat',
+                        }}
+                        inputTitleStyle={{
+                          color: colors.title,
+                          fontSize: 14,
+                          fontFamily: 'Montserrat',
+                        }}
+                        iconColor={colors.link}
+                        inputProps={{
+                          placeholderTextColor: colors.secondaryText,
+                        }}
+                      />
+                    </View>
+                  </ColorPicker>
+                </OverviewList>
+              </Section>
+            </View>
+            <BottomBarSpacer />
+          </SafeAreaView>
+        </ScrollView>
+      </GestureHandlerRootView>
       <CustomAlert
         visible={showModal}
         onConfirm={handleConfirm}
