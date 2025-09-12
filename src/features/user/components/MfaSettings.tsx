@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
-import { useCheckMfa } from '~/core/queries/authHooks';
+import { useCheckMfa, useLogout } from '~/core/queries/authHooks';
 import { hasPrivateKeyMFA } from '~/utils/keychain';
 
 import { UserStackParamList } from './UserNavigator';
@@ -24,6 +24,7 @@ export const MfaSettings = () => {
   const styles = useStylesheet(createStyles);
   const { fontSizes, palettes, colors, spacing } = useTheme();
   const { data: mfa } = useCheckMfa(true);
+  const { mutate: logout } = useLogout();
   const [hasLocalMfaKey, setHasLocalMfaKey] = useState<boolean>(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
@@ -154,15 +155,19 @@ export const MfaSettings = () => {
                 : t('mfaScreen.settings.correctError')
             }
             action={() => {
-              navigation.navigate({
-                name: 'ProfileTab',
-                params: {
-                  screen: 'PolitoAuthenticator',
+              if (mfa?.status === 'available') {
+                navigation.navigate({
+                  name: 'ProfileTab',
                   params: {
-                    activeView: 'enroll',
+                    screen: 'PolitoAuthenticator',
+                    params: {
+                      activeView: 'enroll',
+                    },
                   },
-                },
-              });
+                });
+              } else {
+                logout();
+              }
             }}
             variant="filled"
             absolute={false}
