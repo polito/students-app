@@ -15,6 +15,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { usePreventRemove } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
+import { courseColors } from '~/core/constants.ts';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+
 import ColorPicker, {
   HueSlider,
   InputWidget,
@@ -22,9 +26,6 @@ import ColorPicker, {
   Swatches,
 } from 'reanimated-color-picker';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { courseColors } from '../../../core/constants';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import CustomAlert from '../components/CourseColorWarningModal';
 
@@ -53,7 +54,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
       ...coursesPrefs,
       [route.params.uniqueShortcode]: {
         ...coursesPrefs[route.params.uniqueShortcode],
-        color: temporaryColor,
+        color: temporaryColor.slice(0, 7),
       },
     });
   }, [
