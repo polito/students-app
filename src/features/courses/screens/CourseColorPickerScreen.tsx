@@ -3,16 +3,17 @@ import {
   ScrollView,
 } from 'react-native-gesture-handler';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
+import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { usePreventRemove } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
@@ -49,6 +50,12 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   );
   const [showModal, setShowModal] = useState(false);
 
+  const originalColor =
+    coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color;
+  const hasChanged = temporaryColor !== originalColor;
+  const isUnsafeChange = hasChanged && !isSafeColor;
+  const shouldWarn = isUnsafeChange && showColorWarning !== false;
+
   const saveColor = useCallback(() => {
     updatePreference('courses', {
       ...coursesPrefs,
@@ -63,35 +70,6 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     temporaryColor,
     updatePreference,
   ]);
-
-  const originalColor =
-    coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color;
-  useEffect(() => {
-    const hasChanged = temporaryColor !== originalColor;
-    if (hasChanged && isSafeColor) {
-      saveColor();
-    }
-  }, [temporaryColor, originalColor, isSafeColor, saveColor]);
-
-  const hasChanged = temporaryColor !== originalColor;
-  const isUnsafeChange = hasChanged && !isSafeColor;
-  const shouldWarn = isUnsafeChange && showColorWarning !== false;
-  const shouldPrevent = hasChanged && shouldWarn && !showModal;
-
-  usePreventRemove(shouldPrevent, ({ data: _data }) => {
-    if (shouldPrevent) {
-      setShowModal(true);
-    }
-  });
-
-  const shouldAutoSave =
-    hasChanged && !isSafeColor && showColorWarning === false;
-  usePreventRemove(shouldAutoSave, ({ data }) => {
-    if (shouldAutoSave) {
-      saveColor();
-      navigation.dispatch(data.action);
-    }
-  });
 
   const handleConfirm = useCallback(
     (dontShowAgain: boolean) => {
@@ -108,8 +86,16 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const handleCancel = useCallback(() => {
     setShowModal(false);
     setTemporaryColor(originalColor);
-    navigation.goBack();
-  }, [originalColor, navigation]);
+  }, [originalColor]);
+
+  const handleConfirmColor = useCallback(() => {
+    if (shouldWarn) {
+      setShowModal(true);
+    } else {
+      saveColor();
+      navigation.goBack();
+    }
+  }, [shouldWarn, saveColor, navigation]);
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
@@ -192,6 +178,14 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
             <BottomBarSpacer />
           </SafeAreaView>
         </ScrollView>
+        <CtaButtonContainer absolute>
+          <CtaButton
+            title={t('common.confirm')}
+            action={handleConfirmColor}
+            disabled={!hasChanged}
+            absolute={false}
+          />
+        </CtaButtonContainer>
       </GestureHandlerRootView>
       <CustomAlert
         visible={showModal}
