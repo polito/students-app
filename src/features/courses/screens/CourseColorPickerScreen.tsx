@@ -18,6 +18,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
 import { courseColors } from '~/core/constants.ts';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useBottomBarAwareStyles } from '~/core/hooks/useBottomBarAwareStyles.ts';
 
 import ColorPicker, {
   HueSlider,
@@ -37,7 +38,8 @@ type Props = NativeStackScreenProps<
 export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { spacing, colors } = useTheme();
-  const styles = createStyles({ spacing });
+  const bottomBarStyles = useBottomBarAwareStyles(true);
+  const styles = createStyles({ spacing, colors, bottomBarStyles });
   const {
     courses: coursesPrefs,
     updatePreference,
@@ -201,7 +203,15 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing }: { spacing: any }) =>
+const createStyles = ({
+  spacing,
+  colors,
+  bottomBarStyles,
+}: {
+  spacing: any;
+  colors: any;
+  bottomBarStyles: any;
+}) =>
   StyleSheet.create({
     picker: {
       marginTop: 10,
@@ -244,11 +254,17 @@ const createStyles = ({ spacing }: { spacing: any }) =>
       alignSelf: 'center',
     },
     buttonContainer: {
-      margin: spacing[4],
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: spacing[4],
+      paddingBottom: bottomBarStyles.paddingBottom,
+      backgroundColor: colors.background,
+      zIndex: 10,
     },
     buttonWrapper: {
       padding: 0,
-      top: -spacing[16],
       elevation: 0,
     },
   });
