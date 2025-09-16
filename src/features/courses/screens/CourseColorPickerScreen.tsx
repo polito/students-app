@@ -9,7 +9,6 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
@@ -38,6 +37,7 @@ type Props = NativeStackScreenProps<
 export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const { spacing, colors } = useTheme();
+  const styles = createStyles({ spacing });
   const {
     courses: coursesPrefs,
     updatePreference,
@@ -115,6 +115,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           decelerationRate="fast"
+          style={{ marginBottom: spacing[4] }}
         >
           <SafeAreaView>
             <View style={{ paddingVertical: spacing[5] }}>
@@ -178,14 +179,15 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
             <BottomBarSpacer />
           </SafeAreaView>
         </ScrollView>
-        <CtaButtonContainer absolute>
+        <View style={styles.buttonContainer}>
           <CtaButton
             title={t('common.confirm')}
             action={handleConfirmColor}
             disabled={!hasChanged}
             absolute={false}
+            containerStyle={styles.buttonWrapper}
           />
-        </CtaButtonContainer>
+        </View>
       </GestureHandlerRootView>
       <CustomAlert
         visible={showModal}
@@ -199,45 +201,54 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  picker: {
-    marginTop: 10,
-    marginBottom: 10,
-    width: '95%',
-    alignSelf: 'center',
-  },
-  panel: {
-    marginTop: 10,
-    marginBottom: 10,
-    height: 200,
-    borderRadius: 8,
-    width: '90%',
-    alignSelf: 'center',
-  },
-  slider: {
-    marginTop: 10,
-    marginBottom: 10,
-    height: 30,
-    borderRadius: 8,
-    width: '90%',
-    alignSelf: 'center',
-  },
-  swatchesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    padding: 10,
-  },
-  swatchItem: {
-    width: '12%',
-    aspectRatio: 1,
-    borderRadius: 9999,
-    marginBottom: 10,
-  },
-  widget: {
-    marginTop: 10,
-    marginBottom: 10,
-    width: '95%',
-    alignSelf: 'center',
-  },
-});
+const createStyles = ({ spacing }: { spacing: any }) =>
+  StyleSheet.create({
+    picker: {
+      marginTop: 10,
+      marginBottom: 10,
+      width: '95%',
+      alignSelf: 'center',
+    },
+    panel: {
+      marginTop: 10,
+      marginBottom: 10,
+      height: 200,
+      borderRadius: 8,
+      width: '90%',
+      alignSelf: 'center',
+    },
+    slider: {
+      marginTop: 10,
+      marginBottom: 10,
+      height: 30,
+      borderRadius: 8,
+      width: '90%',
+      alignSelf: 'center',
+    },
+    swatchesContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      padding: 10,
+    },
+    swatchItem: {
+      width: '12%',
+      aspectRatio: 1,
+      borderRadius: 9999,
+      marginBottom: 10,
+    },
+    widget: {
+      marginTop: 10,
+      marginBottom: 10,
+      width: '95%',
+      alignSelf: 'center',
+    },
+    buttonContainer: {
+      margin: spacing[4],
+    },
+    buttonWrapper: {
+      padding: 0,
+      top: -spacing[16],
+      elevation: 0,
+    },
+  });
