@@ -4,11 +4,15 @@ import { Alert, Text, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { FetchChallenge200ResponseData } from '@polito/api-client';
+import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useMfaAuth } from '../../../core/queries/authHooks';
+import {
+  useGetMessages,
+  useMarkMessageAsRead,
+} from '../../../core/queries/studentHooks';
 import { signSecp256k1 } from '../../../utils/crypto';
 import {
   AuthenticatorPrivKey,
@@ -64,10 +68,24 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     >();
   const styles = useStylesheet(createStyles);
   const { mutate: verifyMfa, isPending } = useMfaAuth();
+  const { mutate: markMessageAsRead } = useMarkMessageAsRead();
+  const messagesQuery = useGetMessages();
 
   const [authPk, setAuthPk] = useState<AuthenticatorPrivKey | null | undefined>(
     undefined,
   );
+
+  const markMfaMessageAsRead = useCallback(() => {
+    const messages = messagesQuery.data;
+    if (messages) {
+      const mfaMessage = messages.find(
+        m => m.type === MessageType.Mfa && !m.isRead,
+      );
+      if (mfaMessage) {
+        markMessageAsRead(mfaMessage.id);
+      }
+    }
+  }, [messagesQuery.data, markMessageAsRead]);
 
   const goBack = useCallback(() => {
     if (navigation.canGoBack()) {
@@ -133,6 +151,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
       nonce,
       signature,
     });
+    markMfaMessageAsRead();
     goBack();
   };
 
@@ -148,6 +167,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     } catch (err) {
       Alert.alert(t('common.error'));
     }
+    markMfaMessageAsRead();
     goBack();
   };
 
