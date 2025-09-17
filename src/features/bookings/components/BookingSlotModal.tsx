@@ -20,9 +20,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { inRange } from 'lodash';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { isSlotBookable, isSlotFull } from '../../../utils/bookings';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { setTimeoutAccessibilityInfoHelper } from '../../../utils/setTimeoutAccessibilityInfo';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
 import { BookingField } from './BookingField';
@@ -68,7 +69,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     if (bookingNotYetOpen) {
       const bookingDateTime = item?.bookingStartsAt
         ? DateTime.fromJSDate(item?.bookingStartsAt, {
-            zone: IANAZone.create('Europe/Rome'),
+            zone: APP_TIMEZONE,
           })
         : null;
 
@@ -129,7 +130,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
         message={(() => {
           const bookingDateTime = item?.bookingStartsAt
             ? DateTime.fromJSDate(item?.bookingStartsAt, {
-                zone: IANAZone.create('Europe/Rome'),
+                zone: APP_TIMEZONE,
               })
             : null;
 

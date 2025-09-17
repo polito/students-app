@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { DateTime, IANAZone, Interval } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 
 import {
   CoursesPreferences,
@@ -17,6 +17,7 @@ import {
   useGetDeadlineWeeks,
 } from '../../../core/queries/studentHooks';
 import { Exam } from '../../../core/types/api';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { dateFormatter, formatMachineDate } from '../../../utils/dates';
 import { AgendaDay } from '../types/AgendaDay';
 import {
@@ -45,7 +46,7 @@ const groupItemsByDay = (
   const agendaItems: AgendaItem[] = [];
 
   const timeOptions = {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   };
   const formatHHmm = dateFormatter('HH:mm');
   agendaItems.push(
@@ -123,14 +124,17 @@ const groupItemsByDay = (
 
   agendaItems.push(
     ...deadlines.map(deadline => {
-      const startDate = deadline.date;
-      startDate.setHours(0, 0, 0);
+      const startDateTime = DateTime.fromJSDate(
+        deadline.date,
+        timeOptions,
+      ).startOf('day');
+      const endDateTime = startDateTime.plus({ hour: 1 });
 
       const item: DeadlineItem = {
         id: deadline.id!,
         key: 'deadline-' + deadline.id,
-        start: DateTime.fromJSDate(startDate, timeOptions),
-        end: DateTime.fromJSDate(startDate, timeOptions).plus({ hour: 1 }),
+        start: startDateTime,
+        end: endDateTime,
         startTimestamp: deadline.date.valueOf(),
         date: formatMachineDate(deadline.date),
         title: deadline.name,
@@ -181,7 +185,7 @@ const groupItemsByDay = (
   });
 };
 
-const thisMonday = DateTime.now().startOf('week');
+const thisMonday = DateTime.now().setZone(APP_TIMEZONE).startOf('week');
 
 interface AgendaWeekQueryFnParams {
   preferences: PreferencesContextProps;

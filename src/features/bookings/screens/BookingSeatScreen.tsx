@@ -18,7 +18,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { isEmpty } from 'lodash';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -29,6 +29,7 @@ import {
   useGetBookings,
 } from '../../../core/queries/bookingHooks';
 import { canBeCancelled } from '../../../utils/bookings';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
@@ -60,7 +61,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
   );
 
   const timeOptions = {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   };
 
   const bookingStartAtTime =
