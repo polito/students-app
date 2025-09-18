@@ -29,6 +29,7 @@ import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
+import { ItineraryScreen } from '../screens/ItineraryScreen';
 
 export type ServiceStackParamList = {
   Places: undefined;
@@ -58,6 +59,7 @@ export type PlacesStackParamList = {
     siteId: string;
     buildingId: string;
   };
+  Itinerary: undefined;
   PlaceCategories: undefined;
   MessagesModal: undefined;
   FreeRooms: undefined;
@@ -129,6 +131,7 @@ export const PlacesNavigator = () => {
   const [floorId, setFloorId] = useState<string>();
   const [lines, setLines] = useState<string[]>([]);
   const [selectedLine, setSelectedLine] = useState<string>();
+  const [itineraryMode, setItineraryMode] = useState<boolean>(false);
 
   const checkAndSetFloorId = (id?: string) => {
     if (id) {
@@ -149,16 +152,27 @@ export const PlacesNavigator = () => {
     setSelectedLine(line);
   }
 
+  const setMode = (mode?: boolean) => {
+    if(mode !== undefined){
+      setItineraryMode(mode);
+    }
+    else{
+      setItineraryMode(false);
+    }
+  }
+
+
   useEffect(() => {
     const perm = Platform.select({
       ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
       android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     });
     if (perm) request(perm).catch(console.error);
+    setMode(false); //BOOH speriamo non faccia danni
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine }}>
+    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine, itineraryMode, setItineraryMode: setMode }}>
       <Map.Navigator
         id="PlacesTabNavigator"
         screenOptions={{
@@ -231,6 +245,13 @@ export const PlacesNavigator = () => {
             presentation: 'modal',
             headerLeft: () => <HeaderLogo />,
             headerRight: () => <HeaderCloseButton />,
+          }}
+        />
+        <Map.Screen
+          name="Itinerary"
+          component={ItineraryScreen}
+          options={{
+            title: t('itineraryScreen.title'),
           }}
         />
         <Map.Screen

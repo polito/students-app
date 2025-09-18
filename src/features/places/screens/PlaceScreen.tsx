@@ -65,6 +65,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     siteId: siteId,
     floorId: placeFloorId,
   });
+  const { itineraryMode: mode, setItineraryMode: setMode } = useContext(PlacesContext);
 
   useEffect(() => {
     if (!isLoadingPlace && placeFloorId !== floorId) {
@@ -345,20 +346,12 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     adjustSpacing="right"
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
-                      const scheme = Platform.select({
-                        ios: 'maps://0,0?q=',
-                        android: 'geo:0,0?q=',
-                      });
-                      const latLng = [
-                        place?.latitude || lat,
-                        place?.longitude || long,
-                      ].join(',');
-                      const label = place?.room.name ?? name;
-                      const url = Platform.select({
-                        ios: `${scheme}${label}@${latLng}`,
-                        android: `${scheme}${latLng}(${label})`,
-                      })!;
-                      Linking.openURL(url);
+                      if (!mode) {
+                        if (setMode) {
+                          setMode(true);
+                        }
+                        navigation.navigate('Itinerary');
+                      }
                     }}
                   />
                 }

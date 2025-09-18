@@ -194,16 +194,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const renderMapContent = useCallback(
     () => (
       <>
-            <MarkersLayer
-              search={debouncedSearch}
-              places={places ?? []}
-              displayFloor={!displayFloorId}
-              categoryId={categoryId}
-              subCategoryId={subCategoryId}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
-            />
-            <PathLayer />
+        <MarkersLayer
+          search={debouncedSearch}
+          places={places ?? []}
+          displayFloor={!displayFloorId}
+          categoryId={categoryId}
+          subCategoryId={subCategoryId}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
       </>
     ),
     [

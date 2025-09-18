@@ -9,6 +9,9 @@ interface PlacesContextValue {
 
   selectedLine?: string;
   setSelectedLine: (newLine?: string) => void;
+
+  itineraryMode?: boolean;
+  setItineraryMode?: (mode: boolean) => void;
 }
 
 export const PlacesContext = createContext<PlacesContextValue>(

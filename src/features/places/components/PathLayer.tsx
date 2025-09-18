@@ -1,36 +1,38 @@
-import { Feature, LineString } from 'geojson';
 import { useGetPath } from '../../../core/queries/placesHooks';
 import { ShapeSource, LineLayer, LineJoin } from '@rnmapbox/maps';
 import { useContext, useEffect, useState } from 'react';
 import { PlacesContext } from '../contexts/PlacesContext';
-import { get, set } from 'lodash';
-import { Path } from 'react-native-svg';
 
 export const PathLayer = () => {
   const [groupedFeatures, setGroupedFeatures] = useState<any[][]>([]);
+  const [selectedFloor, setSelectedFloor] = useState<string | undefined>(undefined);
 
   const { floorId: mapFloorId, setFloorId: setMapFloorId } =        //useful to set the map tot the corrrect floor whenever the user click to that portion of the path
     useContext(PlacesContext);
-
-  const { setLines: setLines } = useContext(PlacesContext);
+    
   const { selectedLine: line, setSelectedLine: setLine } = useContext(PlacesContext);
 
   const featureCollection = useGetPath();
-   if (!featureCollection || featureCollection.length === 0) {
-    return null;
-  }
 
-  const handlePressSegment = async(label: string) => {
+  const handlePressSegment = async(label: string, floor: string) => {
     let lineLayer = label;
-    console.log("Pressed segment: " + lineLayer);
 
     if(line === lineLayer){
       setLine(undefined);
     }
     else{
       setLine(lineLayer);
+      setSelectedFloor(floor);
     }
   }
+
+  useEffect(() => {
+    if(line){
+      setMapFloorId(selectedFloor);
+    }
+    else
+      setMapFloorId('XPTE');
+  }, [line]);
 
   function getRandomColor(): string {
     const randomInt = Math.floor(Math.random() * 16777215);
@@ -43,70 +45,14 @@ export const PathLayer = () => {
     return `#${hexString}`;
   }
 
-/*
-  const extractFloorId = (vals: string) => {
-    const valOut: string[] = [];
-
-    const regex = /x[a-zA-Z](\w+)/g;
-    let match: RegExpExecArray | null;
-
-    while ((match = regex.exec(vals)) !== null) {
-      valOut.push(match[0]);
-    }
-
-    return valOut;
-  };
-  */
-
-  const getGroupedFeatures = (data: any) => {
-    const groupedFeatures: any[][] = [];
-    let array: any[] = [];
-    let counter = 0;
-
-    data.forEach((item: any) => {
-      if(item?.properties.link_typ === null)
-        array.push(item);
-      else{
-        setLines(`line-layer-${counter.toString()}`);
-        groupedFeatures.push(array);
-        array = [];
-        counter++;
-      }
-    });
-
-    return groupedFeatures;
-  }
-  
-  useEffect(() => {
-    setGroupedFeatures(getGroupedFeatures(featureCollection));
-  }, [featureCollection]);
-
   return (
     <>
-      {groupedFeatures.length > 0 && groupedFeatures.map((featuresArray: any[], index: number) => {
-        const allCoordinates = featuresArray.flatMap((feature: any) => {
-          if (feature?.geometry && feature?.geometry.type === 'LineString') {
-            return feature.geometry.coordinates;
-          }
-          return [];
-        });
-
-        const lineFeature: Feature<LineString> = {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: allCoordinates,
-          },
-        };
-
+      {featureCollection.features.length > 0 && featureCollection.features.map((featuresArray: any, index: number) => {
         return (
-          <ShapeSource id={`line-source-${index.toString()}`} shape={{
-            type: 'FeatureCollection',
-            features: [lineFeature],
-            }}
+          <ShapeSource id={`line-source-${index.toString()}`} shape={featuresArray.json_build_object}
+            key={`line-source-${index.toString()}`}
             onPress={() => {
-              handlePressSegment(`line-layer-${index.toString()}`);
+              handlePressSegment(`line-layer-${index.toString()}`, featuresArray.json_build_object.features[0].properties.fn_fl_id);
             }}
           >
             {

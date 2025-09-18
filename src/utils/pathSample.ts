@@ -1,7 +1,7 @@
-import data from '../utils/pathCostant.json'
+import data from '../utils/pathFinale.json'
 
 const createGeoJSONData = (data: any) => {
-    const features = data.paths.map((item: any) => {
+    const features = data.features.map((item: any) => {
 
         if(item.edge != -1){
             const lineString = item.geom;
@@ -14,6 +14,9 @@ const createGeoJSONData = (data: any) => {
                 properties: {
                     link_typ: item.link_typ,
                     vals: item.vals,
+                    build_id: item.fn_bl_id,
+                    floor_id: item.fn_fl_id,
+                    no_disab: item.no_disab,
                 },                         //to add the several informations such as stairs, elevators, disab ecc
                 geometry: {
                     type: 'LineString',
@@ -26,4 +29,4 @@ const createGeoJSONData = (data: any) => {
   return features;
 };
 
-export const myGeoJSONData = createGeoJSONData(data);
+export const myGeoJSONData = data;

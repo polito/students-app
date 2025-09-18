@@ -6,6 +6,8 @@ import { PlaceOverview } from '@polito/api-client';
 import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
+import { useContext } from 'react';
+import { PlacesContext } from '../contexts/PlacesContext';
 
 import { capitalize } from 'lodash';
 
@@ -43,6 +45,7 @@ export const MarkersLayer = ({
   const { dark, fontSizes, colors } = useTheme();
   const placeCategoriesMap = usePlaceCategoriesMap();
   const { accessibility } = usePreferencesContext();
+  const { itineraryMode: mode } = useContext(PlacesContext);
 
   const pois = useMemo((): (SearchPlace &
     PlaceCategory & { siteId: string })[] => {
