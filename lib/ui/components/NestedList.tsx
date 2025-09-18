@@ -1,4 +1,4 @@
-import { React } from 'react';
+import React from 'react';
 import { SectionList, StyleProp, ViewStyle } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
@@ -6,7 +6,7 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 // import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 // import { Theme } from '@lib/ui/types/Theme';
-import { UseQueryResult } from '@stack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 
 export type NestedListSection<TItem, TSection> = {
   title: string;
