@@ -63,7 +63,7 @@ export type BookingCalendarEvent = BookingSlot & {
   title: string;
 };
 
-const START_DATE = DateTime.now().startOf('week');
+const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('week');
 
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;

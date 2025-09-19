@@ -39,7 +39,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontSizes, spacing } = useTheme();
-  const now = DateTime.now().toJSDate();
+  const now = DateTime.now().setZone(APP_TIMEZONE).toJSDate();
 
   const isFull = isSlotFull(item);
   const bookingNotYetOpen = !!(
@@ -55,7 +55,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     if (
       !canBeBooked &&
       inRange(
-        DateTime.now().valueOf(),
+        DateTime.now().setZone(APP_TIMEZONE).valueOf(),
         item.bookingStartsAt.valueOf(),
         item.bookingEndsAt.valueOf(),
       ) &&
@@ -103,7 +103,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     if (
       !canBeBooked &&
       inRange(
-        DateTime.now().valueOf(),
+        DateTime.now().setZone(APP_TIMEZONE).valueOf(),
         item.bookingStartsAt.valueOf(),
         item.bookingEndsAt.valueOf(),
       ) &&
