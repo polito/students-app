@@ -136,7 +136,7 @@ const groupItemsByDay = (
         start: startDateTime,
         end: endDateTime,
         startTimestamp: deadline.date.valueOf(),
-        date: formatMachineDate(deadline.date),
+        date: startDateTime.toFormat('yyyy-MM-dd'),
         title: deadline.name,
         type: 'deadline',
         url: deadline.url,

@@ -66,7 +66,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const [currentWeek, setCurrentWeek] = useState<DateTime>(
     date
-      ? date.startOf('week')
+      ? date.setZone(APP_TIMEZONE).startOf('week')
       : DateTime.now().setZone(APP_TIMEZONE).startOf('week'),
   );
 
