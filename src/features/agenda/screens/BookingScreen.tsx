@@ -31,7 +31,7 @@ import { Booking } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { inRange } from 'lodash';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
@@ -46,6 +46,7 @@ import {
   useUpdateBooking,
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { BookingDateTime } from '../../bookings/components/BookingDateTime';
 import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
@@ -104,7 +105,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
       booking?.startsAt &&
       isToday(
         DateTime.fromJSDate(booking?.startsAt, {
-          zone: IANAZone.create('Europe/Rome'),
+          zone: APP_TIMEZONE,
         }),
       ) &&
       inRange(

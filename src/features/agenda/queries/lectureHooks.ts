@@ -4,7 +4,7 @@ import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { ResponseError } from '@polito/api-client/runtime';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
 import {
@@ -12,6 +12,7 @@ import {
   useGetCourses,
 } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { isCurrentMonth } from '../../../utils/dates';
 import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
@@ -176,7 +177,7 @@ export const useGetNextLecture = (
 
     try {
       const lectureStart = DateTime.fromISO(nextLecture.date, {
-        zone: IANAZone.create('Europe/Rome'),
+        zone: APP_TIMEZONE,
       });
 
       if (!lectureStart.isValid) {

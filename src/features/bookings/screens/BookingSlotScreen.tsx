@@ -26,7 +26,7 @@ import { CALENDAR_CELL_HEIGHT } from '@lib/ui/utils/calendar';
 import { BookingSlot } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { BottomModal } from '../../../core/components/BottomModal';
@@ -47,6 +47,7 @@ import {
   getCalendarPropsFromTopic,
   isPastSlot,
 } from '../../../utils/bookings';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { dateFormatter, formatDate } from '../../../utils/dates';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -62,7 +63,7 @@ export type BookingCalendarEvent = BookingSlot & {
   title: string;
 };
 
-const START_DATE = DateTime.now().startOf('week');
+const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('week');
 
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
@@ -136,10 +137,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     if (bookingSlotsQuery.data && bookingSlotsQuery.data?.length > 0) {
       return bookingSlotsQuery.data.map(slot => {
         const start = DateTime.fromJSDate(slot.startsAt as Date, {
-          zone: IANAZone.create('Europe/Rome'),
+          zone: APP_TIMEZONE,
         });
         const end = DateTime.fromJSDate(slot.endsAt as Date, {
-          zone: IANAZone.create('Europe/Rome'),
+          zone: APP_TIMEZONE,
         });
         return {
           ...slot,
@@ -202,7 +203,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     const newStartDate = currentTopic?.startDate
       ? DateTime.fromJSDate(currentTopic?.startDate, {
-          zone: IANAZone.create('Europe/Rome'),
+          zone: APP_TIMEZONE,
         })
       : START_DATE;
     const newDaysPerWeek = currentTopic?.daysPerWeek as WeekNum;
