@@ -114,14 +114,16 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
 
   const onCustomColorChange = (color: { hex: string }) => {
     'worklet';
+    const cleanHex = color.hex.length === 9 ? color.hex.slice(0, 7) : color.hex;
     runOnJS(setIsSafeColor)(false);
-    runOnJS(setTemporaryColor)(color.hex);
+    runOnJS(setTemporaryColor)(cleanHex);
   };
 
   const onSwatchColorChange = (color: { hex: string }) => {
     'worklet';
+    const cleanHex = color.hex.length === 9 ? color.hex.slice(0, 7) : color.hex;
     runOnJS(setIsSafeColor)(true);
-    runOnJS(setTemporaryColor)(color.hex);
+    runOnJS(setTemporaryColor)(cleanHex);
   };
 
   return (

@@ -142,7 +142,7 @@ export const useGetNextLecture = (
   const { data: courses } = useGetCourses();
 
   const nextLectureQuery = useQuery({
-    queryKey: ['nextLecture', courseId],
+    queryKey: ['nextLecture', courseId, coursesPreferences],
     queryFn: async () => {
       if (!courseId) return null;
       try {
@@ -164,7 +164,7 @@ export const useGetNextLecture = (
       }
     },
     enabled: !!courseId && !!courses, // Aspetta anche che i corsi siano caricati
-    staleTime: Infinity,
+    staleTime: 300000, // 5 minutes instead of infinity to allow refetch when preferences change
   });
 
   const nextLecture = nextLectureQuery.data ?? null;
