@@ -143,9 +143,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             )}
             label={t('createTicketScreen.topicDropdownLabel')}
             description={
-              initialSubtopicId
-                ? ''
-                : t('createTicketScreen.topicDescription')
+              initialTopicId ? '' : t('createTicketScreen.topicDescription')
             }
             options={topicOptions}
             onSelectOption={updateTopicId}
@@ -160,7 +158,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             accessibilityLabel={subtopicAccessibilityLabel}
             options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
-            disabled={!topicId || !!initialTopicId}
+            disabled={!topicId || !!initialSubtopicId}
             hideChevron={!!initialSubtopicId}
             value={ticketBody?.subtopicId?.toString()}
             label={t('createTicketScreen.subtopicDropdownLabel')}
