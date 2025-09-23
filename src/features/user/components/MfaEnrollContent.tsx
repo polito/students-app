@@ -104,20 +104,18 @@ export const MfaEnrollScreen = () => {
             },
           ]}
         />
-        <View style={[styles.buttonsRow, { justifyContent: 'space-between' }]}>
+        <View style={styles.buttonsRow}>
           <CtaButton
             absolute={false}
             title={t('mfaScreen.enroll.cancel')}
             action={onNo}
             variant="outlined"
-            containerStyle={styles.secondaryButtonContainer}
             style={styles.secondaryButton}
           />
           <CtaButton
             absolute={false}
             title={t('mfaScreen.enroll.confirm')}
             action={onYes}
-            containerStyle={styles.primaryButtonContainer}
             style={styles.primaryButton}
             loading={isPending}
           />
@@ -174,10 +172,6 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     buttonsRow: {
       flexDirection: 'row',
       justifyContent: 'center',
-      width: '100%',
-    },
-    primaryButtonContainer: {
-      flex: 1,
     },
     confirmButtonContainer: {
       width: '80%',
@@ -187,10 +181,6 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
       backgroundColor: palettes.primary[500],
       borderColor: palettes.primary[500],
       width: spacing[40],
-    },
-    secondaryButtonContainer: {
-      flex: 1,
-      gap: 8,
     },
     secondaryButton: {
       borderColor: palettes.primary[500],

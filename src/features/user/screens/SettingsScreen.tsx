@@ -329,6 +329,46 @@ export const SettingsScreen = () => {
     }
   }, [t]);
 
+  const handleBadgeStatus = () => {
+    if (mfaStatus?.status === 'active' && localMfaKey) {
+      return (
+        <Badge
+          backgroundColor={palettes.success[500]}
+          foregroundColor={palettes.success[100]}
+          text={t('mfaScreen.settings.active')}
+        />
+      );
+    }
+    if (mfaStatus?.status === 'locked') {
+      return (
+        <Badge
+          backgroundColor={palettes.warning[500]}
+          foregroundColor={palettes.warning[100]}
+          text={t('mfaScreen.settings.locked')}
+        />
+      );
+    }
+    if (
+      mfaStatus?.status === 'available' ||
+      mfaStatus?.status === 'needsReauth'
+    ) {
+      return (
+        <Badge
+          backgroundColor={palettes.warning[400]}
+          foregroundColor={palettes.warning[100]}
+          text={t('mfaScreen.settings.disabled')}
+        />
+      );
+    }
+    return (
+      <Badge
+        backgroundColor={palettes.error[500]}
+        foregroundColor={palettes.error[100]}
+        text={t('common.error')}
+      />
+    );
+  };
+
   useEffect(() => {
     if (
       (mfaStatus?.status === 'available' ||
@@ -377,31 +417,7 @@ export const SettingsScreen = () => {
                     <View
                       style={{ flexDirection: 'row', alignItems: 'center' }}
                     >
-                      {mfaStatus?.status === 'locked' ? (
-                        <Badge
-                          backgroundColor={palettes.error[500]}
-                          foregroundColor={palettes.error[100]}
-                          text={t('mfaScreen.settings.locked')}
-                        />
-                      ) : localMfaKey ? (
-                        <Badge
-                          backgroundColor={palettes.success[500]}
-                          foregroundColor={palettes.success[100]}
-                          text={t('common.enabled')}
-                        />
-                      ) : mfaStatus?.status === 'available' && !localMfaKey ? (
-                        <Badge
-                          backgroundColor={palettes.warning[500]}
-                          foregroundColor={palettes.warning[100]}
-                          text={t('mfaScreen.settings.disabled')}
-                        />
-                      ) : (
-                        <Badge
-                          backgroundColor={palettes.error[500]}
-                          foregroundColor={palettes.error[100]}
-                          text={t('common.error')}
-                        />
-                      )}
+                      {handleBadgeStatus()}
                       {Platform.OS === 'ios' && <DisclosureIndicator />}
                     </View>
                   }
