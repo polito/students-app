@@ -6,6 +6,7 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useMfaAuth } from '../../../core/queries/authHooks';
@@ -89,7 +90,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
 
   const goBack = useCallback(() => {
     if (navigation.canGoBack()) {
-      navigation.goBack();
+      navigation.dispatch(StackActions.pop());
     } else {
       navigation.navigate('ProfileTab', {
         screen: 'Profile',
