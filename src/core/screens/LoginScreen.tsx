@@ -165,7 +165,7 @@ export const LoginScreen = () => {
           <CtaButton
             absolute={false}
             title={t('loginScreen.SSO')}
-            action={handleSSO}
+            action={() => handleSSO(true)}
             loading={isLoading}
           />
           <TouchableOpacity style={styles.link} onPress={viewChpass}>

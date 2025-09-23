@@ -36,7 +36,7 @@ export const MfaSettings = () => {
   const buttonHeight = spacing[4];
 
   const getStatusText = () => {
-    if (mfa?.status === 'available') {
+    if (mfa?.status === 'available' || mfa?.status === 'needsReauth') {
       return t('mfaScreen.settings.disabled');
     }
     if (hasLocalMfaKey) {
@@ -81,7 +81,9 @@ export const MfaSettings = () => {
                 }
               />
               {mfa?.status !== 'locked' &&
-                (hasLocalMfaKey || mfa?.status === 'available') && (
+                (hasLocalMfaKey ||
+                  mfa?.status === 'available' ||
+                  mfa?.status === 'needsReauth') && (
                   <>
                     <ListItem
                       title={t('common.enroll.serial')}
@@ -125,6 +127,7 @@ export const MfaSettings = () => {
               {mfa?.status !== 'locked' &&
                 mfa?.status !== 'active' &&
                 mfa?.status !== 'available' &&
+                mfa?.status !== 'needsReauth' &&
                 renderErrorBlock('mfaScreen.settings.notAccessible')}
               {mfa?.status === 'active' &&
                 !hasLocalMfaKey &&
@@ -150,12 +153,15 @@ export const MfaSettings = () => {
         <View style={styles.buttonContainer}>
           <CtaButton
             title={
-              mfa?.status === 'available'
+              mfa?.status === 'available' || mfa?.status === 'needsReauth'
                 ? t('mfaScreen.settings.enableNow')
                 : t('mfaScreen.settings.correctError')
             }
             action={() => {
-              if (mfa?.status === 'available') {
+              if (
+                mfa?.status === 'available' ||
+                mfa?.status === 'needsReauth'
+              ) {
                 navigation.navigate({
                   name: 'ProfileTab',
                   params: {
