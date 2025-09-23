@@ -181,7 +181,6 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
           title={t('mfaScreen.auth.denyAccess')}
           action={onNo}
           variant="outlined"
-          containerStyle={styles.secondaryButtonContainer}
           disabled={isPending}
           loading={isPending}
           style={styles.secondaryButton}
@@ -191,7 +190,6 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
           absolute={false}
           title={t('mfaScreen.auth.allow')}
           action={onYes}
-          containerStyle={styles.primaryButtonContainer}
           disabled={isPending}
           loading={isPending}
           style={styles.primaryButton}
