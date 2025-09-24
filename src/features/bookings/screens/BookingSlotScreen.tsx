@@ -9,11 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Pressable, SectionList, StyleSheet, View } from 'react-native';
 
-import {
-  faCalendarAlt,
-  faList,
-  faRedo,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { AgendaCard } from '@lib/ui/components/AgendaCard';
 import { Col } from '@lib/ui/components/Col';
@@ -31,6 +27,7 @@ import { faSeat } from '@lib/ui/icons/faSeat';
 import { WeekNum } from '@lib/ui/types/Calendar';
 import { CALENDAR_CELL_HEIGHT } from '@lib/ui/utils/calendar';
 import { BookingSlot } from '@polito/api-client';
+import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime, IANAZone } from 'luxon';
@@ -60,6 +57,7 @@ import {
   isCurrentYear,
 } from '../../../utils/dates';
 import { WeekFilter } from '../../agenda/components/WeekFilter';
+import { AgendaOption } from '../../agenda/types/AgendaOption';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
@@ -76,7 +74,7 @@ export type BookingCalendarEvent = BookingSlot & {
 
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
-  const { palettes, colors, dark } = useTheme();
+  const { palettes, colors, dark, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
@@ -215,24 +213,54 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     setCurrentWeekStart(START_DATE.startOf('week'));
   }, [showAgenda]);
+
+  const screenOptions = useMemo<AgendaOption[]>(
+    () => [
+      {
+        id: 'refresh',
+        title: t('agendaScreen.refresh'),
+      },
+      {
+        id: 'toggleView',
+        title: showAgenda
+          ? t('agendaScreen.weeklyLayout')
+          : t('agendaScreen.dailyLayout'),
+      },
+    ],
+    [t, showAgenda],
+  );
+
+  const onPressOption = useCallback(
+    ({ nativeEvent: { event } }: NativeActionEvent) => {
+      switch (event) {
+        case 'refresh':
+          refetch();
+          break;
+        case 'toggleView':
+          setShowAgenda(v => !v);
+          break;
+        default:
+          break;
+      }
+    },
+    [refetch],
+  );
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <>
+        <MenuView actions={screenOptions} onPressAction={onPressOption}>
           <IconButton
-            icon={faRedo}
+            icon={faEllipsisVertical}
             color={palettes.primary['500']}
-            onPress={() => refetch}
+            size={fontSizes.lg}
+            adjustSpacing="right"
+            accessibilityLabel={t('common.options')}
           />
-          <IconButton
-            icon={showAgenda ? faCalendarAlt : faList}
-            color={palettes.primary['500']}
-            onPress={() => setShowAgenda(v => !v)}
-          />
-        </>
+        </MenuView>
       ),
     });
-  }, [navigation, palettes, refetch, showAgenda]);
+  }, [navigation, palettes, screenOptions, onPressOption, fontSizes.lg, t]);
 
   const hours = useMemo(
     () =>
@@ -462,7 +490,9 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                   colors,
                   dark,
                 );
-                const dateStart = formatDate(item.start.toJSDate());
+                const dateStart = formatDate(
+                  currentTopic.startDate ?? item.start.toJSDate(),
+                );
                 const timeStart = item.start.toFormat('HH:mm');
                 const timeEnd = item.end.toFormat('HH:mm');
                 const timeMessage = ` ${dateStart}, ${t('common.fromTime')} ${timeStart}, ${t('common.toTime')} ${timeEnd}`;
