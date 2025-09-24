@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -28,12 +29,13 @@ export const MfaSettings = () => {
   const [hasLocalMfaKey, setHasLocalMfaKey] = useState<boolean>(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
+  const { bottom } = useSafeAreaInsets();
 
   useEffect(() => {
     hasPrivateKeyMFA().then(res => setHasLocalMfaKey(res));
   }, [mfa]);
 
-  const buttonHeight = spacing[4];
+  const buttonHeight = spacing[4] + bottom;
 
   const getStatusText = () => {
     if (mfa?.status === 'available' || mfa?.status === 'needsReauth') {
@@ -177,7 +179,9 @@ export const MfaSettings = () => {
             }}
             variant="filled"
             absolute={false}
-            containerStyle={styles.buttonWrapper}
+            containerStyle={
+              [styles.buttonWrapper, { top: -spacing[16] - bottom }] as any
+            }
           />
         </View>
       )}
@@ -231,11 +235,10 @@ const createStyles = ({ dark, colors, spacing, fontSizes }: Theme) =>
       fontWeight: 'bold',
     },
     buttonContainer: {
-      margin: spacing[4],
+      margin: spacing[2],
     },
     buttonWrapper: {
       padding: 0,
-      top: -spacing[20],
       elevation: 0,
     },
     infoValue: {
