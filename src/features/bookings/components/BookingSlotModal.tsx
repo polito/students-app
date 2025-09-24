@@ -66,13 +66,20 @@ export const BookingSlotModal = ({ close, item }: Props) => {
       return t('bookingSeatScreen.noSeatsAvailable');
     }
     if (bookingNotYetOpen) {
+      const bookingDateTime = item?.bookingStartsAt
+        ? DateTime.fromJSDate(item?.bookingStartsAt, {
+            zone: IANAZone.create('Europe/Rome'),
+          })
+        : null;
+
+      const formatString =
+        bookingDateTime?.hour === 0 && bookingDateTime?.minute === 0
+          ? 'd MMMM yyyy'
+          : 'd MMMM yyyy HH:mm';
+
       return [
         t('bookingSeatScreen.slotBookableFrom'),
-        item?.bookingStartsAt
-          ? DateTime.fromJSDate(item?.bookingStartsAt, {
-              zone: IANAZone.create('Europe/Rome'),
-            }).toFormat('d MMMM yyyy')
-          : ' - ',
+        bookingDateTime?.toFormat(formatString) || ' - ',
       ].join(' ');
     }
   }, [
@@ -119,14 +126,23 @@ export const BookingSlotModal = ({ close, item }: Props) => {
       <EmptyState
         icon={faHourglassStart}
         iconSize={fontSizes['4xl']}
-        message={[
-          t('bookingSeatScreen.slotBookableFrom'),
-          item?.bookingStartsAt
+        message={(() => {
+          const bookingDateTime = item?.bookingStartsAt
             ? DateTime.fromJSDate(item?.bookingStartsAt, {
                 zone: IANAZone.create('Europe/Rome'),
-              }).toFormat('d MMMM yyyy')
-            : ' - ',
-        ].join(' ')}
+              })
+            : null;
+
+          const formatString =
+            bookingDateTime?.hour === 0 && bookingDateTime?.minute === 0
+              ? 'd MMMM yyyy'
+              : 'd MMMM yyyy HH:mm';
+
+          return [
+            t('bookingSeatScreen.slotBookableFrom'),
+            bookingDateTime?.toFormat(formatString) || ' - ',
+          ].join(' ');
+        })()}
       />
     ) : (
       <EmptyState
