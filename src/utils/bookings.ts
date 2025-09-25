@@ -22,7 +22,7 @@ export const isSlotBookable = (item: BookingCalendarEvent) => {
 };
 
 export const isSlotFull = (item: BookingCalendarEvent) => {
-  return item.bookedPlaces === item.places;
+  return item.bookedPlaces >= item.places;
 };
 
 export const isPastSlot = (item: BookingCalendarEvent) => {
