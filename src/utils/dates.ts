@@ -2,15 +2,17 @@ import { DateTime, IANAZone } from 'luxon';
 
 const MACHINE_DATE_REGEX = /([0-9]{4})-0?([0-9]+)-0?([0-9]+)/;
 
+export const APP_TIMEZONE = IANAZone.create('Europe/Rome');
+
 export const formatDate = (date: Date) => {
   return DateTime.fromJSDate(date, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toFormat('dd/MM/yyyy');
 };
 
 export const formatReadableDate = (date: Date, short = false) => {
   return DateTime.fromJSDate(date, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toLocaleString({
     month: short ? 'short' : 'long',
     day: 'numeric',
@@ -20,7 +22,7 @@ export const formatReadableDate = (date: Date, short = false) => {
 export const formatDateFromString = (date: string | null) => {
   if (!date) return '';
   return DateTime.fromISO(date, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toFormat('dd/MM/yyyy');
 };
 
@@ -54,7 +56,7 @@ export const formatMachineDate = (date: Date) => {
 
 const formatTime = (date: Date, format: string) => {
   return DateTime.fromJSDate(date, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toFormat(format);
 };
 
