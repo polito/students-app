@@ -101,16 +101,17 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
   const subtopicOptions = useMemo(
     () =>
-      subTopics.map(subtopic => {
-        const subId = subtopic.id.toString();
+      subTopics?.map(subtopic => {
+        const subId = subtopic?.id?.toString() || '';
+        const subTitle = subtopic?.name || '';
         return {
           id: subId,
-          title: subtopic.name,
+          title: subTitle,
           state: (subId === ticketBody.subtopicId?.toString()
             ? 'on'
             : 'off') as MenuAction['state'],
         };
-      }),
+      }) || [],
     [subTopics, ticketBody.subtopicId],
   );
 
@@ -126,9 +127,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const subtopicAccessibilityLabel = useMemo(() => {
     const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
     if (topicId) {
-      return baseText;
+      return baseText || '';
     } else {
-      return [baseText, t('common.disabledPreviousValue')].join(', ');
+      return [baseText, t('common.disabledPreviousValue')].join(', ') || '';
     }
   }, [t, topicId]);
 
@@ -155,17 +156,17 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList>
           <Select
-            accessibilityLabel={subtopicAccessibilityLabel}
+            accessibilityLabel={subtopicAccessibilityLabel || ''}
             options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
-            disabled={!topicId || !!initialSubtopicId}
-            hideChevron={!!initialSubtopicId}
-            value={ticketBody?.subtopicId?.toString()}
+            disabled={!topicId || !!initialTopicId}
+            hideChevron={!!initialTopicId}
+            value={ticketBody?.subtopicId?.toString() || ''}
             label={t('createTicketScreen.subtopicDropdownLabel')}
             description={
               initialSubtopicId
                 ? ''
-                : t('createTicketScreen.subtopicDescription')
+                : t('createTicketScreen.subtopicDescription') || ''
             }
           />
         </OverviewList>
