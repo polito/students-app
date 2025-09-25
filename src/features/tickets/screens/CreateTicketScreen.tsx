@@ -90,13 +90,15 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   };
 
   const topicOptions = useMemo(() => {
-    return topics.map(topic => ({
-      id: topic.id.toString(),
-      title: topic.name,
-      state: (topic.id.toString() === topicId
-        ? 'on'
-        : 'off') as MenuAction['state'],
-    }));
+    return topics
+      .filter(topic => topic.subtopics && topic.subtopics.length > 0)
+      .map(topic => ({
+        id: topic.id.toString(),
+        title: topic.name,
+        state: (topic.id.toString() === topicId
+          ? 'on'
+          : 'off') as MenuAction['state'],
+      }));
   }, [topicId, topics]);
 
   const subtopicOptions = useMemo(
