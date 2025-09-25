@@ -8,7 +8,7 @@ import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
@@ -18,6 +18,7 @@ import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { formatDate } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 import { useCourseContext } from '../contexts/CourseContext';
@@ -65,7 +66,7 @@ export const CourseNoticesScreen = () => {
           accessibilityLabel={`${t(
             accessibilityListLabel(index, notices?.length || 0),
           )}. ${DateTime.fromJSDate(notice.publishedAt, {
-            zone: IANAZone.create('Europe/Rome'),
+            zone: APP_TIMEZONE,
           }).toFormat('dd/MM/yyyy')}, ${notice.title}`}
           subtitle={formatDate(notice.publishedAt)}
           linkTo={{
