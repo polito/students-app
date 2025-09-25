@@ -204,7 +204,11 @@ export const MessagingView = ({
             </MenuView>
           </Pressable>
           <TranslucentTextField
-            label={t('ticketScreen.reply')}
+            label={
+              showSendButton
+                ? t('ticketScreen.reply')
+                : t('ticketScreen.sendFirstMessage')
+            }
             accessibilityLabel={replayAccessibilityLabel}
             value={message}
             autoCapitalize="sentences"
