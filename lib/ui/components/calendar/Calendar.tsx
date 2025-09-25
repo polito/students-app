@@ -127,6 +127,7 @@ export const Calendar = <T extends ICalendarEventBase>({
   isEventOrderingEnabled,
   hours,
   startHour = 6,
+  locale,
 }: CalendarContainerProps<T>) => {
   const [targetDate, setTargetDate] = useState(date);
   const { accessibility } = usePreferencesContext();
@@ -224,6 +225,7 @@ export const Calendar = <T extends ICalendarEventBase>({
     dayHeaderStyle: dayHeaderStyle,
     dayHeaderHighlightColor: dayHeaderHighlightColor,
     weekDayHeaderHighlightColor: weekDayHeaderHighlightColor,
+    locale,
   };
 
   return (

@@ -21,6 +21,7 @@ export interface CalendarHeaderProps {
   onPressDateHeader?: (date: DateTime) => void;
   activeDate?: DateTime;
   hideHours?: boolean;
+  locale?: string;
 }
 
 export const CalendarHeader = ({
@@ -30,6 +31,7 @@ export const CalendarHeader = ({
   onPressDateHeader,
   activeDate,
   hideHours = false,
+  locale,
 }: CalendarHeaderProps) => {
   const _onPressHeader = useCallback(
     (date: DateTime) => {
@@ -111,7 +113,10 @@ export const CalendarHeader = ({
                   },
                 ]}
               >
-                {date.toLocaleString({ weekday: 'short', day: 'numeric' })}
+                {date.toLocaleString(
+                  { weekday: 'short', day: 'numeric' },
+                  { locale },
+                )}
               </Text>
             </View>
           </TouchableOpacity>
