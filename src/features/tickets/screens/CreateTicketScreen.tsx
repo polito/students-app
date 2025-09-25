@@ -90,30 +90,27 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   };
 
   const topicOptions = useMemo(() => {
-    return topics
-      .filter(topic => topic.subtopics && topic.subtopics.length > 0)
-      .map(topic => ({
-        id: topic.id.toString(),
-        title: topic.name,
-        state: (topic.id.toString() === topicId
-          ? 'on'
-          : 'off') as MenuAction['state'],
-      }));
+    return topics.map(topic => ({
+      id: topic.id.toString(),
+      title: topic.name,
+      state: (topic.id.toString() === topicId
+        ? 'on'
+        : 'off') as MenuAction['state'],
+    }));
   }, [topicId, topics]);
 
   const subtopicOptions = useMemo(
     () =>
-      subTopics?.map(subtopic => {
-        const subId = subtopic?.id?.toString() || '';
-        const subTitle = subtopic?.name || '';
+      subTopics.map(subtopic => {
+        const subId = subtopic.id.toString();
         return {
           id: subId,
-          title: subTitle,
+          title: subtopic.name,
           state: (subId === ticketBody.subtopicId?.toString()
             ? 'on'
             : 'off') as MenuAction['state'],
         };
-      }) || [],
+      }),
     [subTopics, ticketBody.subtopicId],
   );
 
@@ -129,9 +126,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const subtopicAccessibilityLabel = useMemo(() => {
     const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
     if (topicId) {
-      return baseText || '';
+      return baseText;
     } else {
-      return [baseText, t('common.disabledPreviousValue')].join(', ') || '';
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
     }
   }, [t, topicId]);
 
@@ -158,17 +155,17 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         <OverviewList>
           <Select
-            accessibilityLabel={subtopicAccessibilityLabel || ''}
+            accessibilityLabel={subtopicAccessibilityLabel}
             options={subtopicOptions}
             onSelectOption={updateTicketBodyField('subtopicId')}
             disabled={!topicId || !!initialTopicId}
             hideChevron={!!initialTopicId}
-            value={ticketBody?.subtopicId?.toString() || ''}
+            value={ticketBody?.subtopicId?.toString()}
             label={t('createTicketScreen.subtopicDropdownLabel')}
             description={
               initialSubtopicId
                 ? ''
-                : t('createTicketScreen.subtopicDescription') || ''
+                : t('createTicketScreen.subtopicDescription')
             }
           />
         </OverviewList>
