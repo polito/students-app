@@ -6,9 +6,10 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Booking } from '@polito/api-client';
 
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { getHtmlTextContent } from '../../../utils/html';
 import { BookingDateTime } from './BookingDateTime';
 
@@ -23,13 +24,13 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
   const { t } = useTranslation();
   const { accessibilityListLabel } = useAccessibility();
   const date = DateTime.fromJSDate(booking?.startsAt, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toFormat('dd MMMM');
   const startsAtTime = DateTime.fromJSDate(booking?.startsAt, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toFormat('HH:mm');
   const endAtTime = DateTime.fromJSDate(booking?.endsAt, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).toFormat('HH:mm');
 
   const accessibilityLabel = accessibilityListLabel(index, totalData);
