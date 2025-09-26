@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon';
 import { CoursesPreferences } from 'src/core/contexts/PreferencesContext';
 
-import { courseColors } from '../../../core/constants';
 import { APP_TIMEZONE } from '../../../utils/dates';
 import { dateFormatter } from '../../../utils/dates';
 import { LectureItem } from '../types/AgendaItem';
@@ -34,9 +33,7 @@ export const formatNextLecture = (
     teacherId: lecture.teacherId,
     place: lecture.place,
     virtualClassrooms: lecture.virtualClassrooms,
-    color:
-      coursesPreferences[lecture.uniqueShortcode ?? '']?.color ??
-      courseColors[0].color,
+    color: coursesPreferences[lecture.uniqueShortcode ?? '']?.color,
     icon: coursesPreferences[lecture.uniqueShortcode ?? '']?.icon,
     uniqueShortcode: lecture.uniqueShortcode ?? '',
   };
