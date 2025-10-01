@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -10,38 +10,33 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import uuid from 'react-native-uuid';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Row } from '@lib/ui/components/Row';
-import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { GuestStackParamList } from '~/core/components/GuestNavigator.tsx';
+import { PolitoLogo } from '~/core/components/Logo.tsx';
+
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
-import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink';
 import { useLogin } from '../queries/authHooks';
 
-type LoginScreenRouteProp = RouteProp<
-  { Login: { uid: string; key: string } },
-  'Login'
->;
+type Props = NativeStackScreenProps<GuestStackParamList, 'Login'>;
 
-export const LoginScreen = () => {
+export const LoginScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { updatePreference, loginUid } = usePreferencesContext();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { mutateAsync: login, isPending: isLoading } = useLogin();
@@ -51,8 +46,6 @@ export const LoginScreen = () => {
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
   const language = useDeviceLanguage();
-  const route = useRoute<LoginScreenRouteProp>();
-  const { key } = route.params || {};
 
   const handleLoginError = useCallback(
     (e: Error) => {
@@ -68,8 +61,6 @@ export const LoginScreen = () => {
     [t],
   );
 
-  const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
-
   const handleLogin = () =>
     login({
       username,
@@ -77,24 +68,6 @@ export const LoginScreen = () => {
       preferences: { language },
       loginType: 'basic',
     }).catch(handleLoginError);
-  const handleSSO = async () => {
-    const uid = uuid.v4();
-    await updatePreference('loginUid', uid);
-    const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
-    sessionOpener(url).catch(console.error);
-  };
-
-  useEffect(() => {
-    if (loginUid && key) {
-      login({
-        uid: loginUid,
-        key,
-        preferences: { language },
-        loginType: 'sso',
-      }).catch(handleLoginError);
-      updatePreference('loginUid', undefined);
-    }
-  }, [loginUid, key, login, language, updatePreference, handleLoginError]);
 
   return (
     <ScrollView
@@ -102,9 +75,14 @@ export const LoginScreen = () => {
       automaticallyAdjustKeyboardInsets
       keyboardShouldPersistTaps="handled"
     >
+      <View style={styles.logoContainer}>
+        <PolitoLogo width="100%" height="100%" />
+      </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Section style={styles.section}>
-          <ScreenTitle title={t('loginScreen.title')} style={styles.title} />
+          <Text variant="title" role="heading" style={styles.title}>
+            {t('loginScreen.title')}
+          </Text>
           <OverviewList style={styles.sectionList} accessible={false}>
             <TextField
               accessible={true}
@@ -155,22 +133,6 @@ export const LoginScreen = () => {
               />
             </Row>
           </OverviewList>
-          <CtaButton
-            absolute={false}
-            title={t('loginScreen.cta')}
-            action={handleLogin}
-            loading={isLoading}
-            disabled={!canLogin}
-          />
-          <Col align="center">
-            <Text> - {t('common.or')} - </Text>
-          </Col>
-          <CtaButton
-            absolute={false}
-            title={t('loginScreen.SSO')}
-            action={handleSSO}
-            loading={isLoading}
-          />
           <TouchableOpacity
             style={styles.link}
             onPress={() => {
@@ -179,7 +141,24 @@ export const LoginScreen = () => {
               );
             }}
           >
-            <Text variant="link">{t('loginScreen.forgotYourPassword')}</Text>
+            <Text variant="link" style={styles.textLink}>
+              {t('loginScreen.forgotYourPassword')}
+            </Text>
+          </TouchableOpacity>
+          <CtaButton
+            absolute={false}
+            title={t('loginScreen.cta')}
+            action={handleLogin}
+            loading={isLoading}
+            disabled={!canLogin}
+          />
+          <TouchableOpacity
+            style={styles.linkToSSO}
+            onPress={() => navigation.navigate('SSO')}
+          >
+            <Text variant="link" style={styles.textLink}>
+              {t('loginScreen.SSO')}
+            </Text>
           </TouchableOpacity>
         </Section>
       </TouchableWithoutFeedback>
@@ -189,14 +168,21 @@ export const LoginScreen = () => {
 
 const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
+    logoContainer: {
+      width: '30%',
+      aspectRatio: 120 / 168,
+      alignSelf: 'center',
+      marginTop: spacing[24],
+    },
     section: {
-      marginTop: spacing[32],
+      marginTop: spacing[8],
     },
     sectionList: {
       paddingBottom: Platform.select({ android: spacing[4] }),
     },
     title: {
-      fontSize: fontSizes['3xl'],
+      textAlign: 'center',
+      fontSize: fontSizes.lg,
       marginBottom: spacing[3],
       marginHorizontal: spacing[5],
     },
@@ -210,9 +196,15 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       alignItems: 'flex-end',
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[2],
-      marginVertical: spacing[8],
+      marginBottom: spacing[2],
+    },
+    linkToSSO: {
+      alignItems: 'center',
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[2],
     },
     passwordToggle: {
       marginRight: spacing[2],
     },
+    textLink: { textDecorationLine: 'underline' },
   });

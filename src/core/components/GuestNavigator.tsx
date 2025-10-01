@@ -1,26 +1,25 @@
-import { Platform } from 'react-native';
-
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { SSOScreen } from '~/core/screens/SSOScreen.tsx';
+
 import { LoginScreen } from '../screens/LoginScreen';
-import { HeaderLogo } from './HeaderLogo';
+
+export interface GuestStackParamList extends ParamListBase {
+  SSO: undefined;
+  Login: undefined;
+}
+
+const Stack = createNativeStackNavigator<GuestStackParamList>();
 
 export const GuestNavigator = () => {
-  const Stack = createNativeStackNavigator();
-  const { colors } = useTheme();
-
   return (
     <Stack.Navigator
       screenOptions={{
-        headerLargeTitle: false,
-        headerLargeStyle: { backgroundColor: colors.background },
-        headerTransparent: Platform.select({ ios: true }),
-        headerBlurEffect: 'systemUltraThinMaterial',
-        headerLeft: () => <HeaderLogo />,
-        headerTitle: '',
+        headerShown: false,
       }}
     >
+      <Stack.Screen name="SSO" component={SSOScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   );

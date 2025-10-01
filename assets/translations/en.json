@@ -852,6 +852,10 @@
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings"
   },
+  "ssoScreen": {
+    "ssoButton": "Sign in with Single-Sign-On",
+    "ssoLink": "or sign in with your credentials"
+  },
   "surveysScreen": {
     "compiledEmptyState": "There are no compiled surveys",
     "compiledTitle": "Compiled surveys",
