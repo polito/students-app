@@ -1,7 +1,6 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   Keyboard,
   Linking,
   Platform,
@@ -24,50 +23,23 @@ import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { GuestStackParamList } from '~/core/components/GuestNavigator.tsx';
 import { PolitoLogo } from '~/core/components/Logo.tsx';
 
-import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
-import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
-import { useLogin } from '../queries/authHooks';
+import { useAuth } from '../hooks/useAuth';
 
-type Props = NativeStackScreenProps<GuestStackParamList, 'Login'>;
-
-export const LoginScreen = ({ navigation }: Props) => {
+export const LoginScreen = () => {
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { mutateAsync: login, isPending: isLoading } = useLogin();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
-  const language = useDeviceLanguage();
+  const { handleBasicLogin, handleSSO, isLoading } = useAuth();
 
-  const handleLoginError = useCallback(
-    (e: Error) => {
-      if (e instanceof UnsupportedUserTypeError) {
-        Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
-      } else {
-        Alert.alert(
-          t('loginScreen.authnError'),
-          t('loginScreen.authnErrorDescription'),
-        );
-      }
-    },
-    [t],
-  );
-
-  const handleLogin = () =>
-    login({
-      username,
-      password,
-      preferences: { language },
-      loginType: 'basic',
-    }).catch(handleLoginError);
+  const handleLogin = () => handleBasicLogin(username, password);
 
   return (
     <ScrollView
@@ -152,10 +124,7 @@ export const LoginScreen = ({ navigation }: Props) => {
             loading={isLoading}
             disabled={!canLogin}
           />
-          <TouchableOpacity
-            style={styles.linkToSSO}
-            onPress={() => navigation.navigate('SSO')}
-          >
+          <TouchableOpacity style={styles.linkToSSO} onPress={handleSSO}>
             <Text variant="link" style={styles.textLink}>
               {t('loginScreen.SSO')}
             </Text>

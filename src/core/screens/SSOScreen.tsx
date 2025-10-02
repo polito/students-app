@@ -1,13 +1,5 @@
-import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import uuid from 'react-native-uuid';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton.tsx';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer.tsx';
@@ -20,14 +12,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { GuestStackParamList } from '~/core/components/GuestNavigator.tsx';
 import { PolitoLogo } from '~/core/components/Logo.tsx';
-import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
-import { UnsupportedUserTypeError } from '~/core/errors/UnsupportedUserTypeError.ts';
-import { useDeviceLanguage } from '~/core/hooks/useDeviceLanguage.ts';
-import {
-  WebviewType,
-  useOpenInAppLink,
-} from '~/core/hooks/useOpenInAppLink.ts';
-import { useLogin } from '~/core/queries/authHooks.ts';
+import { useAuth } from '~/core/hooks/useAuth.ts';
 
 type Props = NativeStackScreenProps<GuestStackParamList, 'SSO'>;
 
@@ -38,49 +23,11 @@ type SSOScreenRouteProp = RouteProp<
 
 export const SSOScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
-  const { updatePreference, loginUid } = usePreferencesContext();
-  const { mutateAsync: login, isPending: isLoading } = useLogin();
   const styles = useStylesheet(createStyles);
   const { spacing } = useTheme();
-  const language = useDeviceLanguage();
   const route = useRoute<SSOScreenRouteProp>();
   const { key } = route.params || {};
-
-  const handleLoginError = useCallback(
-    (e: Error) => {
-      if (e instanceof UnsupportedUserTypeError) {
-        Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
-      } else {
-        Alert.alert(
-          t('loginScreen.authnError'),
-          t('loginScreen.authnErrorDescription'),
-        );
-      }
-    },
-    [t],
-  );
-
-  const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
-
-  const handleSSO = async () => {
-    const uid = uuid.v4();
-    await updatePreference('loginUid', uid);
-    // Try without redirect_uri first - the server might be configured to redirect automatically
-    const url = `https://app.didattica.polito.it/auth/students/start?uid=${uid}&platform=${Platform.OS}`;
-    sessionOpener(url).catch(console.error);
-  };
-
-  useEffect(() => {
-    if (loginUid && key) {
-      login({
-        uid: loginUid,
-        key,
-        preferences: { language },
-        loginType: 'sso',
-      }).catch(handleLoginError);
-      updatePreference('loginUid', undefined);
-    }
-  }, [loginUid, key, login, language, updatePreference, handleLoginError]);
+  const { handleSSO, isLoading } = useAuth(key);
 
   return (
     <View style={{ flex: 1 }}>
