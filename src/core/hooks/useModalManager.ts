@@ -17,7 +17,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const routes = navigation.getState()?.routes?.[0]?.state?.routes;
   const isOnBoardingClosed = routes
-    ? !routes.some(route => route.name === 'OnboardingModal')
+    ? !routes.some(route => route.name === 'OnboardingModal' || route.name === 'PolitoAuthenticator')
     : undefined;
 
   const { data: messages } = useGetModalMessages();
@@ -43,6 +43,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   }, [mfaStatus, mfaStatusPending, navigation, isSplashLoaded, localMfaKey]);
 
   useEffect(() => {
+    console.log({isSplashLoaded, navigation, versionModalIsOpen, onboardingStep, mfaStatusPending, mfaStatus})
     if (!isSplashLoaded) return;
     if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
     if (mfaStatusPending || mfaStatus?.status === 'available') return;
@@ -52,13 +53,12 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
         initial: false,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSplashLoaded, navigation, versionModalIsOpen]);
+  }, [isSplashLoaded, navigation, versionModalIsOpen, onboardingStep, mfaStatusPending, mfaStatus]);
 
   useEffect(() => {
     if (
       onboardingStep === undefined ||
-      (!isOnBoardingClosed && onboardingStep < ONBOARDING_STEPS - 1) ||
+      (onboardingStep < ONBOARDING_STEPS - 1) ||
       !isSplashLoaded
     ) {
       return;

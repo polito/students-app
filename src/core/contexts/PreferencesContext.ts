@@ -96,6 +96,7 @@ export interface PreferencesContextBase {
   politoAuthnEnrolmentStatus?: {
     inSettings: boolean;
     insertedDeviceName?: string;
+    hideInitialPrompt?: boolean;
   };
 }
 

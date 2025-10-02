@@ -56,36 +56,22 @@ export const MfaEnrollScreen = () => {
     paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
   }));
 
+  const isAutoEnrollment =
+    politoAuthnEnrolmentStatus?.inSettings === true &&
+    politoAuthnEnrolmentStatus?.insertedDeviceName !== undefined &&
+    politoAuthnEnrolmentStatus?.insertedDeviceName !== '';
+
   const onNo = useCallback(() => {
     navigation.goBack();
-    queryClient.setQueryData(MFA_STATUS_QUERY_KEY, undefined);
+    requestAnimationFrame(() => {
+      queryClient.setQueryData(MFA_STATUS_QUERY_KEY, {});
+    });
   }, [navigation, queryClient]);
 
-  const handleDeviceNameChange = useCallback(
-    (text: string) => {
-      setDeviceName(text);
-      updatePreference('politoAuthnEnrolmentStatus', {
-        ...politoAuthnEnrolmentStatus,
-        inSettings: true,
-        insertedDeviceName: text,
-      });
-    },
-    [politoAuthnEnrolmentStatus, updatePreference],
-  );
-
-  const onYes = useCallback(async () => {
+  const executeEnrollment = useCallback(async () => {
     const dtoMfa = { description: deviceName ?? deviceId, pubkey: publicKey };
 
     try {
-      if (step === 0) {
-        if (!(await checkCanSavePrivateKeyMFA())) {
-          Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
-          navigation.goBack();
-          return;
-        }
-        setStep(s => s + 1);
-        return;
-      }
       setIsLoading(true);
       const res = await enrolMfa(dtoMfa);
       await savePrivateKeyMFA(res.serial, privateKey, {
@@ -111,6 +97,7 @@ export const MfaEnrollScreen = () => {
         updatePreference('politoAuthnEnrolmentStatus', {
           ...politoAuthnEnrolmentStatus,
           inSettings: false,
+          insertedDeviceName: undefined,
         });
       }
     } catch (e) {
@@ -122,7 +109,11 @@ export const MfaEnrollScreen = () => {
               text: t('common.ok'),
               onPress: () => {
                 handleSSO(true);
-                handleDeviceNameChange(deviceName);
+                updatePreference('politoAuthnEnrolmentStatus', {
+                  ...politoAuthnEnrolmentStatus,
+                  inSettings: true,
+                  insertedDeviceName: deviceName,
+                });
               },
             },
           ]);
@@ -140,8 +131,6 @@ export const MfaEnrollScreen = () => {
     deviceName,
     deviceId,
     publicKey,
-    navigation,
-    step,
     enrolMfa,
     privateKey,
     t,
@@ -149,23 +138,36 @@ export const MfaEnrollScreen = () => {
     setFeedback,
     politoAuthnEnrolmentStatus,
     updatePreference,
+    navigation,
     handleSSO,
-    handleDeviceNameChange,
   ]);
 
+  const onYes = useCallback(async () => {
+    if (step === 0) {
+      if (!(await checkCanSavePrivateKeyMFA())) {
+        Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
+        navigation.goBack();
+        return;
+      }
+      setStep(s => s + 1);
+      return;
+    }
+
+    await executeEnrollment();
+  }, [step, t, navigation, executeEnrollment]);
+
   useEffect(() => {
-    if (
-      politoAuthnEnrolmentStatus?.inSettings &&
-      politoAuthnEnrolmentStatus?.insertedDeviceName !== undefined
-    ) {
-      setDeviceName(politoAuthnEnrolmentStatus.insertedDeviceName);
+    if (isAutoEnrollment && step === 0) {
+      setDeviceName(politoAuthnEnrolmentStatus.insertedDeviceName || deviceId);
       setStep(1);
-      onYes();
+      executeEnrollment();
     }
   }, [
-    politoAuthnEnrolmentStatus?.inSettings,
+    isAutoEnrollment,
+    step,
     politoAuthnEnrolmentStatus?.insertedDeviceName,
-    onYes,
+    executeEnrollment,
+    deviceId,
   ]);
 
   if (step === 0)
@@ -240,7 +242,7 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
   StyleSheet.create({
     prompt: {
       fontSize: 16,
-      color: colors.white,
+      color: dark ? colors.white : colors.black,
       textAlign: 'center',
       marginBottom: spacing[4],
       marginHorizontal: spacing[5],
