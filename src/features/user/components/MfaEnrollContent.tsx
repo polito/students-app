@@ -36,7 +36,7 @@ import { UserStackParamList } from './UserNavigator';
 
 export const MfaEnrollScreen = () => {
   const { t } = useTranslation();
-  const { mutateAsync: enrolMfa, data: mfa } = useMfaEnrol();
+  const { mutateAsync: enrolMfa } = useMfaEnrol();
   const queryClient = useQueryClient();
   const handleSSO = useSSOLoginInitiator();
   const { setFeedback } = useFeedbackContext();
