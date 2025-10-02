@@ -334,7 +334,7 @@ export const SettingsScreen = () => {
       return (
         <Badge
           backgroundColor={palettes.success[500]}
-          foregroundColor={palettes.success[100]}
+          foregroundColor={palettes.text[100]}
           text={t('mfaScreen.settings.active')}
         />
       );
@@ -355,7 +355,7 @@ export const SettingsScreen = () => {
       return (
         <Badge
           backgroundColor={palettes.warning[400]}
-          foregroundColor={palettes.warning[100]}
+          foregroundColor={palettes.text[100]}
           text={t('mfaScreen.settings.disabled')}
         />
       );

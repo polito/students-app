@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
 import { useCheckMfa, useLogout } from '~/core/queries/authHooks';
 import { hasPrivateKeyMFA } from '~/utils/keychain';
 
@@ -26,6 +27,8 @@ export const MfaSettings = () => {
   const { fontSizes, palettes, colors, spacing } = useTheme();
   const { data: mfa } = useCheckMfa(true);
   const { mutate: logout } = useLogout();
+  const { politoAuthnEnrolmentStatus, updatePreference } =
+    usePreferencesContext();
   const [hasLocalMfaKey, setHasLocalMfaKey] = useState<boolean>(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
@@ -160,6 +163,10 @@ export const MfaSettings = () => {
                 : t('mfaScreen.settings.correctError')
             }
             action={() => {
+              updatePreference('politoAuthnEnrolmentStatus', {
+                ...politoAuthnEnrolmentStatus,
+                inSettings: true,
+              });
               if (
                 mfa?.status === 'available' ||
                 mfa?.status === 'needsReauth'

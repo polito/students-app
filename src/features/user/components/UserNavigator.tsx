@@ -21,6 +21,7 @@ import { MfaSettings } from './MfaSettings.tsx';
 export type UserStackParamList = OfferingStackParamList & {
   Profile: { firstRequest?: boolean };
   Settings: undefined;
+  MfaSettings: undefined;
   Messages: undefined;
   RequestESC: undefined;
   Message: {

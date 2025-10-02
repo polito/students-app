@@ -21,7 +21,6 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
     : undefined;
 
   const { data: messages } = useGetModalMessages();
-
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
   const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
 
@@ -41,9 +40,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
         params: { activeView: 'enroll' },
       });
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mfaStatus, mfaStatusPending, navigation, isSplashLoaded]);
+  }, [mfaStatus, mfaStatusPending, navigation, isSplashLoaded, localMfaKey]);
 
   useEffect(() => {
     if (!isSplashLoaded) return;

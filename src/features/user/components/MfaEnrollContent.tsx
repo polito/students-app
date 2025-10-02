@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Dimensions, Platform, StyleSheet, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -14,10 +14,12 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
 import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
 import { ApiError } from '~/utils/queries';
 
 import {
@@ -30,30 +32,48 @@ import {
   checkCanSavePrivateKeyMFA,
   savePrivateKeyMFA,
 } from '../../../utils/keychain';
+import { UserStackParamList } from './UserNavigator';
 
 export const MfaEnrollScreen = () => {
   const { t } = useTranslation();
-  const { mutateAsync: enrolMfa, isPending } = useMfaEnrol();
+  const { mutateAsync: enrolMfa, data: mfa } = useMfaEnrol();
   const queryClient = useQueryClient();
   const handleSSO = useSSOLoginInitiator();
   const { setFeedback } = useFeedbackContext();
   const [step, setStep] = useState(0);
   const { publicKey, privateKey } = generateSecp256k1KeyPair();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
+  const { politoAuthnEnrolmentStatus, updatePreference } =
+    usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const deviceId = DeviceInfo.getDeviceNameSync();
   const [deviceName, setDeviceName] = useState(deviceId);
+  const [isLoading, setIsLoading] = useState(false);
   const bottomBarHeight = useBottomTabBarHeight();
   const keyboard = useAnimatedKeyboard();
   const animatedBottomPadding = useAnimatedStyle(() => ({
     paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
   }));
-  const onNo = () => {
+
+  const onNo = useCallback(() => {
     navigation.goBack();
     queryClient.setQueryData(MFA_STATUS_QUERY_KEY, undefined);
-  };
+  }, [navigation, queryClient]);
 
-  const onYes = async () => {
+  const handleDeviceNameChange = useCallback(
+    (text: string) => {
+      setDeviceName(text);
+      updatePreference('politoAuthnEnrolmentStatus', {
+        ...politoAuthnEnrolmentStatus,
+        inSettings: true,
+        insertedDeviceName: text,
+      });
+    },
+    [politoAuthnEnrolmentStatus, updatePreference],
+  );
+
+  const onYes = useCallback(async () => {
     const dtoMfa = { description: deviceName ?? deviceId, pubkey: publicKey };
 
     try {
@@ -66,21 +86,45 @@ export const MfaEnrollScreen = () => {
         setStep(s => s + 1);
         return;
       }
+      setIsLoading(true);
       const res = await enrolMfa(dtoMfa);
       await savePrivateKeyMFA(res.serial, privateKey, {
         title: t('mfaScreen.biometricPrompt'),
       });
-      queryClient.invalidateQueries({ queryKey: MFA_STATUS_QUERY_KEY });
+      await queryClient.invalidateQueries({ queryKey: MFA_STATUS_QUERY_KEY });
       setFeedback({
         text: t('mfaScreen.enroll.Success'),
         isPersistent: false,
       });
+      if (politoAuthnEnrolmentStatus?.inSettings === true) {
+        navigation.navigate('ProfileTab');
+        requestAnimationFrame(() => {
+          navigation.navigate('ProfileTab', {
+            screen: 'Settings',
+          });
+          requestAnimationFrame(() => {
+            navigation.navigate('ProfileTab', {
+              screen: 'MfaSettings',
+            });
+          });
+        });
+        updatePreference('politoAuthnEnrolmentStatus', {
+          ...politoAuthnEnrolmentStatus,
+          inSettings: false,
+        });
+      }
     } catch (e) {
       console.error(e);
       if (e instanceof ApiError) {
         if (e.error === 'secureSessionExpired') {
           Alert.alert(t('common.error'), t('mfaScreen.enroll.expired'), [
-            { text: t('common.ok'), onPress: () => handleSSO(true) },
+            {
+              text: t('common.ok'),
+              onPress: () => {
+                handleSSO(true);
+                handleDeviceNameChange(deviceName);
+              },
+            },
           ]);
           return;
         } else {
@@ -91,14 +135,46 @@ export const MfaEnrollScreen = () => {
       }
     }
     navigation.goBack();
-  };
+    setIsLoading(false);
+  }, [
+    deviceName,
+    deviceId,
+    publicKey,
+    navigation,
+    step,
+    enrolMfa,
+    privateKey,
+    t,
+    queryClient,
+    setFeedback,
+    politoAuthnEnrolmentStatus,
+    updatePreference,
+    handleSSO,
+    handleDeviceNameChange,
+  ]);
+
+  useEffect(() => {
+    if (
+      politoAuthnEnrolmentStatus?.inSettings &&
+      politoAuthnEnrolmentStatus?.insertedDeviceName !== undefined
+    ) {
+      setDeviceName(politoAuthnEnrolmentStatus.insertedDeviceName);
+      setStep(1);
+      onYes();
+    }
+  }, [
+    politoAuthnEnrolmentStatus?.inSettings,
+    politoAuthnEnrolmentStatus?.insertedDeviceName,
+    onYes,
+  ]);
+
   if (step === 0)
     return (
       <>
         <RTFTrans
           i18nKey="mfaScreen.enroll.prompt"
           style={[
-            styles.subtitle,
+            styles.prompt,
             {
               height: step > 0 ? 0 : undefined,
             },
@@ -117,7 +193,7 @@ export const MfaEnrollScreen = () => {
             title={t('mfaScreen.enroll.confirm')}
             action={onYes}
             style={styles.primaryButton}
-            loading={isPending}
+            loading={isLoading}
           />
         </View>
         <RTFTrans i18nKey="mfaScreen.enroll.note" style={styles.enrollNote} />
@@ -151,7 +227,7 @@ export const MfaEnrollScreen = () => {
               title={t('common.confirm')}
               action={onYes}
               containerStyle={styles.confirmButtonContainer}
-              loading={isPending}
+              loading={isLoading}
               disabled={deviceName.length === 0}
             />
           </View>
@@ -160,8 +236,15 @@ export const MfaEnrollScreen = () => {
     );
 };
 
-export const createStyles = ({ colors, spacing, palettes }: Theme) =>
+export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
   StyleSheet.create({
+    prompt: {
+      fontSize: 16,
+      color: colors.white,
+      textAlign: 'center',
+      marginBottom: spacing[4],
+      marginHorizontal: spacing[5],
+    },
     subtitle: {
       fontSize: 16,
       color: colors.caption,
@@ -189,7 +272,7 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     },
     note: {
       fontSize: 15,
-      color: colors.caption,
+      color: dark ? colors.white : colors.black,
       textAlign: 'center',
       marginTop: spacing[5],
       marginBottom: spacing[3],
@@ -198,7 +281,7 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     time: {
       fontWeight: 500,
       fontSize: 14,
-      color: colors.caption,
+      color: dark ? colors.white : colors.black,
       textAlign: 'center',
       marginTop: spacing[5],
     },
@@ -211,7 +294,7 @@ export const createStyles = ({ colors, spacing, palettes }: Theme) =>
     },
     enrollNote: {
       fontSize: 16,
-      color: colors.caption,
+      color: dark ? colors.white : colors.black,
       textAlign: 'center',
       marginTop: spacing[3],
       marginHorizontal: spacing[5],
