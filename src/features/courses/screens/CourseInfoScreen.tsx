@@ -36,7 +36,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
@@ -68,14 +67,13 @@ export const CourseInfoScreen = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
-  const { courses: coursesPreferences } = usePreferencesContext();
   const {
     nextLecture,
     dayOfMonth,
     weekDay,
     monthOfYear,
     isLoadingNextLecture,
-  } = useGetNextLecture(courseId, coursesPreferences);
+  } = useGetNextLecture(courseId);
   const openInAppLink = useOpenInAppLink();
   const courseExamsQuery = useGetCourseExams(
     courseId,

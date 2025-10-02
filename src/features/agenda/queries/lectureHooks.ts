@@ -4,14 +4,18 @@ import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { ResponseError } from '@polito/api-client/runtime';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
-import { CoursesPreferences } from '../../../core/contexts/PreferencesContext';
+import {
+  CoursesPreferences,
+  usePreferencesContext,
+} from '../../../core/contexts/PreferencesContext';
 import {
   useCoursesClient,
   useGetCourses,
 } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { isCurrentMonth } from '../../../utils/dates';
 import { toOASTruncable } from '../../../utils/dates.ts';
 import { pluckData } from '../../../utils/queries';
@@ -134,12 +138,10 @@ export const useGetLectureWeeks = (
   };
 };
 
-export const useGetNextLecture = (
-  courseId: number,
-  coursesPreferences: CoursesPreferences,
-) => {
+export const useGetNextLecture = (courseId: number) => {
   const coursesClient = useCoursesClient();
   const { data: courses } = useGetCourses();
+  const { courses: coursesPreferences } = usePreferencesContext();
 
   const nextLectureQuery = useQuery({
     queryKey: ['nextLecture', courseId],
@@ -155,7 +157,7 @@ export const useGetNextLecture = (
             lecture = { ...lecture, uniqueShortcode: course.uniqueShortcode };
           }
         }
-        return formatNextLecture(lecture, coursesPreferences);
+        return lecture;
       } catch (e) {
         if (e instanceof ResponseError && e.response.status === 404) {
           return null;
@@ -167,16 +169,19 @@ export const useGetNextLecture = (
     staleTime: Infinity,
   });
 
-  const nextLecture = nextLectureQuery.data ?? null;
+  const { data } = nextLectureQuery;
 
-  const { dayOfMonth, weekDay, monthOfYear } = useMemo(() => {
-    if (!nextLecture?.date) {
+  const { dayOfMonth, weekDay, monthOfYear, nextLecture } = useMemo(() => {
+    const formattedNextLecture = data
+      ? formatNextLecture(data, coursesPreferences)
+      : null;
+    if (!formattedNextLecture?.date) {
       return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
     }
 
     try {
-      const lectureStart = DateTime.fromISO(nextLecture.date, {
-        zone: IANAZone.create('Europe/Rome'),
+      const lectureStart = DateTime.fromISO(formattedNextLecture.date, {
+        zone: APP_TIMEZONE,
       });
 
       if (!lectureStart.isValid) {
@@ -184,6 +189,7 @@ export const useGetNextLecture = (
       }
 
       return {
+        nextLecture: formattedNextLecture,
         dayOfMonth: lectureStart.toFormat('d'),
         weekDay: lectureStart.toFormat('ccc'),
         monthOfYear: isCurrentMonth(lectureStart)
@@ -194,14 +200,14 @@ export const useGetNextLecture = (
       console.error('Error parsing lecture date:', error);
       return { dayOfMonth: '', weekDay: '', monthOfYear: '' };
     }
-  }, [nextLecture]);
+  }, [data, coursesPreferences]);
 
   return {
-    nextLecture,
     dayOfMonth,
     weekDay,
     monthOfYear,
     isLoadingNextLecture: nextLectureQuery.isLoading,
     error: nextLectureQuery.error,
+    nextLecture,
   };
 };
