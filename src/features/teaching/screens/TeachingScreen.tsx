@@ -6,6 +6,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { Card } from '@lib/ui/components/Card';
 import { Col } from '@lib/ui/components/Col';
+import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
 import { Metric } from '@lib/ui/components/Metric';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -19,6 +20,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { ExamStatusEnum } from '@polito/api-client';
+import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
@@ -147,6 +149,31 @@ export const TeachingScreen = ({ navigation }: Props) => {
               />
             ))}
           </OverviewList>
+        </Section>
+        <Section>
+          <CtaButton
+            title="pippo"
+            action={() => {
+              navigation.getParent()?.dispatch(state => {
+                const index = state.routes.findIndex(
+                  route => route.name === 'ServicesTab',
+                );
+                const routes = state.routes.map(route =>
+                  route.name === 'ServicesTab'
+                    ? {
+                        name: 'ServicesTab',
+                        params: { screen: 'Guides', initial: false },
+                      }
+                    : route,
+                );
+                return CommonActions.reset({
+                  ...state,
+                  index,
+                  routes,
+                });
+              });
+            }}
+          />
         </Section>
         <Section>
           <SectionHeader

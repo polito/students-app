@@ -94,7 +94,7 @@ export interface PreferencesContextBase {
   hideGrades?: boolean;
   loginUid?: string | null;
   politoAuthnEnrolmentStatus?: {
-    inSettings: boolean;
+    inSettings?: boolean;
     insertedDeviceName?: string;
     hideInitialPrompt?: boolean;
   };

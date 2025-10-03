@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { hasPrivateKeyMFA } from '../../utils/keychain';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 import { useCheckMfa } from '../queries/authHooks';
@@ -13,69 +12,69 @@ import { RootParamList } from '../types/navigation';
 
 export const useModalManager = (versionModalIsOpen?: boolean) => {
   const { isSplashLoaded } = useSplashContext();
-  const { onboardingStep } = usePreferencesContext();
+  const { onboardingStep, politoAuthnEnrolmentStatus } =
+    usePreferencesContext();
+  const hideInitialPrompt = politoAuthnEnrolmentStatus?.hideInitialPrompt;
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const routes = navigation.getState()?.routes?.[0]?.state?.routes;
   const isOnBoardingClosed = routes
-    ? !routes.some(route => route.name === 'OnboardingModal' || route.name === 'PolitoAuthenticator')
+    ? !routes.some(route => route.name === 'OnboardingModal')
     : undefined;
+  const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
 
   const { data: messages } = useGetModalMessages();
-  const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
-  const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
 
-  useEffect(() => {
-    hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
-  }, [mfaStatus]);
-
+  const showMfaPrompt = mfaStatus?.status === 'available' && !hideInitialPrompt;
   useEffect(() => {
     if (!isSplashLoaded) return;
-    if (
-      !mfaStatusPending &&
-      mfaStatus?.status === 'available' &&
-      !localMfaKey
-    ) {
-      navigation.navigate('TeachingTab', {
-        screen: 'PolitoAuthenticator',
-        params: { activeView: 'enroll' },
-      });
-    }
-  }, [mfaStatus, mfaStatusPending, navigation, isSplashLoaded, localMfaKey]);
+    if (!showMfaPrompt) return;
+    navigation.navigate('TeachingTab', {
+      screen: 'PolitoAuthenticator',
+      params: { activeView: 'enroll' },
+    });
+  }, [showMfaPrompt, navigation, isSplashLoaded]);
 
   useEffect(() => {
-    console.log({isSplashLoaded, navigation, versionModalIsOpen, onboardingStep, mfaStatusPending, mfaStatus})
+    if (showMfaPrompt || mfaStatusPending) return;
     if (!isSplashLoaded) return;
     if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
-    if (mfaStatusPending || mfaStatus?.status === 'available') return;
-    if (versionModalIsOpen === false) {
-      navigation.navigate('TeachingTab', {
-        screen: 'OnboardingModal',
-        initial: false,
-      });
-    }
-  }, [isSplashLoaded, navigation, versionModalIsOpen, onboardingStep, mfaStatusPending, mfaStatus]);
+    if (versionModalIsOpen) return;
+    navigation.navigate('TeachingTab', {
+      screen: 'OnboardingModal',
+      initial: false,
+    });
+  }, [
+    isSplashLoaded,
+    navigation,
+    versionModalIsOpen,
+    onboardingStep,
+    showMfaPrompt,
+    mfaStatusPending,
+  ]);
 
   useEffect(() => {
+    if (showMfaPrompt || mfaStatusPending) return;
+    if (!isSplashLoaded) return;
     if (
+      !isOnBoardingClosed ||
       onboardingStep === undefined ||
-      (onboardingStep < ONBOARDING_STEPS - 1) ||
-      !isSplashLoaded
-    ) {
+      onboardingStep < ONBOARDING_STEPS - 1
+    )
       return;
-    }
-    if (versionModalIsOpen === false) {
-      if (!messages || messages.length === 0) return;
-      navigation.navigate('TeachingTab', {
-        screen: 'MessagesModal',
-        initial: false,
-      });
-    }
+    if (versionModalIsOpen) return;
+    if (!messages || messages.length === 0) return;
+    navigation.navigate('TeachingTab', {
+      screen: 'MessagesModal',
+      initial: false,
+    });
   }, [
     messages,
     versionModalIsOpen,
     navigation,
     onboardingStep,
     isSplashLoaded,
+    showMfaPrompt,
     isOnBoardingClosed,
+    mfaStatusPending,
   ]);
 };

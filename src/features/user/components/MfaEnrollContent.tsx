@@ -62,11 +62,12 @@ export const MfaEnrollScreen = () => {
     politoAuthnEnrolmentStatus?.insertedDeviceName !== '';
 
   const onNo = useCallback(() => {
-    navigation.goBack();
-    requestAnimationFrame(() => {
-      queryClient.setQueryData(MFA_STATUS_QUERY_KEY, {});
+    updatePreference('politoAuthnEnrolmentStatus', {
+      ...politoAuthnEnrolmentStatus,
+      hideInitialPrompt: true,
     });
-  }, [navigation, queryClient]);
+    navigation.goBack();
+  }, [navigation, politoAuthnEnrolmentStatus, updatePreference]);
 
   const executeEnrollment = useCallback(async () => {
     const dtoMfa = { description: deviceName ?? deviceId, pubkey: publicKey };
@@ -95,9 +96,9 @@ export const MfaEnrollScreen = () => {
           });
         });
         updatePreference('politoAuthnEnrolmentStatus', {
-          ...politoAuthnEnrolmentStatus,
           inSettings: false,
           insertedDeviceName: undefined,
+          hideInitialPrompt: true,
         });
       }
     } catch (e) {
@@ -108,12 +109,12 @@ export const MfaEnrollScreen = () => {
             {
               text: t('common.ok'),
               onPress: () => {
-                handleSSO(true);
                 updatePreference('politoAuthnEnrolmentStatus', {
-                  ...politoAuthnEnrolmentStatus,
                   inSettings: true,
                   insertedDeviceName: deviceName,
+                  hideInitialPrompt: false,
                 });
+                handleSSO(true);
               },
             },
           ]);
