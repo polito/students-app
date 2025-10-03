@@ -25,9 +25,7 @@ export const storeCoursePreferencesByShortcode = async (
   const newPreferences: CoursesPreferences = {};
   preferencesEntries.forEach(([courseId, coursePrefs]) => {
     const course = courses.find(
-      c =>
-        c.id?.toString() === courseId ||
-        c.shortcode + c.moduleNumber === courseId,
+      c => c.id?.toString() === courseId || c.shortcode === courseId,
     );
 
     if (!course) {
@@ -38,7 +36,7 @@ export const storeCoursePreferencesByShortcode = async (
       return;
     }
 
-    newPreferences[course.shortcode + course.moduleNumber] = coursePrefs;
+    newPreferences[course.shortcode] = coursePrefs;
   });
 
   updatePreference('courses', newPreferences);

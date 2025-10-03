@@ -6,7 +6,7 @@ import {
   CourseDirectory,
   CourseDirectoryContentInner,
   CourseFileOverview,
-  CourseOverviewPreviousEditionsInner,
+  CourseModulePreviousEditionsInner,
   CoursePreferencesRequest,
   CourseVcOtherCoursesInner,
   CoursesApi,
@@ -57,7 +57,7 @@ const setupCourses = (
   courses?.forEach(c => {
     const newC = c as CourseOverview;
     const hasDetails = isCourseDetailed(newC);
-    newC.uniqueShortcode = c.shortcode + c.moduleNumber;
+    newC.uniqueShortcode = c.shortcode;
 
     if (hasDetails && !(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
@@ -80,6 +80,25 @@ const setupCourses = (
         isHiddenInAgenda: false,
       };
       hasNewPreferences = true;
+    }
+
+    if (c.modules && c.modules.length > 0) {
+      c.modules.forEach(module => {
+        if (module.id) {
+          const moduleUniqueShortcode = `${c.shortcode}-module-${module.id}`;
+          if (!(moduleUniqueShortcode in coursePreferences)) {
+            const parentPrefs = coursePreferences[newC.uniqueShortcode];
+            if (parentPrefs) {
+              coursePreferences[moduleUniqueShortcode] = {
+                color: parentPrefs.color,
+                isHidden: false,
+                isHiddenInAgenda: false,
+              };
+              hasNewPreferences = true;
+            }
+          }
+        }
+      });
     }
 
     updatedCourses.push(newC);
@@ -157,7 +176,7 @@ export const useGetCourseEditions = (courseId: number) => {
         c =>
           c.id === courseId || c.previousEditions.some(e => e.id === courseId),
       );
-      const editions: CourseOverviewPreviousEditionsInner[] = [];
+      const editions: CourseModulePreviousEditionsInner[] = [];
       if (!course || !course.previousEditions.length) return editions;
       if (course.id) {
         editions.push({
@@ -417,10 +436,7 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (
-    | CourseOverviewPreviousEditionsInner
-    | CourseVcOtherCoursesInner
-  )[],
+  relatedVCs: (CourseModulePreviousEditionsInner | CourseVcOtherCoursesInner)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -464,7 +480,7 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseOverviewPreviousEditionsInner
+    | CourseModulePreviousEditionsInner
     | CourseVcOtherCoursesInner
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],
