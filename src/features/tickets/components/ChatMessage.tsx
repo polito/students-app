@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -23,7 +24,6 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const hasAttachment = message.attachments?.length > 0;
 
   const messageFirstPart = !message.agentId
     ? t('ticketScreen.incomingMessage')
@@ -32,9 +32,9 @@ export const ChatMessage = ({
     ', ',
   );
 
-  const Attachments = () => {
-    if (hasAttachment) {
-      return (
+  const Attachments = useCallback(
+    () =>
+      message.attachments?.length ? (
         <View style={styles.attachmentContainer}>
           {message.attachments.map((item, index) => {
             return (
@@ -47,10 +47,9 @@ export const ChatMessage = ({
             );
           })}
         </View>
-      );
-    }
-    return null;
-  };
+      ) : null,
+    [styles, message, ticketId],
+  );
 
   return (
     <Pressable

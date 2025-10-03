@@ -157,7 +157,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     // Retrieve existing token from SecureStore, if any
     getCredentials()
       .then(keychainCredentials => {
-        let credentials = undefined;
+        let credentials: Credentials | undefined;
 
         if (username && keychainCredentials && keychainCredentials.password) {
           credentials = {

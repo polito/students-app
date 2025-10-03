@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ImageURISource, Platform, StyleSheet, View } from 'react-native';
@@ -91,7 +90,7 @@ const MapDefaultContent = () => {
       <UserLocation />
 
       {/* Marker images */}
-      <Images images={images}></Images>
+      <Images images={images} />
 
       {/* Outdoor map */}
       <RasterSource
