@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -142,15 +142,16 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     markAsRead();
   }, [markAsRead, clearNotificationScope, ticket]);
 
+  const headerRight = useCallback(
+    () =>
+      ticket?.status &&
+      ticket?.status !== TicketStatus.Closed && <HeaderRight ticket={ticket} />,
+    [ticket],
+  );
+
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () =>
-        ticket?.status &&
-        ticket?.status !== TicketStatus.Closed && (
-          <HeaderRight ticket={ticket} />
-        ),
-    });
-  }, [navigation, ticket]);
+    navigation.setOptions({ headerRight });
+  }, [navigation, ticket, headerRight]);
 
   const replies = useMemo(
     () =>
@@ -180,6 +181,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const animatedBottomPadding = useAnimatedStyle(() => ({
     paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
   }));
+
+  const ItemsSeparator = useCallback(
+    () => <View style={styless.separator} />,
+    [styless],
+  );
 
   // TODO: traslucent does not work anymore because now views
   // are more linear: it's needed to recalculate layouts and set
@@ -243,7 +249,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
             received={!!reply?.isFromAgent}
           />
         )}
-        ItemSeparatorComponent={() => <View style={styless.separator} />}
+        ItemSeparatorComponent={ItemsSeparator}
       />
       <TicketMessagingView ticketId={id} />
     </Animated.View>

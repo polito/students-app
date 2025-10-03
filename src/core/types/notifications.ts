@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Notification } from '@polito/api-client/models/Notification';
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 

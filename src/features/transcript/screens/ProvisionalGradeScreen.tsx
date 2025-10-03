@@ -281,7 +281,6 @@ const createStyles = ({
     additionalMetric: {
       marginTop: spacing[4],
     },
-    // eslint-disable-next-line react-native/no-color-literals
     grade: {
       minWidth: 60,
       height: 60,

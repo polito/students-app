@@ -33,7 +33,7 @@ const GradeStateRow = ({ state, isActive = false }: RowProps) => {
               state.id === ProvisionalGradeStateEnum.Confirmed &&
               styles.dotConfirmed,
           ]}
-        ></View>
+        />
       </Col>
       <Col pt={5} flexShrink={1}>
         <Text

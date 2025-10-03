@@ -51,7 +51,7 @@ export const CourseVirtualClassroomScreen = ({ route }: Props) => {
           />
         )}
         {lecture && isLiveVC(lecture) && (
-          <View></View>
+          <View />
           // TODO handle live VC
           // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
         )}

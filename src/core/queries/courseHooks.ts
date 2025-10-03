@@ -95,7 +95,6 @@ const setupCourses = (
 export const useGetCourses = () => {
   const coursesClient = useCoursesClient();
   const { courses: coursePreferences, updatePreference } =
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     usePreferencesContext();
 
   return useQuery<CourseOverview[]>({

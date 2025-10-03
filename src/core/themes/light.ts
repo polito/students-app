@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-// noinspection AllyPlainJsInspection
-//
 import { Theme } from '@lib/ui/types/Theme';
 
 import { IS_ANDROID } from '../constants';

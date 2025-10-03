@@ -68,23 +68,24 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
     return [];
   }, [markTicketAsClosedEnabled, t, dark, colors]);
 
-  const UnReadCount = () => {
-    return (
+  const UnReadCount = useCallback(
+    () => (
       <Col justify="center" align="center" style={styles.unreadCount}>
         <Text style={styles.unreadCountText}>{ticket?.unreadCount || 0}</Text>
       </Col>
-    );
-  };
+    ),
+    [styles, ticket],
+  );
 
-  const onPressCloseTicket = async () => {
+  const onPressCloseTicket = useCallback(async () => {
     if (await confirm()) {
       return markTicketAsClosed();
     }
     return Promise.reject();
-  };
+  }, [confirm, markTicketAsClosed]);
 
-  const Item = () => {
-    return (
+  const Item = useCallback(
+    () => (
       <ListItem
         {...props}
         accessibilityRole="button"
@@ -140,8 +141,23 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
           </Row>
         }
       />
-    );
-  };
+    ),
+    [
+      props,
+      ticket,
+      isDisabled,
+      styles,
+      palettes,
+      spacing,
+      colors,
+      fontSizes,
+      UnReadCount,
+      markTicketAsClosedEnabled,
+      actions,
+      onPressCloseTicket,
+      t,
+    ],
+  );
 
   if (IS_IOS) {
     return (

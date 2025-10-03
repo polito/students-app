@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
@@ -61,7 +61,7 @@ export const UserNavigator = () => {
         component={ProfileScreen}
         initialParams={{ firstRequest: false }}
         options={{
-          headerLeft: () => <HeaderLogo />,
+          headerLeft: HeaderLogoNoProps,
           headerTitle: t('profileScreen.title'),
         }}
       />

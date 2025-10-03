@@ -30,7 +30,6 @@ export const updateGlobalApiConfiguration = ({
     headers: {
       // This currently has no effect but makes sure we don't hit the device
       // http cache, getting results in the wrong language
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Accept-Language': language,
     },
   };

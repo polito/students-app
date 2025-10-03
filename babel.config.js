@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ['module:@react-native/babel-preset'],
     plugins: [
-      '@babel/plugin-proposal-export-namespace-from',
       [
         'module-resolver',
         {

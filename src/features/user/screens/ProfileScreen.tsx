@@ -145,13 +145,14 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
+  const headerRight = useCallback(
+    () => <HeaderRightDropdown student={student} isOffline={isOffline} />,
+    [isOffline, student],
+  );
+
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <HeaderRightDropdown student={student} isOffline={isOffline} />
-      ),
-    });
-  }, [isOffline, navigation, student]);
+    navigation.setOptions({ headerRight });
+  }, [headerRight, navigation]);
 
   return (
     <ScrollView

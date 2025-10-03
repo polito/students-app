@@ -26,6 +26,6 @@ export const Divider = ({
         },
         style,
       ]}
-    ></View>
+    />
   );
 };
