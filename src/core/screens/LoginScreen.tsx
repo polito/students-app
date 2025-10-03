@@ -25,8 +25,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { PolitoLogo } from '~/core/components/Logo.tsx';
-
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '~/core/hooks/useAuth.ts';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
@@ -165,7 +164,7 @@ const createStyles = ({ spacing, fontSizes }: Theme) =>
       alignItems: 'flex-end',
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[2],
-      marginBottom: spacing[2],
+      marginBottom: spacing[8],
     },
     linkToSSO: {
       alignItems: 'center',
