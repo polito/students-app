@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
-import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -15,7 +14,6 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { CourseIndicator } from '../components/CourseIndicator';
 import { CourseContext } from '../contexts/CourseContext';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
@@ -44,7 +42,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   const { getUnreadsCount } = useNotifications();
   const titleStyles = useTitlesStyles(theme);
 
-  const { id } = route.params;
+  const { id, title, uniqueShortcode: paramUniqueShortcode } = route.params;
   const coursesQuery = useGetCourses();
 
   useEffect(() => {
@@ -52,35 +50,42 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     const course = coursesQuery.data.find(
       c => c.id === id || c.previousEditions.some(e => e.id === id),
     );
-    if (!course) return;
+
+    const isModule = coursesQuery.data.some(c =>
+      c.modules?.some(module => module.id === id),
+    );
+
+    let correctUniqueShortcode =
+      course?.uniqueShortcode || paramUniqueShortcode || '';
+
+    if (isModule) {
+      const parentCourse = coursesQuery.data.find(c =>
+        c.modules?.some(module => module.id === id),
+      );
+      if (parentCourse) {
+        correctUniqueShortcode = `${parentCourse.uniqueShortcode}-module-${id}`;
+      }
+    }
+
+    const displayTitle = course?.name || title;
+
+    if (!displayTitle) return;
 
     navigation.setOptions({
+      headerTitleAlign: 'center',
       headerTitle: () => (
-        <Row
-          gap={2}
-          align="center"
-          flexGrow={1}
-          style={Platform.select({
-            android: { marginLeft: -20 },
-            ios: { marginLeft: -35, marginRight: -10 },
-          })}
+        <Text
+          variant="title"
+          style={[
+            titleStyles.headerTitleStyle,
+            {
+              fontSize: 17,
+            },
+          ]}
+          numberOfLines={1}
         >
-          <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
-          <Text
-            variant="title"
-            style={[
-              titleStyles.headerTitleStyle,
-              {
-                fontSize: 17,
-                flexShrink: 1,
-              },
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {course.name}
-          </Text>
-        </Row>
+          {isModule ? t('common.module') : t('common.course')}
+        </Text>
       ),
       headerRight: () => (
         <IconButton
@@ -96,7 +101,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           onPress={() => {
             navigation.navigate('CoursePreferences', {
               courseId: id,
-              uniqueShortcode: course.uniqueShortcode,
+              uniqueShortcode: correctUniqueShortcode,
             });
           }}
         />
@@ -110,6 +115,8 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     palettes.primary,
     spacing,
     t,
+    title,
+    paramUniqueShortcode,
     titleStyles.headerTitleStyle,
     width,
   ]);

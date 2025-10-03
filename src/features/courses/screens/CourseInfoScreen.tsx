@@ -46,6 +46,7 @@ import {
   useGetCourseEditions,
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
+import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { LectureCard } from '../../agenda/components/LectureCard';
@@ -67,6 +68,7 @@ export const CourseInfoScreen = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
+  const coursesQuery = useGetCourses();
   const {
     nextLecture,
     dayOfMonth,
@@ -88,6 +90,13 @@ export const CourseInfoScreen = () => {
     (getUnreadsCountPerCourse(null, editions) ?? 0) - (unreadsCurrentYear ?? 0);
 
   const isOffline = useOfflineDisabled();
+
+  const isModule = useMemo(() => {
+    if (!coursesQuery.data) return false;
+    return coursesQuery.data.some(course =>
+      course.modules?.some(module => module.id === courseId),
+    );
+  }, [coursesQuery.data, courseId]);
 
   const { getParent } = useNavigation();
 
@@ -154,7 +163,15 @@ export const CourseInfoScreen = () => {
       <SafeAreaView>
         <Section style={styles.heading}>
           <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">{courseQuery.data?.shortcode ?? ' '}</Text>
+          <Text variant="caption">
+            {courseQuery.data?.shortcode ?? ' '}
+            {!isModule && courseQuery.data?.cfu && (
+              <Text variant="caption">
+                {' - '}
+                {courseQuery.data.cfu} {t('common.cfu').toLowerCase()}
+              </Text>
+            )}
+          </Text>
         </Section>
         <Card style={styles.metricsCard} accessible={true}>
           <Grid>
@@ -215,16 +232,6 @@ export const CourseInfoScreen = () => {
                 </Row>
               </StatefulMenuView>
             </View>
-            <Metric
-              title={t('courseInfoTab.creditsLabel')}
-              value={t('common.creditsWithUnit', {
-                credits: courseQuery.data?.cfu,
-              })}
-              accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
-                courseQuery.data?.cfu
-              }`}
-              style={GlobalStyles.grow}
-            />
           </Grid>
         </Card>
         <Section>
