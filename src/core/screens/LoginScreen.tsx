@@ -35,7 +35,7 @@ export const LoginScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const passwordRef = useRef<TextInput>(null);
   const canLogin = username?.length && password?.length;
-  const { handleBasicLogin, handleSSO, isLoading } = useAuth();
+  const { handleBasicLogin, handleSSO, viewChpass, isLoading } = useAuth();
 
   const handleLogin = () => handleBasicLogin(username, password);
 
@@ -103,14 +103,7 @@ export const LoginScreen = () => {
               />
             </Row>
           </OverviewList>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => {
-              Linking.openURL(
-                'https://idp.polito.it/Chpass/chpassservlet/main.htm?p_reset=Y',
-              );
-            }}
-          >
+          <TouchableOpacity style={styles.link} onPress={() => viewChpass()}>
             <Text variant="link" style={styles.textLink}>
               {t('loginScreen.forgotYourPassword')}
             </Text>
@@ -122,7 +115,10 @@ export const LoginScreen = () => {
             loading={isLoading}
             disabled={!canLogin}
           />
-          <TouchableOpacity style={styles.linkToSSO} onPress={handleSSO}>
+          <TouchableOpacity
+            style={styles.linkToSSO}
+            onPress={() => handleSSO()}
+          >
             <Text variant="link" style={styles.textLink}>
               {t('loginScreen.SSO')}
             </Text>
