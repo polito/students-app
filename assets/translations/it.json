@@ -705,7 +705,7 @@
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
     "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push.",
-    "SSO": "Accedi con SSO"
+    "SSO": "oppure entra con SSO"
   },
   "messageScreen": {
     "backTitle": "Archivio",
@@ -923,6 +923,10 @@
     "title": "Impostazioni",
     "securityTitle": "Sicurezza",
     "authenticatorTitle": "PoliTO Authenticator"
+  },
+  "ssoScreen": {
+    "ssoButton": "Entra con Single-Sign-On",
+    "ssoLink": "oppure entra con le tue credenziali"
   },
   "surveysScreen": {
     "compiledEmptyState": "Non ci sono questionari compilati",

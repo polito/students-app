@@ -903,6 +903,10 @@
     "securityTitle": "Security",
     "authenticatorTitle": "PoliTO Authenticator"
   },
+  "ssoScreen": {
+    "ssoButton": "Sign in with Single-Sign-On",
+    "ssoLink": "or sign in with your credentials"
+  },
   "surveysScreen": {
     "compiledEmptyState": "There are no compiled surveys",
     "compiledTitle": "Compiled surveys",
