@@ -18,6 +18,8 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { resetNavigationStatusTo } from '~/utils/navigation';
+
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
 import { OnboardingStep } from '../components/OnboardingStep';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
@@ -81,16 +83,10 @@ export const OnboardingModal = ({ navigation }: Props) => {
 
   const onNextPage = useCallback(() => {
     if (isLastStep) {
-      const parent = navigation.getParent()!;
-
-      parent.reset({
-        index: 1,
-        routes: [
-          { name: 'TeachingTab' },
-          { name: 'ServicesTab', params: { screen: 'Guides', initial: false } },
-        ],
-      });
-
+      resetNavigationStatusTo(navigation, 'ServicesTab', [
+        { name: 'Services' },
+        { name: 'Guides' },
+      ]);
       return;
     }
     stepsRef.current?.scrollTo({

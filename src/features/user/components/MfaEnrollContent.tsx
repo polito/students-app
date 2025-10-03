@@ -20,6 +20,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { RTFTrans } from '~/core/components/RTFTrans';
 import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
+import { resetNavigationStatusTo } from '~/utils/navigation';
 import { ApiError } from '~/utils/queries';
 
 import {
@@ -84,17 +85,11 @@ export const MfaEnrollScreen = () => {
         isPersistent: false,
       });
       if (politoAuthnEnrolmentStatus?.inSettings === true) {
-        navigation.navigate('ProfileTab');
-        requestAnimationFrame(() => {
-          navigation.navigate('ProfileTab', {
-            screen: 'Settings',
-          });
-          requestAnimationFrame(() => {
-            navigation.navigate('ProfileTab', {
-              screen: 'MfaSettings',
-            });
-          });
-        });
+        resetNavigationStatusTo(navigation, 'ProfileTab', [
+          { name: 'Profile', params: { firstRequest: false } },
+          { name: 'Settings' },
+          { name: 'MfaSettings' },
+        ]);
         updatePreference('politoAuthnEnrolmentStatus', {
           inSettings: false,
           insertedDeviceName: undefined,

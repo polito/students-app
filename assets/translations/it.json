@@ -767,7 +767,7 @@
       "correctError": "Correggi errore",
       "enableNow": "Attiva ora",
       "none": "Nessuno",
-      "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell'Università inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni disabiliteranno questa installazione di PoliTO Authenticator per questo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando<br> <b>idp.polito.it > Gestione MFA</b>",
+      "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell'Università inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni disabiliteranno questa installazione di PoliTO Authenticator per questo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando<br/> <b>idp.polito.it > Gestione MFA</b>",
       "notAccessible": "La chiave crittografica per <b>PoliTO Authenticator</b> non è accessibile su questo dispositivo. Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate.",
       "lockedDescription": "PoliTO Authenticator su questo dispositivo è stato bloccato per ragioni di sicurezza. Contattare al più presto il supporto tecnico mediante i riferimenti presenti su idp.polito.it/help",
       "locked": "Bloccato",
@@ -885,7 +885,7 @@
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
     "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta entro il:<br><b>{{date}}</b>",
+    "rejectGradeCta": "Rifiuta entro il:<br/><b>{{date}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "teacherMessage": {
       "title": "Messaggio del docente",

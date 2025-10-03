@@ -720,7 +720,7 @@
     "enroll": {
       "title": "MFA Activation",
       "prompt": "Do you want to activate <b>PoliTO Authenticator</b> on this device?",
-      "note": "By activating PoliTO Authenticator, you will be able to access the <b>University's digital services</b> in a simpler and more secure way.</br>You will no longer have to wait for SMS or use external apps to confirm your identity.<br/><br/>You can deactivate PoliTO Authenticator at any time by logging out of the app or by accessing <b>idp.polito.it > MFA Management</b>.",
+      "note": "By activating PoliTO Authenticator, you will be able to access the <b>University's digital services</b> in a simpler and more secure way.<br/>You will no longer have to wait for SMS or use external apps to confirm your identity.<br/><br/>You can deactivate PoliTO Authenticator at any time by logging out of the app or by accessing <b>idp.polito.it > MFA Management</b>.",
       "confirm": "Yes, proceed",
       "unsupported": "Warning. No secure lock screen is set on your device. Please set a secure lock screen to use PoliTO Authenticator (PIN, password or biometric authentication).",
       "saveFailure": "Warning. The authentication key could not be saved on your device. Please visit idp.polito.it > MFA Management to remove the newly created authentication factor.",
@@ -867,7 +867,7 @@
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
-    "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
+    "rejectGradeCta": "Reject the evaluation by: <br/><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "teacherMessage": {
       "title": "Professor's message",
