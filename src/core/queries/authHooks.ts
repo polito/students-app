@@ -146,10 +146,13 @@ export const useLogout = () => {
   const authClient = useAuthClient();
   const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
-
+  const { updatePreference } = usePreferencesContext();
   return useMutation({
-    mutationFn: () => authClient.logout(),
+    mutationFn: () => {
+      return authClient.logout();
+    },
     onSuccess: async () => {
+      updatePreference('politoAuthnEnrolmentStatus', {});
       refreshContext();
       asyncStoragePersister.removeClient();
       queryClient.removeQueries();

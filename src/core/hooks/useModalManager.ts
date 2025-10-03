@@ -23,7 +23,6 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
 
   const { data: messages } = useGetModalMessages();
-
   const showMfaPrompt = mfaStatus?.status === 'available' && !hideInitialPrompt;
   useEffect(() => {
     if (!isSplashLoaded) return;

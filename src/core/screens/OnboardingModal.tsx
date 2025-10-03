@@ -83,6 +83,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
 
   const onNextPage = useCallback(() => {
     if (isLastStep) {
+      navigation.popToTop();
       resetNavigationStatusTo(navigation, 'ServicesTab', [
         { name: 'Services' },
         { name: 'Guides' },

@@ -21,7 +21,7 @@ import { MessageScreenContent } from '../components/MessageScreenContent';
 
 type Props = NativeStackScreenProps<any, 'MessagesModal'>;
 
-export const UnreadMessagesModal = ({ navigation, route }: Props) => {
+export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { data: messages } = useGetModalMessages();
 
   const invalidateMessages = useInvalidateMessages();
@@ -52,18 +52,13 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
   }, [announce, isScreenReaderEnabled, t, messagesToReadCount]);
 
   useEffect(() => {
-    if (route.params?.mfa?.status !== 'available')
-      navigation.setOptions({
-        headerTitle: t('mfaScreen.headerTitle'),
-        headerTitleAlign: 'center',
-      });
-  }, [
-    t,
-    messagesReadCount,
-    navigation,
-    messagesToReadCount,
-    route.params?.mfa?.status,
-  ]);
+    navigation.setOptions({
+      headerTitle: t('messagesScreen.unreadMessages', {
+        read: messagesReadCount + 1,
+        total: messagesToReadCount,
+      }),
+    });
+  }, [t, messagesReadCount, navigation, messagesToReadCount]);
 
   useHideTabs(undefined, () => invalidateMessages.run());
 
@@ -79,6 +74,7 @@ export const UnreadMessagesModal = ({ navigation, route }: Props) => {
       setMessageReadCount(m => m + 1);
     }
   };
+
   return (
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
