@@ -1,18 +1,15 @@
-// PlacesListHeader.tsx
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { faLocationDot, faEllipsisV, faCircleDot, faSignsPost } from '@fortawesome/free-solid-svg-icons';
-// Assumo che queste siano importazioni standard del tuo progetto
 import { Icon } from '@lib/ui/components/Icon';
 import { BottomSheetTextField } from '@lib/ui/components/BottomSheetTextField';
 import { Checkbox } from '../../../core/components/Checkbox';
 import { StatisticsContainer } from './StatisticsContainer';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTranslation } from 'react-i18next';
 
-// Tipizzazione delle Props
 interface PlacesListHeaderProps {
-    // STATI (VALORI DA LEGGERE)
     isExpandedStart: boolean;
     isExpandedDest: boolean;
     searchStart: string;
@@ -21,9 +18,8 @@ interface PlacesListHeaderProps {
     distance: number | null;
     stairsOrElevators: number | null;
     avoidStairs: boolean;
-    dark: boolean; // Per la gestione del tema scuro
+    dark: boolean; 
 
-    // FUNZIONI (SETTERS O HANDLER STABILI TRAMITE useCallback)
     setIsExpandedStart: (value: boolean) => void;
     setIsExpandedDest: (value: boolean) => void;
     handleSearchStart: (text: string) => void;
@@ -33,7 +29,7 @@ interface PlacesListHeaderProps {
     handleDebouncedSearch: (text: string) => void;
     handleComputeButtonState: (state: number) => void;
     setAvoidStairs: (value: boolean) => void;
-    // Queste funzioni dovrebbero essere avvolte in useCallback nel componente genitore
+
     triggerSearchStart?: () => void; 
     triggerSearchDest?: () => void;
 }
@@ -61,10 +57,8 @@ const PlacesListHeaderComponent = ({
 }: PlacesListHeaderProps) => {
     const { dark, palettes } = useTheme();
     const styles = useStylesheet(createStyles);
-    
-    // Non devi più dichiarare gli stili qui, ma importare lo styles sheet o definirlo sotto.
-    // useremo uno styles sheet fittizio chiamato 'styles'
-    
+    const { t } = useTranslation();
+
     return (
         <View style={styles.bottomSheetContent}>
             <View style={styles.selector}>
@@ -79,7 +73,7 @@ const PlacesListHeaderComponent = ({
                     <View style={styles.inputs}>
                         {!isExpandedDest && (
                             <BottomSheetTextField
-                                label={'Scegli punto di partenza'}
+                                label={t('indicationsScreen.fromPlaceLabel')}
                                 onBlur={() => triggerSearchStart?.()}
                                 returnKeyType="search"
                                 onSubmitEditing={() => {
@@ -107,7 +101,7 @@ const PlacesListHeaderComponent = ({
                         )}
                         {!isExpandedStart && (
                             <BottomSheetTextField
-                                label={'Scegli destinazione'}
+                                label={t('indicationsScreen.toPlaceLabel')}
                                 onBlur={() => triggerSearchDest?.()}
                                 returnKeyType="search"
                                 onSubmitEditing={() => {
@@ -145,7 +139,7 @@ const PlacesListHeaderComponent = ({
                 { !isExpandedDest && !isExpandedStart &&(
                     <View style={styles.stairsButtonContainer}>
                         <Text style={[styles.textStairsButton, { color: palettes.primary[600] }]}>
-                            Evita scale
+                            {t('indicationsScreen.avoidStairs')}
                         </Text>
                         <View style={styles.checkBox}>
                             <Checkbox
@@ -159,7 +153,6 @@ const PlacesListHeaderComponent = ({
         </View>
     );
 };
-
 
 const createStyles = () => 
     StyleSheet.create({

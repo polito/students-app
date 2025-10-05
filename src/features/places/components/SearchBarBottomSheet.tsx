@@ -1,20 +1,13 @@
-import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image } from 'react-native';
 import {
   faLocationDot,
-  faCircleDot,
-  faEllipsisV,
   faMapPin,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
-import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Checkbox } from '../../../core/components/Checkbox';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { BottomSheetTextField } from '@lib/ui/components/BottomSheetTextField';
-import { use, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { debounce, set } from 'lodash';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce } from 'lodash';
 import { BottomSheetFlatList, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { ListItem } from '@lib/ui/components/ListItem';
@@ -28,10 +21,10 @@ import { useSearchPlaces } from '~/features/places/hooks/useSearchPlaces';
 import { notNullish } from '~/utils/predicates';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { PlacesContext } from '~/features/places/contexts/PlacesContext';
-import { StatisticsContainer } from './StatisticsContainer';
 import { MarkerSelectionBottomSheet } from './MarkerSelectionBottomSheet';
 import { PlacesListHeader } from './PlacesListHeader';
 import { PlacesListFooter } from './PlacesListFooter';
+import { start } from 'repl';
 
 type Props = {
     showItinerary: () => void;
@@ -56,8 +49,7 @@ type Props = {
 };
 
 export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom, destinationRoom, handleDestinationRoom, debouncedSearch, handleDebouncedSearch, computeButtonState, handleComputeButtonState, searchDest, handleSearchDest, searchStart, handleSearchStart, distance, stairsOrElevators, handleShowControls }: Props) => {
-    const styles = useStylesheet(createStyles);
-    const { dark, palettes } = useTheme();
+    const { dark } = useTheme();
     const { selectedPlace } = useContext(PlacesContext);
     const [avoidStairs, setAvoidStairs] = useState<boolean>(false);
 
@@ -128,11 +120,11 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
     type ListDataItem = SpecialItem | PlaceItem;
 
     const dataWithDefault = useMemo(() => {
-    if (!(isExpandedStart || isExpandedDest)) return [];
-    return [
-        { type: 'special', id: 'special', title: 'Seleziona dalla mappa' },
-        ...(places ?? []).map(p => ({ type: 'place', place: p } as ListDataItem)),
-    ];
+        if (!isExpandedStart && !isExpandedDest) return [];
+        return [
+            { type: 'special', id: 'special', title: 'Seleziona dalla mappa' } as SpecialItem,
+            ...(places ?? []).map(p => ({ type: 'place', place: p } as PlaceItem)),
+        ] as ListDataItem[];
     }, [isExpandedStart, isExpandedDest, places]);
             
     const triggerSearchStart = useCallback(
@@ -195,8 +187,7 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
         setIsExpandedStart,
         handleDestinationRoom,
         handleSearchDest, 
-        setIsExpandedDest,
-        t
+        setIsExpandedDest
     ]
 );
 
@@ -248,29 +239,29 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
                 searchStart={searchStart}
                 searchDest={searchDest}
                 computeButtonState={computeButtonState}
-            distance={distance ? distance : 0}
-            stairsOrElevators={ stairsOrElevators ? stairsOrElevators : 0}
-            avoidStairs={avoidStairs}
-            dark={dark}
-            setIsExpandedStart={setIsExpandedStart}
-            setIsExpandedDest={setIsExpandedDest}
-            handleSearchStart={handleSearchStart}
-            handleSearchDest={handleSearchDest}
-            handleStartRoom={handleStartRoom}
-            handleDestinationRoom={handleDestinationRoom}
-            handleDebouncedSearch={handleDebouncedSearch}
-            handleComputeButtonState={handleComputeButtonState}
-            setAvoidStairs={setAvoidStairs}
-            triggerSearchStart={triggerSearchStart}
-            triggerSearchDest={triggerSearchDest}
+                distance={distance ? distance : 0}
+                stairsOrElevators={ stairsOrElevators ? stairsOrElevators : 0}
+                avoidStairs={avoidStairs}
+                dark={dark}
+                setIsExpandedStart={setIsExpandedStart}
+                setIsExpandedDest={setIsExpandedDest}
+                handleSearchStart={handleSearchStart}
+                handleSearchDest={handleSearchDest}
+                handleStartRoom={handleStartRoom}
+                handleDestinationRoom={handleDestinationRoom}
+                handleDebouncedSearch={handleDebouncedSearch}
+                handleComputeButtonState={handleComputeButtonState}
+                setAvoidStairs={setAvoidStairs}
+                triggerSearchStart={triggerSearchStart}
+                triggerSearchDest={triggerSearchDest}
         />);
     }, [
-    isExpandedStart, 
-    isExpandedDest, 
-    computeButtonState,
-    distance,
-    stairsOrElevators,
-    avoidStairs
+        isExpandedStart, 
+        isExpandedDest, 
+        computeButtonState,
+        distance,
+        stairsOrElevators,
+        avoidStairs
     ]);
 
     const listFooter = useMemo(() => {
@@ -282,14 +273,14 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
             handleComputeButtonState={handleComputeButtonState}
             showItinerary={showItinerary}
         />);
-}, [
-    isExpandedStart, 
-    isExpandedDest, 
-    computeButtonState,
-    startRoom.length, 
-    destinationRoom.length,
-]);
-    
+    }, [
+        isExpandedStart, 
+        isExpandedDest, 
+        computeButtonState,
+        startRoom.length, 
+        destinationRoom.length,
+    ]);
+
     return (
         <>
             <BottomSheet
@@ -368,114 +359,3 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
         </>    
     );
 };
-
-const createStyles = () => 
-    StyleSheet.create({
-    bottomSheetContent: {
-        display: 'flex',
-        width: '100%',
-        paddingVertical: 18,
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 40,
-    },
-    selector: {
-        display: 'flex',
-        paddingVertical: 18,
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-    },
-    grid: {
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'flex-start',
-        paddingHorizontal: 18,
-        gap: 9,
-        alignSelf: 'stretch',
-    },
-    icons: {
-        display: 'flex',
-        width: 16,
-        paddingVertical: 8,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 6,
-        flexShrink: 0,
-        alignSelf: 'stretch',
-    },
-    icon: {
-        display: 'flex',
-        height: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'stretch',
-    },
-    inputs: {   
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: 12,
-        flexGrow: 1,
-        flexShrink: 0,
-        flexBasis: 0,
-        alignSelf: 'stretch',
-    },
-    filter: {
-        display: 'flex',
-        paddingVertical: 6,
-        paddingHorizontal: 9,
-        alignItems: 'center',
-        alignSelf: 'stretch',
-        borderRadius: 6,
-    },
-    text: {
-        overflow: 'hidden',
-        //text-overflow: ellipsis;
-        fontFamily: 'Montserrat',
-        fontSize: 16,
-        fontStyle: 'normal',
-        fontWeight: 400,
-        lineHeight: 21,
-    },
-    stairsButtonContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        paddingTop: 18,
-        paddingBottom: 60,
-        paddingHorizontal: 18,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        gap: 20,
-    },
-    textStairsButton: {
-        fontFamily: 'Montserrat',
-        fontSize: 14,
-        fontStyle: 'normal',
-        fontWeight: 500,
-        lineHeight: 21, /* 21 px */
-    },
-    checkBox: {
-        display: 'flex',
-        width: 16,
-        height: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexShrink: 0,
-    },
-    statisticsContainer: { 
-        padding: 18,
-    },
-    ctaButtonContainer: {
-        display: 'flex',
-        paddingHorizontal: 18,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 10,
-        alignSelf: 'stretch',
-        marginTop: '20%',
-    },
-});

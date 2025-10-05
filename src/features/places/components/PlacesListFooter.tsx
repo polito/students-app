@@ -1,24 +1,12 @@
-// PlacesListHeader.tsx
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { faLocationDot, faEllipsisV, faCircleDot, faSignsPost } from '@fortawesome/free-solid-svg-icons';
-// Assumo che queste siano importazioni standard del tuo progetto
-import { Icon } from '@lib/ui/components/Icon';
-import { BottomSheetTextField } from '@lib/ui/components/BottomSheetTextField';
-import { Checkbox } from '../../../core/components/Checkbox';
-import { StatisticsContainer } from './StatisticsContainer';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-
-// Tipizzazione delle Props
+import { useTranslation } from 'react-i18next';
 interface PlacesListFooterProps {
-    // STATI (VALORI DA LEGGERE - usiamo la lunghezza per stabilità)
     computeButtonState: number;
     startRoomLength: number;
     destinationRoomLength: number;
-
-    // FUNZIONI (HANDLER STABILI TRAMITE useCallback)
     handleComputeButtonState: () => void;
     showItinerary: () => void;
 }
@@ -31,14 +19,14 @@ const PlacesListFooterComponent = ({
     showItinerary,
 }: PlacesListFooterProps) => {
     const styles = useStylesheet(createStyles);
-    
+    const { t } = useTranslation();
     const isDisabled = startRoomLength === 0 || destinationRoomLength === 0;
     
     return (
         <View style={styles.ctaButtonContainer}>
             <CtaButton
                 title={
-                    computeButtonState === 0 ? "Calcola percorso" : "Mostra indicazioni"
+                    computeButtonState === 0 ? t('indicationsScreen.computePath') : t('indicationsScreen.showIndications')
                 }
                 action={() => {
                     handleComputeButtonState();

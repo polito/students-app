@@ -808,6 +808,17 @@
     "title": "Luoghi",
     "viewWholeCampus": "Vedi tutta la sede"
   },
+  "indicationsScreen": {
+    "title": "Indicazioni",
+    "fromPlaceLabel": "Scegli punto di partenza",
+    "toPlaceLabel": "Scegli la destinazione",
+    "avoidStairs": "Evita le scale",
+    "computePath": "Calcola percorso",
+    "showIndications": "Mostra indicazioni"
+  },
+  "itineraryScreen": {
+    "title": "Itinerario"
+  },
   "placesSearchScreen": {
     "searchPlaceholder": "Prova con \"Aula 1\""
   },

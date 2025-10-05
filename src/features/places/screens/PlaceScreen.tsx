@@ -255,7 +255,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       accessibilityLabel={t('common.navigate')}
                       onPress={() => {
                         setItineraryMode(true);
-                        navigation.navigate('Itinerary', { toPlace: placeName });
+                        navigation.navigate('Indications', { toPlace: placeName });
                     }}
                     />
                   }
@@ -337,7 +337,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
                       setItineraryMode(true);
-                      navigation.navigate('Itinerary', { toPlace: placeName });
+                      navigation.navigate('Indications', { toPlace: placeName });
                     }}
                   />
                 }

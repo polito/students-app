@@ -792,6 +792,17 @@
     "title": "Places",
     "viewWholeCampus": "View the whole campus"
   },
+    "indicationsScreen": {
+    "title": "Indications",
+    "fromPlaceLabel": "Choose starting point",
+    "toPlaceLabel": "Choose destination",
+    "avoidStairs": "Avoid stairs",
+    "computePath": "Compute path",
+    "showIndications": "Show indications"
+  },
+  "itineraryScreen": {
+    "title": "Itinerary"
+  },
   "placesSearchScreen": {
     "searchPlaceholder": "Try with \"Room 1\""
   },

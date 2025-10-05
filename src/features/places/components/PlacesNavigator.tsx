@@ -29,8 +29,8 @@ import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
+import { IndicationsScreen } from '../screens/IndicationsScreen';
 import { ItineraryScreen } from '../screens/ItineraryScreen';
-import { NavigationItineraryScreen } from '../screens/NavigationItineraryScreen';
 import { PlaceOverview } from '@polito/api-client';
 
 export type ServiceStackParamList = {
@@ -61,10 +61,11 @@ export type PlacesStackParamList = {
     siteId: string;
     buildingId: string;
   };
-  Itinerary: {
+  Indications: {
+    fromPlace?: string;      //will be changed with the data that represents the place
     toPlace: string;        //will be changed with the data that represents the place
   };
-  NavigationItinerary: undefined;
+  Itinerary: undefined;
   PlaceCategories: undefined;
   MessagesModal: undefined;
   FreeRooms: undefined;
@@ -274,17 +275,17 @@ export const PlacesNavigator = () => {
           }}
         />
         <Map.Screen
+          name="Indications"
+          component={IndicationsScreen}
+          options={{
+            title: t('indicationsScreen.title'),
+          }}
+        />
+        <Map.Screen
           name="Itinerary"
           component={ItineraryScreen}
           options={{
             title: t('itineraryScreen.title'),
-          }}
-        />
-        <Map.Screen
-          name="NavigationItinerary"
-          component={NavigationItineraryScreen}
-          options={{
-            title: t('navigationItineraryScreen.title'),
           }}
         />
         <Map.Screen
