@@ -1,30 +1,28 @@
-import { useGetPath } from '../../../core/queries/placesHooks';
 import { ShapeSource, LineLayer, LineJoin } from '@rnmapbox/maps';
 import { useContext, useEffect, useState } from 'react';
 import { PlacesContext } from '../contexts/PlacesContext';
+import { useGetPath } from '~/core/queries/placesHooks';
 
 export const PathLayer = () => {
-  const [groupedFeatures, setGroupedFeatures] = useState<any[][]>([]);
-  const [selectedFloor, setSelectedFloor] = useState<string | undefined>(undefined);
+  const [ selectedFloor ] = useState<string | undefined>(undefined);
 
-  const { floorId: mapFloorId, setFloorId: setMapFloorId } =        //useful to set the map tot the corrrect floor whenever the user click to that portion of the path
+  const { setFloorId: setMapFloorId } =        //useful to set the map tot the corrrect floor whenever the user click to that portion of the path
     useContext(PlacesContext);
     
-  const { selectedLine: line, setSelectedLine: setLine } = useContext(PlacesContext);
+  const { selectedLine: line } = useContext(PlacesContext);
+  const pathFeatureCollection = useGetPath().features;
 
+  console.log(pathFeatureCollection);
+
+  /*
   const featureCollection = useGetPath();
 
-  const handlePressSegment = async(label: string, floor: string) => {
-    let lineLayer = label;
-
-    if(line === lineLayer){
-      setLine(undefined);
+  useEffect(() => {
+    if (featureCollection) {
+      setPathFeatureCollection(featureCollection.features);
     }
-    else{
-      setLine(lineLayer);
-      setSelectedFloor(floor);
-    }
-  }
+  }, [featureCollection]);
+  */
 
   useEffect(() => {
     if(line){
@@ -34,7 +32,7 @@ export const PathLayer = () => {
       setMapFloorId('XPTE');
   }, [line]);
 
-  function getRandomColor(): string {
+  function getRandomColor(): string {         //da sostituire col design system adeguato
     const randomInt = Math.floor(Math.random() * 16777215);
 
     let hexString = randomInt.toString(16);
@@ -47,13 +45,14 @@ export const PathLayer = () => {
 
   return (
     <>
-      {featureCollection.features.length > 0 && featureCollection.features.map((featuresArray: any, index: number) => {
+    {pathFeatureCollection && pathFeatureCollection.length > 0 && (
+       pathFeatureCollection.map((featuresArray: any, index: number) => {
         return (
-          <ShapeSource id={`line-source-${index.toString()}`} shape={featuresArray.json_build_object}
+          <ShapeSource id={`line-source-${index.toString()}`} shape={featuresArray.features}
             key={`line-source-${index.toString()}`}
-            onPress={() => {
-              handlePressSegment(`line-layer-${index.toString()}`, featuresArray.json_build_object.features[0].properties.fn_fl_id);
-            }}
+            //onPress={() => {
+              //handleSelectSegment?.(`line-layer-${index.toString()}`, featuresArray.json_build_object.features[0].properties.fn_fl_id);   //da vedere bene
+            //}}
           >
             {
               line ? (
@@ -70,7 +69,8 @@ export const PathLayer = () => {
             }
           </ShapeSource>
         );
-    })}
+    }))
+    }
     </>
   );
 };

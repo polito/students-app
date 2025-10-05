@@ -66,7 +66,6 @@ import { darkTheme } from '../../../core/themes/dark';
 import { CampusSelector } from '../components/CampusSelector';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
-import { PathLayer } from '../components/PathLayer';
 import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
@@ -93,7 +92,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const campus = useGetCurrentCampus();
   const { placesSearched, accessibility } = usePreferencesContext();
   const { cameraRef } = useContext(MapNavigatorContext);
-  const { floorId: mapFloorId, setFloorId: setMapFloorId } =
+  const { floorId: mapFloorId, setFloorId: setMapFloorId, setItineraryMode, setSelectedPlace } =
     useContext(PlacesContext);
   const searchPlaceToListItem = useSearchPlaceToListItem();
   const [search, setSearch] = useState('');
@@ -221,7 +220,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     });
   }, [
     categoryId,
-    debouncedSearch,
+    //debouncedSearch,
     displayFloorId,
     navigation,
     places,

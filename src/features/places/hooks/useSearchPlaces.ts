@@ -45,3 +45,27 @@ export const useSearchPlaces = ({
     isLoading: buildingsQuery.isLoading || placesQuery.isLoading,
   };
 };
+
+const excludedNavigationPOICategories = ['SCALA', 'ASCEN'];
+
+export const useNavigationPlaces = ({
+    siteId,
+    search,
+    floorId
+}: UseSearchPlacesOptions) => {
+    const { data: places, isLoading } = useSearchPlaces({
+        siteId,
+        search,
+        floorId, //perchè se no mi esclude tutti i posti di XPTE
+    });
+
+    const filteredPlaces = useMemo(() => 
+         places.filter(p => !excludedNavigationPOICategories.includes(p.category?.id)),
+    [places]);
+
+    return {
+        filteredPlaces,
+        isLoading
+    }
+  
+}

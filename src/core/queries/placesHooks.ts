@@ -8,7 +8,8 @@ import {
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
-import { myGeoJSONData } from '../../utils/pathSample';
+import data from '../../utils/pathFinale.json';
+import path from 'path';
 
 export const SITES_QUERY_KEY = 'sites';
 export const BUILDINGS_QUERY_KEY = 'buildings';
@@ -22,7 +23,7 @@ const usePlacesClient = (): PlacesApi => {
 };
 
 export const useGetPath = () => {
-  return myGeoJSONData;
+  return data;
 }
 
 export const useGetSites = () => {

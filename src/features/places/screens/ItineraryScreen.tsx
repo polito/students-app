@@ -9,85 +9,124 @@ import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-
-import {
-  faCrosshairs,
-  faExpand,
-} from '@fortawesome/free-solid-svg-icons';
-import { Divider } from '@lib/ui/components/Divider';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Row } from '@lib/ui/components/Row';
-import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
-import Mapbox from '@rnmapbox/maps';
-
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
-import { PathLayer } from '../components/PathLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { MarkersLayer } from '../components/MarkersLayer';
-import { useSearchPlaces } from '../hooks/useSearchPlaces';
-import { SubPathSelector } from '~/core/components/SubPathSelector';
-import { StatisticsContainer } from '~/core/components/StatisticsContainer';
-import { PathSearchBar } from '~/core/components/PathSearchBar';
+import { useNavigationPlaces } from '../hooks/useSearchPlaces';
+import { displayTabBar } from '~/utils/tab-bar';
+import { SearchBarBottomSheet } from '~/features/places/components/SearchBarBottomSheet';
+import { PreViewPathLayer } from '../components/PreViewPathLayer';
+import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
+import { Icon } from '@lib/ui/components/Icon';
+import { Row } from '@lib/ui/components/Row';
+import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
+import { faChevronDown, faCrosshairs, faElevator, faExpand } from '@fortawesome/free-solid-svg-icons';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
+import { Text } from '@lib/ui/components/Text';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { IconButton } from '@lib/ui/components/IconButton';
+import { Divider } from '@lib/ui/components/Divider';
+import { Theme } from '@lib/ui/types/Theme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import Mapbox from '@rnmapbox/maps';
+import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useGetPath } from '~/core/queries/placesHooks';
+import { start } from 'repl';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Itinerary'>;
 
-export const ItineraryScreen = ({ navigation }: Props) => {
-    const styles = useStylesheet(createStyles);
-    const { spacing } = useTheme();
+export const ItineraryScreen = ({ navigation, route }: Props) => {
     const { t } = useTranslation();
     const campus = useGetCurrentCampus();
-    const { cameraRef } = useContext(MapNavigatorContext);
-   // const searchPlaceToListItem = useSearchPlaceToListItem();
-    const [search] = useState('');
-    const { floorId: floorId, setFloorId: setFloorId } =        //useful to set the map tot the corrrect floor whenever the user click to that portion of the path
-    useContext(PlacesContext);
-    const [debouncedSearch] = useState(search);
-    const bottomSheetPosition = useSharedValue(0);
+    const { floorId: floorId, setFloorId: setFloorId } = useContext(PlacesContext);
+    const { spacing, fontSizes } = useTheme();
     const [screenHeight, setScreenHeight] = useState(
         Dimensions.get('window').height,
     );
+    const bottomSheetPosition = useSharedValue(0);
+    const { cameraRef } = useContext(MapNavigatorContext);
+    const [pathFeatureCollection, setPathFeatureCollection] = useState<any[] | null>(null);
+    const [totDistance, setTotDistance] = useState<number | null>(null);
+    const [stairsOrElevators, setStairsOrElevators] = useState<number | null>(null);
 
-    const { data: places } = useSearchPlaces({
+    const [computeButtonState, setComputeButtonState] = useState(0);
+
+    const [searchStart, setSearchStart] = useState('');
+    const [startRoom, setStartRoom] = useState('');
+    const [searchDest, setSearchDest] = useState('');
+    const [destRoom, setDestRoom ] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [showControls, setShowControls] = useState(false);
+
+    const handleComputeButtonState = (num?: number) => {
+      if(num)
+        setComputeButtonState(num);
+      else
+        setComputeButtonState(prev => prev + 1);
+    }
+
+    useEffect(() => {
+      if (route.params?.toPlace) {
+        setSearchDest(route.params.toPlace);
+        setDestRoom(route.params.toPlace);
+      }
+    }, [route.params?.toPlace]);
+
+    const { filteredPlaces: places } = useNavigationPlaces({
         siteId: campus?.id,
-        search: debouncedSearch,
         floorId: floorId === 'XPTE' ? undefined : floorId, //perchè se no mi esclude tutti i posti di XPTE
     });
-
-    const centerToUserLocation = useCallback(async () => {
-        const location = await Mapbox.locationManager.getLastKnownLocation();
-        if (location) {
-        const { latitude, longitude } = location.coords;
-        cameraRef.current?.flyTo([longitude, latitude]);
-        }
-    }, [cameraRef]);
-
-    const centerToCurrentCampus = useCallback(async () => {
-        if (!campus || !cameraRef.current) {
-        return;
-        }
-        const { latitude, longitude, extent } = campus;
-        cameraRef.current.fitBounds(
-        [longitude - extent, latitude - extent],
-        [longitude + extent, latitude + extent],
-        undefined,
-        2000,
-        );
-    }, [cameraRef, campus]);
     const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+    const styles = useStylesheet(createStyles);
+
+    const { accessibility } = usePreferencesContext();
+
+    const floorSelectorButton = (
+        <TranslucentCard
+          {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
+            ? { style: { height: 55 } }
+            : {})}
+        >
+          <TouchableOpacity
+            accessibilityLabel={t('placesScreen.changeFloor')}
+            disabled={floorId != null}
+          >
+            <Row ph={3} pv={2.5} gap={1} align="center">
+              {accessibility?.fontSize && Number(accessibility?.fontSize) < 150 && (
+                <Icon icon={faElevator} />
+              )}
+              <Text
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                {...(accessibility?.fontSize &&
+                Number(accessibility?.fontSize) >= 150
+                  ? { style: { height: 75, marginVertical: -20, maxWidth: 250 } }
+                  : {
+                      flexShrink: 1,
+                      flexGrow: 1,
+                      marginRight: 20,
+                    })}
+              >
+                {campus?.floors.find(f => f.id === floorId)?.name}
+              </Text>
+              <Icon
+                icon={faChevronDown}
+                size={fontSizes.xs}
+                style={{ position: 'absolute', right: 15 }}
+              />
+            </Row>
+          </TouchableOpacity>
+        </TranslucentCard>
+    );
+
     const renderMapContent = useCallback(
         () => (
         <>
@@ -96,40 +135,74 @@ export const ItineraryScreen = ({ navigation }: Props) => {
                 selectedId={selectedId}
                 setSelectedId={setSelectedId}
             />
-            <PathLayer/>
+            {
+              pathFeatureCollection && (
+                <PreViewPathLayer />
+              )
+            }
         </>
         ),
         [
-        debouncedSearch,
-        places              //i places si aggiornano in base al piano che selezioni
+          places,
+          pathFeatureCollection,
         ],
     );
+
+    const centerToUserLocation = useCallback(async () => {
+      const location = await Mapbox.locationManager.getLastKnownLocation();
+      if (location) {
+        const { latitude, longitude } = location.coords;
+        cameraRef.current?.flyTo([longitude, latitude]);
+      }
+    }, [cameraRef]);
+
+  const centerToCurrentCampus = useCallback(async () => {
+    if (!campus || !cameraRef.current) {
+      return;
+    }
+    const { latitude, longitude, extent } = campus;
+    cameraRef.current.fitBounds(
+      [longitude - extent, latitude - extent],
+      [longitude + extent, latitude + extent],
+      undefined,
+      2000,
+    );
+  }, [cameraRef, campus]);
+
+    const controlsAnimatedStyle = useAnimatedStyle(() => {
+          return {
+          opacity: 1,
+          transform: [
+              {
+              translateY: -bottomSheetPosition.value,     //TO FIX
+              },
+          ],
+          };
+      });
+
     useLayoutEffect(() => {
         navigation.setOptions({
         mapContent: renderMapContent,
         });
     }, [
-        debouncedSearch,
         navigation,
         renderMapContent,
     ]);
 
-    const controlsAnimatedStyle = useAnimatedStyle(() => {
-        
-        return {
-        opacity: 1,
-        transform: [
-            {
-            translateY: Math.max(0.7 * screenHeight, bottomSheetPosition.value),
-            },
-        ],
-        };
-    });
-
     useEffect(() => {
         if (campus)
-        setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
+          setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
     }, [campus]);
+
+    
+    useEffect(() => {     //cambia con useMemo
+      if(computeButtonState == 1){
+        const featureCollection = useGetPath();
+        setPathFeatureCollection(featureCollection.features);
+        setTotDistance(featureCollection.tot_distance);
+        setStairsOrElevators(featureCollection.stair_or_elevators);
+      }
+    }, [computeButtonState]);
 
     useScreenTitle(
         t('Itinerario')
@@ -142,78 +215,93 @@ export const ItineraryScreen = ({ navigation }: Props) => {
           onLayout={({
             nativeEvent: {
               layout: { height },
-            },
+            },  
           }) => setScreenHeight(height)}
         >
-          <View style={styles.pathInfo}>
-            <StatisticsContainer/>
-            <PathSearchBar/>
-          </View>
-          <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
+          {showControls && (
+          <View style={[styles.controls, controlsAnimatedStyle]} pointerEvents="box-none">
             <Row gap={3} align="stretch" justify="space-between">
-              <TranslucentCard
-                style={styles.translucentCard}
-              >
+              <TranslucentCard>
                 <IconButton
                   icon={faCrosshairs}
                   size={spacing[6]}
                   style={styles.icon}
-                  accessibilityLabel={t('itineraryScreen.goToMyPosition')}
+                  accessibilityLabel={t('placesScreen.goToMyPosition')}
                   onPress={centerToUserLocation}
                 />
-                <Divider style={styles.divider} size={1} />
+                  <Divider style={styles.divider} size={1} />
                 <IconButton
                   icon={faExpand}
                   size={spacing[6]}
                   style={styles.icon}
-                  accessibilityLabel={t('itineraryScreen.viewWholeCampus')}
+                  accessibilityLabel={t('placesScreen.viewWholeCampus')}
                   onPress={centerToCurrentCampus}
                 />
               </TranslucentCard>
-            </Row>
-            <SubPathSelector/>
-          </Animated.View>
+                <StatefulMenuView
+                  style={{
+                    maxWidth: '60%',
+                  }}
+                  onPressAction={({
+                    nativeEvent: { event: selectedFloorId },
+                  }) => {
+                    setFloorId(selectedFloorId);
+                  }}
+                  actions={campus!.floors
+                    .sort((a, b) => a.level - b.level)
+                    .map(f => ({
+                          id: f.id,
+                          title: f.name,
+                  }))}
+                >
+                  {floorSelectorButton}
+                </StatefulMenuView>
+          </Row>
+          </View>)}
+          <SearchBarBottomSheet 
+            showItinerary={() => {navigation.navigate('NavigationItinerary')}} 
+            destinationRoom={route.params.toPlace}
+            startRoom={startRoom}
+            searchStart={searchStart}
+            searchDest={searchDest}
+            handleStartRoom={setStartRoom}
+            handleDestinationRoom={setDestRoom}
+            handleSearchStart={setSearchStart}
+            handleSearchDest={setSearchDest}
+            debouncedSearch={debouncedSearch}
+            handleDebouncedSearch={setDebouncedSearch}
+            computeButtonState={computeButtonState}
+            handleComputeButtonState={handleComputeButtonState}
+            handleShowControls={setShowControls}
+            distance={totDistance}
+            stairsOrElevators={stairsOrElevators}
+          />
         </View>
       );
 };
-    
+
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    pathInfo: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      gap: 18,
-      paddingHorizontal: 18,
-      paddingTop: 18,
-      position: 'absolute',
-      alignSelf: 'stretch',
-    },
     controls: {
       position: 'absolute',
       left: spacing[5],
       right: spacing[5],
+      top: spacing[5],
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'flex-start',
       gap: 12,
       alignSelf: 'stretch',
     },
-    translucentCard: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-    },
     divider: {
-        alignSelf: 'stretch',
+      alignSelf: 'stretch',
     },
     loadingIcon: {
-        marginBottom: spacing[2],
+      marginBottom: spacing[2],
     },
     icon: {
-        alignItems: 'center',
-        paddingHorizontal: spacing[3],
-        paddingVertical: spacing[2],
+      alignItems: 'center',
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
     },
-});
-
+  });

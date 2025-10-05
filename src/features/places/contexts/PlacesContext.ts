@@ -1,3 +1,4 @@
+import { PlaceOverview } from '@polito/api-client';
 import { createContext } from 'react';
 
 interface PlacesContextValue {
@@ -11,7 +12,12 @@ interface PlacesContextValue {
   setSelectedLine: (newLine?: string) => void;
 
   itineraryMode?: boolean;
-  setItineraryMode?: (mode: boolean) => void;
+  setItineraryMode: (mode: boolean) => void;
+
+  handleSelectSegment: (label: string, floor: string) => void;
+
+  selectedPlace: PlaceOverview | null;
+  setSelectedPlace: (place: PlaceOverview | null) => void;
 }
 
 export const PlacesContext = createContext<PlacesContextValue>(

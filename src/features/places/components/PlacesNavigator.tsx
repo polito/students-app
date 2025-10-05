@@ -30,6 +30,8 @@ import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
 import { ItineraryScreen } from '../screens/ItineraryScreen';
+import { NavigationItineraryScreen } from '../screens/NavigationItineraryScreen';
+import { PlaceOverview } from '@polito/api-client';
 
 export type ServiceStackParamList = {
   Places: undefined;
@@ -59,7 +61,10 @@ export type PlacesStackParamList = {
     siteId: string;
     buildingId: string;
   };
-  Itinerary: undefined;
+  Itinerary: {
+    toPlace: string;        //will be changed with the data that represents the place
+  };
+  NavigationItinerary: undefined;
   PlaceCategories: undefined;
   MessagesModal: undefined;
   FreeRooms: undefined;
@@ -132,12 +137,33 @@ export const PlacesNavigator = () => {
   const [lines, setLines] = useState<string[]>([]);
   const [selectedLine, setSelectedLine] = useState<string>();
   const [itineraryMode, setItineraryMode] = useState<boolean>(false);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(null);
 
   const checkAndSetFloorId = (id?: string) => {
     if (id) {
       setFloorId(id);
     }
   };
+
+  const handleSelectSegment = (label: string, floor: string) => {
+    let lineLayer = label;
+
+    if(selectedLine === lineLayer){
+      setLine(undefined);
+    }
+    else{
+      setLine(lineLayer);
+      checkAndSetFloorId(floor);
+    }
+  };
+
+  const handleSelectedPlace = (place: PlaceOverview | null) => {
+    if(place){
+      setSelectedPlace(place);
+    }
+    else
+      setSelectedPlace(null);
+  }
 
   const setAllLines = (line: string) => {
     setLines((prev) => {
@@ -172,7 +198,7 @@ export const PlacesNavigator = () => {
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine, itineraryMode, setItineraryMode: setMode }}>
+    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine, itineraryMode, setItineraryMode: setMode, handleSelectSegment: handleSelectSegment, selectedPlace: selectedPlace, setSelectedPlace: handleSelectedPlace }}>
       <Map.Navigator
         id="PlacesTabNavigator"
         screenOptions={{
@@ -252,6 +278,13 @@ export const PlacesNavigator = () => {
           component={ItineraryScreen}
           options={{
             title: t('itineraryScreen.title'),
+          }}
+        />
+        <Map.Screen
+          name="NavigationItinerary"
+          component={NavigationItineraryScreen}
+          options={{
+            title: t('navigationItineraryScreen.title'),
           }}
         />
         <Map.Screen
