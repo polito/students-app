@@ -14,6 +14,7 @@ export const formatNextLecture = (
   const lectureStart = DateTime.fromJSDate(lecture.startsAt, {
     zone: APP_TIMEZONE,
   });
+
   return {
     title: lecture.courseName,
     key: `${lecture.id}`,

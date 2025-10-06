@@ -5,7 +5,7 @@ export const setDeepLink = () => {
     prefixes: ['polito://students'],
     config: {
       screens: {
-        Login: {
+        SSO: {
           path: '/login',
           parse: {
             uid: (uid: string) => uid,
