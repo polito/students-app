@@ -23,9 +23,7 @@ export const SubPathSelector = (props: Props) => {
     const pathFeatureCollection = useGetPath().features;
     const numSegments = pathFeatureCollection ? pathFeatureCollection.length - 1 : 0;
 
-    console.log(pathFeatureCollection);
-
-    const floorMapNames: { [key: string]: string} = {
+    const floorMapNames: { [key: string]: string} = {         //da cambiare con la cosa che diceva Federico
       'XP01': 'Primo piano',
       'XP02': 'Secondo piano',
       'XP03': 'Terzo piano',

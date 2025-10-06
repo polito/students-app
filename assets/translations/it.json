@@ -817,7 +817,8 @@
     "showIndications": "Mostra indicazioni"
   },
   "itineraryScreen": {
-    "title": "Itinerario"
+    "title": "Itinerario",
+    "backTitle": "Modifica"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Prova con \"Aula 1\""

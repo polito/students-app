@@ -89,7 +89,7 @@ export const StatisticsContainer = ({ avoidStairs, totDistance, stairsOrElevator
                         style={styles.icon}
                     />
                     <Text style={[styles.text, { color: palettes.text[900] }]}>
-                        {stairsOrElevators}  
+                        {stairsOrElevators.toString()}
                     </Text>
                 </View>
             </View>

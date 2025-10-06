@@ -801,7 +801,8 @@
     "showIndications": "Show indications"
   },
   "itineraryScreen": {
-    "title": "Itinerary"
+    "title": "Itinerary",
+    "backTitle": "Edit"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Try with \"Room 1\""

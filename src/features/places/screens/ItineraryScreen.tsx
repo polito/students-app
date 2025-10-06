@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import Animated, {
@@ -62,6 +63,23 @@ export const ItineraryScreen = ({ navigation }: Props) => {
     );
 
     const pathFeatureCollection = useGetPath().features;        //da sostituire con useMemo
+
+    useLayoutEffect(() => {
+      navigation.setOptions({
+        headerRight: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ paddingHorizontal: 10 }}
+        >
+          <View>
+            <Animated.Text style={{ fontSize: 17, color: '#007AFF' }}>
+              {t('itineraryScreen.backTitle')}
+            </Animated.Text>
+          </View>
+        </TouchableOpacity>
+      ),
+      });
+    }, [navigation]);
 
     const { data: places } = useSearchPlaces({
         siteId: campus?.id,

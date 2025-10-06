@@ -12,8 +12,6 @@ export const PathLayer = () => {
   const { selectedLine: line } = useContext(PlacesContext);
   const pathFeatureCollection = useGetPath().features;
 
-  console.log(pathFeatureCollection);
-
   /*
   const featureCollection = useGetPath();
 
