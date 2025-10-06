@@ -914,6 +914,7 @@
     "incomingMessage": "la tua risposta",
     "outgoingMessage": "Risposta da operatore numero",
     "yourQuestion": "La tua domanda",
+    "sendFirstMessage": "Fai la tua domanda",
     "send" : "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
