@@ -8,7 +8,7 @@ export type RTFTransProps = ComponentProps<typeof Trans> & {
 };
 
 export const RTFTrans = ({ children, style, ...props }: RTFTransProps) => (
-  <Text style={style}>
+  <Text style={style} key="t0">
     <Trans
       {...props}
       components={{

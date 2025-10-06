@@ -11,15 +11,11 @@ import { ONBOARDING_STEPS } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 
 export const useModalManager = (versionModalIsOpen?: boolean) => {
-  const { isSplashLoaded } = useSplashContext();
+  const { isSplashLoaded, didHideOnboarding } = useSplashContext();
   const { onboardingStep, politoAuthnEnrolmentStatus } =
     usePreferencesContext();
   const hideInitialPrompt = politoAuthnEnrolmentStatus?.hideInitialPrompt;
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
-  const routes = navigation.getState()?.routes?.[0]?.state?.routes;
-  const isOnBoardingClosed = routes
-    ? !routes.some(route => route.name === 'OnboardingModal')
-    : undefined;
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
 
   const { data: messages } = useGetModalMessages();
@@ -36,6 +32,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   useEffect(() => {
     if (showMfaPrompt || mfaStatusPending) return;
     if (!isSplashLoaded) return;
+    if (didHideOnboarding) return;
     if (onboardingStep && onboardingStep >= ONBOARDING_STEPS - 1) return;
     if (versionModalIsOpen) return;
     navigation.navigate('TeachingTab', {
@@ -46,6 +43,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
     isSplashLoaded,
     navigation,
     versionModalIsOpen,
+    didHideOnboarding,
     onboardingStep,
     showMfaPrompt,
     mfaStatusPending,
@@ -54,11 +52,8 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   useEffect(() => {
     if (showMfaPrompt || mfaStatusPending) return;
     if (!isSplashLoaded) return;
-    if (
-      !isOnBoardingClosed ||
-      onboardingStep === undefined ||
-      onboardingStep < ONBOARDING_STEPS - 1
-    )
+    if (onboardingStep === undefined && !didHideOnboarding) return;
+    if (onboardingStep !== undefined && onboardingStep < ONBOARDING_STEPS - 1)
       return;
     if (versionModalIsOpen) return;
     if (!messages || messages.length === 0) return;
@@ -73,7 +68,7 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
     onboardingStep,
     isSplashLoaded,
     showMfaPrompt,
-    isOnBoardingClosed,
+    didHideOnboarding,
     mfaStatusPending,
   ]);
 };

@@ -289,6 +289,7 @@ export const useMfaChallengeHandler = () => {
                 activeView: 'auth',
                 challenge: data,
               },
+              initial: false,
             });
           }
           return data;

@@ -120,7 +120,8 @@ export const MfaSettings = () => {
                             },
                           ]}
                         >
-                          {mfa?.details?.description ??
+                          {politoAuthnEnrolmentStatus?.insertedDeviceName ??
+                            mfa?.details?.description ??
                             t('mfaScreen.settings.notSet')}
                         </Text>
                       }

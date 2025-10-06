@@ -13,8 +13,7 @@ import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
@@ -35,7 +34,11 @@ import {
 } from '../../../utils/keychain';
 import { UserStackParamList } from './UserNavigator';
 
-export const MfaEnrollScreen = () => {
+type Props = {
+  navigation: NativeStackNavigationProp<UserStackParamList>;
+};
+
+export const MfaEnrollScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { mutateAsync: enrolMfa } = useMfaEnrol();
   const queryClient = useQueryClient();
@@ -43,8 +46,6 @@ export const MfaEnrollScreen = () => {
   const { setFeedback } = useFeedbackContext();
   const [step, setStep] = useState(0);
   const { publicKey, privateKey } = generateSecp256k1KeyPair();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   const { politoAuthnEnrolmentStatus, updatePreference } =
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
@@ -71,7 +72,13 @@ export const MfaEnrollScreen = () => {
   }, [navigation, politoAuthnEnrolmentStatus, updatePreference]);
 
   const executeEnrollment = useCallback(async () => {
-    const dtoMfa = { description: deviceName ?? deviceId, pubkey: publicKey };
+    const dtoMfa = {
+      description:
+        politoAuthnEnrolmentStatus?.insertedDeviceName ??
+        deviceName ??
+        deviceId,
+      pubkey: publicKey,
+    };
 
     try {
       setIsLoading(true);
@@ -100,7 +107,7 @@ export const MfaEnrollScreen = () => {
       console.error(e);
       if (e instanceof ApiError) {
         if (e.error === 'secureSessionExpired') {
-          Alert.alert(t('common.error'), t('mfaScreen.enroll.expired'), [
+          Alert.alert(t('common.warning'), t('mfaScreen.enroll.expired'), [
             {
               text: t('common.ok'),
               onPress: () => {
@@ -121,8 +128,8 @@ export const MfaEnrollScreen = () => {
         Alert.alert(t('common.error'), t('mfaScreen.enroll.saveFailure'));
       }
     }
-    navigation.goBack();
     setIsLoading(false);
+    navigation.goBack();
   }, [
     deviceName,
     deviceId,

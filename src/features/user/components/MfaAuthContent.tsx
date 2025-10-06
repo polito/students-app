@@ -5,8 +5,6 @@ import { Alert, Text, View } from 'react-native';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
-import { useNavigation } from '@react-navigation/native';
-import { StackActions } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useMfaAuth } from '../../../core/queries/authHooks';
@@ -24,13 +22,11 @@ import {
 import { createStyles } from './MfaEnrollContent';
 import { UserStackParamList } from './UserNavigator';
 
-type RootStackParamList = {
-  MfaAuth: { serial: string; nonce: string };
-};
 type Props = {
   challenge: FetchChallenge200ResponseData;
+  navigation: NativeStackNavigationProp<UserStackParamList>;
 };
-export const MfaAuthScreen = ({ challenge }: Props) => {
+export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   const { t } = useTranslation();
   const { challenge: nonce } = challenge;
   const expiryMs = challenge?.expirationTs
@@ -62,11 +58,6 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     const secs = (remainingSeconds % 60).toString().padStart(2, '0');
     return `${mis}:${secs}`;
   }, [remainingSeconds]);
-
-  const navigation =
-    useNavigation<
-      NativeStackNavigationProp<RootStackParamList & UserStackParamList>
-    >();
   const styles = useStylesheet(createStyles);
   const { mutate: verifyMfa, isPending } = useMfaAuth();
   const { mutate: markMessageAsRead } = useMarkMessageAsRead();
@@ -88,20 +79,10 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
     }
   }, [messagesQuery.data, markMessageAsRead]);
 
-  const goBack = useCallback(() => {
-    if (navigation.canGoBack()) {
-      navigation.dispatch(StackActions.pop());
-    } else {
-      navigation.navigate('ProfileTab', {
-        screen: 'Profile',
-      });
-    }
-  }, [navigation]);
-
   useEffect(() => {
     if (authPk) return;
     if (authPk === null) {
-      goBack();
+      navigation.goBack();
       return;
     }
 
@@ -137,11 +118,11 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
         } else {
           Alert.alert(t('common.error'), t('mfaScreen.auth.unlockFailure'));
         }
-        goBack();
+        navigation.goBack();
       }
     };
     fetchPrivateKey();
-  }, [t, goBack, authPk, navigation]);
+  }, [t, authPk, navigation]);
 
   const onNo = async () => {
     if (!authPk) return;
@@ -153,7 +134,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
       signature,
     });
     markMfaMessageAsRead();
-    goBack();
+    navigation.goBack();
   };
 
   const onYes = async () => {
@@ -169,7 +150,7 @@ export const MfaAuthScreen = ({ challenge }: Props) => {
       Alert.alert(t('common.error'));
     }
     markMfaMessageAsRead();
-    goBack();
+    navigation.goBack();
   };
 
   return (

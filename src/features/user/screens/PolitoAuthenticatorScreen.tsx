@@ -14,7 +14,7 @@ import { UserStackParamList } from '../components/UserNavigator';
 
 type Props = NativeStackScreenProps<UserStackParamList, 'PolitoAuthenticator'>;
 
-export const PolitoAuthenticatorScreen = ({ route }: Props) => {
+export const PolitoAuthenticatorScreen = ({ route, navigation }: Props) => {
   const { activeView, challenge } = route.params;
   const styles = useStylesheet(createStyles);
 
@@ -27,9 +27,9 @@ export const PolitoAuthenticatorScreen = ({ route }: Props) => {
     <View style={[styles.container, { paddingBottom: bottom }]}>
       <PolitoAuthenticatorLogo style={styles.logo} />
       {activeView === 'enroll' ? (
-        <MfaEnrollScreen />
+        <MfaEnrollScreen navigation={navigation} />
       ) : activeView === 'auth' && challenge ? (
-        <MfaAuthScreen challenge={challenge} />
+        <MfaAuthScreen challenge={challenge} navigation={navigation} />
       ) : null}
     </View>
   );

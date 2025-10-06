@@ -23,6 +23,7 @@ import { resetNavigationStatusTo } from '~/utils/navigation';
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
 import { OnboardingStep } from '../components/OnboardingStep';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useSplashContext } from '../contexts/SplashContext';
 import { useHideTabs } from '../hooks/useHideTabs';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
@@ -33,6 +34,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const { hideOnboarding } = useSplashContext();
 
   const [width, setWidth] = useState<number>(0);
   const stepsRef = useRef<ScrollView>(null);
@@ -49,7 +51,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
     [currentStep, data],
   );
 
-  useHideTabs();
+  useHideTabs(undefined, hideOnboarding);
 
   // Update the onboarding step in preferences
   useEffect(() => {
