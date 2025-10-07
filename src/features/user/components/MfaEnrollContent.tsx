@@ -252,7 +252,7 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
     },
     subtitle: {
       fontSize: 16,
-      color: colors.caption,
+      color: dark ? colors.white : colors.black,
       textAlign: 'center',
       marginBottom: spacing[4],
       marginHorizontal: spacing[5],

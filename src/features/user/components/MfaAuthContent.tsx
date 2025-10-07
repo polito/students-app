@@ -7,6 +7,9 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { RTFTrans } from '~/core/components/RTFTrans';
+import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
+
 import { useMfaAuth } from '../../../core/queries/authHooks';
 import {
   useGetMessages,
@@ -19,6 +22,7 @@ import {
   hasPrivateKeyMFA,
   resetPrivateKeyMFA,
 } from '../../../utils/keychain';
+import useAppState from '../../../utils/useAppState';
 import { createStyles } from './MfaEnrollContent';
 import { UserStackParamList } from './UserNavigator';
 
@@ -40,19 +44,6 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
 
   const [remainingSeconds, setRemainingSeconds] = useState(calcSeconds);
 
-  useEffect(() => {
-    let cancelled = false;
-    const tick = () => {
-      if (cancelled) return;
-      setRemainingSeconds(calcSeconds());
-      setTimeout(tick, 1000);
-    };
-    tick();
-    return () => {
-      cancelled = true;
-    };
-  }, [expiryMs, calcSeconds]);
-
   const formattedTime = useMemo(() => {
     const mis = Math.floor(remainingSeconds / 60);
     const secs = (remainingSeconds % 60).toString().padStart(2, '0');
@@ -62,11 +53,11 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   const { mutate: verifyMfa, isPending } = useMfaAuth();
   const { mutate: markMessageAsRead } = useMarkMessageAsRead();
   const messagesQuery = useGetMessages();
-
-  const [authPk, setAuthPk] = useState<AuthenticatorPrivKey | null | undefined>(
-    undefined,
-  );
-
+  const appState = useAppState();
+  const [authPk, setAuthPk] = useState<
+    AuthenticatorPrivKey | null | undefined
+  >();
+  const { setFeedback } = useFeedbackContext();
   const markMfaMessageAsRead = useCallback(() => {
     const messages = messagesQuery.data;
     if (messages) {
@@ -79,8 +70,38 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
     }
   }, [messagesQuery.data, markMessageAsRead]);
 
+  const finalizeAuth = useCallback(
+    (feedbackLabel: string) => {
+      markMfaMessageAsRead();
+      setFeedback({
+        text: t(feedbackLabel),
+        isPersistent: false,
+      });
+      navigation.goBack();
+    },
+    [markMfaMessageAsRead, setFeedback, t, navigation],
+  );
+
   useEffect(() => {
-    if (authPk) return;
+    let cancelled = false;
+    const tick = () => {
+      if (cancelled) return;
+      const newSeconds = calcSeconds();
+      setRemainingSeconds(newSeconds);
+      if (newSeconds <= 0) {
+        finalizeAuth('mfaScreen.auth.expired');
+      } else {
+        setTimeout(tick, 1000);
+      }
+    };
+    tick();
+    return () => {
+      cancelled = true;
+    };
+  }, [expiryMs, calcSeconds, finalizeAuth]);
+
+  useEffect(() => {
+    if (authPk || appState !== 'active') return;
     if (authPk === null) {
       navigation.goBack();
       return;
@@ -121,8 +142,8 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
         navigation.goBack();
       }
     };
-    fetchPrivateKey();
-  }, [t, authPk, navigation]);
+    fetchPrivateKey().catch(console.error);
+  }, [t, authPk, navigation, appState]);
 
   const onNo = async () => {
     if (!authPk) return;
@@ -133,8 +154,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       nonce,
       signature,
     });
-    markMfaMessageAsRead();
-    navigation.goBack();
+    finalizeAuth('mfaScreen.auth.rejected');
   };
 
   const onYes = async () => {
@@ -149,8 +169,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
     } catch (err) {
       Alert.alert(t('common.error'));
     }
-    markMfaMessageAsRead();
-    navigation.goBack();
+    finalizeAuth('mfaScreen.auth.accepted');
   };
 
   return (
@@ -180,7 +199,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       <Text style={styles.time}>
         {t('mfaScreen.auth.expiration', { time: formattedTime })}
       </Text>
-      <Text style={styles.note}>{t('mfaScreen.auth.note')}</Text>
+      <RTFTrans style={styles.note} i18nKey="mfaScreen.auth.note" />
     </>
   );
 };

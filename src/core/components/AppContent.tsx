@@ -66,7 +66,6 @@ export const AppContent = () => {
   }, [preferences, queryClient]);
 
   if (MigrationService.needsMigration(preferences)) return null;
-
   return (
     <>
       <BottomModal

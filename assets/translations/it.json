@@ -752,10 +752,13 @@
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
       "unlockFailure": "Operazione annullata. Fai pull-down sulla pagina del profilo personale per riprovare.",
-      "note": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da idp.polito.it",
+      "note": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da <b>idp.polito.it</b>.",
       "allow": "Si, autorizza",
       "denyAccess": "Nega accesso",
-      "expiration": "Tempo rimanente per autorizzare: {{time}}"
+      "expiration": "Tempo rimanente per autorizzare: {{time}}",
+      "expired": "Richiesta di accesso scaduta",
+      "rejected": "Richiesta di accesso respinta",
+      "accepted": "Richiesta di accesso accettata"
     },
     "settings": {
       "information": "Informazioni",
@@ -768,7 +771,7 @@
       "correctError": "Correggi errore",
       "enableNow": "Attiva ora",
       "none": "Nessuno",
-      "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi dell'Università inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni disabiliteranno questa installazione di PoliTO Authenticator per questo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando<br/> <b>idp.polito.it > Gestione MFA</b>",
+      "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi del Politecnico inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni disabiliteranno questa installazione di PoliTO Authenticator per questo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando<br/><b>idp.polito.it > Gestione MFA</b>",
       "notAccessible": "La chiave crittografica per <b>PoliTO Authenticator</b> non è accessibile su questo dispositivo. Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate.",
       "lockedDescription": "PoliTO Authenticator su questo dispositivo è stato bloccato per ragioni di sicurezza. Contattare al più presto il supporto tecnico mediante i riferimenti presenti su idp.polito.it/help",
       "locked": "Bloccato",

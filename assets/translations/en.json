@@ -734,10 +734,13 @@
     "auth": {
       "prompt": "New login request with multi-factor authentication. Do you want to proceed?",
       "unlockFailure": "Operation cancelled. Pull-down on the personal profile screen to retry.",
-      "note": "You didn't request this access? This could be a suspicious attempt. Change your password immediately at idp.polito.it",
+      "note": "You didn't request this access? This could be a suspicious attempt. Change your password immediately at <b>idp.polito.it</b>.",
       "allow": "Yes, authorize",
       "denyAccess": "Deny access",
-      "expiration": "Time remaining to authorize: {{time}}"
+      "expiration": "Time remaining to authorize: {{time}}",
+      "expired": "Authentication request expired",
+      "rejected": "Authentication request rejected",
+      "accepted": "Authentication request accepted"
     },
     "settings": {
       "information": "Information",
