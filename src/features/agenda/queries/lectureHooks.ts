@@ -152,7 +152,6 @@ export const useGetNextLecture = (courseId: number) => {
         if (!response?.data) return null;
         let lecture = response.data as Lecture;
         if (courses) {
-          // Check if the courseId passed to the hook is a module
           const parentCourse = courses.find(c =>
             c.modules?.some(module => module.id === courseId),
           );
@@ -161,7 +160,6 @@ export const useGetNextLecture = (courseId: number) => {
               module => module.id === courseId,
             );
             if (moduleIndex !== undefined && moduleIndex >= 0) {
-              // Use module's uniqueShortcode (parent + index + 1)
               const moduleUniqueShortcode = `${parentCourse.uniqueShortcode}${moduleIndex + 1}`;
 
               lecture = {
@@ -169,7 +167,6 @@ export const useGetNextLecture = (courseId: number) => {
                 uniqueShortcode: moduleUniqueShortcode,
               };
             } else {
-              // Fallback to course's uniqueShortcode
               const course = courses.find(c => c.id === lecture.courseId);
               lecture = {
                 ...lecture,
@@ -177,7 +174,6 @@ export const useGetNextLecture = (courseId: number) => {
               };
             }
           } else {
-            // Regular course - use the course's uniqueShortcode
             const course = courses.find(c => c.id === lecture.courseId);
             lecture = { ...lecture, uniqueShortcode: course?.uniqueShortcode };
           }
