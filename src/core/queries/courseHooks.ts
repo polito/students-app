@@ -87,7 +87,6 @@ const setupCourses = (
         if (module.id) {
           const moduleUniqueShortcode = `${c.shortcode}${index + 1}`;
           if (!(moduleUniqueShortcode in coursePreferences)) {
-            // Assign different colors to modules
             const usedColors = Object.values(coursePreferences)
               .map(cp => cp.color)
               .filter(notNullish);
