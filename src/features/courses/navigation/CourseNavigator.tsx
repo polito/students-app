@@ -63,7 +63,12 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
         c.modules?.some(module => module.id === id),
       );
       if (parentCourse) {
-        correctUniqueShortcode = `${parentCourse.uniqueShortcode}-module-${id}`;
+        const moduleIndex = parentCourse.modules?.findIndex(
+          module => module.id === id,
+        );
+        if (moduleIndex !== undefined && moduleIndex >= 0) {
+          correctUniqueShortcode = `${parentCourse.uniqueShortcode}${moduleIndex + 1}`;
+        }
       }
     }
 

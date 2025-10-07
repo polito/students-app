@@ -24,9 +24,28 @@ export const storeCoursePreferencesByShortcode = async (
 
   const newPreferences: CoursesPreferences = {};
   preferencesEntries.forEach(([courseId, coursePrefs]) => {
-    const course = courses.find(
+    // Check if this is a module (format: shortcode + index)
+    let course = courses.find(
       c => c.id?.toString() === courseId || c.shortcode === courseId,
     );
+
+    // If not found as course, check if it's a module
+    if (!course) {
+      // Try to find a course whose shortcode is a prefix of the courseId
+      course = courses.find(c => {
+        if (!c.shortcode) return false;
+        return (
+          courseId.startsWith(c.shortcode) &&
+          courseId.length > c.shortcode.length
+        );
+      });
+
+      if (course) {
+        // This is a module, keep the original courseId as the key
+        newPreferences[courseId] = coursePrefs;
+        return;
+      }
+    }
 
     if (!course) {
       console.warn(

@@ -49,7 +49,7 @@ const createStyles = ({ colors, palettes }: Theme) =>
     },
     hiddenContainer: {
       backgroundColor: colors.surface,
-      borderRadius: 0,
+      borderRadius: 15,
     },
     hiddenIcon: {
       color: colors.prose,
