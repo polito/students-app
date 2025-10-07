@@ -83,19 +83,33 @@ const setupCourses = (
     }
 
     if (c.modules && c.modules.length > 0) {
-      c.modules.forEach(module => {
+      c.modules.forEach((module, index) => {
         if (module.id) {
-          const moduleUniqueShortcode = `${c.shortcode}-module-${module.id}`;
+          const moduleUniqueShortcode = `${c.shortcode}${index + 1}`;
           if (!(moduleUniqueShortcode in coursePreferences)) {
-            const parentPrefs = coursePreferences[newC.uniqueShortcode];
-            if (parentPrefs) {
-              coursePreferences[moduleUniqueShortcode] = {
-                color: parentPrefs.color,
-                isHidden: false,
-                isHiddenInAgenda: false,
-              };
-              hasNewPreferences = true;
+            // Assign different colors to modules
+            const usedColors = Object.values(coursePreferences)
+              .map(cp => cp.color)
+              .filter(notNullish);
+            let colorData: (typeof courseColors)[0] | undefined;
+            for (const currentColor of courseColors) {
+              if (!usedColors.includes(currentColor.color)) {
+                colorData = currentColor;
+                break;
+              }
             }
+            if (!colorData) {
+              colorData =
+                courseColors[
+                  Math.round(Math.random() * (courseColors.length - 1))
+                ];
+            }
+            coursePreferences[moduleUniqueShortcode] = {
+              color: colorData.color,
+              isHidden: false,
+              isHiddenInAgenda: false,
+            };
+            hasNewPreferences = true;
           }
         }
       });

@@ -24,7 +24,9 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/theme';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useGetPersons } from '~/core/queries/peopleHooks';
@@ -107,6 +109,31 @@ export const CourseListItem = ({
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
+  const styles = useStylesheet(createStyles);
+
+  const getModuleItemStyle = useCallback(
+    (isFirst: boolean, isLast: boolean) => {
+      return [
+        styles.moduleItem,
+        isFirst && styles.moduleItemFirst,
+        isLast && styles.moduleItemLast,
+        !isFirst && !isLast && styles.moduleItemMiddle,
+      ];
+    },
+    [styles],
+  );
+
+  const getModuleContainerStyle = useCallback(
+    (isFirst: boolean, isLast: boolean) => {
+      return [
+        styles.moduleContainer,
+        isFirst && styles.moduleItemFirst,
+        isLast && styles.moduleItemLast,
+        !isFirst && !isLast && styles.moduleItemMiddle,
+      ];
+    },
+    [styles],
+  );
 
   const hasDetails = isCourseDetailed(course);
   const courseInfo = getLatestCourseInfo(course);
@@ -156,15 +183,15 @@ export const CourseListItem = ({
   const hasModules = course.modules && course.modules.length > 0;
 
   const getModuleUniqueShortcode = useCallback(
-    (moduleId: number) => `${course.uniqueShortcode}-module-${moduleId}`,
+    (moduleIndex: number) => `${course.uniqueShortcode}${moduleIndex + 1}`,
     [course.uniqueShortcode],
   );
 
   const allModulesHidden = useMemo(() => {
     if (!hasModules || showAllModules) return false;
-    return course.modules!.every(module => {
+    return course.modules!.every((module, index) => {
       if (!module.id) return false;
-      const moduleUniqueShortcode = getModuleUniqueShortcode(module.id);
+      const moduleUniqueShortcode = getModuleUniqueShortcode(index);
       return preferences.courses[moduleUniqueShortcode]?.isHidden === true;
     });
   }, [
@@ -232,31 +259,21 @@ export const CourseListItem = ({
         <>
           {badge && <UnreadBadge text={badge} />}
           {hasModules ? (
-            <>
-              <GestureDetector gesture={tap}>
-                <Animated.View style={animatedChevron}>
-                  <IconButton
-                    icon={faChevronDown}
-                    color={dark ? palettes.gray[400] : colors.secondaryText}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginTop: 0,
-                      paddingRight: 0,
-                    }}
-                  />
-                </Animated.View>
-              </GestureDetector>
-              <View style={{ width: 20 }} />
-            </>
+            <GestureDetector gesture={tap}>
+              <Animated.View style={animatedChevron}>
+                <IconButton
+                  icon={faChevronDown}
+                  color={dark ? palettes.gray[400] : colors.secondaryText}
+                  style={styles.chevronButton}
+                />
+              </Animated.View>
+            </GestureDetector>
           ) : course.uniqueShortcode ? (
             Platform.select({
               android: (
                 <Menu course={course}>
                   <IconButton
-                    style={{
-                      padding: spacing[3],
-                    }}
+                    style={styles.menuButton}
                     icon={faEllipsisVertical}
                     color={colors.secondaryText}
                     size={fontSizes.xl}
@@ -266,15 +283,11 @@ export const CourseListItem = ({
               ios: <DisclosureIndicator />,
             })
           ) : (
-            <View style={{ width: 20 }} />
+            <View style={styles.spacer} />
           )}
         </>
       }
-      containerStyle={{
-        paddingRight: Platform.select({
-          android: 0,
-        }),
-      }}
+      containerStyle={styles.courseContainer}
     />
   );
 
@@ -291,17 +304,18 @@ export const CourseListItem = ({
       {hasModules && (
         <Animated.View style={[animatedHeight, { overflow: 'hidden' }]}>
           {course.modules
-            ?.filter(module => {
+            ?.map((module, originalIndex) => ({ module, originalIndex }))
+            .filter(({ module, originalIndex }) => {
               if (showAllModules) return true;
               if (!module.id) return false;
-              const moduleUniqueShortcode = getModuleUniqueShortcode(module.id);
+              const moduleUniqueShortcode =
+                getModuleUniqueShortcode(originalIndex);
               return !preferences.courses[moduleUniqueShortcode]?.isHidden;
             })
-            .map((module, index, filteredModules) => {
+            .map(({ module, originalIndex }, index, filteredModules) => {
               const isFirst = index === 0;
               const isLast = index === filteredModules.length - 1;
               const indent = spacing[4];
-              const rightIndent = spacing[4];
               return (
                 <>
                   {Platform.OS === 'ios' ? (
@@ -309,7 +323,7 @@ export const CourseListItem = ({
                       course={{
                         ...course,
                         uniqueShortcode: module.id
-                          ? getModuleUniqueShortcode(module.id)
+                          ? getModuleUniqueShortcode(originalIndex)
                           : course.uniqueShortcode,
                       }}
                     >
@@ -348,41 +362,17 @@ export const CourseListItem = ({
                           <CourseIndicator
                             uniqueShortcode={
                               module.id
-                                ? getModuleUniqueShortcode(module.id)
+                                ? getModuleUniqueShortcode(originalIndex)
                                 : course.uniqueShortcode
                             }
                           />
                         }
                         trailingItem={<DisclosureIndicator />}
-                        style={{
-                          overflow: 'hidden',
-                          marginHorizontal: spacing[4],
-                          borderRadius: isFirst
-                            ? spacing[2]
-                            : isLast
-                              ? spacing[2]
-                              : 0,
-                          borderTopLeftRadius: isFirst ? spacing[2] : 0,
-                          borderTopRightRadius: isFirst ? spacing[2] : 0,
-                          borderBottomLeftRadius: isLast ? spacing[2] : 0,
-                          borderBottomRightRadius: isLast ? spacing[2] : 0,
-                        }}
-                        containerStyle={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          marginTop: 0,
-                          paddingRight: Platform.select({
-                            android: 0,
-                          }),
-                          backgroundColor: dark
-                            ? colors.background
-                            : palettes.gray[100],
-                          borderTopLeftRadius: isFirst ? spacing[2] : 0,
-                          borderTopRightRadius: isFirst ? spacing[2] : 0,
-                          borderBottomLeftRadius: isLast ? spacing[2] : 0,
-                          borderBottomRightRadius: isLast ? spacing[2] : 0,
-                          overflow: 'hidden',
-                        }}
+                        style={getModuleItemStyle(isFirst, isLast)}
+                        containerStyle={getModuleContainerStyle(
+                          isFirst,
+                          isLast,
+                        )}
                       />
                     </Menu>
                   ) : (
@@ -396,7 +386,7 @@ export const CourseListItem = ({
                           id: module.id,
                           title: course.name,
                           uniqueShortcode: module.id
-                            ? getModuleUniqueShortcode(module.id)
+                            ? getModuleUniqueShortcode(originalIndex)
                             : course.uniqueShortcode,
                         },
                       }}
@@ -419,7 +409,7 @@ export const CourseListItem = ({
                         <CourseIndicator
                           uniqueShortcode={
                             module.id
-                              ? getModuleUniqueShortcode(module.id)
+                              ? getModuleUniqueShortcode(originalIndex)
                               : course.uniqueShortcode
                           }
                         />
@@ -429,58 +419,27 @@ export const CourseListItem = ({
                           course={{
                             ...course,
                             uniqueShortcode: module.id
-                              ? getModuleUniqueShortcode(module.id)
+                              ? getModuleUniqueShortcode(originalIndex)
                               : course.uniqueShortcode,
                           }}
                         >
                           <IconButton
-                            style={{
-                              padding: spacing[3],
-                            }}
+                            style={styles.menuButton}
                             icon={faEllipsisVertical}
                             color={colors.secondaryText}
                             size={fontSizes.xl}
                           />
                         </Menu>
                       }
-                      style={{
-                        overflow: 'hidden',
-                        marginHorizontal: spacing[4],
-                        borderRadius: isFirst
-                          ? spacing[2]
-                          : isLast
-                            ? spacing[2]
-                            : 0,
-                        borderTopLeftRadius: isFirst ? spacing[2] : 0,
-                        borderTopRightRadius: isFirst ? spacing[2] : 0,
-                        borderBottomLeftRadius: isLast ? spacing[2] : 0,
-                        borderBottomRightRadius: isLast ? spacing[2] : 0,
-                      }}
-                      containerStyle={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginTop: 0,
-                        paddingRight: Platform.select({
-                          android: 0,
-                        }),
-                        backgroundColor: dark
-                          ? colors.background
-                          : palettes.gray[100],
-                        borderTopLeftRadius: isFirst ? spacing[2] : 0,
-                        borderTopRightRadius: isFirst ? spacing[2] : 0,
-                        borderBottomLeftRadius: isLast ? spacing[2] : 0,
-                        borderBottomRightRadius: isLast ? spacing[2] : 0,
-                        overflow: 'hidden',
-                      }}
+                      style={getModuleItemStyle(isFirst, isLast)}
+                      containerStyle={getModuleContainerStyle(isFirst, isLast)}
                     />
                   )}
                   {!isLast && (
                     <IndentedDivider
                       key={`divider-${module.id}`}
                       indent={indent}
-                      style={{
-                        marginEnd: rightIndent,
-                      }}
+                      style={styles.divider}
                     />
                   )}
                 </>
@@ -496,4 +455,68 @@ export const CourseListItem = ({
   }
 
   return listItem;
+};
+
+const createStyles = (theme: Theme) => {
+  const { spacing, colors, palettes, dark } = theme;
+
+  return {
+    chevronButton: {
+      display: 'flex' as const,
+      alignItems: 'center' as const,
+      marginTop: 0,
+      paddingRight: 0,
+    },
+    spacer: {
+      width: 20,
+    },
+    menuButton: {
+      padding: spacing[3],
+    },
+    courseContainer: {
+      paddingRight: Platform.select({
+        android: 0,
+      }),
+    },
+    moduleItem: {
+      overflow: 'hidden' as const,
+      marginHorizontal: spacing[4],
+    },
+    moduleItemFirst: {
+      borderRadius: spacing[2],
+      borderTopLeftRadius: spacing[2],
+      borderTopRightRadius: spacing[2],
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+    moduleItemLast: {
+      borderRadius: spacing[2],
+      borderBottomLeftRadius: spacing[2],
+      borderBottomRightRadius: spacing[2],
+      paddingBottom: spacing[2],
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+    },
+    moduleItemMiddle: {
+      borderRadius: 0,
+    },
+    moduleContainer: {
+      display: 'flex' as const,
+      alignItems: 'center' as const,
+      marginTop: 0,
+      paddingRight: Platform.select({
+        android: 0,
+      }),
+      backgroundColor: dark ? colors.background : palettes.gray[100],
+      borderTopLeftRadius: spacing[2],
+      borderTopRightRadius: spacing[2],
+      borderBottomLeftRadius: spacing[2],
+      borderBottomRightRadius: spacing[2],
+      overflow: 'hidden' as const,
+    },
+    divider: {
+      marginEnd: spacing[4],
+      marginStart: spacing[4],
+    },
+  };
 };
