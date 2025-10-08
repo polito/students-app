@@ -24,6 +24,7 @@ export const useAuth = (ssoKey?: string) => {
       if (e instanceof UnsupportedUserTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
+        console.error(e);
         Alert.alert(
           t('loginScreen.authnError'),
           t('loginScreen.authnErrorDescription'),

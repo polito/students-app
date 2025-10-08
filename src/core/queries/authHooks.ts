@@ -52,6 +52,7 @@ export async function getFcmToken(
     if (!catchException) {
       throw e;
     }
+    console.error(e);
     Alert.alert(t('common.error'), t('loginScreen.fcmUnsupported'));
   }
 

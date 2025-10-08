@@ -12,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { get, has, setWith } from 'lodash';
 
 import { CourseTabsParamList } from '../../features/courses/navigation/CourseNavigator';
+import { useMfaChallengeHandler } from '../queries/authHooks';
 import {
   NOTIFICATIONS_QUERY_KEY,
   useGetNotifications,
@@ -170,6 +171,8 @@ export const useNotifications = () => {
     [getUnreadsCount],
   );
 
+  const { refetch: refetchMfaChallenge } = useMfaChallengeHandler();
+
   const navigateToUpdate = useCallback(
     (notification?: RemoteMessage) => {
       if (!notification || !notification.data?.polito_transaction) {
@@ -218,8 +221,12 @@ export const useNotifications = () => {
           initial: false,
         });
       }
+
+      if (transaction === TransactionId.Mfa) {
+        refetchMfaChallenge().catch(console.error);
+      }
     },
-    [navigation],
+    [navigation, refetchMfaChallenge],
   );
 
   return {
