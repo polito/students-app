@@ -33,6 +33,7 @@ import { useGetPersons } from '~/core/queries/peopleHooks';
 
 import { IS_ANDROID, courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { getCourseKey } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
@@ -110,6 +111,7 @@ export const CourseListItem = ({
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
   const styles = useStylesheet(createStyles);
+  const { getUnreadsCount } = useNotifications();
 
   const getModuleItemStyle = useCallback(
     (isFirst: boolean, isLast: boolean) => {
@@ -187,6 +189,25 @@ export const CourseListItem = ({
     [course.uniqueShortcode],
   );
 
+  const getModuleBadge = useCallback(
+    (moduleId: number) => {
+      return getUnreadsCount(['teaching', 'courses', moduleId]) ?? 0;
+    },
+    [getUnreadsCount],
+  );
+
+  const getTotalModuleBadges = useCallback(() => {
+    if (!hasModules) return 0;
+    return course.modules!.reduce((total, module) => {
+      if (module.id) {
+        return (
+          total + (getUnreadsCount(['teaching', 'courses', module.id]) ?? 0)
+        );
+      }
+      return total;
+    }, 0);
+  }, [hasModules, course.modules, getUnreadsCount]);
+
   const allModulesHidden = useMemo(() => {
     if (!hasModules || showAllModules) return false;
     return course.modules!.every((module, index) => {
@@ -257,7 +278,15 @@ export const CourseListItem = ({
       }
       trailingItem={
         <>
-          {badge && <UnreadBadge text={badge} />}
+          {(() => {
+            if (hasModules) {
+              const totalModuleBadges = getTotalModuleBadges();
+              return totalModuleBadges > 0 ? (
+                <UnreadBadge text={totalModuleBadges} style={styles.badge} />
+              ) : null;
+            }
+            return badge ? <UnreadBadge text={badge} /> : null;
+          })()}
           {hasModules ? (
             <GestureDetector gesture={tap}>
               <Animated.View style={animatedChevron}>
@@ -287,7 +316,7 @@ export const CourseListItem = ({
           )}
         </>
       }
-      containerStyle={styles.courseContainer}
+      titleStyle={hasModules ? styles.title : undefined}
     />
   );
 
@@ -367,7 +396,14 @@ export const CourseListItem = ({
                             }
                           />
                         }
-                        trailingItem={<DisclosureIndicator />}
+                        trailingItem={
+                          <>
+                            {module.id && getModuleBadge(module.id) > 0 && (
+                              <UnreadBadge text={getModuleBadge(module.id)} />
+                            )}
+                            <DisclosureIndicator />
+                          </>
+                        }
                         style={getModuleItemStyle(isFirst, isLast)}
                         containerStyle={getModuleContainerStyle(
                           isFirst,
@@ -415,23 +451,29 @@ export const CourseListItem = ({
                         />
                       }
                       trailingItem={
-                        <Menu
-                          course={{
-                            ...course,
-                            uniqueShortcode: module.id
-                              ? getModuleUniqueShortcode(originalIndex)
-                              : course.uniqueShortcode,
-                          }}
-                        >
-                          <IconButton
-                            style={styles.menuButton}
-                            icon={faEllipsisVertical}
-                            color={colors.secondaryText}
-                            size={fontSizes.xl}
-                          />
-                        </Menu>
+                        <>
+                          {module.id && getModuleBadge(module.id) > 0 && (
+                            <UnreadBadge text={getModuleBadge(module.id)} />
+                          )}
+                          <Menu
+                            course={{
+                              ...course,
+                              uniqueShortcode: module.id
+                                ? getModuleUniqueShortcode(originalIndex)
+                                : course.uniqueShortcode,
+                            }}
+                          >
+                            <IconButton
+                              style={styles.menuButton}
+                              icon={faEllipsisVertical}
+                              color={colors.secondaryText}
+                              size={fontSizes.xl}
+                            />
+                          </Menu>
+                        </>
                       }
                       style={getModuleItemStyle(isFirst, isLast)}
+                      titleStyle={styles.title}
                       containerStyle={getModuleContainerStyle(isFirst, isLast)}
                     />
                   )}
@@ -461,11 +503,18 @@ const createStyles = (theme: Theme) => {
   const { spacing, colors, palettes, dark } = theme;
 
   return {
+    courseContainer: {
+      marginHorizontal: spacing[1],
+    },
+    title: {
+      display: 'flex' as const,
+      alignItems: 'center' as const,
+      marginRight: spacing[3],
+    },
     chevronButton: {
       display: 'flex' as const,
       alignItems: 'center' as const,
       marginTop: 0,
-      paddingRight: 0,
     },
     spacer: {
       width: 20,
@@ -473,14 +522,9 @@ const createStyles = (theme: Theme) => {
     menuButton: {
       padding: spacing[3],
     },
-    courseContainer: {
-      paddingRight: Platform.select({
-        android: 0,
-      }),
-    },
     moduleItem: {
       overflow: 'hidden' as const,
-      marginHorizontal: spacing[4],
+      marginHorizontal: spacing[5],
     },
     moduleItemFirst: {
       borderRadius: spacing[2],
@@ -493,7 +537,6 @@ const createStyles = (theme: Theme) => {
       borderRadius: spacing[2],
       borderBottomLeftRadius: spacing[2],
       borderBottomRightRadius: spacing[2],
-      paddingBottom: spacing[2],
       borderTopLeftRadius: 0,
       borderTopRightRadius: 0,
     },
@@ -517,6 +560,9 @@ const createStyles = (theme: Theme) => {
     divider: {
       marginEnd: spacing[4],
       marginStart: spacing[4],
+    },
+    badge: {
+      marginRight: spacing[1],
     },
   };
 };

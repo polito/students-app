@@ -98,6 +98,13 @@ export const CourseInfoScreen = () => {
     );
   }, [coursesQuery.data, courseId]);
 
+  const parentCourse = useMemo(() => {
+    if (!coursesQuery.data || !isModule) return null;
+    return coursesQuery.data.find(course =>
+      course.modules?.some(module => module.id === courseId),
+    );
+  }, [coursesQuery.data, courseId, isModule]);
+
   const { getParent } = useNavigation();
 
   const menuActions = useMemo(() => {
@@ -165,6 +172,7 @@ export const CourseInfoScreen = () => {
           <ScreenTitle title={courseQuery.data?.name} />
           <Text variant="caption">
             {courseQuery.data?.shortcode ?? ' '}
+            {isModule && ` - ${parentCourse?.name}`}
             {!isModule && courseQuery.data?.cfu && (
               <Text variant="caption">
                 {' - '}
