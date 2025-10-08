@@ -1,24 +1,27 @@
-import { ShapeSource, LineLayer, LineJoin } from '@rnmapbox/maps';
-import { useContext } from 'react';
-import { PlacesContext } from '../contexts/PlacesContext';
+import { ShapeSource, LineLayer } from '@rnmapbox/maps';
+import { useContext, useEffect, useState } from 'react';
 import { useGetPath } from '~/core/queries/placesHooks';
+import { PreferencesContext } from '~/core/contexts/PreferencesContext';
 
 export const PreViewPathLayer = () => {
   const pathFeatureCollection = useGetPath().features;      //da cambiare con la useMemo
+  const courses = useContext(PreferencesContext)?.courses;
+  const [colors, setColors] = useState<string[]>([]);
 
-  function getRandomColor(): string {
-    const randomInt = Math.floor(Math.random() * 16777215);
-    let hexString = randomInt.toString(16);
+  useEffect(()=>{
+    const courseColors = Object.values(courses || {}).map(c => c.color);
 
-    while (hexString.length < 6) {
-
-      hexString = '0' + hexString;
-
+    if(colors.length < pathFeatureCollection.length){
+      let counter = courseColors.length;
+      while(courseColors.length < pathFeatureCollection.length){
+        colors.push(courseColors[counter % courseColors.length]);
+        counter++;
+      }
     }
 
-    return `#${hexString}`;
+    setColors(courseColors);
 
-  }
+  }, [courses]);
   
   return (
     <>
@@ -30,7 +33,7 @@ export const PreViewPathLayer = () => {
           >
             <LineLayer
                 id={`line-layer-${index.toString()}`}
-                style={{ lineColor: getRandomColor(), lineWidth: 8, lineCap: LineJoin.Round, lineOpacity:  1  }}
+                style={{ lineColor: colors[index], lineWidth: 8, lineCap:'round', lineJoin: 'round', lineOpacity:  1  }}
             />
           </ShapeSource>
         );

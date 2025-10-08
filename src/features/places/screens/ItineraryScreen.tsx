@@ -111,12 +111,12 @@ export const ItineraryScreen = ({ navigation }: Props) => {
     const renderMapContent = useCallback(
         () => (
         <>
+            <PathLayer/>
             <MarkersLayer 
                 places={places}
                 selectedId={selectedId}
                 setSelectedId={setSelectedId}
             />
-            <PathLayer/>
         </>
         ),
         [
@@ -151,7 +151,7 @@ export const ItineraryScreen = ({ navigation }: Props) => {
         opacity: 1,
         transform: [
             {
-            translateY: Math.max(0.7 * screenHeight, bottomSheetPosition.value),
+            translateY: Math.max(0.8 * screenHeight, bottomSheetPosition.value),
             },
         ],
         };
@@ -161,6 +161,20 @@ export const ItineraryScreen = ({ navigation }: Props) => {
         if (campus)
         setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
     }, [campus]);
+
+    useLayoutEffect(() => {
+      const parent = navigation.getParent();
+      if (!parent) return;
+
+      parent.setOptions({
+        tabBarStyle: { display: 'none' },
+      });
+
+      return () =>
+      parent.setOptions({
+        tabBarStyle: undefined,
+      });
+    }, [navigation]);
 
     useScreenTitle(
         t('itineraryScreen.title')

@@ -6,9 +6,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce } from 'lodash';
-import { BottomSheetFlatList, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { BottomSheet } from '@lib/ui/components/BottomSheet';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
@@ -20,11 +20,9 @@ import { useGetCurrentCampus } from '~/features/places/hooks/useGetCurrentCampus
 import { useSearchPlaces } from '~/features/places/hooks/useSearchPlaces';
 import { notNullish } from '~/utils/predicates';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { PlacesContext } from '~/features/places/contexts/PlacesContext';
 import { MarkerSelectionBottomSheet } from './MarkerSelectionBottomSheet';
 import { PlacesListHeader } from './PlacesListHeader';
 import { PlacesListFooter } from './PlacesListFooter';
-import { start } from 'repl';
 
 type Props = {
     showItinerary: () => void;
@@ -44,15 +42,11 @@ type Props = {
     handleSearchDest: (dest: string) => void;
     searchStart: string;
     handleSearchStart: (start: string) => void;
-
-    handleShowControls: (show: boolean) => void;
 };
 
-export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom, destinationRoom, handleDestinationRoom, debouncedSearch, handleDebouncedSearch, computeButtonState, handleComputeButtonState, searchDest, handleSearchDest, searchStart, handleSearchStart, distance, stairsOrElevators, handleShowControls }: Props) => {
+export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom, destinationRoom, handleDestinationRoom, debouncedSearch, handleDebouncedSearch, computeButtonState, handleComputeButtonState, searchDest, handleSearchDest, searchStart, handleSearchStart, distance, stairsOrElevators }: Props) => {
     const { dark } = useTheme();
-    const { selectedPlace } = useContext(PlacesContext);
     const [avoidStairs, setAvoidStairs] = useState<boolean>(false);
-
     const [isExpandedStart, setIsExpandedStart] = useState(false);
     const [isExpandedDest, setIsExpandedDest] = useState(false);
 
@@ -163,7 +157,6 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
         if (item.type === 'special') {
             if (currentIsExpandedStart) setClickMode(1);
             else if (currentIsExpandedDest) setClickMode(2);
-            handleShowControls(true);
         } else {
             const itemName = item.place.room.name ?? t('common.untitled');
             if (currentIsExpandedStart) {
@@ -181,7 +174,6 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
         isExpandedStart, // Purtroppo necessario per la logica
         isExpandedDest,  // Purtroppo necessario per la logica
         setClickMode,
-        handleShowControls,
         handleStartRoom, 
         handleSearchStart, 
         setIsExpandedStart,
@@ -283,21 +275,20 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
 
     return (
         <>
+        { clickMode == 0 ? (
             <BottomSheet
                 ref={innerRef}
                 index={
-                    clickMode > 0 && !selectedPlace ? 0 : distance && distance > 0 ? 0 : 1
+                    clickMode > 0  ? 0 : distance && distance > 0 ? 0 : 1
                 }
                 snapPoints={
-                [
+                    [
                         '32%',
                         '43%',
                         '100%',
                     ]
                 }
             >
-                {
-                   clickMode == 0 ? (
                     <BottomSheetFlatList<ListDataItem>
                         data={dataWithDefault}
                         keyExtractor={(item, index) =>   item.type === 'special'
@@ -324,38 +315,20 @@ export const SearchBarBottomSheet = ({ showItinerary, startRoom, handleStartRoom
                         ListFooterComponent={
                             listFooter
                         }
-                    />) :
+                    />
+            </BottomSheet> ) :
                     (
-                            <BottomSheetScrollView>
-                                <MarkerSelectionBottomSheet action={() => {
-                                    if(selectedPlace){
-                                        if(clickMode == 1){
-                                            if(selectedPlace.room.name)
-                                                handleStartRoom(selectedPlace.room.name);
-                                            else
-                                                handleStartRoom(selectedPlace.category.name);
-                                            handleSearchStart(selectedPlace.room.name);
-                                            //triggerSearchStart?.();
-                                        }else if(clickMode == 2){
-                                            if(selectedPlace.room.name)
-                                                handleDestinationRoom(selectedPlace.room.name);
-                                            else
-                                                handleDestinationRoom(selectedPlace.category.name);
-                                            handleSearchDest(selectedPlace.room.name);
-                                        }
-                                    }
-                                    setIsExpandedDest(false);
-                                    setIsExpandedStart(false);
-                                    setClickMode(0);
-                                    handleDebouncedSearch('');
-                                    handleShowControls(false);
-                                }}
-                                clickMode={clickMode}
-                                />
-                            </BottomSheetScrollView>
-                    )
-                }
-            </BottomSheet>
+                        <MarkerSelectionBottomSheet action={() => {
+                                setIsExpandedDest(false);
+                                setIsExpandedStart(false);
+                                setClickMode(0);
+                                handleDebouncedSearch('');
+                            }}
+                            handleRoom={clickMode == 1 ? handleStartRoom : handleDestinationRoom}
+                            handleSearch={clickMode == 1 ? handleSearchStart : handleSearchDest}
+                            clickMode={clickMode}
+                        />
+                    )}
         </>    
     );
 };

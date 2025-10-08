@@ -30,17 +30,6 @@ export const PathLayer = () => {
       setMapFloorId('XPTE');
   }, [line]);
 
-  function getRandomColor(): string {         //da sostituire col design system adeguato
-    const randomInt = Math.floor(Math.random() * 16777215);
-
-    let hexString = randomInt.toString(16);
-
-    while (hexString.length < 6) {
-      hexString = '0' + hexString;
-    }
-    return `#${hexString}`;
-  }
-
   return (
     <>
     {pathFeatureCollection && pathFeatureCollection.length > 0 && (
@@ -53,17 +42,10 @@ export const PathLayer = () => {
             //}}
           >
             {
-              line ? (
-                  <LineLayer
-                    id={`line-layer-${index.toString()}`}
-                    style={{ lineColor: line === `line-layer-${index.toString()}` ? "#ef7b00" : getRandomColor(), lineWidth: 8, lineCap: LineJoin.Round, lineOpacity: line === `line-layer-${index.toString()}` ? 1 : 0.3 }}
-                  />
-              ) : (
-                  <LineLayer
-                    id={`line-layer-${index.toString()}`}
-                    style={{ lineColor: getRandomColor(), lineWidth: 8, lineCap: LineJoin.Round, lineOpacity: 1 }}
-                  />
-              )
+              <LineLayer
+                id={`line-layer-${index.toString()}`}
+                style={{ lineColor: "#ef7b00", lineWidth: 8, lineCap:'round', lineJoin: 'round', lineOpacity: line === `line-layer-${index.toString()}` ? 1 : 0.3 }}
+              />
             }
           </ShapeSource>
         );

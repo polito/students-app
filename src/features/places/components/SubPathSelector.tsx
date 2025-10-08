@@ -8,9 +8,9 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Text } from '@lib/ui/components/Text';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { PlacesContext } from '~/features/places/contexts/PlacesContext';
-import { useGetPath } from '~/core/queries/placesHooks';
+import { useGetPath, useGetSite } from '~/core/queries/placesHooks';
 
 type Props = {
   lineId?: number;
@@ -23,22 +23,13 @@ export const SubPathSelector = (props: Props) => {
     const pathFeatureCollection = useGetPath().features;
     const numSegments = pathFeatureCollection ? pathFeatureCollection.length - 1 : 0;
 
-    const floorMapNames: { [key: string]: string} = {         //da cambiare con la cosa che diceva Federico
-      'XP01': 'Primo piano',
-      'XP02': 'Secondo piano',
-      'XP03': 'Terzo piano',
-      'XP04': 'Quarto piano',
-      'XP05': 'Quinto piano',
-      'XPTE': 'Piano terra',
-      'XS01': 'Primo Piano Interrato',
-      'XS02': 'Secondo Piano Interrato',
-    }
+    const floorMapNames = useGetSite('TO_CENCIT')?.floors;
 
     const [currentId, setCurrentId] = useState<number>(props.lineId || 0);
     const { colors, palettes, spacing } = useTheme();
 
     return (
-        <View style={[styles.subPathSelector, {backgroundColor: colors.background}]}>
+        <View style={[styles.subPathSelector, {backgroundColor: colors.background, opacity: 0.9}]} >
                 <IconButton
                   icon={faChevronLeft}
                   size={spacing[6]}
@@ -50,10 +41,10 @@ export const SubPathSelector = (props: Props) => {
                 />
                   <View style={styles.container}>
                     <Text style={[styles.floorIndicator, { color: palettes.text[900] }]} numberOfLines={2} ellipsizeMode='tail'>
-                      {floorMapNames[pathFeatureCollection?.[currentId].features.properties.fn_fl_id]}
+                      {floorMapNames?.find((floor) => floor.id === pathFeatureCollection?.[currentId].features.properties.fn_fl_id)?.name}
                     </Text>
                     <Text style={[styles.instruction, { color: palettes.text[500] }]} numberOfLines={2} ellipsizeMode='tail'>
-                      {currentId < numSegments ? `prosegui al ${floorMapNames[pathFeatureCollection?.[currentId + 1].features.properties.fn_fl_id]}` : 'prosegui fino alla destinazione'}
+                      {currentId < numSegments ? `prosegui al ${floorMapNames?.find((floor) => floor.id === pathFeatureCollection?.[currentId + 1].features.properties.fn_fl_id)?.name}` : 'prosegui fino alla destinazione'}
                     </Text>
                   </View>
                 <IconButton

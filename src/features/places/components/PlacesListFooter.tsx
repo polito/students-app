@@ -26,7 +26,7 @@ const PlacesListFooterComponent = ({
         <View style={styles.ctaButtonContainer}>
             <CtaButton
                 title={
-                    computeButtonState === 0 ? t('indicationsScreen.computePath') : t('indicationsScreen.showIndications')
+                    computeButtonState == 0 ? t('indicationsScreen.computePath') : t('indicationsScreen.showIndications')
                 }
                 action={() => {
                     handleComputeButtonState();

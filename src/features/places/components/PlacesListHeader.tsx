@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { faLocationDot, faEllipsisV, faCircleDot, faSignsPost } from '@fortawesome/free-solid-svg-icons';
+import { View, Text, StyleSheet } from 'react-native';
+import { faC, faCircleDot, faEllipsisV, faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { BottomSheetTextField } from '@lib/ui/components/BottomSheetTextField';
 import { Checkbox } from '../../../core/components/Checkbox';
@@ -65,9 +65,9 @@ const PlacesListHeaderComponent = ({
                 <View style={styles.grid}>
                     { !isExpandedStart && !isExpandedDest && (
                     <View style={styles.icons}>
-                        <Icon icon={faLocationDot} color={palettes.gray[dark ? 300 : 600]} />
-                        <Icon icon={faEllipsisV} color={palettes.gray[dark ? 300 : 600]} />
                         <Icon icon={faCircleDot} color={palettes.gray[dark ? 300 : 600]} />
+                        <Icon icon={faEllipsisV} color={palettes.gray[dark ? 300 : 600]} />
+                        <Icon icon={faFlagCheckered} color={palettes.gray[dark ? 300 : 600]} />
                     </View>
                     )}
                     <View style={styles.inputs}>
@@ -188,13 +188,6 @@ const createStyles = () =>
         alignItems: 'center',
         gap: 6,
         flexShrink: 0,
-        alignSelf: 'stretch',
-    },
-    icon: {
-        display: 'flex',
-        height: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
         alignSelf: 'stretch',
     },
     inputs: {   
