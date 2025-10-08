@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   RESULTS,
   checkNotifications,
@@ -7,7 +7,10 @@ import {
 
 import { MessageType } from '@polito/api-client';
 import { getApp } from '@react-native-firebase/app';
-import { AuthorizationStatus } from '@react-native-firebase/messaging';
+import {
+  AuthorizationStatus,
+  FirebaseMessagingTypes,
+} from '@react-native-firebase/messaging';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { isEnvProduction } from '../../utils/env';
@@ -23,7 +26,20 @@ export const useInitFirebaseMessaging = () => {
   const queryClient = useQueryClient();
   const { navigateToUpdate } = useNotifications();
   const { mutate: updateAppInfo } = useUpdateAppInfo();
+  const onMessageHandler = useCallback(
+    (msg: FirebaseMessagingTypes.RemoteMessage) => {
+      const transactionIsMessage = Object.values(MessageType).includes(
+        (msg as RemoteMessage).data?.polito_transaction,
+      );
 
+      return queryClient.invalidateQueries({
+        queryKey: transactionIsMessage
+          ? MESSAGES_QUERY_KEY
+          : NOTIFICATIONS_QUERY_KEY,
+      });
+    },
+    [queryClient],
+  );
   useEffect(() => {
     (async () => {
       if (!isEnvProduction) return;
@@ -51,21 +67,9 @@ export const useInitFirebaseMessaging = () => {
           navigateToUpdate(remoteMessage as RemoteMessage);
         });
 
-        const unsubscribeOnMessage = messaging.onMessage(msg => {
-          const transactionIsMessage = Object.values(MessageType).includes(
-            (msg as RemoteMessage).data?.polito_transaction,
-          );
+        const unsubscribeOnMessage = messaging.onMessage(onMessageHandler);
 
-          return queryClient.invalidateQueries({
-            queryKey: transactionIsMessage
-              ? MESSAGES_QUERY_KEY
-              : NOTIFICATIONS_QUERY_KEY,
-          });
-        });
-
-        messaging.setBackgroundMessageHandler(async () => {
-          queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
-        });
+        messaging.setBackgroundMessageHandler(onMessageHandler);
 
         return () =>
           [unsubscribeOnMessage, unsubscribeOnNotificationOpenedApp].forEach(
@@ -73,6 +77,5 @@ export const useInitFirebaseMessaging = () => {
           );
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigateToUpdate, updateAppInfo, queryClient, onMessageHandler]);
 };

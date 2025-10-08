@@ -33,7 +33,11 @@ import {
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { CardSwiper } from '../../../core/components/CardSwiper';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useLogout, useSwitchCareer } from '../../../core/queries/authHooks';
+import {
+  useLogout,
+  useMfaChallengeHandler,
+  useSwitchCareer,
+} from '../../../core/queries/authHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetMessages,
@@ -126,6 +130,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const student = studentQuery.data;
   const queryClient = useQueryClient();
   const messages = useGetMessages();
+  const mfaChallengeQuery = useMfaChallengeHandler();
 
   const enrollmentYear = useMemo(() => {
     if (!student) return '...';
@@ -151,7 +156,9 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={<RefreshControl manual queries={[studentQuery]} />}
+      refreshControl={
+        <RefreshControl manual queries={[studentQuery, mfaChallengeQuery]} />
+      }
     >
       <SafeAreaView>
         <View

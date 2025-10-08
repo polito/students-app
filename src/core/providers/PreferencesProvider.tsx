@@ -73,7 +73,7 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       const preferences: Partial<PreferencesContextProps> = {
         updatePreference,
       };
-      storagePreferences.map(([key, value]) => {
+      storagePreferences.forEach(([key, value]) => {
         if (value === null) return;
 
         const typedKey = key as PreferenceKey;
@@ -87,8 +87,9 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
         } else {
           if (typedKey === 'language' && value === 'system') {
             preferences[typedKey] = deviceLanguage;
+          } else {
+            preferences[typedKey] = value as any;
           }
-          preferences[typedKey] = value as any;
         }
       });
 

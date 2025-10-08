@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useCallback, useState } from 'react';
 import { Animated, Easing, Image } from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 
@@ -7,10 +7,17 @@ import { SplashContext } from '../contexts/SplashContext';
 export function SplashProvider({ children }: PropsWithChildren) {
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [isSplashLoaded, setIsSplashLoaded] = useState(false);
-
+  const [didHideOnboarding, setDidHideOnboarding] = useState(false);
+  const hideOnboarding = useCallback(() => setDidHideOnboarding(true), []);
   return (
     <SplashContext.Provider
-      value={{ isAppLoaded, setIsAppLoaded, isSplashLoaded }}
+      value={{
+        isAppLoaded,
+        setIsAppLoaded,
+        isSplashLoaded,
+        didHideOnboarding,
+        hideOnboarding,
+      }}
     >
       {children}
       {isAppLoaded && !isSplashLoaded && (

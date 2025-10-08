@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 
-import { ExamGrade, Message, Student, StudentApi } from '@polito/api-client';
+import {
+  ExamGrade,
+  Message,
+  MessageType,
+  Student,
+  StudentApi,
+} from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
 import * as Sentry from '@sentry/react-native';
@@ -17,6 +23,7 @@ import { toOASTruncable } from '../../utils/dates.ts';
 import { filterUnread } from '../../utils/messages';
 import { pluckData } from '../../utils/queries';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
+import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
 
 export const STUDENT_QUERY_KEY = ['student'];
@@ -224,6 +231,8 @@ export const useGetMessages = () => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
+  const { refetch: refetchMfaChallenge } = useMfaChallengeHandler();
+
   return useQuery({
     queryKey: MESSAGES_QUERY_KEY,
     queryFn: () =>
@@ -233,8 +242,18 @@ export const useGetMessages = () => {
         .then(messages => {
           const previousMessages =
             queryClient.getQueryData<Message[]>(MESSAGES_QUERY_KEY);
+          let hasMfaMessages = false;
+          const unreadMessages = filterUnread(messages).filter(m => {
+            if (m.type === MessageType.Mfa) {
+              hasMfaMessages = true;
+              return false;
+            }
+            return true;
+          });
 
-          const unreadMessages = filterUnread(messages);
+          if (hasMfaMessages) {
+            refetchMfaChallenge();
+          }
 
           if (
             previousMessages &&

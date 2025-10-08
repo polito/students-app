@@ -40,7 +40,7 @@ export const SSOScreen = ({ navigation }: Props) => {
         <CtaButton
           absolute={false}
           title={t('ssoScreen.ssoButton')}
-          action={handleSSO}
+          action={() => handleSSO()}
           loading={isLoading}
         />
         <TouchableOpacity

@@ -129,6 +129,7 @@
     "comingSoon": "Coming soon",
     "confirm": "Conferma",
     "contact": "Contatto",
+    "correct": "Correggi",
     "course": "Corso",
     "course_plural": "Corsi",
     "createdAt": "Creato il",
@@ -163,6 +164,11 @@
     "elementCount": "Elemento {{count}} di {{total}}",
     "email": "Email",
     "en": "Inglese",
+    "enroll": {
+      "device": "ID Dispositivo",
+      "serial": "Seriale"
+    },
+    "enabled": "Abilitato",
     "enableLocationPermissionFeedback": "Abilita il servizio di geolocalizzazione",
     "enableLocationServiceFeedback": "Attiva la geolocalizzazione per completare l'operazione",
     "endRefresh": "Caricamento terminato",
@@ -291,11 +297,12 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
+    "warning": "Attenzione",
     "year": "anno",
     "yesterday": "Ieri",
-    "fromTime" : "dalle",
-    "toTime" : "alle",
-    "document" : "Allegato",
+    "fromTime": "dalle",
+    "toTime": "alle",
+    "document": "Allegato",
     "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
@@ -384,7 +391,7 @@
     "enrolledExamDetailInfo": "Informazioni dettaglio superamento esame",
     "examGradeDetailTitle": "Dettaglio voti",
     "examGradeDetailInfo": "Informazioni dettaglio voti",
-    "enrolledExamBottomSheet":  {
+    "enrolledExamBottomSheet": {
       "title": "Superamento esame",
       "content": "Statistica riguardante il numero di superi totali all’esame con due tipi di visualizzazione:",
       "item1": {
@@ -396,7 +403,7 @@
         "content": "comparazione tra l’anno selezionato e i due anni precedenti."
       }
     },
-    "enrolledExamDetailBottomSheet":  {
+    "enrolledExamDetailBottomSheet": {
       "title": "Dettaglio superamento esame",
       "content": "Statistica riguardante il numero di superi all’esame suddiviso in tre sotto gruppi:",
       "item1": {
@@ -408,7 +415,7 @@
         "content": " studenti che si sono iscritti all’esame durante il secondo anno di frequenza o i successivi."
       }
     },
-    "gradesDetailBottomSheet":  {
+    "gradesDetailBottomSheet": {
       "title": "Dettaglio voti",
       "content": "Statistica riguardante il dettaglio delle valutazioni d’esame suddiviso in tre sotto gruppi:",
       "item1": {
@@ -564,11 +571,11 @@
       "fourth": "Accesso a sconti e promozioni riservati agli studenti di vari Paesi europei."
     },
     "cardRequest": {
-      "firstSectionNormalText":"Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
-      "sectionBoldText":"autorizzazione a trasmettere i seguenti dati",
-      "secondSectionNormalText":"all'autorità competente dell'UE:",
-      "firstName" : "Nome",
-      "lastName" : "Cognome",
+      "firstSectionNormalText": "Per attivare la Carta per ciascuna delle vostre carriere, abbiamo bisogno di",
+      "sectionBoldText": "autorizzazione a trasmettere i seguenti dati",
+      "secondSectionNormalText": "all'autorità competente dell'UE:",
+      "firstName": "Nome",
+      "lastName": "Cognome",
       "id": "Matricola",
       "mail": "Mail istituzionale",
       "studyProgram": "Programma di studio"
@@ -580,7 +587,7 @@
     "revoke": "Revoca autorizzazione",
     "revokeConfirm": "Revocando l’autorizzazione a conservare i tuoi dati all’ESC-Router disattiverai questa card e quelle legate a tue eventuali carriere",
     "text": "Per ottenere la tua European Student Card (ESC), hai autorizzato la trasmissione dei tuoi dati tramite ESC_router. Puoi revocare questa autorizzazione in qualsiasi momento.",
-    "title":"Dati ESC"
+    "title": "Dati ESC"
   },
   "europeanCardScreen": {
     "title": "THE EUROPEAN STUDENT CARD",
@@ -627,8 +634,8 @@
     "notes": "Note",
     "title": "Appello",
     "noBookedCount": "Dato non disponibile",
-    "requestReasonTitle":"Motivazioni della richiesta",
-    "requestDetailsTitle":"Dettagli della richiesta"
+    "requestReasonTitle": "Motivazioni della richiesta",
+    "requestDetailsTitle": "Dettagli della richiesta"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
@@ -685,7 +692,7 @@
     "title": "Biblioteca"
   },
   "loginScreen": {
-    "onboarding" : "Onboarding",
+    "onboarding": "Onboarding",
     "authnError": "Errore di autenticazione",
     "authnErrorDescription": "Le credenziali che hai inserito potrebbero essere errate.",
     "cta": "Accedi",
@@ -723,6 +730,54 @@
     "pickPhotoHint": "Dalla tua galleria",
     "takePhoto": "Acquisisci con la fotocamera",
     "takePhotoHint": "Scatta una o più foto e genera un file"
+  },
+  "mfaScreen": {
+    "description": "<b>PoliTO Authenticator</b> è un metodo per l'autenticazione multifattore che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per confermare la tua identità.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per-dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo:<br/>- Effettuare il logout <br/>- Disinstallare l’app <br/>- Cancellare i dati dell’app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando <b>idp.polito.it > Gestione MFA</b>",
+    "modalTitle": "PoliTO Authenticator",
+    "headerTitle": "Authenticator",
+    "biometricPrompt": "Sblocca PoliTO Authenticator per continuare",
+    "enroll": {
+      "title": "Attivazione Mfa",
+      "note": "Attivando PoliTO Authenticator potrai accedere in modo più semplice e sicuro <b>ai servizi digitali dell'Ateneo</b>. Non dovrai più attendere SMS o utilizzare app esterne per confermare la tua identità.<br/><br/>Potrai disattivare PoliTO Authenticator in qualsiasi momento, effettuando il logout dall'app oppure accedendo a <b>idp.polito.it > Gestione MFA</b>.",
+      "prompt": "Vuoi attivare PoliTO Authenticator su questo dispositivo?",
+      "confirm": "Si, attiva",
+      "unsupported": "Attenzione. Su questo dispositivo non è impostata una schermata di blocco sicura. Per poter utilizzare PoliTO Authenticator è necessario impostare una schermata di blocco sicura (PIN, password o riconoscimento biometrico).",
+      "saveFailure": "Attenzione. Non è stato possibile salvare la chiave di autenticazione su questo dispositivo. È necassario rimuovere il metodo appena aggiunto visitando idp.polito.it > Gestione MFA e riprovare.",
+      "cancel": "Non ora",
+      "expired": "Sessione scaduta. È necessario riautenticarsi.",
+      "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo.",
+      "devicePrompt": "Il nome sottostante verrà utilizzato per <b>identificare questo dispositivo</b> tra i tuoi fattori di autenticazione. <b>Puoi cambiarlo</b> se vuoi renderlo più riconoscibile.",
+      "deviceName": "Nome dispositivo"
+    },
+    "auth": {
+      "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
+      "unlockFailure": "Operazione annullata. Fai pull-down sulla pagina del profilo personale per riprovare.",
+      "note": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da <b>idp.polito.it</b>.",
+      "allow": "Si, autorizza",
+      "denyAccess": "Nega accesso",
+      "expiration": "Tempo rimanente per autorizzare: {{time}}",
+      "expired": "Richiesta di accesso scaduta",
+      "rejected": "Richiesta di accesso respinta",
+      "accepted": "Richiesta di accesso accettata"
+    },
+    "settings": {
+      "information": "Informazioni",
+      "details": "Dettagli",
+      "textError": "Testo errore",
+      "status": "Stato",
+      "notSet": "Non impostato",
+      "disabled": "Disabilitato",
+      "active": "Attivo",
+      "correctError": "Correggi errore",
+      "enableNow": "Attiva ora",
+      "none": "Nessuno",
+      "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi del Politecnico inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni disabiliteranno questa installazione di PoliTO Authenticator per questo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando<br/><b>idp.polito.it > Gestione MFA</b>",
+      "notAccessible": "La chiave crittografica per <b>PoliTO Authenticator</b> non è accessibile su questo dispositivo. Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate.",
+      "lockedDescription": "PoliTO Authenticator su questo dispositivo è stato bloccato per ragioni di sicurezza. Contattare al più presto il supporto tecnico mediante i riferimenti presenti su idp.polito.it/help",
+      "locked": "Bloccato",
+      "removed": "PoliTO Authenticator su questo dispositivo è stato rimosso dal pannello di Gestione MFA. È possibile reimpostarlo entrando nella sezione dedicata presente su questa schermata.",
+      "removedTitle": "Authenticator Rimosso"
+    }
   },
   "newsScreen": {
     "createdAt": "Pubblicato il ",
@@ -834,7 +889,7 @@
     "acceptGradeFeedback": "Valutazione registrata, verrà visualizzata nel libretto",
     "contactProfessorCta": "Contatta il docente",
     "rejectGradeConfirmMessage": "Rifiutando la valutazione non potrai più cambiare la tua decisione",
-    "rejectGradeCta": "Rifiuta entro il:<br><b>{{date}}</b>",
+    "rejectGradeCta": "Rifiuta entro il:<br/><b>{{date}}</b>",
     "rejectGradeFeedback": "Valutazione rifiutata, verrà registrata nelle prossime ore",
     "teacherMessage": {
       "title": "Messaggio del docente",
@@ -869,7 +924,9 @@
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
-    "title": "Impostazioni"
+    "title": "Impostazioni",
+    "securityTitle": "Sicurezza",
+    "authenticatorTitle": "PoliTO Authenticator"
   },
   "ssoScreen": {
     "ssoButton": "Entra con Single-Sign-On",
@@ -966,15 +1023,15 @@
     "averages": "Medie",
     "averagesAndGrades": "Medie e voti",
     "averageLabel": "Media di ammissione all’esame di laurea",
-    "finalAverageLabelDescription":{
-      "description":  "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
+    "finalAverageLabelDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",
       "formula": "(somma (voto * crediti) / somma crediti) * (110/30),\nescludendo i peggiori {{-excludedCreditsNumber}} crediti"
     },
     "laude": "*Le lodi non concorrono al calcolo",
     "masterAdmissionAverage": "Media di ammissione al II liv",
-    "masterAdmissionAverageLabelDescription":{
-      "description":"È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
-      "formula":"somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
+    "masterAdmissionAverageLabelDescription": {
+      "description": "È la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata degli n peggiori crediti\n(Per conoscere n, consulta la Guida Studenti)",
+      "formula": "somma (voto * crediti) / somma crediti\n(escludendo gli n peggiori crediti)"
     },
     "NB": "NB",
     "NBDescription": "Queste definizioni sono indicative. Per conoscere i dettagli, consulta la Guida Studenti del tuo corso.\nIn tutte le medie sopra riportate sono considerati esclusivamente gli esami con voto.",
@@ -983,13 +1040,13 @@
     "pointModal": "Il totale dei punti on-time acquisiti. Il valore non può mai superare il massimo previsto dal corso di laurea.\nPer saperne di più, consulta la Guida Studenti.",
     "thisYear": "Questo anno accademico",
     "title": "Carriera",
-    "weightedAverageLabelDescription":{
-      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
+    "weightedAverageLabelDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*",
       "formula": "(somma (voto * crediti) / somma crediti) * (110/30)"
     },
     "weightedAverage": "Media pesata dei voti",
-    "weightedAverageDescription":{
-      "description":"E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
+    "weightedAverageDescription": {
+      "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, espressa in trentesimi",
       "formula": "somma (voto * crediti) / somma crediti"
     },
     "yourCareer": "La tua carriera"

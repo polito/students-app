@@ -121,13 +121,14 @@
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
     "contact": "Contact",
+    "correct": "Fix",
     "course": "Course",
     "course_plural": "Courses",
     "createdAt": "Created at",
     "credits": "Credits",
     "creditsWithUnit": "{{credits}} CFU",
     "creditsWithoutUnit": "{{credits}}",
-    "customColor":"Color picker",
+    "customColor": "Color picker",
     "customColorSubtitle": "Select a custom color",
     "customColorWarning": "Custom colors",
     "customColorTitle": "Custom colors",
@@ -156,6 +157,11 @@
     "elementCount": "Element {{count}} of {{total}}",
     "email": "Email",
     "en": "English",
+    "enroll": {
+      "device": "Device ID",
+      "serial": "Serial"
+    },
+    "enabled": "Enabled",
     "enableLocationPermissionFeedback": "Enable location permission to complete the operation",
     "enableLocationServiceFeedback": "Enable location service to complete the operation",
     "endRefresh": "Refresh completed",
@@ -282,6 +288,7 @@
     "virtualClassroom": "Virtual classroom",
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
+    "warning": "Warning",
     "year": "year",
     "yesterday": "Yesterday",
     "sizeExc": "Excessive file size, maximum 32 MB"
@@ -372,7 +379,7 @@
     "enrolledExamDetailInfo": "Detailed information on passing the exam",
     "examGradeDetailTitle": "Details of votes",
     "examGradeDetailInfo": "Vote detail information",
-    "enrolledExamBottomSheet":  {
+    "enrolledExamBottomSheet": {
       "title": "Passed exam",
       "content": "Statistics regarding the total number of exam passes with two types of display:",
       "item1": {
@@ -384,7 +391,7 @@
         "content": "comparison between the selected year and the two previous years."
       }
     },
-    "enrolledExamDetailBottomSheet":  {
+    "enrolledExamDetailBottomSheet": {
       "title": "Exam passing details",
       "content": "Statistics regarding the number of exam passers divided into three subgroups:",
       "item1": {
@@ -396,7 +403,7 @@
         "content": " students who registered for the exam during their second or subsequent year of attendance."
       }
     },
-    "gradesDetailBottomSheet":  {
+    "gradesDetailBottomSheet": {
       "title": "Details of votes",
       "content": "Statistics regarding the details of exam grades divided into three subgroups:",
       "item1": {
@@ -549,9 +556,9 @@
       "fourth": "Access to discounts and promotions reserved for students in various European countries."
     },
     "cardRequest": {
-      "firstSectionNormalText":"To activate your Card for each of your careers, we need ",
-      "sectionBoldText":"authorization to transmit the following data ",
-      "secondSectionNormalText":"to the relevant EU authority:",
+      "firstSectionNormalText": "To activate your Card for each of your careers, we need ",
+      "sectionBoldText": "authorization to transmit the following data ",
+      "secondSectionNormalText": "to the relevant EU authority:",
       "firstName": "First name",
       "lastName": "Last name",
       "id": "Student ID number",
@@ -565,7 +572,7 @@
     "revoke": "Revoke authorisation",
     "revokeConfirm": "Revoking the authorization to keep your data in the ESC-Router will deactivate this card and any other cards linked to your academic careers, if any",
     "text": "To obtain your European Student Card (ESC), you authorized the transmission of your data through ESC_router. You can revoke this authorization at any time.",
-    "title":"ESC Data Settings"
+    "title": "ESC Data Settings"
   },
   "europeanCardScreen": {
     "title": "THE EUROPEAN STUDENT CARD",
@@ -612,8 +619,8 @@
     "notes": "Notes",
     "title": "Exam call",
     "noBookedCount": "Data not available",
-    "requestReasonTitle":"Request reason",
-    "requestDetailsTitle":"Request details"
+    "requestReasonTitle": "Request reason",
+    "requestDetailsTitle": "Request details"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
@@ -707,6 +714,54 @@
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
   },
+  "mfaScreen": {
+    "headerTitle": "Authenticator",
+    "biometricPrompt": "Unlock to use PoliTO Authenticator",
+    "modalTitle": "PoliTO Authenticator",
+    "enroll": {
+      "title": "MFA Activation",
+      "prompt": "Do you want to activate <b>PoliTO Authenticator</b> on this device?",
+      "note": "By activating PoliTO Authenticator, you will be able to access the <b>University's digital services</b> in a simpler and more secure way.<br/>You will no longer have to wait for SMS or use external apps to confirm your identity.<br/><br/>You can deactivate PoliTO Authenticator at any time by logging out of the app or by accessing <b>idp.polito.it > MFA Management</b>.",
+      "confirm": "Yes, proceed",
+      "unsupported": "Warning. No secure lock screen is set on your device. Please set a secure lock screen to use PoliTO Authenticator (PIN, password or biometric authentication).",
+      "saveFailure": "Warning. The authentication key could not be saved on your device. Please visit idp.polito.it > MFA Management to remove the newly created authentication factor.",
+      "cancel": "Not now",
+      "expired": "The session has expired, please log in again to continue",
+      "Success": "Polito Authenticator has been successfully activated on this device",
+      "devicePrompt": "The name below will be used to <b>identify this device</b> among your authentication factors. <b>You can change it</b> if you want to make it more recognizable.",
+      "deviceName": "Device name"
+    },
+    "auth": {
+      "prompt": "New login request with multi-factor authentication. Do you want to proceed?",
+      "unlockFailure": "Operation cancelled. Pull-down on the personal profile screen to retry.",
+      "note": "You didn't request this access? This could be a suspicious attempt. Change your password immediately at <b>idp.polito.it</b>.",
+      "allow": "Yes, authorize",
+      "denyAccess": "Deny access",
+      "expiration": "Time remaining to authorize: {{time}}",
+      "expired": "Authentication request expired",
+      "rejected": "Authentication request rejected",
+      "accepted": "Authentication request accepted"
+    },
+    "settings": {
+      "information": "Information",
+      "details": "Details",
+      "none": "None",
+      "disabled": "Disabled",
+      "active": "Active",
+      "enableNow": "Enable now",
+      "correctError": "Correct error",
+      "status": "Status",
+      "notSet": "Not set",
+      "textError": "Text error",
+      "description": "<b>PoliTO Authenticator</b> is a two-factor authentication method that allows secure and fast access to the University’s services by sending a notification to your device for confirmation.<br/><br/>It is based on asymmetric cryptography and is <b>installed per device</b>: each installation is independent and linked to a single device.<br/><br/>The following actions will remove this PoliTO Authenticator installation from your device:<br/>- Logging out <br/>- Uninstalling the app <br/>- Clearing the app data through the device settings<br/><br/>You can manage PoliTO Authenticator at any time by logging out of the app or by accessing <b>idp.polito.it > MFA Management</b>.",
+      "notAccessible": "The cryptographic key for <b>PoliTo Authenticator</b> is not accessible on this device.<br/>This may occur due to activation errors or changes in device credentials (PIN/password/biometric).",
+      "notAccessibleAlert": "The cryptographic key for PoliTo Authenticator is not accessible on this device.This may occur due to activation errors or changes in device credentials (PIN/password/biometric).",
+      "lockedDescription": "PoliTO Authenticator on this device has been blocked for security reasons. Contact technical support as soon as possible using the references available at idp.polito.it/help",
+      "locked": "Blocked",
+      "removed": "PoliTO Authenticator on this device has been removed from the MFA Management panel. You can re-add it by entering the dedicated section available on this screen.",
+      "removedTitle": "Authenticator Removed"
+    }
+  },
   "newsScreen": {
     "createdAt": "Published on ",
     "eventStartTime": "Starts on ",
@@ -780,7 +835,6 @@
     "title": "Place",
     "placeDetail": "Place detail",
     "getDirections": "Obtain directions"
-
   },
   "placesScreen": {
     "changeFloor": "Change floor",
@@ -818,7 +872,7 @@
     "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
     "contactProfessorCta": "Contact the teacher",
     "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
-    "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
+    "rejectGradeCta": "Reject the evaluation by: <br/><b>{{date}}</b>",
     "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
     "teacherMessage": {
       "title": "Professor's message",
@@ -850,7 +904,9 @@
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "openLanguageMenu": "Tap twice to open the language selection menu",
     "openThemeMenu": "Tap twice to open the theme selection menu",
-    "title": "Settings"
+    "title": "Settings",
+    "securityTitle": "Security",
+    "authenticatorTitle": "PoliTO Authenticator"
   },
   "ssoScreen": {
     "ssoButton": "Sign in with Single-Sign-On",
@@ -939,15 +995,15 @@
     "averages": "Averages",
     "averagesAndGrades": "Averages and grades",
     "averageLabel": "Average grade for admission to the Final Examination",
-    "finalAverageLabelDescription":{
-      "description":  "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
+    "finalAverageLabelDescription": {
+      "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
       "formula": "(sum (grade * credits) / sum of credits) * (110/30) ,\nexcluding the {{-excludedCreditsNumber}} worst credits"
     },
     "laude": "*Honours does not count toward the calculation",
     "masterAdmissionAverage": "Master admission average grade",
-    "masterAdmissionAverageLabelDescription":{
-      "description":"It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
-      "formula":"sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
+    "masterAdmissionAverageLabelDescription": {
+      "description": "It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
+      "formula": "sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
     },
     "NB": "Note",
     "NBDescription": "These definitions are indicative. To find out more, refer to the Student Guide.\nOnly graded exams are considered in all average grade above.",
@@ -956,13 +1012,13 @@
     "pointModal": "The total of the Exam on-time points earned. This value can never exceed the maximum allowed by the degree program.\nTo find out more, refer to the Student Guide.",
     "thisYear": "This academic year",
     "title": "Career",
-    "weightedAverageLabelDescription":{
-      "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
+    "weightedAverageLabelDescription": {
+      "description": "This is the average, weighted according to the credits relating to each exam with a grade*",
       "formula": "(sum (grade * credits) / sum of credits) * (110/30)"
     },
     "weightedAverage": "Weighted average of grades",
-    "weightedAverageDescription":{
-      "description":"It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
+    "weightedAverageDescription": {
+      "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
       "formula": "sum (grade * credits) / sum of credits"
     },
     "yourCareer": "Your career"
