@@ -123,7 +123,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
         if (hasKey) {
           Alert.alert(
             t('common.error'),
-            t('mfaScreen.settings.notAccessible'),
+            t('mfaScreen.settings.notAccessibleAlert'),
             [
               {
                 text: t('common.ok'),

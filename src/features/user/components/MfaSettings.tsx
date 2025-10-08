@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { useNavigation } from '@react-navigation/core';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
@@ -25,7 +25,7 @@ export const MfaSettings = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontSizes, palettes, colors, spacing } = useTheme();
-  const { data: mfa } = useCheckMfa(true);
+  const { data: mfa, refetch: refetchMfa } = useCheckMfa(true);
   const { mutate: logout } = useLogout();
   const { politoAuthnEnrolmentStatus, updatePreference } =
     usePreferencesContext();
@@ -33,6 +33,12 @@ export const MfaSettings = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   const { bottom } = useSafeAreaInsets();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchMfa();
+    }, [refetchMfa]),
+  );
 
   useEffect(() => {
     hasPrivateKeyMFA().then(res => setHasLocalMfaKey(res));

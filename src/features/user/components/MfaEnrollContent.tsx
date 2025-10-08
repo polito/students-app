@@ -259,7 +259,6 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
     },
     buttonsRow: {
       flexDirection: 'row',
-      justifyContent: 'center',
     },
     confirmButtonContainer: {
       width: '80%',
