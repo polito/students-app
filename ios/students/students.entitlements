@@ -4,9 +4,5 @@
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
-	<key>keychain-access-groups</key>
-	<array>
-		<string>$(AppIdentifierPrefix)it.polito.$(PRODUCT_NAME:rfc1034identifier)</string>
-	</array>
 </dict>
 </plist>
