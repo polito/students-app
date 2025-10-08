@@ -25,6 +25,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { courseColors } from '../../../core/constants';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
@@ -105,7 +106,14 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     () => coursesPrefs[uniqueShortcode],
     [uniqueShortcode, coursesPrefs],
   );
-  const selectedColor = coursePrefs?.color;
+
+  const defaultPrefs = {
+    color: courseColors[0].color,
+    isHidden: false,
+    isHiddenInAgenda: false,
+  };
+
+  const selectedColor = coursePrefs?.color || defaultPrefs.color;
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -149,7 +157,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   leadingItem={
                     <Icon
                       icon={
-                        coursePrefs.icon && coursePrefs.icon in courseIcons
+                        coursePrefs?.icon && coursePrefs.icon in courseIcons
                           ? courseIcons[coursePrefs.icon]
                           : faIcons
                       }
@@ -161,12 +169,13 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('coursePreferencesScreen.showInExtracts')}
                   subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
                   disabled={!coursePrefs}
-                  value={!coursePrefs.isHidden}
+                  value={!coursePrefs?.isHidden}
                   leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
                   onChange={value => {
                     updatePreference('courses', {
                       ...coursesPrefs,
                       [uniqueShortcode]: {
+                        ...defaultPrefs,
                         ...coursePrefs,
                         isHidden: !value,
                       },
@@ -241,7 +250,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 <SwitchListItem
                   title={t('common.hideInAgenda')}
                   disabled={!coursePrefs}
-                  value={coursePrefs.isHiddenInAgenda || coursePrefs.isHidden}
+                  value={coursePrefs?.isHiddenInAgenda || coursePrefs?.isHidden}
                   leadingItem={
                     <Icon icon={faEyeSlash} size={fontSizes['2xl']} />
                   }
@@ -249,6 +258,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     updatePreference('courses', {
                       ...coursesPrefs,
                       [uniqueShortcode]: {
+                        ...defaultPrefs,
                         ...coursePrefs,
                         isHiddenInAgenda: value,
                       },
@@ -264,7 +274,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       uniqueShortcode,
                     });
                   }}
-                  disabled={!coursePrefs.itemsToHideInAgenda?.length}
+                  disabled={!coursePrefs?.itemsToHideInAgenda?.length}
                   trailingItem={
                     <Icon icon={faChevronRight} size={fontSizes.xl} />
                   }

@@ -28,11 +28,30 @@ const addUniqueShortcodeToLectures = (
   lectures: ApiLecture[],
   courses: CourseOverview[],
 ): Lecture[] => {
-  return lectures.map(lecture => ({
-    ...lecture,
-    uniqueShortcode: courses!.find(course => course.id === lecture.courseId)
-      ?.uniqueShortcode,
-  }));
+  return lectures.map(lecture => {
+    const parentCourse = courses!.find(c =>
+      c.modules?.some(module => module.id === lecture.courseId),
+    );
+
+    if (parentCourse) {
+      const moduleIndex = parentCourse.modules?.findIndex(
+        module => module.id === lecture.courseId,
+      );
+      if (moduleIndex !== undefined && moduleIndex >= 0) {
+        const moduleUniqueShortcode = `${parentCourse.uniqueShortcode}${moduleIndex + 1}`;
+        return {
+          ...lecture,
+          uniqueShortcode: moduleUniqueShortcode,
+        };
+      }
+    }
+
+    return {
+      ...lecture,
+      uniqueShortcode: courses!.find(course => course.id === lecture.courseId)
+        ?.uniqueShortcode,
+    };
+  });
 };
 
 const useLectureClient = (): LecturesApi => {
@@ -53,13 +72,32 @@ const getVisibleCourseIds = (
     .filter(([_, prefs]) => prefs.isHidden)
     .map(([uniqueShortcode]) => uniqueShortcode);
 
-  return courses
+  const visibleCourseIds: number[] = [];
+
+  courses
     .filter(
       course =>
         course.id !== null &&
         !hiddenUniqueShortcodes.includes(course.uniqueShortcode),
     )
-    .map(course => course.id as number);
+    .forEach(course => {
+      visibleCourseIds.push(course.id as number);
+    });
+
+  courses.forEach(course => {
+    if (course.modules && course.modules.length > 0) {
+      course.modules.forEach((module, index) => {
+        if (module.id) {
+          const moduleUniqueShortcode = `${course.uniqueShortcode}${index + 1}`;
+          if (!hiddenUniqueShortcodes.includes(moduleUniqueShortcode)) {
+            visibleCourseIds.push(module.id);
+          }
+        }
+      });
+    }
+  });
+
+  return visibleCourseIds;
 };
 
 const getLectureWeekQueryKey = (monday: DateTime) => {
@@ -152,9 +190,30 @@ export const useGetNextLecture = (courseId: number) => {
         if (!response?.data) return null;
         let lecture = response.data as Lecture;
         if (courses) {
-          const course = courses.find(c => c.id === lecture.courseId);
-          if (course) {
-            lecture = { ...lecture, uniqueShortcode: course.uniqueShortcode };
+          const parentCourse = courses.find(c =>
+            c.modules?.some(module => module.id === courseId),
+          );
+          if (parentCourse) {
+            const moduleIndex = parentCourse.modules?.findIndex(
+              module => module.id === courseId,
+            );
+            if (moduleIndex !== undefined && moduleIndex >= 0) {
+              const moduleUniqueShortcode = `${parentCourse.uniqueShortcode}${moduleIndex + 1}`;
+
+              lecture = {
+                ...lecture,
+                uniqueShortcode: moduleUniqueShortcode,
+              };
+            } else {
+              const course = courses.find(c => c.id === lecture.courseId);
+              lecture = {
+                ...lecture,
+                uniqueShortcode: course?.uniqueShortcode,
+              };
+            }
+          } else {
+            const course = courses.find(c => c.id === lecture.courseId);
+            lecture = { ...lecture, uniqueShortcode: course?.uniqueShortcode };
           }
         }
         return lecture;
