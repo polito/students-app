@@ -41,7 +41,13 @@ export const WeekFilter = ({
   }, [current, endOfWeek]);
 
   return (
-    <Row align="center">
+    <Row
+      align="center"
+      accessible={true}
+      accessibilityLabel={`${current.toFormat('d MMM')} - ${endOfWeek.toFormat(
+        'd MMM',
+      )}`}
+    >
       <IconButton
         accessibilityRole="button"
         icon={faChevronLeft}
