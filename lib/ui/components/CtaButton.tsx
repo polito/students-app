@@ -124,6 +124,7 @@ export const CtaButton = ({
       )}
       <TouchableHighlight
         accessibilityRole="button"
+        accessibilityHint={hint}
         underlayColor={underlayColor}
         disabled={disabled || loading}
         style={[
@@ -169,6 +170,7 @@ export const CtaButton = ({
                 size={fontSizes.xl}
                 color={variant === 'filled' ? colors.white : color}
                 style={{ marginRight: spacing[2] }}
+                accessibilityLabel={title}
               />
             )}
             <TextWithLinks
