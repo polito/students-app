@@ -29,6 +29,8 @@ export const ErrorCard = ({
   return (
     <Card
       accessible={Platform.select({ android: true, ios: false })}
+      accessibilityRole="alert"
+      accessibilityLabel={text}
       rounded
       spaced={spaced}
       // rounded={rounded ?? Platform.select({ android: false })}

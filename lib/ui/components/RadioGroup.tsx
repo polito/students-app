@@ -25,7 +25,10 @@ export const RadioGroup = <T,>({
   const { t } = useTranslation();
 
   return (
-    <Col>
+    <Col
+      accessible={true}
+      accessibilityLabel={showError && value === undefined ? t('common.selectAnOption') : undefined}
+    >
       {options.map((radioDefinition, index) => {
         const isSelected = radioDefinition.value === value;
 
@@ -34,6 +37,8 @@ export const RadioGroup = <T,>({
             key={index}
             onPress={() => setValue(radioDefinition.value)}
             titleStyle={styles.radioText}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: isSelected }}
             leadingItem={
               <View
                 style={[

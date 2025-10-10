@@ -23,6 +23,8 @@ export const Badge = ({
   const { accessibility } = usePreferencesContext();
   return (
     <Row
+      accessible={true}
+      accessibilityLabel={text}
       gap={2}
       style={[
         {
