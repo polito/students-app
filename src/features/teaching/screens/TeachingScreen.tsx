@@ -48,6 +48,7 @@ import { ExamListItem } from '../components/ExamListItem';
 import { ProgressChart } from '../components/ProgressChart';
 import { SurveyTypesSection } from '../components/SurveyTypesSection';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
 
@@ -66,6 +67,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+const { accessibilityListLabel } = useAccessibility();
+
   const transcriptBadge = null;
 
   const courses = useMemo(() => {
@@ -287,10 +290,15 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('examsScreen.emptyState')
             }
           >
-            {exams.map(exam => (
+            {exams.map((exam, index) => (
               <ExamListItem
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
+                   accessible={true}
+                accessibilityLabel={accessibilityListLabel(
+                  index,
+                  exams.length,
+                )}
               />
             ))}
           </OverviewList>
