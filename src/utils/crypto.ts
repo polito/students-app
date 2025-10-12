@@ -1,3 +1,8 @@
+// Crypto utilities temporarily disabled for department filtering feature branch
+// These require @noble/curves, @noble/hashes, asn1js, and base32-encode packages
+// Uncomment when MFA features are needed
+
+/*
 import 'react-native-get-random-values';
 
 import { secp256k1 } from '@noble/curves/secp256k1';
@@ -66,4 +71,18 @@ export function signSecp256k1(
   const signature = base32Encode(der, 'RFC4648');
 
   return signature;
+}
+*/
+
+// Stub exports to prevent import errors
+export const generateSecp256k1PrivKey = (): never => {
+  throw new Error('Crypto utilities are disabled in this branch');
+};
+
+export const generateSecp256k1KeyPair = (): never => {
+  throw new Error('Crypto utilities are disabled in this branch');
+};
+
+export function signSecp256k1(): never {
+  throw new Error('Crypto utilities are disabled in this branch');
 }
