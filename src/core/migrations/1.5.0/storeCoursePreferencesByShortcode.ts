@@ -62,7 +62,7 @@ export const storeCoursePreferencesByShortcode = async (
 
     if (course.modules && course.modules.length > 0) {
       const moduleIndex = course.modules.findIndex(
-        (_, index) => courseId === `${course.shortcode}${index + 1}`,
+        (_, index) => courseId === `${course?.shortcode}${index + 1}`,
       );
       if (moduleIndex >= 0) {
         newPreferences[courseId] = coursePrefs;
