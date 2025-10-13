@@ -186,9 +186,9 @@ export const CourseListItem = ({
 
   const getModuleUniqueShortcode = useCallback(
     (moduleIndex: number) => {
-      return `${course.uniqueShortcode}${moduleIndex + 1}`;
+      return `${course.shortcode}${moduleIndex + 1}`;
     },
-    [course.uniqueShortcode],
+    [course.shortcode],
   );
 
   const getModuleBadge = useCallback(
@@ -275,7 +275,7 @@ export const CourseListItem = ({
       subtitle={subtitle}
       leadingItem={
         hasModules ? undefined : (
-          <CourseIndicator uniqueShortcode={course.uniqueShortcode + '1'} />
+          <CourseIndicator uniqueShortcode={course.uniqueShortcode} />
         )
       }
       trailingItem={

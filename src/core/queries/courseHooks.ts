@@ -57,7 +57,9 @@ const setupCourses = (
   courses?.forEach(c => {
     const newC = c as CourseOverview;
     const hasDetails = isCourseDetailed(newC);
-    newC.uniqueShortcode = c.shortcode;
+    // Corsi senza moduli: shortcode + '1', corsi con moduli: shortcode
+    newC.uniqueShortcode =
+      c.modules && c.modules.length > 0 ? c.shortcode : c.shortcode + '1';
 
     if (hasDetails && !(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
