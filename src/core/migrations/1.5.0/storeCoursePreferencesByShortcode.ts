@@ -38,6 +38,15 @@ export const storeCoursePreferencesByShortcode = async (
       });
 
       if (course) {
+        if (course.modules && course.modules.length > 0) {
+          const moduleIndex = course.modules.findIndex(
+            (_, index) => courseId === `${course!.shortcode}${index + 1}`,
+          );
+          if (moduleIndex >= 0) {
+            newPreferences[courseId] = coursePrefs;
+            return;
+          }
+        }
         newPreferences[courseId] = coursePrefs;
         return;
       }
@@ -51,7 +60,21 @@ export const storeCoursePreferencesByShortcode = async (
       return;
     }
 
-    newPreferences[course.shortcode] = coursePrefs;
+    if (course.modules && course.modules.length > 0) {
+      const moduleIndex = course.modules.findIndex(
+        (_, index) => courseId === `${course.shortcode}${index + 1}`,
+      );
+      if (moduleIndex >= 0) {
+        newPreferences[courseId] = coursePrefs;
+        return;
+      }
+    }
+
+    if (courseId === course.shortcode) {
+      newPreferences[course.shortcode] = coursePrefs;
+    } else {
+      newPreferences[courseId] = coursePrefs;
+    }
   });
 
   updatePreference('courses', newPreferences);
