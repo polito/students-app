@@ -886,7 +886,7 @@
     "recordedGradeTitle": "Recorded grade",
     "staff": "Staff",
     "teacher": "Holder",
-    "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5, which will be added to your final graduation grade.\nYou can consult your total on-time points on career.\nMore information is available in the Student Guide.",
+    "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5, which will be added to your final final grade.\nYou can consult your total on-time points on career.\nMore information is available in the Student Guide.",
     "titleOnTimePoint": "On-time Exam points",
     "ctaButtonModal": "Access your career"
   },
