@@ -972,7 +972,7 @@
     "outgoingMessage": "Risposta da operatore numero",
     "yourQuestion": "La tua domanda",
     "sendFirstMessage": "Fai la tua domanda",
-    "send" : "Invia",
+    "send": "Invia",
     "headerBackTitle": "Tickets",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
@@ -1021,7 +1021,6 @@
     "acquiredCreditsLabel": "Crediti acquisiti",
     "attendedCreditsLabel": "Crediti frequentati",
     "averages": "Medie",
-    "averagesAndGrades": "Medie e voti",
     "averageLabel": "Media di ammissione all’esame di laurea",
     "finalAverageLabelDescription": {
       "description": "E’ la media, pesata in funzione dei crediti relativi ad ogni esame con voto*, depurata dei {{-excludedCreditsNumber}} peggiori crediti",

@@ -993,7 +993,6 @@
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
-    "averagesAndGrades": "Averages and grades",
     "averageLabel": "Average grade for admission to the Final Examination",
     "finalAverageLabelDescription": {
       "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
