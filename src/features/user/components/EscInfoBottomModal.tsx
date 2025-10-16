@@ -14,9 +14,9 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
 import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import { Theme } from '@lib/ui/types/Theme.ts';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog.ts';
-import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation.ts';
-import { useDeleteEsc } from '../../../core/queries/escHooks.ts';
+import { useConfirmationDialog } from '~/core/hooks/useConfirmationDialog.ts';
+import { useDeviceOrientation } from '~/core/hooks/useDeviceOrientation.ts';
+import { useDeleteEsc } from '~/core/queries/escHooks.ts';
 
 type Props = PropsWithChildren<
   ViewProps & {

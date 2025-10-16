@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/react-native';
 import { Buffer } from 'buffer';
 
 import { AppContent } from './core/components/AppContent';
+import { DialogProvider } from './core/components/Dialog';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { FeedbackProvider } from './core/providers/FeedbackProvider';
@@ -32,6 +33,7 @@ export const App = () => {
               <FeedbackProvider>
                 <ApiProvider>
                   <DownloadsProvider>
+                    <DialogProvider />
                     <AppContent />
                   </DownloadsProvider>
                 </ApiProvider>
