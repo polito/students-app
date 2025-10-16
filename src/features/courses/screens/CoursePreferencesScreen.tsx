@@ -43,7 +43,6 @@ import {
 } from '../../../core/queries/courseHooks';
 import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { CourseIcon } from '../components/CourseIcon';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -166,13 +165,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         },
                       });
                     }}
-                  >
-                    <ListItem
-                      title={t('common.color')}
-                      isAction
-                      leadingItem={<CourseIcon color={coursePrefs?.color} />}
-                    />
-                  </StatefulMenuView>
+                  ></StatefulMenuView>
                 </View>
                 <ListItem
                   title={t('common.color')}
