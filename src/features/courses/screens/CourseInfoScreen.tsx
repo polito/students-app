@@ -93,15 +93,23 @@ export const CourseInfoScreen = () => {
 
   const isModule = useMemo(() => {
     if (!coursesQuery.data) return false;
-    return coursesQuery.data.some(course =>
-      course.modules?.some(module => module.id === courseId),
+    return coursesQuery.data.some(
+      course =>
+        course.modules?.some(module => module.id === courseId) ||
+        course.modules?.some(module =>
+          module.previousEditions.some(e => +e.id === courseId),
+        ),
     );
   }, [coursesQuery.data, courseId]);
 
   const parentCourse = useMemo(() => {
     if (!coursesQuery.data || !isModule) return null;
-    return coursesQuery.data.find(course =>
-      course.modules?.some(module => module.id === courseId),
+    return coursesQuery.data.find(
+      course =>
+        course.modules?.some(module => module.id === courseId) ||
+        course.modules?.some(module =>
+          module.previousEditions.some(e => +e.id === courseId),
+        ),
     );
   }, [coursesQuery.data, courseId, isModule]);
 
@@ -113,17 +121,15 @@ export const CourseInfoScreen = () => {
       const editionsCount = getUnreadsCount(['teaching', 'courses', e.id]);
       return {
         id: `${e.id}`,
-        title: e.year,
-        state: courseId === e.id ? 'on' : undefined,
+        title: e.year.toString(),
+        state: courseId === +e.id ? 'on' : undefined,
         image: editionsCount
           ? Platform.select({ ios: 'circle.fill', android: 'circle' })
           : undefined,
         imageColor: editionsCount ? palettes.rose[600] : undefined,
       } as MenuAction;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editions, courseId]);
-
+  }, [editions, courseId, palettes, getUnreadsCount]);
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
       return;

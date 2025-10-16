@@ -111,7 +111,7 @@ export const CourseListItem = ({
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
   const styles = useStylesheet(createStyles);
-  const { getUnreadsCount } = useNotifications();
+  const { getUnreadsCountPerCourse } = useNotifications();
 
   const getModuleItemStyle = useCallback(
     (isFirst: boolean, isLast: boolean) => {
@@ -192,10 +192,10 @@ export const CourseListItem = ({
   );
 
   const getModuleBadge = useCallback(
-    (moduleId: number) => {
-      return getUnreadsCount(['teaching', 'courses', moduleId]) ?? 0;
+    (moduleId: number, previousEditions?: any[]) => {
+      return getUnreadsCountPerCourse(moduleId, previousEditions) ?? 0;
     },
-    [getUnreadsCount],
+    [getUnreadsCountPerCourse],
   );
 
   const getTotalModuleBadges = useCallback(() => {
@@ -203,12 +203,13 @@ export const CourseListItem = ({
     return course.modules!.reduce((total, module) => {
       if (module.id) {
         return (
-          total + (getUnreadsCount(['teaching', 'courses', module.id]) ?? 0)
+          total +
+          (getUnreadsCountPerCourse(module.id, module.previousEditions) ?? 0)
         );
       }
       return total;
     }, 0);
-  }, [hasModules, course.modules, getUnreadsCount]);
+  }, [hasModules, course.modules, getUnreadsCountPerCourse]);
 
   const allModulesHidden = useMemo(() => {
     if (!hasModules || showAllModules) return false;
@@ -400,9 +401,18 @@ export const CourseListItem = ({
                         }
                         trailingItem={
                           <>
-                            {module.id && getModuleBadge(module.id) > 0 && (
-                              <UnreadBadge text={getModuleBadge(module.id)} />
-                            )}
+                            {module.id &&
+                              getModuleBadge(
+                                module.id,
+                                module.previousEditions,
+                              ) > 0 && (
+                                <UnreadBadge
+                                  text={getModuleBadge(
+                                    module.id,
+                                    module.previousEditions,
+                                  )}
+                                />
+                              )}
                             <DisclosureIndicator />
                           </>
                         }
@@ -454,9 +464,16 @@ export const CourseListItem = ({
                       }
                       trailingItem={
                         <>
-                          {module.id && getModuleBadge(module.id) > 0 && (
-                            <UnreadBadge text={getModuleBadge(module.id)} />
-                          )}
+                          {module.id &&
+                            getModuleBadge(module.id, module.previousEditions) >
+                              0 && (
+                              <UnreadBadge
+                                text={getModuleBadge(
+                                  module.id,
+                                  module.previousEditions,
+                                )}
+                              />
+                            )}
                           <Menu
                             course={{
                               ...course,

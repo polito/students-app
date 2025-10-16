@@ -47,17 +47,27 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     if (!coursesQuery.data) return;
-    const course = coursesQuery.data.find(
-      c => c.id === id || c.previousEditions.some(e => e.id === id),
-    );
+    const course = coursesQuery.data.find(c => {
+      return (
+        c.id === id ||
+        c.previousEditions.some(e => +e.id === id) ||
+        c.modules?.some(module => module.id === id) ||
+        c.modules?.some(module =>
+          module.previousEditions.some(e => +e.id === id),
+        )
+      );
+    });
 
-    const isModule = coursesQuery.data.some(c =>
-      c.modules?.some(module => module.id === id),
+    const isModule = coursesQuery.data.some(
+      c =>
+        c.modules?.some(module => module.id === id) ||
+        c.modules?.some(module =>
+          module.previousEditions.some(e => +e.id === id),
+        ),
     );
 
     let correctUniqueShortcode =
       course?.uniqueShortcode || paramUniqueShortcode || '';
-
     if (isModule) {
       const parentCourse = coursesQuery.data.find(c =>
         c.modules?.some(module => module.id === id),

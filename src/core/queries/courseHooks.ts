@@ -187,9 +187,13 @@ export const useGetCourseEditions = (courseId: number) => {
   return useQuery({
     queryKey: getCourseKey(courseId, CourseSectionEnum.Editions),
     queryFn: () => {
-      const course = coursesQuery.data?.find(
+      const coursesModules = coursesQuery.data
+        ?.flatMap(c => c.modules)
+        .concat(coursesQuery.data)
+        .filter(notNullish);
+      const course = coursesModules?.find(
         c =>
-          c.id === courseId || c.previousEditions.some(e => e.id === courseId),
+          c.id === courseId || c.previousEditions.some(e => +e.id === courseId),
       );
       const editions: CourseModulePreviousEditionsInner[] = [];
       if (!course || !course.previousEditions.length) return editions;
