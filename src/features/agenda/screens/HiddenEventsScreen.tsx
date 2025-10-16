@@ -93,7 +93,6 @@ const HiddenEventItem = ({ item, onToggle }: HiddenEventItemProps) => {
           </Text>
         )}
       </Col>
-      <View></View>
     </Row>
   );
 };
