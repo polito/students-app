@@ -1,6 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Platform, TouchableHighlightProps } from 'react-native';
+import { Linking, Platform, TouchableHighlightProps, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
@@ -16,7 +16,6 @@ import { formatFileSize } from '../../../utils/files';
 
 interface Props {
   item: CourseAssignment;
-  accessibilityListLabel?: string;
 }
 
 const Menu = ({ children }: PropsWithChildren) => {
@@ -49,10 +48,10 @@ const Menu = ({ children }: PropsWithChildren) => {
 
 export const CourseAssignmentListItem = ({
   item,
-  accessibilityListLabel,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const { colors, spacing, fontSizes } = useTheme();
+  const { t } = useTranslation();
   const subTitle = `${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
     item.uploadedAt,
   )}`;
@@ -68,26 +67,32 @@ export const CourseAssignmentListItem = ({
             item.deletedAt != null ? 'line-through' : undefined,
         }}
         subtitle={subTitle}
-        accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
         mimeType={item.mimeType}
         trailingItem={
           item.deletedAt == null
             ? Platform.select({
                 android: (
-                  <Menu>
-                    <IconButton
-                      style={{
-                        padding: spacing[3],
-                      }}
-                      icon={faEllipsisVertical}
-                      color={colors.secondaryText}
-                      size={fontSizes.xl}
-                      hitSlop={{
-                        right: +spacing[2],
-                        left: +spacing[2],
-                      }}
-                    />
-                  </Menu>
+                  <View
+                    accessible
+                    accessibilityRole="button"
+                    accessibilityLabel={t('courseAssignmentsTab.menuInfo')}
+                  >
+                    <Menu>
+                      <IconButton
+                        accessible={false}
+                        style={{
+                          padding: spacing[3],
+                        }}
+                        icon={faEllipsisVertical}
+                        color={colors.secondaryText}
+                        size={fontSizes.xl}
+                        hitSlop={{
+                          right: +spacing[2],
+                          left: +spacing[2],
+                        }}
+                      />
+                    </Menu>
+                  </View>
                 ),
               })
             : undefined
@@ -95,15 +100,7 @@ export const CourseAssignmentListItem = ({
         {...rest}
       />
     ),
-    [
-      item,
-      subTitle,
-      accessibilityListLabel,
-      spacing,
-      colors.secondaryText,
-      fontSizes.xl,
-      rest,
-    ],
+    [item, subTitle, spacing, colors.secondaryText, fontSizes.xl, rest, t],
   );
 
   if (Platform.OS === 'ios') {

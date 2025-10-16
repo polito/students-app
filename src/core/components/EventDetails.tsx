@@ -26,14 +26,31 @@ export const EventDetails = ({
   const { spacing, fontSizes } = useTheme();
   const formatHHmm = dateFormatter('HH:mm');
   return (
-    <View style={{ padding: spacing[5] }} {...rest}>
+    <View
+      style={{ padding: spacing[5] }}
+      {...rest}
+      accessible
+      accessibilityRole="text"
+      accessibilityLabel={[
+        title,
+        type,
+        typeof time === 'string'
+          ? `${time} ${endTime ? ` - ${formatHHmm(endTime)}` : ''}`
+          : time,
+        timeLabel,
+      ].join(', ')}
+    >
       <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
-      <Text variant="caption" style={{ marginBottom: spacing[2] }}>
+      <Text
+        accessible={false}
+        variant="caption"
+        style={{ marginBottom: spacing[2] }}
+      >
         {type}
       </Text>
       {time &&
         (typeof time === 'string' ? (
-          <Text style={{ fontSize: fontSizes.md }}>
+          <Text accessible={false} style={{ fontSize: fontSizes.md }}>
             {time}
             {endTime && ` - ${formatHHmm(endTime)}`}
           </Text>
@@ -41,7 +58,9 @@ export const EventDetails = ({
           time
         ))}
       {!!timeLabel && (
-        <Text style={{ fontSize: fontSizes.md }}>{timeLabel}</Text>
+        <Text accessible={false} style={{ fontSize: fontSizes.md }}>
+          {timeLabel}
+        </Text>
       )}
     </View>
   );

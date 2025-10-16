@@ -1,12 +1,13 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList } from 'react-native';
+import { AccessibilityInfo, FlatList } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { DateTime } from 'luxon';
 
@@ -51,6 +52,18 @@ export const CourseNoticesScreen = () => {
     clearNotificationScope(noticesNotificationScope);
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!notices || notices?.length === 0) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseNoticesTab.emptyState'),
+          );
+        }, 500);
+      }
+    }, [notices, t]),
+  );
+
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
@@ -63,7 +76,15 @@ export const CourseNoticesScreen = () => {
       renderItem={({ item: notice, index }) => (
         <ListItem
           title={notice.title}
-          accessibilityLabel={`${t(
+          accessibilityLabel={`
+          ${
+            getUnreadsCount([...noticesNotificationScope, notice.id])
+              ? `${t('common.unread')}, ${t(
+                  'courseNoticesTab.messageReadAfterGoBack',
+                )}`
+              : ''
+          }
+          ${t(
             accessibilityListLabel(index, notices?.length || 0),
           )}. ${DateTime.fromJSDate(notice.publishedAt, {
             zone: APP_TIMEZONE,

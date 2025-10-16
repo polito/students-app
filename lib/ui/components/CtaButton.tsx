@@ -124,6 +124,7 @@ export const CtaButton = ({
       )}
       <TouchableHighlight
         accessibilityRole="button"
+        accessibilityHint={hint}
         underlayColor={underlayColor}
         disabled={disabled || loading}
         style={[
