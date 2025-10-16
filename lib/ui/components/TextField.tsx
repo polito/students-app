@@ -21,6 +21,7 @@ export interface TextFieldProps extends Omit<TextInputProps, 'placeholder'> {
   icon?: IconDefinition;
   style?: ViewProps['style'];
   inputStyle?: TextInputProps['style'];
+  errorText?: string;
 }
 
 /**
@@ -34,10 +35,12 @@ export const TextField = ({
   inputStyle,
   numberOfLines = 1,
   autoCapitalize = 'none',
+  errorText,
   ...rest
 }: TextFieldProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const accessibilityLabel = rest?.accessibilityLabel ?? label;
 
   const textInputProps: TextInputProps = useMemo(() => {
     switch (type) {
@@ -58,7 +61,9 @@ export const TextField = ({
         rest.editable === false && styles.disabled,
         style,
       ]}
-      accessibilityLabel={rest?.accessibilityLabel ?? label}
+      accessibilityLabel={
+        errorText ? `${accessibilityLabel}, ${errorText}` : accessibilityLabel
+      }
       accessible={true}
       importantForAccessibility="yes"
     >

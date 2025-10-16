@@ -22,9 +22,15 @@ export const PersonListItem = ({
 
   return (
     <ListItem
+      accessible
+      accessibilityRole="button"
       leadingItem={
         person?.picture ? (
-          <Image source={{ uri: person.picture }} style={styles.picture} />
+          <Image
+            source={{ uri: person.picture }}
+            style={styles.picture}
+            accessibilityLabel={`Profile picture of ${person.firstName} ${person.lastName}`}
+          />
         ) : (
           <Icon icon={faUser} size={fontSizes['2xl']} />
         )

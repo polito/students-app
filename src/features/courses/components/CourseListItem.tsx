@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, View } from 'react-native';
+import { AccessibilityInfo, Alert, Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +10,9 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useQueryClient } from '@tanstack/react-query';
+
+import { AGENDA_QUERY_PREFIX } from '~/features/agenda/queries/agendaHooks';
+import { LECTURES_QUERY_PREFIX } from '~/features/agenda/queries/lectureHooks';
 
 import { IS_ANDROID } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -35,7 +38,7 @@ const Menu = ({
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
   const { dark, colors } = useTheme();
-
+  const queryClient = useQueryClient();
   const isHidden =
     preferences.courses[course.uniqueShortcode]?.isHidden ?? false;
 
@@ -47,7 +50,19 @@ const Menu = ({
         isHidden: !isHidden,
       },
     });
-  }, [preferences, course.uniqueShortcode, isHidden]);
+    queryClient
+      .invalidateQueries({ queryKey: [LECTURES_QUERY_PREFIX] })
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: [AGENDA_QUERY_PREFIX] });
+      });
+    let message = '';
+    if (!isHidden) {
+      message = t('courseListItem.courseHidden');
+    } else {
+      message = t('courseListItem.courseShown');
+    }
+    AccessibilityInfo.announceForAccessibility(message);
+  }, [preferences, course.uniqueShortcode, isHidden, queryClient, t]);
 
   return (
     <ContextMenu
@@ -76,6 +91,10 @@ export const CourseListItem = ({
 }: Props) => {
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
+
+  const prefs = usePreferencesContext();
+  const coursePrefs = prefs.courses[course?.uniqueShortcode];
+  const isHidden = coursePrefs?.isHidden ?? false;
 
   const hasDetails = isCourseDetailed(course);
   const courseInfo = getLatestCourseInfo(course);
@@ -106,6 +125,25 @@ export const CourseListItem = ({
     t,
   ]);
 
+  const accessibleExtraText = useMemo(() => {
+    return IS_ANDROID ? '' : t('coursesScreen.longPress');
+  }, [t]);
+
+  const accessibleText = useMemo(() => {
+    return `${accessibilityLabel || ''} ${course.name},  ${course.cfu} ${t(
+      'common.credits',
+    )},  ${
+      isHidden ? t('coursesScreen.notVisible') : ''
+    }   ${accessibleExtraText}   `;
+  }, [
+    course.name,
+    course.cfu,
+    isHidden,
+    accessibleExtraText,
+    accessibilityLabel,
+    t,
+  ]);
+
   const listItem = (
     <ListItem
       accessible={accessible}
@@ -125,9 +163,8 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
-      accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
-        course.cfu
-      } ${t('common.credits')}`}
+      accessibilityLabel={accessibleText}
+      accessibilityRole="button"
       title={course.name}
       subtitle={subtitle}
       leadingItem={<CourseIndicator uniqueShortcode={course.uniqueShortcode} />}
@@ -135,21 +172,28 @@ export const CourseListItem = ({
         <>
           {badge && <UnreadBadge text={badge} />}
           {hasDetails ? (
-            Platform.select({
-              android: (
-                <Menu course={course}>
-                  <IconButton
-                    style={{
-                      padding: spacing[3],
-                    }}
-                    icon={faEllipsisVertical}
-                    color={colors.secondaryText}
-                    size={fontSizes.xl}
-                  />
-                </Menu>
-              ),
-              ios: <DisclosureIndicator />,
-            })
+            <View
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel={t('courseListItem.settingsIcon')}
+            >
+              {Platform.select({
+                android: (
+                  <Menu course={course}>
+                    <IconButton
+                      accessible={false}
+                      style={{
+                        padding: spacing[3],
+                      }}
+                      icon={faEllipsisVertical}
+                      color={colors.secondaryText}
+                      size={fontSizes.xl}
+                    />
+                  </Menu>
+                ),
+                ios: <DisclosureIndicator />,
+              })}
+            </View>
           ) : (
             <View style={{ width: 20 }} />
           )}
@@ -168,7 +212,7 @@ export const CourseListItem = ({
       <View
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={`${accessibilityLabel} ${course.name},  ${course.cfu}`}
+        accessibilityLabel={accessibleText}
       >
         <Menu course={course}>{listItem}</Menu>
       </View>

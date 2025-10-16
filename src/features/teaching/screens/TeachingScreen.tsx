@@ -1,6 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
@@ -24,7 +31,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourses } from '../../../core/queries/courseHooks';
@@ -46,13 +55,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { courses: coursePreferences, hideGrades } = usePreferencesContext();
+  const {
+    courses: coursePreferences,
+    hideGrades,
+    updatePreference,
+  } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
   const { getUnreadsCountPerCourse } = useNotifications();
   const surveyCategoriesQuery = useGetSurveyCategories();
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const { accessibilityListLabel } = useAccessibility();
+
   const transcriptBadge = null;
 
   const courses = useMemo(() => {
@@ -96,6 +111,102 @@ export const TeachingScreen = ({ navigation }: Props) => {
     );
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
+  const transcriptAccessibleLabel = useMemo(() => {
+    if (hideGrades) {
+      return [
+        t('transcriptMetricsScreen.notShown'),
+        t('transcriptMetricsScreen.showDetails'),
+      ].join('. ');
+    }
+
+    const firstLabel =
+      studentQuery.data?.averageGradePurged != null
+        ? t('transcriptMetricsScreen.finalAverageLabel')
+        : t('transcriptMetricsScreen.weightedAverageLabel');
+    const firstLabelValue = hideGrades
+      ? t('common.notAvailable')
+      : (studentQuery.data?.averageGradePurged ??
+        studentQuery.data?.averageGrade ??
+        t('common.notAvailable'));
+
+    const secondLabel = studentQuery.data?.estimatedFinalGradePurged
+      ? t('transcriptMetricsScreen.estimatedFinalGradePurged')
+      : t('transcriptMetricsScreen.estimatedFinalGrade');
+    const secondPreValue = studentQuery.data?.estimatedFinalGradePurged
+      ? studentQuery.data?.estimatedFinalGradePurged || 0
+      : studentQuery.data?.estimatedFinalGrade || 0;
+    const secondLabelValue = `${secondPreValue} ${t('common.on')} 110`;
+
+    const thirdLabel = t('transcriptMetricsScreen.totalCredits');
+    const thirdLabelValue = `${studentQuery.data?.totalAcquiredCredits} ${t(
+      'common.on',
+    )} ${studentQuery.data?.totalCredits}`;
+
+    return [
+      firstLabel,
+      firstLabelValue,
+      secondLabel,
+      secondLabelValue,
+      thirdLabel,
+      thirdLabelValue,
+      t('transcriptMetricsScreen.showDetails'),
+    ].join('. ');
+  }, [
+    hideGrades,
+    studentQuery.data?.averageGrade,
+    studentQuery.data?.averageGradePurged,
+    studentQuery.data?.estimatedFinalGrade,
+    studentQuery.data?.estimatedFinalGradePurged,
+    studentQuery.data?.totalAcquiredCredits,
+    studentQuery.data?.totalCredits,
+    t,
+  ]);
+
+  const coursesSectionLabelAccessible = useMemo(() => {
+    const notVisibleCourseCount = coursesQuery?.data?.length
+      ? coursesQuery?.data?.length - courses.length
+      : 0;
+    const notVisibleCourseCountLabel =
+      notVisibleCourseCount > 0
+        ? t('coursesScreen.totalNotVisible', {
+            total: notVisibleCourseCount,
+          })
+        : undefined;
+
+    return [
+      t('coursesScreen.title'),
+      t('coursesScreen.total', { total: courses.length }),
+      `  ${t('common.and')} ${notVisibleCourseCountLabel} `,
+    ].join('. ');
+  }, [courses.length, coursesQuery?.data?.length, t]);
+
+  const examsSectionLabelAccessible = useMemo(() => {
+    const notVisibleExamCount = examsQuery?.data?.length
+      ? examsQuery?.data?.length - exams.length
+      : 0;
+    const notVisibleExamCountLabel =
+      notVisibleExamCount > 0
+        ? t('examsScreen.totalNotVisible', {
+            total: notVisibleExamCount,
+          })
+        : undefined;
+    return [
+      t('examsScreen.title'),
+      t('examsScreen.total', { total: exams.length }),
+      `  ${t('common.and')} ${notVisibleExamCountLabel} `,
+    ].join('. ');
+  }, [exams.length, examsQuery?.data?.length, t]);
+
+  const onHide = (value: boolean) => {
+    updatePreference('hideGrades', value);
+    const message = value
+      ? 'coursesScreen.hiddenCredits'
+      : 'coursesScreen.visibleCredits';
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(t(message));
+    }, 500);
+  };
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -117,6 +228,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
         ) : undefined}
         <Section>
           <SectionHeader
+            accessible
+            accessibilityLabel={coursesSectionLabelAccessible}
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
@@ -150,6 +263,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           <SectionHeader
+            accessible
+            accessibilityLabel={examsSectionLabelAccessible}
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
             linkToMoreCount={
@@ -174,15 +289,20 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
                 bottomBorder={index < exams.length - 1}
+                accessible={true}
+                accessibilityLabel={accessibilityListLabel(index, exams.length)}
               />
             ))}
           </OverviewList>
         </Section>
         <Section>
-          <SectionHeader
-            title={t('common.transcript')}
-            trailingItem={<HideGrades />}
-          />
+          {/*/ / this Pressable is for ios accessibility*/}
+          <Pressable onPress={() => IS_IOS && onHide(!hideGrades)}>
+            <SectionHeader
+              title={t('common.transcript')}
+              trailingItem={<HideGrades />}
+            />
+          </Pressable>
 
           <View style={GlobalStyles.relative}>
             <Card style={styles.transcriptCard}>
@@ -194,6 +314,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 )
               ) : (
                 <TouchableHighlight
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={transcriptAccessibleLabel}
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
                 >
@@ -278,16 +401,24 @@ const HideGrades = () => {
   const label = hideGrades ? t('common.show') : t('common.hide');
   const icon = hideGrades ? faEye : faEyeSlash;
 
-  const onHide = (value: boolean) => updatePreference('hideGrades', value);
+  const onHide = (value: boolean) => {
+    updatePreference('hideGrades', value);
+    const message = value
+      ? 'coursesScreen.hiddenCredits'
+      : 'coursesScreen.visibleCredits';
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(t(message));
+    }, 500);
+  };
 
   return (
     <View
       style={styles.hideGradesSwitch}
-      accessibilityLabel={`${label}. ${t(
-        `common.activeStatus.${hideGrades}`,
+      accessibilityLabel={`${label}, ${t(
+        'transcriptMetricsScreen.hideAndShowButton',
       )} `}
-      accessibilityRole="switch"
-      accessible={true}
+      accessibilityRole="button"
+      accessible
     >
       <Icon icon={icon} color={colors.link} />
       <Text variant="link" onPress={() => onHide(!hideGrades)}>
