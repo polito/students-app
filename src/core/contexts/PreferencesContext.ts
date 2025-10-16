@@ -3,8 +3,11 @@ import { createContext, useContext } from 'react';
 import { PlaceOverview } from '@polito/api-client';
 import { PersonOverview } from '@polito/api-client/models';
 
-import { AgendaTypesFilterState } from '../../features/agenda/types/AgendaTypesFilterState';
-import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
+import { AgendaTypesFilterState } from '~/features/agenda/types/AgendaTypesFilterState.ts';
+import {
+  HiddenRecurrence,
+  SingleEvent,
+} from '~/features/courses/types/Recurrence.ts';
 
 export const editablePreferenceKeys = [
   // This version is used exclusively for migrations.
@@ -114,6 +117,7 @@ export interface CoursePreferencesProps {
   order?: number;
   isHiddenInAgenda: boolean;
   itemsToHideInAgenda?: HiddenRecurrence[];
+  singleItemsToHideInAgenda?: SingleEvent[];
 }
 
 export const PreferencesContext = createContext<

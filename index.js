@@ -5,7 +5,7 @@ import { AppRegistry } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 
 import { name as appName } from './app.json';
-import { App } from './src/App';
+import { App } from '~/App';
 
 import '@formatjs/intl-getcanonicallocales/polyfill';
 import '@formatjs/intl-locale/polyfill';
