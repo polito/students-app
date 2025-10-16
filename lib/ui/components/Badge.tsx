@@ -4,7 +4,7 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
 
 type Props = {
   text: string;
