@@ -22,11 +22,12 @@ import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled.ts';
+import { APP_TIMEZONE } from '~/utils/dates.ts';
+
 import { DateTime } from 'luxon';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { APP_TIMEZONE } from '../../../utils/dates';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { AgendaTypeFilter } from '../components/AgendaTypeFilter';
 import { BookingCard } from '../components/BookingCard';
@@ -151,6 +152,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         id: 'daily',
         title: t('agendaScreen.dailyLayout'),
       },
+      {
+        id: 'hide-event',
+        title: t('agendaScreen.hideEvent'),
+      },
     ],
     [t],
   );
@@ -166,6 +171,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
       });
     };
 
+    const navigateToHideEventScreen = () => {
+      navigation.navigate('AgendaVisibility');
+    };
+
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
       switch (event) {
         case 'daily':
@@ -173,6 +182,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           break;
         case 'refresh':
           refetch();
+          break;
+        case 'hide-event':
+          navigateToHideEventScreen();
           break;
       }
     };

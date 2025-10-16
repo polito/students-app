@@ -175,9 +175,17 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         id: 'weekly',
         title: t('agendaScreen.weeklyLayout'),
       },
+      {
+        id: 'hide-event',
+        title: t('agendaScreen.hideEvent'),
+      },
     ],
     [t],
   );
+
+  const navigateToHideEventScreen = useCallback(() => {
+    navigation.navigate('AgendaVisibility');
+  }, [navigation]);
 
   useEffect(() => {
     if (isScrolling) {
@@ -203,6 +211,9 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
           break;
         case 'refresh':
           refreshQueries();
+          break;
+        case 'hide-event':
+          navigateToHideEventScreen();
           break;
       }
     };
@@ -240,6 +251,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     refreshQueries,
     nextDate,
     screenOptions,
+    navigateToHideEventScreen,
   ]);
 
   return (
