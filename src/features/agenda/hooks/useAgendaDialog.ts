@@ -9,7 +9,7 @@ export const useAgendaDialog = () => {
     onHideThis: () => void,
     onHideThisAndFuture: () => void,
   ) => {
-    Dialog.dialog(
+    Dialog.multiChoiceDialog(
       t('agendaDialog.hideEventTitle'),
       t('agendaDialog.hideEventMessage'),
       [
