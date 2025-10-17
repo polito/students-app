@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -42,12 +42,6 @@ export const CourseStatisticsScreen = ({ route, navigation }: Props) => {
     filter,
     nameCourse,
   } = route.params;
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: nameCourse ?? t('courseStatisticsScreen.title'),
-    });
-  }, [nameCourse, navigation, t]);
 
   const { spacing, colors } = useTheme();
   const [currentFilters, setCurrentFilters] = useState<{
