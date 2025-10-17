@@ -285,7 +285,10 @@ export const CourseListItem = ({
             if (hasModules) {
               const totalModuleBadges = getTotalModuleBadges();
               return totalModuleBadges > 0 ? (
-                <UnreadBadge text={totalModuleBadges} style={styles.badge} />
+                <UnreadBadge
+                  text={totalModuleBadges}
+                  style={Platform.OS === 'android' ? styles.badge : undefined}
+                />
               ) : null;
             }
             return badge ? <UnreadBadge text={badge} /> : null;
@@ -411,6 +414,7 @@ export const CourseListItem = ({
                                     module.id,
                                     module.previousEditions,
                                   )}
+                                  style={styles.badge}
                                 />
                               )}
                             <DisclosureIndicator />
@@ -534,6 +538,7 @@ const createStyles = (theme: Theme) => {
       display: 'flex' as const,
       alignItems: 'center' as const,
       marginTop: 0,
+      marginRight: Platform.OS === 'ios' ? -spacing[4] : 0,
     },
     spacer: {
       width: 20,
@@ -558,6 +563,7 @@ const createStyles = (theme: Theme) => {
       borderBottomRightRadius: spacing[2],
       borderTopLeftRadius: 0,
       borderTopRightRadius: 0,
+      marginBottom: spacing[1],
     },
     moduleItemMiddle: {
       borderRadius: 0,
@@ -582,6 +588,9 @@ const createStyles = (theme: Theme) => {
     },
     badge: {
       marginRight: spacing[1],
+    },
+    badgeCourseIos: {
+      marginRight: -spacing[3],
     },
   };
 };
