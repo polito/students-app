@@ -63,7 +63,7 @@ export interface AgendaCardProps {
    * On card pressed handler
    */
   onPress?: () => void;
-  /**  /**
+  /**
    * The date of the event
    */
   date: string;
