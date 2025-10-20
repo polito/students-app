@@ -36,15 +36,46 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
 
   const { year } = useDegreeContext();
 
+  const accessibilityYearLabel = useMemo(() => {
+    const textNumber = [
+      'first',
+      'second',
+      'third',
+      'quarto',
+      'fifth',
+      'sixth',
+      'seventh',
+      'eighth',
+      'ninth',
+      'tenth',
+    ];
+    if (teachingYear >= 1 && teachingYear <= 10) {
+      return `${t(`common.${textNumber[teachingYear - 1]}`)} ${t(
+        'common.year',
+      )}`;
+    }
+    return `${year}° ${t('common.year')}`;
+  }, [t, teachingYear, year]);
+
   const [expandedGroupIndex, setExpandedGroupIndex] = useState<number>();
   return (
     <View style={styles.trackSectionContainer}>
-      <Text variant="subHeading" style={styles.subHeading}>
+      <Text
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={accessibilityYearLabel}
+        variant="subHeading"
+        style={styles.subHeading}
+      >
         {teachingYear}° {t('common.year')}
       </Text>
       <OverviewList rounded={true} style={styles.firstLevelOverviewList}>
         {firstLevelCourses.map((course, index) => (
           <ListItem
+            accessible={true}
+            accessibilityLabel={[course.name, course.cfu, t('common.cfu')].join(
+              ', ',
+            )}
             title={course.name}
             titleProps={{ numberOfLines: undefined }}
             key={`${course.teachingYear.toString()}-${

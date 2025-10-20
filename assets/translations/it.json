@@ -303,7 +303,17 @@
     "fromTime": "dalle",
     "toTime": "alle",
     "document": "Allegato",
-    "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
+    "sizeExc": "File di dimensioni eccessive, massimo 32 MB",
+    "first": "Primo",
+    "second": "Secondo",
+    "third": "Terzo",
+    "quarto": "Quarto",
+    "fifth": "Quinto",
+    "sixth": "Sesto",
+    "seventh": "Settimo",
+    "eighth": "Ottavo",
+    "ninth": "Nono",
+    "tenth": "Decimo"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -804,6 +814,7 @@
     "title": "Lauree magistrali"
   },
   "offeringScreen": {
+    "section": "Intestazione",
     "bachelor": "Laurea triennale",
     "emptyState": "Nessun corso disponibile",
     "master": "Laurea magistrale",
@@ -867,6 +878,7 @@
     "searchPlaceholder": "Prova con \"Aula 1\""
   },
   "profileScreen": {
+    "year click": "clicca due volte per cambiare anno del corso",
     "careerStatus": "Stato carriera:",
     "careerStatusEnum": {
       "active": "Attiva",

@@ -79,8 +79,8 @@ export const DegreeInfoScreen = () => {
             </Card>
           </>
           <Section>
-            <Card padded gapped>
-              <View>
+            <Card accessible={false} padded gapped>
+              <View accessibilityRole="text" accessible={true}>
                 <Text variant="subHeading">{t('common.notes')}</Text>
                 {degree?.notes?.map((note, index) => (
                   <Text key={index} variant="longProse">
@@ -89,7 +89,7 @@ export const DegreeInfoScreen = () => {
                 ))}
               </View>
               {degree?.objectives?.content && (
-                <View>
+                <View accessibilityRole="text" accessible={true}>
                   <Text variant="subHeading">{t('common.objectives')}</Text>
                   <Text variant="longProse">
                     {getHtmlTextContent(degree?.objectives?.content)}
