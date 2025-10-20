@@ -6,8 +6,8 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
-import { isCurrentMonth, isCurrentYear } from '../../../utils/dates';
-import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
+import { isCurrentMonth, isCurrentYear } from '~/utils/dates.ts';
+
 import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';
@@ -29,8 +29,6 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
   const monthOfYear =
     !isCurrentMonth(agendaDay.date) && agendaDay.date.toFormat('MMM');
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
-
-  const filteredAgendaDay = useProcessedLectures(agendaDay.items);
 
   return (
     <Row onLayout={onLayout}>
@@ -71,7 +69,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
             <EmptyDay />
           )
         ) : (
-          filteredAgendaDay.map(item => {
+          agendaDay.items.map(item => {
             switch (item.type) {
               case 'booking':
                 return <BookingCard key={item.key} item={item} />;
