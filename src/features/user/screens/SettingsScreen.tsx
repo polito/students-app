@@ -474,12 +474,6 @@ export const SettingsScreen = () => {
               />
             </OverviewList>
           </Section>
-          <Section>
-            <SectionHeader title={t('common.cache')} />
-            <OverviewList indented>
-              <CleanCacheListItem />
-            </OverviewList>
-          </Section>
           <Section
             accessible={true}
             accessibilityLabel={[
