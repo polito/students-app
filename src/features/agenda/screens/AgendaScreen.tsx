@@ -218,15 +218,21 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
             accessibilityLabel={t('agendaScreen.selectDate')}
             onPress={() => setDataPickerIsOpened(true)}
           />
-          <MenuView actions={screenOptions} onPressAction={onPressOption}>
-            <IconButton
-              icon={faEllipsisVertical}
-              color={palettes.primary[400]}
-              size={fontSizes.lg}
-              adjustSpacing="right"
-              accessibilityLabel={t('common.options')}
-            />
-          </MenuView>
+          <View
+            accessibilityRole="button"
+            accessible
+            accessibilityLabel={t('common.options')}
+          >
+            <MenuView actions={screenOptions} onPressAction={onPressOption}>
+              <IconButton
+                accessible={false}
+                icon={faEllipsisVertical}
+                color={palettes.primary[400]}
+                size={fontSizes.lg}
+                adjustSpacing="right"
+              />
+            </MenuView>
+          </View>
         </>
       ),
     });
@@ -248,6 +254,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         <AgendaFilters />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={today}

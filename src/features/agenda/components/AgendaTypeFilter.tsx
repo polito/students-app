@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -75,6 +75,19 @@ export const AgendaTypeFilter = () => {
     }
   }, [filters, colorsMap, getLocalizedType, styles.buttonType, t]);
 
+  const pillContentText = useMemo(() => {
+    const selectedTypes: AgendaItemType[] = [];
+    Object.entries(filters).forEach(([type, enabled]) => {
+      if (enabled) selectedTypes.push(type as AgendaItemType);
+    });
+
+    if (selectedTypes.length === 0 || selectedTypes.length === 4) {
+      return t('common.all');
+    } else {
+      return selectedTypes.map(type => getLocalizedType(type)).join(', ');
+    }
+  }, [filters, getLocalizedType, t]);
+
   const typeActions = useMemo(() => {
     return ALL_AGENDA_TYPES.map(eventType => {
       const typedEventType = eventType as AgendaItemType;
@@ -94,32 +107,26 @@ export const AgendaTypeFilter = () => {
   }, [filters, colorsMap, getLocalizedType]);
 
   return (
-    <MenuView
-      actions={typeActions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        const type = event as AgendaItemType;
-        toggleFilter(type);
-      }}
+    <Pressable
+      accessible={true}
+      accessibilityLabel={[t('common.filterFor'), pillContentText].join(', ')}
+      style={styles.typeFilter}
     >
-      <PillDropdownActivator variant="neutral">
-        <View style={styles.typeFilter}>
-          <Text key="events">{t('common.event_plural')} </Text>
-          <Text
-            style={
-              Array.isArray(pillContent) &&
-              pillContent.length > 0 && {
-                paddingRight: 4,
-                paddingLeft: 6,
-                backgroundColor: colors.background,
-                borderRadius: 3,
-              }
-            }
-          >
-            {Array.isArray(pillContent) && pillContent.length.toString()}{' '}
-          </Text>
-        </View>
-      </PillDropdownActivator>
-    </MenuView>
+      <MenuView
+        actions={typeActions}
+        onPressAction={({ nativeEvent: { event } }) => {
+          const type = event as AgendaItemType;
+          toggleFilter(type);
+        }}
+      >
+        <PillDropdownActivator variant="neutral">
+          <View style={styles.typeFilter}>
+            <Text key="events">{t('common.event_plural')}:</Text>
+            {pillContent}
+          </View>
+        </PillDropdownActivator>
+      </MenuView>
+    </Pressable>
   );
 };
 

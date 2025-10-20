@@ -217,6 +217,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           <OverviewList indented>
             {lecture?.place && (
               <ListItem
+                accessibilityRole="button"
+                accessible
+                accessibilityLabel={
+                  lecture.place?.name
+                    ? t('agendaScreen.room', { roomName: lecture.place.name })
+                    : '-'
+                }
                 leadingItem={
                   <Icon icon={faLocationDot} size={fontSizes['2xl']} />
                 }
@@ -244,6 +251,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               />
             )}
             <ListItem
+              accessibilityRole="button"
+              accessible
+              accessibilityLabel={[
+                t('lectureScreen.courseFilesCta'),
+                lecture.title,
+              ].join(', ')}
               title={lecture.title}
               subtitle={t('lectureScreen.courseFilesCta')}
               leadingItem={

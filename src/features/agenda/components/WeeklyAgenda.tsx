@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Col } from '@lib/ui/components/Col';
@@ -28,6 +29,8 @@ export const WeeklyAgenda = ({
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { accessibility } = usePreferencesContext();
+  const { t } = useTranslation();
+
   const newDay = useMemo(
     () =>
       currentDay
@@ -36,12 +39,29 @@ export const WeeklyAgenda = ({
     [currentDay],
   );
 
+  const dateStart = useMemo(
+    () => agendaWeek.dateRange.start!.toFormat('d MMM'),
+    [agendaWeek.dateRange],
+  );
+
+  const dateEnd = useMemo(
+    () => agendaWeek.dateRange.end!.minus(1).toFormat('d MMM'),
+    [agendaWeek.dateRange],
+  );
+
   return (
     <View>
-      <Text variant="secondaryText" style={styles.weekHeader} capitalize>
-        {agendaWeek.dateRange.start!.toFormat('d MMM')}
+      <Text
+        accessible
+        accessibilityRole="text"
+        accessibilityLabel={[t('common.week'), dateStart, dateEnd].join(', ')}
+        variant="secondaryText"
+        style={styles.weekHeader}
+        capitalize
+      >
+        {dateStart}
         {' - '}
-        {agendaWeek.dateRange.end!.minus(1).toFormat('d MMM')}
+        {dateEnd}
       </Text>
       {agendaWeek.data.map(day => (
         <DailyAgenda

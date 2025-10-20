@@ -22,6 +22,8 @@ export const PersonListItem = ({
 
   return (
     <ListItem
+      accessibilityRole="button"
+      accessible
       leadingItem={
         person?.picture ? (
           <Image source={{ uri: person.picture }} style={styles.picture} />

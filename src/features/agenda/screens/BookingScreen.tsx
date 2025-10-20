@@ -265,7 +265,13 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               title={t('bookingScreen.barCodeTitle')}
               accessible={false}
             />
-            <Card style={styles.barCodeCard} spaced>
+            <Card
+              style={styles.barCodeCard}
+              spaced
+              accessible={true}
+              accessibilityRole="image"
+              accessibilityLabel={`${t('bookingScreen.barCodeTitle')}: ${studentQuery.data?.username}`}
+            >
               {studentQuery.data && (
                 <Barcode
                   value={studentQuery.data.username}

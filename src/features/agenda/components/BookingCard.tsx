@@ -19,6 +19,7 @@ export const BookingCard = ({ item, compact = false }: Props) => {
 
   return (
     <AgendaCard
+      date={item?.date}
       title={item.title}
       type={t('common.booking')}
       color={colors.bookingCardBorder}

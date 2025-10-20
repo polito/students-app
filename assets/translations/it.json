@@ -28,7 +28,11 @@
     "rooms": "Aule {{roomNames}}",
     "selectDate": "Seleziona data",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "next week": "Prossima settimana",
+    "previous week": "Settimana precedente",
+    "totalEvents": "Numero prenotazioni settimanali",
+    "noEvents": "Questa settimana non hai prenotazioni"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -300,6 +304,9 @@
     "warning": "Attenzione",
     "year": "anno",
     "yesterday": "Ieri",
+    "week": "Settimana",
+    "room": "Aula",
+    "filterFor": "Filtra eventi per",
     "fromTime": "dalle",
     "toTime": "alle",
     "document": "Allegato",

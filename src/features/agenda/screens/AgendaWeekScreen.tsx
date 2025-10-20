@@ -1,6 +1,11 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
 import {
@@ -83,8 +88,20 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   } = useGetAgendaWeek(currentWeek);
 
   const calendarData = useMemo(() => {
-    return weekData?.data?.flatMap(week => week.items) ?? [];
-  }, [weekData?.data]);
+    const res = weekData?.data?.flatMap(week => week.items) ?? [];
+    if (res?.length === 0) {
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(t('agendaScreen.noEvents'));
+      }, 500);
+    } else {
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(
+          [t('agendaScreen.totalEvents'), res.length].join(', '),
+        );
+      }, 500);
+    }
+    return res;
+  }, [t, weekData?.data]);
 
   const calendarMax = useMemo(() => {
     return (
@@ -261,6 +278,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={todayDateTime.toJSDate()}
@@ -299,11 +317,17 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
               <CalendarHeader {...props} cellHeight={-1} />
             )}
             renderEvent={(item: AgendaItem, touchableOpacityProps, key) => {
+              const formattedProps = {
+                ...touchableOpacityProps,
+                disabled: false,
+              };
               return (
                 <TouchableOpacity
                   key={key}
-                  {...touchableOpacityProps}
+                  {...formattedProps}
                   style={[touchableOpacityProps.style, styles.event]}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${item.title}`}
                 >
                   {item.type === 'booking' && (
                     <BookingCard key={item.key} item={item} compact={true} />
