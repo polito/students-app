@@ -11,8 +11,8 @@ import { AgendaItem } from '../types/AgendaItem';
 export const processLectures = (
   data: AgendaItem[],
   courses: CoursesPreferences,
-) => {
-  return data
+) =>
+  data
     .map(item => {
       if (item.type === 'lecture' && item.uniqueShortcode) {
         return {
@@ -53,11 +53,8 @@ export const processLectures = (
 
       return !isLectureHidden;
     });
-};
 
 export const useProcessedLectures = (data: AgendaItem[]) => {
   const { courses } = usePreferencesContext();
-  return useMemo(() => {
-    return processLectures(data, courses);
-  }, [courses, data]);
+  return useMemo(() => processLectures(data, courses), [courses, data]);
 };
