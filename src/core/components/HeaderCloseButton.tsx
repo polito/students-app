@@ -4,13 +4,15 @@ import { Pressable } from 'react-native';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export const HeaderCloseButton = () => {
+export const HeaderCloseButton = ({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<any>;
+}) => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   return (
     <Pressable
@@ -23,3 +25,8 @@ export const HeaderCloseButton = () => {
     </Pressable>
   );
 };
+
+export const createHeaderCloseButton =
+  (navigation: NativeStackNavigationProp<any>) => () => (
+    <HeaderCloseButton navigation={navigation} />
+  );

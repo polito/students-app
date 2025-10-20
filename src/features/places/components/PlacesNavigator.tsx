@@ -13,8 +13,8 @@ import {
   UserLocation,
 } from '@rnmapbox/maps';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
+import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { notNullish } from '../../../utils/predicates';
@@ -208,13 +208,13 @@ export const PlacesNavigator = () => {
         <Stack.Screen
           name="MessagesModal"
           component={UnreadMessagesModal}
-          options={{
+          options={({ navigation }) => ({
             headerTitle: t('messagesScreen.title'),
             headerLargeTitle: false,
             presentation: 'modal',
-            headerLeft: () => <HeaderLogo />,
-            headerRight: () => <HeaderCloseButton />,
-          }}
+            headerLeft: HeaderLogoNoProps,
+            headerRight: createHeaderCloseButton(navigation),
+          })}
         />
         <Map.Screen
           name="FreeRooms"

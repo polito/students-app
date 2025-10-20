@@ -9,7 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { PolitoAuthenticatorScreen } from '~/features/user/screens/PolitoAuthenticatorScreen';
 
-import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
+import { createHeaderCloseButton } from '../../core/components/HeaderCloseButton';
 import { HeaderLogoNoProps } from '../../core/components/HeaderLogo';
 import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
 import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
@@ -113,13 +113,13 @@ export const SharedScreens = () => {
       <Stack.Screen
         name="MessagesModal"
         component={UnreadMessagesModal}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: t('messagesScreen.title'),
           headerLargeTitle: false,
           presentation: 'modal',
           headerLeft: HeaderLogoNoProps,
-          headerRight: HeaderCloseButton,
-        }}
+          headerRight: createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="PolitoAuthenticator"
