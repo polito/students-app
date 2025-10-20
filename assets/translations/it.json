@@ -300,6 +300,13 @@
     "warning": "Attenzione",
     "year": "anno",
     "yesterday": "Ieri",
+    "activated": "Attivato",
+    "deactivated": "Disattivato",
+    "disabled": "Disabilitato",
+    "enabled": "Abilitato",
+    "disabled": "Disabilitato",
+    "click2Active": "Doppio click per attivare",
+    "click2Deactivate": "Doppio click per disattivare",
     "fromTime": "dalle",
     "toTime": "alle",
     "document": "Allegato",
@@ -720,7 +727,8 @@
     "sentAt": "Inviato il",
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
-    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
+    "clickToNavigate": "clicca due volte per aprire e leggere il messaggio completo"
   },
   "messagingView": {
     "activeReplay": "Attivo, (tocca due volte per attivare)",
