@@ -60,6 +60,12 @@ export const PersonScreen = ({ route }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
+  const profileImageAccessibleLabel = [
+    t('common.profilePic'),
+    ', ',
+    person && person?.picture ? '' : t('personScreen.noProfileImage'),
+  ].join(', ');
+
   const header = (
     <Col ph={5} gap={6} mb={6}>
       <Text weight="bold" variant="title" style={styles.title}>
@@ -71,7 +77,10 @@ export const PersonScreen = ({ route }: Props) => {
         person?.facilityShortName ||
         person?.profileUrl) && (
         <Row gap={6}>
-          <View accessible={true} accessibilityLabel={t('common.profilePic')}>
+          <View
+            accessible={true}
+            accessibilityLabel={profileImageAccessibleLabel}
+          >
             {person?.picture ? (
               <Image
                 source={{ uri: person.picture }}
@@ -131,6 +140,8 @@ export const PersonScreen = ({ route }: Props) => {
   const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         key={index}
         isAction
         leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
@@ -154,6 +165,8 @@ export const PersonScreen = ({ route }: Props) => {
 
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
@@ -191,6 +204,8 @@ export const PersonScreen = ({ route }: Props) => {
             <OverviewList indented loading={personQuery.isLoading}>
               {phoneNumbers?.map(renderPhoneNumber)}
               <ListItem
+                accessible={true}
+                accessibilityRole="button"
                 isAction
                 leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
                 title={t('common.email')}

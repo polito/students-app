@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
@@ -31,6 +36,20 @@ export const ContactsScreen = () => {
   const { peopleSearched } = usePreferencesContext();
 
   const isInputDisabled = useOfflineDisabled();
+
+  useEffect(() => {
+    if (people && people.length > 0) {
+      AccessibilityInfo.announceForAccessibility(
+        [
+          t('contactsScreen.resultFound'),
+          ', ',
+          people.length,
+          ', ',
+          t('contactsScreen.resultFoundRes'),
+        ].join(', '),
+      );
+    }
+  }, [people, t]);
 
   return (
     <>

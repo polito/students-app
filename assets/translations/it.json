@@ -306,6 +306,8 @@
     "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
+    "resultFound": "Sono stati trovati",
+    "resultFoundRes": "Risultati",
     "cancelRecentSearch": "Rimuovi",
     "cancelRecentSearchText": "Rimuovi ricerca recente",
     "clearSearch": "Cancella ricerca",
@@ -537,6 +539,7 @@
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
   "degreeCourseScreen": {
+    "periodSelect": "clicca due volte per cambiare anno del corso",
     "classroomExercise": "Esercitazioni in aula",
     "examMode": "Modalità di esame",
     "hours": "{{hours}} Ore",
@@ -831,6 +834,7 @@
     "title": "Novità"
   },
   "personScreen": {
+    "noProfileImage" : "Nessuna immagine di profilo",
     "call": "Chiama",
     "contacts": "Contatti",
     "coursesLabel": "Lista dei corsi offerti dal docente",

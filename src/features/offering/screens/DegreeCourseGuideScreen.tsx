@@ -32,8 +32,13 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
         <Section>
           <Card padded gapped style={styles.card}>
             {offeringCourse?.guide.map((section, i) => (
-              <Col key={i}>
-                <Text variant="subHeading" accessibilityRole="header">
+              <Col
+                key={i}
+                accessible={true}
+                accessibilityRole="text"
+                accessibilityLabel={[section.title, section.content].join(', ')}
+              >
+                <Text variant="subHeading" accessible={false}>
                   {section.title}
                 </Text>
                 <HtmlView
