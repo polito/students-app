@@ -55,6 +55,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const studentQuery = useGetStudent();
   const transcriptBadge = null;
 
+  const hasValidModules = (course: any) => {
+    if (!course.modules || course.modules.length === 0) return true;
+    return course.modules.some((module: any) => module.id !== null);
+  };
+
+  const getValidModulesCount = (course: any) => {
+    return (
+      course.modules?.filter((module: any) => module.id !== null).length || 0
+    );
+  };
+
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
 
@@ -121,7 +132,16 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
               coursesQuery.data
-                ? coursesQuery.data.length - courses.length
+                ? coursesQuery.data.length +
+                  coursesQuery.data.reduce(
+                    (acc, course) => acc + (course.modules?.length || 0),
+                    0,
+                  ) -
+                  courses.length -
+                  courses.reduce(
+                    (acc, course) => acc + getValidModulesCount(course),
+                    0,
+                  )
                 : undefined
             }
           />
@@ -136,7 +156,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {courses.map(course => (
+            {courses.filter(hasValidModules).map(course => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
