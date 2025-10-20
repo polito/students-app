@@ -4,6 +4,7 @@ import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import replace from 'react-string-replace';
 
 import { Card } from '@lib/ui/components/Card';
+import { Col } from '@lib/ui/components/Col';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
 import { Section } from '@lib/ui/components/Section';
@@ -122,17 +123,31 @@ export const JobOfferScreen = ({ route }: Props) => {
             </Text>
           )}
         </Card>
-        <Card accessible padded gapped>
-          <>
+        <Card padded gapped>
+          <Col
+            accessible={true}
+            accessibilityLabel={[
+              t('jobOfferScreen.description'),
+              ' - ',
+              companyMission ? companyMission : ' - ',
+            ].join(' ')}
+          >
             <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
             <Text variant="longProse">{companyMission ?? ' - '}</Text>
-          </>
-          <>
+          </Col>
+          <Col
+            accessible={true}
+            accessibilityLabel={[
+              t('jobOfferScreen.requirements'),
+              ' - ',
+              requirements ? requirements : ' - ',
+            ].join(' ')}
+          >
             <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
             <Text variant="longProse">
               {requirements ? requirements : ' - '}
             </Text>
-          </>
+          </Col>
           <>
             {(contactInfo[0] || email || url) && (
               <Text variant="subHeading">
