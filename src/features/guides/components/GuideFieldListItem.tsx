@@ -27,6 +27,8 @@ export const GuideFieldListItem = ({ field }: Props) => {
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityLabel={[field.label, ' - ', field.value].join(', ')}
       title={
         <View style={styles.row}>
           <Text style={[styles.text, styles.label]}>{field.label}</Text>
