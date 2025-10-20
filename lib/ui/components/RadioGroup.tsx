@@ -27,7 +27,11 @@ export const RadioGroup = <T,>({
   return (
     <Col
       accessible={true}
-      accessibilityLabel={showError && value === undefined ? t('common.selectAnOption') : undefined}
+      accessibilityLabel={
+        showError && value === undefined
+          ? t('common.selectAnOption')
+          : undefined
+      }
     >
       {options.map((radioDefinition, index) => {
         const isSelected = radioDefinition.value === value;

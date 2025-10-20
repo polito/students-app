@@ -44,7 +44,9 @@ export const OverviewList = ({
     <Card
       accessible={Platform.select({ android: true, ios: false })}
       accessibilityState={{ busy: loading }}
-      accessibilityLabel={Children.count(children) === 0 ? emptyStateText : undefined}
+      accessibilityLabel={
+        Children.count(children) === 0 ? emptyStateText : undefined
+      }
       rounded={rounded ?? Platform.select({ android: false })}
       translucent={translucent}
       style={[
