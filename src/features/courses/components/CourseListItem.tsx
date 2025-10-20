@@ -26,7 +26,7 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/theme';
+import { Theme } from '@lib/ui/types/Theme';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useGetPersons } from '~/core/queries/peopleHooks';
