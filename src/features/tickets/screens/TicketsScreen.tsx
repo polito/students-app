@@ -69,111 +69,117 @@ const ListItem = ({
   );
 };
 
+type TicketPageSection = {
+  ticketsQuery: ReturnType<typeof useGetTickets>;
+};
+
+const OpenTickets = ({ ticketsQuery }: TicketPageSection) => {
+  const { t } = useTranslation();
+
+  const openTickets = (ticketsQuery.data || [])
+    .filter(ticket => ticket.status !== TicketStatus.Closed)
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!ticketsQuery?.data || openTickets?.length > 0) {
+        return;
+      }
+      AccessibilityInfo.announceForAccessibility(
+        t('ticketsScreen.noOpenTickets'),
+      );
+    }, [openTickets, t, ticketsQuery]),
+  );
+
+  const sectionHeaderTicketOpenAccessibilityLabel = useMemo(() => {
+    const baseText = t('ticketsScreen.opened');
+    if (openTickets?.length > 0) {
+      return baseText;
+    } else {
+      return [baseText, t('ticketsScreen.noOpenTickets')].join(', ');
+    }
+  }, [openTickets, t]);
+
+  return (
+    <Section>
+      <SectionHeader
+        accessibilityLabel={sectionHeaderTicketOpenAccessibilityLabel}
+        title={t('ticketsScreen.opened')}
+      />
+      {!ticketsQuery.isLoading &&
+        (openTickets.length > 0 ? (
+          <OverviewList indented>
+            {openTickets?.map((ticket, index) => (
+              <ListItem
+                totalData={openTickets?.length || 0}
+                index={index}
+                ticket={ticket}
+                key={ticket.id}
+              />
+            ))}
+          </OverviewList>
+        ) : (
+          <OverviewList emptyStateText={t('ticketsScreen.openEmptyState')} />
+        ))}
+    </Section>
+  );
+};
+
+const ClosedTickets = ({ ticketsQuery }: TicketPageSection) => {
+  const { t } = useTranslation();
+
+  const closedTickets = (ticketsQuery.data || [])
+    .filter(ticket => ticket.status === TicketStatus.Closed)
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+  const renderedClosedTickets = useMemo(
+    () => closedTickets.slice(0, 4),
+    [closedTickets],
+  );
+
+  const sectionHeaderTicketClosedAccessibilityLabel = useMemo(() => {
+    const baseText = t('ticketsScreen.closed');
+    if (renderedClosedTickets.length > 0) {
+      return baseText;
+    } else {
+      return [baseText, t('ticketsScreen.noClosedTickets')].join(', ');
+    }
+  }, [renderedClosedTickets, t]);
+
+  return (
+    <Section>
+      <SectionHeader
+        accessibilityLabel={sectionHeaderTicketClosedAccessibilityLabel}
+        title={t('ticketsScreen.closed')}
+        linkTo={{
+          screen: 'TicketList',
+          params: { statuses: [TicketStatus.Closed] },
+        }}
+        linkToMoreCount={closedTickets.length - renderedClosedTickets.length}
+      />
+      {!ticketsQuery.isLoading &&
+        (renderedClosedTickets.length > 0 ? (
+          <OverviewList indented>
+            {renderedClosedTickets.map((ticket, index) => (
+              <ListItem
+                totalData={renderedClosedTickets?.length || 0}
+                index={index}
+                ticket={ticket}
+                key={ticket.id}
+              />
+            ))}
+          </OverviewList>
+        ) : (
+          <OverviewList emptyStateText={t('ticketsScreen.closedEmptyState')} />
+        ))}
+    </Section>
+  );
+};
+
 export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
-
-  const OpenTickets = () => {
-    const openTickets = (ticketsQuery.data || [])
-      .filter(ticket => ticket.status !== TicketStatus.Closed)
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-    useFocusEffect(
-      useCallback(() => {
-        if (!ticketsQuery?.data || openTickets?.length > 0) {
-          return;
-        }
-        AccessibilityInfo.announceForAccessibility(
-          t('ticketsScreen.noOpenTickets'),
-        );
-      }, [openTickets]),
-    );
-
-    const sectionHeaderTicketOpenAccessibilityLabel = useMemo(() => {
-      const baseText = t('ticketsScreen.opened');
-      if (openTickets?.length > 0) {
-        return baseText;
-      } else {
-        return [baseText, t('ticketsScreen.noOpenTickets')].join(', ');
-      }
-    }, [openTickets]);
-
-    return (
-      <Section>
-        <SectionHeader
-          accessibilityLabel={sectionHeaderTicketOpenAccessibilityLabel}
-          title={t('ticketsScreen.opened')}
-        />
-        {!ticketsQuery.isLoading &&
-          (openTickets.length > 0 ? (
-            <OverviewList indented>
-              {openTickets?.map((ticket, index) => (
-                <ListItem
-                  totalData={openTickets?.length || 0}
-                  index={index}
-                  ticket={ticket}
-                  key={ticket.id}
-                />
-              ))}
-            </OverviewList>
-          ) : (
-            <OverviewList emptyStateText={t('ticketsScreen.openEmptyState')} />
-          ))}
-      </Section>
-    );
-  };
-
-  const ClosedTickets = () => {
-    const closedTickets = (ticketsQuery.data || [])
-      .filter(ticket => ticket.status === TicketStatus.Closed)
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-    const renderedClosedTickets = useMemo(
-      () => closedTickets.slice(0, 4),
-      [closedTickets],
-    );
-
-    const sectionHeaderTicketClosedAccessibilityLabel = useMemo(() => {
-      const baseText = t('ticketsScreen.closed');
-      if (renderedClosedTickets.length > 0) {
-        return baseText;
-      } else {
-        return [baseText, t('ticketsScreen.noClosedTickets')].join(', ');
-      }
-    }, [renderedClosedTickets]);
-
-    return (
-      <Section>
-        <SectionHeader
-          accessibilityLabel={sectionHeaderTicketClosedAccessibilityLabel}
-          title={t('ticketsScreen.closed')}
-          linkTo={{
-            screen: 'TicketList',
-            params: { statuses: [TicketStatus.Closed] },
-          }}
-          linkToMoreCount={closedTickets.length - renderedClosedTickets.length}
-        />
-        {!ticketsQuery.isLoading &&
-          (renderedClosedTickets.length > 0 ? (
-            <OverviewList indented>
-              {renderedClosedTickets.map((ticket, index) => (
-                <ListItem
-                  totalData={renderedClosedTickets?.length || 0}
-                  index={index}
-                  ticket={ticket}
-                  key={ticket.id}
-                />
-              ))}
-            </OverviewList>
-          ) : (
-            <OverviewList
-              emptyStateText={t('ticketsScreen.closedEmptyState')}
-            />
-          ))}
-      </Section>
-    );
-  };
 
   return (
     <>
@@ -183,8 +189,8 @@ export const TicketsScreen = ({ navigation }: Props) => {
         contentContainerStyle={styles.container}
       >
         <SafeAreaView>
-          <OpenTickets />
-          <ClosedTickets />
+          <OpenTickets ticketsQuery={ticketsQuery} />
+          <ClosedTickets ticketsQuery={ticketsQuery} />
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>

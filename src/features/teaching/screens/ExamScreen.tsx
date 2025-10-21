@@ -27,22 +27,23 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { BottomModal } from '../../../core/components/BottomModal';
-import { useBottomModal } from '../../../core/hooks/useBottomModal';
-import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useGetExams } from '../../../core/queries/examHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { useGetAllCpdSurveys } from '../../../core/queries/surveysHooks';
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer';
+import { BottomModal } from '~/core/components/BottomModal';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
+import { useBottomModal } from '~/core/hooks/useBottomModal';
+import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled';
+import { useGetExams } from '~/core/queries/examHooks';
+import { useGetPerson } from '~/core/queries/peopleHooks';
+import { useGetAllCpdSurveys } from '~/core/queries/surveysHooks';
+import { PlacesListItem } from '~/features/places/components/PlacesListItem';
 import {
   dateFormatter,
   formatDate,
   formatDateTime,
   formatReadableDate,
   isValidDate,
-} from '../../../utils/dates';
-import { PlacesListItem } from '../../places/components/PlacesListItem';
+} from '~/utils/dates';
+
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';
 import { ExamRescheduleCTA } from '../components/ExamRescheduleCTA';

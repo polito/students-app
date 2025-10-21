@@ -47,7 +47,6 @@ const mimeTypeIcons: Record<IconType, IconDefinition> = {
   javascript: faFileCode,
   json: faFileCode,
   iso: faFileZipper,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   '7z': faFileZipper,
 };
 

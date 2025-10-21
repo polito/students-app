@@ -1,7 +1,11 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {
+  MaterialTopTabBarProps,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 
 import { CareerScreen } from '../screens/CareerScreen';
@@ -17,8 +21,13 @@ const TopTabs = createMaterialTopTabNavigator<TranscriptTabs>();
 export const TranscriptTopTabsNavigator = () => {
   const { t } = useTranslation();
 
+  const tabBar = useCallback(
+    (props: MaterialTopTabBarProps) => <TopTabBar {...props} />,
+    [],
+  );
+
   return (
-    <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
+    <TopTabs.Navigator tabBar={tabBar}>
       <TopTabs.Screen
         name="TranscriptGrades"
         component={GradesScreen}
