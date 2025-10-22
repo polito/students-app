@@ -51,7 +51,7 @@ export const MessagesScreen = () => {
                       <Pressable
                         style={[
                           styles.deleteButton,
-                          { backgroundColor: palettes.error[500] },
+                          { backgroundColor: palettes.danger[600] },
                         ]}
                         onPress={() => handleDelete(message.id)}
                       >
