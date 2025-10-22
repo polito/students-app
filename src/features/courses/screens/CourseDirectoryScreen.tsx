@@ -1,41 +1,25 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { FlatList, Platform, StyleSheet } from 'react-native';
 
-import { faFile } from '@fortawesome/free-regular-svg-icons';
-import {
-  faCloudArrowDown,
-  faEllipsisH,
-  faSearch,
-  faXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { IconButton } from '@lib/ui/components/IconButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
-import { TextButton } from '@lib/ui/components/TextButton';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import {
-  BASE_PATH,
-  CourseDirectory,
-  CourseFileOverview,
-} from '@polito/api-client';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
-import { useFocusEffect } from '@react-navigation/native';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useDownloadQueue } from '../../../core/hooks/useDownloadQueue';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetCourseDirectory,
@@ -43,20 +27,16 @@ import {
 } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CourseFileOverviewWithLocation } from '../../../core/types/files';
-import { splitNameAndExtension } from '../../../utils/files';
-import {
-  sortByNameAsc,
-  sortByNameDesc,
-  sortWithDirectoriesFirstByDate,
-  sortWithDirectoriesFirstByDownloadStatus,
-} from '../../../utils/sorting';
+import { sortByNameAsc } from '../../../utils/sorting';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
+import { FileScreenHeader } from '../components/FileScreenHeader';
+import { ITEM_TYPES, MENU_ACTIONS } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
@@ -66,19 +46,6 @@ type Props = NativeStackScreenProps<
   'CourseDirectory' | 'DirectoryFiles'
 >;
 
-const FileCacheChecker = () => {
-  const { refresh } = useContext(CourseFilesCacheContext);
-
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh]),
-  );
-
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <></>;
-};
-
 const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const { courseId, directoryId, directoryName } = route.params;
   const { t } = useTranslation();
@@ -87,78 +54,53 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
-  const { palettes, fontSizes } = useTheme();
-  const {
-    downloads,
-    downloadQueue,
-    clearQueue,
-    setDownloadQueue,
-    addToQueue,
-    removeFromQueue,
-  } = useDownloadsContext();
-  const { startQueueDownload, stopQueueDownload } = useDownloadQueue();
   const [courseFilesCache] = useCourseFilesCachePath();
-  const [enableMultiSelect, setEnableMultiSelect] = useState(false);
-  const [hideFolders, setHideFolders] = useState(false);
-  const [sortedData, setSortedData] =
-    useState<typeof directoryQuery.data>(undefined);
-
-  // Sync sorted data with query data
-  useEffect(() => {
-    setSortedData(directoryQuery.data);
-  }, [directoryQuery.data]);
 
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
   }, [navigation]);
 
-  const selectAllFiles = useCallback(() => {
-    if (!sortedData) return;
+  const {
+    enableMultiSelect,
+    allFilesSelected,
+    sortedData,
+    setSortedData,
+    activeSort,
+    sortOptions,
+    toggleMultiSelect,
+    toggleSelectAll,
+    onPressSortOption,
+    downloadButtonTitle,
+    downloadButtonIcon,
+    downloadButtonProgress,
+    downloadButtonStyle,
+    handleDownloadAction,
+  } = useFileManagement({
+    courseId,
+    courseFilesCache,
+    data: directoryQuery.data || undefined,
+    isDirectoryView: true,
+  });
 
-    const files = sortedData.filter(item => !isDirectory(item));
+  useEffect(() => {
+    if (directoryQuery.data) {
+      // Separate directories and files
+      const directories = directoryQuery.data.filter(item => isDirectory(item));
+      const files = directoryQuery.data.filter(item => !isDirectory(item));
 
-    files.forEach(file => {
-      const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${file.id}`;
-      const [filename, extension] = splitNameAndExtension(file.name);
-      const cachedFilePath = [
-        courseFilesCache,
-        (file as any).location?.substring(1),
-        [filename ? `${filename} (${file.id})` : file.id, extension]
-          .filter(Boolean)
-          .join('.'),
-      ]
-        .filter(Boolean)
-        .join('/');
+      // Sort directories and files separately by name (A-Z)
+      const sortedDirectories = sortByNameAsc(directories);
+      const sortedFiles = sortByNameAsc(files);
 
-      addToQueue({
-        id: file.id,
-        name: file.name,
-        url: fileUrl,
-        filePath: cachedFilePath,
-        courseId,
-      });
-    });
-  }, [sortedData, addToQueue, courseId, courseFilesCache]);
+      // Combine directories first, then files
+      setSortedData([...sortedDirectories, ...sortedFiles]);
+    }
+  }, [directoryQuery.data, setSortedData]);
 
-  const deselectAllFiles = useCallback(() => {
-    if (!sortedData) return;
-
-    const files = sortedData.filter(item => !isDirectory(item));
-    files.forEach(file => {
-      removeFromQueue(file.id);
-    });
-  }, [sortedData, removeFromQueue]);
-
-  const allFilesSelected = useMemo(() => {
-    if (!sortedData) return false;
-    const files = sortedData.filter(item => !isDirectory(item));
-    return (
-      files.length > 0 &&
-      files.every(file =>
-        downloadQueue.files.some(queuedFile => queuedFile.id === file.id),
-      )
-    );
-  }, [sortedData, downloadQueue.files]);
+  const flattenedData = useMemo(() => {
+    if (!sortedData) return [];
+    return sortedData;
+  }, [sortedData]) as (CourseDirectory | CourseFileOverview)[];
 
   useEffect(() => {
     if (!isFileNavigator) {
@@ -168,181 +110,39 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     }
   }, [directoryName, isFileNavigator, navigation, t]);
 
-  // Auto-exit multi-select mode when downloads are completed
-  useEffect(() => {
-    if (enableMultiSelect && downloadQueue.hasCompleted) {
-      setEnableMultiSelect(false);
-    }
-  }, [enableMultiSelect, downloadQueue.hasCompleted]);
-
-  const screenOptions = useMemo(
-    () => [
-      {
-        id: 'select',
-        title: enableMultiSelect
-          ? t('common.cancelSelection')
-          : t('common.select'),
-      },
-      ...(enableMultiSelect
-        ? [
-            {
-              id: 'selectAll',
-              title: allFilesSelected
-                ? t('common.deselectAll')
-                : t('common.selectAll'),
-            },
-          ]
-        : []),
-      {
-        id: 'toggleFolders',
-        title: hideFolders ? t('common.showFolders') : t('common.hideFolders'),
-      },
-    ],
-    [t, enableMultiSelect, allFilesSelected, hideFolders],
-  );
-  const sortOptions = useMemo(
-    () => [
-      {
-        id: t('common.orderByNameAZ'),
-        title: t('common.orderByNameAZ'),
-      },
-      {
-        id: t('common.orderByNameZA'),
-        title: t('common.orderByNameZA'),
-      },
-      {
-        id: t('common.downloadStatus.false'),
-        title: t('common.downloadStatus.false'),
-      },
-      {
-        id: t('common.newest'),
-        title: t('common.newest'),
-      },
-      {
-        id: t('common.oldest'),
-        title: t('common.oldest'),
-      },
-    ],
-    [t],
-  );
-  const [activeSort, setActiveSort] = useState(sortOptions[0].title);
   const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    // eslint-disable-next-line default-case
     switch (event) {
-      case screenOptions[0].id:
-        if (enableMultiSelect) {
-          setEnableMultiSelect(false);
-          clearQueue();
-        } else {
-          setEnableMultiSelect(true);
-          setDownloadQueue(prev => ({
-            ...prev,
-            hasCompleted: false,
-          }));
-        }
+      case MENU_ACTIONS.SELECT:
+        toggleMultiSelect();
         break;
-      case 'selectAll':
-        if (allFilesSelected) {
-          deselectAllFiles();
-        } else {
-          selectAllFiles();
-        }
+      case MENU_ACTIONS.SELECT_ALL:
+        toggleSelectAll();
         break;
-      case 'toggleFolders':
-        setHideFolders(prev => !prev);
+      case MENU_ACTIONS.TOGGLE_FOLDERS:
+        navigation.replace('RecentFiles', { courseId });
+        updatePreference('filesScreen', 'filesView');
         break;
-      case screenOptions[3].id:
-        break;
-    }
-  };
-  const onPressSortOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    setActiveSort(event);
-    if (!directoryQuery.data) return;
-
-    // eslint-disable-next-line default-case
-    switch (event) {
-      case sortOptions[0].id:
-        setSortedData(sortByNameAsc(directoryQuery.data));
-        break;
-      case sortOptions[1].id:
-        setSortedData(sortByNameDesc(directoryQuery.data));
-        break;
-      case sortOptions[2].id:
-        setSortedData(
-          sortWithDirectoriesFirstByDownloadStatus(
-            directoryQuery.data,
-            downloads,
-            item => {
-              if (item.type === 'directory') return '';
-              const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
-              const [filename, extension] = splitNameAndExtension(item.name);
-              const cachedFilePath = [
-                courseFilesCache,
-                (item as any).location?.substring(1),
-                [filename ? `${filename} (${item.id})` : item.id, extension]
-                  .filter(Boolean)
-                  .join('.'),
-              ]
-                .filter(Boolean)
-                .join('/');
-              return `${fileUrl}:${cachedFilePath}`;
-            },
-          ),
-        );
-        break;
-      case sortOptions[3].id:
-        setSortedData(
-          sortWithDirectoriesFirstByDate(directoryQuery.data, item =>
-            item.type === 'file' ? item.createdAt : new Date(0),
-          ),
-        );
-        break;
-      case sortOptions[4].id:
-        setSortedData(
-          sortWithDirectoriesFirstByDate(directoryQuery.data, item =>
-            item.type === 'file' ? item.createdAt : new Date(0),
-          ).reverse(),
-        );
+      default:
         break;
     }
   };
   return (
     <CourseFilesCacheProvider>
-      <FileCacheChecker />
-
       {isFileNavigator && (
         <CourseSearchBar
           searchFilter={searchFilter}
           setSearchFilter={setSearchFilter}
         />
       )}
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          alignSelf: 'stretch',
-          flexDirection: 'row',
-        }}
-      >
-        <MenuView
-          actions={sortOptions}
-          onPressAction={e => {
-            onPressSortOption(e);
-          }}
-        >
-          <TextButton>{activeSort}</TextButton>
-        </MenuView>
-        <MenuView actions={screenOptions} onPressAction={onPressOption}>
-          <IconButton
-            icon={faEllipsisH}
-            color={palettes.primary[400]}
-            size={fontSizes.lg}
-            adjustSpacing="left"
-            accessibilityLabel={t('common.options')}
-          />
-        </MenuView>
-      </View>
+      <FileScreenHeader
+        enableMultiSelect={enableMultiSelect}
+        allFilesSelected={allFilesSelected}
+        activeSort={activeSort}
+        sortOptions={sortOptions}
+        onPressSortOption={onPressSortOption}
+        onPressOption={onPressOption}
+        isDirectoryView={true}
+      />
 
       {searchFilter ? (
         <CourseFileSearchFlatList
@@ -352,25 +152,21 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
       ) : (
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
-          data={
-            hideFolders
-              ? sortedData?.filter(item => !isDirectory(item))
-              : sortedData
-          }
+          data={flattenedData}
           scrollEnabled={scrollEnabled}
           contentContainerStyle={paddingHorizontal}
           keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
           initialNumToRender={15}
           renderItem={({ item }) =>
-            isDirectory(item) ? (
+            (item as any).type === ITEM_TYPES.DIRECTORY ? (
               <CourseDirectoryListItem
                 courseId={courseId}
-                item={item}
+                item={item as CourseDirectory}
                 enableMultiSelect={enableMultiSelect}
               />
             ) : (
               <CourseFileListItem
-                item={item}
+                item={item as CourseFileOverview}
                 onSwipeStart={() => setScrollEnabled(false)}
                 onSwipeEnd={() => setScrollEnabled(true)}
                 enableMultiSelect={enableMultiSelect}
@@ -395,57 +191,13 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           }
         />
       )}
-      {isFileNavigator && navigation && !enableMultiSelect && (
-        <CtaButton
-          title={t('courseDirectoryScreen.navigateRecentFiles')}
-          icon={faFile}
-          action={() => {
-            navigation.replace('RecentFiles', { courseId });
-            updatePreference('filesScreen', 'filesView');
-          }}
-        />
-      )}
       {navigation && enableMultiSelect && (
         <CtaButton
-          title={
-            downloadQueue.isDownloading && downloadQueue.files.length > 0
-              ? t('courseDirectoryScreen.downloadProgress', {
-                  current: Math.min(
-                    downloadQueue.currentFileIndex + 1,
-                    downloadQueue.files.length,
-                  ),
-                  total: downloadQueue.files.length,
-                })
-              : downloadQueue.files.length > 0
-                ? `${t('common.download')} (${downloadQueue.files.length})`
-                : t('common.download')
-          }
-          icon={
-            downloadQueue.isDownloading && downloadQueue.files.length > 0
-              ? faXmark
-              : faCloudArrowDown
-          }
-          action={() => {
-            if (downloadQueue.isDownloading && downloadQueue.files.length > 0) {
-              stopQueueDownload();
-              clearQueue();
-            } else if (downloadQueue.files.length > 0) {
-              startQueueDownload();
-            }
-          }}
-          progress={
-            downloadQueue.isDownloading && downloadQueue.files.length > 0
-              ? downloadQueue.overallProgress
-              : undefined
-          }
-          style={{
-            backgroundColor: downloadQueue.isDownloading
-              ? palettes.danger[600]
-              : palettes.primary[400],
-            borderColor: downloadQueue.isDownloading
-              ? palettes.danger[600]
-              : palettes.primary[400],
-          }}
+          title={downloadButtonTitle}
+          icon={downloadButtonIcon}
+          action={handleDownloadAction}
+          progress={downloadButtonProgress}
+          style={downloadButtonStyle}
         />
       )}
     </CourseFilesCacheProvider>
