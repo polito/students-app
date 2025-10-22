@@ -161,6 +161,9 @@
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadProgress": "Scaricando {{current}} di {{total}}",
+    "downloadCompleted": "Tutti i file scaricati con successo",
+    "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti",
     "downloadStatus": {
       "false": "Non scaricato",
       "true": "Scaricato"
@@ -272,6 +275,10 @@
     "refresh": "Aggiorna",
     "remaining": "{{value}} rimanenti",
     "remove": "Rimuovi",
+    "removeAll": "Rimuovi tutti",
+    "removeAllDownloaded": "Rimuovi tutti i file scaricati",
+    "downloadAttachment": "Scarica allegato",
+    "removeAttachment": "Rimuovi allegato",
     "reset": "Reimposta",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
@@ -375,10 +382,7 @@
     "navigateRecentFiles": "Sfoglia file recenti",
     "search": "Cerca",
     "downloadSelected": "Scarica file selezionati",
-    "stopDownload": "Ferma download",
-    "downloadProgress": "Scaricando {{current}} di {{total}}",
-    "downloadCompleted": "Tutti i file scaricati con successo",
-    "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti"
+    "stopDownload": "Ferma download"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
