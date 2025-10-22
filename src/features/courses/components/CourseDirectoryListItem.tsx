@@ -1,6 +1,7 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
+import { exists } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
 
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
@@ -35,7 +36,7 @@ export const CourseDirectoryListItem = ({
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList, any>>();
   const { t } = useTranslation();
-  const { downloadQueue, addToQueue, removeFromQueue, downloads } =
+  const { downloadQueue, addFilesToQueue, removeFilesFromQueue, downloads } =
     useDownloadsContext();
   const [courseFilesCache] = useCourseFilesCachePath();
 
@@ -47,43 +48,78 @@ export const CourseDirectoryListItem = ({
     );
   }, [downloadQueue.files, item]);
 
-  const allFilesDownloaded = useMemo(() => {
+  // Check if all files are downloaded by checking filesystem directly
+  const [allFilesDownloaded, setAllFilesDownloaded] = useState(false);
+
+  const checkAllFilesDownloaded = useCallback(async () => {
     const directoryFiles = item.files.filter(isFile);
 
-    if (directoryFiles.length === 0) return false;
+    if (directoryFiles.length === 0) {
+      setAllFilesDownloaded(false);
+      return;
+    }
 
-    return directoryFiles.every(file => {
-      const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${file.id}`;
-      const [filenameFromName, extensionFromName] = splitNameAndExtension(
-        file.name,
-      );
-      let ext: string | null = extension(file.mimeType!);
-      if (!ext && extensionFromName && lookup(extensionFromName)) {
-        ext = extensionFromName;
-      }
+    const fileChecks = await Promise.all(
+      directoryFiles.map(async file => {
+        const [filenameFromName, extensionFromName] = splitNameAndExtension(
+          file.name,
+        );
+        let ext: string | null = extension(file.mimeType!);
+        if (!ext && extensionFromName && lookup(extensionFromName)) {
+          ext = extensionFromName;
+        }
 
-      const fileLocation = `/${item.name}`;
-      const cachedFilePath = [
-        courseFilesCache,
-        fileLocation.substring(1),
-        [filenameFromName ? `${filenameFromName} (${file.id})` : file.id, ext]
+        const fileLocation = `/${item.name}`;
+        const cachedFilePath = [
+          courseFilesCache,
+          fileLocation.substring(1),
+          [filenameFromName ? `${filenameFromName} (${file.id})` : file.id, ext]
+            .filter(Boolean)
+            .join('.'),
+        ]
           .filter(Boolean)
-          .join('.'),
-      ]
-        .filter(Boolean)
-        .join('/');
+          .join('/');
 
-      const downloadKey = `${fileUrl}:${cachedFilePath}`;
-      return downloads[downloadKey]?.isDownloaded ?? false;
-    });
-  }, [item, courseId, courseFilesCache, downloads]);
+        // Check if file actually exists on filesystem
+        const fileExists = await exists(cachedFilePath);
+        return fileExists;
+      }),
+    );
+
+    const allDownloaded = fileChecks.every(fileExists => fileExists);
+    setAllFilesDownloaded(allDownloaded);
+  }, [item, courseFilesCache]);
+
+  useEffect(() => {
+    checkAllFilesDownloaded();
+  }, [checkAllFilesDownloaded]);
+
+  // Re-check when downloads change (when files are downloaded/removed)
+  useEffect(() => {
+    checkAllFilesDownloaded();
+  }, [downloads, checkAllFilesDownloaded]);
+
+  // Re-check when component becomes visible again (when returning from directory)
+  useEffect(() => {
+    const handleFocus = () => {
+      checkAllFilesDownloaded();
+    };
+
+    // Check immediately when component mounts
+    checkAllFilesDownloaded();
+
+    // Also check when navigation focus changes (when returning from directory)
+    const unsubscribe = navigation.addListener('focus', handleFocus);
+
+    return unsubscribe;
+  }, [navigation, checkAllFilesDownloaded]);
 
   const handleSelection = useCallback(() => {
     const directoryFiles = item.files.filter(isFile);
 
     if (isInQueue) {
       directoryFiles.forEach(file => {
-        removeFromQueue(file.id);
+        removeFilesFromQueue([file.id]);
       });
     } else {
       directoryFiles.forEach(file => {
@@ -109,13 +145,18 @@ export const CourseDirectoryListItem = ({
           .filter(Boolean)
           .join('/');
 
-        addToQueue({
-          id: file.id,
-          name: file.name,
-          url: fileUrl,
-          filePath: cachedFilePath,
+        addFilesToQueue(
+          [
+            {
+              id: file.id,
+              name: file.name,
+              url: fileUrl,
+              filePath: cachedFilePath,
+            },
+          ],
           courseId,
-        });
+          'course',
+        );
       });
     }
   }, [
@@ -123,12 +164,15 @@ export const CourseDirectoryListItem = ({
     item,
     courseId,
     courseFilesCache,
-    addToQueue,
-    removeFromQueue,
+    addFilesToQueue,
+    removeFilesFromQueue,
   ]);
 
   const trailingItem = useMemo(() => {
     if (!enableMultiSelect) return null;
+
+    // Don't show checkbox if all files are downloaded (similar to individual files)
+    if (allFilesDownloaded) return null;
 
     return (
       <Checkbox
@@ -138,7 +182,7 @@ export const CourseDirectoryListItem = ({
         containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
       />
     );
-  }, [enableMultiSelect, isInQueue, handleSelection]);
+  }, [enableMultiSelect, isInQueue, handleSelection, allFilesDownloaded]);
 
   return (
     <DirectoryListItem
@@ -148,7 +192,10 @@ export const CourseDirectoryListItem = ({
       })}
       onPress={() => {
         if (enableMultiSelect) {
-          handleSelection();
+          // Don't allow selection if all files are downloaded
+          if (!allFilesDownloaded) {
+            handleSelection();
+          }
         } else {
           navigation.navigate('CourseDirectory', {
             courseId,

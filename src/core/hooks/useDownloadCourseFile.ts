@@ -30,7 +30,8 @@ export const useDownloadCourseFile = (
   const { token } = useApiContext();
   const { t } = useTranslation();
   const coursesFilesCachePath = useCoursesFilesCachePath();
-  const { downloads, setDownloads } = useDownloadsContext();
+  const { downloads, updateDownload: updateDownloadFromContext } =
+    useDownloadsContext();
   const { clearNotificationScope } = useNotifications();
   const courseId = useCourseContext();
   const {
@@ -51,15 +52,9 @@ export const useDownloadCourseFile = (
 
   const updateDownload = useCallback(
     (updates: Partial<Download>) => {
-      setDownloads(oldDownloads => ({
-        ...oldDownloads,
-        [key]: {
-          ...oldDownloads[key],
-          ...updates,
-        },
-      }));
+      updateDownloadFromContext(key, updates);
     },
-    [key, setDownloads],
+    [key, updateDownloadFromContext],
   );
 
   const cachedFilePath = cache[fileId];
