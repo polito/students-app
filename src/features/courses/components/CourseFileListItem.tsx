@@ -121,7 +121,7 @@ export const CourseFileListItem = memo(
       [courseId, item.id],
     );
     const [isCorrupted, setIsCorrupted] = useState(false);
-    const { downloadQueue, addToQueue, removeFromQueue } =
+    const { downloadQueue, addFilesToQueue, removeFilesFromQueue } =
       useDownloadsContext();
     const isInQueue = downloadQueue.files.some(f => f.id === item.id);
     const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
@@ -245,15 +245,20 @@ export const CourseFileListItem = memo(
                 isChecked={isInQueue}
                 onPress={() => {
                   if (isInQueue) {
-                    removeFromQueue(item.id);
+                    removeFilesFromQueue([item.id]);
                   } else {
-                    addToQueue({
-                      id: item.id,
-                      name: item.name,
-                      url: fileUrl,
-                      filePath: cachedFilePath,
+                    addFilesToQueue(
+                      [
+                        {
+                          id: item.id,
+                          name: item.name,
+                          url: fileUrl,
+                          filePath: cachedFilePath,
+                        },
+                      ],
                       courseId,
-                    });
+                      'course',
+                    );
                   }
                 }}
                 textStyle={{ marginHorizontal: 0 }}
@@ -305,8 +310,8 @@ export const CourseFileListItem = memo(
         stopDownload,
         enableMultiSelect,
         isInQueue,
-        addToQueue,
-        removeFromQueue,
+        addFilesToQueue,
+        removeFilesFromQueue,
         item.id,
         item.name,
         fileUrl,
@@ -332,15 +337,20 @@ export const CourseFileListItem = memo(
               }
             : () => {
                 if (isInQueue) {
-                  removeFromQueue(item.id);
+                  removeFilesFromQueue([item.id]);
                 } else {
-                  addToQueue({
-                    id: item.id,
-                    name: item.name,
-                    url: fileUrl,
-                    filePath: cachedFilePath,
+                  addFilesToQueue(
+                    [
+                      {
+                        id: item.id,
+                        name: item.name,
+                        url: fileUrl,
+                        filePath: cachedFilePath,
+                      },
+                    ],
                     courseId,
-                  });
+                    'course',
+                  );
                 }
               }
         }

@@ -168,6 +168,9 @@
     "doubleTapToDeactivate": "Tap twice to deactivate",
     "download": "Download",
     "downloadError": "Something went wrong with the download",
+    "downloadProgress": "Downloading {{current}} of {{total}}",
+    "downloadCompleted": "All files downloaded successfully",
+    "downloadCompletedWithErrors": "{{successCount}} files downloaded, {{errorCount}} failed",
     "downloadStatus": {
       "false": "Not downloaded",
       "true": "Downloaded"
@@ -280,6 +283,10 @@
     "refresh": "Refresh",
     "remaining": "{{value}} remaining",
     "remove": "Remove",
+    "removeAll": "Remove all",
+    "removeAllDownloaded": "Remove all downloaded files",
+    "downloadAttachment": "Download attachment",
+    "removeAttachment": "Remove attachment",
     "reset": "Reset",
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
@@ -380,10 +387,7 @@
     "navigateRecentFiles": "View recent",
     "search": "Search",
     "downloadSelected": "Download selected files",
-    "stopDownload": "Stop download",
-    "downloadProgress": "Downloading {{current}} of {{total}}",
-    "downloadCompleted": "All files downloaded successfully",
-    "downloadCompletedWithErrors": "{{successCount}} files downloaded, {{errorCount}} failed"
+    "stopDownload": "Stop download"
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",

@@ -1,14 +1,13 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
-import { useFocusEffect } from '@react-navigation/native';
+import { NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -17,40 +16,94 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
+import { sortByNameAsc } from '../../../utils/sorting';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
-import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
+import { FileScreenHeader } from '../components/FileScreenHeader';
+import { MENU_ACTIONS } from '../constants';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
+import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 
 type Props = NativeStackScreenProps<FileStackParamList, 'RecentFiles'>;
 
-export const CourseFilesScreen = ({ navigation, route }: Props) => {
+const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const { refresh } = useContext(CourseFilesCacheContext);
   const courseId = route.params.courseId;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext();
+  const [courseFilesCache] = useCourseFilesCachePath();
+
+  const {
+    enableMultiSelect,
+    allFilesSelected,
+    sortedData,
+    setSortedData,
+    activeSort,
+    sortOptions,
+    toggleMultiSelect,
+    toggleSelectAll,
+    onPressSortOption,
+    downloadButtonTitle,
+    downloadButtonIcon,
+    downloadButtonProgress,
+    downloadButtonStyle,
+    handleDownloadAction,
+  } = useFileManagement({
+    courseId,
+    courseFilesCache,
+    data: recentFilesQuery.data,
+    isDirectoryView: false,
+  });
+
+  useEffect(() => {
+    if (recentFilesQuery.data) {
+      setSortedData(sortByNameAsc(recentFilesQuery.data));
+    }
+  }, [recentFilesQuery.data, setSortedData]);
 
   useOnLeaveScreen(() => {
     clearNotificationScope(['teaching', 'courses', courseId, 'files']);
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh]),
-  );
+  const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
+    switch (event) {
+      case MENU_ACTIONS.SELECT:
+        toggleMultiSelect();
+        break;
+      case MENU_ACTIONS.SELECT_ALL:
+        toggleSelectAll();
+        break;
+      case MENU_ACTIONS.TOGGLE_FOLDERS:
+        navigation.replace('DirectoryFiles', { courseId });
+        updatePreference('filesScreen', 'directoryView');
+        break;
+      default:
+        break;
+    }
+  };
 
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
   return (
     <>
+      <FileScreenHeader
+        enableMultiSelect={enableMultiSelect}
+        allFilesSelected={allFilesSelected}
+        activeSort={activeSort}
+        sortOptions={sortOptions}
+        onPressSortOption={onPressSortOption}
+        onPressOption={onPressOption}
+        isDirectoryView={false}
+      />
+
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        data={recentFilesQuery.data}
+        data={sortedData || recentFilesQuery.data}
         contentContainerStyle={paddingHorizontal}
         scrollEnabled={scrollEnabled}
         keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
@@ -60,9 +113,10 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
         renderItem={({ item }) => {
           return (
             <CourseRecentFileListItem
-              item={item}
+              item={item as CourseFileOverview}
               onSwipeStart={onSwipeStart}
               onSwipeEnd={onSwipeEnd}
+              enableMultiSelect={enableMultiSelect}
             />
           );
         }}
@@ -82,16 +136,23 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
           ) : null
         }
       />
-      {recentFilesQuery.data && navigation && (
+      {navigation && enableMultiSelect && (
         <CtaButton
-          title={t('courseFilesTab.navigateFolders')}
-          icon={faFolderOpen}
-          action={() => {
-            navigation.replace('DirectoryFiles', { courseId });
-            updatePreference('filesScreen', 'directoryView');
-          }}
+          title={downloadButtonTitle}
+          icon={downloadButtonIcon}
+          action={handleDownloadAction}
+          progress={downloadButtonProgress}
+          style={downloadButtonStyle}
         />
       )}
     </>
+  );
+};
+
+export const CourseFilesScreen = ({ navigation, route }: Props) => {
+  return (
+    <CourseFilesCacheProvider>
+      <CourseFilesScreenContent navigation={navigation} route={route} />
+    </CourseFilesCacheProvider>
   );
 };

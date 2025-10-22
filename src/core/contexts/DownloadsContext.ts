@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 
 export interface Download {
   jobId?: number;
@@ -11,7 +11,8 @@ export interface QueuedFile {
   name: string;
   url: string;
   filePath: string;
-  courseId: number;
+  contextId: string | number;
+  contextType?: string;
 }
 
 export interface DownloadQueue {
@@ -27,14 +28,27 @@ export type Downloads = Record<string, Download>;
 
 export const DownloadsContext = createContext<{
   downloads: Downloads;
-  setDownloads: Dispatch<SetStateAction<Downloads>>;
   downloadQueue: DownloadQueue;
-  setDownloadQueue: Dispatch<SetStateAction<DownloadQueue>>;
   addToQueue: (_file: QueuedFile) => void;
   removeFromQueue: (_fileId: string) => void;
   clearQueue: () => void;
   startQueueDownload: () => void;
   stopQueueDownload: () => void;
+  updateDownload: (_key: string, _updates: Partial<Download>) => void;
+  addFilesToQueue: (
+    _files: Omit<QueuedFile, 'contextId' | 'contextType'>[],
+    _contextId: string | number,
+    _contextType?: string,
+  ) => void;
+  removeFilesFromQueue: (_fileIds: string[]) => void;
+  getFilesByContext: (
+    _contextId: string | number,
+    _contextType?: string,
+  ) => QueuedFile[];
+  clearContextFiles: (
+    _contextId: string | number,
+    _contextType?: string,
+  ) => void;
 } | null>(null);
 
 export const useDownloadsContext = () => {
