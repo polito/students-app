@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSquareMinus } from '@fortawesome/free-regular-svg-icons';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator.tsx';
@@ -72,7 +72,6 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
           </Text>
         )}
       </Col>
-      <View></View>
     </Row>
   );
 };

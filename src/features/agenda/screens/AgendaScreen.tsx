@@ -197,7 +197,6 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     };
 
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      // eslint-disable-next-line default-case
       switch (event) {
         case 'weekly':
           switchToWeekly();

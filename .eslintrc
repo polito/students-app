@@ -1,13 +1,12 @@
 {
   "root": true,
   "extends": [
-    "eslint-config-react-typescript/lib/react",
+    "@react-native",
     "plugin:react/jsx-runtime",
     "prettier"
   ],
   "plugins": [
-    "unused-imports",
-    "react-native"
+    "unused-imports"
   ],
   "parserOptions": {
     "project": "tsconfig.json",
@@ -17,13 +16,15 @@
     "react-native/split-platform-components": 2,
     "react-native/no-color-literals": 1,
     "react-native/no-raw-text": 0,
-    "react-native/no-single-element-style-arrays": 2
+    "react-native/no-single-element-style-arrays": 2,
+    "react-native/no-inline-styles": 0, // TODO: disable
+    "react/no-unstable-nested-components": 0 // TODO: disable
   },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
       "rules": {
-        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-shadow": "error",
         "no-shadow": "off",
         "no-unused-vars": "off",
         "unused-imports/no-unused-imports": "error",
