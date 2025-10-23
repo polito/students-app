@@ -1,6 +1,5 @@
 build/
 .idea
-.vscode
 .env
 
 # OSX
@@ -73,3 +72,5 @@ ios/sentry.properties
 .expo
 dist/
 web-build/
+
+.env.local

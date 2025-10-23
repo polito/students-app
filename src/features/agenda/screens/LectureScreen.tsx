@@ -201,7 +201,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           )}
 
           {playingVC && isLiveVC(playingVC) && (
-            <View></View>
+            <View />
             // TODO handle live VC
             // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
           )}

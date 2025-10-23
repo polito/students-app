@@ -131,7 +131,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             emptyStateText={(() => {
               if (isOffline) return t('common.cacheMiss');
 
-              return (coursesQuery.data?.length ?? 0 > 0)
+              return (coursesQuery.data?.length ?? 0) > 0
                 ? t('teachingScreen.allCoursesHidden')
                 : t('coursesScreen.emptyState');
             })()}

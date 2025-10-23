@@ -6,8 +6,8 @@ import { ExamGrade } from '@polito/api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
+import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { OnboardingModal } from '../../../core/screens/OnboardingModal';
 import {
@@ -78,7 +78,7 @@ export const TeachingNavigator = () => {
         name="Home"
         component={TeachingScreen}
         options={{
-          headerLeft: () => <HeaderLogo />,
+          headerLeft: HeaderLogoNoProps,
           headerTitle: t('teachingScreen.title'),
         }}
       />
@@ -167,13 +167,13 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="OnboardingModal"
         component={OnboardingModal}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: t('onboardingScreen.title'),
           headerLargeTitle: false,
           presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
-        }}
+          headerLeft: HeaderLogoNoProps,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="PlacesTeachingStack"

@@ -65,6 +65,16 @@ In order to build and run the application locally (especially if you're not part
 This scheme is pre-configured to automatically manage signing and will show up with a `DEV` badge and a dedicated bundle
 identifier on the destination device in order to distinguish it from the production app.
 
+### FixPilot
+
+The iOS toolchain is quite fragile and may break due to various reasons (Xcode updates, library updates, etc...).
+To help with this, a small helper script called `fixpilot` is provided to automatically fix common issues.
+You can run it with:
+
+```shell
+$ npm run fixpilot
+```
+
 ## Project structure
 
 The project uses feature modules to keep the main areas semantically organized. Each module should be divided by entity
