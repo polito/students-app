@@ -60,12 +60,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
     return course.modules.some((module: any) => module.id !== null);
   };
 
-  const getValidModulesCount = (course: any) => {
-    return (
-      course.modules?.filter((module: any) => module.id !== null).length || 0
-    );
-  };
-
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
 
@@ -132,16 +126,35 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
               coursesQuery.data
-                ? coursesQuery.data.length +
-                  coursesQuery.data.reduce(
-                    (acc, course) => acc + (course.modules?.length || 0),
-                    0,
-                  ) -
-                  courses.length -
-                  courses.reduce(
-                    (acc, course) => acc + getValidModulesCount(course),
-                    0,
-                  )
+                ? (() => {
+                    // Calcola gli elementi nascosti direttamente
+                    let hiddenCount = 0;
+
+                    coursesQuery.data.forEach(course => {
+                      if (!isCourseDetailed(course) || !course.uniqueShortcode)
+                        return;
+
+                      // Corsi nascosti
+                      if (coursePreferences[course.uniqueShortcode]?.isHidden) {
+                        hiddenCount += 1 + (course.modules?.length || 0);
+                        return;
+                      }
+
+                      // Moduli nascosti nei corsi visibili
+                      if (course.modules) {
+                        course.modules.forEach((module, index) => {
+                          const moduleShortcode = `${course.shortcode}${index + 1}`;
+                          if (coursePreferences[moduleShortcode]?.isHidden) {
+                            hiddenCount += 1;
+                          }
+                        });
+                      }
+                    });
+
+                    const count = hiddenCount;
+
+                    return count > 0 ? count : undefined;
+                  })()
                 : undefined
             }
           />

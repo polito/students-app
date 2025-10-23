@@ -4,7 +4,7 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 
-import { PropsWithChildren, useCallback, useMemo } from 'react';
+import { Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
@@ -164,7 +164,9 @@ export const CourseListItem = ({
 
   const subtitle = useMemo(() => {
     return (
-      `${course.cfu} ${t('common.credits').toLowerCase()}` +
+      (course.cfu !== null && course.cfu !== undefined
+        ? `${course.cfu} ${t('common.credits').toLowerCase()}`
+        : '') +
       (!course.isInPersonalStudyPlan
         ? ` • ${t('courseListItem.extra')} • ${course.year}`
         : '') +
@@ -352,7 +354,7 @@ export const CourseListItem = ({
               const isLast = index === filteredModules.length - 1;
               const indent = spacing[4];
               return (
-                <>
+                <Fragment key={module.id || `module-${originalIndex}`}>
                   {Platform.OS === 'ios' ? (
                     <Menu
                       course={{
@@ -507,7 +509,7 @@ export const CourseListItem = ({
                       style={styles.divider}
                     />
                   )}
-                </>
+                </Fragment>
               );
             })}
         </Animated.View>

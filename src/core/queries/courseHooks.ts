@@ -137,7 +137,6 @@ export const useGetCourses = () => {
       coursesClient
         .getCourses()
         .then(pluckData)
-        .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
         .then(c => setupCourses(c, coursePreferences, updatePreference)),
   });
 };
