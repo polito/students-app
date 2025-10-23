@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -97,6 +98,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
       x: (currentStep + 1) * width,
     });
   }, [currentStep, isLastStep, navigation, width]);
+
   return (
     <>
       <ScrollView
@@ -125,7 +127,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
           <OnboardingStep key={item} stepNumber={item} width={width} />
         ))}
       </ScrollView>
-      <View style={styles.fixedContainer}>
+      <SafeAreaView style={styles.fixedContainer}>
         <View style={styles.dotsContainer}>
           <AnimatedDotsCarousel
             length={4}
@@ -187,7 +189,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
             />
           </Col>
         </Row>
-      </View>
+      </SafeAreaView>
     </>
   );
 };

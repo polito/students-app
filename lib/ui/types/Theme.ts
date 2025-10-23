@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { TextStyle } from 'react-native';
 
 export interface Theme {

@@ -1,8 +1,8 @@
-import { DateTime } from 'luxon';
-import { CoursesPreferences } from 'src/core/contexts/PreferencesContext';
+import { CoursesPreferences } from '~/core/contexts/PreferencesContext';
+import { APP_TIMEZONE, dateFormatter } from '~/utils/dates';
 
-import { APP_TIMEZONE } from '../../../utils/dates';
-import { dateFormatter } from '../../../utils/dates';
+import { DateTime } from 'luxon';
+
 import { LectureItem } from '../types/AgendaItem';
 import { Lecture } from '../types/Lecture';
 

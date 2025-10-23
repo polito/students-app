@@ -1,11 +1,7 @@
-import 'react-native-gesture-handler';
-
 import { AppRegistry } from 'react-native';
 
-import * as Sentry from '@sentry/react-native';
-
 import { name as appName } from './app.json';
-import { App } from './src/App';
+import App from './src/App';
 
 import '@formatjs/intl-getcanonicallocales/polyfill';
 import '@formatjs/intl-locale/polyfill';
@@ -18,4 +14,4 @@ if ('__setDefaultTimeZone' in Intl.DateTimeFormat) {
     Intl.DateTimeFormat.__setDefaultTimeZone('Europe/Rome')
 }
 
-AppRegistry.registerComponent(appName, () => Sentry.wrap(App));
+AppRegistry.registerComponent(appName, () => App);

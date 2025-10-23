@@ -58,7 +58,7 @@ export const WeeklyAgenda = ({
       ))}
       {!agendaWeek.data.length && (
         <Row>
-          <Col style={styles.dayColumn}></Col>
+          <Col style={styles.dayColumn} />
           <Col
             style={[
               styles.itemsColumn,
