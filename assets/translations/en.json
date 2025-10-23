@@ -695,7 +695,9 @@
   "messageScreen": {
     "backTitle": "Archive",
     "sender": "Sender",
-    "title": "Message"
+    "title": "Message",
+    "viewProvisionalGrade": "Check Provisional Grade",
+    "viewProvisionalGradeDescription": "Check your provisional grade and take action"
   },
   "messagesScreen": {
     "empty": "You have no messages",

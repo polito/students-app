@@ -17,13 +17,13 @@ import {
   useInvalidateMessages,
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { MessageScreenContent } from '../components/MessageScreenContent';
 
-type Props = NativeStackScreenProps<any, 'MessagesModal'>;
+type Props = NativeStackScreenProps<TeachingStackParamList, 'MessagesModal'>;
 
 export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { data: messages } = useGetModalMessages();
-
   const invalidateMessages = useInvalidateMessages();
   const { t } = useTranslation();
   const [messagesReadCount, setMessageReadCount] = useState(0);
@@ -33,6 +33,9 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { isScreenReaderEnabled, announce } = useScreenReader();
 
   const { bottom } = useSafeAreaInsets();
+
+  const currentMessage = messages?.[messagesReadCount];
+  const isExamMessage = currentMessage?.type === ('exams' as any);
 
   useEffect(() => {
     if (!messagesToReadCount) {
@@ -62,8 +65,6 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
 
   useHideTabs(undefined, () => invalidateMessages.run());
 
-  const currentMessage = messages?.[messagesReadCount];
-
   const onConfirm = async () => {
     if (currentMessage) {
       await new Promise(ok => mutate(currentMessage.id, { onSettled: ok }));
@@ -73,6 +74,15 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
     } else {
       setMessageReadCount(m => m + 1);
     }
+  };
+
+  const onViewProvisionalGrade = async () => {
+    if (currentMessage) {
+      await new Promise(ok => mutate(currentMessage.id, { onSettled: ok }));
+    }
+
+    navigation.goBack();
+    navigation.navigate('Transcript');
   };
 
   return (
@@ -87,6 +97,15 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
           paddingVertical: bottom,
         }}
       >
+        {isExamMessage && (
+          <CtaButton
+            absolute={false}
+            title={t('messageScreen.viewProvisionalGrade')}
+            action={onViewProvisionalGrade}
+            variant="outlined"
+            style={{ marginBottom: -15 }}
+          />
+        )}
         <CtaButton
           absolute={false}
           title={t(
