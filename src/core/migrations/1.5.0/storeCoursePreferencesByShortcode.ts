@@ -24,11 +24,33 @@ export const storeCoursePreferencesByShortcode = async (
 
   const newPreferences: CoursesPreferences = {};
   preferencesEntries.forEach(([courseId, coursePrefs]) => {
-    const course = courses.find(
-      c =>
-        c.id?.toString() === courseId ||
-        c.shortcode + c.moduleNumber === courseId,
+    let course = courses.find(
+      c => c.id?.toString() === courseId || c.shortcode === courseId,
     );
+
+    if (!course) {
+      course = courses.find(c => {
+        if (!c.shortcode) return false;
+        return (
+          courseId.startsWith(c.shortcode) &&
+          courseId.length > c.shortcode.length
+        );
+      });
+
+      if (course) {
+        if (course.modules && course.modules.length > 0) {
+          const moduleIndex = course.modules.findIndex(
+            (_, index) => courseId === `${course!.shortcode}${index + 1}`,
+          );
+          if (moduleIndex >= 0) {
+            newPreferences[courseId] = coursePrefs;
+            return;
+          }
+        }
+        newPreferences[courseId] = coursePrefs;
+        return;
+      }
+    }
 
     if (!course) {
       console.warn(
@@ -38,7 +60,21 @@ export const storeCoursePreferencesByShortcode = async (
       return;
     }
 
-    newPreferences[course.shortcode + course.moduleNumber] = coursePrefs;
+    if (course.modules && course.modules.length > 0) {
+      const moduleIndex = course.modules.findIndex(
+        (_, index) => courseId === `${course?.shortcode}${index + 1}`,
+      );
+      if (moduleIndex >= 0) {
+        newPreferences[courseId] = coursePrefs;
+        return;
+      }
+    }
+
+    if (courseId === course.shortcode) {
+      newPreferences[course.shortcode] = coursePrefs;
+    } else {
+      newPreferences[courseId] = coursePrefs;
+    }
   });
 
   updatePreference('courses', newPreferences);
