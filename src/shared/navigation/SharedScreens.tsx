@@ -107,6 +107,7 @@ export const SharedScreens = () => {
         getId={({ params }) => `${params.courseId}${params.courseShortcode}`}
         options={{
           headerTitle: t('courseStatisticsScreen.title'),
+          headerTitleAlign: 'center',
           headerBackTitle: t('common.course'),
         }}
       />
