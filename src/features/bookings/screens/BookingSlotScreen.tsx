@@ -52,6 +52,7 @@ import {
   isPastSlot,
 } from '../../../utils/bookings';
 import {
+  APP_TIMEZONE,
   formatDate,
   isCurrentMonth,
   isCurrentYear,
@@ -62,7 +63,7 @@ import { ServiceStackParamList } from '../../services/components/ServicesNavigat
 import { BookingSlotModal } from '../components/BookingSlotModal';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
 
-const START_DATE = DateTime.now().startOf('day');
+const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('day');
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'BookingSlot'>;
 export type BookingCalendarEvent = BookingSlot & {
@@ -72,7 +73,6 @@ export type BookingCalendarEvent = BookingSlot & {
   title: string;
 };
 
-const START_DATE = DateTime.now().startOf('day');
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
   const { palettes, colors, dark, fontSizes } = useTheme();
@@ -114,10 +114,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     if (!bookingSlots) return [];
     return bookingSlots.map(slot => {
       const start = DateTime.fromJSDate(slot.startsAt as Date, {
-        zone: IANAZone.create('Europe/Rome'),
+        zone: APP_TIMEZONE,
       });
       const end = DateTime.fromJSDate(slot.endsAt as Date, {
-        zone: IANAZone.create('Europe/Rome'),
+        zone: APP_TIMEZONE,
       });
       return {
         ...slot,
@@ -175,10 +175,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     const weekISO = currentWeekStart.toISODate()!;
     const newEvents = bookingSlots.map(slot => {
       const start = DateTime.fromJSDate(slot.startsAt as Date, {
-        zone: IANAZone.create('Europe/Rome'),
+        zone: APP_TIMEZONE,
       });
       const end = DateTime.fromJSDate(slot.endsAt as Date, {
-        zone: IANAZone.create('Europe/Rome'),
+        zone: APP_TIMEZONE,
       });
       return {
         ...slot,
