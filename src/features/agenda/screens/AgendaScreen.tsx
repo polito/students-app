@@ -27,16 +27,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled.ts';
+import { useSafeAreaSpacing } from '~/core/hooks/useSafeAreaSpacing.ts';
+import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
+import { EXAMS_QUERY_KEY } from '~/core/queries/examHooks.ts';
+import { DEADLINES_QUERY_PREFIX } from '~/core/queries/studentHooks.ts';
+import { APP_TIMEZONE } from '~/utils/dates.ts';
+
 import { DateTime } from 'luxon';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
-import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
-import { DEADLINES_QUERY_PREFIX } from '../../../core/queries/studentHooks';
-import { APP_TIMEZONE } from '../../../utils/dates';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
