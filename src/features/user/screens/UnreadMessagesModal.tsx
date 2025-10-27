@@ -8,6 +8,7 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useHideTabs } from '../../../core/hooks/useHideTabs';
@@ -31,7 +32,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
   const isLastMessageToRead = messagesReadCount + 1 === messagesToReadCount;
   const { mutate } = useMarkMessageAsRead(false);
   const { isScreenReaderEnabled, announce } = useScreenReader();
-
+  const { spacing } = useTheme();
   const { bottom } = useSafeAreaInsets();
 
   const currentMessage = messages?.[messagesReadCount];
@@ -85,6 +86,10 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
     navigation.navigate('Transcript');
   };
 
+  const showExamButton = isExamMessage;
+  const showNextButton = !isLastMessageToRead;
+  const showEndButton = !isExamMessage && isLastMessageToRead;
+
   return (
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -95,27 +100,40 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
       <View
         style={{
           paddingVertical: bottom,
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
         }}
       >
-        {isExamMessage && (
+        {showExamButton && (
           <CtaButton
             absolute={false}
             title={t('messageScreen.viewProvisionalGrade')}
             action={onViewProvisionalGrade}
-            variant="outlined"
-            style={{ marginBottom: -15 }}
+            variant="filled"
+            containerStyle={{ flex: 1 }}
           />
         )}
-        <CtaButton
-          absolute={false}
-          title={t(
-            isLastMessageToRead
-              ? 'messagesScreen.end'
-              : 'messagesScreen.readNext',
-          )}
-          action={onConfirm}
-          icon={isLastMessageToRead ? faCheckCircle : faChevronRight}
-        />
+
+        {showNextButton && (
+          <CtaButton
+            absolute={false}
+            title=""
+            variant="outlined"
+            action={onConfirm}
+            icon={faChevronRight}
+            style={{ paddingLeft: spacing[4], paddingRight: spacing[2] }}
+          />
+        )}
+
+        {showEndButton && (
+          <CtaButton
+            absolute={false}
+            title={t('messagesScreen.end')}
+            action={onConfirm}
+            icon={faCheckCircle}
+            containerStyle={{ flex: 1 }}
+          />
+        )}
       </View>
     </>
   );
