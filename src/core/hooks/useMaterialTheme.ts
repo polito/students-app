@@ -19,7 +19,7 @@ export const useMaterialTheme = (): MD3Theme => {
       colors: {
         ...baseTheme.colors,
         // Primary colors
-        primary: uiTheme.palettes.primary[500],
+        primary: uiTheme.palettes.primary[uiTheme.dark ? 400 : 600],
         primaryContainer: uiTheme.palettes.primary[700],
         onPrimary: uiTheme.colors.white,
         onPrimaryContainer: uiTheme.colors.white,
@@ -46,14 +46,10 @@ export const useMaterialTheme = (): MD3Theme => {
         background: uiTheme.colors.background,
         onBackground: uiTheme.colors.prose,
         surface: uiTheme.colors.surface,
-        onSurface: uiTheme.colors.title,
-        surfaceVariant: uiTheme.dark
-          ? uiTheme.palettes.gray[700]
-          : uiTheme.palettes.gray[100],
+        onSurface: uiTheme.palettes.gray[uiTheme.dark ? 200 : 800],
+        surfaceVariant: uiTheme.palettes.gray[uiTheme.dark ? 700 : 100],
         onSurfaceVariant: uiTheme.colors.secondaryText,
-        surfaceDisabled: uiTheme.dark
-          ? uiTheme.palettes.gray[800]
-          : uiTheme.palettes.gray[200],
+        surfaceDisabled: uiTheme.palettes.gray[uiTheme.dark ? 800 : 200],
         onSurfaceDisabled: uiTheme.colors.disableTitle,
 
         // Outline
