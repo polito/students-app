@@ -29,7 +29,7 @@
     "selectDate": "Seleziona data",
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale",
-    "hideEvent": "Visibilità agenda",
+    "hideEvent": "Preferenze agenda",
     "noHiddenEvents": "Non ci sono eventi nascosti"
   },
   "agendaDialog": {
@@ -38,7 +38,7 @@
     "hideThisEvent": "Nascondi solo questo",
     "hideThisAndFutureEvents": "Nascondi questo e futuri"
   },
-  "agendaVisibility": {
+  "AgendaPreferences": {
     "hideInAgenda": "Nascondi in agenda",
     "hideEvent": "Nascondi evento",
     "showInAgenda": "Mostra in agenda"
@@ -469,7 +469,7 @@
     }
   },
   "courseHideEventScreen": {
-    "button": "Mostra in Agenda",
+    "button": "Mostra in agenda",
     "selectItems": "Seleziona tutti"
   },
   "courseIconPickerScreen": {

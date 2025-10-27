@@ -184,7 +184,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   );
 
   const navigateToHideEventScreen = useCallback(() => {
-    navigation.navigate('AgendaVisibility');
+    navigation.navigate('AgendaPreferences');
   }, [navigation]);
 
   useEffect(() => {

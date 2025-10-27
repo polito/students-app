@@ -172,7 +172,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     };
 
     const navigateToHideEventScreen = () => {
-      navigation.navigate('AgendaVisibility');
+      navigation.navigate('AgendaPreferences');
     };
 
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {

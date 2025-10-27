@@ -18,9 +18,9 @@ import { useGetCourses } from '~/core/queries/courseHooks.ts';
 import { AgendaStackParamList } from '~/features/agenda/components/AgendaNavigator.tsx';
 import { CourseIndicator } from '~/features/courses/components/CourseIndicator.tsx';
 
-type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaVisibility'>;
+type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaPreferences'>;
 
-export const AgendaVisibilityScreen = ({ navigation }: Props) => {
+export const AgendaPreferencesScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const coursesQuery = useGetCourses();
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
@@ -47,7 +47,7 @@ export const AgendaVisibilityScreen = ({ navigation }: Props) => {
         {coursesQuery.data &&
           (coursesQuery.data.length > 0 ? (
             <Section>
-              <SectionHeader title={t('agendaVisibility.showInAgenda')} />
+              <SectionHeader title={t('AgendaPreferences.showInAgenda')} />
               <OverviewList indented>
                 {coursesQuery.data.map(
                   course =>

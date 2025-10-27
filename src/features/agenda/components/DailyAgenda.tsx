@@ -8,6 +8,7 @@ import { Theme } from '@lib/ui/types/Theme';
 
 import { isCurrentMonth, isCurrentYear } from '~/utils/dates.ts';
 
+import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
 import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';

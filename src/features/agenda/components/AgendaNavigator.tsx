@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HeaderLogo } from '~/core/components/HeaderLogo.tsx';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
 import { useTitlesStyles } from '~/core/hooks/useTitlesStyles.ts';
-import { AgendaVisibilityScreen } from '~/features/agenda/screens/AgendaVisibilityScreen.tsx';
+import { AgendaPreferencesScreen } from '~/features/agenda/screens/AgendaPreferencesScreen.tsx';
 import { HiddenEventsScreen } from '~/features/agenda/screens/HiddenEventsScreen.tsx';
 import {
   SharedScreens,
@@ -45,7 +45,7 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
       seatId: number;
     };
     PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
-    AgendaVisibility: undefined;
+    AgendaPreferences: undefined;
     HiddenEvents: undefined;
   };
 
@@ -161,8 +161,8 @@ export const AgendaNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="AgendaVisibility"
-        component={AgendaVisibilityScreen}
+        name="AgendaPreferences"
+        component={AgendaPreferencesScreen}
         options={{
           title: t('common.preferencesAgenda'),
           headerShown: true,
@@ -172,7 +172,7 @@ export const AgendaNavigator = () => {
         name="HiddenEvents"
         component={HiddenEventsScreen}
         options={{
-          title: t('common.preferencesAgenda'),
+          title: t('common.hiddenEvents'),
           headerShown: true,
         }}
       />

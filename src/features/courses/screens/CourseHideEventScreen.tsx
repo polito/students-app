@@ -4,7 +4,6 @@ import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSquareMinus } from '@fortawesome/free-regular-svg-icons';
 import { faRepeat } from '@fortawesome/free-solid-svg-icons';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator.tsx';
 import { Badge } from '@lib/ui/components/Badge.tsx';
 import { Col } from '@lib/ui/components/Col.tsx';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton.tsx';
@@ -16,12 +15,14 @@ import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
 import { Checkbox } from '~/core/components/Checkbox';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
 import { useGetPlace } from '~/core/queries/placesHooks';
 
 import { DateTime, WeekdayNumbers } from 'luxon';
 
+import { EventInfo } from '../../agenda/components/EventInfo';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseHiddenEvent } from '../types/Recurrence';
 
@@ -69,13 +70,9 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
       <Col style={styles.cardCol}>
         <Row align="center" gap={2}>
           <Text variant="heading" style={styles.title}>
-            {(item.type === 'recurrence'
-              ? getLongDayTime(item.day)
-              : getLongDayTime(DateTime.fromISO(item.day).day)) +
-              '  ' +
-              item.start +
-              '-' +
-              item.end}
+            {item.type === 'recurrence'
+              ? `${getLongDayTime(item.day)}  ${item.start}-${item.end}`
+              : `${getLongDayTime(DateTime.fromISO(item.day).weekday)} ${item.start}-${item.end}`}
           </Text>
           {item.type === 'recurrence' && (
             <Badge
@@ -91,12 +88,7 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
             />
           )}
         </Row>
-        {placeLoading && <ActivityIndicator size="small" />}
-        {item.room && place && (
-          <Text style={styles.label} numberOfLines={1} ellipsizeMode="tail">
-            {place.room.name}
-          </Text>
-        )}
+        <EventInfo item={item} place={place} placeLoading={placeLoading} />
       </Col>
     </Row>
   );
@@ -283,6 +275,7 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
         disabled={!items.filter(item => item.restoreVisibility).length}
       />
       <CtaButtonSpacer />
+      <BottomBarSpacer />
     </>
   );
 };
