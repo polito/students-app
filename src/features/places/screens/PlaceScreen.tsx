@@ -260,8 +260,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       accessibilityLabel={t('common.navigate')}
                       onPress={() => {
                         setItineraryMode(true);
-                        navigation.navigate('Indications', { toPlace: placeName });
-                    }}
+                        navigation.navigate('Indications', {
+                          toPlace: { placeId: placeId, namePlace: name },
+                        });
+                      }}
                     />
                   }
                 />
@@ -313,7 +315,9 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
         index={1}
-        onAnimate={() => {}} // trigger animation with index = 1 when clicked
+        onAnimate={() => {
+          setItineraryMode(false);
+        }} // trigger animation with index = 1 when clicked
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
@@ -342,7 +346,12 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
                       setItineraryMode(true);
-                      navigation.navigate('Indications', { toPlace: placeName });
+                      navigation.navigate('Indications', {
+                        toPlace: {
+                          placeId: place?.id || '',
+                          namePlace: place?.room.name || '',
+                        },
+                      });
                     }}
                   />
                 }

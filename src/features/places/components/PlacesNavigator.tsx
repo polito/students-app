@@ -5,6 +5,7 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { Divider } from '@lib/ui/components/Divider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { PlaceOverview } from '@polito/api-client';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   Images,
@@ -25,12 +26,12 @@ import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { BuildingScreen } from '../screens/BuildingScreen';
 import { EventPlacesScreen } from '../screens/EventPlacesScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
-import { PlaceScreen } from '../screens/PlaceScreen';
-import { PlacesScreen } from '../screens/PlacesScreen';
-import { createMapNavigator } from './MapNavigator';
 import { IndicationsScreen } from '../screens/IndicationsScreen';
 import { ItineraryScreen } from '../screens/ItineraryScreen';
-import { PlaceOverview } from '@polito/api-client';
+import { PlaceScreen } from '../screens/PlaceScreen';
+import { PlacesScreen } from '../screens/PlacesScreen';
+import { DestinationPlaceType } from '../types';
+import { createMapNavigator } from './MapNavigator';
 
 export type ServiceStackParamList = {
   Places: undefined;
@@ -61,8 +62,8 @@ export type PlacesStackParamList = {
     buildingId: string;
   };
   Indications: {
-    fromPlace?: string;     
-    toPlace: string;        
+    fromPlace?: DestinationPlaceType;
+    toPlace?: DestinationPlaceType;
   };
   Itinerary: {
     startRoom: string;
@@ -148,7 +149,9 @@ export const PlacesNavigator = () => {
   const [lines, setLines] = useState<string[]>([]);
   const [selectedLine, setSelectedLine] = useState<string>();
   const [itineraryMode, setItineraryMode] = useState<boolean>(false);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(
+    null,
+  );
   const [selectionIcon, setSelectionIcon] = useState<string | null>(null);
 
   const checkAndSetFloorId = (id?: string) => {
@@ -160,45 +163,38 @@ export const PlacesNavigator = () => {
   const handleSelectSegment = (label: string, floor: string) => {
     const lineLayer = label;
 
-    if(selectedLine === lineLayer){
+    if (selectedLine === lineLayer) {
       setLine(undefined);
-    }
-    else{
+    } else {
       setLine(lineLayer);
       checkAndSetFloorId(floor);
     }
   };
 
   const handleSelectedPlace = (place: PlaceOverview | null) => {
-    if(place){
+    if (place) {
       setSelectedPlace(place);
-    }
-    else
-      setSelectedPlace(null);
-  }
+    } else setSelectedPlace(null);
+  };
 
   const setAllLines = (line: string) => {
-    setLines((prev) => {
-      if(prev.length > 0)
-        return [...prev, line];
-      else
-        return [line];
-    })
+    setLines(prev => {
+      if (prev.length > 0) return [...prev, line];
+      else return [line];
+    });
   };
 
   const setLine = (line?: string) => {
     setSelectedLine(line);
-  }
+  };
 
   const setMode = (mode?: boolean) => {
-    if(mode !== undefined){
+    if (mode !== undefined) {
       setItineraryMode(mode);
-    }
-    else{
+    } else {
       setItineraryMode(false);
     }
-  }
-
+  };
 
   useEffect(() => {
     const perm = Platform.select({
@@ -206,11 +202,27 @@ export const PlacesNavigator = () => {
       android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
     });
     if (perm) request(perm).catch(console.error);
-    setMode(false); 
+    setMode(false);
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId, lines, setLines: setAllLines, selectedLine, setSelectedLine: setLine, itineraryMode, setItineraryMode: setMode, handleSelectSegment: handleSelectSegment, selectedPlace: selectedPlace, setSelectedPlace: handleSelectedPlace, selectionIcon: selectionIcon, setSelectionIcon: setSelectionIcon }}>
+    <PlacesContext.Provider
+      value={{
+        floorId,
+        setFloorId: checkAndSetFloorId,
+        lines,
+        setLines: setAllLines,
+        selectedLine,
+        setSelectedLine: setLine,
+        itineraryMode,
+        setItineraryMode: setMode,
+        handleSelectSegment: handleSelectSegment,
+        selectedPlace: selectedPlace,
+        setSelectedPlace: handleSelectedPlace,
+        selectionIcon: selectionIcon,
+        setSelectionIcon: setSelectionIcon,
+      }}
+    >
       <Map.Navigator
         id="PlacesTabNavigator"
         screenOptions={{
