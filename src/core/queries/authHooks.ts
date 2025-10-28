@@ -30,7 +30,6 @@ import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
-import { asyncStoragePersister } from '../providers/ApiProvider';
 import { RootParamList } from '../types/navigation.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
@@ -155,7 +154,6 @@ export const useLogout = () => {
     onSuccess: async () => {
       updatePreference('politoAuthnEnrolmentStatus', {});
       refreshContext();
-      asyncStoragePersister.removeClient();
       queryClient.removeQueries();
       await resetCredentials();
     },
@@ -177,7 +175,6 @@ export const useSwitchCareer = () => {
       and avoid waiting for the setCredentials & preferences update,
       since it's already refreshed upon username change in prefs */
       refreshContext({ token, username });
-      asyncStoragePersister.removeClient();
       queryClient.invalidateQueries();
 
       await setCredentials(clientId, token);
