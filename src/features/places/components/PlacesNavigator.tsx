@@ -39,6 +39,7 @@ export type PlacesStackParamList = {
   Places: {
     categoryId?: string;
     subCategoryId?: string;
+    departmentId?: string;
     pitch?: number;
   };
   Place: {
@@ -181,7 +182,11 @@ export const PlacesNavigator = () => {
           component={PlacesScreen}
           options={{ title: t('placesScreen.title') }}
           getId={({ params }: { params: any }) =>
-            [params?.categoryId, params?.subCategoryId].join()
+            [
+              params?.categoryId,
+              params?.subCategoryId,
+              params?.departmentId,
+            ].join()
           }
         />
         <Map.Screen
