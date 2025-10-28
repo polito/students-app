@@ -59,8 +59,8 @@ export const useReplyToTicket = (ticketId: number) => {
       return ticketsClient.replyToTicket(dto);
     },
     onSuccess() {
-      return invalidatesQueries.forEach(q =>
-        client.invalidateQueries({ queryKey: q }),
+      return invalidatesQueries.forEach(queryKey =>
+        client.invalidateQueries({ queryKey }),
       );
     },
   });
@@ -86,8 +86,8 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
   return useMutation({
     mutationFn: () => ticketsClient.markTicketAsClosed({ ticketId }),
     onSuccess() {
-      return invalidatesQueries.forEach(q =>
-        client.invalidateQueries({ queryKey: q }),
+      return invalidatesQueries.forEach(queryKey =>
+        client.invalidateQueries({ queryKey }),
       );
     },
   });
@@ -96,11 +96,17 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
 export const useMarkTicketAsRead = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
+  const invalidatesQueries = [
+    TICKETS_QUERY_KEY,
+    [TICKET_QUERY_PREFIX, ticketId],
+  ];
 
   return useMutation({
     mutationFn: () => ticketsClient.markTicketAsRead({ ticketId }),
     onSuccess() {
-      return client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
+      return invalidatesQueries.forEach(queryKey =>
+        client.invalidateQueries({ queryKey }),
+      );
     },
   });
 };

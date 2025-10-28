@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
+import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
@@ -16,10 +16,12 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { MfaSettings } from './MfaSettings.tsx';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: { firstRequest?: boolean };
   Settings: undefined;
+  MfaSettings: undefined;
   Messages: undefined;
   RequestESC: undefined;
   Message: {
@@ -29,7 +31,12 @@ export type UserStackParamList = OfferingStackParamList & {
   Notifications: undefined;
   Person: { id: number };
 };
-const Stack = createNativeStackNavigator<UserStackParamList>();
+
+export const UserNavigatorID = 'UserTabNavigator';
+const Stack = createNativeStackNavigator<
+  UserStackParamList,
+  typeof UserNavigatorID
+>();
 
 export const UserNavigator = () => {
   const { t } = useTranslation();
@@ -38,6 +45,7 @@ export const UserNavigator = () => {
 
   return (
     <Stack.Navigator
+      id={UserNavigatorID}
       screenOptions={{
         headerLargeTitle: false,
         headerTransparent: Platform.select({ ios: true }),
@@ -53,7 +61,7 @@ export const UserNavigator = () => {
         component={ProfileScreen}
         initialParams={{ firstRequest: false }}
         options={{
-          headerLeft: () => <HeaderLogo />,
+          headerLeft: HeaderLogoNoProps,
           headerTitle: t('profileScreen.title'),
         }}
       />
@@ -91,6 +99,13 @@ export const UserNavigator = () => {
         component={MessagesScreen}
         options={{
           headerTitle: t('messagesScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="MfaSettings"
+        component={MfaSettings}
+        options={{
+          headerTitle: t('settingsScreen.authenticatorTitle'),
         }}
       />
       <Stack.Screen

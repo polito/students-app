@@ -2,31 +2,36 @@ import { Theme } from '@lib/ui/types/Theme';
 import { Booking, BookingTopic } from '@polito/api-client';
 
 import { inRange } from 'lodash';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotScreen';
+import { APP_TIMEZONE } from './dates';
 
 export const MIN_CELL_HEIGHT = 20;
 
 export const isSlotBookable = (item: BookingCalendarEvent) => {
   const bookingStartsAt = DateTime.fromJSDate(item.bookingStartsAt as Date, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).valueOf();
   const bookingEndsAt = DateTime.fromJSDate(item.bookingEndsAt as Date, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   }).valueOf();
   return (
     item.canBeBooked &&
-    inRange(DateTime.now().valueOf(), bookingStartsAt, bookingEndsAt)
+    inRange(
+      DateTime.now().setZone(APP_TIMEZONE).valueOf(),
+      bookingStartsAt,
+      bookingEndsAt,
+    )
   );
 };
 
 export const isSlotFull = (item: BookingCalendarEvent) => {
-  return item.bookedPlaces === item.places;
+  return item.bookedPlaces >= item.places;
 };
 
 export const isPastSlot = (item: BookingCalendarEvent) => {
-  return DateTime.now() > item.end;
+  return DateTime.now().setZone(APP_TIMEZONE) > item.end;
 };
 
 export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
@@ -34,7 +39,7 @@ export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
     slot.canBeBooked &&
     slot.hasSeatSelection &&
     slot.hasSeats &&
-    slot.end > DateTime.now()
+    slot.end > DateTime.now().setZone(APP_TIMEZONE)
   );
 };
 
@@ -47,7 +52,7 @@ export const getBookingStyle = (
   const isBooked = item.isBooked;
   const isFull = isSlotFull(item);
   const canBeBooked = isSlotBookable(item);
-  const notYetBookable = item.start > DateTime.now();
+  const notYetBookable = item.start > DateTime.now().setZone(APP_TIMEZONE);
   const isPast = isPastSlot(item);
 
   if (isBooked && !isPast) {

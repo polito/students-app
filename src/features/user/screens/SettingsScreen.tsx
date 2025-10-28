@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -17,8 +18,11 @@ import {
   faCircleExclamation,
   faCircleHalfStroke,
   faFont,
+  faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge';
 import { Col } from '@lib/ui/components/Col';
+import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -30,6 +34,9 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+
+import { useCheckMfa } from '~/core/queries/authHooks';
+import { hasPrivateKeyMFA, resetPrivateKeyMFA } from '~/utils/keychain';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
@@ -137,7 +144,7 @@ const VisualizationListItem = () => {
       id: 'dark',
       title: 'theme.dark',
       color: colorSchema.dark,
-      state: 'dark' === colorScheme,
+      state: colorScheme === 'dark',
       image: Platform.select({ ios: 'circle.fill', android: 'circle' }),
     },
     {
@@ -145,7 +152,7 @@ const VisualizationListItem = () => {
       id: 'light',
       title: 'theme.light',
       color: colorSchema.light,
-      state: 'dark' === colorScheme,
+      state: colorScheme === 'dark',
       image: Platform.select({ ios: 'circle.fill', android: 'circle' }),
     },
     {
@@ -238,8 +245,8 @@ const LanguageListItem = () => {
   );
 };
 
-// TODO temporarily removed
-// eslint-disable-next-line unused-imports/no-unused-vars
+// TODO: temporarily removed
+// eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
 const Notifications = () => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
@@ -300,6 +307,77 @@ const Notifications = () => {
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { data: mfaStatus } = useCheckMfa(true);
+  const { palettes } = useTheme();
+
+  const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
+  useEffect(() => {
+    hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
+  }, [mfaStatus]);
+
+  const handleKeyRemoval = useCallback(async () => {
+    try {
+      await resetPrivateKeyMFA();
+      setLocalMfaKey(false);
+      Alert.alert(
+        t('mfaScreen.settings.removedTitle'),
+        t('mfaScreen.settings.removed'),
+        [{ text: t('common.ok') }],
+      );
+    } catch (error) {
+      console.error('Error removing MFA key:', error);
+    }
+  }, [t]);
+
+  const handleBadgeStatus = () => {
+    if (mfaStatus?.status === 'active' && localMfaKey) {
+      return (
+        <Badge
+          backgroundColor={palettes.success[500]}
+          foregroundColor={palettes.text[100]}
+          text={t('mfaScreen.settings.active')}
+        />
+      );
+    }
+    if (mfaStatus?.status === 'locked') {
+      return (
+        <Badge
+          backgroundColor={palettes.warning[500]}
+          foregroundColor={palettes.warning[100]}
+          text={t('mfaScreen.settings.locked')}
+        />
+      );
+    }
+    if (
+      mfaStatus?.status === 'available' ||
+      mfaStatus?.status === 'needsReauth'
+    ) {
+      return (
+        <Badge
+          backgroundColor={palettes.warning[400]}
+          foregroundColor={palettes.text[100]}
+          text={t('mfaScreen.settings.disabled')}
+        />
+      );
+    }
+    return (
+      <Badge
+        backgroundColor={palettes.error[500]}
+        foregroundColor={palettes.error[100]}
+        text={t('common.error')}
+      />
+    );
+  };
+
+  useEffect(() => {
+    if (
+      (mfaStatus?.status === 'available' ||
+        mfaStatus?.status === 'needsReauth') &&
+      localMfaKey
+    ) {
+      handleKeyRemoval();
+    }
+  }, [mfaStatus?.status, localMfaKey, handleKeyRemoval]);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -318,12 +396,35 @@ export const SettingsScreen = () => {
             </OverviewList>
           </Section>
           {/* <Section>
-            <SectionHeader
-              title={t('common.notifications')}
-              trailingItem={<Badge text={t('common.comingSoon')} />}
-            />
-            <Notifications />
-          </Section>*/}
+              <SectionHeader
+                title={t('common.notifications')}
+                trailingItem={<Badge text={t('common.comingSoon')} />}
+              />
+              <Notifications />
+            </Section>*/}
+          {mfaStatus?.status !== 'unavailable' && (
+            <Section>
+              <SectionHeader title={t('settingsScreen.securityTitle')} />
+              <OverviewList indented>
+                <ListItem
+                  title={t('settingsScreen.authenticatorTitle')}
+                  accessibilityRole="button"
+                  linkTo={{
+                    screen: 'MfaSettings',
+                  }}
+                  leadingItem={<Icon icon={faShieldHalved} size={20} />}
+                  trailingItem={
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                    >
+                      {handleBadgeStatus()}
+                      {Platform.OS === 'ios' && <DisclosureIndicator />}
+                    </View>
+                  }
+                />
+              </OverviewList>
+            </Section>
+          )}
           <Section>
             <SectionHeader title={t('common.accessibility')} />
             <OverviewList indented>

@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Col } from '@lib/ui/components/Col';
 import { CtaButton } from '@lib/ui/components/CtaButton';
@@ -18,9 +19,12 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { resetNavigationStatusTo } from '~/utils/navigation';
+
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
 import { OnboardingStep } from '../components/OnboardingStep';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
+import { useSplashContext } from '../contexts/SplashContext';
 import { useHideTabs } from '../hooks/useHideTabs';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
@@ -31,6 +35,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const { hideOnboarding } = useSplashContext();
 
   const [width, setWidth] = useState<number>(0);
   const stepsRef = useRef<ScrollView>(null);
@@ -47,7 +52,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
     [currentStep, data],
   );
 
-  useHideTabs();
+  useHideTabs(undefined, hideOnboarding);
 
   // Update the onboarding step in preferences
   useEffect(() => {
@@ -81,16 +86,11 @@ export const OnboardingModal = ({ navigation }: Props) => {
 
   const onNextPage = useCallback(() => {
     if (isLastStep) {
-      const parent = navigation.getParent()!;
-
-      parent.reset({
-        index: 1,
-        routes: [
-          { name: 'TeachingTab' },
-          { name: 'ServicesTab', params: { screen: 'Guides', initial: false } },
-        ],
-      });
-
+      navigation.popToTop();
+      resetNavigationStatusTo(navigation, 'ServicesTab', [
+        { name: 'Services' },
+        { name: 'Guides' },
+      ]);
       return;
     }
     stepsRef.current?.scrollTo({
@@ -98,6 +98,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
       x: (currentStep + 1) * width,
     });
   }, [currentStep, isLastStep, navigation, width]);
+
   return (
     <>
       <ScrollView
@@ -126,7 +127,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
           <OnboardingStep key={item} stepNumber={item} width={width} />
         ))}
       </ScrollView>
-      <View style={styles.fixedContainer}>
+      <SafeAreaView style={styles.fixedContainer}>
         <View style={styles.dotsContainer}>
           <AnimatedDotsCarousel
             length={4}
@@ -188,7 +189,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
             />
           </Col>
         </Row>
-      </View>
+      </SafeAreaView>
     </>
   );
 };

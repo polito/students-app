@@ -22,10 +22,11 @@ import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { AgendaTypeFilter } from '../components/AgendaTypeFilter';
 import { BookingCard } from '../components/BookingCard';
@@ -58,19 +59,19 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
 
   const { params } = route;
-  const date = params?.date ? DateTime.fromISO(params.date) : DateTime.now();
-  const today = useMemo(() => new Date(), []);
-  const todayDateTime = useMemo(
-    () => DateTime.fromJSDate(today, { zone: IANAZone.create('Europe/Rome') }),
-    [today],
-  );
+  const date = params?.date
+    ? DateTime.fromISO(params.date)
+    : DateTime.now().setZone(APP_TIMEZONE);
+  const todayDateTime = useMemo(() => DateTime.now().setZone(APP_TIMEZONE), []);
 
   const [currentWeek, setCurrentWeek] = useState<DateTime>(
-    date ? date.startOf('week') : DateTime.now().startOf('week'),
+    date
+      ? date.setZone(APP_TIMEZONE).startOf('week')
+      : DateTime.now().setZone(APP_TIMEZONE).startOf('week'),
   );
 
   const [selectedDate, setSelectedDate] = useState<DateTime>(
-    date ?? DateTime.now(),
+    date ?? DateTime.now().setZone(APP_TIMEZONE),
   );
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
@@ -129,7 +130,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const getSelectedWeek = useCallback((newDateJS: Date) => {
     setDataPickerIsOpened(false);
     const newDate = DateTime.fromJSDate(newDateJS, {
-      zone: IANAZone.create('Europe/Rome'),
+      zone: APP_TIMEZONE,
     });
     const selectedWeek = newDate.startOf('week');
     setCurrentWeek(selectedWeek);
@@ -166,7 +167,6 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     };
 
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      // eslint-disable-next-line default-case
       switch (event) {
         case 'daily':
           switchToDaily();
@@ -262,7 +262,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
       <DatePicker
         modal
         locale={language}
-        date={today}
+        date={todayDateTime.toJSDate()}
         mode="date"
         open={dataPickerIsOpened}
         onConfirm={getSelectedWeek}

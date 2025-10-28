@@ -27,6 +27,7 @@ export const editablePreferenceKeys = [
   'filesScreen',
   'hideGrades',
   'loginUid',
+  'politoAuthnEnrolmentStatus',
 ] as const;
 
 export type PreferenceKey = (typeof editablePreferenceKeys)[number];
@@ -44,6 +45,7 @@ export const objectPreferenceKeys = [
   'agendaScreen',
   'filesScreen',
   'hideGrades',
+  'politoAuthnEnrolmentStatus',
 ];
 
 export type CoursesPreferences = {
@@ -90,7 +92,12 @@ export interface PreferencesContextBase {
   };
   showColorWarning?: boolean;
   hideGrades?: boolean;
-  loginUid?: string;
+  loginUid?: string | null;
+  politoAuthnEnrolmentStatus?: {
+    inSettings?: boolean;
+    insertedDeviceName?: string;
+    hideInitialPrompt?: boolean;
+  };
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {

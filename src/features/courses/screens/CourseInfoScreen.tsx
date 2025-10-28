@@ -36,7 +36,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
@@ -47,6 +46,7 @@ import {
   useGetCourseEditions,
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
+import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { LectureCard } from '../../agenda/components/LectureCard';
@@ -68,14 +68,14 @@ export const CourseInfoScreen = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
-  const { courses: coursesPreferences } = usePreferencesContext();
+  const coursesQuery = useGetCourses();
   const {
     nextLecture,
     dayOfMonth,
     weekDay,
     monthOfYear,
     isLoadingNextLecture,
-  } = useGetNextLecture(courseId, coursesPreferences);
+  } = useGetNextLecture(courseId);
   const openInAppLink = useOpenInAppLink();
   const courseExamsQuery = useGetCourseExams(
     courseId,
@@ -91,6 +91,28 @@ export const CourseInfoScreen = () => {
 
   const isOffline = useOfflineDisabled();
 
+  const isModule = useMemo(() => {
+    if (!coursesQuery.data) return false;
+    return coursesQuery.data.some(
+      course =>
+        course.modules?.some(module => module.id === courseId) ||
+        course.modules?.some(module =>
+          module.previousEditions.some(e => +e.id === courseId),
+        ),
+    );
+  }, [coursesQuery.data, courseId]);
+
+  const parentCourse = useMemo(() => {
+    if (!coursesQuery.data || !isModule) return null;
+    return coursesQuery.data.find(
+      course =>
+        course.modules?.some(module => module.id === courseId) ||
+        course.modules?.some(module =>
+          module.previousEditions.some(e => +e.id === courseId),
+        ),
+    );
+  }, [coursesQuery.data, courseId, isModule]);
+
   const { getParent } = useNavigation();
 
   const menuActions = useMemo(() => {
@@ -99,17 +121,15 @@ export const CourseInfoScreen = () => {
       const editionsCount = getUnreadsCount(['teaching', 'courses', e.id]);
       return {
         id: `${e.id}`,
-        title: e.year,
-        state: courseId === e.id ? 'on' : undefined,
+        title: e.year.toString(),
+        state: courseId === +e.id ? 'on' : undefined,
         image: editionsCount
           ? Platform.select({ ios: 'circle.fill', android: 'circle' })
           : undefined,
         imageColor: editionsCount ? palettes.rose[600] : undefined,
       } as MenuAction;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editions, courseId]);
-
+  }, [editions, courseId, palettes, getUnreadsCount]);
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
       return;
@@ -156,7 +176,16 @@ export const CourseInfoScreen = () => {
       <SafeAreaView>
         <Section style={styles.heading}>
           <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">{courseQuery.data?.shortcode ?? ' '}</Text>
+          <Text variant="caption">
+            {courseQuery.data?.shortcode ?? ' '}
+            {isModule && ` - ${parentCourse?.name}`}
+            {!isModule && courseQuery.data?.cfu && (
+              <Text variant="caption">
+                {' - '}
+                {courseQuery.data.cfu} {t('common.cfu').toLowerCase()}
+              </Text>
+            )}
+          </Text>
         </Section>
         <Card style={styles.metricsCard} accessible={true}>
           <Grid>
@@ -217,16 +246,6 @@ export const CourseInfoScreen = () => {
                 </Row>
               </StatefulMenuView>
             </View>
-            <Metric
-              title={t('courseInfoTab.creditsLabel')}
-              value={t('common.creditsWithUnit', {
-                credits: courseQuery.data?.cfu,
-              })}
-              accessibilityLabel={`${t('courseInfoTab.creditsLabel')}: ${
-                courseQuery.data?.cfu
-              }`}
-              style={GlobalStyles.grow}
-            />
           </Grid>
         </Card>
         <Section>

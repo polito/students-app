@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import {
-  CourseOverviewPreviousEditionsInner,
+  CourseModulePreviousEditionsInner,
   MessageType,
 } from '@polito/api-client';
 import { Notification } from '@polito/api-client/models/Notification';
@@ -12,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { get, has, setWith } from 'lodash';
 
 import { CourseTabsParamList } from '../../features/courses/navigation/CourseNavigator';
+import { useMfaChallengeHandler } from '../queries/authHooks';
 import {
   NOTIFICATIONS_QUERY_KEY,
   useGetNotifications,
@@ -152,7 +153,7 @@ export const useNotifications = () => {
   const getUnreadsCountPerCourse = useCallback(
     (
       courseId?: number | null,
-      prevEditions?: CourseOverviewPreviousEditionsInner[],
+      prevEditions?: CourseModulePreviousEditionsInner[],
     ) => {
       if (courseId === undefined || !prevEditions) return 0;
       const courseIds = prevEditions.map(e => e.id);
@@ -169,6 +170,8 @@ export const useNotifications = () => {
     },
     [getUnreadsCount],
   );
+
+  const { refetch: refetchMfaChallenge } = useMfaChallengeHandler();
 
   const navigateToUpdate = useCallback(
     (notification?: RemoteMessage) => {
@@ -218,8 +221,12 @@ export const useNotifications = () => {
           initial: false,
         });
       }
+
+      if (transaction === TransactionId.Mfa) {
+        refetchMfaChallenge().catch(console.error);
+      }
     },
-    [navigation],
+    [navigation, refetchMfaChallenge],
   );
 
   return {

@@ -27,15 +27,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { DateTime, IANAZone } from 'luxon';
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useOfflineDisabled } from '~/core/hooks/useOfflineDisabled.ts';
+import { useSafeAreaSpacing } from '~/core/hooks/useSafeAreaSpacing.ts';
+import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
+import { EXAMS_QUERY_KEY } from '~/core/queries/examHooks.ts';
+import { DEADLINES_QUERY_PREFIX } from '~/core/queries/studentHooks.ts';
+import { APP_TIMEZONE } from '~/utils/dates.ts';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
-import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
-import { DEADLINES_QUERY_PREFIX } from '../../../core/queries/studentHooks';
+import { DateTime } from 'luxon';
+
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
@@ -56,11 +58,14 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   const { marginHorizontal } = useSafeAreaSpacing();
   const { language } = usePreferencesContext();
   const { params } = route;
-  const today = useMemo(() => new Date(), []);
+  const today = useMemo(
+    () => DateTime.now().setZone(APP_TIMEZONE).toJSDate(),
+    [],
+  );
 
   const selectedDate = params?.date
     ? DateTime.fromISO(params.date)
-    : DateTime.now();
+    : DateTime.now().setZone(APP_TIMEZONE);
 
   const [nextDate, setNextDate, nextDateRef] =
     useStateRef<DateTime>(selectedDate);
@@ -136,7 +141,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     (newJSDate: Date) => {
       setDataPickerIsOpened(false);
       const newDate = DateTime.fromJSDate(newJSDate, {
-        zone: IANAZone.create('Europe/Rome'),
+        zone: APP_TIMEZONE,
       });
       (
         navigation as NativeStackNavigationProp<AgendaStackParamList, 'Agenda'>
@@ -192,7 +197,6 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     };
 
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-      // eslint-disable-next-line default-case
       switch (event) {
         case 'weekly':
           switchToWeekly();

@@ -1,11 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
-import { OfferingCourseStaff } from '@polito/api-client/models';
+import {
+  FetchChallenge200ResponseData,
+  OfferingCourseStaff,
+} from '@polito/api-client/models';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
-import { HeaderLogo } from '../../core/components/HeaderLogo';
+import { PolitoAuthenticatorScreen } from '~/features/user/screens/PolitoAuthenticatorScreen';
+
+import { createHeaderCloseButton } from '../../core/components/HeaderCloseButton';
+import { HeaderLogoNoProps } from '../../core/components/HeaderLogo';
 import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
 import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';
@@ -43,6 +48,10 @@ export interface SharedScreensParamList extends ParamListBase {
     uri: string;
     width: number;
     height: number;
+  };
+  PolitoAuthenticator: {
+    activeView: 'enroll' | 'auth';
+    challenge?: FetchChallenge200ResponseData;
   };
 }
 const Stack = createNativeStackNavigator<SharedScreensParamList>();
@@ -98,18 +107,29 @@ export const SharedScreens = () => {
         getId={({ params }) => `${params.courseId}${params.courseShortcode}`}
         options={{
           headerTitle: t('courseStatisticsScreen.title'),
+          headerTitleAlign: 'center',
           headerBackTitle: t('common.course'),
         }}
       />
       <Stack.Screen
         name="MessagesModal"
         component={UnreadMessagesModal}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: t('messagesScreen.title'),
           headerLargeTitle: false,
           presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
+          headerLeft: HeaderLogoNoProps,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
+      />
+      <Stack.Screen
+        name="PolitoAuthenticator"
+        component={PolitoAuthenticatorScreen}
+        options={{
+          headerTitle: t('mfaScreen.headerTitle'),
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: HeaderLogoNoProps,
         }}
       />
       <Stack.Screen

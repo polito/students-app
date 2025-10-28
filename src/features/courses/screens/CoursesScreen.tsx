@@ -63,6 +63,7 @@ export const CoursesScreen = () => {
                         index,
                         courses.length,
                       )}
+                      showAllModules={true}
                     />
                   ))}
                 </OverviewList>

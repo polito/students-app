@@ -1,7 +1,8 @@
-import { DateTime, IANAZone } from 'luxon';
-import { CoursesPreferences } from 'src/core/contexts/PreferencesContext';
+import { CoursesPreferences } from '~/core/contexts/PreferencesContext';
+import { APP_TIMEZONE, dateFormatter } from '~/utils/dates';
 
-import { dateFormatter } from '../../../utils/dates';
+import { DateTime } from 'luxon';
+
 import { LectureItem } from '../types/AgendaItem';
 import { Lecture } from '../types/Lecture';
 
@@ -11,8 +12,9 @@ export const formatNextLecture = (
 ): LectureItem => {
   const formatTime = dateFormatter('HH:mm');
   const lectureStart = DateTime.fromJSDate(lecture.startsAt, {
-    zone: IANAZone.create('Europe/Rome'),
+    zone: APP_TIMEZONE,
   });
+
   return {
     title: lecture.courseName,
     key: `${lecture.id}`,
@@ -20,7 +22,7 @@ export const formatNextLecture = (
     date: lecture.startsAt.toISOString(),
     start: lectureStart,
     end: DateTime.fromJSDate(lecture.endsAt, {
-      zone: IANAZone.create('Europe/Rome'),
+      zone: APP_TIMEZONE,
     }),
     id: lecture.id,
     courseId: lecture.courseId,

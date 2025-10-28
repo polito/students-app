@@ -64,7 +64,7 @@ export const CareerScreen = () => {
   const onPressAverageEvent = () => {
     showBottomModal(
       <CareerScreenModal
-        title={t('transcriptMetricsScreen.averagesAndGrades')}
+        title={t('transcriptMetricsScreen.averages')}
         itemList={[
           {
             title: t('transcriptMetricsScreen.weightedAverage'),
@@ -266,7 +266,7 @@ export const CareerScreen = () => {
 
           <Section>
             <SectionHeader
-              title={t('transcriptMetricsScreen.averagesAndGrades')}
+              title={t('transcriptMetricsScreen.averages')}
               trailingIcon={{
                 onPress: onPressAverageEvent,
                 icon: faQuestionCircle,

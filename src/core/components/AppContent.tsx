@@ -66,7 +66,6 @@ export const AppContent = () => {
   }, [preferences, queryClient]);
 
   if (MigrationService.needsMigration(preferences)) return null;
-
   return (
     <>
       <BottomModal
@@ -74,7 +73,7 @@ export const AppContent = () => {
         {...bottomModal}
         onModalHide={() => setVersionModalVisible(false)}
       />
-      {isLogged ? (
+      {isLogged && !preferences.loginUid ? (
         <RootNavigator versionModalIsOpen={versionModalVisible} />
       ) : (
         <GuestNavigator />

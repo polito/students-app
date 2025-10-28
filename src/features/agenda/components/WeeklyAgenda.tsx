@@ -7,9 +7,13 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { APP_TIMEZONE } from '~/utils/dates.ts';
+
 import { DateTime } from 'luxon';
 
-import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
+import { processLectures } from '../hooks/useProcessedLectures';
+import { AgendaDay } from '../types/AgendaDay';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { DailyAgenda } from './DailyAgenda';
 import { EmptyWeek } from './EmptyWeek';
@@ -26,12 +30,28 @@ export const WeeklyAgenda = ({
   currentDay,
 }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { accessibility } = usePreferencesContext();
+  const { accessibility, courses } = usePreferencesContext();
   const newDay = useMemo(
     () =>
-      currentDay ? currentDay.startOf('day') : DateTime.now().startOf('day'),
+      currentDay
+        ? currentDay.startOf('day')
+        : DateTime.now().setZone(APP_TIMEZONE).startOf('day'),
     [currentDay],
   );
+
+  const processedWeek = useMemo(() => {
+    const processed: AgendaDay[] = [];
+    agendaWeek.data.forEach(day => {
+      const filteredItems = processLectures(day.items, courses);
+      if (filteredItems.length > 0) {
+        processed.push({
+          ...day,
+          items: filteredItems,
+        });
+      }
+    });
+    return processed;
+  }, [agendaWeek.data, courses]);
 
   return (
     <View>
@@ -40,7 +60,7 @@ export const WeeklyAgenda = ({
         {' - '}
         {agendaWeek.dateRange.end!.minus(1).toFormat('d MMM')}
       </Text>
-      {agendaWeek.data.map(day => (
+      {processedWeek.map(day => (
         <DailyAgenda
           key={day.key}
           agendaDay={day}
@@ -53,9 +73,9 @@ export const WeeklyAgenda = ({
           }}
         />
       ))}
-      {!agendaWeek.data.length && (
+      {!processedWeek.length && (
         <Row>
-          <Col style={styles.dayColumn}></Col>
+          <Col style={styles.dayColumn} />
           <Col
             style={[
               styles.itemsColumn,
