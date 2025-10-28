@@ -8,8 +8,6 @@ import {
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
-import data from '../../utils/pathFinale.json';
-import path from 'path';
 
 export const SITES_QUERY_KEY = 'sites';
 export const BUILDINGS_QUERY_KEY = 'buildings';
@@ -17,14 +15,11 @@ export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
+export const PATH_QUERY_KEY = 'path';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
 };
-
-export const useGetPath = () => {
-  return data;
-}
 
 export const useGetSites = () => {
   const placesClient = usePlacesClient();
@@ -158,5 +153,27 @@ export const useGetMultiplePlaces = (placeIds?: string[]) => {
         enabled: placeId != null,
         staleTime: Infinity,
       })) ?? [],
+  });
+};
+
+export const useGetPath = (params: {
+  startPlaceId?: string;
+  destPlaceId?: string;
+}) => {
+  const placesClient = usePlacesClient();
+
+  return useQuery({
+    queryKey: [PATH_QUERY_KEY, params.startPlaceId, params.destPlaceId],
+    queryFn: () =>
+      placesClient.getDirections({
+        startPlaceId: params.startPlaceId!,
+        destinationPlaceId: params.destPlaceId!,
+      }),
+    enabled:
+      params.startPlaceId !== undefined &&
+      params.startPlaceId !== '' &&
+      params.destPlaceId !== undefined &&
+      params.destPlaceId !== '',
+    staleTime: Infinity,
   });
 };
