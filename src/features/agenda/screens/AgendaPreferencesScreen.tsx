@@ -50,10 +50,10 @@ export const AgendaPreferencesScreen = ({ navigation }: Props) => {
               <SectionHeader title={t('AgendaPreferences.showInAgenda')} />
               <OverviewList indented>
                 {coursesQuery.data.map(
-                  course =>
+                  (course, index) =>
                     coursesPrefs[course.uniqueShortcode] && (
                       <SwitchListItem
-                        key={course.shortcode + '' + course.id}
+                        key={`${course.shortcode}-${course.id}-${index}`}
                         title={course.name}
                         disabled={!coursesPrefs[course.uniqueShortcode]}
                         value={

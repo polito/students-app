@@ -246,8 +246,8 @@ export const HiddenEventsScreen = ({ navigation }: Props) => {
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <SafeAreaView>
-          {sections.map(section => (
-            <View key={section.courseShortcode}>
+          {sections.map((section, idx) => (
+            <View key={`${section.courseShortcode}-${idx}`}>
               <View style={styles.sectionHeader}>
                 <Text variant="heading" style={styles.sectionTitle}>
                   {section.title}

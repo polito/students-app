@@ -54,3 +54,5 @@ export const Dialog: IDialog = {
     Alert.alert(options.title ?? '', options.message, alertButtons);
   },
 };
+
+export const DialogProvider = () => null;
