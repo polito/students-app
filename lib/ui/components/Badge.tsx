@@ -1,12 +1,14 @@
+import { ViewProps } from 'react-native';
+
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Icon } from '@lib/ui/components/Icon';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
 
-type Props = {
+type Props = ViewProps & {
   text: string;
   icon?: IconDefinition;
   backgroundColor: string;
@@ -18,6 +20,7 @@ export const Badge = ({
   icon,
   backgroundColor,
   foregroundColor,
+  style,
 }: Props) => {
   const { spacing, shapes, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
@@ -39,6 +42,7 @@ export const Badge = ({
         !icon && {
           paddingRight: spacing[1.5],
         },
+        style,
       ]}
     >
       {icon && <Icon icon={icon} size={fontSizes.md} color={foregroundColor} />}
