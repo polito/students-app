@@ -68,6 +68,7 @@ export type PlacesStackParamList = {
   Itinerary: {
     startRoom: string;
     destRoom: string;
+    avoidStairs: boolean;
   };
   PlaceCategories: undefined;
   MessagesModal: undefined;

@@ -76,6 +76,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const isExpandedStartRef = useRef(isExpandedStart);
   const isExpandedDestRef = useRef(isExpandedDest);
 
+  const [isLoadingPath, setIsLoadingPath] = useState(false);
+
   const handleRoom = useCallback(
     (place: PlaceOverview | undefined, isStartRoom: boolean) => {
       if (isStartRoom) {
@@ -127,8 +129,10 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
               destRoom={destRoom}
               setTotDistance={setTotDistance}
               setStairsOrElevators={setStairsOrElevators}
+              avoidStairs={avoidStairs}
               navigation={navigation}
               screenHeight={screenHeight}
+              setIsLoadingPath={setIsLoadingPath}
             />
           </>
         ),
@@ -152,6 +156,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     selectedId,
     screenHeight,
     computeButtonState,
+    avoidStairs,
     setSelectedId,
   ]);
 
@@ -379,12 +384,15 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         startRoomLength={startRoom?.placeId.length || 0}
         destinationRoomLength={destRoom?.placeId.length || 0}
         handleComputeButtonState={setComputeButtonState}
+        isLoading={isLoadingPath}
         showItinerary={() => {
           if (startRoom && startRoom.placeId && destRoom && destRoom.placeId) {
             setSelectedLine('line-layer-0');
+            // TO_CEN03-XPTE-C001 TO_CEN05-XPTE-B055
             navigation.navigate('Itinerary', {
               startRoom: startRoom.placeId,
               destRoom: destRoom.placeId,
+              avoidStairs: avoidStairs,
             });
           }
         }}
@@ -395,6 +403,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     navigation,
     startRoom,
     destRoom,
+    avoidStairs,
+    isLoadingPath,
     setComputeButtonState,
     setSelectedLine,
   ]);
