@@ -9,8 +9,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { PolitoAuthenticatorScreen } from '~/features/user/screens/PolitoAuthenticatorScreen';
 
-import { HeaderCloseButton } from '../../core/components/HeaderCloseButton';
-import { HeaderLogo } from '../../core/components/HeaderLogo';
+import { createHeaderCloseButton } from '../../core/components/HeaderCloseButton';
+import { HeaderLogoNoProps } from '../../core/components/HeaderLogo';
 import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
 import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';
@@ -107,19 +107,20 @@ export const SharedScreens = () => {
         getId={({ params }) => `${params.courseId}${params.courseShortcode}`}
         options={{
           headerTitle: t('courseStatisticsScreen.title'),
+          headerTitleAlign: 'center',
           headerBackTitle: t('common.course'),
         }}
       />
       <Stack.Screen
         name="MessagesModal"
         component={UnreadMessagesModal}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: t('messagesScreen.title'),
           headerLargeTitle: false,
           presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
-          headerRight: () => <HeaderCloseButton />,
-        }}
+          headerLeft: HeaderLogoNoProps,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="PolitoAuthenticator"
@@ -128,7 +129,7 @@ export const SharedScreens = () => {
           headerTitle: t('mfaScreen.headerTitle'),
           headerLargeTitle: false,
           presentation: 'modal',
-          headerLeft: () => <HeaderLogo />,
+          headerLeft: HeaderLogoNoProps,
         }}
       />
       <Stack.Screen

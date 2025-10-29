@@ -6,7 +6,7 @@ import {
   CourseDirectory,
   CourseDirectoryContentInner,
   CourseFileOverview,
-  CourseOverviewPreviousEditionsInner,
+  CourseModulePreviousEditionsInner,
   CoursePreferencesRequest,
   CourseVcOtherCoursesInner,
   CoursesApi,
@@ -57,7 +57,9 @@ const setupCourses = (
   courses?.forEach(c => {
     const newC = c as CourseOverview;
     const hasDetails = isCourseDetailed(newC);
-    newC.uniqueShortcode = c.shortcode + c.moduleNumber;
+    // Corsi senza moduli: shortcode + '1', corsi con moduli: shortcode
+    newC.uniqueShortcode =
+      c.modules && c.modules.length > 0 ? c.shortcode : c.shortcode + '1';
 
     if (hasDetails && !(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
@@ -82,6 +84,38 @@ const setupCourses = (
       hasNewPreferences = true;
     }
 
+    if (c.modules && c.modules.length > 0) {
+      c.modules.forEach((module, index) => {
+        if (module.id) {
+          const moduleUniqueShortcode = `${c.shortcode}${index + 1}`;
+          if (!(moduleUniqueShortcode in coursePreferences)) {
+            const usedColors = Object.values(coursePreferences)
+              .map(cp => cp.color)
+              .filter(notNullish);
+            let colorData: (typeof courseColors)[0] | undefined;
+            for (const currentColor of courseColors) {
+              if (!usedColors.includes(currentColor.color)) {
+                colorData = currentColor;
+                break;
+              }
+            }
+            if (!colorData) {
+              colorData =
+                courseColors[
+                  Math.round(Math.random() * (courseColors.length - 1))
+                ];
+            }
+            coursePreferences[moduleUniqueShortcode] = {
+              color: colorData.color,
+              isHidden: false,
+              isHiddenInAgenda: false,
+            };
+            hasNewPreferences = true;
+          }
+        }
+      });
+    }
+
     updatedCourses.push(newC);
   });
 
@@ -95,7 +129,6 @@ const setupCourses = (
 export const useGetCourses = () => {
   const coursesClient = useCoursesClient();
   const { courses: coursePreferences, updatePreference } =
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     usePreferencesContext();
 
   return useQuery<CourseOverview[]>({
@@ -104,7 +137,6 @@ export const useGetCourses = () => {
       coursesClient
         .getCourses()
         .then(pluckData)
-        .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
         .then(c => setupCourses(c, coursePreferences, updatePreference)),
   });
 };
@@ -154,11 +186,15 @@ export const useGetCourseEditions = (courseId: number) => {
   return useQuery({
     queryKey: getCourseKey(courseId, CourseSectionEnum.Editions),
     queryFn: () => {
-      const course = coursesQuery.data?.find(
+      const coursesModules = coursesQuery.data
+        ?.flatMap(c => c.modules)
+        .concat(coursesQuery.data)
+        .filter(notNullish);
+      const course = coursesModules?.find(
         c =>
-          c.id === courseId || c.previousEditions.some(e => e.id === courseId),
+          c.id === courseId || c.previousEditions.some(e => +e.id === courseId),
       );
-      const editions: CourseOverviewPreviousEditionsInner[] = [];
+      const editions: CourseModulePreviousEditionsInner[] = [];
       if (!course || !course.previousEditions.length) return editions;
       if (course.id) {
         editions.push({
@@ -418,10 +454,7 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (
-    | CourseOverviewPreviousEditionsInner
-    | CourseVcOtherCoursesInner
-  )[],
+  relatedVCs: (CourseModulePreviousEditionsInner | CourseVcOtherCoursesInner)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -465,7 +498,7 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseOverviewPreviousEditionsInner
+    | CourseModulePreviousEditionsInner
     | CourseVcOtherCoursesInner
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],

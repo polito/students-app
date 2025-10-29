@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import {
-  CourseOverviewPreviousEditionsInner,
+  CourseModulePreviousEditionsInner,
   MessageType,
 } from '@polito/api-client';
 import { Notification } from '@polito/api-client/models/Notification';
@@ -153,7 +153,7 @@ export const useNotifications = () => {
   const getUnreadsCountPerCourse = useCallback(
     (
       courseId?: number | null,
-      prevEditions?: CourseOverviewPreviousEditionsInner[],
+      prevEditions?: CourseModulePreviousEditionsInner[],
     ) => {
       if (courseId === undefined || !prevEditions) return 0;
       const courseIds = prevEditions.map(e => e.id);

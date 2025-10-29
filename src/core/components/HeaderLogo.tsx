@@ -23,3 +23,5 @@ export const HeaderLogo = (props: RowProps) => {
     </Row>
   );
 };
+
+export const HeaderLogoNoProps = () => <HeaderLogo />;

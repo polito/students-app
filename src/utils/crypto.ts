@@ -1,10 +1,12 @@
 import 'react-native-get-random-values';
 
-import { secp256k1 } from '@noble/curves/secp256k1';
-import { sha256 } from '@noble/hashes/sha2';
+import { secp256k1 } from '@noble/curves/secp256k1.js';
+import { sha256 } from '@noble/hashes/sha2.js';
 
 import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
 import base32Encode from 'base32-encode';
+// ts/linter does not complain without Buffer, but it's needed at runtime
+import { Buffer } from 'buffer';
 
 import { AuthenticatorPrivKey } from './keychain';
 
@@ -26,7 +28,7 @@ export const generateSecp256k1KeyPair = () => {
       }),
       new BitString({
         unusedBits: 0,
-        valueHex: pubKey.buffer,
+        valueHex: pubKey.buffer as ArrayBuffer,
       }),
     ],
   });
@@ -62,7 +64,7 @@ export function signSecp256k1(
   const message = new TextEncoder().encode(messageParts.join('|'));
   const digest = sha256(message);
 
-  const der = secp256k1.sign(digest, privKey).toBytes('der');
+  const der = secp256k1.sign(digest, privKey, { format: 'der' });
   const signature = base32Encode(der, 'RFC4648');
 
   return signature;

@@ -2,17 +2,16 @@ import {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useRef,
+  useMemo,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
 import { ResponseError } from '@polito/api-client/runtime';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core';
 import {
   QueryCache,
   QueryClient,
@@ -20,6 +19,7 @@ import {
   onlineManager,
 } from '@tanstack/react-query';
 
+import { SQLiteStorage } from 'expo-sqlite/kv-store';
 import SuperJSON from 'superjson';
 
 import { updateGlobalApiConfiguration } from '../../config/api';
@@ -34,11 +34,15 @@ import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
-export const asyncStoragePersister = createAsyncStoragePersister({
-  key: 'polito-students.queries',
-  storage: AsyncStorage,
+const QueryStorage = new SQLiteStorage('queryClient');
+
+const DATA_MAX_AGE = 1000 * 3600 * 24 * 7;
+
+export const queryPersister = experimental_createQueryPersister({
+  storage: QueryStorage,
   serialize: SuperJSON.stringify,
   deserialize: SuperJSON.parse,
+  maxAge: DATA_MAX_AGE,
 });
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
@@ -84,50 +88,36 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     },
     [t],
   );
-  const queryClientRef = useRef(
-    new QueryClient({
+
+  const queryClient = useMemo(() => {
+    const client = new QueryClient({
       queryCache: new QueryCache({
         onError: error => {
           if (error instanceof ResponseError) {
-            globalQueryErrorHandler(error, queryClientRef.current);
+            globalQueryErrorHandler(error, client);
           }
         },
       }),
       defaultOptions: {
         queries: {
-          gcTime: 1000 * 60 * 60 * 24 * 3, // 3 days
+          gcTime: DATA_MAX_AGE, // 3 days
           staleTime: 300000, // 5 minutes
-          // networkMode: 'always',
+          networkMode: 'online',
           retry: isEnvProduction ? 2 : 1,
           refetchOnWindowFocus: isEnvProduction,
+          persister: queryPersister.persisterFn,
         },
         mutations: {
           retry: 1,
           onError(error) {
             if (error instanceof ResponseError) {
-              globalQueryErrorHandler(error, queryClientRef.current);
+              globalQueryErrorHandler(error, client);
             }
           },
         },
       },
-    }),
-  );
-
-  // Update the queryClient options through the setter
-  // to avoid recreating the cache
-  useEffect(() => {
-    if (!queryClientRef.current) {
-      return;
-    }
-    queryClientRef.current.setDefaultOptions({
-      mutations: {
-        onError(error) {
-          if (error instanceof ResponseError) {
-            globalQueryErrorHandler(error, queryClientRef.current);
-          }
-        },
-      },
     });
+    return client;
   }, [globalQueryErrorHandler]);
 
   useEffect(() => {
@@ -157,7 +147,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     // Retrieve existing token from SecureStore, if any
     getCredentials()
       .then(keychainCredentials => {
-        let credentials = undefined;
+        let credentials: Credentials | undefined;
 
         if (username && keychainCredentials && keychainCredentials.password) {
           credentials = {
@@ -204,20 +194,11 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ApiContext.Provider value={apiContext}>
-      <QueryClientProvider client={queryClientRef.current}>
-        {splashContext.isAppLoaded && children}
-      </QueryClientProvider>
-      {/* {splashContext.isAppLoaded && (
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{
-            persister: asyncStoragePersister,
-            maxAge: Infinity,
-          }}
-        >
+      {splashContext.isAppLoaded && (
+        <QueryClientProvider client={queryClient}>
           {children}
-        </PersistQueryClientProvider>
-      )}*/}
+        </QueryClientProvider>
+      )}
     </ApiContext.Provider>
   );
 };

@@ -20,7 +20,12 @@ import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
-  Course: { id: number; animated?: boolean };
+  Course: {
+    id: number;
+    animated?: boolean;
+    title?: string;
+    uniqueShortcode?: string;
+  };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
