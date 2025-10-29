@@ -65,6 +65,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   const { data: pathFeat } = useGetPath({
     startPlaceId: route.params.startRoom,
     destPlaceId: route.params.destRoom,
+    avoidStairs: route.params.avoidStairs,
   });
 
   useLayoutEffect(() => {

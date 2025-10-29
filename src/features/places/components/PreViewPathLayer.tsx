@@ -1,4 +1,4 @@
-import { useContext, useEffect, useLayoutEffect } from 'react';
+import { useContext, useLayoutEffect, useMemo } from 'react';
 
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
@@ -17,6 +17,8 @@ type Props = {
   setStairsOrElevators: (count: number | null) => void;
   navigation: MapNavigationProp<PlacesStackParamList, 'Indications', undefined>;
   screenHeight: number;
+  avoidStairs: boolean;
+  setIsLoadingPath: (loading: boolean) => void;
 };
 
 export const PreViewPathLayer = ({
@@ -26,6 +28,8 @@ export const PreViewPathLayer = ({
   setStairsOrElevators,
   navigation,
   screenHeight,
+  avoidStairs,
+  setIsLoadingPath,
 }: Props) => {
   const courses = useContext(PreferencesContext)?.courses;
   const courseColors = Object.values(courses || {}).map(c => c.color);
@@ -37,14 +41,27 @@ export const PreViewPathLayer = ({
   } = useGetPath({
     startPlaceId: startRoom.placeId,
     destPlaceId: destRoom.placeId,
+    avoidStairs: avoidStairs,
   });
 
-  useEffect(() => {
+  useMemo(() => {
     if (pathFeat && pathFeat.data && !isLoading && !isError) {
+      setIsLoadingPath(isLoading);
       setTotDistance(pathFeat.data.totDistance);
       setStairsOrElevators(pathFeat.data.stairsOrElevatorsCount);
+    } else if (isLoading) {
+      setIsLoadingPath(isLoading);
+    } else if (isError) {
+      // USE SNACKBAR
     }
-  }, [pathFeat, isLoading, isError, setTotDistance, setStairsOrElevators]);
+  }, [
+    pathFeat,
+    isLoading,
+    isError,
+    setTotDistance,
+    setStairsOrElevators,
+    setIsLoadingPath,
+  ]);
 
   useLayoutEffect(() => {
     if (pathFeat) {

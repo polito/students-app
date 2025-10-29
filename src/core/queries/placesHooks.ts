@@ -159,15 +159,22 @@ export const useGetMultiplePlaces = (placeIds?: string[]) => {
 export const useGetPath = (params: {
   startPlaceId?: string;
   destPlaceId?: string;
+  avoidStairs?: boolean;
 }) => {
   const placesClient = usePlacesClient();
 
   return useQuery({
-    queryKey: [PATH_QUERY_KEY, params.startPlaceId, params.destPlaceId],
+    queryKey: [
+      PATH_QUERY_KEY,
+      params.startPlaceId,
+      params.destPlaceId,
+      params.avoidStairs,
+    ],
     queryFn: () =>
       placesClient.getDirections({
         startPlaceId: params.startPlaceId!,
         destinationPlaceId: params.destPlaceId!,
+        avoidStairs: params.avoidStairs,
       }),
     enabled:
       params.startPlaceId !== undefined &&
