@@ -30,8 +30,19 @@ export const ProgressChart = ({
 }: Props) => {
   const { dark, colors: themeColors, palettes, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
+  
+  // Create accessibility label for the chart
+  const accessibilityLabel = label
+    ? label.replace('\n', ' ')
+    : undefined;
+  
   return (
-    <View accessible={false} {...rest}>
+    <View 
+      accessible={true} 
+      accessibilityRole="progressbar"
+      accessibilityLabel={accessibilityLabel}
+      {...rest}
+    >
       <RNCKProgressChart
         data={{
           data: [1],

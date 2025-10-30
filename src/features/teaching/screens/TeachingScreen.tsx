@@ -297,7 +297,12 @@ export const TeachingScreen = ({ navigation }: Props) => {
         </Section>
         <Section>
           {/*/ / this Pressable is for ios accessibility*/}
-          <Pressable onPress={() => IS_IOS && onHide(!hideGrades)}>
+          <Pressable 
+            onPress={() => IS_IOS && onHide(!hideGrades)}
+            accessible={IS_IOS}
+            accessibilityRole={IS_IOS ? 'button' : undefined}
+            accessibilityLabel={IS_IOS ? `${hideGrades ? t('common.show') : t('common.hide')}, ${t('transcriptMetricsScreen.hideAndShowButton')}` : undefined}
+          >
             <SectionHeader
               title={t('common.transcript')}
               trailingItem={<HideGrades />}

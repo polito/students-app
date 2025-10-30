@@ -22,6 +22,8 @@ export const SurveyCategoryListItem = ({ type, ...props }: Props) => {
     <ListItem
       {...props}
       title={type.name}
+      accessibilityLabel={`${type.name}, ${t('common.remaining', { value: type.incompleteCount })}`}
+      accessibilityRole="button"
       linkTo={{
         screen: 'CpdSurveys',
         params: {
