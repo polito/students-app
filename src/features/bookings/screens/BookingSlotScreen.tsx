@@ -325,10 +325,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
             keyExtractor={item => item.id.toString()}
+            stickySectionHeadersEnabled={false}
             renderSectionHeader={({ section: { title } }) => (
-              <View style={styles.weekHeader}>
-                <Text variant="heading">{title}</Text>
-              </View>
+              <Text
+                variant="secondaryText"
+                style={styles.weekHeader}
+                capitalize
+              >
+                {title.split(' - ')[0]}
+                {' - '}
+                {title.split(' - ')[1]}
+              </Text>
             )}
             renderSectionFooter={({ section }) =>
               section.data.length === 0 ? (
@@ -596,8 +603,9 @@ const createStyles = ({
       color: colors.surface,
     },
     weekHeader: {
-      paddingVertical: spacing[2],
-      paddingHorizontal: spacing[3],
+      marginTop: spacing[4],
+      marginLeft: spacing[20],
+      paddingBottom: spacing[2],
     },
     empty: {
       padding: spacing[4],
