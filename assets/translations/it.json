@@ -892,11 +892,13 @@
     "toPlaceLabel": "Scegli la destinazione",
     "avoidStairs": "Evita le scale",
     "computePath": "Calcola percorso",
-    "showIndications": "Avvia itinerario"
+    "showIndications": "Avvia itinerario",
+    "pathNotFound": "Parametri del percorso non validi o nessun percorso disponibile."
   },
   "itineraryScreen": {
     "title": "Itinerario",
-    "backTitle": "Modifica"
+    "backTitle": "Modifica",
+    "itineraryError": "Si è verificato un errore durante il tentativo di avviare l'itinerario per questo percorso."
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Prova con \"Aula 1\""

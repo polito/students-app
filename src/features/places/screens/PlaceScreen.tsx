@@ -53,7 +53,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { placesSearched, updatePreference } = usePreferencesContext();
-  const { floorId, setFloorId, setItineraryMode } = useContext(PlacesContext);
+  const { floorId, setFloorId, setItineraryMode, setSelectionMode } = useContext(PlacesContext);
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
@@ -70,6 +70,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     siteId: siteId,
     floorId: placeFloorId,
   });
+
+  useEffect(() => {
+    setSelectedId('');
+  }, [navigation, setSelectedId]);
 
   useEffect(() => {
     if (!isLoadingPlace && placeFloorId !== floorId) {
@@ -260,6 +264,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       accessibilityLabel={t('common.navigate')}
                       onPress={() => {
                         setItineraryMode(true);
+                        setSelectionMode(false);
                         navigation.navigate('Indications', {
                           toPlace: { placeId: placeId, namePlace: name },
                         });
@@ -346,6 +351,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
                       setItineraryMode(true);
+                      setSelectionMode(false);
                       navigation.navigate('Indications', {
                         toPlace: {
                           placeId: place?.id || '',

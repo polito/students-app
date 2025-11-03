@@ -32,12 +32,14 @@ const PlacesListFooterComponent = ({
         title={
           computeButtonState === 0
             ? t('indicationsScreen.computePath')
+            : isLoading ? t('')
             : t('indicationsScreen.showIndications')
         }
         action={() => {
           if (computeButtonState > 0 && !isDisabled) {
             showItinerary();
-          } else handleComputeButtonState(1);
+          } else if(computeButtonState === 0 && !isLoading)
+            handleComputeButtonState(1);
         }}
         disabled={isDisabled}
         loading={isLoading}

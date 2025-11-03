@@ -47,7 +47,7 @@ export const MarkersLayer = ({
   const { dark, fontSizes, colors } = useTheme();
   const placeCategoriesMap = usePlaceCategoriesMap();
   const { accessibility } = usePreferencesContext();
-  const { itineraryMode, setSelectedPlace, selectionIcon } = useContext(PlacesContext);
+  const { itineraryMode, setSelectedPlace, selectionIcon, selectionMode } = useContext(PlacesContext);
 
   const pois = useMemo((): (SearchPlace &
     PlaceCategory & { siteId: string })[] => {
@@ -175,10 +175,17 @@ export const MarkersLayer = ({
 
         if (selectedPoi) {
           if(itineraryMode){
-            if(isPlace(selectedPoi)){     
-              setSelectedPlace(selectedPoi);
-              setSelectedId(selectedPoi.id);
-            }
+            if(selectionMode)
+              if(isPlace(selectedPoi)){  
+                if(selectedId === selectedPoi.id){
+                  setSelectedPlace(null);
+                  setSelectedId('');
+                }   
+                else{
+                  setSelectedPlace(selectedPoi);
+                  setSelectedId(selectedPoi.id);
+                }
+              }
           }else{
             if (isAccessibleFont) {
             // Se è già selezionato, naviga alla pagina di dettaglio
@@ -251,7 +258,8 @@ export const MarkersLayer = ({
           iconImage: [
             'case',
             ['==', ['get', 'id'], selectedId], 
-            selectionIcon === 'start' ? 'start_selection' : selectionIcon === 'destination' ? 'destination_selection' : ['get', 'markerUrl'], 
+            selectionIcon === 'start' ? 'start_selection' :  selectionIcon === 'destination'
+             ? 'destination_selection' : ['get', 'markerUrl'], 
             ['get', 'markerUrl'], 
           ],
           iconSize: [
