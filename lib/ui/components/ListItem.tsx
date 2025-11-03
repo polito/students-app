@@ -155,6 +155,7 @@ export const ListItem = ({
       disabled={disabled}
       {...rest}
       // These two added due to the issue #60 indicated in react-native-context-menu-view
+      // https://github.com/mpiannucci/react-native-context-menu-view/issues/60
       onLongPress={() => {}}
       delayLongPress={100}
     >
