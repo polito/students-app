@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
@@ -44,45 +44,17 @@ export interface Props extends Partial<ListItemProps> {
 interface MenuProps extends Partial<ContextMenuProps> {
   onRefreshDownload: () => void;
   onRemoveDownload: () => void;
-  setIsMenuOpen: (isOpen: boolean) => void;
+  isDownloaded: boolean;
 }
 
 const Menu = ({
   children,
   onRefreshDownload,
   onRemoveDownload,
-  setIsMenuOpen,
+  isDownloaded,
 }: MenuProps) => {
   const { t } = useTranslation();
   const { dark, colors } = useTheme();
-  const MENU_TOUCH_DELAY_MS = 300;
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const clearMenuTimeout = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-  }, []);
-
-  const handleTouchStart = useCallback(() => {
-    clearMenuTimeout();
-    timeoutRef.current = setTimeout(() => {
-      setIsMenuOpen(true);
-    }, MENU_TOUCH_DELAY_MS);
-  }, [clearMenuTimeout, setIsMenuOpen]);
-
-  const handleTouchEnd = useCallback(() => {
-    clearMenuTimeout();
-    setIsMenuOpen(false);
-  }, [clearMenuTimeout, setIsMenuOpen]);
-
-  useEffect(() => {
-    return () => {
-      clearMenuTimeout();
-    };
-  }, [clearMenuTimeout]);
 
   return (
     <ContextMenu
@@ -99,14 +71,7 @@ const Menu = ({
           destructive: true,
         },
       ]}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onCancel={() => {
-        clearMenuTimeout();
-        setIsMenuOpen(false);
-      }}
       onPress={({ nativeEvent: { index } }) => {
-        setIsMenuOpen(false);
         switch (index) {
           case 0:
             onRefreshDownload();
@@ -117,6 +82,7 @@ const Menu = ({
           default:
         }
       }}
+      disabled={IS_IOS && !isDownloaded}
     >
       {children}
     </ContextMenu>
@@ -150,7 +116,6 @@ export const CourseFileListItem = memo(
       [courseId, item.id],
     );
     const [isCorrupted, setIsCorrupted] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
     const cachedFilePath = useMemo(() => {
       let ext: string | null = extension(item.mimeType!);
@@ -229,8 +194,6 @@ export const CourseFileListItem = memo(
     }, [openFile, t, cachedFilePath, setFeedback, isDownloaded]);
 
     const downloadFile = useCallback(async () => {
-      if (IS_IOS && isMenuOpen) return;
-
       if (downloadProgress == null) {
         if (isCorrupted) {
           await refreshDownload();
@@ -251,7 +214,6 @@ export const CourseFileListItem = memo(
       openDownloadedFile,
       refreshDownload,
       startDownload,
-      isMenuOpen,
     ]);
 
     const trailingItem = useMemo(
@@ -290,7 +252,7 @@ export const CourseFileListItem = memo(
               <Menu
                 onRefreshDownload={refreshDownload}
                 onRemoveDownload={removeDownload}
-                setIsMenuOpen={setIsMenuOpen}
+                isDownloaded={isDownloaded}
               >
                 <IconButton
                   icon={faEllipsisVertical}
@@ -312,7 +274,6 @@ export const CourseFileListItem = memo(
         refreshDownload,
         removeDownload,
         stopDownload,
-        setIsMenuOpen,
       ],
     );
 
@@ -338,12 +299,12 @@ export const CourseFileListItem = memo(
       />
     );
 
-    if (IS_IOS && isDownloaded) {
+    if (IS_IOS) {
       return (
         <Menu
           onRefreshDownload={refreshDownload}
           onRemoveDownload={removeDownload}
-          setIsMenuOpen={setIsMenuOpen}
+          isDownloaded={isDownloaded}
         >
           {listItem}
         </Menu>
