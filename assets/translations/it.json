@@ -83,6 +83,7 @@
   },
   "bookingsScreen": {
     "emptyState": "Non hai prenotazioni attive",
+    "emptyWeek": "Non hai eventi disponibili in questa settimana",
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
