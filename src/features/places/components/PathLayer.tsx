@@ -26,15 +26,6 @@ export const PathLayer = ({
   const { setFloorId: setMapFloorId, selectedLine: line } =
     useContext(PlacesContext);
   const floorMapNames = useGetSite('TO_CENCIT')?.floors;
-  /*
-  const featureCollection = useGetPath();
-
-  useEffect(() => {
-    if (featureCollection) {
-      setPathFeatureCollection(featureCollection.features);
-    }
-  }, [featureCollection]);
-  */
 
   useEffect(() => {
     if (line) {
@@ -68,19 +59,19 @@ export const PathLayer = ({
     if (type === 'start') {
       return 'start';
     } else if (type === 'end') {
-      const maxIndex = pathFeatureCollection.length - 1;
-      if (index === maxIndex) return 'destination';
+      if (index === pathFeatureCollection.length - 1) return 'destination';
       else {
         const currentFloor = floorMapNames?.find(
           floor =>
             floor.id ===
-            pathFeatureCollection?.[index].features.properties.fn_fl_id,
+            pathFeatureCollection[index].features.properties.fnFlId,
         );
         const nextFloor = floorMapNames?.find(
           floor =>
             floor.id ===
-            pathFeatureCollection?.[index + 1].features.properties.fn_fl_id,
+            pathFeatureCollection[index + 1].features.properties.fnFlId,
         );
+
         if (currentFloor && nextFloor) {
           return currentFloor.level > nextFloor.level ? 'down' : 'up';
         }

@@ -10,7 +10,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Dimensions, View } from 'react-native';
 import { ActivityIndicator, Image } from 'react-native';
-
 import {
   faLocationDot,
   faMapPin,
@@ -25,11 +24,8 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PlaceOverview } from '@polito/api-client';
-
 import { notNullish } from '~/utils/predicates';
-
 import { debounce } from 'lodash';
-
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlaces } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -51,7 +47,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { dark } = useTheme();
   const campus = useGetCurrentCampus();
-  const { floorId: floorId, setSelectedLine } = useContext(PlacesContext);
+  const { floorId: floorId, setSelectedLine, setSelectionMode } = useContext(PlacesContext);
   const [screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
   );
@@ -307,6 +303,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
             title={t('Seleziona dalla mappa')}
             onPress={() => {
               handleItemPress(item);
+              setSelectionMode(true);
             }}
           />
         );
@@ -333,7 +330,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         );
       }
     },
-    [handleItemPress, fontSizes, t],
+    [handleItemPress, fontSizes, setSelectionMode, t],
   );
 
   const listHeader = useMemo(() => {
@@ -388,7 +385,6 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         showItinerary={() => {
           if (startRoom && startRoom.placeId && destRoom && destRoom.placeId) {
             setSelectedLine('line-layer-0');
-            // TO_CEN03-XPTE-C001 TO_CEN05-XPTE-B055
             navigation.navigate('Itinerary', {
               startRoom: startRoom.placeId,
               destRoom: destRoom.placeId,
@@ -463,6 +459,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
             setClickMode(0);
             setSelectedId('');
             setDebouncedSearch('');
+            setSelectionMode(false);
           }}
           handleRoom={handleRoom}
           handleSearch={clickMode === 1 ? setSearchStart : setSearchDest}

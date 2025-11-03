@@ -14,6 +14,9 @@ interface PlacesContextValue {
   itineraryMode?: boolean;
   setItineraryMode: (mode: boolean) => void;
 
+  selectionMode?: boolean;
+  setSelectionMode: (mode: boolean) => void;
+
   handleSelectSegment: (label: string, floor: string) => void;
 
   selectedPlace: PlaceOverview | null;

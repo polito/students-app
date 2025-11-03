@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useMemo } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
@@ -9,6 +9,8 @@ import { useGetPath } from '~/core/queries/placesHooks';
 import { DestinationPlaceType } from '../types';
 import { MapNavigationProp } from './MapNavigator';
 import { PlacesStackParamList } from './PlacesNavigator';
+import { Snackbar } from '@lib/ui/components/Snackbar';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   startRoom: DestinationPlaceType;
@@ -31,8 +33,10 @@ export const PreViewPathLayer = ({
   avoidStairs,
   setIsLoadingPath,
 }: Props) => {
+  const { t } = useTranslation();
   const courses = useContext(PreferencesContext)?.courses;
   const courseColors = Object.values(courses || {}).map(c => c.color);
+  const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
 
   const {
     data: pathFeat,
@@ -44,7 +48,7 @@ export const PreViewPathLayer = ({
     avoidStairs: avoidStairs,
   });
 
-  useMemo(() => {
+  useEffect(() => {
     if (pathFeat && pathFeat.data && !isLoading && !isError) {
       setIsLoadingPath(isLoading);
       setTotDistance(pathFeat.data.totDistance);
@@ -52,7 +56,7 @@ export const PreViewPathLayer = ({
     } else if (isLoading) {
       setIsLoadingPath(isLoading);
     } else if (isError) {
-      // USE SNACKBAR
+      setIsSnackbarVisible(true);
     }
   }, [
     pathFeat,
@@ -104,23 +108,39 @@ export const PreViewPathLayer = ({
     }
   }, [pathFeat, navigation, screenHeight]);
 
-  return pathFeat?.data.features.map((featuresArray: any, index: number) => {
+  /* if(isError){
+    return (
+      <Snackbar
+        text={t('indicationsScreen.pathNotFound')}
+        visible={isSnackbarVisible}
+        onDismiss={() => {
+          setIsSnackbarVisible(false);
+        }}
+      />
+    )
+  } */
+
+  if (isLoading || !pathFeat?.data?.features) {
+    return null;
+  }
+
+  return pathFeat.data.features.map((featuresArray: any, index: number) => {
     return (
       <ShapeSource
-        id={`line-source-${index.toString()}`}
-        shape={featuresArray.features}
-        key={`line-source-${index.toString()}`}
-      >
-        <LineLayer
-          id={`line-layer-${index.toString()}`}
-          style={{
-            lineColor: courseColors[index % courseColors.length],
-            lineWidth: 8,
-            lineCap: 'round',
-            lineJoin: 'round',
-            lineOpacity: 1,
-          }}
-        />
+          id={`line-source-${index.toString()}`}
+          shape={featuresArray.features}
+          key={`line-source-${index.toString()}`}
+        >
+          <LineLayer
+            id={`line-layer-${index.toString()}`}
+            style={{
+              lineColor: courseColors[index % courseColors.length],
+              lineWidth: 8,
+              lineCap: 'round',
+              lineJoin: 'round',
+              lineOpacity: 1,
+            }}
+          />
       </ShapeSource>
     );
   });

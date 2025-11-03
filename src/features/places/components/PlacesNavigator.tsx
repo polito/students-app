@@ -142,6 +142,7 @@ export const PlacesNavigator = () => {
   const [lines, setLines] = useState<string[]>([]);
   const [selectedLine, setSelectedLine] = useState<string>();
   const [itineraryMode, setItineraryMode] = useState<boolean>(false);
+  const [selectionMode, setSelectionMode] = useState<boolean>(false);
   const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(
     null,
   );
@@ -209,6 +210,8 @@ export const PlacesNavigator = () => {
         setSelectedLine: setLine,
         itineraryMode,
         setItineraryMode: setMode,
+        selectionMode,
+        setSelectionMode: setSelectionMode,
         handleSelectSegment: handleSelectSegment,
         selectedPlace: selectedPlace,
         setSelectedPlace: handleSelectedPlace,

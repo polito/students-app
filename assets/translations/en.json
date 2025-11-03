@@ -864,17 +864,19 @@
     "title": "Places",
     "viewWholeCampus": "View the whole campus"
   },
-    "indicationsScreen": {
+  "indicationsScreen": {
     "title": "Indications",
     "fromPlaceLabel": "Choose starting point",
     "toPlaceLabel": "Choose destination",
     "avoidStairs": "Avoid stairs",
     "computePath": "Compute path",
-    "showIndications": "Start itinerary"
+    "showIndications": "Start itinerary",
+    "pathNotFound": "Invalid route parameters or no drivable path available."
   },
   "itineraryScreen": {
     "title": "Itinerary",
-    "backTitle": "Edit"
+    "backTitle": "Edit",
+    "itineraryError": "There was an error attempting to start the navigation for this route."
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Try with \"Room 1\""
