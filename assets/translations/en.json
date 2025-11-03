@@ -28,7 +28,20 @@
     "rooms": "Rooms {{roomNames}}",
     "selectDate": "Select date",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout"
+    "weeklyLayout": "Weekly layout",
+    "hideEvent": "Agenda preferences",
+    "noHiddenEvents": "There are no hidden events"
+  },
+  "agendaDialog": {
+    "hideEventTitle": "Hide event",
+    "hideEventMessage": "Choose how to hide this event from the agenda",
+    "hideThisEvent": "Hide only this one",
+    "hideThisAndFutureEvents": "Hide this and future events"
+  },
+  "AgendaPreferences": {
+    "hideInAgenda": "Hide in agenda",
+    "hideEvent": "Hide event",
+    "showInAgenda": "Show on the agenda"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -249,6 +262,7 @@
     "phoneContacts": "Phone contacts",
     "play": "Play",
     "preferences": "Preferences",
+    "preferencesAgenda": "Agenda preferences",
     "profilePic": "Profile picture",
     "recentlyViewed": "Recently viewed",
     "refresh": "Refresh",
@@ -261,6 +275,7 @@
     "search": "Search",
     "seat": "Seat",
     "selectAnOption": "Please select an option",
+    "series": "Series",
     "services": "Services",
     "show": "Show",
     "shortUsername": "ID",
@@ -441,7 +456,7 @@
     }
   },
   "courseHideEventScreen": {
-    "button": "Show in Agenda",
+    "button": "Show in agenda",
     "selectItems": "Select all"
   },
   "courseIconPickerScreen": {

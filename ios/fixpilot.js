@@ -72,20 +72,20 @@ try {
     try {
       run('echo "Press Enter to continue or Ctrl+C to abort: " && read dummy');
     } catch (error) {
-      console.log('❌ Canceled');
+      console.log('❌  Canceled');
       process.exit(1);
     }
 
     console.log('♻️  cleaning DerivedData');
-    run('sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*');
+    run('sudo rm -rf ~/Library/Developer/Xcode/DerivedData');
   }
 
   // Clean Pods and build files
-  console.log('🎵 cleaning Pods and build files');
+  console.log('🎵  cleaning Pods and build files');
   run('rm -rf ios/Pods ios/build ios/.xcode.env.local');
 
   if (!process.argv.includes('--skip-modules')) {
-    console.log('🪢 cleaning node_modules');
+    console.log('🪢  cleaning node_modules');
     run('rm -rf node_modules');
 
     console.log('Installing node modules');
@@ -94,21 +94,22 @@ try {
     });
   }
 
-  console.log('💎 running bundle install');
+  console.log('💎  Running bundle install');
   run('bundle install');
 
-  console.log('📦 Running pod install');
+  console.log('📦  Running pod install');
   try {
     run('npm run pod-install');
   } catch (error) {
-    console.log('🛁 Pod install failed, trying to remove Podfile.lock and retry');
+    console.log('🛁  Pod install failed, trying harder');
     run('rm -f ios/Podfile.lock');
+    run('cd ios && bundle exec pod repo update');
     run('npm run pod-install');
   }
 
-  console.log('✅ Done');
+  console.log('✅  Done');
 
 } catch (error) {
-  console.error('❌ An error occurred:', error.message);
+  console.error('❌  An error occurred:', error.message);
   process.exit(1);
 }

@@ -34,24 +34,45 @@ export const processLectures = (
 
       if (course.isHiddenInAgenda) return false;
 
-      if (!course.itemsToHideInAgenda) return true;
+      if (course.itemsToHideInAgenda) {
+        const lectureRecurrence = {
+          day: item.start.weekday,
+          start: item.fromTime,
+          end: item.toTime,
+          room: item.place ? resolvePlaceId(item.place) : '',
+        };
 
-      const lectureRecurrence = {
-        day: item.start.weekday,
-        start: item.fromTime,
-        end: item.toTime,
-        room: item.place ? resolvePlaceId(item.place) : '',
-      };
+        const isLectureHidden = course.itemsToHideInAgenda.some(
+          hiddenRecurrence =>
+            hiddenRecurrence.day === lectureRecurrence.day &&
+            hiddenRecurrence.start === lectureRecurrence.start &&
+            hiddenRecurrence.end === lectureRecurrence.end &&
+            hiddenRecurrence.room === lectureRecurrence.room,
+        );
 
-      const isLectureHidden = course.itemsToHideInAgenda.some(
-        hiddenRecurrence =>
-          hiddenRecurrence.day === lectureRecurrence.day &&
-          hiddenRecurrence.start === lectureRecurrence.start &&
-          hiddenRecurrence.end === lectureRecurrence.end &&
-          hiddenRecurrence.room === lectureRecurrence.room,
-      );
+        if (isLectureHidden) return false;
+      }
 
-      return !isLectureHidden;
+      if (course.singleItemsToHideInAgenda) {
+        const lectureSingleEvent = {
+          day: item.start.toString(),
+          start: item.fromTime,
+          end: item.toTime,
+          room: item.place ? resolvePlaceId(item.place) : '',
+        };
+
+        const isSingleEventHidden = course.singleItemsToHideInAgenda.some(
+          hiddenSingle =>
+            hiddenSingle.day === lectureSingleEvent.day &&
+            hiddenSingle.start === lectureSingleEvent.start &&
+            hiddenSingle.end === lectureSingleEvent.end &&
+            hiddenSingle.room === lectureSingleEvent.room,
+        );
+
+        if (isSingleEventHidden) return false;
+      }
+
+      return true;
     });
 
 export const useProcessedLectures = (data: AgendaItem[]) => {
