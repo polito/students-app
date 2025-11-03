@@ -28,7 +28,20 @@
     "rooms": "Aule {{roomNames}}",
     "selectDate": "Seleziona data",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "hideEvent": "Preferenze agenda",
+    "noHiddenEvents": "Non ci sono eventi nascosti"
+  },
+  "agendaDialog": {
+    "hideEventTitle": "Nascondi evento",
+    "hideEventMessage": "Scegli come nascondere questo evento dall'agenda",
+    "hideThisEvent": "Nascondi solo questo",
+    "hideThisAndFutureEvents": "Nascondi questo e futuri"
+  },
+  "AgendaPreferences": {
+    "hideInAgenda": "Nascondi in agenda",
+    "hideEvent": "Nascondi evento",
+    "showInAgenda": "Mostra in agenda"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -201,6 +214,7 @@
     "grade": "Voto",
     "hiddenEvents": "Eventi nascosti",
     "hide": "Nascondi",
+    "hiddenEvent": "Nascondi evento",
     "hideInAgenda": "Nascondi in agenda",
     "hour": "Orario",
     "hours": "Ore",
@@ -258,6 +272,7 @@
     "phoneContacts": "Contatto telefonico",
     "play": "Riproduci",
     "preferences": "Preferenze",
+    "preferencesAgenda": "Preferenze agenda",
     "profilePic": "Immagine di profilo",
     "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
@@ -271,6 +286,7 @@
     "seat": "Postazione",
     "selectAnOption": "Seleziona una delle opzioni",
     "selectColor": "Seleziona il colore",
+    "series": "Serie",
     "services": "Servizi",
     "show": "Mostra",
     "shortUsername": "Matr.",
@@ -454,7 +470,7 @@
     }
   },
   "courseHideEventScreen": {
-    "button": "Mostra in Agenda",
+    "button": "Mostra in agenda",
     "selectItems": "Seleziona tutti"
   },
   "courseIconPickerScreen": {

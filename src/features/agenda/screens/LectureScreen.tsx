@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   Dimensions,
   ListRenderItemInfo,
   SafeAreaView,
@@ -22,20 +21,21 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { DateTime, WeekdayNumbers } from 'luxon';
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
+import { EventDetails } from '~/core/components/EventDetails.tsx';
+import { VideoPlayer } from '~/core/components/VideoPlayer.tsx';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useGetCourseVirtualClassrooms } from '~/core/queries/courseHooks.ts';
+import { useGetPerson } from '~/core/queries/peopleHooks.ts';
+import { GlobalStyles } from '~/core/styles/GlobalStyles.ts';
+import { convertMachineDateToFormatDate } from '~/utils/dates.ts';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer.tsx';
-import { EventDetails } from '../../../core/components/EventDetails.tsx';
-import { VideoPlayer } from '../../../core/components/VideoPlayer';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { GlobalStyles } from '../../../core/styles/GlobalStyles';
-import { convertMachineDateToFormatDate } from '../../../utils/dates.ts';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { isLiveVC, isRecordedVC } from '../../courses/utils/lectures';
 import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { useAgendaDialog } from '../hooks/useAgendaDialog';
+import { cleanupPastSingleEvents } from '../utils/hiddenEvents';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
@@ -49,6 +49,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     lecture.courseId,
   );
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
+  const agendaDialog = useAgendaDialog();
 
   const coursePrefs = useMemo(() => {
     if (!lecture?.uniqueShortcode) {
@@ -119,34 +120,15 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     );
   }, [associatedVirtualClassrooms, currentIndex, virtualClassrooms]);
 
-  const hideEvent = () => {
-    Alert.alert(
-      t('lectureScreen.hideEventAlertTitle'),
-      t('lectureScreen.hideEventAlertMessage', {
-        title: lecture.title,
-        day: DateTime.now()
-          .set({ weekday: lecture.start.weekday as WeekdayNumbers })
-          .toFormat('cccc'),
-        fromTime: lecture.fromTime,
-        toTime: lecture.toTime,
-      }),
-      [
-        { text: t('common.cancel'), onPress: () => {} },
-        {
-          text: t('common.ok'),
-          onPress: () => {
-            changeEventVisibility();
-          },
-        },
-      ],
-      { cancelable: false },
-    );
-  };
-
   const changeEventVisibility = () => {
     if (!lecture.uniqueShortcode || !coursePrefs) {
       return;
     }
+
+    const cleanedSingleEvents = cleanupPastSingleEvents(
+      coursePrefs.singleItemsToHideInAgenda,
+    );
+
     updatePreference('courses', {
       ...coursesPrefs,
       [lecture?.uniqueShortcode]: {
@@ -160,9 +142,44 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             room: lecture.place ? resolvePlaceId(lecture.place) : '',
           },
         ],
+        singleItemsToHideInAgenda: cleanedSingleEvents,
       },
     });
     navigation.pop();
+  };
+
+  const changeSingleEventVisibility = () => {
+    if (!lecture.uniqueShortcode || !coursePrefs) {
+      return;
+    }
+
+    const cleanedSingleEvents = cleanupPastSingleEvents(
+      coursePrefs.singleItemsToHideInAgenda,
+    );
+
+    updatePreference('courses', {
+      ...coursesPrefs,
+      [lecture?.uniqueShortcode]: {
+        ...coursePrefs,
+        singleItemsToHideInAgenda: [
+          ...cleanedSingleEvents,
+          {
+            start: lecture.fromTime,
+            end: lecture.toTime,
+            day: lecture.start.toString(),
+            room: lecture.place ? resolvePlaceId(lecture.place) : '',
+          },
+        ],
+      },
+    });
+    navigation.pop();
+  };
+
+  const hideEvent = () => {
+    agendaDialog.hideEvent(
+      () => changeSingleEventVisibility(),
+      () => changeEventVisibility(),
+    );
   };
 
   return (

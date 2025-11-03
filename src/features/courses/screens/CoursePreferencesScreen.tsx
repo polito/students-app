@@ -24,16 +24,17 @@ import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import {
+  useGetCourse,
+  useUpdateCoursePreferences,
+} from '~/core/queries/courseHooks';
+import { formatFileSize } from '~/utils/files';
+
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import {
-  useGetCourse,
-  useUpdateCoursePreferences,
-} from '../../../core/queries/courseHooks';
-import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
@@ -274,7 +275,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       uniqueShortcode,
                     });
                   }}
-                  disabled={!coursePrefs?.itemsToHideInAgenda?.length}
+                  disabled={
+                    !coursePrefs?.itemsToHideInAgenda?.length &&
+                    !coursePrefs.singleItemsToHideInAgenda?.length
+                  }
                   trailingItem={
                     <Icon icon={faChevronRight} size={fontSizes.xl} />
                   }
