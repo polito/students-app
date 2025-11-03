@@ -50,19 +50,17 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   const campus = useGetCurrentCampus();
   const { cameraRef } = useContext(MapNavigatorContext);
   // const searchPlaceToListItem = useSearchPlaceToListItem();
-  const [search] = useState('');
   const {
     floorId: floorId,
     setFloorId: setFloorId,
     selectedLine,
   } = useContext(PlacesContext);
-  const [debouncedSearch] = useState(search);
   const bottomSheetPosition = useSharedValue(0);
   const [screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
   );
   const [chosenBbox, setChosenBbox] = useState<BBox | null>(null);
-  const { data: pathFeat } = useGetPath({
+  const { data: pathFeat} = useGetPath({
     startPlaceId: route.params.startRoom,
     destPlaceId: route.params.destRoom,
     avoidStairs: route.params.avoidStairs,
@@ -133,12 +131,16 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
     ),
     [places, selectedId, setSelectedId, pathFeat],
   );
+
   useLayoutEffect(() => {
-    if (chosenBbox) {
+    const isValidGeometry = chosenBbox && chosenBbox.length === 4 && chosenBbox.every(coord => !isNaN(coord) && typeof coord === 'number' && isFinite(coord));
+
+    if (isValidGeometry) {
       const bounds = {
         ne: [chosenBbox[2], chosenBbox[3]],
         sw: [chosenBbox[0], chosenBbox[1]],
       };
+
       navigation.setOptions({
         mapOptions: {
           camera: {
@@ -152,16 +154,17 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
             zoomLevel: 19,
           },
         },
-        mapContent: renderMapContent,
       });
     }
+  }, [chosenBbox, navigation, screenHeight]);
+
+  useLayoutEffect(() => {
+      navigation.setOptions({
+        mapContent: renderMapContent,
+      });
   }, [
-    debouncedSearch,
     navigation,
     renderMapContent,
-    selectedLine,
-    chosenBbox,
-    screenHeight,
   ]);
 
   useEffect(() => {
@@ -195,21 +198,22 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
           (coord: any) => coord,
         );
       setFloorId(pathFeat?.data.features[0].features.properties?.fnFlId);
-      setChosenBbox(
-        bbox({
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              geometry: {
-                type: 'LineString',
-                coordinates: allCoordinates ? allCoordinates : [],
+      if(allCoordinates && allCoordinates.length > 0)
+        setChosenBbox(
+          bbox({
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                geometry: {
+                  type: 'LineString',
+                  coordinates: allCoordinates ? allCoordinates : [],
+                },
+                properties: {},
               },
-              properties: {},
-            },
-          ],
-        }),
-      );
+            ],
+          }),
+        );
     }
   }, [selectedLine, pathFeat, setFloorId]);
 
