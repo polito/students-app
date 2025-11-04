@@ -14,7 +14,12 @@ export const CourseTrailingItem = ({ cfu }: TrailingItemProps) => {
   const { spacing, colors, palettes } = useTheme();
   const { t } = useTranslation();
   return (
-    <Row pl={2}>
+    <Row
+      pl={2}
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={`${cfu} ${t('common.cfu')}`}
+    >
       <Text
         variant="prose"
         style={{

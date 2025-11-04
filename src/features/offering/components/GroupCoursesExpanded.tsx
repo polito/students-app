@@ -13,7 +13,12 @@ export const GroupCoursesExpanded = ({ courses, disabled }: Props) => {
   const { year } = useDegreeContext();
 
   return (
-    <OverviewList rounded={true} style={{ elevation: 0 }}>
+    <OverviewList
+      rounded={true}
+      style={{ elevation: 0 }}
+      accessible={true}
+      accessibilityRole="list"
+    >
       {courses.map(course => {
         return (
           <ListItem
@@ -29,6 +34,10 @@ export const GroupCoursesExpanded = ({ courses, disabled }: Props) => {
             }}
             trailingItem={<CourseTrailingItem cfu={course.cfu} />}
             disabled={disabled}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`${course.name}, ${course.cfu} CFU`}
+            accessibilityHint="Tocca per visualizzare i dettagli del corso"
           />
         );
       })}

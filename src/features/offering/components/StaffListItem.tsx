@@ -14,8 +14,18 @@ export const StaffListItem = ({ staff }: { staff: CourseStaffInner }) => {
     'common.' + (staff.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator'),
   );
   return person ? (
-    <PersonListItem person={person} subtitle={subtitle} />
+    <PersonListItem
+      person={person}
+      subtitle={subtitle}
+      accessibilityLabel={`${person.firstName} ${person.lastName}, ${subtitle}`}
+      accessibilityRole="button"
+    />
   ) : (
-    <ListItem title=" - " subtitle={subtitle} />
+    <ListItem
+      title=" - "
+      subtitle={subtitle}
+      accessibilityLabel={`${t('common.staffMemberUnavailable')}, ${subtitle}`}
+      accessibilityRole="text"
+    />
   );
 };

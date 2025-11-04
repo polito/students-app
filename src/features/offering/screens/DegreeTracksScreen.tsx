@@ -66,6 +66,9 @@ export const DegreeTracksScreen = () => {
         marginTop: spacing[4],
         marginBottom: bottomBarHeight + spacing[2],
       }}
+      accessible={true}
+      accessibilityRole="list"
+      accessibilityLabel={t('common.degreeTracksAndCourses')}
     >
       <SectionList
         refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
@@ -80,8 +83,13 @@ export const DegreeTracksScreen = () => {
           <Pressable
             onPress={() => toggleSection(index)}
             accessibilityLabel={`${title}. ${t(
-              `common.openedStatus.${isExpanded}`,
-            )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}
+              isExpanded
+                ? 'common.openedStatus.true'
+                : 'common.openedStatus.false',
+            )}. ${t(isExpanded ? 'common.openedStatusAction.true' : 'common.openedStatusAction.false')}`}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: isExpanded }}
+            accessibilityHint={t('common.tapToToggleSection')}
           >
             <View
               style={{

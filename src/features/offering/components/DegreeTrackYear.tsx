@@ -50,9 +50,9 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
       'tenth',
     ];
     if (teachingYear >= 1 && teachingYear <= 10) {
-      return `${t(`common.${textNumber[teachingYear - 1]}`)} ${t(
-        'common.year',
-      )}`;
+      const yearText = t(`common.${textNumber[teachingYear - 1]}`);
+      const yearWord = t('common.year');
+      return `${yearText} ${yearWord}`;
     }
     return `${year}° ${t('common.year')}`;
   }, [t, teachingYear, year]);
@@ -69,7 +69,13 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
       >
         {teachingYear}° {t('common.year')}
       </Text>
-      <OverviewList rounded={true} style={styles.firstLevelOverviewList}>
+      <OverviewList
+        rounded={true}
+        style={styles.firstLevelOverviewList}
+        accessible={true}
+        accessibilityRole="list"
+        accessibilityLabel={`${t('common.coursesList')} ${accessibilityYearLabel} - ${firstLevelCourses.length + coursesByGroup.length} elementi`}
+      >
         {firstLevelCourses.map((course, index) => (
           <ListItem
             accessible={true}
@@ -91,18 +97,19 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
               },
             }}
             accessibilityRole="button"
+            accessibilityHint={t('common.tapToViewCourseDetails')}
             trailingItem={<CourseTrailingItem cfu={course.cfu} />}
             disabled={isOffline}
           />
         ))}
         {coursesByGroup.map((group, index) => (
           <GroupCourses
-            key={index}
+            key={`group-${group.name}-${index}`}
             group={group}
             isExpanded={expandedGroupIndex === index}
             toggleExpand={() =>
               setExpandedGroupIndex(prevIndex =>
-                prevIndex !== index ? index : undefined,
+                prevIndex === index ? undefined : index,
               )
             }
             disabled={isOffline}

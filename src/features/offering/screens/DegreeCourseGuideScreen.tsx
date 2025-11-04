@@ -30,9 +30,19 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
     >
       <SafeAreaView>
         <Section>
-          <Card padded gapped style={styles.card}>
+          <Card
+            padded
+            gapped
+            style={styles.card}
+            accessible={true}
+            accessibilityRole="text"
+          >
             {offeringCourse?.guide.map((section, i) => (
-              <Col key={i}>
+              <Col
+                key={`guide-section-${section.title}-${i}`}
+                accessible={true}
+                accessibilityRole="text"
+              >
                 <Text variant="subHeading" accessibilityRole="header">
                   {section.title}
                 </Text>
