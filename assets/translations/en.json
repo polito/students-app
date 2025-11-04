@@ -528,7 +528,9 @@
     "showInExtractsSubtitle": "In home screen and agenda"
   },
   "courseScreen": {
-    "fileDownloadFailed": "The download failed. Please try again later."
+    "fileDownloadFailed": "The download failed. Please try again later.",
+    "fileIntegrityCheckFailed": "File integrity check failed. The downloaded file may be corrupted.",
+    "fileNotFound": "File not found on device. Please try downloading it again."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Join live streaming",

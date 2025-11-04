@@ -209,7 +209,6 @@ export const useDownloadFile = (
                 checksumError,
               );
             }
-
             await insertFileToSQLite({
               id: fileId,
               area,
