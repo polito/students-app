@@ -9,7 +9,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuAction, MenuView } from '@react-native-menu/menu';
+import { MenuAction } from '@react-native-menu/menu';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { ALL_AGENDA_TYPES, AgendaItemType } from '../types/AgendaItem';
@@ -112,20 +112,30 @@ export const AgendaTypeFilter = () => {
       accessibilityLabel={[t('common.filterFor'), pillContentText].join(', ')}
       style={styles.typeFilter}
     >
-      <MenuView
-        actions={typeActions}
-        onPressAction={({ nativeEvent: { event } }) => {
-          const type = event as AgendaItemType;
-          toggleFilter(type);
-        }}
+      <PillDropdownActivator
+        variant="neutral"
+        accessibilityRole="button"
+        accessibilityLabel={t('agendaTypeFilter.filterButton')}
+        accessibilityHint={t('agendaTypeFilter.filterHint')}
+        accessibilityState={{ expanded: false }}
       >
-        <PillDropdownActivator variant="neutral">
-          <View style={styles.typeFilter}>
-            <Text key="events">{t('common.event_plural')}:</Text>
-            {pillContent}
-          </View>
-        </PillDropdownActivator>
-      </MenuView>
+        <View style={styles.typeFilter}>
+          <Text key="events">{t('common.event_plural')} </Text>
+          <Text
+            style={
+              Array.isArray(pillContent) &&
+              pillContent.length > 0 && {
+                paddingRight: 4,
+                paddingLeft: 6,
+                backgroundColor: colors.background,
+                borderRadius: 3,
+              }
+            }
+          >
+            {Array.isArray(pillContent) && pillContent.length.toString()}{' '}
+          </Text>
+        </View>
+      </PillDropdownActivator>
     </Pressable>
   );
 };

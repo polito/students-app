@@ -120,23 +120,30 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   }, [associatedVirtualClassrooms, currentIndex, virtualClassrooms]);
 
   const hideEvent = () => {
+    const dayName = DateTime.now()
+      .set({ weekday: lecture.start.weekday as WeekdayNumbers })
+      .toFormat('cccc');
+
     Alert.alert(
       t('lectureScreen.hideEventAlertTitle'),
       t('lectureScreen.hideEventAlertMessage', {
         title: lecture.title,
-        day: DateTime.now()
-          .set({ weekday: lecture.start.weekday as WeekdayNumbers })
-          .toFormat('cccc'),
+        day: dayName,
         fromTime: lecture.fromTime,
         toTime: lecture.toTime,
       }),
       [
-        { text: t('common.cancel'), onPress: () => {} },
+        {
+          text: t('common.cancel'),
+          onPress: () => {},
+          style: 'cancel',
+        },
         {
           text: t('common.ok'),
           onPress: () => {
             changeEventVisibility();
           },
+          style: 'destructive',
         },
       ],
       { cancelable: false },

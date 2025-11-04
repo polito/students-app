@@ -118,6 +118,13 @@ export const AgendaCard = ({
     [type, colors.lectureCardSecondary],
   );
 
+  const accessibilityLabel = useMemo(() => {
+    const parts = [type, title];
+    if (time) parts.push(time);
+    if (location) parts.push(location);
+    return parts.join(', ');
+  }, [type, title, time, location]);
+
   return (
     <Card
       rounded
@@ -150,15 +157,10 @@ export const AgendaCard = ({
               paddingVertical: spacing[1],
             },
         ]}
-        accessibilityLabel={[
-          date,
-          time,
-          type,
-          title,
-          t('common.room'),
-          location,
-        ].join(', ')}
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        disabled={!onPress}
       >
         <Col
           gap={isCompact ? 0.5 : 2}

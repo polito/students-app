@@ -460,7 +460,13 @@
   },
   "courseHideEventScreen": {
     "button": "Mostra in Agenda",
-    "selectItems": "Seleziona tutti"
+    "selectItems": "Seleziona tutti",
+    "eventWithRoom": "{{time}} - {{room}}",
+    "eventWithoutRoom": "{{time}}"
+  },
+  "agendaTypeFilter": {
+    "filterButton": "Filtro tipo eventi",
+    "filterHint": "Apri menu per selezionare quali tipi di eventi mostrare in agenda"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"

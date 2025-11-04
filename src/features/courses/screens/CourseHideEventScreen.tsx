@@ -24,7 +24,6 @@ import { CourseHiddenRecurrence } from '../types/Recurrence';
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseHideEvent'>;
 
 interface HideEventProps {
-  key: number;
   item: CourseHiddenRecurrence;
   updateItemVisibility: (
     element: CourseHiddenRecurrence,
@@ -52,23 +51,33 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
     return dayName.charAt(0).toUpperCase() + dayName.slice(1);
   };
 
+  const eventTime = `${getLongDayTime(item.day)} ${item.start}-${item.end}`;
+  const placeName = place?.room.name || '';
+  const checkboxText = placeName
+    ? t('courseHideEventScreen.eventWithRoom', {
+        time: eventTime,
+        room: placeName,
+      })
+    : t('courseHideEventScreen.eventWithoutRoom', { time: eventTime });
+
   return (
     <Row style={styles.card}>
       <Checkbox
-        onPress={() => handleVisibilityChange()}
+        onPress={handleVisibilityChange}
         isChecked={item.restoreVisibility}
         containerStyle={styles.checkbox}
+        text={checkboxText}
       />
       <Col style={styles.cardCol}>
         <Row align="center">
           <Text variant="heading" style={styles.title}>
-            {getLongDayTime(item.day) + '  ' + item.start + '-' + item.end}
+            {eventTime}
           </Text>
         </Row>
         {placeLoading && <ActivityIndicator size="small" />}
-        {item.room && place && (
+        {Boolean(item.room && place) && (
           <Text style={styles.label} numberOfLines={1} ellipsizeMode="tail">
-            {place.room.name}
+            {place?.room?.name}
           </Text>
         )}
       </Col>
@@ -196,9 +205,9 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
             }
           />
           <OverviewList>
-            {items.map((item, index) => (
+            {items.map(item => (
               <HideEventCard
-                key={index}
+                key={`${item.day}-${item.start}-${item.end}-${item.room}`}
                 item={item}
                 updateItemVisibility={updateItemVisibility}
               />
