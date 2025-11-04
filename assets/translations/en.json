@@ -704,7 +704,8 @@
     "sentAt": "Sent at",
     "title": "Messages archive",
     "unreadMessages": "Message ({{read}} of {{total}})",
-    "youHaveUnreadMessages": "You have {{total}} unread messages"
+    "youHaveUnreadMessages": "You have {{total}} unread messages",
+    "clickToNavigate": "Tap to read message"
   },
   "messagingView": {
     "pickFile": "Pick file max 32MB",
@@ -864,7 +865,13 @@
     "settings": "Settings",
     "smartCard": "Smartcard",
     "title": "Profile",
-    "trainingOffer": "Training offer"
+    "trainingOffer": "Training offer",
+    "notificationsAccessibility": "Notifications",
+    "settingsAccessibility": "Settings",
+    "navigationHint": "Tap to navigate",
+    "unreadMessages": "{{count}} unread messages",
+    "logoutAccessibility": "Logout",
+    "logoutHint": "Tap to logout from the application"
   },
   "provisionalGradeScreen": {
     "acceptGradeConfirmMessage": "By requesting immediate registration, the evaluation will be recorded in your transcript and you will no longer be able to change your decision",

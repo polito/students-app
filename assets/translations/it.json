@@ -728,7 +728,7 @@
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
     "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
-    "clickToNavigate": "clicca due volte per aprire e leggere il messaggio completo"
+    "clickToNavigate": "Tocca per leggere il messaggio"
   },
   "messagingView": {
     "activeReplay": "Attivo, (tocca due volte per attivare)",
@@ -889,7 +889,13 @@
     "settings": "Impostazioni",
     "smartCard": "Smartcard",
     "title": "Profilo",
-    "trainingOffer": "Offerta formativa"
+    "trainingOffer": "Offerta formativa",
+    "notificationsAccessibility": "Notifiche",
+    "settingsAccessibility": "Impostazioni",
+    "navigationHint": "Tocca per navigare",
+    "unreadMessages": "{{count}} messaggi non letti",
+    "logoutAccessibility": "Logout",
+    "logoutHint": "Tocca per uscire dall'applicazione"
   },
   "provisionalGradeScreen": {
     "acceptGradeConfirmMessage": "Richiedendo la registrazione immediata la valutazione verrà inserita in libretto e non potrai più cambiare la tua decisione",

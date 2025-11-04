@@ -209,17 +209,31 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               title={t('notificationsScreen.title')}
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
               linkTo="Notifications"
+              accessibilityLabel={t('profileScreen.notificationsAccessibility')}
+              accessibilityHint={t('profileScreen.navigationHint')}
             />
             <ListItem
               title={t('profileScreen.settings')}
               leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
               linkTo="Settings"
+              accessibilityLabel={t('profileScreen.settingsAccessibility')}
+              accessibilityHint={t('profileScreen.navigationHint')}
             />
             <ListItem
               title={t('messagesScreen.title')}
               leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}
+              accessibilityLabel={`${t('messagesScreen.title')}${
+                messages.data && hasUnreadMessages(messages.data)
+                  ? `, ${t('profileScreen.unreadMessages', { count: filterUnread(messages.data).length })}`
+                  : ''
+              }`}
+              accessibilityHint={
+                areMessagesDisabled
+                  ? t('common.disabledOffline')
+                  : t('profileScreen.navigationHint')
+              }
               trailingItem={
                 messages.data && hasUnreadMessages(messages.data) ? (
                   <UnreadBadge text={filterUnread(messages.data).length} />
@@ -233,6 +247,12 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
             title={t('common.logout')}
             action={handleLogout}
             icon={faSignOut}
+            accessibilityLabel={t('profileScreen.logoutAccessibility')}
+            accessibilityHint={
+              isOffline
+                ? t('common.disabledOffline')
+                : t('profileScreen.logoutHint')
+            }
           />
         </Section>
         <BottomBarSpacer />
