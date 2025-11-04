@@ -61,6 +61,7 @@
     "domhandler": "^5.0.3",
     "domutils": "^3.2.2",
     "expo": "~53.0.0",
+    "expo-sqlite": "^15.2.14",
     "expo-web-browser": "^14.2.0",
     "geopoint": "^1.0.1",
     "htmlparser2": "^10.0.0",
@@ -154,7 +155,6 @@
     "autolinking": {
       "exclude": [
         "expo-application",
-        "expo-asset",
         "expo-constants",
         "expo-file-system",
         "expo-font",

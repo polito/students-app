@@ -48,7 +48,6 @@ export const CourseDirectoryListItem = ({
     );
   }, [downloadQueue.files, item]);
 
-  // Check if all files are downloaded by checking filesystem directly
   const [allFilesDownloaded, setAllFilesDownloaded] = useState(false);
 
   const checkAllFilesDownloaded = useCallback(async () => {
@@ -80,7 +79,6 @@ export const CourseDirectoryListItem = ({
           .filter(Boolean)
           .join('/');
 
-        // Check if file actually exists on filesystem
         const fileExists = await exists(cachedFilePath);
         return fileExists;
       }),
@@ -94,21 +92,17 @@ export const CourseDirectoryListItem = ({
     checkAllFilesDownloaded();
   }, [checkAllFilesDownloaded]);
 
-  // Re-check when downloads change (when files are downloaded/removed)
   useEffect(() => {
     checkAllFilesDownloaded();
   }, [downloads, checkAllFilesDownloaded]);
 
-  // Re-check when component becomes visible again (when returning from directory)
   useEffect(() => {
     const handleFocus = () => {
       checkAllFilesDownloaded();
     };
 
-    // Check immediately when component mounts
     checkAllFilesDownloaded();
 
-    // Also check when navigation focus changes (when returning from directory)
     const unsubscribe = navigation.addListener('focus', handleFocus);
 
     return unsubscribe;
@@ -171,7 +165,6 @@ export const CourseDirectoryListItem = ({
   const trailingItem = useMemo(() => {
     if (!enableMultiSelect) return null;
 
-    // Don't show checkbox if all files are downloaded (similar to individual files)
     if (allFilesDownloaded) return null;
 
     return (
@@ -187,12 +180,12 @@ export const CourseDirectoryListItem = ({
   return (
     <DirectoryListItem
       title={item.name}
+      disabled={allFilesDownloaded && enableMultiSelect}
       subtitle={t('courseDirectoryListItem.subtitle', {
         count: item.files.length,
       })}
       onPress={() => {
         if (enableMultiSelect) {
-          // Don't allow selection if all files are downloaded
           if (!allFilesDownloaded) {
             handleSelection();
           }

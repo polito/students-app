@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
-import { stat, unlink } from 'react-native-fs';
+import { unlink } from 'react-native-fs';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -27,6 +27,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   useGetCourse,
@@ -35,7 +36,7 @@ import {
 import { formatFileSize } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
-import { CourseContext } from '../contexts/CourseContext';
+import { CourseContext, useCourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
@@ -44,25 +45,31 @@ const CleanCourseFilesListItem = () => {
 
   const { fontSizes } = useTheme();
   const [courseFilesCache] = useCourseFilesCachePath();
+  const courseId = useCourseContext();
   const [cacheSize, setCacheSize] = useState<number>(0);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
   });
 
+  const fileDatabaseRef = useRef(getFileDatabase());
+  const courseArea = `course-${courseId}`;
+
   const refreshSize = () => {
-    if (courseFilesCache) {
-      stat(courseFilesCache)
-        .then(({ size }) => {
-          setCacheSize(size);
-        })
-        .catch(() => {
-          setCacheSize(0);
-        });
-    }
+    fileDatabaseRef.current
+      .getTotalSizeByArea(courseArea)
+      .then(size => {
+        setCacheSize(size);
+      })
+      .catch(() => {
+        setCacheSize(0);
+      });
   };
 
-  useEffect(refreshSize, [courseFilesCache]);
+  useEffect(() => {
+    refreshSize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseArea]);
 
   return (
     <ListItem
@@ -75,6 +82,7 @@ const CleanCourseFilesListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (courseFilesCache && (await confirm())) {
+          await fileDatabaseRef.current.deleteFilesByArea(courseArea);
           unlink(courseFilesCache).then(() => {
             setFeedback({
               text: t('coursePreferencesScreen.cleanCacheFeedback'),
