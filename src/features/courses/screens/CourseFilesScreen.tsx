@@ -23,7 +23,6 @@ import { MENU_ACTIONS } from '../constants';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
-import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 
 type Props = NativeStackScreenProps<FileStackParamList, 'RecentFiles'>;
 
@@ -150,9 +149,5 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
 };
 
 export const CourseFilesScreen = ({ navigation, route }: Props) => {
-  return (
-    <CourseFilesCacheProvider>
-      <CourseFilesScreenContent navigation={navigation} route={route} />
-    </CourseFilesCacheProvider>
-  );
+  return <CourseFilesScreenContent navigation={navigation} route={route} />;
 };

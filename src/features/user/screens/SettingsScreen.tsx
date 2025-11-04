@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -9,7 +9,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import { stat, unlink } from 'react-native-fs';
+import { unlink } from 'react-native-fs';
 
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -48,6 +48,7 @@ import {
   PreferencesContextBase,
   usePreferencesContext,
 } from '../../../core/contexts/PreferencesContext';
+import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
@@ -66,19 +67,22 @@ const CleanCacheListItem = () => {
     title: t('common.areYouSure?'),
     message: t('settingsScreen.cleanCacheConfirmMessage'),
   });
+  const fileDatabaseRef = useRef(getFileDatabase());
+
   const refreshSize = () => {
-    if (filesCache) {
-      stat(filesCache)
-        .then(({ size }) => {
-          setCacheSize(size);
-        })
-        .catch(() => {
-          setCacheSize(0);
-        });
-    }
+    fileDatabaseRef.current
+      .getTotalSize()
+      .then(size => {
+        setCacheSize(size);
+      })
+      .catch(() => {
+        setCacheSize(0);
+      });
   };
 
-  useEffect(refreshSize, [filesCache]);
+  useEffect(() => {
+    refreshSize();
+  }, []);
   return (
     <ListItem
       isAction
@@ -91,6 +95,7 @@ const CleanCacheListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
+          await fileDatabaseRef.current.deleteAllFiles();
           unlink(filesCache).then(() => {
             setFeedback({
               text: t('coursePreferencesScreen.cleanCacheFeedback'),
