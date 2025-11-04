@@ -540,7 +540,9 @@
     "showInExtractsSubtitle": "In home screen e agenda"
   },
   "courseScreen": {
-    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi.",
+    "fileIntegrityCheckFailed": "Controllo integrità file fallito. Il file scaricato potrebbe essere corrotto.",
+    "fileNotFound": "Il file non è stato trovato sul dispositivo. Prova a riscaricarlo."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Collegati alla diretta",
