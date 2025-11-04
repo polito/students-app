@@ -22,7 +22,7 @@ import { Checkbox } from '~/core/components/Checkbox';
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
-import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
+import { useDownloadFile } from '../../../core/hooks/useDownloadFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
 import { formatFileSize, splitNameAndExtension } from '../../../utils/files';
@@ -150,7 +150,7 @@ export const CourseFileListItem = memo(
       refreshDownload,
       removeDownload,
       openFile,
-    } = useDownloadCourseFile(fileUrl, cachedFilePath, item.id);
+    } = useDownloadFile(fileUrl, cachedFilePath, item.id, `course-${courseId}`);
 
     useEffect(() => {
       (async () => {
@@ -263,7 +263,7 @@ export const CourseFileListItem = memo(
                 }}
                 textStyle={{ marginHorizontal: 0 }}
                 containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
-              ></Checkbox>
+              />
             )
           ) : (
             <IconButton
@@ -323,6 +323,7 @@ export const CourseFileListItem = memo(
     const listItem = (
       <FileListItem
         {...rest}
+        disabled={isDownloaded && enableMultiSelect}
         accessibilityLabel={
           !isDownloaded
             ? downloadProgress == null

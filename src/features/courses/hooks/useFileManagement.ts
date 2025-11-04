@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { exists } from 'react-native-fs';
 
@@ -9,12 +9,10 @@ import {
   CourseDirectory,
   CourseFileOverview,
 } from '@polito/api-client';
-import { useFocusEffect } from '@react-navigation/native';
 
 import { useGenericDownload } from '../../../core/hooks/useDownloadQueue';
 import { splitNameAndExtension } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
-import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
 import { isDirectory } from '../utils/fs-entry';
 
 interface UseFileManagementProps {
@@ -32,7 +30,6 @@ export const useFileManagement = ({
 }: UseFileManagementProps) => {
   const { t } = useTranslation();
   const { palettes } = useTheme();
-  const { refresh } = useContext(CourseFilesCacheContext);
   const {
     downloads,
     downloadQueue,
@@ -46,20 +43,11 @@ export const useFileManagement = ({
     stopDownload,
   } = useGenericDownload(courseId, 'course');
 
-  // File cache refresh on focus
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh]),
-  );
-
-  // State
   const [enableMultiSelect, setEnableMultiSelect] = useState(false);
   const [allFilesSelectedState, setAllFilesSelectedState] = useState(false);
   const [sortedData, setSortedData] = useState<typeof data>(undefined);
   const [wasDownloading, setWasDownloading] = useState(false);
 
-  // Sort options
   const sortOptions = useMemo(
     () => [
       {
@@ -88,13 +76,10 @@ export const useFileManagement = ({
 
   const [activeSort, setActiveSort] = useState(sortOptions[0].title);
 
-  // Multi-select state
   const allFilesSelected = useMemo(() => {
     if (!enableMultiSelect) return false;
     return allFilesSelectedState;
   }, [enableMultiSelect, allFilesSelectedState]);
-
-  // Download actions (using courseFiles from useGenericDownload)
 
   const downloadButtonTitle = useMemo(() => {
     return isDownloading
@@ -133,7 +118,6 @@ export const useFileManagement = ({
     };
   }, [isDownloading, palettes]);
 
-  // Sorting functions
   const sortByDownloadStatus = useCallback(
     (files: (CourseDirectory | CourseFileOverview)[]) => {
       return files.sort((a, b) => {
@@ -184,7 +168,6 @@ export const useFileManagement = ({
     [],
   );
 
-  // Multi-select functions
   const selectAllFiles = useCallback(async () => {
     if (!sortedData) return;
 
@@ -303,7 +286,6 @@ export const useFileManagement = ({
     }
   }, [allFilesSelected, deselectAllFiles, selectAllFiles]);
 
-  // Sort handler
   const onPressSortOption = useCallback(
     (event: string) => {
       setActiveSort(event);
@@ -370,7 +352,6 @@ export const useFileManagement = ({
     [data, isDirectoryView, sortOptions, sortByDownloadStatus, sortByDate],
   );
 
-  // Download handler
   const handleDownloadAction = useCallback(() => {
     if (isDownloading) {
       stopDownload();
@@ -379,7 +360,6 @@ export const useFileManagement = ({
     }
   }, [isDownloading, hasFiles, stopDownload, startDownload]);
 
-  // Effects
   useEffect(() => {
     if (isDownloading) {
       setWasDownloading(true);
@@ -390,7 +370,6 @@ export const useFileManagement = ({
   }, [isDownloading, wasDownloading, enableMultiSelect]);
 
   return {
-    // State
     enableMultiSelect,
     allFilesSelected,
     sortedData,
@@ -398,13 +377,11 @@ export const useFileManagement = ({
     activeSort,
     sortOptions,
 
-    // Actions
     toggleMultiSelect,
     toggleSelectAll,
     onPressSortOption,
     handleDownloadAction,
 
-    // Download button props
     downloadButtonTitle,
     downloadButtonIcon,
     downloadButtonProgress,

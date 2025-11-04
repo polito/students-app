@@ -8,9 +8,14 @@ import {
 import { useTranslation } from 'react-i18next';
 import {
   downloadFile,
+  exists,
   stopDownload as fsStopDownload,
   mkdir,
+  readFile,
+  stat,
 } from 'react-native-fs';
+
+import { sha1 } from '@noble/hashes/legacy.js';
 
 import { useApiContext } from '../contexts/ApiContext';
 import {
@@ -21,11 +26,49 @@ import {
   QueuedFile,
 } from '../contexts/DownloadsContext';
 import { useFeedbackContext } from '../contexts/FeedbackContext';
+import { FileRecord, getFileDatabase } from '../database/FileDatabase';
 
 export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
+
+  const fileDatabase = getFileDatabase();
+
+  const calculateFileChecksum = useCallback(
+    async (filePath: string): Promise<string> => {
+      try {
+        const fileExists = await exists(filePath);
+        if (!fileExists) {
+          throw new Error(`File does not exist: ${filePath}`);
+        }
+
+        const fileContent = await readFile(filePath, 'base64');
+
+        const binaryString = atob(fileContent);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        const hash = sha1(bytes);
+        return Array.from(hash)
+          .map((b: unknown) => (b as number).toString(16).padStart(2, '0'))
+          .join('');
+      } catch (error) {
+        console.error('Error calculating file checksum:', error);
+        return 'checksum_error';
+      }
+    },
+    [],
+  );
+
+  const insertFileToSQLite = useCallback(
+    async (file: FileRecord) => {
+      await fileDatabase.insertFile(file);
+    },
+    [fileDatabase],
+  );
 
   const [downloads, setDownloads] = useState<Downloads>({});
   const [downloadQueue, setDownloadQueue] = useState<DownloadQueue>({
@@ -108,7 +151,6 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     }));
 
     try {
-      // Create directory if it doesn't exist
       const directoryPath = currentFile.filePath.substring(
         0,
         currentFile.filePath.lastIndexOf('/'),
@@ -167,6 +209,45 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           downloadProgress: undefined,
         },
       }));
+
+      try {
+        const fileExists = await exists(currentFile.filePath);
+        if (!fileExists) {
+          console.warn(
+            'File does not exist, skipping SQLite metadata save:',
+            currentFile.filePath,
+          );
+        } else {
+          const fileStats = await stat(currentFile.filePath);
+          const filename = currentFile.filePath.split('/').pop() || '';
+          const mimeType =
+            filename.split('.').pop() || 'application/octet-stream';
+
+          let checksum = 'checksum_error';
+          try {
+            checksum = await calculateFileChecksum(currentFile.filePath);
+          } catch (checksumError) {
+            console.warn(
+              'Could not calculate checksum, using placeholder:',
+              checksumError,
+            );
+          }
+
+          await insertFileToSQLite({
+            id: currentFile.id,
+            area: `course-${currentFile.contextId}`,
+            path: currentFile.filePath,
+            filename,
+            mime: mimeType,
+            checksum,
+            sizeKb: Math.round(fileStats.size / 1024),
+            downloadTime: new Date().toISOString(),
+            updateTime: undefined,
+          });
+        }
+      } catch (error) {
+        console.error('Error saving file metadata to SQLite:', error);
+      }
 
       downloadResultsRef.current.successCount++;
 
@@ -243,30 +324,52 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         return newState;
       });
     }
-  }, [token, t, setDownloadQueue, setDownloads]);
+  }, [
+    token,
+    t,
+    setDownloadQueue,
+    setDownloads,
+    insertFileToSQLite,
+    calculateFileChecksum,
+  ]);
 
   const addToQueue = useCallback((file: QueuedFile) => {
-    setDownloadQueue(prev => ({
-      ...prev,
-      files: [...prev.files.filter(f => f.id !== file.id), file],
-    }));
+    setDownloadQueue(prev => {
+      if (prev.isDownloading) {
+        return prev;
+      }
+      return {
+        ...prev,
+        files: [...prev.files.filter(f => f.id !== file.id), file],
+      };
+    });
   }, []);
 
   const removeFromQueue = useCallback((fileId: string) => {
-    setDownloadQueue(prev => ({
-      ...prev,
-      files: prev.files.filter(f => f.id !== fileId),
-    }));
+    setDownloadQueue(prev => {
+      if (prev.isDownloading) {
+        return prev;
+      }
+      return {
+        ...prev,
+        files: prev.files.filter(f => f.id !== fileId),
+      };
+    });
   }, []);
 
   const clearQueue = useCallback(() => {
-    setDownloadQueue({
-      files: [],
-      isDownloading: false,
-      currentFileIndex: 0,
-      overallProgress: 0,
-      hasCompleted: false,
-      isProcessingFile: false,
+    setDownloadQueue(prev => {
+      if (prev.isDownloading) {
+        return prev;
+      }
+      return {
+        files: [],
+        isDownloading: false,
+        currentFileIndex: 0,
+        overallProgress: 0,
+        hasCompleted: false,
+        isProcessingFile: false,
+      };
     });
   }, []);
 
@@ -332,20 +435,30 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         contextType,
       }));
 
-      setDownloadQueue(prev => ({
-        ...prev,
-        files: [...prev.files, ...filesWithContext],
-      }));
+      setDownloadQueue(prev => {
+        if (prev.isDownloading) {
+          return prev;
+        }
+        return {
+          ...prev,
+          files: [...prev.files, ...filesWithContext],
+        };
+      });
     },
     [setDownloadQueue],
   );
 
   const removeFilesFromQueue = useCallback(
     (fileIds: string[]) => {
-      setDownloadQueue(prev => ({
-        ...prev,
-        files: prev.files.filter(file => !fileIds.includes(file.id)),
-      }));
+      setDownloadQueue(prev => {
+        if (prev.isDownloading) {
+          return prev;
+        }
+        return {
+          ...prev,
+          files: prev.files.filter(file => !fileIds.includes(file.id)),
+        };
+      });
     },
     [setDownloadQueue],
   );
@@ -363,16 +476,21 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
 
   const clearContextFiles = useCallback(
     (contextId: string | number, contextType?: string) => {
-      setDownloadQueue(prev => ({
-        ...prev,
-        files: prev.files.filter(
-          file =>
-            !(
-              file.contextId === contextId &&
-              (contextType === undefined || file.contextType === contextType)
-            ),
-        ),
-      }));
+      setDownloadQueue(prev => {
+        if (prev.isDownloading) {
+          return prev;
+        }
+        return {
+          ...prev,
+          files: prev.files.filter(
+            file =>
+              !(
+                file.contextId === contextId &&
+                (contextType === undefined || file.contextType === contextType)
+              ),
+          ),
+        };
+      });
     },
     [setDownloadQueue],
   );
