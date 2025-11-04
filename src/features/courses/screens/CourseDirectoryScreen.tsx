@@ -38,7 +38,6 @@ import { CourseContext } from '../contexts/CourseContext';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
-import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<
@@ -84,15 +83,12 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     if (directoryQuery.data) {
-      // Separate directories and files
       const directories = directoryQuery.data.filter(item => isDirectory(item));
       const files = directoryQuery.data.filter(item => !isDirectory(item));
 
-      // Sort directories and files separately by name (A-Z)
       const sortedDirectories = sortByNameAsc(directories);
       const sortedFiles = sortByNameAsc(files);
 
-      // Combine directories first, then files
       setSortedData([...sortedDirectories, ...sortedFiles]);
     }
   }, [directoryQuery.data, setSortedData]);
@@ -127,7 +123,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     }
   };
   return (
-    <CourseFilesCacheProvider>
+    <>
       {isFileNavigator && (
         <CourseSearchBar
           searchFilter={searchFilter}
@@ -200,7 +196,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           style={downloadButtonStyle}
         />
       )}
-    </CourseFilesCacheProvider>
+    </>
   );
 };
 
