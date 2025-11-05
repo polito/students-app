@@ -28,7 +28,9 @@
     "rooms": "Rooms {{roomNames}}",
     "selectDate": "Select date",
     "title": "Agenda",
-    "weeklyLayout": "Weekly layout"
+    "weeklyLayout": "Weekly layout",
+    "previous week": "Previous week",
+    "next week": "Next week"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -185,6 +187,7 @@
     "faculty": "Faculty",
     "file": "File",
     "file_plural": "Files",
+    "filterFor": "Filter for",
     "floor": "Floor",
     "follow": "Follow",
     "free": "Free",
