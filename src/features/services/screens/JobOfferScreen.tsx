@@ -86,12 +86,29 @@ export const JobOfferScreen = ({ route }: Props) => {
         <Section>
           <ScreenTitle title={title ?? ''} style={styles.heading} />
         </Section>
-        <Card accessible padded>
-          <Text variant="heading" weight="bold" numberOfLines={1}>
+        <Card
+          accessible
+          padded
+          accessibilityRole="text"
+          accessibilityLabel={`${t('jobOfferScreen.companyName')}: ${companyName}`}
+        >
+          <Text
+            variant="heading"
+            weight="bold"
+            numberOfLines={1}
+            accessible={true}
+            accessibilityRole="header"
+          >
             {companyName}
           </Text>
         </Card>
-        <Card accessible padded gapped>
+        <Card
+          accessible
+          padded
+          gapped
+          accessibilityRole="text"
+          accessibilityLabel={`${t('jobOfferScreen.jobDetails')}`}
+        >
           {!!contractType && (
             <Text variant="longProse" weight="semibold">
               {t('jobOfferScreen.contractType')}
@@ -129,7 +146,7 @@ export const JobOfferScreen = ({ route }: Props) => {
             accessibilityLabel={[
               t('jobOfferScreen.description'),
               ' - ',
-              companyMission ? companyMission : ' - ',
+              companyMission || ' - ',
             ].join(' ')}
           >
             <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
@@ -140,13 +157,11 @@ export const JobOfferScreen = ({ route }: Props) => {
             accessibilityLabel={[
               t('jobOfferScreen.requirements'),
               ' - ',
-              requirements ? requirements : ' - ',
+              requirements || ' - ',
             ].join(' ')}
           >
             <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
-            <Text variant="longProse">
-              {requirements ? requirements : ' - '}
-            </Text>
+            <Text variant="longProse">{requirements || ' - '}</Text>
           </Col>
           <>
             {(contactInfo[0] || email || url) && (
@@ -158,6 +173,8 @@ export const JobOfferScreen = ({ route }: Props) => {
               <Text
                 numberOfLines={1}
                 accessibilityRole="link"
+                accessibilityLabel={`${t('jobOfferScreen.url')}: ${url}`}
+                accessibilityHint={t('common.externalLink')}
                 weight="semibold"
               >
                 {t('jobOfferScreen.url')}
@@ -168,7 +185,13 @@ export const JobOfferScreen = ({ route }: Props) => {
             )}
             {!!contactInfo && <Text>{contactInfo}</Text>}
             {!!email && (
-              <Text weight="semibold">
+              <Text
+                weight="semibold"
+                accessible={true}
+                accessibilityRole="link"
+                accessibilityLabel={`${t('jobOfferScreen.email')}: ${email}`}
+                accessibilityHint={t('jobOfferScreen.sendEmail')}
+              >
                 {t('jobOfferScreen.email')}
                 <Text variant="link" onPress={() => onPressEmail(email)}>
                   {email}

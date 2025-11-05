@@ -535,6 +535,9 @@
     "statistics": "Statistics",
     "statisticsSubtitle": "See exam statistics"
   },
+  "degreeJobOpportunitiesScreen": {
+    "jobOpportunities": "Job opportunities"
+  },
   "degreeScreen": {
     "cohort": "Coorte",
     "degreeClass": "Degree code",
@@ -648,21 +651,31 @@
   "jobOfferScreen": {
     "application": "Application",
     "companyMission": "Mission",
+    "companyName": "Company",
     "contactInformation": "For information contact",
     "contractType": "Contract type: ",
     "description": "Description",
     "email": "E-mail: ",
     "endsAtDate": "Expiration: ",
     "freePositions": "Free positions: ",
+    "jobDetails": "Job details",
+    "jobOfferTitle": "Job offer",
     "location": "Company location: ",
     "requirements": "Requirements",
     "salary": "Salary: ",
+    "sendEmail": "Send email",
     "title": "Job offers",
     "url": "Website: "
   },
   "jobOffersScreen": {
+    "emptyState": "No job offers available",
     "endsAtDate": "expiration: ",
+    "jobOffersList": "Job offers list",
+    "jobOffersAvailable": "job offers available",
     "title": "Job offers"
+  },
+  "jobOfferListItem": {
+    "tapToViewDetails": "Tap to view job offer details"
   },
   "josOffersScreen": {
     "title": "Offers screen"

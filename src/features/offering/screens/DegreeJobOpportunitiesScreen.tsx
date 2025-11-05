@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
@@ -14,6 +15,7 @@ import { getHtmlTextContent } from '../../../utils/html';
 import { useDegreeContext } from '../contexts/DegreeContext';
 
 export const DegreeJobOpportunitiesScreen = () => {
+  const { t } = useTranslation();
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const styles = useStylesheet(createStyles);
@@ -29,8 +31,18 @@ export const DegreeJobOpportunitiesScreen = () => {
       <SafeAreaView>
         <LoadingContainer loading={isLoading}>
           <Section>
-            <Card padded>
-              <Text variant="subHeading" style={styles.subHeading}>
+            <Card
+              padded
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel={`${t('degreeJobOpportunitiesScreen.jobOpportunities')} - ${degree?.jobOpportunities?.title || ''}`}
+            >
+              <Text
+                variant="subHeading"
+                style={styles.subHeading}
+                accessible={true}
+                accessibilityRole="header"
+              >
                 {degree?.jobOpportunities?.title}
               </Text>
               <Text variant="longProse">

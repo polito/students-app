@@ -52,6 +52,7 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
         location,
         companyInfos,
       ].join(', ')}
+      accessibilityHint={t('jobOfferListItem.tapToViewDetails')}
       subtitle={
         <Col>
           <Text

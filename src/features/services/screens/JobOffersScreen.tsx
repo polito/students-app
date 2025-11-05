@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -9,6 +10,7 @@ import { useGetJobOffers } from '../../../core/queries/jobOfferHooks';
 import { JobOfferListItem } from '../components/JobOfferListItem';
 
 export const JobOffersScreen = () => {
+  const { t } = useTranslation();
   const jobOffersQuery = useGetJobOffers();
 
   return (
@@ -18,7 +20,13 @@ export const JobOffersScreen = () => {
     >
       <SafeAreaView>
         <Section>
-          <OverviewList loading={jobOffersQuery.isLoading}>
+          <OverviewList
+            loading={jobOffersQuery.isLoading}
+            accessible={true}
+            accessibilityRole="list"
+            accessibilityLabel={`${t('jobOffersScreen.jobOffersList')} - ${jobOffersQuery.data?.length || 0} ${t('jobOffersScreen.jobOffersAvailable')}`}
+            emptyStateText={t('jobOffersScreen.emptyState')}
+          >
             {jobOffersQuery?.data?.map((jobOffer, index) => (
               <JobOfferListItem
                 jobOffer={jobOffer}
