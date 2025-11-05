@@ -10,6 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Dimensions, View } from 'react-native';
 import { ActivityIndicator, Image } from 'react-native';
+
 import {
   faLocationDot,
   faMapPin,
@@ -24,8 +25,11 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PlaceOverview } from '@polito/api-client';
+
 import { notNullish } from '~/utils/predicates';
+
 import { debounce } from 'lodash';
+
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlaces } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -47,14 +51,17 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { dark } = useTheme();
   const campus = useGetCurrentCampus();
-  const { floorId: floorId, setSelectedLine, setSelectionMode } = useContext(PlacesContext);
+  const {
+    floorId: floorId,
+    setSelectedLine,
+    setSelectionMode,
+  } = useContext(PlacesContext);
   const [screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
   );
   const [totDistance, setTotDistance] = useState<number | null>(null);
-  const [stairsOrElevators, setStairsOrElevators] = useState<number | null>(
-    null,
-  );
+  const [stairs, setStairs] = useState<number | null>(null);
+  const [elevators, setElevators] = useState<number | null>(null);
 
   const { fromPlace: startRoom, toPlace: destRoom } = route.params;
 
@@ -73,6 +80,14 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const isExpandedDestRef = useRef(isExpandedDest);
 
   const [isLoadingPath, setIsLoadingPath] = useState(false);
+
+  const handleStairsAndElevators = (
+    stairsCount: number | null,
+    elevatorsCount: number | null,
+  ) => {
+    setStairs(stairsCount);
+    setElevators(elevatorsCount);
+  };
 
   const handleRoom = useCallback(
     (place: PlaceOverview | undefined, isStartRoom: boolean) => {
@@ -124,7 +139,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
               startRoom={startRoom}
               destRoom={destRoom}
               setTotDistance={setTotDistance}
-              setStairsOrElevators={setStairsOrElevators}
+              setStairsAndElevators={handleStairsAndElevators}
               avoidStairs={avoidStairs}
               navigation={navigation}
               screenHeight={screenHeight}
@@ -342,7 +357,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         searchDest={searchDest}
         computeButtonState={computeButtonState}
         distance={totDistance ? totDistance : 0}
-        stairsOrElevators={stairsOrElevators ? stairsOrElevators : 0}
+        stairs={stairs ? stairs : 0}
+        elevators={elevators ? elevators : 0}
         avoidStairs={avoidStairs}
         dark={dark}
         setIsExpandedStart={setIsExpandedStart}
@@ -362,7 +378,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     isExpandedDest,
     computeButtonState,
     totDistance,
-    stairsOrElevators,
+    stairs,
+    elevators,
     avoidStairs,
     dark,
     searchStart,

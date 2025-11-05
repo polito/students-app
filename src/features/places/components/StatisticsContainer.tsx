@@ -12,15 +12,15 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 type StatisticsContainerProps = {
-  avoidStairs: boolean;
   totDistance: number;
-  stairsOrElevators: number;
+  stairs: number;
+  elevators: number;
 };
 
 export const StatisticsContainer = ({
-  avoidStairs,
   totDistance,
-  stairsOrElevators,
+  stairs,
+  elevators,
 }: StatisticsContainerProps) => {
   const styles = useStylesheet(createStyles);
   const { dark, palettes } = useTheme();
@@ -36,21 +36,16 @@ export const StatisticsContainer = ({
 
   function formatWalkingTime(
     distanceMeters: number,
-    stairsorElevatorsCount: number = 0,
-    avoid: boolean = false,
+    stairsCount: number = 0,
+    elevatorsCount: number = 0,
   ): string {
     // Average walking speed ≈ 5 km/h = 1.39 m/s
     const walkingSpeedMps = 5000 / 3600;
 
     let totalSeconds = distanceMeters / walkingSpeedMps;
 
-    if (!avoid) {
-      // Stairs penalty: 30 s per flight
-      totalSeconds += stairsorElevatorsCount * 30;
-    } else {
-      // Elevator penalty: 90 s per use (waiting + travel)
-      totalSeconds += stairsorElevatorsCount * 90;
-    }
+    totalSeconds += stairsCount * 30;
+    totalSeconds += elevatorsCount * 90;
 
     const minutes = Math.floor(totalSeconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -83,18 +78,30 @@ export const StatisticsContainer = ({
           style={styles.icon}
         />
         <Text style={[styles.text, { color: palettes.text[900] }]}>
-          {formatWalkingTime(totDistance, stairsOrElevators, avoidStairs)}
+          {formatWalkingTime(totDistance, stairs, elevators)}
         </Text>
       </View>
-      <View style={styles.statistic}>
-        <Icon
-          icon={avoidStairs ? faElevator : faStairs}
-          color={palettes.gray[dark ? 300 : 600]}
-          style={styles.icon}
-        />
-        <Text style={[styles.text, { color: palettes.text[900] }]}>
-          {stairsOrElevators.toString()}
-        </Text>
+      <View style={styles.stairsAndElevators}>
+        <View style={styles.statistic}>
+          <Icon
+            icon={faStairs}
+            color={palettes.gray[dark ? 300 : 600]}
+            style={styles.icon}
+          />
+          <Text style={[styles.text, { color: palettes.text[900] }]}>
+            {stairs.toString()}
+          </Text>
+        </View>
+        <View style={styles.statistic}>
+          <Icon
+            icon={faElevator}
+            color={palettes.gray[dark ? 300 : 600]}
+            style={styles.icon}
+          />
+          <Text style={[styles.text, { color: palettes.text[900] }]}>
+            {elevators.toString()}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -107,6 +114,11 @@ const createStyles = () =>
       flexDirection: 'row',
       width: '100%',
       alignItems: 'flex-start',
+      gap: 22,
+    },
+    stairsAndElevators: {
+      display: 'flex',
+      flexDirection: 'row',
       gap: 22,
     },
     statistic: {
