@@ -1,5 +1,8 @@
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { Snackbar } from '@lib/ui/components/Snackbar';
+import { ResponseError } from '@polito/api-client/runtime';
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
 
@@ -9,14 +12,15 @@ import { useGetPath } from '~/core/queries/placesHooks';
 import { DestinationPlaceType } from '../types';
 import { MapNavigationProp } from './MapNavigator';
 import { PlacesStackParamList } from './PlacesNavigator';
-import { Snackbar } from '@lib/ui/components/Snackbar';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   startRoom: DestinationPlaceType;
   destRoom: DestinationPlaceType;
   setTotDistance: (distance: number | null) => void;
-  setStairsOrElevators: (count: number | null) => void;
+  setStairsAndElevators: (
+    stairs: number | null,
+    elevators: number | null,
+  ) => void;
   navigation: MapNavigationProp<PlacesStackParamList, 'Indications', undefined>;
   screenHeight: number;
   avoidStairs: boolean;
@@ -27,7 +31,7 @@ export const PreViewPathLayer = ({
   startRoom,
   destRoom,
   setTotDistance,
-  setStairsOrElevators,
+  setStairsAndElevators,
   navigation,
   screenHeight,
   avoidStairs,
@@ -42,17 +46,33 @@ export const PreViewPathLayer = ({
     data: pathFeat,
     isLoading,
     isError,
+    error: getPathError,
   } = useGetPath({
     startPlaceId: startRoom.placeId,
     destPlaceId: destRoom.placeId,
     avoidStairs: avoidStairs,
   });
 
+  useLayoutEffect(() => {
+    (getPathError as ResponseError)?.response?.status === 404 && (
+      <Snackbar
+        text={t('indicationsScreen.pathNotFound')}
+        visible={isSnackbarVisible}
+        onDismiss={() => {
+          setIsSnackbarVisible(false);
+        }}
+      />
+    );
+  }, [getPathError, isSnackbarVisible, t]);
+
   useEffect(() => {
     if (pathFeat && pathFeat.data && !isLoading && !isError) {
       setIsLoadingPath(isLoading);
       setTotDistance(pathFeat.data.totDistance);
-      setStairsOrElevators(pathFeat.data.stairsOrElevatorsCount);
+      setStairsAndElevators(
+        pathFeat.data.stairsCount || 0,
+        pathFeat.data.elevatorsCount || 0,
+      );
     } else if (isLoading) {
       setIsLoadingPath(isLoading);
     } else if (isError) {
@@ -63,7 +83,7 @@ export const PreViewPathLayer = ({
     isLoading,
     isError,
     setTotDistance,
-    setStairsOrElevators,
+    setStairsAndElevators,
     setIsLoadingPath,
   ]);
 
@@ -108,18 +128,6 @@ export const PreViewPathLayer = ({
     }
   }, [pathFeat, navigation, screenHeight]);
 
-  /* if(isError){
-    return (
-      <Snackbar
-        text={t('indicationsScreen.pathNotFound')}
-        visible={isSnackbarVisible}
-        onDismiss={() => {
-          setIsSnackbarVisible(false);
-        }}
-      />
-    )
-  } */
-
   if (isLoading || !pathFeat?.data?.features) {
     return null;
   }
@@ -127,20 +135,20 @@ export const PreViewPathLayer = ({
   return pathFeat.data.features.map((featuresArray: any, index: number) => {
     return (
       <ShapeSource
-          id={`line-source-${index.toString()}`}
-          shape={featuresArray.features}
-          key={`line-source-${index.toString()}`}
-        >
-          <LineLayer
-            id={`line-layer-${index.toString()}`}
-            style={{
-              lineColor: courseColors[index % courseColors.length],
-              lineWidth: 8,
-              lineCap: 'round',
-              lineJoin: 'round',
-              lineOpacity: 1,
-            }}
-          />
+        id={`line-source-${index.toString()}`}
+        shape={featuresArray.features}
+        key={`line-source-${index.toString()}`}
+      >
+        <LineLayer
+          id={`line-layer-${index.toString()}`}
+          style={{
+            lineColor: courseColors[index % courseColors.length],
+            lineWidth: 8,
+            lineCap: 'round',
+            lineJoin: 'round',
+            lineOpacity: 1,
+          }}
+        />
       </ShapeSource>
     );
   });
