@@ -30,6 +30,7 @@ import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
+import { QueryStorage } from '../providers/ApiProvider.tsx';
 import { RootParamList } from '../types/navigation.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
@@ -154,6 +155,9 @@ export const useLogout = () => {
     onSuccess: async () => {
       updatePreference('politoAuthnEnrolmentStatus', {});
       refreshContext();
+      QueryStorage.clear().catch(e => {
+        console.error('Error clearing query storage:', e);
+      });
       queryClient.removeQueries();
       await resetCredentials();
     },

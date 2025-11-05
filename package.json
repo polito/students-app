@@ -20,7 +20,6 @@
     "postinstall": "npm run fixpilot -- --skip-modules --skip-derived"
   },
   "dependencies": {
-    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@d11/react-native-fast-image": "^8.11.1",
     "@formatjs/intl-datetimeformat": "^6.16.5",
     "@formatjs/intl-getcanonicallocales": "^2.5.3",
