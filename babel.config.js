@@ -1,9 +1,9 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['module:@react-native/babel-preset'],
+    presets: ['babel-preset-expo'],
     plugins: [
-      '@babel/plugin-proposal-export-namespace-from',
+      '@babel/plugin-transform-export-namespace-from',
       [
         'module-resolver',
         {
@@ -15,7 +15,11 @@ module.exports = function (api) {
       ],
       'module:react-native-dotenv',
       'react-native-reanimated/plugin',
-      'react-native-paper/babel',
     ],
+    env: {
+      production: {
+        plugins: ['react-native-paper/babel'],
+      },
+    },
   };
 };
