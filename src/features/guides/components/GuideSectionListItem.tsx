@@ -10,7 +10,9 @@ type Props = {
 export const GuideSectionListItem = ({ section }: Props) => {
   return (
     <>
-      <Text variant="subHeading">{section.title}</Text>
+      <Text variant="subHeading" accessible={true} accessibilityRole="header">
+        {section.title}
+      </Text>
       <HtmlView
         props={{
           source: { html: section.content },

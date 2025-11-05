@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { Card } from '@lib/ui/components/Card';
@@ -21,6 +22,7 @@ import { GuideSectionListItem } from '../components/GuideSectionListItem';
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Guide'>;
 
 export const GuideScreen = ({ navigation, route }: Props) => {
+  const { t } = useTranslation();
   const { id } = route.params;
   const styles = useStylesheet(createStyles);
   const query = useGetGuides();
@@ -54,15 +56,33 @@ export const GuideScreen = ({ navigation, route }: Props) => {
           <ScreenTitle title={guide?.title ?? ''} padded />
         </Section>
         <Section>
-          <Card padded style={styles.card}>
+          <Card
+            padded
+            style={styles.card}
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel={`${t('guideScreen.introduction')}: ${guide?.intro}`}
+          >
             <Text>{guide?.intro}</Text>
           </Card>
-          <OverviewList indented loading={query.isLoading}>
+          <OverviewList
+            indented
+            loading={query.isLoading}
+            accessible={true}
+            accessibilityRole="list"
+            accessibilityLabel={`${t('guideScreen.guideFields')} - ${guide?.fields.length || 0} ${t('guideScreen.fieldsAvailable')}`}
+          >
             {guide?.fields.map(field => {
               return <GuideFieldListItem field={field} key={field.label} />;
             })}
           </OverviewList>
-          <Card padded style={styles.card}>
+          <Card
+            padded
+            style={styles.card}
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel={`${t('guideScreen.guideSections')} - ${guide?.sections.length || 0} ${t('guideScreen.sectionsAvailable')}`}
+          >
             {guide?.sections.map(section => {
               return (
                 <GuideSectionListItem section={section} key={section.title} />
