@@ -23,7 +23,8 @@ interface PlacesListHeaderProps {
   searchDest: string;
   computeButtonState: number;
   distance: number;
-  stairsOrElevators: number;
+  stairs: number;
+  elevators: number;
   avoidStairs: boolean;
   dark: boolean;
 
@@ -47,7 +48,8 @@ const PlacesListHeaderComponent = ({
   searchDest,
   computeButtonState,
   distance,
-  stairsOrElevators,
+  stairs,
+  elevators,
   avoidStairs,
   setIsExpandedStart,
   setIsExpandedDest,
@@ -150,8 +152,8 @@ const PlacesListHeaderComponent = ({
             <View style={styles.statisticsContainer}>
               <StatisticsContainer
                 totDistance={distance}
-                stairsOrElevators={stairsOrElevators}
-                avoidStairs={avoidStairs}
+                stairs={stairs}
+                elevators={elevators}
               />
             </View>
           )}
