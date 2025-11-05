@@ -67,6 +67,8 @@ export const ContactsScreen = () => {
             isClearable={!!search}
             onClear={() => setSearch('')}
             onClearLabel={t('contactsScreen.clearSearch')}
+            accessibilityLabel={t('contactsScreen.searchPlaceholder')}
+            accessibilityHint={t('contactsScreen.searchHint')}
           />
         </Row>
       </HeaderAccessory>
@@ -83,6 +85,9 @@ export const ContactsScreen = () => {
                 loading={isLoading}
                 style={{ marginTop: spacing[4] }}
                 emptyStateText={t('contactsScreen.emptyState')}
+                accessible={true}
+                accessibilityRole="list"
+                accessibilityLabel={`${t('contactsScreen.searchResults')} - ${people?.length || 0} ${t('contactsScreen.contactsFound')}`}
               >
                 {people?.map((person, index) => (
                   <PersonOverviewListItem
