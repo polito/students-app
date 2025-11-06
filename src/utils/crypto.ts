@@ -1,7 +1,6 @@
 import 'react-native-get-random-values';
 
 import { secp256k1 } from '@noble/curves/secp256k1.js';
-import { sha256 } from '@noble/hashes/sha2.js';
 
 import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
 import base32Encode from 'base32-encode';
@@ -61,10 +60,12 @@ export function signSecp256k1(
   if (decline) {
     messageParts.push('decline');
   }
-  const message = new TextEncoder().encode(messageParts.join('|'));
-  const digest = sha256(message);
+  const message = new Uint8Array(Buffer.from(messageParts.join('|'), 'utf-8'));
 
-  const der = secp256k1.sign(digest, privKey, { format: 'der' });
+  const der = secp256k1.sign(message, privKey, {
+    format: 'der',
+    prehash: true,
+  });
   const signature = base32Encode(der, 'RFC4648');
 
   return signature;
