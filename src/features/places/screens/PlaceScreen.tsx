@@ -53,7 +53,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { placesSearched, updatePreference } = usePreferencesContext();
-  const { floorId, setFloorId, setItineraryMode, setSelectionMode } = useContext(PlacesContext);
+  const { floorId, setFloorId, setItineraryMode, setSelectionMode } =
+    useContext(PlacesContext);
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
