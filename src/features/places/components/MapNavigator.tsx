@@ -236,7 +236,10 @@ export const MapNavigator = ({
                                       )
                                     : undefined
                                 }
-                                onPress={navigation.goBack}
+                                onPress={() => {
+                                  setSelectedId('');
+                                  navigation.goBack();
+                                }}
                                 label={
                                   headerBackTitle ??
                                   previousDescriptor?.options.title
