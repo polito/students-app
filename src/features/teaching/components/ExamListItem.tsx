@@ -77,6 +77,8 @@ export const ExamListItem = ({
         }}
         title={exam.courseName}
         accessibilityRole="button"
+        accessibilityHint={t('common.tapToNavigate')}
+        focusable
         leadingItem={
           <CourseIcon
             icon={coursesPreferences[exam.uniqueShortcode]?.icon}

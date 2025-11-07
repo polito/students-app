@@ -30,17 +30,28 @@ export const ProgressChart = ({
 }: Props) => {
   const { dark, colors: themeColors, palettes, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
-  
-  // Create accessibility label for the chart
+
+  // Create accessibility label and value for the chart
   const accessibilityLabel = label
     ? label.replace('\n', ' ')
-    : undefined;
-  
+    : 'Progress chart';
+
+  const accessibilityValue =
+    data.length > 0
+      ? {
+          min: 0,
+          max: 1,
+          now: data.at(-1) || 0,
+        }
+      : undefined;
+
   return (
-    <View 
-      accessible={true} 
+    <View
+      accessible={true}
       accessibilityRole="progressbar"
       accessibilityLabel={accessibilityLabel}
+      accessibilityValue={accessibilityValue}
+      focusable={true}
       {...rest}
     >
       <RNCKProgressChart
@@ -66,7 +77,7 @@ export const ProgressChart = ({
       />
       {data.map((i, index) => (
         <RNCKProgressChart
-          key={index}
+          key={`progress-${i}-${index}`}
           data={{
             data: [i],
           }}

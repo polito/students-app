@@ -296,12 +296,32 @@ export const TeachingScreen = ({ navigation }: Props) => {
           </OverviewList>
         </Section>
         <Section>
-          {/*/ / this Pressable is for ios accessibility*/}
-          <Pressable 
+          {/* Pressable wrapper for iOS - provides larger tap area with keyboard support */}
+          <Pressable
             onPress={() => IS_IOS && onHide(!hideGrades)}
             accessible={IS_IOS}
             accessibilityRole={IS_IOS ? 'button' : undefined}
-            accessibilityLabel={IS_IOS ? `${hideGrades ? t('common.show') : t('common.hide')}, ${t('transcriptMetricsScreen.hideAndShowButton')}` : undefined}
+            accessibilityLabel={
+              IS_IOS
+                ? `${hideGrades ? t('common.show') : t('common.hide')}, ${t('transcriptMetricsScreen.hideAndShowButton')}`
+                : undefined
+            }
+            accessibilityHint={IS_IOS ? t('common.tapToToggle') : undefined}
+            focusable={IS_IOS}
+            onAccessibilityAction={
+              IS_IOS
+                ? event => {
+                    if (event.nativeEvent.actionName === 'activate') {
+                      onHide(!hideGrades);
+                    }
+                  }
+                : undefined
+            }
+            accessibilityActions={
+              IS_IOS
+                ? [{ name: 'activate', label: t('common.activate') }]
+                : undefined
+            }
           >
             <SectionHeader
               title={t('common.transcript')}
@@ -322,8 +342,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   accessible
                   accessibilityRole="button"
                   accessibilityLabel={transcriptAccessibleLabel}
+                  accessibilityHint={t('common.tapToNavigate')}
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
+                  focusable
                 >
                   <Row p={5} gap={5} align="center" justify="space-between">
                     <Col justify="center" flexShrink={1} gap={5}>
@@ -419,11 +441,30 @@ const HideGrades = () => {
   return (
     <View
       style={styles.hideGradesSwitch}
-      accessibilityLabel={`${label}, ${t(
-        'transcriptMetricsScreen.hideAndShowButton',
-      )} `}
-      accessibilityRole="button"
-      accessible
+      // Only make accessible on Android - on iOS the parent Pressable handles accessibility
+      accessible={!IS_IOS}
+      accessibilityLabel={
+        !IS_IOS
+          ? `${label}, ${t('transcriptMetricsScreen.hideAndShowButton')}`
+          : undefined
+      }
+      accessibilityRole={!IS_IOS ? 'button' : undefined}
+      accessibilityHint={!IS_IOS ? t('common.tapToToggle') : undefined}
+      focusable={!IS_IOS}
+      onAccessibilityAction={
+        !IS_IOS
+          ? event => {
+              if (event.nativeEvent.actionName === 'activate') {
+                onHide(!hideGrades);
+              }
+            }
+          : undefined
+      }
+      accessibilityActions={
+        !IS_IOS
+          ? [{ name: 'activate', label: t('common.activate') }]
+          : undefined
+      }
     >
       <Icon icon={icon} color={colors.link} />
       <Text variant="link" onPress={() => onHide(!hideGrades)}>

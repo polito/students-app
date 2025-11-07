@@ -270,6 +270,9 @@
     "stopFollowing": "Stop following",
     "structure": "Structure",
     "switchCareerLabel": "Tap to switch career",
+    "tapToNavigate": "Tap to navigate",
+    "tapToToggle": "Tap to toggle",
+    "activate": "Activate",
     "teacher": "Teacher",
     "theme": "Theme",
     "ticket_plural": "Tickets",
@@ -1025,7 +1028,8 @@
       "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
       "formula": "sum (grade * credits) / sum of credits"
     },
-    "yourCareer": "Your career"
+    "yourCareer": "Your career",
+    "hideAndShowButton": "grades visibility toggle"
   },
   "videoControls": {
     "changePlaybackRate": "Change playback rate",
