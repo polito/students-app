@@ -78,6 +78,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
 
   const isExpandedStartRef = useRef(isExpandedStart);
   const isExpandedDestRef = useRef(isExpandedDest);
+  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
 
   const [isLoadingPath, setIsLoadingPath] = useState(false);
 
@@ -116,8 +117,6 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   }, [campus?.id, floorId]);
 
   const { filteredPlaces: places } = useNavigationPlaces(navigationParams);
-
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
 
   useLayoutEffect(() => {
     if (
@@ -169,6 +168,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     computeButtonState,
     avoidStairs,
     setSelectedId,
+    t,
   ]);
 
   useEffect(() => {
