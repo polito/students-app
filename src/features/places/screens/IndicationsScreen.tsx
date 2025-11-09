@@ -30,6 +30,7 @@ import { notNullish } from '~/utils/predicates';
 
 import { debounce } from 'lodash';
 
+import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetPlaces } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -81,6 +82,9 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
 
   const [isLoadingPath, setIsLoadingPath] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const { setFeedback } = useFeedbackContext();
+  const [isFeedbackVisible, setFeedbackVisible] = useState(false);
 
   const handleStairsAndElevators = (
     stairsCount: number | null,
@@ -109,6 +113,24 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     [navigation],
   );
 
+  const provideFeedback = useCallback(() => {
+    setFeedback({
+      text: t('indicationsScreen.pathNotFound'),
+      isPersistent: true,
+      action: {
+        label: t('common.ok'),
+        onPress: () => {
+          handleRoom(undefined as any, true);
+          setSearchStart('');
+          setDebouncedSearch('');
+          setIsExpandedStart(false);
+          setFeedbackVisible(false);
+          setComputeButtonState(0);
+        },
+      },
+    });
+  }, [setFeedback, t, handleRoom]);
+
   const navigationParams = useMemo(() => {
     return {
       siteId: campus?.id,
@@ -117,6 +139,16 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   }, [campus?.id, floorId]);
 
   const { filteredPlaces: places } = useNavigationPlaces(navigationParams);
+
+  useEffect(() => {
+    if (isError) {
+      setTimeout(() => {
+        provideFeedback();
+        setFeedbackVisible(true);
+        setIsError(false);
+      }, 500);
+    }
+  }, [isError, provideFeedback]);
 
   useLayoutEffect(() => {
     if (
@@ -143,6 +175,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
               navigation={navigation}
               screenHeight={screenHeight}
               setIsLoadingPath={setIsLoadingPath}
+              setIsError={setIsError}
             />
           </>
         ),
@@ -266,8 +299,10 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       innerRef.current?.expand();
     } else if (!isExpandedDest && !isExpandedStart) {
       innerRef.current?.snapToIndex(0);
+    } else if (isError) {
+      innerRef.current?.expand();
     }
-  }, [isExpandedDest, isExpandedStart]);
+  }, [isExpandedDest, isExpandedStart, isError]);
 
   const handleItemPress = useCallback(
     (item: ListDataItem) => {
@@ -399,6 +434,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         destinationRoomLength={destRoom?.placeId.length || 0}
         handleComputeButtonState={setComputeButtonState}
         isLoading={isLoadingPath}
+        isError={isError}
         showItinerary={() => {
           if (startRoom && startRoom.placeId && destRoom && destRoom.placeId) {
             setSelectedLine('line-layer-0');
@@ -420,6 +456,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     isLoadingPath,
     setComputeButtonState,
     setSelectedLine,
+    isError,
   ]);
 
   useScreenTitle(t('indicationsScreen.title'));
@@ -464,7 +501,9 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
             }
             ListHeaderComponent={listHeader}
             ListFooterComponent={
-              !isExpandedStart && !isExpandedDest ? listFooter : null
+              !isExpandedStart && !isExpandedDest && !isFeedbackVisible
+                ? listFooter
+                : null
             }
           />
         </BottomSheet>

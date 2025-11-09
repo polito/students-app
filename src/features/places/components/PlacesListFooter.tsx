@@ -10,6 +10,7 @@ interface PlacesListFooterProps {
   startRoomLength: number;
   destinationRoomLength: number;
   isLoading: boolean;
+  isError: boolean;
   handleComputeButtonState: (num: number) => void;
   showItinerary: () => void;
 }
@@ -20,6 +21,7 @@ const PlacesListFooterComponent = ({
   destinationRoomLength,
   handleComputeButtonState,
   isLoading,
+  isError,
   showItinerary,
 }: PlacesListFooterProps) => {
   const styles = useStylesheet(createStyles);
@@ -32,16 +34,17 @@ const PlacesListFooterComponent = ({
         title={
           computeButtonState === 0
             ? t('indicationsScreen.computePath')
-            : isLoading ? t('')
-            : t('indicationsScreen.showIndications')
+            : isLoading
+              ? t('')
+              : t('indicationsScreen.showIndications')
         }
         action={() => {
           if (computeButtonState > 0 && !isDisabled) {
             showItinerary();
-          } else if(computeButtonState === 0 && !isLoading)
+          } else if (computeButtonState === 0 && !isLoading)
             handleComputeButtonState(1);
         }}
-        disabled={isDisabled}
+        disabled={isDisabled || isError}
         loading={isLoading}
         style={{ width: '100%' }}
       />
