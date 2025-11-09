@@ -37,6 +37,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   const { id: degreeId, year: initialYear } = route.params;
   const [year, setYear] = useState(initialYear);
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
+  const displayYear = degreeQuery.data?.year?.toString() || year;
   const { accessibility } = usePreferencesContext();
   const isOffline = useOfflineDisabled();
 
@@ -52,8 +53,8 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   }, [degreeQuery.data?.editions, isOffline]);
 
   useEffect(() => {
-    if (!degreeQuery.data) return;
-    const degreeYear = Number(degreeQuery.data.year);
+    if (!degreeQuery.data || !displayYear) return;
+    const degreeYear = Number(displayYear);
     const previousDegreeYear = degreeYear - 1;
     const accessibilityLabel = [
       t('profileScreen.enrollmentYear', {
@@ -105,6 +106,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
     navigation,
     spacing,
     degreeQuery,
+    displayYear,
     t,
     dark,
     palettes.primary,
@@ -114,7 +116,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
   ]);
 
   return (
-    <DegreeContext.Provider value={{ degreeId, year }}>
+    <DegreeContext.Provider value={{ degreeId, year: displayYear }}>
       <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
         <TopTabs.Screen
           name="DegreeInfoScreen"

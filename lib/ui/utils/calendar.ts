@@ -64,7 +64,7 @@ export function formatHour(hour: number, ampm = false) {
 }
 
 export function isToday(date: DateTime) {
-  return date.toISODate() === DateTime.now().toISODate();
+  return date.toISODate() === DateTime.now().setZone('Europe/Rome').toISODate();
 }
 
 export function getRelativeTopInDay(

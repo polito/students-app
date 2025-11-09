@@ -7,13 +7,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 
+import { setDeepLink } from '~/utils/linking.ts';
+import { fromUiTheme } from '~/utils/navigation-theme.ts';
+
 import i18n from 'i18next';
 import { Settings } from 'luxon';
 
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
-import { setDeepLink } from '../../../src/utils/linking';
-import { fromUiTheme } from '../../utils/navigation-theme';
 import { NavigationContainer } from '../components/NavigationContainer';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';

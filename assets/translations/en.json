@@ -852,6 +852,10 @@
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings"
   },
+  "ssoScreen": {
+    "ssoButton": "Sign in with Single-Sign-On",
+    "ssoLink": "or sign in with your credentials"
+  },
   "surveysScreen": {
     "compiledEmptyState": "There are no compiled surveys",
     "compiledTitle": "Compiled surveys",
@@ -890,6 +894,7 @@
     "new": "New ticket",
     "pickFileTitle": "You can include one attachment per message",
     "reply": "Reply",
+    "sendFirstMessage": "Ask your question",
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",
     "title": "Ticket",

@@ -10,6 +10,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { DailyAgenda } from './DailyAgenda';
 import { EmptyWeek } from './EmptyWeek';
@@ -29,7 +30,9 @@ export const WeeklyAgenda = ({
   const { accessibility } = usePreferencesContext();
   const newDay = useMemo(
     () =>
-      currentDay ? currentDay.startOf('day') : DateTime.now().startOf('day'),
+      currentDay
+        ? currentDay.startOf('day')
+        : DateTime.now().setZone(APP_TIMEZONE).startOf('day'),
     [currentDay],
   );
 

@@ -20,9 +20,10 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 
 import { inRange } from 'lodash';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { isSlotBookable, isSlotFull } from '../../../utils/bookings';
+import { APP_TIMEZONE } from '../../../utils/dates';
 import { setTimeoutAccessibilityInfoHelper } from '../../../utils/setTimeoutAccessibilityInfo';
 import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
 import { BookingField } from './BookingField';
@@ -38,7 +39,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontSizes, spacing } = useTheme();
-  const now = DateTime.now().toJSDate();
+  const now = DateTime.now().setZone(APP_TIMEZONE).toJSDate();
 
   const isFull = isSlotFull(item);
   const bookingNotYetOpen = !!(
@@ -54,7 +55,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     if (
       !canBeBooked &&
       inRange(
-        DateTime.now().valueOf(),
+        DateTime.now().setZone(APP_TIMEZONE).valueOf(),
         item.bookingStartsAt.valueOf(),
         item.bookingEndsAt.valueOf(),
       ) &&
@@ -68,7 +69,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     if (bookingNotYetOpen) {
       const bookingDateTime = item?.bookingStartsAt
         ? DateTime.fromJSDate(item?.bookingStartsAt, {
-            zone: IANAZone.create('Europe/Rome'),
+            zone: APP_TIMEZONE,
           })
         : null;
 
@@ -102,7 +103,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
     if (
       !canBeBooked &&
       inRange(
-        DateTime.now().valueOf(),
+        DateTime.now().setZone(APP_TIMEZONE).valueOf(),
         item.bookingStartsAt.valueOf(),
         item.bookingEndsAt.valueOf(),
       ) &&
@@ -129,7 +130,7 @@ export const BookingSlotModal = ({ close, item }: Props) => {
         message={(() => {
           const bookingDateTime = item?.bookingStartsAt
             ? DateTime.fromJSDate(item?.bookingStartsAt, {
-                zone: IANAZone.create('Europe/Rome'),
+                zone: APP_TIMEZONE,
               })
             : null;
 
