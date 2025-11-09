@@ -29,7 +29,7 @@ import {
 } from '../../places/components/PlacesNavigator';
 import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
 import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
-import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
+import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen.tsx';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
 import { TicketListScreen } from '../../tickets/screens/TicketListScreen';

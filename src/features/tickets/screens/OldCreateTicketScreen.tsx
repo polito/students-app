@@ -8,7 +8,7 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
-// import { SectionHeader } from '@lib/ui/components/SectionHeader';
+import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Select } from '@lib/ui/components/Select';
 import { TextField } from '@lib/ui/components/TextField';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
@@ -26,8 +26,6 @@ import { darkTheme } from '../../../core/themes/dark';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from '../components/MessagingView';
-
-// import { loadLanguages } from 'i18next';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 
@@ -68,11 +66,11 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }
   }, [isSuccess, data, initialTopicId, navigation]);
 
-  // const subTopics = useMemo(
-  //   () =>
-  //     topics?.find(topic => topic.id.toString() === topicId)?.subtopics ?? [],
-  //   [topicId, topics],
-  // );
+  const subTopics = useMemo(
+    () =>
+      topics?.find(topic => topic.id.toString() === topicId)?.subtopics ?? [],
+    [topicId, topics],
+  );
 
   const updateTicketBodyField =
     (field: keyof CreateTicketRequest) => (value: string | number | Blob) => {
@@ -101,20 +99,20 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }));
   }, [topicId, topics]);
 
-  // const subtopicOptions = useMemo(
-  //   () =>
-  //     subTopics.map(subtopic => {
-  //       const subId = subtopic.id.toString();
-  //       return {
-  //         id: subId,
-  //         title: subtopic.name,
-  //         state: (subId === ticketBody.subtopicId?.toString()
-  //           ? 'on'
-  //           : 'off') as MenuAction['state'],
-  //       };
-  //     }),
-  //   [subTopics, ticketBody.subtopicId],
-  // );
+  const subtopicOptions = useMemo(
+    () =>
+      subTopics.map(subtopic => {
+        const subId = subtopic.id.toString();
+        return {
+          id: subId,
+          title: subtopic.name,
+          state: (subId === ticketBody.subtopicId?.toString()
+            ? 'on'
+            : 'off') as MenuAction['state'],
+        };
+      }),
+    [subTopics, ticketBody.subtopicId],
+  );
 
   const subjectAccessibilityLabel = useMemo(() => {
     const baseText = t('createTicketScreen.subjectLabel');
@@ -125,44 +123,65 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }
   }, [t, ticketBody?.subtopicId]);
 
-  // const subtopicAccessibilityLabel = useMemo(() => {
-  //   const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
-  //   if (topicId) {
-  //     return baseText;
-  //   } else {
-  //     return [baseText, t('common.disabledPreviousValue')].join(', ');
-  //   }
-  // }, [t, topicId]);
+  const subtopicAccessibilityLabel = useMemo(() => {
+    const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
+    if (topicId) {
+      return baseText;
+    } else {
+      return [baseText, t('common.disabledPreviousValue')].join(', ');
+    }
+  }, [t, topicId]);
 
   return (
     <ScreenContainer>
       <Section>
-        <OverviewList rounded>
-          {/* Topic selector card */}
+        <SectionHeader title={t('createTicketScreen.subtitle')} />
+        <OverviewList>
           <Select
-            options={topicOptions}
-            value={topicId}
-            onSelectOption={updateTopicId}
-            label={t('createTicketScreen.topicDropdownLabel')}
             accessibilityLabel={t(
               'createTicketScreen.topicDropdownLabelAccessibility',
             )}
-            description={t('createTicketScreen.subtopicDropdownLabel')}
+            label={t('createTicketScreen.topicDropdownLabel')}
+            description={
+              initialTopicId ? '' : t('createTicketScreen.topicDescription')
+            }
+            options={topicOptions}
+            onSelectOption={updateTopicId}
+            disabled={!!initialTopicId}
+            hideChevron={!!initialTopicId}
+            value={topicId}
           />
         </OverviewList>
 
-        {/* Subject input card */}
-        <OverviewList rounded>
+        <OverviewList>
+          <Select
+            accessibilityLabel={subtopicAccessibilityLabel}
+            options={subtopicOptions}
+            onSelectOption={updateTicketBodyField('subtopicId')}
+            disabled={!topicId || !!initialTopicId}
+            hideChevron={!!initialTopicId}
+            value={ticketBody?.subtopicId?.toString()}
+            label={t('createTicketScreen.subtopicDropdownLabel')}
+            description={
+              initialSubtopicId
+                ? ''
+                : t('createTicketScreen.subtopicDescription')
+            }
+          />
+        </OverviewList>
+
+        <OverviewList style={styles.objectSection}>
           <TextField
             accessibilityLabel={subjectAccessibilityLabel}
             autoCapitalize="sentences"
             label={t('createTicketScreen.subjectLabel')}
             inputStyle={styles.textFieldInput}
-            editable={true} // {!!ticketBody?.subtopicId}
+            editable={!!ticketBody?.subtopicId}
             value={ticketBody.subject}
             onChangeText={updateTicketBodyField('subject')}
           />
         </OverviewList>
+
         <ChatBubble style={styles.bubbleContainer} bubbleStyle={styles.bubble}>
           <ThemeContext.Provider value={darkTheme}>
             <MessagingView
