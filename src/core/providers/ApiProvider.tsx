@@ -56,6 +56,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   const { setFeedback } = useFeedbackContext();
   const { username, language } = usePreferencesContext();
   const splashContext = useSplashContext();
+
   const globalQueryErrorHandler = useCallback(
     async (error: unknown, client: QueryClient) => {
       if (error instanceof ResponseError) {
@@ -74,11 +75,14 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         };
 
         // The login alert is handled in the login screen
-        if (!error.response.url.includes('/login'))
-          Alert.alert(
-            t('common.error'),
-            message ?? t('common.somethingWentWrong'),
-          );
+        if (!error.response.url.includes('/login')) {
+          if (!error.response.url.includes('/directions')) {
+            Alert.alert(
+              t('common.error'),
+              message ?? t('common.somethingWentWrong'),
+            );
+          }
+        }
 
         if (!isEnvProduction) {
           console.error(message);

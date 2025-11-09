@@ -1,8 +1,5 @@
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useContext, useEffect, useLayoutEffect } from 'react';
 
-import { Snackbar } from '@lib/ui/components/Snackbar';
-import { ResponseError } from '@polito/api-client/runtime';
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
 
@@ -25,6 +22,7 @@ type Props = {
   screenHeight: number;
   avoidStairs: boolean;
   setIsLoadingPath: (loading: boolean) => void;
+  setIsError: (isError: boolean) => void;
 };
 
 export const PreViewPathLayer = ({
@@ -36,34 +34,20 @@ export const PreViewPathLayer = ({
   screenHeight,
   avoidStairs,
   setIsLoadingPath,
+  setIsError,
 }: Props) => {
-  const { t } = useTranslation();
   const courses = useContext(PreferencesContext)?.courses;
   const courseColors = Object.values(courses || {}).map(c => c.color);
-  const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
 
   const {
     data: pathFeat,
     isLoading,
     isError,
-    error: getPathError,
   } = useGetPath({
     startPlaceId: startRoom.placeId,
     destPlaceId: destRoom.placeId,
     avoidStairs: avoidStairs,
   });
-
-  useLayoutEffect(() => {
-    (getPathError as ResponseError)?.response?.status === 404 && (
-      <Snackbar
-        text={t('indicationsScreen.pathNotFound')}
-        visible={isSnackbarVisible}
-        onDismiss={() => {
-          setIsSnackbarVisible(false);
-        }}
-      />
-    );
-  }, [getPathError, isSnackbarVisible, t]);
 
   useEffect(() => {
     if (pathFeat && pathFeat.data && !isLoading && !isError) {
@@ -76,7 +60,8 @@ export const PreViewPathLayer = ({
     } else if (isLoading) {
       setIsLoadingPath(isLoading);
     } else if (isError) {
-      setIsSnackbarVisible(true);
+      setIsLoadingPath(false);
+      setIsError(true);
     }
   }, [
     pathFeat,
@@ -85,6 +70,7 @@ export const PreViewPathLayer = ({
     setTotDistance,
     setStairsAndElevators,
     setIsLoadingPath,
+    setIsError,
   ]);
 
   useLayoutEffect(() => {
