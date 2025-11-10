@@ -22,7 +22,7 @@ type Props = {
   screenHeight: number;
   avoidStairs: boolean;
   setIsLoadingPath: (loading: boolean) => void;
-  setIsError: (isError: boolean) => void;
+  provideFeedback: () => void;
 };
 
 export const PreViewPathLayer = ({
@@ -34,23 +34,25 @@ export const PreViewPathLayer = ({
   screenHeight,
   avoidStairs,
   setIsLoadingPath,
-  setIsError,
+  provideFeedback,
 }: Props) => {
   const courses = useContext(PreferencesContext)?.courses;
   const courseColors = Object.values(courses || {}).map(c => c.color);
 
-  const {
-    data: pathFeat,
-    isLoading,
-    isError,
-  } = useGetPath({
+  const { data: pathFeat, isLoading } = useGetPath({
     startPlaceId: startRoom.placeId,
     destPlaceId: destRoom.placeId,
     avoidStairs: avoidStairs,
+    generateFeedback: provideFeedback,
   });
 
   useEffect(() => {
-    if (pathFeat && pathFeat.data && !isLoading && !isError) {
+    if (
+      pathFeat &&
+      pathFeat.data &&
+      pathFeat.data.features.length > 0 &&
+      !isLoading
+    ) {
       setIsLoadingPath(isLoading);
       setTotDistance(pathFeat.data.totDistance);
       setStairsAndElevators(
@@ -59,37 +61,20 @@ export const PreViewPathLayer = ({
       );
     } else if (isLoading) {
       setIsLoadingPath(isLoading);
-    } else if (isError) {
-      setIsLoadingPath(false);
-      setIsError(true);
     }
   }, [
     pathFeat,
     isLoading,
-    isError,
     setTotDistance,
     setStairsAndElevators,
     setIsLoadingPath,
-    setIsError,
   ]);
 
   useLayoutEffect(() => {
-    if (pathFeat) {
-      const allCoordinates = pathFeat.data.features.flatMap(
-        (feat: any) => feat.features.geometry.coordinates,
-      );
+    if (pathFeat?.data.features.length) {
       const pathBbox = bbox({
         type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: allCoordinates,
-            },
-            properties: {},
-          },
-        ],
+        features: pathFeat.data.features.flatMap((feat: any) => feat.features),
       });
 
       const bounds = {
@@ -101,8 +86,8 @@ export const PreViewPathLayer = ({
         mapOptions: {
           camera: {
             padding: {
-              paddingTop: screenHeight * 0.4,
-              paddingBottom: 100,
+              paddingTop: 50,
+              paddingBottom: screenHeight / 2 + 50,
               paddingLeft: 50,
               paddingRight: 50,
             },
@@ -118,24 +103,26 @@ export const PreViewPathLayer = ({
     return null;
   }
 
-  return pathFeat.data.features.map((featuresArray: any, index: number) => {
-    return (
-      <ShapeSource
-        id={`line-source-${index.toString()}`}
-        shape={featuresArray.features}
-        key={`line-source-${index.toString()}`}
-      >
-        <LineLayer
-          id={`line-layer-${index.toString()}`}
-          style={{
-            lineColor: courseColors[index % courseColors.length],
-            lineWidth: 8,
-            lineCap: 'round',
-            lineJoin: 'round',
-            lineOpacity: 1,
-          }}
-        />
-      </ShapeSource>
-    );
-  });
+  if (pathFeat.data.features.length > 0) {
+    return pathFeat.data.features.map((featuresArray: any, index: number) => {
+      return (
+        <ShapeSource
+          id={`line-source-${index.toString()}`}
+          shape={featuresArray.features}
+          key={`line-source-${index.toString()}`}
+        >
+          <LineLayer
+            id={`line-layer-${index.toString()}`}
+            style={{
+              lineColor: courseColors[index % courseColors.length],
+              lineWidth: 8,
+              lineCap: 'round',
+              lineJoin: 'round',
+              lineOpacity: 1,
+            }}
+          />
+        </ShapeSource>
+      );
+    });
+  }
 };
