@@ -77,12 +77,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
 
         // The login alert is handled in the login screen
         if (!error.response.url.includes('/login')) {
-          if (!error.response.url.includes('/directions')) {
-            Alert.alert(
-              t('common.error'),
-              message ?? t('common.somethingWentWrong'),
-            );
-          }
+          Alert.alert(
+            t('common.error'),
+            message ?? t('common.somethingWentWrong'),
+          );
         }
 
         if (!isEnvProduction) {
