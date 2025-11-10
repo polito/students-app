@@ -24,6 +24,7 @@ export const Checkbox = ({
   disable,
   dimension = 'default',
   icon,
+  iconColor,
 }: {
   text?: string;
   onPress: () => void;
@@ -34,6 +35,7 @@ export const Checkbox = ({
   disable?: boolean;
   dimension?: 'default' | 'small';
   icon?: IconDefinition;
+  iconColor?: string;
 }) => {
   const styles = useStylesheet(createStyles);
 
@@ -62,12 +64,14 @@ export const Checkbox = ({
               icon={icon ? icon : faSquareCheck}
               style={styles.checkboxIcon}
               size={dimension === 'small' ? 15 : 20}
+              color={iconColor ?? styles.checkboxIcon.color}
             />
           ) : (
             <Icon
               icon={faSquare}
               style={styles.checkboxIcon}
               size={dimension === 'small' ? 15 : 20}
+              color={iconColor ?? styles.checkboxIcon.color}
             />
           )}
         </View>
@@ -83,7 +87,7 @@ const createStyles = ({ palettes, spacing, fontSizes, dark }: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       marginVertical: spacing[3],
-      marginHorizontal: spacing[5],
+      marginHorizontal: spacing[4],
     },
     checkbox: {
       height: 25,
