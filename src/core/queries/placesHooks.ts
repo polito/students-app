@@ -160,6 +160,7 @@ export const useGetPath = (params: {
   startPlaceId?: string;
   destPlaceId?: string;
   avoidStairs?: boolean;
+  generateFeedback: () => void;
 }) => {
   const placesClient = usePlacesClient();
 
@@ -170,12 +171,27 @@ export const useGetPath = (params: {
       params.destPlaceId,
       params.avoidStairs,
     ],
+    /*
+    throwOnError: (err, _query) => {
+      console.error('useGetPathError: ', err, _query);
+      return false;
+    },*/
     queryFn: () =>
-      placesClient.getDirections({
-        startPlaceId: params.startPlaceId!,
-        destinationPlaceId: params.destPlaceId!,
-        avoidStairs: params.avoidStairs,
-      }),
+      placesClient
+        .getDirections({
+          startPlaceId: params.startPlaceId!,
+          destinationPlaceId: params.destPlaceId!,
+          avoidStairs: params.avoidStairs,
+        })
+        .catch(error => {
+          // Custom handling for 404 errors to return a more descriptive message
+          if (error.response?.status === 404) {
+            params.generateFeedback();
+
+            return null;
+          }
+          throw error;
+        }),
     enabled:
       params.startPlaceId !== undefined &&
       params.startPlaceId !== '' &&

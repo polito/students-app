@@ -114,6 +114,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   );
 
   const provideFeedback = useCallback(() => {
+    setIsLoadingPath(false);
+    setIsError(true);
     setFeedback({
       text: t('indicationsScreen.pathNotFound'),
       isPersistent: true,
@@ -142,13 +144,10 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     if (isError) {
-      setTimeout(() => {
-        provideFeedback();
-        setFeedbackVisible(true);
-        setIsError(false);
-      }, 500);
+      setFeedbackVisible(true);
+      setIsError(false);
     }
-  }, [isError, provideFeedback]);
+  }, [isError]);
 
   useLayoutEffect(() => {
     if (
@@ -175,7 +174,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
               navigation={navigation}
               screenHeight={screenHeight}
               setIsLoadingPath={setIsLoadingPath}
-              setIsError={setIsError}
+              provideFeedback={provideFeedback}
             />
           </>
         ),
@@ -202,6 +201,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     avoidStairs,
     setSelectedId,
     t,
+    provideFeedback,
   ]);
 
   useEffect(() => {
