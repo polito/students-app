@@ -1,33 +1,38 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSquareMinus } from '@fortawesome/free-regular-svg-icons';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator.tsx';
+import { faRepeat } from '@fortawesome/free-solid-svg-icons';
+import { Badge } from '@lib/ui/components/Badge.tsx';
 import { Col } from '@lib/ui/components/Col.tsx';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton.tsx';
 import { OverviewList } from '@lib/ui/components/OverviewList.tsx';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import { Theme } from '@lib/ui/types/Theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { t } from 'i18next';
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
+import { Checkbox } from '~/core/components/Checkbox';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
+import { useGetPlace } from '~/core/queries/placesHooks';
+
 import { DateTime, WeekdayNumbers } from 'luxon';
 
-import { Checkbox } from '../../../core/components/Checkbox.tsx';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useGetPlace } from '../../../core/queries/placesHooks.ts';
+import { EventInfo } from '../../agenda/components/EventInfo';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { CourseHiddenRecurrence } from '../types/Recurrence';
+import { CourseHiddenEvent } from '../types/Recurrence';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseHideEvent'>;
 
 interface HideEventProps {
   key: number;
-  item: CourseHiddenRecurrence;
+  item: CourseHiddenEvent;
   updateItemVisibility: (
-    element: CourseHiddenRecurrence,
+    element: CourseHiddenEvent,
     newVisibility: boolean,
   ) => void;
 }
@@ -40,6 +45,8 @@ const enum CheckboxState {
 
 const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
   const styles = useStylesheet(createStyles);
+  const { palettes, dark } = useTheme();
+  const { t } = useTranslation();
   const { data: place, isLoading: placeLoading } = useGetPlace(item.room);
 
   const handleVisibilityChange = () => {
@@ -58,19 +65,30 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
         onPress={() => handleVisibilityChange()}
         isChecked={item.restoreVisibility}
         containerStyle={styles.checkbox}
+        iconColor={palettes.navy[dark ? '50' : '400']}
       />
       <Col style={styles.cardCol}>
-        <Row align="center">
+        <Row align="center" gap={2}>
           <Text variant="heading" style={styles.title}>
-            {getLongDayTime(item.day) + '  ' + item.start + '-' + item.end}
+            {item.type === 'recurrence'
+              ? `${getLongDayTime(item.day)}  ${item.start}-${item.end}`
+              : `${getLongDayTime(DateTime.fromISO(item.day).weekday)} ${item.start}-${item.end}`}
           </Text>
+          {item.type === 'recurrence' && (
+            <Badge
+              text={t('common.series')}
+              backgroundColor={
+                !dark ? palettes.lightBlue[50] : palettes.navy[600]
+              }
+              foregroundColor={
+                !dark ? palettes.lightBlue[600] : palettes.lightBlue[300]
+              }
+              icon={faRepeat}
+              style={{ borderRadius: 6 }}
+            />
+          )}
         </Row>
-        {placeLoading && <ActivityIndicator size="small" />}
-        {item.room && place && (
-          <Text style={styles.label} numberOfLines={1} ellipsizeMode="tail">
-            {place.room.name}
-          </Text>
-        )}
+        <EventInfo item={item} place={place} placeLoading={placeLoading} />
       </Col>
     </Row>
   );
@@ -78,6 +96,8 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
 
 export const CourseHideEventScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
+  const { palettes, dark } = useTheme();
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const coursePrefs = useMemo(() => {
     return coursesPrefs[route.params.uniqueShortcode];
@@ -85,14 +105,26 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
   const [selectAll, setSelectAll] = useState<CheckboxState>(
     CheckboxState.UNSELECTED,
   );
-  const [items, setItems] = useState<CourseHiddenRecurrence[]>(() => {
-    return (
+  const [items, setItems] = useState<CourseHiddenEvent[]>(() => {
+    const recurrenceItems =
       coursesPrefs[route.params.uniqueShortcode].itemsToHideInAgenda?.map(
         item => {
-          return { ...item, restoreVisibility: false };
+          return {
+            type: 'recurrence' as const,
+            ...item,
+            restoreVisibility: false,
+          };
         },
-      ) ?? []
-    );
+      ) ?? [];
+
+    const singleItems =
+      coursesPrefs[route.params.uniqueShortcode].singleItemsToHideInAgenda?.map(
+        item => {
+          return { type: 'single' as const, ...item, restoreVisibility: false };
+        },
+      ) ?? [];
+
+    return [...recurrenceItems, ...singleItems];
   });
 
   const selectAllItem = () => {
@@ -110,7 +142,7 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
   };
 
   const updateItemVisibility = (
-    element: CourseHiddenRecurrence,
+    element: CourseHiddenEvent,
     newVisibility: boolean,
   ) => {
     setItems(prevItems =>
@@ -132,12 +164,25 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
             recurrence =>
               !itemsToDelete.some(
                 item =>
+                  item.type === 'recurrence' &&
                   item.start === recurrence.start &&
                   item.end === recurrence.end &&
                   item.day === recurrence.day &&
                   item.room === recurrence.room,
               ),
           ),
+          singleItemsToHideInAgenda:
+            coursePrefs.singleItemsToHideInAgenda?.filter(
+              recurrence =>
+                !itemsToDelete.some(
+                  item =>
+                    item.type === 'single' &&
+                    item.start === recurrence.start &&
+                    item.end === recurrence.end &&
+                    item.day === recurrence.day &&
+                    item.room === recurrence.room,
+                ),
+            ),
         },
       });
     }
@@ -150,10 +195,19 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
   };
 
   useEffect(() => {
-    if (!coursePrefs.itemsToHideInAgenda?.length) {
-      navigation.pop();
+    if (
+      !coursePrefs.itemsToHideInAgenda?.length &&
+      !coursePrefs.singleItemsToHideInAgenda?.length
+    ) {
+      requestAnimationFrame(() => {
+        navigation.pop();
+      });
     }
-  }, [coursePrefs.itemsToHideInAgenda, navigation]);
+  }, [
+    coursePrefs.itemsToHideInAgenda,
+    coursePrefs.singleItemsToHideInAgenda,
+    navigation,
+  ]);
 
   useEffect(() => {
     setSelectAll(
@@ -166,13 +220,22 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
   }, [items]);
 
   useEffect(() => {
-    setItems(
+    const recurrenceItems =
       coursePrefs.itemsToHideInAgenda?.map(item => ({
+        type: 'recurrence' as const,
         ...item,
         restoreVisibility: false,
-      })) ?? [],
-    );
-  }, [coursePrefs.itemsToHideInAgenda]);
+      })) ?? [];
+
+    const singleItems =
+      coursePrefs.singleItemsToHideInAgenda?.map(item => ({
+        type: 'single' as const,
+        ...item,
+        restoreVisibility: false,
+      })) ?? [];
+
+    setItems([...recurrenceItems, ...singleItems]);
+  }, [coursePrefs.itemsToHideInAgenda, coursePrefs.singleItemsToHideInAgenda]);
 
   return (
     <>
@@ -193,6 +256,7 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
                 ? faSquareMinus
                 : undefined
             }
+            iconColor={palettes.navy[dark ? '50' : '400']}
           />
           <OverviewList>
             {items.map((item, index) => (
@@ -211,6 +275,7 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
         disabled={!items.filter(item => item.restoreVisibility).length}
       />
       <CtaButtonSpacer />
+      <BottomBarSpacer />
     </>
   );
 };
@@ -220,14 +285,13 @@ const createStyles = ({ spacing, fontSizes, palettes, dark }: Theme) =>
     card: {
       flex: 1,
       marginHorizontal: spacing[2.5],
-      marginVertical: spacing[2],
-      padding: spacing[3],
+      marginVertical: spacing[1],
+      padding: spacing[2],
       overflow: 'visible',
       alignItems: 'center',
     },
     cardCol: {
       flexShrink: 1,
-      paddingRight: spacing[5],
     },
     title: {
       fontSize: fontSizes.md,
@@ -238,7 +302,7 @@ const createStyles = ({ spacing, fontSizes, palettes, dark }: Theme) =>
     },
     smallCheckbox: {
       marginHorizontal: spacing[2.5],
-      marginTop: spacing[4],
+      marginTop: spacing[2],
       marginBottom: spacing[1.5],
     },
     textSmallCheckbox: {
