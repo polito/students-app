@@ -50,7 +50,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
     return `${mis}:${secs}`;
   }, [remainingSeconds]);
   const styles = useStylesheet(createStyles);
-  const { mutate: verifyMfa, isPending } = useMfaAuth();
+  const { mutateAsync: verifyMfa, isPending } = useMfaAuth();
   const { mutate: markMessageAsRead } = useMarkMessageAsRead();
   const messagesQuery = useGetMessages();
   const appState = useAppState();
@@ -71,10 +71,10 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   }, [messagesQuery.data, markMessageAsRead]);
 
   const finalizeAuth = useCallback(
-    (feedbackLabel: string) => {
+    (feedbackLabel: string, success: boolean) => {
       markMfaMessageAsRead();
       setFeedback({
-        text: t(feedbackLabel),
+        text: success ? t(feedbackLabel) : t('mfaScreen.auth.failed'),
         isPersistent: false,
       });
       navigation.goBack();
@@ -89,7 +89,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       const newSeconds = calcSeconds();
       setRemainingSeconds(newSeconds);
       if (newSeconds <= 0) {
-        finalizeAuth('mfaScreen.auth.expired');
+        finalizeAuth('mfaScreen.auth.expired', true);
       } else {
         setTimeout(tick, 1000);
       }
@@ -102,10 +102,6 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
 
   useEffect(() => {
     if (authPk || appState !== 'active') return;
-    if (authPk === null) {
-      navigation.goBack();
-      return;
-    }
 
     const fetchPrivateKey = async () => {
       try {
@@ -115,12 +111,13 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
         if (secret) {
           setAuthPk(AuthenticatorPrivKey.fromJSON(secret));
         } else {
-          setAuthPk(null);
+          await resetPrivateKeyMFA();
+          throw new Error('Invalid PK');
         }
       } catch (err) {
         console.error(err);
         const hasKey = await hasPrivateKeyMFA();
-        if (hasKey) {
+        if (!hasKey) {
           Alert.alert(
             t('common.error'),
             t('mfaScreen.settings.notAccessibleAlert'),
@@ -128,7 +125,6 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
               {
                 text: t('common.ok'),
                 onPress: async () => {
-                  await resetPrivateKeyMFA();
                   navigation.navigate('ProfileTab', {
                     screen: 'Settings',
                   });
@@ -137,7 +133,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
             ],
           );
         } else {
-          Alert.alert(t('common.error'), t('mfaScreen.auth.unlockFailure'));
+          Alert.alert(t('common.error'), t('mfaScreen.auth.unlockDismissed'));
         }
         navigation.goBack();
       }
@@ -148,20 +144,21 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   const onNo = async () => {
     if (!authPk) return;
     const signature = signSecp256k1(nonce, authPk, true);
-    verifyMfa({
+    const success = await verifyMfa({
       decline: true,
       serial: authPk.serial,
       nonce,
       signature,
     });
-    finalizeAuth('mfaScreen.auth.rejected');
+    finalizeAuth('mfaScreen.auth.rejected', success);
   };
 
   const onYes = async () => {
     if (!authPk) return;
+    let success = false;
     try {
       const signature = signSecp256k1(nonce, authPk);
-      verifyMfa({
+      success = await verifyMfa({
         serial: authPk.serial,
         nonce,
         signature,
@@ -169,7 +166,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
     } catch (err) {
       Alert.alert(t('common.error'));
     }
-    finalizeAuth('mfaScreen.auth.accepted');
+    finalizeAuth('mfaScreen.auth.accepted', success);
   };
 
   return (

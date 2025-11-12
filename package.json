@@ -20,7 +20,6 @@
     "postinstall": "npm run fixpilot -- --skip-modules --skip-derived"
   },
   "dependencies": {
-    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@d11/react-native-fast-image": "^8.11.1",
     "@formatjs/intl-datetimeformat": "^6.16.5",
     "@formatjs/intl-getcanonicallocales": "^2.5.3",
@@ -33,7 +32,6 @@
     "@gorhom/bottom-sheet": "^5.2.6",
     "@miblanchard/react-native-slider": "^2.6.0",
     "@noble/curves": "^2.0.1",
-    "@noble/hashes": "^2.0.1",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@polito/api-client": "2.2.6",
     "@react-native-async-storage/async-storage": "^2.2.0",

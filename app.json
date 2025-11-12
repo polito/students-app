@@ -1,16 +1,14 @@
 {
   "name": "students",
   "displayName": "Polito Students",
-  "expo": {
-    "plugins": [
-      [
-        "@sentry/react-native/expo",
-        {
-          "url": "https://sentry.k8s.polito.it/",
-          "project": "students-app",
-          "organization": "polito"
-        }
-      ]
+  "plugins": [
+    [
+      "@sentry/react-native/expo",
+      {
+        "url": "https://sentry.k8s.polito.it/",
+        "project": "students-app",
+        "organization": "polito"
+      }
     ]
-  }
+  ]
 }
