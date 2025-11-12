@@ -44,9 +44,15 @@ export interface Props extends Partial<ListItemProps> {
 interface MenuProps extends Partial<ContextMenuProps> {
   onRefreshDownload: () => void;
   onRemoveDownload: () => void;
+  isDownloaded: boolean;
 }
 
-const Menu = ({ children, onRefreshDownload, onRemoveDownload }: MenuProps) => {
+const Menu = ({
+  children,
+  onRefreshDownload,
+  onRemoveDownload,
+  isDownloaded,
+}: MenuProps) => {
   const { t } = useTranslation();
   const { dark, colors } = useTheme();
 
@@ -76,6 +82,7 @@ const Menu = ({ children, onRefreshDownload, onRemoveDownload }: MenuProps) => {
           default:
         }
       }}
+      disabled={IS_IOS && !isDownloaded}
     >
       {children}
     </ContextMenu>
@@ -245,6 +252,7 @@ export const CourseFileListItem = memo(
               <Menu
                 onRefreshDownload={refreshDownload}
                 onRemoveDownload={removeDownload}
+                isDownloaded={isDownloaded}
               >
                 <IconButton
                   icon={faEllipsisVertical}
@@ -296,6 +304,7 @@ export const CourseFileListItem = memo(
         <Menu
           onRefreshDownload={refreshDownload}
           onRemoveDownload={removeDownload}
+          isDownloaded={isDownloaded}
         >
           {listItem}
         </Menu>
