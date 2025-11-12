@@ -13,6 +13,8 @@ import {
   UserLocation,
 } from '@rnmapbox/maps';
 
+import { EMPTY_OBJ } from '~/core/constants';
+
 import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { TranslucentView } from '../../../core/components/TranslucentView';
@@ -102,7 +104,7 @@ const MapDefaultContent = () => {
         tileSize={RASTER_TILE_SIZE}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer id="outdoor" aboveLayerID="background" style={null} />
+        <RasterLayer id="outdoor" aboveLayerID="background" style={EMPTY_OBJ} />
       </RasterSource>
 
       {/* Indoor map */}
@@ -116,7 +118,7 @@ const MapDefaultContent = () => {
         minZoomLevel={INTERIORS_MIN_ZOOM}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer id="indoor" aboveLayerID="outdoor" style={null} />
+        <RasterLayer id="indoor" aboveLayerID="outdoor" style={EMPTY_OBJ} />
       </RasterSource>
     </>
   );

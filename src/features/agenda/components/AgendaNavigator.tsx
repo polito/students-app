@@ -6,6 +6,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogo } from '~/core/components/HeaderLogo.tsx';
+import { AgendaNavigatorID } from '~/core/constants';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
 import { useTitlesStyles } from '~/core/hooks/useTitlesStyles.ts';
 import { AgendaPreferencesScreen } from '~/features/agenda/screens/AgendaPreferencesScreen.tsx';
@@ -48,8 +49,6 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
     AgendaPreferences: undefined;
     HiddenEvents: undefined;
   };
-
-export const AgendaNavigatorID = 'AgendaTabNavigator';
 
 const Stack = createNativeStackNavigator<
   AgendaStackParamList,

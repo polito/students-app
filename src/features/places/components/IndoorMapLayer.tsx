@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { RasterLayer, RasterSource } from '@rnmapbox/maps';
 
+import { EMPTY_OBJ } from '~/core/constants';
+
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM } from '../constants';
 
 export interface IndoorMapLayerProps {
@@ -18,7 +20,7 @@ export const IndoorMapLayer = ({ floorId }: IndoorMapLayerProps) => {
     <>
       <RasterLayer
         key={`indoor:${colorScheme}:${_floorId}`}
-        style={null}
+        style={EMPTY_OBJ}
         id="indoor"
         sourceID="indoorSource"
         aboveLayerID="outdoor"

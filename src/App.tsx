@@ -15,7 +15,7 @@ import { extendSuperJSON } from './utils/superjson';
 
 extendSuperJSON();
 
-Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
+Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
 
 const App = () => {
   return (

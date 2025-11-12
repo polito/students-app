@@ -4,6 +4,8 @@ import { Platform } from 'react-native';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { UserNavigatorID } from '~/core/constants.ts';
+
 import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
@@ -32,7 +34,6 @@ export type UserStackParamList = OfferingStackParamList & {
   Person: { id: number };
 };
 
-export const UserNavigatorID = 'UserTabNavigator';
 const Stack = createNativeStackNavigator<
   UserStackParamList,
   typeof UserNavigatorID

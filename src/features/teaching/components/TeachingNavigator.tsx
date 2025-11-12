@@ -6,6 +6,8 @@ import { ExamGrade } from '@polito/api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { TeachingNavigatorID } from '~/core/constants';
+
 import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
@@ -49,8 +51,6 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
-
-export const TeachingNavigatorID = 'TeachingTabNavigator';
 
 const Stack = createNativeStackNavigator<
   TeachingStackParamList,
