@@ -10,7 +10,6 @@ interface PlacesListFooterProps {
   startRoomLength: number;
   destinationRoomLength: number;
   isLoading: boolean;
-  isError: boolean;
   handleComputeButtonState: (num: number) => void;
   showItinerary: () => void;
 }
@@ -21,7 +20,6 @@ const PlacesListFooterComponent = ({
   destinationRoomLength,
   handleComputeButtonState,
   isLoading,
-  isError,
   showItinerary,
 }: PlacesListFooterProps) => {
   const styles = useStylesheet(createStyles);
@@ -44,9 +42,9 @@ const PlacesListFooterComponent = ({
           } else if (computeButtonState === 0 && !isLoading)
             handleComputeButtonState(1);
         }}
-        disabled={isDisabled || isError}
+        disabled={isDisabled}
         loading={isLoading}
-        style={{ width: '100%' }}
+        style={styles.button}
       />
     </View>
   );
@@ -65,5 +63,8 @@ const createStyles = () =>
       gap: 10,
       alignSelf: 'stretch',
       marginTop: '20%',
+    },
+    button: {
+      width: '100%',
     },
   });

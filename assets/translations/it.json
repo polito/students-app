@@ -888,12 +888,21 @@
   },
   "indicationsScreen": {
     "title": "Indicazioni",
+    "mapSelectorItem": "Seleziona dalla mappa",
     "fromPlaceLabel": "Scegli punto di partenza",
     "toPlaceLabel": "Scegli la destinazione",
     "avoidStairs": "Evita le scale",
     "computePath": "Calcola percorso",
     "showIndications": "Avvia itinerario",
     "pathNotFound": "Parametri del percorso non validi o nessun percorso disponibile."
+  },
+  "mapSelectionScreen": {
+    "title": "Seleziona dalla mappa",
+    "selectionLabel": "Seleziona un punto di interesse dalla mappa",
+    "fromPlaceSelected": "Punto di partenza selezionato:",
+    "toPlaceSelected": "Punto di arrivo selezionato:",
+    "placeSelected": "Luogo selezionato:",
+    "confirmSelection": "Conferma selezione"
   },
   "itineraryScreen": {
     "title": "Itinerario",

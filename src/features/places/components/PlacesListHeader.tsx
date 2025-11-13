@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -229,8 +228,6 @@ const createStyles = () =>
     filter: {
       display: 'flex',
       paddingVertical: 6,
-      paddingHorizontal: 9,
-      alignItems: 'center',
       alignSelf: 'stretch',
       borderRadius: 6,
     },
@@ -273,4 +270,4 @@ const createStyles = () =>
     },
   });
 
-export const PlacesListHeader = memo(PlacesListHeaderComponent);
+export const PlacesListHeader = PlacesListHeaderComponent;

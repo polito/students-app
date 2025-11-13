@@ -40,7 +40,6 @@ import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { formatPlaceCategory } from '../utils/category';
@@ -66,15 +65,10 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const [updatedRecentPlaces, setUpdatedRecentPlaces] = useState(false);
   const siteId = place?.site.id;
   const placeFloorId = place?.floor.id;
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: siteId,
     floorId: placeFloorId,
   });
-
-  useEffect(() => {
-    setSelectedId('');
-  }, [navigation, setSelectedId]);
 
   useEffect(() => {
     if (!isLoadingPlace && placeFloorId !== floorId) {
@@ -144,8 +138,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               categoryId={place?.category?.id}
               subCategoryId={place?.category?.subCategory?.id}
               isCrossNavigation={isCrossNavigation}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
+              //selectedId={selectedId}
+              //setSelectedId={setSelectedId}
             />
             {place.geoJson != null && (
               <ShapeSource
@@ -199,8 +193,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 places={places}
                 isCrossNavigation={isCrossNavigation}
                 categoryId="OTHER"
-                selectedId={selectedId}
-                setSelectedId={setSelectedId}
+                //selectedId={selectedId}
+                //setSelectedId={setSelectedId}
               />
               <ShapeSource id="placeHighlightSource">
                 <LineLayer
