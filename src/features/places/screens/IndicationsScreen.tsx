@@ -16,9 +16,8 @@ import {
   faMapPin,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { BottomSheet } from '@lib/ui/components/BottomSheet';
+import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import { BottomSheet as BottomSheetUI } from '@lib/ui/components/BottomSheet';
 import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
@@ -32,16 +31,14 @@ import { debounce } from 'lodash';
 
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetPlaces } from '../../../core/queries/placesHooks';
+import { useGetPath, useGetPlaces } from '../../../core/queries/placesHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
-import { MarkerSelectionBottomSheet } from '../components/MarkerSelectionBottomSheet';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesListFooter } from '../components/PlacesListFooter';
 import { PlacesListHeader } from '../components/PlacesListHeader';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { PreViewPathLayer } from '../components/PreViewPathLayer';
-import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useNavigationPlaces, useSearchPlaces } from '../hooks/useSearchPlaces';
@@ -53,11 +50,14 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { dark } = useTheme();
   const campus = useGetCurrentCampus();
   const {
-    floorId: floorId,
     setSelectedLine,
     setSelectionMode,
+    selectedPlace,
+    setSelectedPlace,
+    selectionIcon,
+    setSelectionIcon,
   } = useContext(PlacesContext);
-  const [screenHeight, setScreenHeight] = useState(
+  const [_screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
   );
   const [totDistance, setTotDistance] = useState<number | null>(null);
@@ -66,33 +66,21 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
 
   const { fromPlace: startRoom, toPlace: destRoom } = route.params;
 
-  const [computeButtonState, setComputeButtonState] = useState(
-    startRoom && startRoom.placeId.length > 0 ? 1 : 0,
-  );
+  const [computeButtonState, setComputeButtonState] = useState(0);
   const [searchStart, setSearchStart] = useState(startRoom?.namePlace || '');
   const [searchDest, setSearchDest] = useState(destRoom?.namePlace || '');
 
   const [avoidStairs, setAvoidStairs] = useState<boolean>(false);
   const [isExpandedStart, setIsExpandedStart] = useState(false);
   const [isExpandedDest, setIsExpandedDest] = useState(false);
-  const { setSelectionIcon } = useContext(PlacesContext); // per settare l'icona start o destination
 
   const isExpandedStartRef = useRef(isExpandedStart);
   const isExpandedDestRef = useRef(isExpandedDest);
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  //const { setSelectedId } = useContext(MapNavigatorContext);
 
-  const [isLoadingPath, setIsLoadingPath] = useState(false);
-  const [isError, setIsError] = useState(false);
   const { setFeedback } = useFeedbackContext();
   const [isFeedbackVisible, setFeedbackVisible] = useState(false);
-
-  const handleStairsAndElevators = (
-    stairsCount: number | null,
-    elevatorsCount: number | null,
-  ) => {
-    setStairs(stairsCount);
-    setElevators(elevatorsCount);
-  };
+  const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
 
   const handleRoom = useCallback(
     (place: PlaceOverview | undefined, isStartRoom: boolean) => {
@@ -114,95 +102,76 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   );
 
   const provideFeedback = useCallback(() => {
-    setIsLoadingPath(false);
-    setIsError(true);
+    setComputeButtonState(0);
+    setFeedbackVisible(true);
     setFeedback({
       text: t('indicationsScreen.pathNotFound'),
       isPersistent: true,
       action: {
         label: t('common.ok'),
         onPress: () => {
-          handleRoom(undefined as any, true);
-          setSearchStart('');
-          setDebouncedSearch('');
-          setIsExpandedStart(false);
           setFeedbackVisible(false);
-          setComputeButtonState(0);
         },
       },
     });
-  }, [setFeedback, t, handleRoom]);
+  }, [setFeedback, t]);
 
-  const navigationParams = useMemo(() => {
-    return {
-      siteId: campus?.id,
-      floorId: floorId,
-    };
-  }, [campus?.id, floorId]);
+  const { filteredPlaces: places } = useNavigationPlaces({
+    siteId: campus?.id,
+  });
 
-  const { filteredPlaces: places } = useNavigationPlaces(navigationParams);
+  const { data: pathFeat, isLoading: isLoadingPath } = useGetPath({
+    startPlaceId: startRoom?.placeId || '',
+    destPlaceId: destRoom?.placeId || '',
+    avoidStairs: avoidStairs,
+    computeButtonState: computeButtonState,
+    generateFeedback: provideFeedback,
+  });
 
   useEffect(() => {
-    if (isError) {
-      setFeedbackVisible(true);
-      setIsError(false);
+    if (pathFeat && pathFeat.data.features.length > 0) {
+      setTotDistance(pathFeat.data.totDistance);
+      setStairs(pathFeat.data.stairsCount || 0);
+      setElevators(pathFeat.data.elevatorsCount || 0);
     }
-  }, [isError]);
+  }, [pathFeat]);
 
-  useLayoutEffect(() => {
+  const renderMapContent = useCallback(() => {
     if (
-      startRoom?.placeId &&
-      startRoom?.namePlace.length > 0 &&
-      destRoom?.placeId &&
-      destRoom?.namePlace.length > 0 &&
+      pathFeat &&
+      pathFeat.data.features.length > 0 &&
       computeButtonState === 1
     ) {
-      navigation.setOptions({
-        mapContent: () => (
-          <>
-            <MarkersLayer
-              places={places}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
-            />
-            <PreViewPathLayer
-              startRoom={startRoom}
-              destRoom={destRoom}
-              setTotDistance={setTotDistance}
-              setStairsAndElevators={handleStairsAndElevators}
-              avoidStairs={avoidStairs}
-              navigation={navigation}
-              screenHeight={screenHeight}
-              setIsLoadingPath={setIsLoadingPath}
-              provideFeedback={provideFeedback}
-            />
-          </>
-        ),
-      });
-    } else {
-      navigation.setOptions({
-        mapContent: () => (
+      return (
+        <>
           <MarkersLayer
             places={places}
-            selectedId={selectedId}
-            setSelectedId={setSelectedId}
+            //selectedId={selectedId}
+            //setSelectedId={setSelectedId}
           />
-        ),
-      });
+          <PreViewPathLayer
+            pathFeat={pathFeat}
+            bottomSheetHeight={bottomSheetHeight}
+            navigation={navigation}
+          />
+        </>
+      );
+    } else if (!pathFeat) {
+      return (
+        <MarkersLayer
+          places={places}
+          //selectedId={selectedId}
+          //setSelectedId={setSelectedId}
+        />
+      );
     }
-  }, [
-    navigation,
-    startRoom,
-    destRoom,
-    places,
-    selectedId,
-    screenHeight,
-    computeButtonState,
-    avoidStairs,
-    setSelectedId,
-    t,
-    provideFeedback,
-  ]);
+  }, [places, pathFeat, bottomSheetHeight, navigation, computeButtonState]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      mapContent: renderMapContent,
+    });
+  }, [navigation, renderMapContent]);
 
   useEffect(() => {
     isExpandedStartRef.current = isExpandedStart;
@@ -221,7 +190,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { data: listPlaces, isLoading } = useGetPlaces({
     siteId: campus?.id,
   });
-  const innerRef = useRef<BottomSheetMethods>(null);
+  const innerRef = useRef<BottomSheet>(null);
 
   const allPlaces = useMemo(() => {
     const list = listPlaces?.data ?? [];
@@ -299,10 +268,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       innerRef.current?.expand();
     } else if (!isExpandedDest && !isExpandedStart) {
       innerRef.current?.snapToIndex(0);
-    } else if (isError) {
-      innerRef.current?.expand();
     }
-  }, [isExpandedDest, isExpandedStart, isError]);
+  }, [isExpandedDest, isExpandedStart]);
 
   const handleItemPress = useCallback(
     (item: ListDataItem) => {
@@ -310,13 +277,18 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       const currentIsExpandedDest = isExpandedDestRef.current;
 
       if (item.type === 'special') {
-        setSelectedId('');
         if (currentIsExpandedStart) {
           setClickMode(1);
           setSelectionIcon('start');
+          navigation.navigate('MapSelection', {
+            clickMode,
+          });
         } else if (currentIsExpandedDest) {
           setClickMode(2);
           setSelectionIcon('destination');
+          navigation.navigate('MapSelection', {
+            clickMode: clickMode,
+          });
         }
       } else {
         const itemName = item.place.room.name ?? t('common.untitled');
@@ -339,7 +311,11 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       setSearchDest,
       setIsExpandedDest,
       setSelectionIcon,
-      setSelectedId,
+      //setSelectedId,
+      navigation,
+      clickMode,
+      //setDebouncedSearch,
+      //setSelectionMode,
       t,
     ],
   );
@@ -350,7 +326,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         return (
           <ListItem
             leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-            title={t('Seleziona dalla mappa')}
+            title={t('indicationsScreen.mapSelectorItem')}
             onPress={() => {
               handleItemPress(item);
               setSelectionMode(true);
@@ -434,14 +410,18 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         destinationRoomLength={destRoom?.placeId.length || 0}
         handleComputeButtonState={setComputeButtonState}
         isLoading={isLoadingPath}
-        isError={isError}
         showItinerary={() => {
-          if (startRoom && startRoom.placeId && destRoom && destRoom.placeId) {
+          if (
+            startRoom?.placeId &&
+            destRoom?.placeId &&
+            pathFeat &&
+            pathFeat.data.features.length > 0
+          ) {
             setSelectedLine('line-layer-0');
             navigation.navigate('Itinerary', {
+              pathFeat: pathFeat,
               startRoom: startRoom.placeId,
               destRoom: destRoom.placeId,
-              avoidStairs: avoidStairs,
             });
           }
         }}
@@ -452,11 +432,35 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     navigation,
     startRoom,
     destRoom,
-    avoidStairs,
-    isLoadingPath,
     setComputeButtonState,
     setSelectedLine,
-    isError,
+    isLoadingPath,
+    pathFeat,
+  ]);
+
+  useEffect(() => {
+    if (selectedPlace) {
+      handleRoom(selectedPlace, selectionIcon === 'start');
+      if (selectionIcon === 'start') setSearchStart(selectedPlace.room.name);
+      else if (selectionIcon === 'destination')
+        setSearchDest(selectedPlace.room.name);
+    }
+    setIsExpandedDest(false);
+    setIsExpandedStart(false);
+    setClickMode(0);
+    setDebouncedSearch('');
+    setSelectionMode(false);
+    setSelectedPlace(null);
+  }, [
+    selectedPlace,
+    handleRoom,
+    selectionIcon,
+    clickMode,
+    setSelectionMode,
+    setDebouncedSearch,
+    setSelectedPlace,
+    setSearchStart,
+    setSearchDest,
   ]);
 
   useScreenTitle(t('indicationsScreen.title'));
@@ -471,11 +475,12 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         },
       }) => setScreenHeight(height)}
     >
-      {clickMode === 0 ? (
-        <BottomSheet
+      {clickMode === 0 && (
+        <BottomSheetUI
           ref={innerRef}
           index={computeButtonState === 0 ? 0 : 1}
           snapPoints={['43%', '55%', '100%']}
+          onChange={(_, pos) => setBottomSheetHeight(pos)}
         >
           <BottomSheetFlatList<ListDataItem>
             data={dataWithDefault}
@@ -506,21 +511,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
                 : null
             }
           />
-        </BottomSheet>
-      ) : (
-        <MarkerSelectionBottomSheet
-          action={() => {
-            setIsExpandedDest(false);
-            setIsExpandedStart(false);
-            setClickMode(0);
-            setSelectedId('');
-            setDebouncedSearch('');
-            setSelectionMode(false);
-          }}
-          handleRoom={handleRoom}
-          handleSearch={clickMode === 1 ? setSearchStart : setSearchDest}
-          clickMode={clickMode}
-        />
+        </BottomSheetUI>
       )}
     </View>
   );

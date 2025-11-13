@@ -1,4 +1,10 @@
-import { useCallback, useContext, useMemo } from 'react';
+import {
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -29,43 +35,45 @@ import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { PlaceOverview } from '@polito/api-client';
 import Mapbox from '@rnmapbox/maps';
 
 import { TranslucentView } from '~/core/components/TranslucentView.ios';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
+import { useScreenTitle } from '~/core/hooks/useScreenTitle';
 
+import { MapScreenProps } from '../components/MapNavigator';
+import { MarkersLayer } from '../components/MarkersLayer';
+import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { useNavigationPlaces } from '../hooks/useSearchPlaces';
 
-type Props = {
-  action: () => void;
-  handleRoom: (place: PlaceOverview | undefined, isStartRoom: boolean) => void;
-  handleSearch: (query: string) => void;
-  clickMode: number;
-};
+type Props = MapScreenProps<PlacesStackParamList, 'MapSelection'>;
 
-export const MarkerSelectionBottomSheet = ({
-  action,
-  clickMode,
-  handleRoom,
-  handleSearch,
-}: Props) => {
+const screenHeight = Dimensions.get('window').height;
+
+export const MapSelectionScreen = ({ navigation, route }: Props) => {
+  const { clickMode } = route.params;
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const {
-    selectedPlace,
-    setSelectedPlace,
-    floorId: floorId,
-    setFloorId: setFloorId,
-  } = useContext(PlacesContext);
+  const { selectedPlace, setSelectedPlace, floorId, setFloorId } =
+    useContext(PlacesContext);
   const { fontSizes, dark, palettes, spacing, colors } = useTheme();
   const campus = useGetCurrentCampus();
   const { cameraRef } = useContext(MapNavigatorContext);
   const bottomSheetPosition = useSharedValue(0);
-  const screenHeight = Dimensions.get('window').height;
   const { accessibility } = usePreferencesContext();
+  const [confirmSelection, setConfirmSelection] = useState<boolean>(false);
+
+  const { filteredPlaces: places } = useNavigationPlaces({
+    siteId: campus?.id,
+    floorId: floorId,
+  });
+
+  useCallback(() => {
+    if (!confirmSelection) setSelectedPlace(null);
+  }, [confirmSelection, setSelectedPlace]);
 
   const floorActions = useMemo(() => {
     if (!campus?.floors) return [];
@@ -129,12 +137,26 @@ export const MarkerSelectionBottomSheet = ({
           <Icon
             icon={faChevronDown}
             size={fontSizes.xs}
-            style={{ position: 'absolute', right: 15 }}
+            style={styles.chevronIcon}
           />
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
   );
+
+  const ctaButton = useMemo(() => {
+    return (
+      <CtaButton
+        absolute={false}
+        title={t('mapSelectionScreen.confirmSelection')}
+        disabled={selectedPlace ? false : true}
+        action={() => {
+          setConfirmSelection(true);
+          navigation.goBack();
+        }}
+      />
+    );
+  }, [navigation, selectedPlace, t]);
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -147,12 +169,24 @@ export const MarkerSelectionBottomSheet = ({
     };
   });
 
+  const renderMapContent = useCallback(
+    () => <MarkersLayer places={places} />,
+    [places],
+  );
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      mapContent: renderMapContent,
+    });
+  }, [navigation, renderMapContent]);
+
+  useScreenTitle(t('mapSelectionScreen.title'));
+
   return (
     <>
       <TranslucentView
         style={{
+          ...styles.translucentView,
           backgroundColor: Platform.select({ android: colors.background }),
-          top: '75%',
         }}
       />
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
@@ -175,9 +209,7 @@ export const MarkerSelectionBottomSheet = ({
             />
           </TranslucentCard>
           <StatefulMenuView
-            style={{
-              maxWidth: '60%',
-            }}
+            style={styles.statefulMenu}
             onPressAction={({ nativeEvent: { event: selectedFloorId } }) => {
               setFloorId(selectedFloorId);
             }}
@@ -204,10 +236,10 @@ export const MarkerSelectionBottomSheet = ({
                   ellipsizeMode="tail"
                 >
                   {clickMode === 1
-                    ? t('Punto di partenza selezionato:')
+                    ? t('mapSelectionScreen.fromPlaceSelected')
                     : clickMode === 2
-                      ? t('Punto di arrivo selezionato:')
-                      : t('Luogo selezionato:')}
+                      ? t('mapSelectionScreen.toPlaceSelected')
+                      : t('mapSelectionScreen.placeSelected')}
                 </Text>
                 <Text
                   style={[
@@ -233,26 +265,12 @@ export const MarkerSelectionBottomSheet = ({
                   },
                 ]}
               >
-                {t('Seleziona un punto di interesse dalla mappa')}
+                {t('mapSelectionScreen.selectionLabel')}
               </Text>
             )}
           </View>
         </View>
-        <View style={styles.ctaButtonContainer}>
-          <CtaButton
-            absolute={false}
-            title={t('Conferma selezione')}
-            disabled={selectedPlace ? false : true}
-            action={() => {
-              if (selectedPlace) {
-                handleRoom(selectedPlace, clickMode === 1);
-                handleSearch(selectedPlace.room.name);
-              }
-              action();
-              setSelectedPlace(null);
-            }}
-          />
-        </View>
+        <View style={styles.ctaButtonContainer}>{ctaButton}</View>
       </View>
     </>
   );
@@ -260,6 +278,9 @@ export const MarkerSelectionBottomSheet = ({
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
+    translucentView: {
+      top: '75%',
+    },
     controls: {
       position: 'absolute',
       left: spacing[5],
@@ -279,6 +300,10 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
+    },
+    chevronIcon: {
+      position: 'absolute',
+      right: 15,
     },
     markerSelectorContainer: {
       position: 'absolute',
@@ -334,5 +359,8 @@ const createStyles = ({ spacing }: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'stretch',
+    },
+    statefulMenu: {
+      maxWidth: '60%',
     },
   });

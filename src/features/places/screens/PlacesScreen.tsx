@@ -189,42 +189,23 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setMapFloorId(displayFloorId);
     }
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const renderMapContent = useCallback(
     () => (
-        <MarkersLayer
-          search={debouncedSearch}
-          places={places ?? []}
-          displayFloor={!displayFloorId}
-          categoryId={categoryId}
-          subCategoryId={subCategoryId}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-        />
+      <MarkersLayer
+        search={debouncedSearch}
+        places={places ?? []}
+        displayFloor={!displayFloorId}
+        categoryId={categoryId}
+        subCategoryId={subCategoryId}
+      />
     ),
-    [
-      debouncedSearch,
-      places,
-      displayFloorId,
-      categoryId,
-      subCategoryId,
-      selectedId,
-      setSelectedId,
-    ],
+    [debouncedSearch, places, displayFloorId, categoryId, subCategoryId],
   );
   useLayoutEffect(() => {
     navigation.setOptions({
       mapContent: renderMapContent,
     });
-  }, [
-    categoryId,
-    debouncedSearch,
-    displayFloorId,
-    navigation,
-    places,
-    subCategoryId,
-    renderMapContent,
-  ]);
+  }, [navigation, renderMapContent]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -286,7 +267,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   useEffect(() => {
     if (campus)
       setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
-  }, [campus]);
+  }, [campus, setFloorId]);
   const floorSelectorButton = (
     <TranslucentCard
       {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150

@@ -24,7 +24,6 @@ import { Theme } from '@lib/ui/types/Theme';
 import Mapbox from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
 
-import { useGetPath } from '~/core/queries/placesHooks';
 import { SubPathSelector } from '~/features/places/components/SubPathSelector';
 import { displayTabBar } from '~/utils/tab-bar';
 
@@ -44,6 +43,7 @@ import { useNavigationPlaces } from '../hooks/useSearchPlaces';
 type Props = MapScreenProps<PlacesStackParamList, 'Itinerary'>;
 
 export const ItineraryScreen = ({ navigation, route }: Props) => {
+  const { pathFeat, startRoom, destRoom } = route.params;
   const styles = useStylesheet(createStyles);
   const { spacing } = useTheme();
   const { t } = useTranslation();
@@ -60,11 +60,6 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
     Dimensions.get('window').height,
   );
   const [chosenBbox, setChosenBbox] = useState<BBox | null>(null);
-  const { data: pathFeat} = useGetPath({
-    startPlaceId: route.params.startRoom,
-    destPlaceId: route.params.destRoom,
-    avoidStairs: route.params.avoidStairs,
-  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -87,10 +82,10 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
     return {
       siteId: campus?.id,
       floorId: floorId,
-      startRoom: route.params.startRoom,
-      destRoom: route.params.destRoom,
+      startRoom: startRoom,
+      destRoom: destRoom,
     };
-  }, [campus?.id, floorId, route.params.startRoom, route.params.destRoom]);
+  }, [campus?.id, floorId, startRoom, destRoom]);
 
   const { filteredPlaces: places } = useNavigationPlaces(filteredPlacesParams);
 
@@ -114,26 +109,30 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
       2000,
     );
   }, [cameraRef, campus]);
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const renderMapContent = useCallback(
     () => (
       <>
         <PathLayer
           handleSegmentChange={setChosenBbox}
-          pathFeatureCollection={pathFeat?.data.features}
+          pathFeatureCollection={pathFeat.data.features}
         />
         <MarkersLayer
           places={places}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
+          //selectedId={selectedId}
+          //setSelectedId={setSelectedId}
         />
       </>
     ),
-    [places, selectedId, setSelectedId, pathFeat],
+    [places, /*selectedId, setSelectedId,*/ pathFeat],
   );
 
   useLayoutEffect(() => {
-    const isValidGeometry = chosenBbox && chosenBbox.length === 4 && chosenBbox.every(coord => !isNaN(coord) && typeof coord === 'number' && isFinite(coord));
+    const isValidGeometry =
+      chosenBbox &&
+      chosenBbox.length === 4 &&
+      chosenBbox.every(
+        coord => !isNaN(coord) && typeof coord === 'number' && isFinite(coord),
+      );
 
     if (isValidGeometry) {
       const bounds = {
@@ -159,26 +158,15 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   }, [chosenBbox, navigation, screenHeight]);
 
   useLayoutEffect(() => {
-      navigation.setOptions({
-        mapContent: renderMapContent,
-      });
-  }, [
-    navigation,
-    renderMapContent,
-  ]);
+    navigation.setOptions({
+      mapContent: renderMapContent,
+    });
+  }, [navigation, renderMapContent]);
 
   useEffect(() => {
     const rootNav = navigation.getParent()!;
     return () => displayTabBar(rootNav);
   }, [navigation]);
-
-  /*
-    useEffect(() => {
-      if(pathFeatureCollection && pathFeatureCollection.length > 0){
-        //setSelectedLine("line-layer-0")
-        setFloorId(pathFeatureCollection[0].features.properties.fn_fl_id);
-      }
-    }, [pathFeatureCollection, setFloorId, setSelectedLine]);*/
 
   const controlsAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -198,7 +186,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
           (coord: any) => coord,
         );
       setFloorId(pathFeat?.data.features[0].features.properties?.fnFlId);
-      if(allCoordinates && allCoordinates.length > 0)
+      if (allCoordinates && allCoordinates.length > 0)
         setChosenBbox(
           bbox({
             type: 'FeatureCollection',
@@ -216,12 +204,6 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
         );
     }
   }, [selectedLine, pathFeat, setFloorId]);
-
-  /*
-    useEffect(() => {
-        if (campus)
-          setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
-    }, [campus, setFloorId]);*/
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();

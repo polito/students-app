@@ -160,6 +160,7 @@ export const useGetPath = (params: {
   startPlaceId?: string;
   destPlaceId?: string;
   avoidStairs?: boolean;
+  computeButtonState: number;
   generateFeedback: () => void;
 }) => {
   const placesClient = usePlacesClient();
@@ -171,11 +172,6 @@ export const useGetPath = (params: {
       params.destPlaceId,
       params.avoidStairs,
     ],
-    /*
-    throwOnError: (err, _query) => {
-      console.error('useGetPathError: ', err, _query);
-      return false;
-    },*/
     queryFn: () =>
       placesClient
         .getDirections({
@@ -192,11 +188,11 @@ export const useGetPath = (params: {
           }
           throw error;
         }),
-    enabled:
-      params.startPlaceId !== undefined &&
-      params.startPlaceId !== '' &&
-      params.destPlaceId !== undefined &&
-      params.destPlaceId !== '',
+    enabled: !!(
+      params.startPlaceId &&
+      params.destPlaceId &&
+      params.computeButtonState === 1
+    ),
     staleTime: Infinity,
   });
 };
