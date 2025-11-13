@@ -5,7 +5,7 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { Divider } from '@lib/ui/components/Divider';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { PlaceOverview } from '@polito/api-client';
+import { GetDirections200Response, PlaceOverview } from '@polito/api-client';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   Images,
@@ -28,6 +28,7 @@ import { EventPlacesScreen } from '../screens/EventPlacesScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { IndicationsScreen } from '../screens/IndicationsScreen';
 import { ItineraryScreen } from '../screens/ItineraryScreen';
+import { MapSelectionScreen } from '../screens/MapSelectionScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { DestinationPlaceType } from '../types';
@@ -65,10 +66,13 @@ export type PlacesStackParamList = {
     fromPlace?: DestinationPlaceType;
     toPlace?: DestinationPlaceType;
   };
+  MapSelection: {
+    clickMode: number;
+  };
   Itinerary: {
+    pathFeat: GetDirections200Response;
     startRoom: string;
     destRoom: string;
-    avoidStairs: boolean;
   };
   PlaceCategories: undefined;
   MessagesModal: undefined;
@@ -298,6 +302,13 @@ export const PlacesNavigator = () => {
           component={IndicationsScreen}
           options={{
             title: t('indicationsScreen.title'),
+          }}
+        />
+        <Map.Screen
+          name="MapSelection"
+          component={MapSelectionScreen}
+          options={{
+            title: t('mapSelectionScreen.title'),
           }}
         />
         <Map.Screen

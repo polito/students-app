@@ -46,7 +46,6 @@ import {
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { FREE_ROOMS_TIME_WINDOW_SIZE_HOURS } from '../constants';
-import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
@@ -114,7 +113,6 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { floorId, setFloorId } = useContext(PlacesContext);
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
 
   const today = useMemo(() => DateTime.now().startOf('day'), []);
 
@@ -237,20 +235,12 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
         <MarkersLayer
           places={places ?? []}
           displayFloor={!displayFloorId}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
+          //selectedId={selectedId}
+          //setSelectedId={setSelectedId}
         />
       ),
     });
-  }, [
-    displayFloorId,
-    navigation,
-    places,
-    tabBarHeight,
-    headerHeight,
-    selectedId,
-    setSelectedId,
-  ]);
+  }, [displayFloorId, navigation, places, tabBarHeight, headerHeight]);
 
   return (
     <View style={GlobalStyles.grow} pointerEvents="box-none">

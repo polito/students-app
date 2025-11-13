@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
 import { Images, LineLayer, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
@@ -21,6 +22,7 @@ export const PathLayer = ({
   handleSegmentChange,
   pathFeatureCollection,
 }: Props) => {
+  const styles = createStyles();
   const [selectedFloor] = useState<string | undefined>(undefined);
 
   const { setFloorId: setMapFloorId, selectedLine: line } =
@@ -79,6 +81,18 @@ export const PathLayer = ({
     }
   };
 
+  const handleIcon = (index: number) => {
+    if (index === pathFeatureCollection.length - 1) return 'destination';
+    return checkFloorForIcon(index, 'end');
+  };
+
+  const handleOpacity = (index: number) => {
+    if (line?.split('-')[2] === index.toString()) {
+      return 1;
+    }
+    return 0.3;
+  };
+
   return (
     pathFeatureCollection &&
     pathFeatureCollection.length > 0 &&
@@ -104,12 +118,8 @@ export const PathLayer = ({
             <LineLayer
               id={`line-layer-${index.toString()}`}
               style={{
-                lineColor: '#ef7b00',
-                lineWidth: 8,
-                lineCap: 'round',
-                lineJoin: 'round',
-                lineOpacity:
-                  line === `line-layer-${index.toString()}` ? 1 : 0.3,
+                ...styles.line,
+                lineOpacity: handleOpacity(index),
               }}
             />
           </ShapeSource>
@@ -131,11 +141,7 @@ export const PathLayer = ({
               >
                 <SymbolLayer
                   id={`start-point-layer-${index.toString()}`}
-                  style={{
-                    iconImage: 'start',
-                    iconSize: 0.35,
-                    iconAllowOverlap: true,
-                  }}
+                  style={styles.startIcon}
                 />
               </ShapeSource>
 
@@ -156,12 +162,8 @@ export const PathLayer = ({
                 <SymbolLayer
                   id={`end-point-layer-${index.toString()}`}
                   style={{
-                    iconImage:
-                      index === pathFeatureCollection.length - 1
-                        ? 'destination'
-                        : checkFloorForIcon(index, 'end'),
-                    iconSize: 0.45,
-                    iconAllowOverlap: true,
+                    ...styles.icon,
+                    iconImage: handleIcon(index),
                   }}
                 />
               </ShapeSource>
@@ -172,3 +174,22 @@ export const PathLayer = ({
     })
   );
 };
+
+const createStyles = () =>
+  StyleSheet.create({
+    line: {
+      lineColor: '#ef7b00',
+      lineWidth: 8,
+      lineCap: 'round',
+      lineJoin: 'round',
+    },
+    startIcon: {
+      iconImage: 'start',
+      iconSize: 0.35,
+      iconAllowOverlap: true,
+    },
+    icon: {
+      iconSize: 0.45,
+      iconAllowOverlap: true,
+    },
+  } as LineLayer['props']['style']);

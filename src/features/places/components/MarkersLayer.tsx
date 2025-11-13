@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -6,14 +7,13 @@ import { PlaceOverview } from '@polito/api-client';
 import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
 import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
-import { useContext } from 'react';
-import { PlacesContext } from '../contexts/PlacesContext';
 
 import { capitalize } from 'lodash';
 
 import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { notNullish } from '../../../utils/predicates';
 import { DEFAULT_CATEGORY_MARKER } from '../constants';
+import { PlacesContext } from '../contexts/PlacesContext';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { SearchPlace, isPlace } from '../types';
 
@@ -28,8 +28,8 @@ export interface MarkersLayerProps {
   categoryId?: string;
   subCategoryId?: string;
   isCrossNavigation?: boolean;
-  selectedId: string;
-  setSelectedId: (id: string) => void;
+  //selectedId: string;
+  //setSelectedId: (id: string) => void;
 }
 
 export const MarkersLayer = ({
@@ -40,15 +40,16 @@ export const MarkersLayer = ({
   subCategoryId,
   search,
   isCrossNavigation = false,
-  selectedId,
-  setSelectedId,
 }: MarkersLayerProps) => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
   const { dark, fontSizes, colors } = useTheme();
   const placeCategoriesMap = usePlaceCategoriesMap();
   const { accessibility } = usePreferencesContext();
-  const { itineraryMode, setSelectedPlace, selectionIcon, selectionMode } = useContext(PlacesContext);
+  const { itineraryMode, setSelectedPlace, selectionIcon, selectionMode } =
+    useContext(PlacesContext);
+
+  const [selectedId, setSelectedId] = useState<string>('');
 
   const pois = useMemo((): (SearchPlace &
     PlaceCategory & { siteId: string })[] => {
@@ -175,21 +176,20 @@ export const MarkersLayer = ({
           accessibility?.fontSize && accessibility.fontSize >= 150;
 
         if (selectedPoi) {
-          if(itineraryMode){
-            if(selectionMode)
-              if(isPlace(selectedPoi)){  
-                if(selectedId === selectedPoi.id){
+          if (itineraryMode) {
+            if (selectionMode)
+              if (isPlace(selectedPoi)) {
+                if (selectedId === selectedPoi.id) {
                   setSelectedPlace(null);
                   setSelectedId('');
-                }   
-                else{
+                } else {
                   setSelectedPlace(selectedPoi);
                   setSelectedId(selectedPoi.id);
                 }
               }
-          }else{
+          } else {
             if (isAccessibleFont) {
-            // Se è già selezionato, naviga alla pagina di dettaglio
+              // Se è già selezionato, naviga alla pagina di dettaglio
               if (selectedId === selectedPoi.id) {
                 const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
                 const params =
@@ -258,17 +258,15 @@ export const MarkersLayer = ({
         style={{
           iconImage: [
             'case',
-            ['==', ['get', 'id'], selectedId], 
-            selectionIcon === 'start' ? 'start_selection' :  selectionIcon === 'destination'
-             ? 'destination_selection' : ['get', 'markerUrl'], 
-            ['get', 'markerUrl'], 
-          ],
-          iconSize: [
-            'case',
             ['==', ['get', 'id'], selectedId],
-            0.3, 
-            0.35, 
+            selectionIcon === 'start'
+              ? 'start_selection'
+              : selectionIcon === 'destination'
+                ? 'destination_selection'
+                : ['get', 'markerUrl'],
+            ['get', 'markerUrl'],
           ],
+          iconSize: ['case', ['==', ['get', 'id'], selectedId], 0.3, 0.35],
           symbolSortKey: ['get', 'priority'],
           textField:
             accessibility?.fontSize && Number(accessibility?.fontSize) >= 150

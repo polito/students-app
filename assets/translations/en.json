@@ -866,12 +866,21 @@
   },
   "indicationsScreen": {
     "title": "Indications",
+    "mapSelectorItem": "Select on map",
     "fromPlaceLabel": "Choose starting point",
     "toPlaceLabel": "Choose destination",
     "avoidStairs": "Avoid stairs",
     "computePath": "Compute path",
     "showIndications": "Start itinerary",
     "pathNotFound": "Invalid route parameters or no drivable path available."
+  },
+  "mapSelectionScreen": {
+    "title": "Select from map",
+    "selectionLabel": "Select a point of interest from the map",
+    "fromPlaceSelected": "Starting point selected:",
+    "toPlaceSelected": "Destination point selected:",
+    "placeSelected": "Place selected:",
+    "confirmSelection": "Confirm selection"
   },
   "itineraryScreen": {
     "title": "Itinerary",
