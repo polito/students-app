@@ -89,6 +89,9 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
           ? undefined
           : statusIcon
       }
+      style={{
+        alignItems: 'center',
+      }}
     />
   );
 };

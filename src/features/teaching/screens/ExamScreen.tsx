@@ -284,7 +284,10 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </>
           )}
           {exam?.feedback && exam?.status === ExamStatusEnum.Unavailable && (
-            <ErrorCard text={exam.feedback} />
+            <ErrorCard
+              text={exam.feedback}
+              style={{ paddingTop: spacing[3] }}
+            />
           )}
           <CtaButtonSpacer />
           <BottomBarSpacer />
