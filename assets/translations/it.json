@@ -903,7 +903,9 @@
   "itineraryScreen": {
     "title": "Itinerario",
     "backTitle": "Modifica",
-    "itineraryError": "Si è verificato un errore durante il tentativo di avviare l'itinerario per questo percorso."
+    "itineraryError": "Si è verificato un errore durante il tentativo di avviare l'itinerario per questo percorso.",
+    "continueTo": "prosegui al",
+    "continuteToDestination": "prosegui fino alla destinazione"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Prova con \"Aula 1\""

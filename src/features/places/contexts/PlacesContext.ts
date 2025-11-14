@@ -1,5 +1,6 @@
-import { PlaceOverview } from '@polito/api-client';
 import { createContext } from 'react';
+
+import { PlaceOverview } from '@polito/api-client';
 
 interface PlacesContextValue {
   floorId?: string;

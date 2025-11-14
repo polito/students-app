@@ -45,7 +45,7 @@ type Props = MapScreenProps<PlacesStackParamList, 'Itinerary'>;
 export const ItineraryScreen = ({ navigation, route }: Props) => {
   const { pathFeat, startRoom, destRoom } = route.params;
   const styles = useStylesheet(createStyles);
-  const { spacing } = useTheme();
+  const { spacing, colors } = useTheme();
   const { t } = useTranslation();
   const campus = useGetCurrentCampus();
   const { cameraRef } = useContext(MapNavigatorContext);
@@ -61,31 +61,40 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   );
   const [chosenBbox, setChosenBbox] = useState<BBox | null>(null);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{ paddingHorizontal: 10 }}
-        >
-          <View>
-            <Animated.Text style={{ fontSize: 17, color: '#007AFF' }}>
-              {t('itineraryScreen.backTitle')}
-            </Animated.Text>
-          </View>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation, t]);
+  const headerRight = useCallback(
+    () => (
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.modifyButton}
+      >
+        <View>
+          <Animated.Text
+            style={{
+              ...styles.modifyButtonText,
+              color: colors.link,
+            }}
+          >
+            {t('itineraryScreen.backTitle')}
+          </Animated.Text>
+        </View>
+      </TouchableOpacity>
+    ),
+    [navigation, t, styles, colors],
+  );
 
-  const filteredPlacesParams = useMemo(() => {
-    return {
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerRight });
+  }, [navigation, headerRight, t]);
+
+  const filteredPlacesParams = useMemo(
+    () => ({
       siteId: campus?.id,
       floorId: floorId,
       startRoom: startRoom,
       destRoom: destRoom,
-    };
-  }, [campus?.id, floorId, startRoom, destRoom]);
+    }),
+    [campus?.id, floorId, startRoom, destRoom],
+  );
 
   const { filteredPlaces: places } = useNavigationPlaces(filteredPlacesParams);
 
@@ -128,8 +137,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
 
   useLayoutEffect(() => {
     const isValidGeometry =
-      chosenBbox &&
-      chosenBbox.length === 4 &&
+      chosenBbox?.length === 4 &&
       chosenBbox.every(
         coord => !isNaN(coord) && typeof coord === 'number' && isFinite(coord),
       );
@@ -273,6 +281,12 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'flex-start',
       gap: 12,
       alignSelf: 'stretch',
+    },
+    modifyButton: {
+      paddingHorizontal: 10,
+    },
+    modifyButtonText: {
+      fontSize: 17,
     },
     divider: {
       alignSelf: 'stretch',

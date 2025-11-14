@@ -1,7 +1,9 @@
-import { useLayoutEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { useLayoutEffect, useMemo } from 'react';
 
-import { GetDirections200Response } from '@polito/api-client';
+import {
+  GeoJSONFeatureGeometry,
+  GetDirections200Response,
+} from '@polito/api-client';
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 
 import { courseColors as colors } from '~/core/constants';
@@ -21,8 +23,6 @@ export const PreViewPathLayer = ({
   bottomSheetHeight,
   navigation,
 }: Props) => {
-  const styles = createStyles();
-
   useLayoutEffect(() => {
     const bounds = getCoordinatesBounds(
       pathFeat.data.features.flatMap(
@@ -46,31 +46,39 @@ export const PreViewPathLayer = ({
     });
   }, [pathFeat, navigation, bottomSheetHeight]);
 
-  if (pathFeat.data.features.length > 0) {
-    return pathFeat.data.features.map((featuresArray: any, index: number) => (
-      <ShapeSource
-        id={`line-source-${index}`}
-        shape={featuresArray.features}
-        key={`line-source-${index}`}
-      >
-        <LineLayer
-          id={`line-layer-${index}`}
-          style={{
-            ...styles.segment,
-            lineColor: colors[index % colors.length].color,
-          }}
+  return (
+    <>
+      {pathFeat.data.features.map((featuresArray, index) => (
+        <ShapeLine
+          key={`shape-line-${index}`}
+          index={index}
+          features={featuresArray.features}
         />
-      </ShapeSource>
-    ));
-  }
+      ))}
+    </>
+  );
 };
 
-const createStyles = () =>
-  StyleSheet.create({
-    segment: {
+const ShapeLine = ({
+  index,
+  features,
+}: {
+  index: number;
+  features: GeoJSONFeatureGeometry;
+}) => {
+  const style = useMemo(
+    () => ({
       lineWidth: 8,
-      lineCap: 'round',
-      lineJoin: 'round',
+      lineCap: 'round' as const,
+      lineJoin: 'round' as const,
       lineOpacity: 1,
-    },
-  } as LineLayer['props']['style']);
+      lineColor: colors[index % colors.length].color,
+    }),
+    [index],
+  );
+  return (
+    <ShapeSource id={`line-source-${index}`} shape={features}>
+      <LineLayer id={`line-layer-${index}`} style={style} />
+    </ShapeSource>
+  );
+};

@@ -1,4 +1,4 @@
-import { memo, ReactElement } from 'react';
+import { ReactElement, memo } from 'react';
 import {
   StyleProp,
   TextProps,

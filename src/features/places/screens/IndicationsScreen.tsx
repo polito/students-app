@@ -170,7 +170,9 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
           />
         </>
       );
-    } else if (!pathFeat) {
+    }
+
+    if (!pathFeat) {
       return (
         <MarkersLayer
           places={places}
@@ -179,6 +181,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         />
       );
     }
+
+    return null;
   }, [places, pathFeat, bottomSheetHeight, navigation, computeButtonState]);
 
   useLayoutEffect(() => {
