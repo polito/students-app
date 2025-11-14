@@ -889,7 +889,9 @@
   "itineraryScreen": {
     "title": "Itinerary",
     "backTitle": "Edit",
-    "itineraryError": "There was an error attempting to start the navigation for this route."
+    "itineraryError": "There was an error attempting to start the navigation for this route.",
+    "continueTo": "continue to",
+    "continuteToDestination": "continue to the destination"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Try with \"Room 1\""

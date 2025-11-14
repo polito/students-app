@@ -207,7 +207,7 @@ const createStyles = () =>
     icons: {
       display: 'flex',
       width: 16,
-      paddingVertical: '1.5%',
+      paddingVertical: '1%',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',

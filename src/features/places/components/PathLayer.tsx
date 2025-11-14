@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
 
 import { Images, LineLayer, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
 
 import { useGetSite } from '~/core/queries/placesHooks';
+import { lightTheme } from '~/core/themes/light';
 
 import { PlacesContext } from '../contexts/PlacesContext';
 
@@ -22,7 +22,6 @@ export const PathLayer = ({
   handleSegmentChange,
   pathFeatureCollection,
 }: Props) => {
-  const styles = createStyles();
   const [selectedFloor] = useState<string | undefined>(undefined);
 
   const { setFloorId: setMapFloorId, selectedLine: line } =
@@ -111,12 +110,12 @@ export const PathLayer = ({
             }}
           />
           <ShapeSource
-            id={`line-source-${index.toString()}`}
+            id={`line-source-${index}`}
             shape={featuresArray.features}
-            key={`line-source-${index.toString()}`}
+            key={`line-source-${index}`}
           >
             <LineLayer
-              id={`line-layer-${index.toString()}`}
+              id={`line-layer-${index}`}
               style={{
                 ...styles.line,
                 lineOpacity: handleOpacity(index),
@@ -137,16 +136,16 @@ export const PathLayer = ({
                     },
                   ],
                 }}
-                key={`start-point-source-${index.toString()}`}
+                key={`start-point-source-${index}`}
               >
                 <SymbolLayer
-                  id={`start-point-layer-${index.toString()}`}
+                  id={`start-point-layer-${index}`}
                   style={styles.startIcon}
                 />
               </ShapeSource>
 
               <ShapeSource
-                id={`end-point-source-${index.toString()}`}
+                id={`end-point-source-${index}`}
                 shape={{
                   type: 'FeatureCollection',
                   features: [
@@ -175,21 +174,20 @@ export const PathLayer = ({
   );
 };
 
-const createStyles = () =>
-  StyleSheet.create({
-    line: {
-      lineColor: '#ef7b00',
-      lineWidth: 8,
-      lineCap: 'round',
-      lineJoin: 'round',
-    },
-    startIcon: {
-      iconImage: 'start',
-      iconSize: 0.35,
-      iconAllowOverlap: true,
-    },
-    icon: {
-      iconSize: 0.45,
-      iconAllowOverlap: true,
-    },
-  } as LineLayer['props']['style']);
+const styles = {
+  line: {
+    lineColor: lightTheme.palettes.orange[600],
+    lineWidth: 8,
+    lineCap: 'round' as const,
+    lineJoin: 'round' as const,
+  },
+  startIcon: {
+    iconImage: 'start',
+    iconSize: 0.35,
+    iconAllowOverlap: true,
+  },
+  icon: {
+    iconSize: 0.45,
+    iconAllowOverlap: true,
+  },
+};
