@@ -350,7 +350,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       navigation.navigate('Indications', {
                         toPlace: {
                           placeId: place?.id || '',
-                          namePlace: place?.room.name || '',
+                          namePlace:
+                            place?.room.name || place?.category.name || '',
                         },
                       });
                     }}

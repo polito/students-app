@@ -82,6 +82,17 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const [isFeedbackVisible, setFeedbackVisible] = useState(false);
   const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
 
+  const [clickMode, setClickMode] = useState<number>(0); // 0 nothing, 1 start, 2 dest
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const { fontSizes, spacing, palettes } = useTheme();
+
+  const { data: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
+  const { data: listPlaces, isLoading } = useGetPlaces({
+    siteId: campus?.id,
+  });
+  const innerRef = useRef<BottomSheet>(null);
+
   const handleRoom = useCallback(
     (place: PlaceOverview | undefined, isStartRoom: boolean) => {
       if (isStartRoom) {
@@ -110,11 +121,14 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       action: {
         label: t('common.ok'),
         onPress: () => {
+          handleRoom(undefined as any, true);
+          setSearchStart('');
+          setDebouncedSearch('');
           setFeedbackVisible(false);
         },
       },
     });
-  }, [setFeedback, t]);
+  }, [setFeedback, t, handleRoom, setDebouncedSearch, setSearchStart]);
 
   const { filteredPlaces: places } = useNavigationPlaces({
     siteId: campus?.id,
@@ -180,17 +194,6 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   useEffect(() => {
     isExpandedDestRef.current = isExpandedDest;
   }, [isExpandedDest]);
-
-  const [clickMode, setClickMode] = useState<number>(0); // 0 nothing, 1 start, 2 dest
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-
-  const { fontSizes, spacing } = useTheme();
-
-  const { data: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
-  const { data: listPlaces, isLoading } = useGetPlaces({
-    siteId: campus?.id,
-  });
-  const innerRef = useRef<BottomSheet>(null);
 
   const allPlaces = useMemo(() => {
     const list = listPlaces?.data ?? [];
@@ -325,7 +328,13 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       if (item.type === 'special') {
         return (
           <ListItem
-            leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
+            leadingItem={
+              <Icon
+                icon={faLocationDot}
+                color={dark ? palettes.lightBlue[400] : palettes.lightBlue[700]}
+                size={fontSizes['2xl']}
+              />
+            }
             title={t('indicationsScreen.mapSelectorItem')}
             onPress={() => {
               handleItemPress(item);
@@ -356,7 +365,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         );
       }
     },
-    [handleItemPress, fontSizes, setSelectionMode, t],
+    [handleItemPress, fontSizes, setSelectionMode, dark, palettes, t],
   );
 
   const listHeader = useMemo(() => {

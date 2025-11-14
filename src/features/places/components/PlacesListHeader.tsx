@@ -161,7 +161,7 @@ const PlacesListHeaderComponent = ({
             <Text
               style={[
                 styles.textStairsButton,
-                { color: palettes.primary[600] },
+                { color: dark ? palettes.primary[200] : palettes.primary[600] },
               ]}
             >
               {t('indicationsScreen.avoidStairs')}
