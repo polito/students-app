@@ -67,7 +67,12 @@ export const StatisticsContainer = ({
           color={palettes.gray[dark ? 300 : 600]}
           style={styles.icon}
         />
-        <Text style={[styles.text, { color: palettes.text[900] }]}>
+        <Text
+          style={[
+            styles.text,
+            { color: dark ? palettes.text[300] : palettes.text[900] },
+          ]}
+        >
           {formatDistance(totDistance)}
         </Text>
       </View>
@@ -77,7 +82,12 @@ export const StatisticsContainer = ({
           color={palettes.gray[dark ? 300 : 600]}
           style={styles.icon}
         />
-        <Text style={[styles.text, { color: palettes.text[900] }]}>
+        <Text
+          style={[
+            styles.text,
+            { color: dark ? palettes.text[300] : palettes.text[900] },
+          ]}
+        >
           {formatWalkingTime(totDistance, stairs, elevators)}
         </Text>
       </View>
@@ -88,7 +98,12 @@ export const StatisticsContainer = ({
             color={palettes.gray[dark ? 300 : 600]}
             style={styles.icon}
           />
-          <Text style={[styles.text, { color: palettes.text[900] }]}>
+          <Text
+            style={[
+              styles.text,
+              { color: dark ? palettes.text[300] : palettes.text[900] },
+            ]}
+          >
             {stairs.toString()}
           </Text>
         </View>
@@ -98,7 +113,12 @@ export const StatisticsContainer = ({
             color={palettes.gray[dark ? 300 : 600]}
             style={styles.icon}
           />
-          <Text style={[styles.text, { color: palettes.text[900] }]}>
+          <Text
+            style={[
+              styles.text,
+              { color: dark ? palettes.text[300] : palettes.text[900] },
+            ]}
+          >
             {elevators.toString()}
           </Text>
         </View>

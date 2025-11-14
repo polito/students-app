@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import {
@@ -30,7 +31,8 @@ export const SubPathSelector = (props: Props) => {
   const floorMapNames = useGetSite('TO_CENCIT')?.floors;
 
   const [currentId, setCurrentId] = useState<number>(props.lineId || 0);
-  const { colors, palettes, spacing } = useTheme();
+  const { colors, palettes, spacing, dark } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -58,7 +60,10 @@ export const SubPathSelector = (props: Props) => {
         />
         <View style={styles.container}>
           <Text
-            style={[styles.floorIndicator, { color: palettes.text[900] }]}
+            style={[
+              styles.floorIndicator,
+              { color: dark ? palettes.text[200] : palettes.text[900] },
+            ]}
             numberOfLines={2}
             ellipsizeMode="tail"
           >
@@ -72,13 +77,17 @@ export const SubPathSelector = (props: Props) => {
             }
           </Text>
           <Text
-            style={[styles.instruction, { color: palettes.text[700] }]}
+            style={[
+              styles.instruction,
+              { color: dark ? palettes.text[400] : palettes.text[700] },
+            ]}
             numberOfLines={2}
             ellipsizeMode="tail"
           >
             {currentId < numSegments
-              ? `prosegui al ${floorMapNames?.find(floor => floor.id === props.pathFeatureCollection[currentId + 1].features.properties.fnFlId)?.name}`
-              : 'prosegui fino alla destinazione'}
+              ? t('itineraryScreen.continueTo') +
+                `${floorMapNames?.find(floor => floor.id === props.pathFeatureCollection[currentId + 1].features.properties.fnFlId)?.name}`
+              : t('itineraryScreen.continuteToDestination')}
           </Text>
         </View>
         <IconButton
