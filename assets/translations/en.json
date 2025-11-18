@@ -890,7 +890,7 @@
     "title": "Itinerary",
     "backTitle": "Edit",
     "itineraryError": "There was an error attempting to start the navigation for this route.",
-    "continueTo": "continue to",
+    "continueTo": "continue to ",
     "continuteToDestination": "continue to the destination"
   },
   "placesSearchScreen": {

@@ -16,9 +16,12 @@ import { PlacesContext } from '../contexts/PlacesContext';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { SearchPlace, isPlace } from '../types';
 
-const selection_start = require('../../../../assets/map-icons/start_selection.png');
-const selection_destination = require('../../../../assets/map-icons/destination_selection.png');
-
+const start_selection = require('../../../../assets/map-icons/start_selection.png');
+const destination_selection = require('../../../../assets/map-icons/destination_selection.png');
+const up = require('../../../../assets/map-icons/up.png');
+const down = require('../../../../assets/map-icons/down.png');
+const start = require('../../../../assets/map-icons/start.png');
+const destination = require('../../../../assets/map-icons/destination.png');
 export interface MarkersLayerProps {
   selectedPoiId?: string;
   search?: string;
@@ -246,8 +249,12 @@ export const MarkersLayer = ({
     >
       <Images
         images={{
-          start_selection: selection_start,
-          destination_selection: selection_destination,
+          start_selection,
+          destination_selection,
+          up,
+          down,
+          start,
+          destination,
         }}
       />
       <SymbolLayer

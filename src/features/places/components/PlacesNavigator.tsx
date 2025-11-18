@@ -122,7 +122,7 @@ const MapDefaultContent = () => {
         <RasterLayer
           id="outdoor"
           aboveLayerID="background"
-          style={{ rasterOpacity: 1 }}
+          style={null as any}
         />
       </RasterSource>
 
@@ -137,11 +137,7 @@ const MapDefaultContent = () => {
         minZoomLevel={INTERIORS_MIN_ZOOM}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer
-          id="indoor"
-          aboveLayerID="outdoor"
-          style={{ rasterOpacity: 1 }}
-        />
+        <RasterLayer id="indoor" aboveLayerID="outdoor" style={null as any} />
       </RasterSource>
     </>
   );
@@ -151,8 +147,7 @@ export const PlacesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [floorId, setFloorId] = useState<string>();
-  const [lines, setLines] = useState<string[]>([]);
-  const [selectedLine, setSelectedLine] = useState<string>();
+  const [selectedSegmentId, setSelectedSegmentId] = useState<number>();
   const [itineraryMode, setItineraryMode] = useState<boolean>(false);
   const [selectionMode, setSelectionMode] = useState<boolean>(false);
   const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(
@@ -166,13 +161,11 @@ export const PlacesNavigator = () => {
     }
   };
 
-  const handleSelectSegment = (label: string, floor: string) => {
-    const lineLayer = label;
-
-    if (selectedLine === lineLayer) {
-      setLine(undefined);
+  const handleSelectSegment = (index: number, floor: string) => {
+    if (selectedSegmentId === index) {
+      setSelectedSegmentId(index);
     } else {
-      setLine(lineLayer);
+      setSelectedSegmentId(index);
       checkAndSetFloorId(floor);
     }
   };
@@ -181,17 +174,6 @@ export const PlacesNavigator = () => {
     if (place) {
       setSelectedPlace(place);
     } else setSelectedPlace(null);
-  };
-
-  const setAllLines = (line: string) => {
-    setLines(prev => {
-      if (prev.length > 0) return [...prev, line];
-      else return [line];
-    });
-  };
-
-  const setLine = (line?: string) => {
-    setSelectedLine(line);
   };
 
   const setMode = (mode?: boolean) => {
@@ -216,10 +198,8 @@ export const PlacesNavigator = () => {
       value={{
         floorId,
         setFloorId: checkAndSetFloorId,
-        lines,
-        setLines: setAllLines,
-        selectedLine,
-        setSelectedLine: setLine,
+        selectedSegmentId: selectedSegmentId,
+        setSelectedSegmentId: setSelectedSegmentId,
         itineraryMode,
         setItineraryMode: setMode,
         selectionMode,
