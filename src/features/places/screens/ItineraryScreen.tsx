@@ -53,7 +53,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   const {
     floorId: floorId,
     setFloorId: setFloorId,
-    selectedLine,
+    selectedSegmentId,
   } = useContext(PlacesContext);
   const bottomSheetPosition = useSharedValue(0);
   const [screenHeight, setScreenHeight] = useState(
@@ -188,7 +188,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   });
 
   useEffect(() => {
-    if (selectedLine === 'line-layer-0') {
+    if (selectedSegmentId === 0) {
       const allCoordinates =
         pathFeat?.data.features[0].features.geometry.coordinates.flatMap(
           (coord: any) => coord,
@@ -211,7 +211,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
           }),
         );
     }
-  }, [selectedLine, pathFeat, setFloorId]);
+  }, [selectedSegmentId, pathFeat, setFloorId]);
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
@@ -259,7 +259,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
             />
           </TranslucentCard>
         </Col>
-        {pathFeat && pathFeat.data.features.length > 0 && selectedLine && (
+        {pathFeat && pathFeat.data.features.length > 0 && (
           <SubPathSelector
             lineId={0}
             pathFeatureCollection={pathFeat.data.features}

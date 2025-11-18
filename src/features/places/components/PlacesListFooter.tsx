@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -50,7 +49,7 @@ const PlacesListFooterComponent = ({
   );
 };
 
-export const PlacesListFooter = memo(PlacesListFooterComponent);
+export const PlacesListFooter = PlacesListFooterComponent;
 
 const createStyles = () =>
   StyleSheet.create({

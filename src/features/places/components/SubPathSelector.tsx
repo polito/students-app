@@ -10,6 +10,7 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { NavigationResponseFeature } from '@polito/api-client';
 
 import { TranslucentView } from '~/core/components/TranslucentView';
 import { useGetSite } from '~/core/queries/placesHooks';
@@ -17,7 +18,7 @@ import { PlacesContext } from '~/features/places/contexts/PlacesContext';
 
 type Props = {
   lineId?: number;
-  pathFeatureCollection: any;
+  pathFeatureCollection: NavigationResponseFeature[];
 };
 
 export const SubPathSelector = (props: Props) => {
@@ -30,7 +31,9 @@ export const SubPathSelector = (props: Props) => {
 
   const floorMapNames = useGetSite('TO_CENCIT')?.floors;
 
-  const [currentId, setCurrentId] = useState<number>(props.lineId || 0);
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(
+    props.lineId || 0,
+  );
   const { colors, palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
 
@@ -48,13 +51,13 @@ export const SubPathSelector = (props: Props) => {
           icon={faChevronLeft}
           size={spacing[6]}
           style={[styles.icon, { backgroundColor: colors.background }]}
-          disabled={currentId === 0}
+          disabled={currentSegmentIndex === 0}
           onPress={() => {
-            setCurrentId(prev => prev - 1);
+            setCurrentSegmentIndex(prev => prev - 1);
             handleSelectSegment?.(
-              `line-layer-${(currentId - 1).toString()}`,
-              props.pathFeatureCollection[currentId - 1].features.properties
-                .fnFlId,
+              currentSegmentIndex - 1,
+              props.pathFeatureCollection[currentSegmentIndex - 1].features
+                .properties.fnFlId || '',
             );
           }}
         />
@@ -71,8 +74,8 @@ export const SubPathSelector = (props: Props) => {
               floorMapNames?.find(
                 floor =>
                   floor.id ===
-                  props.pathFeatureCollection[currentId].features.properties
-                    .fnFlId,
+                  props.pathFeatureCollection[currentSegmentIndex].features
+                    .properties.fnFlId,
               )?.name
             }
           </Text>
@@ -84,9 +87,9 @@ export const SubPathSelector = (props: Props) => {
             numberOfLines={2}
             ellipsizeMode="tail"
           >
-            {currentId < numSegments
+            {currentSegmentIndex < numSegments
               ? t('itineraryScreen.continueTo') +
-                `${floorMapNames?.find(floor => floor.id === props.pathFeatureCollection[currentId + 1].features.properties.fnFlId)?.name}`
+                `${floorMapNames?.find(floor => floor.id === props.pathFeatureCollection[currentSegmentIndex + 1].features.properties.fnFlId)?.name}`
               : t('itineraryScreen.continuteToDestination')}
           </Text>
         </View>
@@ -94,13 +97,13 @@ export const SubPathSelector = (props: Props) => {
           icon={faChevronRight}
           size={spacing[6]}
           style={[styles.icon, { backgroundColor: colors.background }]}
-          disabled={currentId === numSegments}
+          disabled={currentSegmentIndex === numSegments}
           onPress={() => {
-            setCurrentId(prev => (numSegments ? prev + 1 : prev));
+            setCurrentSegmentIndex(prev => (numSegments ? prev + 1 : prev));
             handleSelectSegment?.(
-              `line-layer-${(currentId + 1).toString()}`,
-              props.pathFeatureCollection[currentId + 1].features.properties
-                .fnFlId,
+              currentSegmentIndex + 1,
+              props.pathFeatureCollection[currentSegmentIndex + 1].features
+                .properties.fnFlId || '',
             );
           }}
         />

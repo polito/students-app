@@ -3,10 +3,11 @@ import { useLayoutEffect, useMemo } from 'react';
 import {
   GeoJSONFeatureGeometry,
   GetDirections200Response,
+  NavigationResponseFeature,
 } from '@polito/api-client';
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 
-import { courseColors as colors } from '~/core/constants';
+import { courseColors } from '~/core/constants';
 
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 import { MapNavigationProp } from './MapNavigator';
@@ -25,9 +26,9 @@ export const PreViewPathLayer = ({
 }: Props) => {
   useLayoutEffect(() => {
     const bounds = getCoordinatesBounds(
-      pathFeat.data.features.flatMap(
-        (feat: any) => feat.features.geometry.coordinates,
-      ),
+      pathFeat.data.features.flatMap((feat: NavigationResponseFeature) => {
+        return feat.features.geometry.coordinates as [number, number][];
+      }),
     );
 
     navigation.setOptions({
@@ -48,13 +49,15 @@ export const PreViewPathLayer = ({
 
   return (
     <>
-      {pathFeat.data.features.map((featuresArray, index) => (
-        <ShapeLine
-          key={`shape-line-${index}`}
-          index={index}
-          features={featuresArray.features}
-        />
-      ))}
+      {pathFeat.data.features.map(
+        (featuresArray: NavigationResponseFeature) => (
+          <ShapeLine
+            key={`shape-line-${featuresArray.segmentId}`}
+            index={featuresArray.segmentId || 0}
+            features={featuresArray.features}
+          />
+        ),
+      )}
     </>
   );
 };
@@ -72,7 +75,7 @@ const ShapeLine = ({
       lineCap: 'round' as const,
       lineJoin: 'round' as const,
       lineOpacity: 1,
-      lineColor: colors[index % colors.length].color,
+      lineColor: courseColors[index % courseColors.length].color,
     }),
     [index],
   );
