@@ -50,7 +50,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { dark } = useTheme();
   const campus = useGetCurrentCampus();
   const {
-    setSelectedLine,
+    setSelectedSegmentId,
     setSelectionMode,
     selectedPlace,
     setSelectedPlace,
@@ -98,13 +98,23 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       if (isStartRoom) {
         if (place)
           navigation.setParams({
-            fromPlace: { placeId: place.id, namePlace: place.room.name },
+            fromPlace: {
+              placeId: place.id,
+              namePlace: place?.room.name
+                ? place.room.name
+                : place?.category.name,
+            },
           });
         else navigation.setParams({ fromPlace: undefined });
       } else {
         if (place)
           navigation.setParams({
-            toPlace: { placeId: place.id, namePlace: place.room.name },
+            toPlace: {
+              placeId: place.id,
+              namePlace: place?.room.name
+                ? place.room.name
+                : place?.category.name,
+            },
           });
         else navigation.setParams({ toPlace: undefined });
       }
@@ -158,11 +168,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     ) {
       return (
         <>
-          <MarkersLayer
-            places={places}
-            //selectedId={selectedId}
-            //setSelectedId={setSelectedId}
-          />
+          <MarkersLayer places={places} />
           <PreViewPathLayer
             pathFeat={pathFeat}
             bottomSheetHeight={bottomSheetHeight}
@@ -173,13 +179,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     }
 
     if (!pathFeat) {
-      return (
-        <MarkersLayer
-          places={places}
-          //selectedId={selectedId}
-          //setSelectedId={setSelectedId}
-        />
-      );
+      return <MarkersLayer places={places} />;
     }
 
     return null;
@@ -427,10 +427,9 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
           if (
             startRoom?.placeId &&
             destRoom?.placeId &&
-            pathFeat &&
-            pathFeat.data.features.length > 0
+            pathFeat?.data.features.length
           ) {
-            setSelectedLine('line-layer-0');
+            setSelectedSegmentId(pathFeat.data.features[0].segmentId);
             navigation.navigate('Itinerary', {
               pathFeat: pathFeat,
               startRoom: startRoom.placeId,
@@ -446,7 +445,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     startRoom,
     destRoom,
     setComputeButtonState,
-    setSelectedLine,
+    setSelectedSegmentId,
     isLoadingPath,
     pathFeat,
   ]);
@@ -454,9 +453,18 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   useEffect(() => {
     if (selectedPlace) {
       handleRoom(selectedPlace, selectionIcon === 'start');
-      if (selectionIcon === 'start') setSearchStart(selectedPlace.room.name);
+      if (selectionIcon === 'start')
+        setSearchStart(
+          selectedPlace?.room.name
+            ? selectedPlace.room.name
+            : selectedPlace?.category.name,
+        );
       else if (selectionIcon === 'destination')
-        setSearchDest(selectedPlace.room.name);
+        setSearchDest(
+          selectedPlace?.room.name
+            ? selectedPlace.room.name
+            : selectedPlace?.category.name,
+        );
     }
     setIsExpandedDest(false);
     setIsExpandedStart(false);

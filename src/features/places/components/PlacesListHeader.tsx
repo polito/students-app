@@ -191,7 +191,7 @@ const createStyles = () =>
     },
     selector: {
       display: 'flex',
-      paddingVertical: 6,
+      paddingVertical: 7,
       flexDirection: 'column',
       alignItems: 'flex-start',
     },

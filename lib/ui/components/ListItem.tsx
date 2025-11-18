@@ -1,4 +1,4 @@
-import { ReactElement, memo } from 'react';
+import { ReactElement } from 'react';
 import {
   StyleProp,
   TextProps,
@@ -197,4 +197,4 @@ const ListItemComponent = ({
   );
 };
 
-export const ListItem = memo(ListItemComponent);
+export const ListItem = ListItemComponent;

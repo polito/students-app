@@ -6,11 +6,8 @@ interface PlacesContextValue {
   floorId?: string;
   setFloorId: (newFloorId?: string) => void;
 
-  lines?: string[];
-  setLines: (newLine: string) => void;
-
-  selectedLine?: string;
-  setSelectedLine: (newLine?: string) => void;
+  selectedSegmentId?: number;
+  setSelectedSegmentId: (newSegmentId?: number) => void;
 
   itineraryMode?: boolean;
   setItineraryMode: (mode: boolean) => void;
@@ -18,7 +15,7 @@ interface PlacesContextValue {
   selectionMode?: boolean;
   setSelectionMode: (mode: boolean) => void;
 
-  handleSelectSegment: (label: string, floor: string) => void;
+  handleSelectSegment: (label: number, floor: string) => void;
 
   selectedPlace: PlaceOverview | null;
   setSelectedPlace: (place: PlaceOverview | null) => void;
