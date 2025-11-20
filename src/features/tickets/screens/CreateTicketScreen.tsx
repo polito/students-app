@@ -5,11 +5,11 @@ import { StyleSheet } from 'react-native';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
 // import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Select } from '@lib/ui/components/Select';
 import { TextField } from '@lib/ui/components/TextField';
 import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -138,18 +138,25 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     <ScreenContainer>
       <Section>
         <OverviewList rounded>
-          {/* Topic selector card */}
+          <ListItem
+            title={t('createTicketScreen.topicDropdownLabel')}
+            linkTo={{ screen: 'TopicScreen' }}
+            accessibilityLabel={t(
+              'createTicketScreen.topicDropdownLabelAccessibility',
+            )}
+          />
+        </OverviewList>
+
+        {/* <OverviewList rounded> 
+          Topic selector dropdown
           <Select
             options={topicOptions}
             value={topicId}
             onSelectOption={updateTopicId}
             label={t('createTicketScreen.topicDropdownLabel')}
-            accessibilityLabel={t(
-              'createTicketScreen.topicDropdownLabelAccessibility',
-            )}
-            description={t('createTicketScreen.subtopicDropdownLabel')}
+            accessibilityLabel={t('createTicketScreen.topicDropdownLabelAccessibility')}
           />
-        </OverviewList>
+        </OverviewList> */}
 
         {/* Subject input card */}
         <OverviewList rounded>

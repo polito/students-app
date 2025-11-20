@@ -35,6 +35,7 @@ import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
 import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
+import TopicScreen from '../../tickets/screens/TopicScreen';
 import { BookingsScreen } from '../screens/BookingsScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
@@ -55,6 +56,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
     topicId?: number;
     subtopicId?: number;
   };
+  TopicScreen: undefined;
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
   TicketList: {
@@ -149,6 +151,14 @@ export const ServicesNavigator = () => {
         options={{
           headerLargeTitle: false,
           headerTitle: t('createTicketScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="TopicScreen"
+        component={TopicScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('createTicketScreen.topicDropdownLabel'),
         }}
       />
       <Stack.Screen
