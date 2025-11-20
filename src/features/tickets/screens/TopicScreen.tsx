@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet } from 'react-native';
+import { Pressable, SafeAreaView } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -103,7 +103,7 @@ export default function TopicScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView /* style={styles.container}*/>
       <NestedList
         sections={sections}
         loading={false}
@@ -112,7 +112,7 @@ export default function TopicScreen({ navigation, route }: Props) {
         renderSectionHeader={({ section }) => (
           <Pressable
             onPress={() => toggleSection(section.index)}
-            style={styles.sectionHeaderContainer}
+            // style={styles.sectionHeaderContainer}
           >
             <SectionHeader
               title={section.title}
@@ -142,9 +142,9 @@ export default function TopicScreen({ navigation, route }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  sectionHeaderContainer: {
-    paddingVertical: 12,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: { flex: 1, backgroundColor: '#fff' },
+//   sectionHeaderContainer: {
+//     paddingVertical: 12,
+//   },
+// });
