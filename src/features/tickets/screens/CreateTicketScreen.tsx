@@ -15,7 +15,6 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { CreateTicketRequest } from '@polito/api-client';
-import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -82,24 +81,24 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
       }));
     };
 
-  const updateTopicId = (value: string) => {
-    setTopicId(value);
-    setTicketBody(prevState => ({
-      ...prevState,
-      subtopicId: undefined,
-      attachment: undefined,
-    }));
-  };
+  // const updateTopicId = (value: string) => {
+  //   setTopicId(value);
+  //   setTicketBody(prevState => ({
+  //     ...prevState,
+  //     subtopicId: undefined,
+  //     attachment: undefined,
+  //   }));
+  // };
 
-  const topicOptions = useMemo(() => {
-    return topics.map(topic => ({
-      id: topic.id.toString(),
-      title: topic.name,
-      state: (topic.id.toString() === topicId
-        ? 'on'
-        : 'off') as MenuAction['state'],
-    }));
-  }, [topicId, topics]);
+  // const topicOptions = useMemo(() => {
+  //   return topics.map(topic => ({
+  //     id: topic.id.toString(),
+  //     title: topic.name,
+  //     state: (topic.id.toString() === topicId
+  //       ? 'on'
+  //       : 'off') as MenuAction['state'],
+  //   }));
+  // }, [topicId, topics]);
 
   // const subtopicOptions = useMemo(
   //   () =>
