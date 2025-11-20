@@ -35,13 +35,13 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
     route.params;
   const ticketTopicQuery = useGetTicketTopics();
-  const topics = useMemo(() => {
+  const _topics = useMemo(() => {
     if (!ticketTopicQuery.data) return [];
     return ticketTopicQuery.data;
   }, [ticketTopicQuery.data]);
   const styles = useStylesheet(createStyles);
 
-  const [topicId, setTopicId] = useState(initialTopicId?.toString());
+  const [_topicId, _setTopicId] = useState(initialTopicId?.toString());
   const [ticketBody, setTicketBody] = useState<Partial<CreateTicketRequest>>({
     subject: undefined,
     message: undefined,
