@@ -387,9 +387,7 @@ export const CourseListItem = ({
                             );
                           }
                         }}
-                        accessibilityLabel={`${accessibilityLabel} ${module.name}, ${
-                          module.cfu
-                        } ${t('common.credits')}`}
+                        accessibilityLabel={`${accessibilityLabel} ${module.name}, ${t('common.credits')}`}
                         title={module.name}
                         subtitle={(() => {
                           const teacherName = getTeacherName(module.teacherId);
@@ -451,9 +449,7 @@ export const CourseListItem = ({
                           );
                         }
                       }}
-                      accessibilityLabel={`${accessibilityLabel} ${module.name}, ${
-                        module.cfu
-                      } ${t('common.credits')}`}
+                      accessibilityLabel={`${accessibilityLabel} ${module.name}, ${t('common.credits')}`}
                       title={module.name}
                       subtitle={(() => {
                         const teacherName = getTeacherName(module.teacherId);
