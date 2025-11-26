@@ -1,6 +1,8 @@
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { FileNavigatorID } from '~/core/constants';
+
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useCourseContext } from '../contexts/CourseContext';
@@ -17,8 +19,6 @@ export type FileStackParamList = {
     directoryName?: string;
   };
 };
-
-export const FileNavigatorID = 'FileTabNavigator';
 
 const Stack = createNativeStackNavigator<
   FileStackParamList,
