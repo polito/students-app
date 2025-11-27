@@ -165,8 +165,6 @@ export const CourseDirectoryListItem = ({
   const trailingItem = useMemo(() => {
     if (!enableMultiSelect) return null;
 
-    if (allFilesDownloaded) return null;
-
     return (
       <Checkbox
         isChecked={isInQueue}
@@ -175,20 +173,17 @@ export const CourseDirectoryListItem = ({
         containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
       />
     );
-  }, [enableMultiSelect, isInQueue, handleSelection, allFilesDownloaded]);
+  }, [enableMultiSelect, isInQueue, handleSelection]);
 
   return (
     <DirectoryListItem
       title={item.name}
-      disabled={allFilesDownloaded && enableMultiSelect}
       subtitle={t('courseDirectoryListItem.subtitle', {
         count: item.files.length,
       })}
       onPress={() => {
         if (enableMultiSelect) {
-          if (!allFilesDownloaded) {
-            handleSelection();
-          }
+          handleSelection();
         } else {
           navigation.navigate('CourseDirectory', {
             courseId,

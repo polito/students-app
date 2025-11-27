@@ -262,6 +262,8 @@
     "of": "Su",
     "ok": "Ok",
     "oldest": "Meno recente",
+    "yes": "Sì",
+    "no": "No",
     "or": "oppure",
     "open": "Apri",
     "openSettings": "Apri impostazioni",
@@ -412,6 +414,9 @@
     "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
+    "removeFilesTitle": "Rimuovi file",
+    "removeFileConfirmation": "Il file verrà rimosso solo localmente dal tuo dispositivo. Vuoi continuare?",
+    "removeFilesConfirmation": "I {{count}} file verranno rimossi solo localmente dal tuo dispositivo. Vuoi continuare?",
     "title": "Materiale"
   },
   "courseGuideScreen": {
