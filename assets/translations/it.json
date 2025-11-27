@@ -887,10 +887,11 @@
     "mapSelectorItem": "Seleziona dalla mappa",
     "fromPlaceLabel": "Scegli punto di partenza",
     "toPlaceLabel": "Scegli la destinazione",
-    "avoidStairs": "Evita le scale",
+    "avoidStairs": "Evita scale",
     "computePath": "Calcola percorso",
     "showIndications": "Avvia itinerario",
-    "pathNotFound": "Parametri del percorso non validi o nessun percorso disponibile."
+    "pathNotFound": "Nessun percorso disponibile.",
+    "stepsInfo": "Il percorso include scalini"
   },
   "mapSelectionScreen": {
     "title": "Seleziona dalla mappa",

@@ -63,6 +63,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const [totDistance, setTotDistance] = useState<number | null>(null);
   const [stairs, setStairs] = useState<number | null>(null);
   const [elevators, setElevators] = useState<number | null>(null);
+  const [steps, setSteps] = useState<number | null>(null);
 
   const { fromPlace: startRoom, toPlace: destRoom } = route.params;
 
@@ -157,6 +158,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       setTotDistance(pathFeat.data.totDistance);
       setStairs(pathFeat.data.stairsCount || 0);
       setElevators(pathFeat.data.elevatorsCount || 0);
+      setSteps(pathFeat.data.stepsCount || 0);
     }
   }, [pathFeat]);
 
@@ -383,6 +385,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         distance={totDistance ? totDistance : 0}
         stairs={stairs ? stairs : 0}
         elevators={elevators ? elevators : 0}
+        steps={steps ? steps : 0}
         avoidStairs={avoidStairs}
         dark={dark}
         setIsExpandedStart={setIsExpandedStart}
@@ -404,6 +407,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     totDistance,
     stairs,
     elevators,
+    steps,
     avoidStairs,
     dark,
     searchStart,

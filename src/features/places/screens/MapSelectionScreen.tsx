@@ -71,6 +71,32 @@ export const MapSelectionScreen = ({ navigation, route }: Props) => {
     floorId: floorId,
   });
 
+  useCallback(async () => {
+    if (!campus || !cameraRef.current) {
+      return;
+    }
+    const location = await Mapbox.locationManager.getLastKnownLocation();
+    if (clickMode === 1 && location) {
+      const { latitude: latCampus, longitude: lonCampus, extent } = campus;
+      const { latitude: userLat, longitude: userLon } = location.coords;
+
+      const minLon = lonCampus - extent;
+      const maxLon = lonCampus + extent;
+      const minLat = latCampus - extent;
+      const maxLat = latCampus + extent;
+
+      const isInside =
+        userLon >= minLon &&
+        userLon <= maxLon &&
+        userLat >= minLat &&
+        userLat <= maxLat;
+
+      if (isInside) {
+        cameraRef.current?.flyTo([userLon, userLat]);
+      }
+    }
+  }, [clickMode, campus, cameraRef]);
+
   useCallback(() => {
     if (!confirmSelection) setSelectedPlace(null);
   }, [confirmSelection, setSelectedPlace]);

@@ -872,7 +872,8 @@
     "avoidStairs": "Avoid stairs",
     "computePath": "Compute path",
     "showIndications": "Start itinerary",
-    "pathNotFound": "Invalid route parameters or no drivable path available."
+    "pathNotFound": "No drivable path available.",
+    "stepsInfo": "The route includes steps"
   },
   "mapSelectionScreen": {
     "title": "Select from map",
