@@ -225,6 +225,7 @@ export const useDownloadFile = (
           }
         } catch (e) {
           if (!(e as Error).message?.includes('aborted')) {
+            console.error('Error downloading file:', e);
             Alert.alert(
               t('common.error'),
               t('courseScreen.fileDownloadFailed'),

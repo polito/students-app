@@ -255,6 +255,8 @@
     "of": "Of",
     "ok": "Ok",
     "oldest": "Oldest",
+    "yes": "Yes",
+    "no": "No",
     "or": "or",
     "open": "Open",
     "openSettings": "Open settings",
@@ -400,6 +402,9 @@
     "empty": "There are no files",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
+    "removeFilesTitle": "Remove files",
+    "removeFileConfirmation": "The file will be removed only locally from your device. Do you want to continue?",
+    "removeFilesConfirmation": "The {{count}} files will be removed only locally from your device. Do you want to continue?",
     "title": "Files"
   },
   "courseGuideScreen": {

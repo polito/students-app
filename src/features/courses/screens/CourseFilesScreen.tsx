@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -51,6 +53,11 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     downloadButtonProgress,
     downloadButtonStyle,
     handleDownloadAction,
+    handleRemoveAction,
+    removeButtonTitle,
+    removeButtonStyle,
+    isDownloadButtonDisabled,
+    isRemoveButtonDisabled,
   } = useFileManagement({
     courseId,
     courseFilesCache,
@@ -136,13 +143,25 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         }
       />
       {navigation && enableMultiSelect && (
-        <CtaButton
-          title={downloadButtonTitle}
-          icon={downloadButtonIcon}
-          action={handleDownloadAction}
-          progress={downloadButtonProgress}
-          style={downloadButtonStyle}
-        />
+        <CtaButtonContainer absolute={false}>
+          <CtaButton
+            title={removeButtonTitle}
+            icon={faTrash}
+            action={handleRemoveAction}
+            style={removeButtonStyle}
+            disabled={isRemoveButtonDisabled}
+            absolute={true}
+          />
+          <CtaButton
+            title={downloadButtonTitle}
+            icon={downloadButtonIcon}
+            action={handleDownloadAction}
+            progress={downloadButtonProgress}
+            style={downloadButtonStyle}
+            disabled={isDownloadButtonDisabled}
+            absolute={true}
+          />
+        </CtaButtonContainer>
       )}
     </>
   );
