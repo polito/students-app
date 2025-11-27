@@ -1,9 +1,29 @@
 import { createContext, useContext } from 'react';
 
+export enum DownloadPhase {
+  Queued = 'queued',
+  Downloading = 'downloading',
+  Completed = 'completed',
+  Error = 'error',
+}
+
+export enum DownloadArea {
+  Course = 'course',
+}
+
+export interface DownloadRequest<T extends DownloadArea = DownloadArea> {
+  area: T;
+  id: string;
+  source: string;
+  destination: string;
+}
+
 export interface Download {
   jobId?: number;
   isDownloaded: boolean;
   downloadProgress?: number;
+  phase?: DownloadPhase;
+  error?: string;
 }
 
 export interface QueuedFile {
@@ -19,9 +39,11 @@ export interface DownloadQueue {
   files: QueuedFile[];
   isDownloading: boolean;
   currentFileIndex: number;
+  activeDownloadIds: Set<string>;
   overallProgress: number;
   hasCompleted: boolean;
   isProcessingFile: boolean;
+  hasFailure: boolean;
 }
 
 export type Downloads = Record<string, Download>;
@@ -49,6 +71,11 @@ export const DownloadsContext = createContext<{
     _contextId: string | number,
     _contextType?: string,
   ) => void;
+  status: (_request: DownloadRequest) => Download | undefined;
+  download: (..._requests: DownloadRequest[]) => void;
+  clear: (_requestOrArea: DownloadRequest | DownloadArea) => void;
+  stop: (_requestOrArea: DownloadRequest | DownloadArea) => void;
+  queueStatus: DownloadQueue;
 } | null>(null);
 
 export const useDownloadsContext = () => {
