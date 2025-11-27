@@ -728,7 +728,9 @@
   "messageScreen": {
     "backTitle": "Archivio",
     "sender": "Mittente",
-    "title": "Messaggio"
+    "title": "Messaggio",
+    "viewProvisionalGrade": "Vai a valutazioni",
+    "viewProvisionalGradeDescription": "Controlla la tua valutazione provvisoria e prendi una decisione"
   },
   "messagesScreen": {
     "empty": "Non ci sono messaggi",
