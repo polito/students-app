@@ -226,45 +226,43 @@ export const CourseFileListItem = memo(
 
     const trailingItem = useMemo(
       () =>
-        !isDownloaded ? (
+        enableMultiSelect ? (
+          <Checkbox
+            isChecked={isInQueue}
+            onPress={() => {
+              if (isInQueue) {
+                removeFilesFromQueue([item.id]);
+              } else {
+                addFilesToQueue(
+                  [
+                    {
+                      id: item.id,
+                      name: item.name,
+                      url: fileUrl,
+                      filePath: cachedFilePath,
+                    },
+                  ],
+                  courseId,
+                  'course',
+                );
+              }
+            }}
+            textStyle={{ marginHorizontal: 0 }}
+            containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
+          />
+        ) : !isDownloaded ? (
           downloadProgress == null ? (
-            enableMultiSelect === false ? (
-              <IconButton
-                icon={faCloudArrowDown}
-                accessibilityLabel={t('common.download')}
-                adjustSpacing="right"
-                onPress={downloadFile}
-                {...iconProps}
-                hitSlop={{
-                  left: +spacing[2],
-                  right: +spacing[2],
-                }}
-              />
-            ) : (
-              <Checkbox
-                isChecked={isInQueue}
-                onPress={() => {
-                  if (isInQueue) {
-                    removeFilesFromQueue([item.id]);
-                  } else {
-                    addFilesToQueue(
-                      [
-                        {
-                          id: item.id,
-                          name: item.name,
-                          url: fileUrl,
-                          filePath: cachedFilePath,
-                        },
-                      ],
-                      courseId,
-                      'course',
-                    );
-                  }
-                }}
-                textStyle={{ marginHorizontal: 0 }}
-                containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
-              />
-            )
+            <IconButton
+              icon={faCloudArrowDown}
+              accessibilityLabel={t('common.download')}
+              adjustSpacing="right"
+              onPress={downloadFile}
+              {...iconProps}
+              hitSlop={{
+                left: +spacing[2],
+                right: +spacing[2],
+              }}
+            />
           ) : (
             <IconButton
               icon={faXmark}
@@ -299,31 +297,30 @@ export const CourseFileListItem = memo(
           })
         ),
       [
+        enableMultiSelect,
+        isInQueue,
+        removeFilesFromQueue,
+        addFilesToQueue,
+        item.id,
+        item.name,
+        fileUrl,
+        cachedFilePath,
+        courseId,
         isDownloaded,
         downloadProgress,
         t,
         downloadFile,
         iconProps,
         spacing,
+        stopDownload,
         refreshDownload,
         removeDownload,
-        stopDownload,
-        enableMultiSelect,
-        isInQueue,
-        addFilesToQueue,
-        removeFilesFromQueue,
-        item.id,
-        item.name,
-        fileUrl,
-        cachedFilePath,
-        courseId,
       ],
     );
 
     const listItem = (
       <FileListItem
         {...rest}
-        disabled={isDownloaded && enableMultiSelect}
         accessibilityLabel={
           !isDownloaded
             ? downloadProgress == null
