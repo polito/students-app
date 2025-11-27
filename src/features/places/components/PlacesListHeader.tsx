@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import {
   faCircleDot,
+  faCircleInfo,
   faEllipsisV,
   faFlagCheckered,
 } from '@fortawesome/free-solid-svg-icons';
@@ -24,6 +25,7 @@ interface PlacesListHeaderProps {
   distance: number;
   stairs: number;
   elevators: number;
+  steps: number;
   avoidStairs: boolean;
   dark: boolean;
 
@@ -49,6 +51,7 @@ const PlacesListHeaderComponent = ({
   distance,
   stairs,
   elevators,
+  steps,
   avoidStairs,
   setIsExpandedStart,
   setIsExpandedDest,
@@ -148,7 +151,14 @@ const PlacesListHeaderComponent = ({
           distance > 0 &&
           !isExpandedDest &&
           !isExpandedStart && (
-            <View style={styles.statisticsContainer}>
+            <View
+              style={[
+                styles.statisticsContainer,
+                steps === 0
+                  ? styles.statisticsNoStep
+                  : styles.statisticsWithStep,
+              ]}
+            >
               <StatisticsContainer
                 totDistance={distance}
                 stairs={stairs}
@@ -156,12 +166,14 @@ const PlacesListHeaderComponent = ({
               />
             </View>
           )}
-        {!isExpandedDest && !isExpandedStart && (
+        {!isExpandedDest && !isExpandedStart && computeButtonState === 0 && (
           <View style={styles.stairsButtonContainer}>
             <Text
               style={[
                 styles.textStairsButton,
-                { color: dark ? palettes.primary[200] : palettes.primary[600] },
+                {
+                  color: dark ? palettes.primary[200] : palettes.primary[600],
+                },
               ]}
             >
               {t('indicationsScreen.avoidStairs')}
@@ -171,6 +183,27 @@ const PlacesListHeaderComponent = ({
                 onPress={() => setAvoidStairs(!avoidStairs)}
                 isChecked={avoidStairs}
               />
+            </View>
+          </View>
+        )}
+        {steps > 0 && computeButtonState > 0 && (
+          <View style={styles.stepsInfoContainer}>
+            <View style={styles.stepsInfo}>
+              <Icon
+                icon={faCircleInfo}
+                color={dark ? palettes.primary[200] : palettes.primary[600]}
+                style={styles.icon}
+              />
+              <Text
+                style={[
+                  styles.textStairsButton,
+                  {
+                    color: dark ? palettes.primary[200] : palettes.primary[600],
+                  },
+                ]}
+              >
+                {t('indicationsScreen.stepsInfo')}
+              </Text>
             </View>
           </View>
         )}
@@ -265,8 +298,43 @@ const createStyles = () =>
       alignItems: 'center',
       flexShrink: 0,
     },
+    stepsInfoContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      paddingBottom: 60,
+      paddingHorizontal: 18,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+    stepsInfo: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    icon: {
+      display: 'flex',
+      width: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     statisticsContainer: {
-      padding: 18,
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      paddingTop: 18,
+      paddingBottom: 60,
+      paddingHorizontal: 18,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      gap: 20,
+    },
+    statisticsNoStep: {
+      paddingBottom: 60,
+    },
+    statisticsWithStep: {
+      paddingBottom: 40,
     },
   });
 
