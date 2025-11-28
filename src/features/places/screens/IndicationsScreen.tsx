@@ -8,7 +8,13 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, View } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { ActivityIndicator, Image } from 'react-native';
 
 import {
@@ -22,6 +28,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { Icon } from '@lib/ui/components/Icon';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PlaceOverview } from '@polito/api-client';
 
@@ -82,17 +89,47 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { setFeedback } = useFeedbackContext();
   const [isFeedbackVisible, setFeedbackVisible] = useState(false);
   const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
+  const styles = useStylesheet(createStyles);
 
   const [clickMode, setClickMode] = useState<number>(0); // 0 nothing, 1 start, 2 dest
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const { fontSizes, spacing, palettes } = useTheme();
+  const { fontSizes, spacing, palettes, colors } = useTheme();
 
-  const { data: sitePlaces } = useSearchPlaces({ siteId: campus?.id });
+  const { data: sitePlaces } = useSearchPlaces({
+    search: debouncedSearch,
+    siteId: campus?.id,
+  });
   const { data: listPlaces, isLoading } = useGetPlaces({
     siteId: campus?.id,
   });
   const innerRef = useRef<BottomSheet>(null);
+
+  const headerRight = useCallback(
+    () => (
+      <TouchableOpacity
+        onPress={() => setComputeButtonState(0)}
+        style={styles.modifyButton}
+      >
+        <View>
+          <Animated.Text
+            style={{
+              ...styles.modifyButtonText,
+              color: colors.link,
+            }}
+          >
+            {t('itineraryScreen.backTitle')}
+          </Animated.Text>
+        </View>
+      </TouchableOpacity>
+    ),
+    [t, styles, colors, setComputeButtonState],
+  );
+
+  useLayoutEffect(() => {
+    if (computeButtonState === 1) navigation.setOptions({ headerRight });
+    else navigation.setOptions({ headerRight: undefined });
+  }, [navigation, headerRight, t, computeButtonState]);
 
   const handleRoom = useCallback(
     (place: PlaceOverview | undefined, isStartRoom: boolean) => {
@@ -260,17 +297,20 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     ] as ListDataItem[];
   }, [isExpandedStart, isExpandedDest, allPlaces]);
 
-  const triggerSearchStart = useCallback(() => {
-    debounce(() => setDebouncedSearch(searchStart.trim().toLowerCase()), 100, {
-      leading: true,
-    })();
-  }, [searchStart]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const triggerSearch = useCallback(
+    debounce(
+      (searchTerm: string) =>
+        setDebouncedSearch(searchTerm.trim().toLowerCase()),
+      300,
+    ),
+    [],
+  );
 
-  const triggerSearchDest = useCallback(() => {
-    debounce(() => setDebouncedSearch(searchDest.trim().toLowerCase()), 100, {
-      leading: true,
-    })();
-  }, [searchDest]);
+  useEffect(() => {
+    if (isExpandedStart) triggerSearch(searchStart);
+    if (isExpandedDest) triggerSearch(searchDest);
+  }, [searchStart, isExpandedStart, isExpandedDest, searchDest, triggerSearch]);
 
   useEffect(() => {
     if (isExpandedStart || isExpandedDest) {
@@ -396,8 +436,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         handleDebouncedSearch={setDebouncedSearch}
         handleComputeButtonState={setComputeButtonState}
         setAvoidStairs={setAvoidStairs}
-        triggerSearchStart={triggerSearchStart}
-        triggerSearchDest={triggerSearchDest}
+        triggerSearchStart={() => triggerSearch(searchStart)}
+        triggerSearchDest={() => triggerSearch(searchDest)}
       />
     );
   }, [
@@ -415,8 +455,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     handleRoom,
     setDebouncedSearch,
     setComputeButtonState,
-    triggerSearchStart,
-    triggerSearchDest,
+    triggerSearch,
   ]);
 
   const listFooter = useMemo(() => {
@@ -541,3 +580,13 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     </View>
   );
 };
+
+const createStyles = () =>
+  StyleSheet.create({
+    modifyButton: {
+      paddingHorizontal: 10,
+    },
+    modifyButtonText: {
+      fontSize: 17,
+    },
+  });
