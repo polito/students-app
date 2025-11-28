@@ -28,9 +28,9 @@ export const StatisticsContainer = ({
   function formatDistance(meters: number): string {
     if (meters >= 1000) {
       const km = meters / 1000;
-      return `${km.toFixed(2)} km`;
+      return `${km.toFixed(0)} km`;
     } else {
-      return `${meters.toFixed(2)} m`;
+      return `${meters.toFixed(0)} m`;
     }
   }
 
