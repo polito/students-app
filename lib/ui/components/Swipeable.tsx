@@ -1,21 +1,23 @@
 import ReanimatedSwipeable, {
+  SwipeDirection,
   SwipeableProps,
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import React, {
   ReactNode,
   createContext,
   useCallback,
   useContext,
+  useId,
   useRef,
+  useState,
 } from 'react';
 import Reanimated, {
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-// Context to manage currently open swipeable
+// Context to manage currently open swipeable (Exclusive Open Logic)
 interface SwipeableContextType {
   closeCurrentSwipeable: () => void;
   registerSwipeable: (
@@ -91,8 +93,11 @@ const RightActionWrapper = ({
   return <Reanimated.View style={styleAnimation}>{children}</Reanimated.View>;
 };
 
-interface Props extends Omit<Partial<SwipeableProps>, 'renderRightActions'> {
-  children: ReactNode;
+type SwipeableChildRenderProp = (state: { isSwiping: boolean }) => ReactNode;
+
+interface Props
+  extends Omit<Partial<SwipeableProps>, 'renderRightActions' | 'children'> {
+  children: ReactNode | SwipeableChildRenderProp;
   rightAction?: ReactNode;
   rightActionWidth?: number;
 }
@@ -110,8 +115,11 @@ export const Swipeable = ({
 }: Props) => {
   const swipeableRef =
     useRef<React.ComponentRef<typeof ReanimatedSwipeable>>(null);
-  const swipeableId = useRef(`swipeable-${Math.random()}`).current;
+
+  const swipeableId = useId();
+
   const context = useContext(SwipeableContext);
+  const [isSwiping, setIsSwiping] = useState(false);
 
   const animationOptions = {
     overshootClamping: true,
@@ -134,6 +142,7 @@ export const Swipeable = ({
 
   const handleSwipeableOpenStartDrag = useCallback(
     (_direction: SwipeDirection.LEFT | SwipeDirection.RIGHT) => {
+      setIsSwiping(true);
       context?.registerSwipeable(swipeableId, swipeableRef);
     },
     [context, swipeableId],
@@ -141,10 +150,16 @@ export const Swipeable = ({
 
   const handleSwipeableClose = useCallback(
     (_direction: SwipeDirection.LEFT | SwipeDirection.RIGHT) => {
+      setIsSwiping(false);
       context?.unregisterSwipeable(swipeableId);
     },
     [context, swipeableId],
   );
+
+  const childrenNode =
+    typeof children === 'function'
+      ? (children as SwipeableChildRenderProp)({ isSwiping })
+      : children;
 
   return (
     <ReanimatedSwipeable
@@ -160,7 +175,7 @@ export const Swipeable = ({
       animationOptions={animationOptions}
       {...props}
     >
-      <Reanimated.View>{children}</Reanimated.View>
+      <Reanimated.View>{childrenNode}</Reanimated.View>
     </ReanimatedSwipeable>
   );
 };

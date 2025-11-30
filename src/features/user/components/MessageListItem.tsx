@@ -15,9 +15,15 @@ interface Props {
   messageItem: Message;
   index: number;
   totalData: number;
+  isSwiping: boolean;
 }
 
-export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
+export const MessageListItem = ({
+  messageItem,
+  index,
+  totalData,
+  isSwiping,
+}: Props) => {
   const { t } = useTranslation();
   const { mutate: markAsRead } = useMarkMessageAsRead();
   const { accessibilityListLabel } = useAccessibility();
@@ -28,6 +34,8 @@ export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
   const sentAt = formatDateTime(messageItem.sentAt);
 
   const onPressItem = () => {
+    if (isSwiping) return;
+
     if (!messageItem.isRead) {
       markAsRead(messageItem.id);
     }

@@ -63,11 +63,14 @@ export const MessagesScreen = () => {
                       </Pressable>
                     }
                   >
-                    <MessageListItem
-                      messageItem={message}
-                      index={index}
-                      totalData={messages.length}
-                    />
+                    {({ isSwiping }) => (
+                      <MessageListItem
+                        messageItem={message}
+                        index={index}
+                        totalData={messages.length}
+                        isSwiping={isSwiping}
+                      />
+                    )}
                   </Swipeable>
                 ))}
               </OverviewList>
