@@ -104,11 +104,8 @@ export const AgendaCard = ({
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
 
   const secondaryIfLecture = useMemo(
-    () =>
-      ['lezione', 'lecture'].includes(type.toLowerCase())
-        ? { color: colors.lectureCardSecondary }
-        : undefined,
-    [type, colors.lectureCardSecondary],
+    () => ({ color: colors.lectureCardSecondary }),
+    [colors.lectureCardSecondary],
   );
 
   return (

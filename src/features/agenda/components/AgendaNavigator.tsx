@@ -5,13 +5,17 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { HeaderLogo } from '~/core/components/HeaderLogo.tsx';
+import { AgendaNavigatorID } from '~/core/constants';
+import { usePreferencesContext } from '~/core/contexts/PreferencesContext.ts';
+import { useTitlesStyles } from '~/core/hooks/useTitlesStyles.ts';
+import { AgendaPreferencesScreen } from '~/features/agenda/screens/AgendaPreferencesScreen.tsx';
+import { HiddenEventsScreen } from '~/features/agenda/screens/HiddenEventsScreen.tsx';
 import {
   SharedScreens,
   SharedScreensParamList,
-} from '../../../shared/navigation/SharedScreens';
+} from '~/shared/navigation/SharedScreens.tsx';
+
 import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import {
   CourseSharedScreens,
@@ -42,9 +46,9 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
       seatId: number;
     };
     PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
+    AgendaPreferences: undefined;
+    HiddenEvents: undefined;
   };
-
-export const AgendaNavigatorID = 'AgendaTabNavigator';
 
 const Stack = createNativeStackNavigator<
   AgendaStackParamList,
@@ -153,6 +157,22 @@ export const AgendaNavigator = () => {
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AgendaPreferences"
+        component={AgendaPreferencesScreen}
+        options={{
+          title: t('common.preferencesAgenda'),
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="HiddenEvents"
+        component={HiddenEventsScreen}
+        options={{
+          title: t('common.hiddenEvents'),
+          headerShown: true,
         }}
       />
       {CourseSharedScreens()}

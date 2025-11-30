@@ -7,10 +7,6 @@ interface IndentedDividerProps extends DividerProps {
 /**
  * A divider element to separate list items with indentation
  */
-export const IndentedDivider = ({
-  indent = 56,
-  style,
-  ...props
-}: IndentedDividerProps) => {
-  return <Divider {...props} style={[{ marginStart: indent }, style]} />;
+export const IndentedDivider = ({ style, ...props }: IndentedDividerProps) => {
+  return <Divider {...props} style={style} />;
 };

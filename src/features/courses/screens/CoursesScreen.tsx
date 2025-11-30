@@ -7,10 +7,11 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useGetCourses } from '../../../core/queries/courseHooks';
-import { CourseOverview } from '../../../core/types/api';
+import { BottomBarSpacer } from '~/core/components/BottomBarSpacer';
+import { useAccessibility } from '~/core/hooks/useAccessibilty';
+import { useGetCourses } from '~/core/queries/courseHooks';
+import { CourseOverview } from '~/core/types/api';
+
 import { CourseListItem } from '../components/CourseListItem';
 
 export const CoursesScreen = () => {
@@ -63,6 +64,7 @@ export const CoursesScreen = () => {
                         index,
                         courses.length,
                       )}
+                      showAllModules={true}
                     />
                   ))}
                 </OverviewList>

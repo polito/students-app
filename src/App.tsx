@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Mapbox from '@rnmapbox/maps';
 
 import { AppContent } from './core/components/AppContent';
+import { DialogProvider } from './core/components/Dialog';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { FeedbackProvider } from './core/providers/FeedbackProvider';
@@ -14,7 +15,7 @@ import { extendSuperJSON } from './utils/superjson';
 
 extendSuperJSON();
 
-Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
+Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
             <FeedbackProvider>
               <ApiProvider>
                 <DownloadsProvider>
+                  <DialogProvider />
                   <AppContent />
                 </DownloadsProvider>
               </ApiProvider>

@@ -9,13 +9,17 @@ import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
 import { ResponseError } from '@polito/api-client/runtime';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { QueryCache, QueryClient, onlineManager } from '@tanstack/react-query';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+  onlineManager,
+} from '@tanstack/react-query';
 
+import { SQLiteStorage } from 'expo-sqlite/kv-store';
 import SuperJSON from 'superjson';
 
 import { updateGlobalApiConfiguration } from '../../config/api';
@@ -30,14 +34,17 @@ import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
-export const asyncStoragePersister = createAsyncStoragePersister({
-  key: 'polito-students.queries',
-  storage: AsyncStorage,
-  serialize: SuperJSON.stringify,
-  deserialize: SuperJSON.parse,
-});
+export const QueryStorage = new SQLiteStorage('queryClient');
 
 const DATA_MAX_AGE = 1000 * 3600 * 24 * 7;
+
+export const queryPersister = experimental_createQueryPersister({
+  storage: QueryStorage,
+  serialize: SuperJSON.stringify,
+  deserialize: SuperJSON.parse,
+  maxAge: DATA_MAX_AGE,
+  refetchOnRestore: 'always',
+});
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation();
@@ -99,6 +106,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
           networkMode: 'online',
           retry: isEnvProduction ? 2 : 1,
           refetchOnWindowFocus: isEnvProduction,
+          persister: queryPersister.persisterFn,
         },
         mutations: {
           retry: 1,
@@ -128,12 +136,14 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       });
 
       setApiContext(() => {
-        return {
+        const newContext = {
           isLogged: !!credentials,
           username: credentials?.username ?? '',
           token: credentials?.token ?? '',
           refreshContext,
         };
+
+        return newContext;
       });
     };
 
@@ -154,7 +164,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         console.warn("Keychain couldn't be accessed!", e);
         refreshContext();
       });
-  }, [language, username]);
+  }, [language, username, queryClient]);
 
   useEffect(() => {
     // Handle login status
@@ -188,15 +198,9 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
   return (
     <ApiContext.Provider value={apiContext}>
       {splashContext.isAppLoaded && (
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{
-            persister: asyncStoragePersister,
-            maxAge: DATA_MAX_AGE,
-          }}
-        >
+        <QueryClientProvider client={queryClient}>
           {children}
-        </PersistQueryClientProvider>
+        </QueryClientProvider>
       )}
     </ApiContext.Provider>
   );

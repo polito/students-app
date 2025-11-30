@@ -8,8 +8,7 @@ import { PlaceRef } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { AgendaNavigatorID } from '~/features/agenda/components/AgendaNavigator';
-import { TeachingNavigatorID } from '~/features/teaching/components/TeachingNavigator';
+import { AgendaNavigatorID, TeachingNavigatorID } from '~/core/constants';
 
 import { notNullish } from '../../../utils/predicates';
 

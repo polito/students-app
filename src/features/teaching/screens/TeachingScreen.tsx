@@ -55,6 +55,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const studentQuery = useGetStudent();
   const transcriptBadge = null;
 
+  const hasValidModules = (course: any) => {
+    if (!course.modules || course.modules.length === 0) return true;
+    return course.modules.some((module: any) => module.id !== null);
+  };
+
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
 
@@ -121,7 +126,35 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
               coursesQuery.data
-                ? coursesQuery.data.length - courses.length
+                ? (() => {
+                    // Calcola gli elementi nascosti direttamente
+                    let hiddenCount = 0;
+
+                    coursesQuery.data.forEach(course => {
+                      if (!isCourseDetailed(course) || !course.uniqueShortcode)
+                        return;
+
+                      // Corsi nascosti
+                      if (coursePreferences[course.uniqueShortcode]?.isHidden) {
+                        hiddenCount += 1 + (course.modules?.length || 0);
+                        return;
+                      }
+
+                      // Moduli nascosti nei corsi visibili
+                      if (course.modules) {
+                        course.modules.forEach((module, index) => {
+                          const moduleShortcode = `${course.shortcode}${index + 1}`;
+                          if (coursePreferences[moduleShortcode]?.isHidden) {
+                            hiddenCount += 1;
+                          }
+                        });
+                      }
+                    });
+
+                    const count = hiddenCount;
+
+                    return count > 0 ? count : undefined;
+                  })()
                 : undefined
             }
           />
@@ -136,7 +169,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {courses.map(course => (
+            {courses.filter(hasValidModules).map(course => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
