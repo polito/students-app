@@ -2,6 +2,8 @@ import {
   PropsWithChildren,
   useCallback,
   useEffect,
+  useMemo,
+  useReducer,
   useRef,
   useState,
 } from 'react';
@@ -16,507 +18,515 @@ import {
 } from 'react-native-fs';
 
 import { sha1 } from '@noble/hashes/legacy.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { MAX_CONCURRENT_DOWNLOADS } from '../constants';
 import { useApiContext } from '../contexts/ApiContext';
 import {
   Download,
-  DownloadArea,
   DownloadPhase,
   DownloadQueue,
-  DownloadRequest,
-  Downloads,
   DownloadsContext,
   QueuedFile,
 } from '../contexts/DownloadsContext';
 import { useFeedbackContext } from '../contexts/FeedbackContext';
-import { FileRecord, getFileDatabase } from '../database/FileDatabase';
+import { getFileDatabase } from '../database/FileDatabase';
+
+interface State {
+  downloads: Record<string, Omit<Download, 'downloadProgress'>>;
+  queue: QueuedFile[];
+  activeIds: Set<string>;
+  isDownloading: boolean;
+  hasCompleted: boolean;
+  hasFailure: boolean;
+}
+
+type Action =
+  | { type: 'ADD_FILES'; files: QueuedFile[] }
+  | { type: 'REMOVE_FILES'; ids: string[] }
+  | {
+      type: 'UPDATE_DOWNLOAD';
+      key: string;
+      updates: Partial<Omit<Download, 'downloadProgress'>>;
+    }
+  | { type: 'START_DOWNLOAD' }
+  | { type: 'STOP_DOWNLOAD' }
+  | { type: 'ADD_ACTIVE_ID'; id: string }
+  | { type: 'REMOVE_ACTIVE_ID'; id: string }
+  | { type: 'SET_COMPLETED' }
+  | { type: 'SET_FAILURE' }
+  | { type: 'RESET' }
+  | { type: 'RESTORE'; state: State };
+
+type ProgressAction =
+  | { type: 'UPDATE_PROGRESS'; key: string; progress: number }
+  | { type: 'REMOVE_PROGRESS'; key: string }
+  | { type: 'RESET_PROGRESS' };
+
+const QUEUE_STORAGE_KEY = '@downloads_queue';
+const FILE_SIZE_LIMIT_MB = 100;
+const PROGRESS_UPDATE_THROTTLE_MS = 200;
+// Throttle for context value updates - only update context when progress changes significantly
+const CONTEXT_PROGRESS_UPDATE_THROTTLE_MS = 500;
 
 export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-
   const fileDatabase = getFileDatabase();
 
+  const initialState: State = {
+    downloads: {},
+    queue: [],
+    activeIds: new Set(),
+    isDownloading: false,
+    hasCompleted: false,
+    hasFailure: false,
+  };
+
+  const reducer = (state: State, action: Action): State => {
+    switch (action.type) {
+      case 'ADD_FILES':
+        return {
+          ...state,
+          queue: [
+            ...state.queue.filter(
+              f => !action.files.some(nf => nf.id === f.id),
+            ),
+            ...action.files,
+          ],
+        };
+      case 'REMOVE_FILES':
+        return {
+          ...state,
+          queue: state.queue.filter(f => !action.ids.includes(f.id)),
+        };
+      case 'UPDATE_DOWNLOAD':
+        return {
+          ...state,
+          downloads: {
+            ...state.downloads,
+            [action.key]: { ...state.downloads[action.key], ...action.updates },
+          },
+        };
+      case 'START_DOWNLOAD':
+        return {
+          ...state,
+          isDownloading: true,
+          activeIds: new Set(),
+          hasCompleted: false,
+          hasFailure: false,
+        };
+      case 'STOP_DOWNLOAD':
+        return { ...state, isDownloading: false, activeIds: new Set() };
+      case 'ADD_ACTIVE_ID':
+        return {
+          ...state,
+          activeIds: new Set([...state.activeIds, action.id]),
+        };
+      case 'REMOVE_ACTIVE_ID': {
+        const newIds = new Set(state.activeIds);
+        newIds.delete(action.id);
+        return { ...state, activeIds: newIds };
+      }
+      case 'SET_COMPLETED':
+        return {
+          ...state,
+          isDownloading: false,
+          queue: [],
+          activeIds: new Set(),
+          hasCompleted: true,
+          hasFailure: false,
+        };
+      case 'SET_FAILURE':
+        return { ...state, hasFailure: true };
+      case 'RESET':
+        return initialState;
+      case 'RESTORE':
+        return action.state;
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const progressReducer = (
+    progressState: Record<string, number>,
+    action: ProgressAction,
+  ): Record<string, number> => {
+    switch (action.type) {
+      case 'UPDATE_PROGRESS':
+        return { ...progressState, [action.key]: action.progress };
+      case 'REMOVE_PROGRESS': {
+        const newState = { ...progressState };
+        delete newState[action.key];
+        return newState;
+      }
+      case 'RESET_PROGRESS':
+        return {};
+      default:
+        return progressState;
+    }
+  };
+
+  const [progresses, dispatchProgress] = useReducer(progressReducer, {});
+  const progressRef = useRef(progresses);
+  const lastProgressUpdateRef = useRef<number>(0);
+  const [throttledProgresses, setThrottledProgresses] = useState(progresses);
+  const lastContextProgressUpdateRef = useRef<number>(0);
+
+  useEffect(() => {
+    progressRef.current = progresses;
+  }, [progresses]);
+
+  // Throttle progress updates for context value to reduce consumer re-renders
+  useEffect(() => {
+    const now = Date.now();
+    if (
+      now - lastContextProgressUpdateRef.current >=
+      CONTEXT_PROGRESS_UPDATE_THROTTLE_MS
+    ) {
+      setThrottledProgresses(progresses);
+      lastContextProgressUpdateRef.current = now;
+    }
+  }, [progresses]);
+
+  const getFileKey = useCallback(
+    (file: QueuedFile) => `${file.url}:${file.filePath}`,
+    [],
+  );
+
   const calculateFileChecksum = useCallback(
-    async (filePath: string): Promise<string> => {
+    async (filePath: string, expectedSize?: number): Promise<string> => {
       try {
-        const fileExists = await exists(filePath);
-        if (!fileExists) {
-          throw new Error(`File does not exist: ${filePath}`);
+        if (!(await exists(filePath))) throw new Error('File does not exist');
+        const fileStats = await stat(filePath);
+        if (fileStats.size === 0) throw new Error('File is empty');
+        if (expectedSize && fileStats.size !== expectedSize)
+          throw new Error('File size mismatch');
+        if (fileStats.size > FILE_SIZE_LIMIT_MB * 1024 * 1024) {
+          console.warn(
+            `Skipping checksum for large file (${Math.round(fileStats.size / 1024 / 1024)}MB)`,
+          );
+          return 'checksum_skipped_large_file';
         }
-
         const fileContent = await readFile(filePath, 'base64');
-
+        if (!fileContent || fileContent.length === 0)
+          throw new Error('File content is empty');
         const binaryString = atob(fileContent);
         const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
+        for (let i = 0; i < binaryString.length; i++)
           bytes[i] = binaryString.charCodeAt(i);
-        }
-
         const hash = sha1(bytes);
         return Array.from(hash)
           .map((b: unknown) => (b as number).toString(16).padStart(2, '0'))
           .join('');
-      } catch (error) {
-        console.error('Error calculating file checksum:', error);
+      } catch {
         return 'checksum_error';
       }
     },
     [],
   );
 
-  const insertFileToSQLite = useCallback(
-    async (file: FileRecord) => {
-      await fileDatabase.insertFile(file);
+  // Memoize downloadQueue with specific dependencies to avoid recalculation on every progress update
+  // Use throttled progresses for overallProgress calculation to reduce re-renders
+  // Internal progress tracking uses real-time progresses via progressRef
+  const downloadQueue = useMemo((): DownloadQueue => {
+    const completedFiles = state.queue.filter(
+      f =>
+        !state.activeIds.has(f.id) &&
+        state.downloads[getFileKey(f)]?.isDownloaded === true,
+    ).length;
+    // Use throttled progresses for context, but real-time for internal calculations
+    const activeProgresses = state.queue
+      .filter(f => state.activeIds.has(f.id))
+      .map(f => throttledProgresses[getFileKey(f)] ?? 0);
+    const activeCount = activeProgresses.length;
+    const activeProgressSum = activeProgresses.reduce((sum, p) => sum + p, 0);
+    const totalFiles = state.queue.length;
+    const overallProgress =
+      totalFiles > 0
+        ? activeCount > 0
+          ? (completedFiles + activeProgressSum / activeCount) / totalFiles
+          : completedFiles / totalFiles
+        : 0;
+    return {
+      files: state.queue,
+      isDownloading: state.isDownloading,
+      currentFileIndex: completedFiles,
+      activeDownloadIds: state.activeIds,
+      overallProgress: Math.min(overallProgress, 1),
+      hasCompleted: state.hasCompleted,
+      isProcessingFile: state.activeIds.size > 0,
+      hasFailure: state.hasFailure,
+    };
+  }, [
+    state.queue,
+    state.activeIds,
+    state.isDownloading,
+    state.hasCompleted,
+    state.hasFailure,
+    state.downloads,
+    getFileKey,
+    throttledProgresses,
+  ]);
+
+  const matchesContext = useCallback(
+    (
+      file: QueuedFile,
+      contextId: string | number,
+      contextType?: string,
+    ): boolean =>
+      String(file.contextId) === String(contextId) &&
+      (contextType === undefined || file.contextType === contextType),
+    [],
+  );
+
+  useEffect(() => {
+    AsyncStorage.setItem(
+      QUEUE_STORAGE_KEY,
+      JSON.stringify({ ...state, activeIds: Array.from(state.activeIds) }),
+    ).catch(console.error);
+  }, [state]);
+
+  useEffect(() => {
+    const loadQueue = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(QUEUE_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored) as any;
+          if (parsed.queue?.length > 0 && !parsed.isDownloading) {
+            dispatch({
+              type: 'RESTORE',
+              state: {
+                ...parsed,
+                activeIds: new Set(parsed.activeIds || []),
+                isDownloading: false,
+              },
+            });
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadQueue();
+  }, []);
+
+  const downloadSingleFile = useCallback(
+    async (file: QueuedFile) => {
+      const key = getFileKey(file);
+      try {
+        await mkdir(
+          file.filePath.substring(0, file.filePath.lastIndexOf('/')),
+          { NSURLIsExcludedFromBackupKey: true },
+        ).catch(() => {});
+        const { jobId, promise } = downloadFile({
+          fromUrl: file.url,
+          toFile: file.filePath,
+          headers: { Authorization: `Bearer ${token}` },
+          progress: ({ bytesWritten, contentLength }) => {
+            const fileProgress = bytesWritten / contentLength;
+            const now = Date.now();
+            progressRef.current[key] = fileProgress;
+            if (
+              now - lastProgressUpdateRef.current >=
+              PROGRESS_UPDATE_THROTTLE_MS
+            ) {
+              dispatchProgress({
+                type: 'UPDATE_PROGRESS',
+                key,
+                progress: fileProgress,
+              });
+              lastProgressUpdateRef.current = now;
+            }
+          },
+        });
+        dispatch({ type: 'UPDATE_DOWNLOAD', key, updates: { jobId } });
+        const result = await promise;
+        if (result.statusCode !== 200)
+          throw new Error(t('common.downloadError'));
+        dispatch({
+          type: 'UPDATE_DOWNLOAD',
+          key,
+          updates: {
+            phase: DownloadPhase.Completed,
+            isDownloaded: true,
+            error: undefined,
+          },
+        });
+        dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+        const stats = await stat(file.filePath);
+        const checksum = await calculateFileChecksum(file.filePath, stats.size);
+        const filename = file.filePath.split('/').pop() || '';
+        await fileDatabase.insertFile({
+          id: file.id,
+          area: `course-${file.contextId}`,
+          path: file.filePath,
+          filename,
+          mime: filename.split('.').pop() || 'application/octet-stream',
+          checksum,
+          sizeKb: Math.round(stats.size / 1024),
+          downloadTime: new Date().toISOString(),
+          updateTime: undefined,
+        });
+      } catch (error) {
+        dispatch({
+          type: 'UPDATE_DOWNLOAD',
+          key,
+          updates: {
+            phase: DownloadPhase.Error,
+            isDownloaded: false,
+            error: String(error),
+          },
+        });
+        dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+        dispatch({ type: 'SET_FAILURE' });
+      } finally {
+        dispatch({ type: 'REMOVE_ACTIVE_ID', id: file.id });
+      }
+    },
+    [token, t, getFileKey, calculateFileChecksum, fileDatabase],
+  );
+
+  const isProcessingQueueRef = useRef(false);
+  const processQueueTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const processQueue = useCallback(() => {
+    // Prevent multiple simultaneous calls
+    if (isProcessingQueueRef.current) return;
+    if (!state.isDownloading) return;
+
+    isProcessingQueueRef.current = true;
+
+    try {
+      const pending = state.queue.filter(
+        f =>
+          !state.activeIds.has(f.id) &&
+          !state.downloads[getFileKey(f)]?.isDownloaded,
+      );
+      const slots = MAX_CONCURRENT_DOWNLOADS - state.activeIds.size;
+      const toStart = pending.slice(0, slots);
+
+      toStart.forEach(file => {
+        const key = getFileKey(file);
+        dispatch({ type: 'ADD_ACTIVE_ID', id: file.id });
+        dispatch({
+          type: 'UPDATE_DOWNLOAD',
+          key,
+          updates: { phase: DownloadPhase.Downloading },
+        });
+        dispatchProgress({ type: 'UPDATE_PROGRESS', key, progress: 0 });
+        downloadSingleFile(file);
+      });
+
+      // Check completion
+      if (pending.length === 0 && state.activeIds.size === 0) {
+        dispatch({ type: 'SET_COMPLETED' });
+        setFeedback({
+          text: state.hasFailure
+            ? t('common.downloadCompletedWithErrors', {
+                successCount: 0,
+                errorCount: 0,
+              })
+            : t('common.downloadCompleted'),
+          isPersistent: false,
+        });
+        AsyncStorage.removeItem(QUEUE_STORAGE_KEY).catch(() => {});
+      } else if (
+        pending.length > 0 &&
+        state.activeIds.size >= MAX_CONCURRENT_DOWNLOADS
+      ) {
+        // More files to process but no slots available - schedule retry
+        if (processQueueTimeoutRef.current) {
+          clearTimeout(processQueueTimeoutRef.current);
+        }
+        processQueueTimeoutRef.current = setTimeout(() => {
+          processQueueRef.current();
+        }, 100);
+      }
+    } finally {
+      isProcessingQueueRef.current = false;
+    }
+  }, [state, getFileKey, downloadSingleFile, setFeedback, t]);
+
+  // Store processQueue in ref to avoid dependency issues
+  const processQueueRef = useRef(processQueue);
+  useEffect(() => {
+    processQueueRef.current = processQueue;
+  }, [processQueue]);
+
+  // Auto-process queue when conditions change, but use ref to avoid dependency on processQueue
+  useEffect(() => {
+    if (
+      state.isDownloading &&
+      state.activeIds.size < MAX_CONCURRENT_DOWNLOADS &&
+      state.queue.length > 0
+    ) {
+      // Use ref to avoid recreating processQueue on every state change
+      processQueueRef.current();
+    }
+
+    // Cleanup timeout on unmount or when download stops
+    return () => {
+      if (processQueueTimeoutRef.current) {
+        clearTimeout(processQueueTimeoutRef.current);
+        processQueueTimeoutRef.current = null;
+      }
+    };
+  }, [state.isDownloading, state.activeIds.size, state.queue.length]);
+
+  const startQueueDownload = useCallback(() => {
+    if (state.queue.length === 0) return;
+    dispatch({ type: 'START_DOWNLOAD' });
+    processQueue();
+  }, [state.queue.length, processQueue]);
+
+  const stopQueueDownload = useCallback(() => {
+    state.activeIds.forEach(id => {
+      const file = state.queue.find(f => f.id === id);
+      if (file) {
+        const download = state.downloads[getFileKey(file)];
+        if (download?.jobId !== undefined) fsStopDownload(download.jobId);
+      }
+    });
+    dispatch({ type: 'STOP_DOWNLOAD' });
+  }, [state, getFileKey]);
+
+  const updateDownload = useCallback(
+    (key: string, updates: Partial<Download>) => {
+      const { downloadProgress, ...rest } = updates;
+      dispatch({ type: 'UPDATE_DOWNLOAD', key, updates: rest });
+      if (downloadProgress !== undefined) {
+        dispatchProgress({
+          type: 'UPDATE_PROGRESS',
+          key,
+          progress: downloadProgress,
+        });
+      }
+    },
+    [],
+  );
+
+  const checkFileExists = useCallback(
+    async (file: QueuedFile): Promise<boolean> => {
+      try {
+        const fileRecord = await fileDatabase.getFileById(file.id);
+        if (fileRecord)
+          return (
+            (await exists(fileRecord.path)) || (await exists(file.filePath))
+          );
+        return await exists(file.filePath);
+      } catch {
+        return false;
+      }
     },
     [fileDatabase],
   );
 
-  const [downloads, setDownloads] = useState<Downloads>({});
-  const [downloadQueue, setDownloadQueue] = useState<DownloadQueue>({
-    files: [],
-    isDownloading: false,
-    currentFileIndex: 0,
-    activeDownloadIds: new Set(),
-    overallProgress: 0,
-    hasCompleted: false,
-    isProcessingFile: false,
-    hasFailure: false,
-  });
-
-  const downloadQueueRef = useRef(downloadQueue);
-  downloadQueueRef.current = downloadQueue;
-
-  const downloadsRef = useRef(downloads);
-  downloadsRef.current = downloads;
-
-  const downloadResultsRef = useRef({ successCount: 0, errorCount: 0 });
-  const pendingFeedbackRef = useRef<{
-    successCount: number;
-    errorCount: number;
-  } | null>(null);
-
-  const processDownloadQueueRef = useRef<(() => void) | undefined>(undefined);
-
-  useEffect(() => {
-    downloadsRef.current = downloads;
-  }, [downloads]);
-
-  useEffect(() => {
-    if (
-      pendingFeedbackRef.current &&
-      !downloadQueue.isDownloading &&
-      downloadQueue.hasCompleted
-    ) {
-      const { successCount, errorCount } = pendingFeedbackRef.current;
-
-      if (errorCount === 0) {
-        setFeedback({
-          text: t('common.downloadCompleted'),
-          isPersistent: false,
-        });
-      } else {
-        setFeedback({
-          text: t('common.downloadCompletedWithErrors', {
-            successCount,
-            errorCount,
-          }),
-          isPersistent: false,
-        });
-      }
-
-      pendingFeedbackRef.current = null;
-    }
-  }, [downloadQueue.isDownloading, downloadQueue.hasCompleted, setFeedback, t]);
-
-  const downloadSingleFile = useCallback(
-    async (file: QueuedFile) => {
-      const key = `${file.url}:${file.filePath}`;
-
-      setDownloads(prev => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          downloadProgress: 0,
-          phase: DownloadPhase.Downloading,
-          error: undefined,
-          isDownloaded: false,
-        },
-      }));
-
-      try {
-        const directoryPath = file.filePath.substring(
-          0,
-          file.filePath.lastIndexOf('/'),
-        );
-        await mkdir(directoryPath, { NSURLIsExcludedFromBackupKey: true });
-
-        const { jobId, promise } = downloadFile({
-          fromUrl: file.url,
-          toFile: file.filePath,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          begin: () => {},
-          progress: ({ bytesWritten, contentLength }) => {
-            const fileProgress = bytesWritten / contentLength;
-
-            setDownloads(prev => ({
-              ...prev,
-              [key]: {
-                ...prev[key],
-                downloadProgress: fileProgress,
-              },
-            }));
-
-            setDownloadQueue(prev => {
-              const currentDownloads = downloadsRef.current;
-              const totalFiles = prev.files.length;
-              const completedFiles = prev.files.filter(
-                f =>
-                  prev.activeDownloadIds.has(f.id) === false &&
-                  currentDownloads[`${f.url}:${f.filePath}`]?.isDownloaded ===
-                    true,
-              ).length;
-
-              const activeProgresses = prev.files
-                .filter(f => prev.activeDownloadIds.has(f.id))
-                .map(f => {
-                  const fileKey = `${f.url}:${f.filePath}`;
-                  return currentDownloads[fileKey]?.downloadProgress ?? 0;
-                });
-
-              const activeProgressSum = activeProgresses.reduce(
-                (sum, p) => sum + p,
-                0,
-              );
-              const activeCount = activeProgresses.length;
-
-              const overallProgress =
-                activeCount > 0
-                  ? (completedFiles + activeProgressSum / activeCount) /
-                    totalFiles
-                  : completedFiles / totalFiles;
-
-              return {
-                ...prev,
-                currentFileIndex: completedFiles,
-                overallProgress: Math.min(overallProgress, 1),
-              };
-            });
-          },
-        });
-
-        setDownloads(prev => ({
-          ...prev,
-          [key]: {
-            ...prev[key],
-            jobId,
-          },
-        }));
-
-        const result = await promise;
-        if (result.statusCode !== 200) {
-          throw new Error(t('common.downloadError'));
-        }
-
-        setDownloads(prev => ({
-          ...prev,
-          [key]: {
-            ...prev[key],
-            isDownloaded: true,
-            downloadProgress: undefined,
-            phase: DownloadPhase.Completed,
-            error: undefined,
-          },
-        }));
-
-        try {
-          const fileExists = await exists(file.filePath);
-          if (!fileExists) {
-            console.warn(
-              'File does not exist, skipping SQLite metadata save:',
-              file.filePath,
-            );
-          } else {
-            const fileStats = await stat(file.filePath);
-            const filename = file.filePath.split('/').pop() || '';
-            const mimeType =
-              filename.split('.').pop() || 'application/octet-stream';
-
-            let checksum = 'checksum_error';
-            try {
-              checksum = await calculateFileChecksum(file.filePath);
-            } catch (checksumError) {
-              console.warn(
-                'Could not calculate checksum, using placeholder:',
-                checksumError,
-              );
-            }
-
-            await insertFileToSQLite({
-              id: file.id,
-              area: `course-${file.contextId}`,
-              path: file.filePath,
-              filename,
-              mime: mimeType,
-              checksum,
-              sizeKb: Math.round(fileStats.size / 1024),
-              downloadTime: new Date().toISOString(),
-              updateTime: undefined,
-            });
-          }
-        } catch (error) {
-          console.error('Error saving file metadata to SQLite:', error);
-        }
-
-        downloadResultsRef.current.successCount++;
-      } catch (e) {
-        const errorMessage = e instanceof Error ? e.message : String(e);
-        setDownloads(prev => ({
-          ...prev,
-          [key]: {
-            ...prev[key],
-            isDownloaded: false,
-            downloadProgress: undefined,
-            phase: DownloadPhase.Error,
-            error: errorMessage,
-          },
-        }));
-
-        downloadResultsRef.current.errorCount++;
-
-        setDownloadQueue(prev => ({
-          ...prev,
-          hasFailure: true,
-        }));
-      } finally {
-        setDownloadQueue(prev => {
-          const newActiveIds = new Set(prev.activeDownloadIds);
-          newActiveIds.delete(file.id);
-
-          const currentDownloads = downloadsRef.current;
-          const completedFiles = prev.files.filter(
-            f =>
-              !newActiveIds.has(f.id) &&
-              currentDownloads[`${f.url}:${f.filePath}`]?.isDownloaded === true,
-          ).length;
-
-          const allFilesProcessed = prev.files.every(
-            f =>
-              newActiveIds.has(f.id) === false &&
-              (currentDownloads[`${f.url}:${f.filePath}`]?.isDownloaded ===
-                true ||
-                currentDownloads[`${f.url}:${f.filePath}`]?.isDownloaded ===
-                  false),
-          );
-
-          const newState: DownloadQueue =
-            allFilesProcessed && newActiveIds.size === 0
-              ? {
-                  ...prev,
-                  isDownloading: false,
-                  currentFileIndex: 0,
-                  activeDownloadIds: new Set<string>(),
-                  overallProgress: 1,
-                  hasCompleted: true,
-                  files: [],
-                  isProcessingFile: false,
-                  hasFailure: false,
-                }
-              : {
-                  ...prev,
-                  currentFileIndex: completedFiles,
-                  activeDownloadIds: newActiveIds,
-                  isProcessingFile: newActiveIds.size > 0,
-                };
-
-          if (allFilesProcessed && newActiveIds.size === 0) {
-            pendingFeedbackRef.current = { ...downloadResultsRef.current };
-          }
-
-          downloadQueueRef.current = newState as DownloadQueue;
-
-          setTimeout(() => {
-            processDownloadQueueRef.current?.();
-          }, 0);
-
-          return newState;
-        });
-      }
-    },
-    [
-      token,
-      t,
-      setDownloads,
-      setDownloadQueue,
-      insertFileToSQLite,
-      calculateFileChecksum,
-    ],
-  );
-
-  const processDownloadQueue = useCallback(() => {
-    const currentQueue = downloadQueueRef.current;
-    const currentDownloads = downloadsRef.current;
-
-    if (!currentQueue.isDownloading) {
-      return;
-    }
-
-    const pendingFiles = currentQueue.files.filter(
-      file =>
-        !currentQueue.activeDownloadIds.has(file.id) &&
-        !currentDownloads[`${file.url}:${file.filePath}`]?.isDownloaded,
-    );
-
-    if (
-      pendingFiles.length === 0 &&
-      currentQueue.activeDownloadIds.size === 0
-    ) {
-      setDownloadQueue(prev => {
-        pendingFeedbackRef.current = { ...downloadResultsRef.current };
-
-        return {
-          ...prev,
-          isDownloading: false,
-          currentFileIndex: 0,
-          activeDownloadIds: new Set(),
-          overallProgress: 1,
-          hasCompleted: true,
-          files: [],
-          isProcessingFile: false,
-          hasFailure: false,
-        };
-      });
-      return;
-    }
-
-    const availableSlots =
-      MAX_CONCURRENT_DOWNLOADS - currentQueue.activeDownloadIds.size;
-    const filesToStart = pendingFiles.slice(0, availableSlots);
-
-    if (filesToStart.length > 0) {
-      setDownloadQueue(prev => {
-        const newActiveIds = new Set(prev.activeDownloadIds);
-        filesToStart.forEach(file => newActiveIds.add(file.id));
-
-        return {
-          ...prev,
-          activeDownloadIds: newActiveIds,
-          isProcessingFile: true,
-        };
-      });
-
-      filesToStart.forEach(file => {
-        downloadSingleFile(file);
-      });
-    }
-  }, [downloadSingleFile]);
-
-  processDownloadQueueRef.current = processDownloadQueue;
-
-  const addToQueue = useCallback((file: QueuedFile) => {
-    setDownloadQueue(prev => {
-      if (prev.isDownloading) {
-        return prev;
-      }
-      return {
-        ...prev,
-        files: [...prev.files.filter(f => f.id !== file.id), file],
-      };
-    });
-  }, []);
-
-  const removeFromQueue = useCallback((fileId: string) => {
-    setDownloadQueue(prev => {
-      if (prev.isDownloading) {
-        return prev;
-      }
-      return {
-        ...prev,
-        files: prev.files.filter(f => f.id !== fileId),
-      };
-    });
-  }, []);
-
-  const clearQueue = useCallback(() => {
-    setDownloadQueue(prev => {
-      if (prev.isDownloading) {
-        return prev;
-      }
-      return {
-        files: [],
-        isDownloading: false,
-        currentFileIndex: 0,
-        activeDownloadIds: new Set(),
-        overallProgress: 0,
-        hasCompleted: false,
-        isProcessingFile: false,
-        hasFailure: false,
-      };
-    });
-  }, []);
-
-  const startQueueDownload = useCallback(() => {
-    const currentQueue = downloadQueueRef.current;
-    if (currentQueue.files.length === 0) return;
-
-    downloadResultsRef.current = { successCount: 0, errorCount: 0 };
-
-    setDownloadQueue(prev => ({
-      ...prev,
-      isDownloading: true,
-      currentFileIndex: 0,
-      activeDownloadIds: new Set(),
-      overallProgress: 0,
-      hasCompleted: false,
-      isProcessingFile: false,
-      hasFailure: false,
-    }));
-
-    setTimeout(() => {
-      processDownloadQueue();
-    }, 0);
-  }, [processDownloadQueue]);
-
-  const stopQueueDownload = useCallback(() => {
-    const currentQueue = downloadQueueRef.current;
-
-    currentQueue.activeDownloadIds.forEach(fileId => {
-      const file = currentQueue.files.find(f => f.id === fileId);
-      if (file) {
-        const key = `${file.url}:${file.filePath}`;
-        const currentDownload = downloads[key];
-        if (currentDownload?.jobId) {
-          fsStopDownload(currentDownload.jobId);
-        }
-      }
-    });
-
-    setDownloadQueue(prev => ({
-      ...prev,
-      isDownloading: false,
-      activeDownloadIds: new Set(),
-    }));
-  }, [downloads]);
-
-  const updateDownload = useCallback(
-    (key: string, updates: Partial<Download>) => {
-      setDownloads(prev => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          ...updates,
-        },
-      }));
-    },
-    [setDownloads],
-  );
-
   const addFilesToQueue = useCallback(
-    (
+    async (
       files: Omit<QueuedFile, 'contextId' | 'contextType'>[],
       contextId: string | number,
       contextType?: string,
@@ -526,311 +536,111 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         contextId,
         contextType,
       }));
-
-      setDownloadQueue(prev => {
-        if (prev.isDownloading) {
-          return prev;
-        }
-
-        const newFiles = filesWithContext.filter(
-          newFile => !prev.files.some(f => f.id === newFile.id),
-        );
-
-        newFiles.forEach(file => {
-          const key = `${file.url}:${file.filePath}`;
-          setDownloads(prevDownloads => {
-            const existingDownload = prevDownloads[key];
-            return {
-              ...prevDownloads,
-              [key]: {
+      await Promise.all(
+        filesWithContext.map(async file => {
+          const key = getFileKey(file);
+          const existingDownload = state.downloads[key];
+          if (await checkFileExists(file)) {
+            dispatch({
+              type: 'UPDATE_DOWNLOAD',
+              key,
+              updates: {
+                ...existingDownload,
+                phase: DownloadPhase.Completed,
+                isDownloaded: true,
+              },
+            });
+          } else {
+            dispatch({
+              type: 'UPDATE_DOWNLOAD',
+              key,
+              updates: {
                 ...existingDownload,
                 phase: DownloadPhase.Queued,
-                isDownloaded: existingDownload?.isDownloaded ?? false,
-                downloadProgress: undefined,
+                isDownloaded: false,
               },
-            };
-          });
-        });
-
-        return {
-          ...prev,
-          files: [...prev.files, ...newFiles],
-        };
-      });
+            });
+          }
+        }),
+      );
+      dispatch({ type: 'ADD_FILES', files: filesWithContext });
     },
-    [setDownloadQueue],
+    [getFileKey, state.downloads, checkFileExists],
   );
 
   const removeFilesFromQueue = useCallback(
     (fileIds: string[]) => {
-      setDownloadQueue(prev => {
-        if (prev.isDownloading) {
-          return prev;
-        }
-        return {
-          ...prev,
-          files: prev.files.filter(file => !fileIds.includes(file.id)),
-        };
-      });
+      if (!state.isDownloading)
+        dispatch({ type: 'REMOVE_FILES', ids: fileIds });
     },
-    [setDownloadQueue],
+    [state.isDownloading],
   );
 
   const getFilesByContext = useCallback(
-    (contextId: string | number, contextType?: string) => {
-      return downloadQueue.files.filter(
-        file =>
-          file.contextId === contextId &&
-          (contextType === undefined || file.contextType === contextType),
-      );
-    },
-    [downloadQueue.files],
+    (contextId: string | number, contextType?: string) =>
+      state.queue.filter(file => matchesContext(file, contextId, contextType)),
+    [state.queue, matchesContext],
   );
 
   const clearContextFiles = useCallback(
     (contextId: string | number, contextType?: string) => {
-      setDownloadQueue(prev => {
-        if (prev.isDownloading) {
-          return prev;
-        }
-        return {
-          ...prev,
-          files: prev.files.filter(
-            file =>
-              !(
-                file.contextId === contextId &&
-                (contextType === undefined || file.contextType === contextType)
-              ),
-          ),
-        };
-      });
-    },
-    [setDownloadQueue],
-  );
-
-  const getDownloadKey = useCallback((request: DownloadRequest): string => {
-    return `${request.source}:${request.destination}`;
-  }, []);
-
-  const status = useCallback(
-    (request: DownloadRequest): Download | undefined => {
-      const key = getDownloadKey(request);
-      return downloads[key];
-    },
-    [downloads, getDownloadKey],
-  );
-
-  const download = useCallback(
-    (...requests: DownloadRequest[]) => {
-      const filesToAdd: QueuedFile[] = requests.map(request => {
-        const contextId =
-          request.area === DownloadArea.Course ? request.id : request.id;
-        const contextType = request.area;
-
-        return {
-          id: request.id,
-          name: request.destination.split('/').pop() || request.id,
-          url: request.source,
-          filePath: request.destination,
-          contextId,
-          contextType,
-        };
-      });
-
-      setDownloadQueue(prev => {
-        if (prev.isDownloading) {
-          return prev;
-        }
-
-        const newFiles = filesToAdd.filter(
-          newFile => !prev.files.some(f => f.id === newFile.id),
-        );
-
-        if (newFiles.length === 0) {
-          return prev;
-        }
-
-        newFiles.forEach(file => {
-          const key = getDownloadKey({
-            area: (file.contextType as DownloadArea) || DownloadArea.Course,
-            id: file.id,
-            source: file.url,
-            destination: file.filePath,
-          });
-
-          setDownloads(prevDownloads => ({
-            ...prevDownloads,
-            [key]: {
-              ...prevDownloads[key],
-              phase: DownloadPhase.Queued,
-              isDownloaded: false,
-              downloadProgress: undefined,
-            },
-          }));
-        });
-
-        return {
-          ...prev,
-          files: [...prev.files, ...newFiles],
-        };
-      });
-
-      processDownloadQueueRef.current?.();
-    },
-    [getDownloadKey],
-  );
-
-  const clear = useCallback(
-    (requestOrArea: DownloadRequest | DownloadArea) => {
-      if (typeof requestOrArea === 'string') {
-        const area = requestOrArea;
-        setDownloadQueue(prev => {
-          if (prev.isDownloading) {
-            return prev;
-          }
-
-          const filesToRemove = prev.files.filter(
-            file => file.contextType === area,
-          );
-
-          filesToRemove.forEach(file => {
-            const key = getDownloadKey({
-              area: (file.contextType as DownloadArea) || DownloadArea.Course,
-              id: file.id,
-              source: file.url,
-              destination: file.filePath,
-            });
-
-            const downloadStatus = downloads[key];
-            if (
-              downloadStatus?.phase !== DownloadPhase.Downloading &&
-              downloadStatus?.phase !== DownloadPhase.Completed
-            ) {
-              setDownloads(prevDownloads => {
-                const newDownloads = { ...prevDownloads };
-                delete newDownloads[key];
-                return newDownloads;
-              });
-            }
-          });
-
-          return {
-            ...prev,
-            files: prev.files.filter(
-              file =>
-                file.contextType !== area ||
-                downloads[
-                  getDownloadKey({
-                    area:
-                      (file.contextType as DownloadArea) || DownloadArea.Course,
-                    id: file.id,
-                    source: file.url,
-                    destination: file.filePath,
-                  })
-                ]?.phase === DownloadPhase.Downloading,
-            ),
-          };
-        });
-      } else {
-        const request = requestOrArea;
-        const key = getDownloadKey(request);
-        const downloadStatus = downloads[key];
-
-        if (
-          downloadStatus?.phase !== DownloadPhase.Downloading &&
-          downloadStatus?.phase !== DownloadPhase.Completed
-        ) {
-          setDownloads(prev => {
-            const newDownloads = { ...prev };
-            delete newDownloads[key];
-            return newDownloads;
-          });
-
-          setDownloadQueue(prev => {
-            if (prev.isDownloading) {
-              return prev;
-            }
-            return {
-              ...prev,
-              files: prev.files.filter(f => f.id !== request.id),
-            };
-          });
-        }
+      if (!state.isDownloading) {
+        const idsToRemove = state.queue
+          .filter(file => matchesContext(file, contextId, contextType))
+          .map(file => file.id);
+        if (idsToRemove.length > 0)
+          dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
       }
     },
-    [downloads, getDownloadKey],
+    [state.isDownloading, state.queue, matchesContext],
   );
 
-  const stop = useCallback(
-    (requestOrArea: DownloadRequest | DownloadArea) => {
-      if (typeof requestOrArea === 'string') {
-        const area = requestOrArea;
-        const currentQueue = downloadQueueRef.current;
-
-        currentQueue.files
-          .filter(file => file.contextType === area)
-          .forEach(file => {
-            const key = getDownloadKey({
-              area: (file.contextType as DownloadArea) || DownloadArea.Course,
-              id: file.id,
-              source: file.url,
-              destination: file.filePath,
-            });
-            const downloadStatus = downloads[key];
-            if (downloadStatus?.jobId) {
-              fsStopDownload(downloadStatus.jobId);
-            }
-          });
-
-        setDownloadQueue(prev => ({
-          ...prev,
-          isDownloading: false,
-          activeDownloadIds: new Set(),
-        }));
-      } else {
-        const request = requestOrArea;
-        const key = getDownloadKey(request);
-        const downloadStatus = downloads[key];
-
-        if (downloadStatus?.jobId) {
-          fsStopDownload(downloadStatus.jobId);
-        }
-
-        setDownloads(prev => ({
-          ...prev,
+  // Use throttled progresses for context value to reduce re-renders
+  // Internal calculations use real-time progresses via progressRef
+  const downloadsWithProgress = useMemo(
+    () =>
+      Object.keys(state.downloads).reduce(
+        (acc, key) => ({
+          ...acc,
           [key]: {
-            ...prev[key],
-            phase: DownloadPhase.Error,
-            downloadProgress: undefined,
+            ...state.downloads[key],
+            downloadProgress: throttledProgresses[key],
           },
-        }));
-      }
-    },
-    [downloads, getDownloadKey],
+        }),
+        {} as Record<string, Download>,
+      ),
+    [state.downloads, throttledProgresses],
+  );
+
+  // Memoize context value to prevent unnecessary re-renders of all consumers
+  // Only re-render consumers when actual values change, not on every progress update
+  const contextValue = useMemo(
+    () => ({
+      downloads: downloadsWithProgress,
+      downloadQueue,
+      startQueueDownload,
+      stopQueueDownload,
+      updateDownload,
+      addFilesToQueue,
+      removeFilesFromQueue,
+      getFilesByContext,
+      clearContextFiles,
+    }),
+    [
+      downloadsWithProgress,
+      downloadQueue,
+      startQueueDownload,
+      stopQueueDownload,
+      updateDownload,
+      addFilesToQueue,
+      removeFilesFromQueue,
+      getFilesByContext,
+      clearContextFiles,
+    ],
   );
 
   return (
-    <DownloadsContext.Provider
-      value={{
-        downloads,
-        downloadQueue,
-        addToQueue,
-        removeFromQueue,
-        clearQueue,
-        startQueueDownload,
-        stopQueueDownload,
-        updateDownload,
-        addFilesToQueue,
-        removeFilesFromQueue,
-        getFilesByContext,
-        clearContextFiles,
-        status,
-        download,
-        clear,
-        stop,
-        queueStatus: downloadQueue,
-      }}
-    >
+    <DownloadsContext.Provider value={contextValue}>
       {children}
     </DownloadsContext.Provider>
   );
