@@ -1,20 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
-import { exists, unlink } from 'react-native-fs';
+import { unlink } from 'react-native-fs';
 
-import { faCloudArrowDown, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
-  BASE_PATH,
-  CourseDirectory,
-  CourseFileOverview,
-} from '@polito/api-client';
+  faCloudArrowDown,
+  faTrash,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 
 import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useGenericDownload } from '../../../core/hooks/useDownloadQueue';
-import { splitNameAndExtension } from '../../../utils/files';
+import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
 import { isDirectory } from '../utils/fs-entry';
 
@@ -91,7 +94,8 @@ export const useFileManagement = ({
   }, [isDownloading]);
 
   const downloadButtonProgress = useMemo(() => {
-    return isDownloading ? downloadQueue.overallProgress : undefined;
+    if (!isDownloading) return undefined;
+    return downloadQueue.overallProgress;
   }, [isDownloading, downloadQueue.overallProgress]);
 
   const downloadButtonStyle = useMemo(() => {
@@ -105,43 +109,44 @@ export const useFileManagement = ({
 
   const getDownloadKey = useCallback(
     (fileId: string, filePath: string) => {
-      const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${fileId}`;
+      const fileUrl = buildCourseFileUrl(courseId, fileId);
       return `${fileUrl}:${filePath}`;
     },
     [courseId],
   );
 
   const selectedDownloadedFiles = useMemo(() => {
+    if (!isDownloading && courseFiles.length === 0) return [];
     return courseFiles.filter(file => {
-      const filePath = file.filePath;
-      const key = getDownloadKey(file.id, filePath);
+      const key = getDownloadKey(file.id, file.filePath);
       return downloads[key]?.isDownloaded === true;
     });
-  }, [courseFiles, downloads, getDownloadKey]);
+  }, [courseFiles, downloads, getDownloadKey, isDownloading]);
 
   const selectedNotDownloadedFiles = useMemo(() => {
+    if (!isDownloading && courseFiles.length === 0) return [];
     return courseFiles.filter(file => {
-      const filePath = file.filePath;
-      const key = getDownloadKey(file.id, filePath);
+      const key = getDownloadKey(file.id, file.filePath);
       return downloads[key]?.isDownloaded !== true;
     });
-  }, [courseFiles, downloads, getDownloadKey]);
+  }, [courseFiles, downloads, getDownloadKey, isDownloading]);
 
   const downloadButtonTitle = useMemo(() => {
+    if (isDownloading) {
+      return t('common.downloadProgress', {
+        current: downloadQueue.currentFileIndex,
+        total: courseFiles.length,
+      });
+    }
     const notDownloadedCount = selectedNotDownloadedFiles.length;
-    return isDownloading
-      ? t('common.downloadProgress', {
-          current: downloadQueue.currentFileIndex,
-          total: courseFiles.length,
-        })
-      : notDownloadedCount > 0
-        ? `${t('common.download')} (${notDownloadedCount})`
-        : t('common.download');
+    return notDownloadedCount > 0
+      ? `${t('common.download')} (${notDownloadedCount})`
+      : t('common.download');
   }, [
     isDownloading,
-    selectedNotDownloadedFiles.length,
-    courseFiles.length,
     downloadQueue.currentFileIndex,
+    courseFiles.length,
+    selectedNotDownloadedFiles.length,
     t,
   ]);
 
@@ -172,31 +177,28 @@ export const useFileManagement = ({
 
   const sortByDownloadStatus = useCallback(
     (files: (CourseDirectory | CourseFileOverview)[]) => {
+      if (!downloads || Object.keys(downloads).length === 0) {
+        return files;
+      }
       return files.sort((a, b) => {
-        const aKey = `${BASE_PATH}/courses/${courseId}/files/${a.id}:${[
+        const aFilePath = buildCourseFilePath(
           courseFilesCache,
-          (a as any).location?.substring(1),
-          [
-            a.name.split('.')[0] ? `${a.name.split('.')[0]} (${a.id})` : a.id,
-            a.name.split('.').pop(),
-          ]
-            .filter(Boolean)
-            .join('.'),
-        ]
-          .filter(Boolean)
-          .join('/')}`;
-        const bKey = `${BASE_PATH}/courses/${courseId}/files/${b.id}:${[
+          (a as any).location,
+          a.id,
+          a.name,
+          (a as any).mimeType,
+        );
+        const aKey = `${buildCourseFileUrl(courseId, a.id)}:${aFilePath}`;
+
+        const bFilePath = buildCourseFilePath(
           courseFilesCache,
-          (b as any).location?.substring(1),
-          [
-            b.name.split('.')[0] ? `${b.name.split('.')[0]} (${b.id})` : b.id,
-            b.name.split('.').pop(),
-          ]
-            .filter(Boolean)
-            .join('.'),
-        ]
-          .filter(Boolean)
-          .join('/')}`;
+          (b as any).location,
+          b.id,
+          b.name,
+          (b as any).mimeType,
+        );
+        const bKey = `${buildCourseFileUrl(courseId, b.id)}:${bFilePath}`;
+
         const aDownloaded = downloads[aKey]?.isDownloaded ?? false;
         const bDownloaded = downloads[bKey]?.isDownloaded ?? false;
         return bDownloaded ? 1 : aDownloaded ? -1 : 0;
@@ -246,46 +248,22 @@ export const useFileManagement = ({
       }
     });
 
-    const fileChecks = await Promise.all(
-      allFiles.map(async file => {
-        const [filename, extension] = splitNameAndExtension(file.name);
-        const cachedFilePath = [
-          courseFilesCache,
-          file.location?.substring(1),
-          [filename ? `${filename} (${file.id})` : file.id, extension]
-            .filter(Boolean)
-            .join('.'),
-        ]
-          .filter(Boolean)
-          .join('/');
+    const filesToAdd = allFiles.map(file => {
+      const fileUrl = buildCourseFileUrl(courseId, file.id);
+      const cachedFilePath = buildCourseFilePath(
+        courseFilesCache,
+        file.location,
+        file.id,
+        file.name,
+      );
 
-        const fileExists = await exists(cachedFilePath);
-        return { file, fileExists };
-      }),
-    );
-
-    const filesToAdd = fileChecks
-      .filter(({ fileExists }) => !fileExists)
-      .map(({ file }) => {
-        const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${file.id}`;
-        const [filename, extension] = splitNameAndExtension(file.name);
-        const cachedFilePath = [
-          courseFilesCache,
-          file.location?.substring(1),
-          [filename ? `${filename} (${file.id})` : file.id, extension]
-            .filter(Boolean)
-            .join('.'),
-        ]
-          .filter(Boolean)
-          .join('/');
-
-        return {
-          id: file.id,
-          name: file.name,
-          url: fileUrl,
-          filePath: cachedFilePath,
-        };
-      });
+      return {
+        id: file.id,
+        name: file.name,
+        url: fileUrl,
+        filePath: cachedFilePath,
+      };
+    });
 
     if (filesToAdd.length > 0) {
       addFiles(filesToAdd);
@@ -477,6 +455,65 @@ export const useFileManagement = ({
     clearFiles,
   ]);
 
+  const renderCtaButtons = useCallback(
+    (useContainer: boolean = false) => {
+      if (!enableMultiSelect) return null;
+
+      const removeButton = !isDownloading
+        ? React.createElement(CtaButton, {
+            title: removeButtonTitle,
+            icon: faTrash,
+            action: handleRemoveAction,
+            style: removeButtonStyle,
+            disabled: isRemoveButtonDisabled,
+            absolute: true,
+            destructive: true,
+          })
+        : null;
+
+      const downloadButton = React.createElement(CtaButton, {
+        title: downloadButtonTitle,
+        icon: downloadButtonIcon,
+        action: handleDownloadAction,
+        progress: downloadButtonProgress,
+        style: downloadButtonStyle,
+        disabled: isDownloadButtonDisabled,
+        absolute: true,
+      });
+
+      const buttons = React.createElement(
+        React.Fragment,
+        null,
+        removeButton,
+        downloadButton,
+      );
+
+      if (useContainer) {
+        return React.createElement(
+          CtaButtonContainer,
+          { absolute: false },
+          buttons,
+        );
+      }
+
+      return buttons;
+    },
+    [
+      enableMultiSelect,
+      isDownloading,
+      removeButtonTitle,
+      handleRemoveAction,
+      removeButtonStyle,
+      isRemoveButtonDisabled,
+      downloadButtonTitle,
+      downloadButtonIcon,
+      handleDownloadAction,
+      downloadButtonProgress,
+      downloadButtonStyle,
+      isDownloadButtonDisabled,
+    ],
+  );
+
   useEffect(() => {
     if (isDownloading) {
       setWasDownloading(true);
@@ -519,9 +556,12 @@ export const useFileManagement = ({
     downloadButtonProgress,
     downloadButtonStyle,
     isDownloadButtonDisabled,
+    isDownloading,
 
     removeButtonTitle,
     removeButtonStyle,
     isRemoveButtonDisabled,
+
+    renderCtaButtons,
   };
 };

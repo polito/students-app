@@ -51,9 +51,6 @@ export type Downloads = Record<string, Download>;
 export const DownloadsContext = createContext<{
   downloads: Downloads;
   downloadQueue: DownloadQueue;
-  addToQueue: (_file: QueuedFile) => void;
-  removeFromQueue: (_fileId: string) => void;
-  clearQueue: () => void;
   startQueueDownload: () => void;
   stopQueueDownload: () => void;
   updateDownload: (_key: string, _updates: Partial<Download>) => void;
@@ -71,11 +68,6 @@ export const DownloadsContext = createContext<{
     _contextId: string | number,
     _contextType?: string,
   ) => void;
-  status: (_request: DownloadRequest) => Download | undefined;
-  download: (..._requests: DownloadRequest[]) => void;
-  clear: (_requestOrArea: DownloadRequest | DownloadArea) => void;
-  stop: (_requestOrArea: DownloadRequest | DownloadArea) => void;
-  queueStatus: DownloadQueue;
 } | null>(null);
 
 export const useDownloadsContext = () => {
