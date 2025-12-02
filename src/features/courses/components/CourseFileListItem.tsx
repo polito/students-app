@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 import { stat } from 'react-native-fs';
-import { extension, lookup } from 'react-native-mime-types';
 
 import {
   faCloudArrowDown,
@@ -14,7 +13,7 @@ import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
+import { CourseFileOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 
 import { Checkbox } from '~/core/components/Checkbox';
@@ -25,8 +24,11 @@ import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { useDownloadFile } from '../../../core/hooks/useDownloadFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
-import { formatFileSize, splitNameAndExtension } from '../../../utils/files';
-import { notNullish } from '../../../utils/predicates';
+import {
+  buildCourseFilePath,
+  buildCourseFileUrl,
+  formatFileSize,
+} from '../../../utils/files';
 import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -123,24 +125,25 @@ export const CourseFileListItem = memo(
     const [isCorrupted, setIsCorrupted] = useState(false);
     const { downloadQueue, addFilesToQueue, removeFilesFromQueue } =
       useDownloadsContext();
-    const isInQueue = downloadQueue.files.some(f => f.id === item.id);
-    const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
-    const cachedFilePath = useMemo(() => {
-      let ext: string | null = extension(item.mimeType!);
-      const [filename, extensionFromName] = splitNameAndExtension(item.name);
-      if (!ext && extensionFromName && lookup(extensionFromName)) {
-        ext = extensionFromName;
-      }
-      return [
-        courseFilesCache,
-        item.location?.substring(1),
-        [filename ? `${filename} (${item.id})` : item.id, ext]
-          .filter(notNullish)
-          .join('.'),
-      ]
-        .filter(Boolean)
-        .join('/');
-    }, [courseFilesCache, item]);
+    const isInQueue = useMemo(
+      () => downloadQueue.files.some(f => f.id === item.id),
+      [downloadQueue.files, item.id],
+    );
+    const fileUrl = useMemo(
+      () => buildCourseFileUrl(courseId, item.id),
+      [courseId, item.id],
+    );
+    const cachedFilePath = useMemo(
+      () =>
+        buildCourseFilePath(
+          courseFilesCache,
+          item.location,
+          item.id,
+          item.name,
+          item.mimeType,
+        ),
+      [courseFilesCache, item.location, item.id, item.name, item.mimeType],
+    );
 
     const {
       isDownloaded,
@@ -224,29 +227,40 @@ export const CourseFileListItem = memo(
       startDownload,
     ]);
 
+    const handleToggleQueue = useCallback(() => {
+      if (isInQueue) {
+        removeFilesFromQueue([item.id]);
+      } else {
+        addFilesToQueue(
+          [
+            {
+              id: item.id,
+              name: item.name,
+              url: fileUrl,
+              filePath: cachedFilePath,
+            },
+          ],
+          courseId,
+          'course',
+        );
+      }
+    }, [
+      isInQueue,
+      item.id,
+      item.name,
+      fileUrl,
+      cachedFilePath,
+      courseId,
+      removeFilesFromQueue,
+      addFilesToQueue,
+    ]);
+
     const trailingItem = useMemo(
       () =>
         enableMultiSelect ? (
           <Checkbox
             isChecked={isInQueue}
-            onPress={() => {
-              if (isInQueue) {
-                removeFilesFromQueue([item.id]);
-              } else {
-                addFilesToQueue(
-                  [
-                    {
-                      id: item.id,
-                      name: item.name,
-                      url: fileUrl,
-                      filePath: cachedFilePath,
-                    },
-                  ],
-                  courseId,
-                  'course',
-                );
-              }
-            }}
+            onPress={handleToggleQueue}
             textStyle={{ marginHorizontal: 0 }}
             containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
           />
@@ -268,9 +282,7 @@ export const CourseFileListItem = memo(
               icon={faXmark}
               accessibilityLabel={t('common.stop')}
               adjustSpacing="right"
-              onPress={() => {
-                stopDownload();
-              }}
+              onPress={stopDownload}
               {...iconProps}
               hitSlop={{
                 left: +spacing[2],
@@ -299,13 +311,7 @@ export const CourseFileListItem = memo(
       [
         enableMultiSelect,
         isInQueue,
-        removeFilesFromQueue,
-        addFilesToQueue,
-        item.id,
-        item.name,
-        fileUrl,
-        cachedFilePath,
-        courseId,
+        handleToggleQueue,
         isDownloaded,
         downloadProgress,
         t,
@@ -328,30 +334,7 @@ export const CourseFileListItem = memo(
               : t('common.stop')
             : t('common.open')
         }
-        onPress={
-          !enableMultiSelect
-            ? () => {
-                downloadFile();
-              }
-            : () => {
-                if (isInQueue) {
-                  removeFilesFromQueue([item.id]);
-                } else {
-                  addFilesToQueue(
-                    [
-                      {
-                        id: item.id,
-                        name: item.name,
-                        url: fileUrl,
-                        filePath: cachedFilePath,
-                      },
-                    ],
-                    courseId,
-                    'course',
-                  );
-                }
-              }
-        }
+        onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
         title={item.name ?? t('common.unnamedFile')}
