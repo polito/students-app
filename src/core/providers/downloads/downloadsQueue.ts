@@ -4,18 +4,15 @@
  */
 import { Dispatch, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { stopDownload as fsStopDownload } from 'react-native-fs';
+import { exists, stopDownload as fsStopDownload } from 'react-native-fs';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { MAX_CONCURRENT_DOWNLOADS } from '../../constants';
 import { DownloadPhase, QueuedFile } from '../../contexts/DownloadsContext';
 import { useFeedbackContext } from '../../contexts/FeedbackContext';
-import {
-  checkFileExists,
-  getFileKey,
-  matchesContext,
-} from './downloadsFileUtils';
+import { getFileDatabase } from '../../database/FileDatabase';
+import { getFileKey, matchesContext } from './downloadsFileUtils';
 import {
   Action,
   ProgressAction,
@@ -162,11 +159,33 @@ export const useQueueManagement = ({
         contextId,
         contextType,
       }));
-      await Promise.all(
+
+      dispatch({ type: 'ADD_FILES', files: filesWithContext });
+
+      const fileDatabase = getFileDatabase();
+      const area = `course-${contextId}`;
+      const allFilesInArea = await fileDatabase.getFilesByArea(area);
+      const filesMap = new Map(allFilesInArea.map((f: any) => [f.id, f]));
+
+      Promise.all(
         filesWithContext.map(async file => {
           const key = getFileKey(file);
           const existingDownload = state.downloads[key];
-          if (await checkFileExists(file)) {
+          const fileRecord = filesMap.get(file.id);
+
+          const possiblePaths = [fileRecord?.path, file.filePath].filter(
+            Boolean,
+          ) as string[];
+
+          let fileExists = false;
+          for (const path of possiblePaths) {
+            if (await exists(path).catch(() => false)) {
+              fileExists = true;
+              break;
+            }
+          }
+
+          if (fileExists) {
             dispatch({
               type: 'UPDATE_DOWNLOAD',
               key,
@@ -188,8 +207,7 @@ export const useQueueManagement = ({
             });
           }
         }),
-      );
-      dispatch({ type: 'ADD_FILES', files: filesWithContext });
+      ).catch(console.error);
     },
     [state.downloads, dispatch],
   );
