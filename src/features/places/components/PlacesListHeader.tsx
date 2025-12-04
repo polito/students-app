@@ -27,6 +27,7 @@ interface PlacesListHeaderProps {
   elevators: number;
   steps: number;
   avoidStairs: boolean;
+  isLoadingPath: boolean;
   dark: boolean;
 
   setIsExpandedStart: (value: boolean) => void;
@@ -53,6 +54,7 @@ const PlacesListHeaderComponent = ({
   elevators,
   steps,
   avoidStairs,
+  isLoadingPath,
   setIsExpandedStart,
   setIsExpandedDest,
   handleSearchStart,
@@ -149,6 +151,7 @@ const PlacesListHeaderComponent = ({
         </View>
         {computeButtonState > 0 &&
           distance > 0 &&
+          !isLoadingPath &&
           !isExpandedDest &&
           !isExpandedStart && (
             <View
@@ -186,7 +189,7 @@ const PlacesListHeaderComponent = ({
             </View>
           </View>
         )}
-        {steps > 0 && computeButtonState > 0 && (
+        {steps > 0 && computeButtonState > 0 && !isLoadingPath && (
           <View style={styles.stepsInfoContainer}>
             <View style={styles.stepsInfo}>
               <Icon

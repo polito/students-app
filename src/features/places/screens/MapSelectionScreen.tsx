@@ -1,6 +1,7 @@
 import {
   useCallback,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useState,
@@ -71,10 +72,11 @@ export const MapSelectionScreen = ({ navigation, route }: Props) => {
     floorId: floorId,
   });
 
-  useCallback(async () => {
-    if (!campus || !cameraRef.current) {
+  const initUserPosition = useCallback(async () => {
+    if (!campus) {
       return;
     }
+
     const location = await Mapbox.locationManager.getLastKnownLocation();
     if (clickMode === 1 && location) {
       const { latitude: latCampus, longitude: lonCampus, extent } = campus;
@@ -91,11 +93,9 @@ export const MapSelectionScreen = ({ navigation, route }: Props) => {
         userLat >= minLat &&
         userLat <= maxLat;
 
-      if (isInside) {
-        cameraRef.current?.flyTo([userLon, userLat]);
-      }
+      return isInside;
     }
-  }, [clickMode, campus, cameraRef]);
+  }, [clickMode, campus]);
 
   useCallback(() => {
     if (!confirmSelection) setSelectedPlace(null);
@@ -131,6 +131,14 @@ export const MapSelectionScreen = ({ navigation, route }: Props) => {
       2000,
     );
   }, [cameraRef, campus]);
+
+  useEffect(() => {
+    initUserPosition().then(isInside => {
+      if (isInside && clickMode === 1) {
+        centerToUserLocation();
+      }
+    });
+  }, [clickMode, initUserPosition, centerToUserLocation]);
 
   const floorSelectorButton = (
     <TranslucentCard

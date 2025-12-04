@@ -91,7 +91,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const [bottomSheetHeight, setBottomSheetHeight] = useState(0);
   const styles = useStylesheet(createStyles);
 
-  const [clickMode, setClickMode] = useState<number>(0); // 0 nothing, 1 start, 2 dest
+  //const [clickMode, setClickMode] = useState<number>(0); // 0 nothing, 1 start, 2 dest
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const { fontSizes, spacing, palettes, colors } = useTheme();
@@ -108,7 +108,11 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const headerRight = useCallback(
     () => (
       <TouchableOpacity
-        onPress={() => setComputeButtonState(0)}
+        onPress={() => {
+          Clarity.sendCustomEvent('Modify Button (IndicationsScreen) Clicked');
+          setComputeButtonState(0);
+          setDebouncedSearch('');
+        }}
         style={styles.modifyButton}
       >
         <View>
@@ -189,6 +193,16 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     computeButtonState: computeButtonState,
     generateFeedback: provideFeedback,
   });
+
+  useEffect(() => {
+    if (isLoadingPath || computeButtonState === 0) return;
+
+    const isPathNotFound = !pathFeat || pathFeat.data.features.length === 0;
+
+    if (isPathNotFound) {
+      provideFeedback();
+    }
+  }, [isLoadingPath, computeButtonState, pathFeat, provideFeedback]);
 
   useEffect(() => {
     if (pathFeat && pathFeat.data.features.length > 0) {
@@ -327,16 +341,14 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
 
       if (item.type === 'special') {
         if (currentIsExpandedStart) {
-          setClickMode(1);
           setSelectionIcon('start');
           navigation.navigate('MapSelection', {
-            clickMode,
+            clickMode: 1,
           });
         } else if (currentIsExpandedDest) {
-          setClickMode(2);
           setSelectionIcon('destination');
           navigation.navigate('MapSelection', {
-            clickMode: clickMode,
+            clickMode: 2,
           });
         }
       } else {
@@ -353,7 +365,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       }
     },
     [
-      setClickMode,
+      //setClickMode,
       handleRoom,
       setSearchStart,
       setIsExpandedStart,
@@ -362,7 +374,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       setSelectionIcon,
       //setSelectedId,
       navigation,
-      clickMode,
+      //clickMode,
       //setDebouncedSearch,
       //setSelectionMode,
       t,
@@ -427,6 +439,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         elevators={elevators ? elevators : 0}
         steps={steps ? steps : 0}
         avoidStairs={avoidStairs}
+        isLoadingPath={isLoadingPath}
         dark={dark}
         setIsExpandedStart={setIsExpandedStart}
         setIsExpandedDest={setIsExpandedDest}
@@ -449,6 +462,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     elevators,
     steps,
     avoidStairs,
+    isLoadingPath,
     dark,
     searchStart,
     searchDest,
@@ -472,7 +486,8 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
             destRoom?.placeId &&
             pathFeat?.data.features.length
           ) {
-            setSelectedSegmentId(pathFeat.data.features[0].segmentId);
+            setSelectedSegmentId(0);
+            Clarity.sendCustomEvent('ShowItineraryButton Clicked');
             navigation.navigate('Itinerary', {
               pathFeat: pathFeat,
               startRoom: startRoom.placeId,
@@ -511,7 +526,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     }
     setIsExpandedDest(false);
     setIsExpandedStart(false);
-    setClickMode(0);
+    //setClickMode(0);
     setDebouncedSearch('');
     setSelectionMode(false);
     setSelectedPlace(null);
@@ -519,7 +534,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     selectedPlace,
     handleRoom,
     selectionIcon,
-    clickMode,
+    //clickMode,
     setSelectionMode,
     setDebouncedSearch,
     setSelectedPlace,
@@ -539,44 +554,42 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         },
       }) => setScreenHeight(height)}
     >
-      {clickMode === 0 && (
-        <BottomSheetUI
-          ref={innerRef}
-          index={computeButtonState === 0 ? 0 : 1}
-          snapPoints={['43%', '55%', '100%']}
-          onChange={(_, pos) => setBottomSheetHeight(pos)}
-        >
-          <BottomSheetFlatList<ListDataItem>
-            data={dataWithDefault}
-            keyExtractor={(item, index) =>
-              item.type === 'special'
-                ? `special-item-${index}`
-                : `${item.place.id ?? index}`
-            }
-            renderItem={renderItem}
-            keyboardShouldPersistTaps="handled"
-            ItemSeparatorComponent={IndentedDivider}
-            ListEmptyComponent={
-              isExpandedStart || isExpandedDest ? (
-                isLoading ? (
-                  <ActivityIndicator style={{ marginVertical: spacing[8] }} />
-                ) : (
-                  <EmptyState
-                    message={t('placesScreen.noPlacesFound')}
-                    icon={faSignsPost}
-                  />
-                )
-              ) : null
-            }
-            ListHeaderComponent={listHeader}
-            ListFooterComponent={
-              !isExpandedStart && !isExpandedDest && !isFeedbackVisible
-                ? listFooter
-                : null
-            }
-          />
-        </BottomSheetUI>
-      )}
+      <BottomSheetUI
+        ref={innerRef}
+        index={computeButtonState === 0 ? 0 : 1}
+        snapPoints={['43%', '55%', '100%']}
+        onChange={(_, pos) => setBottomSheetHeight(pos)}
+      >
+        <BottomSheetFlatList<ListDataItem>
+          data={dataWithDefault}
+          keyExtractor={(item, index) =>
+            item.type === 'special'
+              ? `special-item-${index}`
+              : `${item.place.id ?? index}`
+          }
+          renderItem={renderItem}
+          keyboardShouldPersistTaps="handled"
+          ItemSeparatorComponent={IndentedDivider}
+          ListEmptyComponent={
+            isExpandedStart || isExpandedDest ? (
+              isLoading ? (
+                <ActivityIndicator style={{ marginVertical: spacing[8] }} />
+              ) : (
+                <EmptyState
+                  message={t('placesScreen.noPlacesFound')}
+                  icon={faSignsPost}
+                />
+              )
+            ) : null
+          }
+          ListHeaderComponent={listHeader}
+          ListFooterComponent={
+            !isExpandedStart && !isExpandedDest && !isFeedbackVisible
+              ? listFooter
+              : null
+          }
+        />
+      </BottomSheetUI>
     </View>
   );
 };
