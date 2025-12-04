@@ -1,11 +1,10 @@
 /**
  * Types and constants for downloads: defines State, Action, and ProgressAction types,
- * along with configuration constants like throttle intervals and file size limits.
+ * along with configuration constants like throttle intervals.
  */
 import { Download, QueuedFile } from '../../contexts/DownloadsContext';
 
 export const QUEUE_STORAGE_KEY = '@downloads_queue';
-export const FILE_SIZE_LIMIT_MB = 100;
 export const PROGRESS_UPDATE_THROTTLE_MS = 200;
 export const CONTEXT_PROGRESS_UPDATE_THROTTLE_MS = 500;
 
