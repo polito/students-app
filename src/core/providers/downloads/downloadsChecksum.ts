@@ -7,8 +7,6 @@ import { exists, stat } from 'react-native-fs';
 
 import { sha1 } from '@noble/hashes/legacy.js';
 
-import { FILE_SIZE_LIMIT_MB } from './downloadsTypes';
-
 export const calculateFileChecksum = async (
   filePath: string,
   expectedSize?: number,
@@ -23,7 +21,7 @@ export const calculateFileChecksum = async (
 
     const fileSizeMB = fileStats.size / (1024 * 1024);
 
-    if (fileSizeMB <= FILE_SIZE_LIMIT_MB) {
+    if (fileSizeMB <= 200) {
       try {
         const checksum = await ReactNativeBlobUtil.fs.hash(filePath, 'sha1');
         return checksum;
@@ -128,12 +126,6 @@ export const calculateFileChecksum = async (
           });
       });
     } else {
-      if (fileSizeMB > FILE_SIZE_LIMIT_MB) {
-        console.warn(
-          `Checksum skipped for large file (${Math.round(fileSizeMB)}MB): SHA1.create() not available`,
-        );
-        return 'checksum_skipped_large_file';
-      }
       throw new Error('SHA1.create() not available');
     }
   } catch (error) {
