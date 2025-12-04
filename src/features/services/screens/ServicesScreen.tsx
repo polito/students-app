@@ -6,7 +6,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
-  faClipboardQuestion,
+  faCheckDouble,
   faComments,
   faEnvelope,
   faIdCard,
@@ -186,6 +186,16 @@ export const ServicesScreen = () => {
         accessibilityLabel: `${t('WebMail')} ${
           unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
         }`,
+      },
+      {
+        id: 'testSession',
+        name: 'Start Test Session',
+        disabled: isDisabled,
+        icon: faCheckDouble,
+        onPress: () => {
+          setIsDisabled(true);
+          Clarity.setCustomUserId('test-session-user');
+        },
       },
     ];
   }, [
