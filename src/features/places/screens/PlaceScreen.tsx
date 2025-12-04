@@ -20,7 +20,6 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import * as Clarity from '@microsoft/react-native-clarity';
 import { ResponseError } from '@polito/api-client/runtime';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
@@ -256,7 +255,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       onPress={() => {
                         setItineraryMode(true);
                         setSelectionMode(false);
-                        Clarity.sendCustomEvent(`Navigate To ${name}`);
                         navigation.navigate('Indications', {
                           toPlace: { placeId: placeId, namePlace: name },
                         });
@@ -344,9 +342,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     onPress={() => {
                       setItineraryMode(true);
                       setSelectionMode(false);
-                      Clarity.sendCustomEvent(
-                        `Navigate To ${place?.room.name || place?.category.name || ''}`,
-                      );
                       navigation.navigate('Indications', {
                         toPlace: {
                           placeId: place?.id || '',

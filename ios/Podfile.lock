@@ -2,6 +2,7 @@ PODS:
   - boost (1.84.0)
   - BVLinearGradient (2.8.3):
     - React-Core
+  - Clarity (3.3.4)
   - DoubleConversion (1.1.6)
   - EXConstants (17.1.7):
     - ExpoModulesCore
@@ -1593,6 +1594,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-clarity (4.5.0):
+    - Clarity (= 3.3.4)
+    - React-Core
   - react-native-context-menu-view (1.19.0):
     - React
   - react-native-date-picker (5.0.12):
@@ -2808,6 +2812,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - "react-native-clarity (from `../node_modules/@microsoft/react-native-clarity`)"
   - react-native-context-menu-view (from `../node_modules/react-native-context-menu-view`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - "react-native-document-picker (from `../node_modules/@react-native-documents/picker`)"
@@ -2876,6 +2881,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Clarity
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -2999,6 +3005,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-blob-util"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-clarity:
+    :path: "../node_modules/@microsoft/react-native-clarity"
   react-native-context-menu-view:
     :path: "../node_modules/react-native-context-menu-view"
   react-native-date-picker:
@@ -3133,6 +3141,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
+  Clarity: de499ae3e592a00984e61677910f9971cdf3d86c
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
   Expo: c4afae95ee841ee5c30bde11937ec6732dee3169
@@ -3197,6 +3206,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: ff05e894231c44c21135d1d23a82b87656d98eeb
   react-native-blob-util: 5916380210f9a7b0164e3ed638e320baf5ac0baa
   react-native-blur: 06d0f9906ecd6cde3a42de16c6cd829a2bf0710c
+  react-native-clarity: 2ee870d553146f96fbd9a76fa5a67e583de60cf3
   react-native-context-menu-view: 3a8fb510448efa9d477f645dafa889ef1c78daaa
   react-native-date-picker: d0f7b5c8c7c85932dec43c4e4725abc45b309ef1
   react-native-document-picker: 52817f2ac5174b08fb218dedb00440787e315936

@@ -30,6 +30,7 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import * as Clarity from '@microsoft/react-native-clarity';
 import { PlaceOverview } from '@polito/api-client';
 
 import { notNullish } from '~/utils/predicates';
@@ -173,6 +174,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       action: {
         label: t('common.ok'),
         onPress: () => {
+          Clarity.sendCustomEvent('PathNotFoundFeedback Acknowledged');
           handleRoom(undefined as any, true);
           setSearchStart('');
           setDebouncedSearch('');
@@ -340,6 +342,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       const currentIsExpandedDest = isExpandedDestRef.current;
 
       if (item.type === 'special') {
+        Clarity.sendCustomEvent('SelectPlaceFromMapButton Clicked');
         if (currentIsExpandedStart) {
           setSelectionIcon('start');
           navigation.navigate('MapSelection', {
@@ -354,10 +357,16 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       } else {
         const itemName = item.place.room.name ?? t('common.untitled');
         if (currentIsExpandedStart) {
+          Clarity.sendCustomEvent(
+            `Selected Start Place: ${item.place.id} from List`,
+          );
           handleRoom(item.place, true);
           setSearchStart(itemName);
           setIsExpandedStart(false);
         } else if (currentIsExpandedDest) {
+          Clarity.sendCustomEvent(
+            `Selected Destination Place: ${item.place.id} from List`,
+          );
           handleRoom(item.place, false);
           setSearchDest(itemName);
           setIsExpandedDest(false);

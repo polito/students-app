@@ -7,6 +7,7 @@ import {
   faBookBookmark,
   faBriefcase,
   faCheckDouble,
+  faClipboardQuestion,
   faComments,
   faEnvelope,
   faIdCard,
@@ -19,6 +20,7 @@ import { Grid, auto } from '@lib/ui/components/Grid';
 import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
+import * as Clarity from '@microsoft/react-native-clarity';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -56,6 +58,7 @@ export const ServicesScreen = () => {
     setFontSize(Number(accessibility?.fontSize) ?? 0);
   }, [accessibility?.fontSize]);
   const openInAppLink = useOpenInAppLink();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const openWebmailLink = useCallback(async () => {
     queryClient
@@ -208,6 +211,7 @@ export const ServicesScreen = () => {
     emailGuideRead,
     unreadEmailsQuery.data,
     openWebmailLink,
+    isDisabled,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(

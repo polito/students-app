@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import * as Clarity from '@microsoft/react-native-clarity';
 import { PlaceOverview } from '@polito/api-client';
 import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
@@ -186,6 +187,9 @@ export const MarkersLayer = ({
                   setSelectedPlace(null);
                   setSelectedId('');
                 } else {
+                  Clarity.sendCustomEvent(
+                    `${selectedPoi.id} in Itinerary Mode`,
+                  );
                   setSelectedPlace(selectedPoi);
                   setSelectedId(selectedPoi.id);
                 }
@@ -219,6 +223,7 @@ export const MarkersLayer = ({
                 setSelectedId(selectedPoi.id);
               }
             } else {
+              Clarity.sendCustomEvent(`${selectedPoi.id} Marker Clicked`);
               const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
               const params =
                 screen === 'Place'

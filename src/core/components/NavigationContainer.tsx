@@ -1,5 +1,6 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, useRef } from 'react';
 
+import * as Clarity from '@microsoft/react-native-clarity';
 import {
   NavigationContainer as ReactNavigationContainer,
   useNavigationContainerRef,
@@ -13,6 +14,7 @@ export const NavigationContainer = ({
   ...rest
 }: ComponentProps<typeof ReactNavigationContainer>) => {
   const navigationRef = useNavigationContainerRef<RootParamList>();
+  const routeNameRef = useRef<string | undefined>(undefined);
 
   return (
     <ReactNavigationContainer
@@ -20,6 +22,26 @@ export const NavigationContainer = ({
       onReady={() => {
         // Register the navigation container with the instrumentation
         navigationIntegration.registerNavigationContainer(navigationRef);
+        if (process.env.CLARITY_TEST_PROJECT_ID) {
+          Clarity.initialize(process.env.CLARITY_TEST_PROJECT_ID!, {
+            logLevel: Clarity.LogLevel.Verbose,
+          });
+          const currentRouteName = navigationRef.getCurrentRoute()?.name;
+          routeNameRef.current = currentRouteName;
+          Clarity.setCurrentScreenName('TeachingScreen');
+        } else {
+          console.warn(
+            'No Clarity Project ID provided, skipping Clarity initialization.',
+          );
+        }
+      }}
+      onStateChange={() => {
+        const previousRouteName = routeNameRef.current;
+        const currentRouteName = navigationRef.getCurrentRoute()?.name;
+        if (previousRouteName !== currentRouteName) {
+          routeNameRef.current = currentRouteName;
+          Clarity.setCurrentScreenName(currentRouteName ?? null);
+        }
       }}
       {...rest}
     >
