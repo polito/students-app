@@ -137,16 +137,19 @@ export const CourseDirectoryListItem = ({
 
       const downloadedFileIds = new Set<string>();
 
-      await Promise.all(
-        directoryFiles.map(async file => {
+      try {
+        const area = `course-${courseId}`;
+        const allFilesInArea = await fileDatabase.getFilesByArea(area);
+        const filesMap = new Map(allFilesInArea.map(f => [f.id, f]));
+
+        for (const file of directoryFiles) {
           try {
-            const fileRecord = await fileDatabase.getFileById(file.id);
+            const fileRecord = filesMap.get(file.id);
             if (fileRecord) {
               const fileExists = await exists(fileRecord.path);
               if (fileExists) {
                 downloadedFileIds.add(file.id);
 
-                // Update downloads state immediately
                 const cachedFilePath = buildCourseFilePath(
                   courseFilesCache,
                   `/${item.name}`,
@@ -157,7 +160,6 @@ export const CourseDirectoryListItem = ({
                 const fileUrl = buildCourseFileUrl(courseId, file.id);
                 const downloadKey = `${fileUrl}:${cachedFilePath}`;
 
-                // Update downloads state if not already marked as downloaded
                 if (
                   !downloads[downloadKey] ||
                   !downloads[downloadKey].isDownloaded
@@ -169,7 +171,6 @@ export const CourseDirectoryListItem = ({
                 }
               }
             } else {
-              // Check if file exists at expected path even if not in DB
               const cachedFilePath = buildCourseFilePath(
                 courseFilesCache,
                 `/${item.name}`,
@@ -182,11 +183,9 @@ export const CourseDirectoryListItem = ({
                 downloadedFileIds.add(file.id);
               }
             }
-          } catch (error) {
-            // On error, don't mark as downloaded
-          }
-        }),
-      );
+          } catch (error) {}
+        }
+      } catch (error) {}
 
       setFilesCheckedFromDB(downloadedFileIds);
     };
