@@ -99,7 +99,7 @@ export const SubPathSelector = (props: Props) => {
           style={[styles.icon, { backgroundColor: colors.background }]}
           disabled={currentSegmentIndex === numSegments}
           onPress={() => {
-            setCurrentSegmentIndex(prev => (numSegments ? prev + 1 : prev));
+            setCurrentSegmentIndex(prev => prev + 1);
             handleSelectSegment?.(
               currentSegmentIndex + 1,
               props.pathFeatureCollection[currentSegmentIndex + 1].features
