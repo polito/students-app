@@ -74,12 +74,15 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
       const key = getFileKey(file);
       try {
         await mkdir(
-          file.filePath.substring(0, file.filePath.lastIndexOf('/')),
+          file.request.destination.substring(
+            0,
+            file.request.destination.lastIndexOf('/'),
+          ),
           { NSURLIsExcludedFromBackupKey: true },
         ).catch(() => {});
         const { jobId, promise } = rnDownloadFile({
-          fromUrl: file.url,
-          toFile: file.filePath,
+          fromUrl: file.request.source,
+          toFile: file.request.destination,
           headers: { Authorization: `Bearer ${token}` },
           progress: ({ bytesWritten, contentLength }) => {
             const fileProgress = bytesWritten / contentLength;
@@ -112,13 +115,16 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           },
         });
         dispatchProgress({ type: 'REMOVE_PROGRESS', key });
-        const stats = await stat(file.filePath);
-        const checksum = await calculateFileChecksum(file.filePath, stats.size);
-        const filename = file.filePath.split('/').pop() || '';
+        const stats = await stat(file.request.destination);
+        const checksum = await calculateFileChecksum(
+          file.request.destination,
+          stats.size,
+        );
+        const filename = file.request.destination.split('/').pop() || '';
         await fileDatabase.insertFile({
           id: file.id,
-          area: `course-${file.contextId}`,
-          path: file.filePath,
+          area: `${file.request.area}-${file.request.id}`,
+          path: file.request.destination,
           filename,
           mime: filename.split('.').pop() || 'application/octet-stream',
           checksum,
@@ -170,7 +176,6 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           progress: downloadProgress,
         });
       } else if ('downloadProgress' in updates) {
-        // Explicitly remove progress when downloadProgress is set to undefined
         dispatchProgress({ type: 'REMOVE_PROGRESS', key });
       }
     },
@@ -215,31 +220,34 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     throttledProgresses,
   ]);
 
-  const downloadsWithProgress = useMemo(
-    () =>
-      Object.keys(state.downloads).reduce(
-        (acc, key) => {
-          const download = state.downloads[key];
-          const hasProgress = throttledProgresses[key] != null;
-          const shouldShowProgress =
-            !download.isDownloaded &&
-            hasProgress &&
-            (download.phase === DownloadPhase.Downloading ||
-              download.phase === undefined);
-          return {
-            ...acc,
-            [key]: {
-              ...download,
-              downloadProgress: shouldShowProgress
-                ? throttledProgresses[key]
-                : undefined,
-            },
-          };
-        },
-        {} as Record<string, Download>,
-      ),
-    [state.downloads, throttledProgresses],
-  );
+  const downloadsWithProgress = useMemo(() => {
+    const allKeys = new Set([
+      ...Object.keys(state.downloads),
+      ...Object.keys(progresses),
+    ]);
+    return Array.from(allKeys).reduce(
+      (acc, key) => {
+        const download = state.downloads[key] ?? {};
+        const progressValue = throttledProgresses[key] ?? progresses[key];
+        const hasProgress = progressValue != null;
+        const isDownloaded = download.isDownloaded ?? false;
+        const shouldShowProgress =
+          !isDownloaded &&
+          hasProgress &&
+          (download.phase === DownloadPhase.Downloading ||
+            download.phase === undefined);
+        return {
+          ...acc,
+          [key]: {
+            ...download,
+            isDownloaded: download.isDownloaded ?? false,
+            downloadProgress: shouldShowProgress ? progressValue : undefined,
+          },
+        };
+      },
+      {} as Record<string, Download>,
+    );
+  }, [state.downloads, throttledProgresses, progresses]);
 
   const contextValue = useMemo(
     () => ({

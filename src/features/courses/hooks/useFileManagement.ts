@@ -17,6 +17,7 @@ import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useGenericDownload } from '../../../core/hooks/useDownloadQueue';
+import { getFileKey } from '../../../core/providers/downloads/downloadsFileUtils';
 import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
 import { isDirectory } from '../utils/fs-entry';
@@ -55,6 +56,7 @@ export const useFileManagement = ({
   const [allFilesSelectedState, setAllFilesSelectedState] = useState(false);
   const [sortedData, setSortedData] = useState<typeof data>(undefined);
   const [wasDownloading, setWasDownloading] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const sortOptions = useMemo(
     () => [
@@ -107,29 +109,21 @@ export const useFileManagement = ({
     };
   }, [isDownloading, palettes]);
 
-  const getDownloadKey = useCallback(
-    (fileId: string, filePath: string) => {
-      const fileUrl = buildCourseFileUrl(courseId, fileId);
-      return `${fileUrl}:${filePath}`;
-    },
-    [courseId],
-  );
-
   const selectedDownloadedFiles = useMemo(() => {
     if (!isDownloading && courseFiles.length === 0) return [];
     return courseFiles.filter(file => {
-      const key = getDownloadKey(file.id, file.filePath);
+      const key = getFileKey(file);
       return downloads[key]?.isDownloaded === true;
     });
-  }, [courseFiles, downloads, getDownloadKey, isDownloading]);
+  }, [courseFiles, downloads, isDownloading]);
 
   const selectedNotDownloadedFiles = useMemo(() => {
     if (!isDownloading && courseFiles.length === 0) return [];
     return courseFiles.filter(file => {
-      const key = getDownloadKey(file.id, file.filePath);
+      const key = getFileKey(file);
       return downloads[key]?.isDownloaded !== true;
     });
-  }, [courseFiles, downloads, getDownloadKey, isDownloading]);
+  }, [courseFiles, downloads, isDownloading]);
 
   const downloadButtonTitle = useMemo(() => {
     if (isDownloading) {
@@ -168,8 +162,6 @@ export const useFileManagement = ({
   }, [palettes, spacing]);
 
   const isDownloadButtonDisabled = useMemo(() => {
-    // Allow button to be enabled during download so user can stop it
-    // Only disable if there are no files to download and not currently downloading
     return !hasNotDownloadedFiles && !isDownloading;
   }, [hasNotDownloadedFiles, isDownloading]);
 
@@ -409,40 +401,47 @@ export const useFileManagement = ({
       {
         text: t('common.yes'),
         onPress: async () => {
-          const removePromises = selectedDownloadedFiles.map(async file => {
-            const filePath = file.filePath;
-            const key = getDownloadKey(file.id, filePath);
+          setIsRemoving(true);
+          try {
+            const removePromises = selectedDownloadedFiles.map(async file => {
+              const key = getFileKey(file);
+              const filePath = file.request.destination;
 
-            try {
-              await unlink(filePath);
-            } catch (error) {
-              console.error(`Error removing file ${filePath}:`, error);
-            }
+              try {
+                await unlink(filePath);
+              } catch (error) {
+                console.error(`Error removing file ${filePath}:`, error);
+              }
 
-            try {
-              await fileDatabase.deleteFile(file.id);
-            } catch (error) {
-              console.error(
-                `Error removing file metadata from SQLite for ${file.id}:`,
-                error,
-              );
-            }
+              try {
+                await fileDatabase.deleteFile(file.id);
+              } catch (error) {
+                console.error(
+                  `Error removing file metadata from SQLite for ${file.id}:`,
+                  error,
+                );
+              }
 
-            updateDownload(key, {
-              jobId: undefined,
-              isDownloaded: false,
-              downloadProgress: undefined,
+              updateDownload(key, {
+                jobId: undefined,
+                isDownloaded: false,
+                downloadProgress: undefined,
+              });
             });
-          });
 
-          await Promise.all(removePromises);
+            await Promise.all(removePromises);
 
-          const fileIdsToRemove = selectedDownloadedFiles.map(file => file.id);
-          removeFiles(fileIdsToRemove);
+            const fileIdsToRemove = selectedDownloadedFiles.map(
+              file => file.id,
+            );
+            removeFiles(fileIdsToRemove);
 
-          setEnableMultiSelect(false);
-          clearFiles();
-          setAllFilesSelectedState(false);
+            setEnableMultiSelect(false);
+            clearFiles();
+            setAllFilesSelectedState(false);
+          } finally {
+            setIsRemoving(false);
+          }
         },
       },
     ]);
@@ -450,7 +449,6 @@ export const useFileManagement = ({
     hasDownloadedFiles,
     selectedDownloadedFiles,
     t,
-    getDownloadKey,
     fileDatabase,
     updateDownload,
     removeFiles,
@@ -473,15 +471,17 @@ export const useFileManagement = ({
           })
         : null;
 
-      const downloadButton = React.createElement(CtaButton, {
-        title: downloadButtonTitle,
-        icon: downloadButtonIcon,
-        action: handleDownloadAction,
-        progress: downloadButtonProgress,
-        style: downloadButtonStyle,
-        disabled: isDownloadButtonDisabled,
-        absolute: true,
-      });
+      const downloadButton = !isRemoving
+        ? React.createElement(CtaButton, {
+            title: downloadButtonTitle,
+            icon: downloadButtonIcon,
+            action: handleDownloadAction,
+            progress: downloadButtonProgress,
+            style: downloadButtonStyle,
+            disabled: isDownloadButtonDisabled,
+            absolute: true,
+          })
+        : null;
 
       const buttons = React.createElement(
         React.Fragment,
@@ -503,6 +503,7 @@ export const useFileManagement = ({
     [
       enableMultiSelect,
       isDownloading,
+      isRemoving,
       removeButtonTitle,
       handleRemoveAction,
       removeButtonStyle,

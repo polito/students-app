@@ -9,7 +9,11 @@ import { exists, stopDownload as fsStopDownload } from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { MAX_CONCURRENT_DOWNLOADS } from '../../constants';
-import { DownloadPhase, QueuedFile } from '../../contexts/DownloadsContext';
+import {
+  DownloadArea,
+  DownloadPhase,
+  QueuedFile,
+} from '../../contexts/DownloadsContext';
 import { useFeedbackContext } from '../../contexts/FeedbackContext';
 import { getFileDatabase } from '../../database/FileDatabase';
 import { getFileKey, matchesContext } from './downloadsFileUtils';
@@ -19,6 +23,15 @@ import {
   QUEUE_STORAGE_KEY,
   State,
 } from './downloadsTypes';
+
+const getDownloadAreaFromContextType = (contextType?: string): DownloadArea => {
+  switch (contextType) {
+    case 'course':
+      return DownloadArea.Course;
+    default:
+      return DownloadArea.Course;
+  }
+};
 
 interface UseQueueManagementParams {
   state: State;
@@ -79,7 +92,13 @@ export const useQueueManagement = ({
       }
 
       if (pending.length === 0 && state.activeIds.size === 0) {
-        dispatch({ type: 'SET_COMPLETED' });
+        const completedQueueKeys = new Set(
+          currentQueue.map(f => getFileKey(f)),
+        );
+        completedQueueKeys.forEach(key => {
+          dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+        });
+        dispatch({ type: 'SET_COMPLETED', completedKeys: completedQueueKeys });
         setFeedback({
           text: state.hasFailure
             ? t('common.downloadCompletedWithErrors', {
@@ -150,13 +169,24 @@ export const useQueueManagement = ({
 
   const addFilesToQueue = useCallback(
     async (
-      files: Omit<QueuedFile, 'contextId' | 'contextType'>[],
+      files: Array<{ id: string; name: string; url: string; filePath: string }>,
       contextId: string | number,
       contextType?: string,
     ) => {
-      const filesWithContext = files.map(file => ({
-        ...file,
-        contextId,
+      if (state.isDownloading) {
+        return;
+      }
+      const downloadArea = getDownloadAreaFromContextType(contextType);
+      const filesWithContext: QueuedFile[] = files.map(file => ({
+        id: file.id,
+        name: file.name,
+        request: {
+          area: downloadArea,
+          id: contextId as any,
+          source: file.url,
+          destination: file.filePath,
+        },
+        contextId: contextId as any,
         contextType,
       }));
 
@@ -173,9 +203,10 @@ export const useQueueManagement = ({
           const existingDownload = state.downloads[key];
           const fileRecord = filesMap.get(file.id);
 
-          const possiblePaths = [fileRecord?.path, file.filePath].filter(
-            Boolean,
-          ) as string[];
+          const possiblePaths = [
+            fileRecord?.path,
+            file.request.destination,
+          ].filter(Boolean) as string[];
 
           let fileExists = false;
           for (const path of possiblePaths) {
@@ -209,12 +240,11 @@ export const useQueueManagement = ({
         }),
       ).catch(console.error);
     },
-    [state.downloads, dispatch],
+    [state.downloads, state.isDownloading, dispatch],
   );
 
   const removeFilesFromQueue = useCallback(
     (fileIds: string[]) => {
-      // Stop active downloads for files being removed
       fileIds.forEach(id => {
         if (state.activeIds.has(id)) {
           const file = state.queue.find(f => f.id === id);
@@ -223,9 +253,7 @@ export const useQueueManagement = ({
             if (download?.jobId !== undefined) {
               fsStopDownload(download.jobId);
             }
-            // Remove from activeIds
             dispatch({ type: 'REMOVE_ACTIVE_ID', id });
-            // Remove progress
             dispatchProgress({
               type: 'REMOVE_PROGRESS',
               key: getFileKey(file),
@@ -233,7 +261,6 @@ export const useQueueManagement = ({
           }
         }
       });
-      // Remove files from queue
       dispatch({ type: 'REMOVE_FILES', ids: fileIds });
     },
     [state, dispatch, dispatchProgress],
@@ -251,7 +278,6 @@ export const useQueueManagement = ({
         .filter(file => matchesContext(file, contextId, contextType))
         .map(file => file.id);
       if (idsToRemove.length > 0) {
-        // Stop active downloads for files being removed
         idsToRemove.forEach(id => {
           if (state.activeIds.has(id)) {
             const file = state.queue.find(f => f.id === id);
@@ -260,9 +286,7 @@ export const useQueueManagement = ({
               if (download?.jobId !== undefined) {
                 fsStopDownload(download.jobId);
               }
-              // Remove from activeIds
               dispatch({ type: 'REMOVE_ACTIVE_ID', id });
-              // Remove progress
               dispatchProgress({
                 type: 'REMOVE_PROGRESS',
                 key: getFileKey(file),
@@ -270,7 +294,6 @@ export const useQueueManagement = ({
             }
           }
         });
-        // Remove files from queue
         dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
       }
     },

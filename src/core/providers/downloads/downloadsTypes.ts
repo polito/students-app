@@ -29,12 +29,11 @@ export type Action =
   | { type: 'STOP_DOWNLOAD' }
   | { type: 'ADD_ACTIVE_ID'; id: string }
   | { type: 'REMOVE_ACTIVE_ID'; id: string }
-  | { type: 'SET_COMPLETED' }
+  | { type: 'SET_COMPLETED'; completedKeys?: Set<string> }
   | { type: 'SET_FAILURE' }
   | { type: 'RESET' }
   | { type: 'RESTORE'; state: State };
 
 export type ProgressAction =
   | { type: 'UPDATE_PROGRESS'; key: string; progress: number }
-  | { type: 'REMOVE_PROGRESS'; key: string }
-  | { type: 'RESET_PROGRESS' };
+  | { type: 'REMOVE_PROGRESS'; key: string };
