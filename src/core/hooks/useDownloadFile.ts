@@ -8,17 +8,15 @@ import {
   stopDownload as fsStopDownload,
   mkdir,
   moveFile,
-  readFile,
   stat,
   unlink,
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
-import { sha1 } from '@noble/hashes/legacy.js';
-
 import { useApiContext } from '../contexts/ApiContext';
 import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
 import { FileRecord, getFileDatabase } from '../database/FileDatabase';
+import { calculateFileChecksum } from '../providers/downloads/downloadsChecksum';
 import { useNotifications } from './useNotifications';
 
 export const useDownloadFile = (
@@ -35,34 +33,6 @@ export const useDownloadFile = (
   const { clearNotificationScope } = useNotifications();
 
   const fileDatabase = getFileDatabase();
-
-  const calculateFileChecksum = useCallback(
-    async (filePath: string): Promise<string> => {
-      try {
-        const fileExists = await exists(filePath);
-        if (!fileExists) {
-          throw new Error(`File does not exist: ${filePath}`);
-        }
-
-        const fileContent = await readFile(filePath, 'base64');
-
-        const binaryString = atob(fileContent);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-
-        const hash = sha1(bytes);
-        return Array.from(hash)
-          .map((b: unknown) => (b as number).toString(16).padStart(2, '0'))
-          .join('');
-      } catch (error) {
-        console.error('Error calculating file checksum:', error);
-        return 'checksum_error';
-      }
-    },
-    [],
-  );
 
   const insertFileToSQLite = useCallback(
     async (file: FileRecord) => {
@@ -245,7 +215,6 @@ export const useDownloadFile = (
       toFile,
       token,
       updateDownload,
-      calculateFileChecksum,
       area,
       fileId,
       insertFileToSQLite,
