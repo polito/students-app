@@ -169,6 +169,9 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           key,
           progress: downloadProgress,
         });
+      } else if ('downloadProgress' in updates) {
+        // Explicitly remove progress when downloadProgress is set to undefined
+        dispatchProgress({ type: 'REMOVE_PROGRESS', key });
       }
     },
     [dispatch, dispatchProgress],
@@ -217,10 +220,12 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
       Object.keys(state.downloads).reduce(
         (acc, key) => {
           const download = state.downloads[key];
+          const hasProgress = throttledProgresses[key] != null;
           const shouldShowProgress =
             !download.isDownloaded &&
-            download.phase === DownloadPhase.Downloading &&
-            throttledProgresses[key] != null;
+            hasProgress &&
+            (download.phase === DownloadPhase.Downloading ||
+              download.phase === undefined);
           return {
             ...acc,
             [key]: {
