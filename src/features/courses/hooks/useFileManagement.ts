@@ -168,7 +168,9 @@ export const useFileManagement = ({
   }, [palettes, spacing]);
 
   const isDownloadButtonDisabled = useMemo(() => {
-    return !hasNotDownloadedFiles || isDownloading;
+    // Allow button to be enabled during download so user can stop it
+    // Only disable if there are no files to download and not currently downloading
+    return !hasNotDownloadedFiles && !isDownloading;
   }, [hasNotDownloadedFiles, isDownloading]);
 
   const isRemoveButtonDisabled = useMemo(() => {

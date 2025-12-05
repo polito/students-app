@@ -214,10 +214,29 @@ export const useQueueManagement = ({
 
   const removeFilesFromQueue = useCallback(
     (fileIds: string[]) => {
-      if (!state.isDownloading)
-        dispatch({ type: 'REMOVE_FILES', ids: fileIds });
+      // Stop active downloads for files being removed
+      fileIds.forEach(id => {
+        if (state.activeIds.has(id)) {
+          const file = state.queue.find(f => f.id === id);
+          if (file) {
+            const download = state.downloads[getFileKey(file)];
+            if (download?.jobId !== undefined) {
+              fsStopDownload(download.jobId);
+            }
+            // Remove from activeIds
+            dispatch({ type: 'REMOVE_ACTIVE_ID', id });
+            // Remove progress
+            dispatchProgress({
+              type: 'REMOVE_PROGRESS',
+              key: getFileKey(file),
+            });
+          }
+        }
+      });
+      // Remove files from queue
+      dispatch({ type: 'REMOVE_FILES', ids: fileIds });
     },
-    [state.isDownloading, dispatch],
+    [state, dispatch, dispatchProgress],
   );
 
   const getFilesByContext = useCallback(
@@ -228,15 +247,34 @@ export const useQueueManagement = ({
 
   const clearContextFiles = useCallback(
     (contextId: string | number, contextType?: string) => {
-      if (!state.isDownloading) {
-        const idsToRemove = state.queue
-          .filter(file => matchesContext(file, contextId, contextType))
-          .map(file => file.id);
-        if (idsToRemove.length > 0)
-          dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
+      const idsToRemove = state.queue
+        .filter(file => matchesContext(file, contextId, contextType))
+        .map(file => file.id);
+      if (idsToRemove.length > 0) {
+        // Stop active downloads for files being removed
+        idsToRemove.forEach(id => {
+          if (state.activeIds.has(id)) {
+            const file = state.queue.find(f => f.id === id);
+            if (file) {
+              const download = state.downloads[getFileKey(file)];
+              if (download?.jobId !== undefined) {
+                fsStopDownload(download.jobId);
+              }
+              // Remove from activeIds
+              dispatch({ type: 'REMOVE_ACTIVE_ID', id });
+              // Remove progress
+              dispatchProgress({
+                type: 'REMOVE_PROGRESS',
+                key: getFileKey(file),
+              });
+            }
+          }
+        });
+        // Remove files from queue
+        dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
       }
     },
-    [state.isDownloading, state.queue, dispatch],
+    [state, dispatch, dispatchProgress],
   );
 
   return {
