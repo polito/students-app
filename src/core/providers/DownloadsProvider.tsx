@@ -25,7 +25,7 @@ import {
 } from '../contexts/DownloadsContext';
 import { getFileDatabase } from '../database/FileDatabase';
 import { calculateFileChecksum } from './downloads/downloadsChecksum';
-import { getFileKey } from './downloads/downloadsFileUtils';
+import { buildAreaString, getFileKey } from './downloads/downloadsFileUtils';
 import { useLoadQueue, useSaveQueue } from './downloads/downloadsPersistence';
 import { useQueueManagement } from './downloads/downloadsQueue';
 import {
@@ -123,7 +123,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         const filename = file.request.destination.split('/').pop() || '';
         await fileDatabase.insertFile({
           id: file.id,
-          area: `${file.request.area}-${file.request.id}`,
+          area: buildAreaString(file.request.area, String(file.request.id)),
           path: file.request.destination,
           filename,
           mime: filename.split('.').pop() || 'application/octet-stream',
