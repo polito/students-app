@@ -24,14 +24,14 @@ interface UseQueueManagementParams {
   state: State;
   dispatch: Dispatch<Action>;
   dispatchProgress: Dispatch<ProgressAction>;
-  downloadSingleFile: (file: QueuedFile) => Promise<void>;
+  downloadFile: (file: QueuedFile) => Promise<void>;
 }
 
 export const useQueueManagement = ({
   state,
   dispatch,
   dispatchProgress,
-  downloadSingleFile,
+  downloadFile,
 }: UseQueueManagementParams) => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
@@ -73,7 +73,7 @@ export const useQueueManagement = ({
           updates: { phase: DownloadPhase.Downloading },
         });
         dispatchProgress({ type: 'UPDATE_PROGRESS', key, progress: 0 });
-        downloadSingleFile(file);
+        downloadFile(file);
         availableSlots--;
         pendingIndex++;
       }
@@ -107,7 +107,7 @@ export const useQueueManagement = ({
     } finally {
       isProcessingQueueRef.current = false;
     }
-  }, [state, downloadSingleFile, setFeedback, t, dispatch, dispatchProgress]);
+  }, [state, downloadFile, setFeedback, t, dispatch, dispatchProgress]);
 
   const processQueueRef = useRef(processQueue);
   useEffect(() => {

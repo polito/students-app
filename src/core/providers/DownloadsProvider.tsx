@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { downloadFile, mkdir, stat } from 'react-native-fs';
+import { mkdir, downloadFile as rnDownloadFile, stat } from 'react-native-fs';
 
 import { useApiContext } from '../contexts/ApiContext';
 import {
@@ -69,7 +69,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   useSaveQueue(state);
   useLoadQueue(dispatch);
 
-  const downloadSingleFile = useCallback(
+  const downloadFile = useCallback(
     async (file: QueuedFile) => {
       const key = getFileKey(file);
       try {
@@ -77,7 +77,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           file.filePath.substring(0, file.filePath.lastIndexOf('/')),
           { NSURLIsExcludedFromBackupKey: true },
         ).catch(() => {});
-        const { jobId, promise } = downloadFile({
+        const { jobId, promise } = rnDownloadFile({
           fromUrl: file.url,
           toFile: file.filePath,
           headers: { Authorization: `Bearer ${token}` },
@@ -156,7 +156,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     state,
     dispatch,
     dispatchProgress,
-    downloadSingleFile,
+    downloadFile,
   });
 
   const updateDownload = useCallback(
