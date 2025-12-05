@@ -4,7 +4,7 @@
  */
 import { Dispatch, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { exists, stopDownload as fsStopDownload } from 'react-native-fs';
+import { stopDownload as fsStopDownload } from 'react-native-fs';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,7 +16,14 @@ import {
 } from '../../contexts/DownloadsContext';
 import { useFeedbackContext } from '../../contexts/FeedbackContext';
 import { getFileDatabase } from '../../database/FileDatabase';
-import { getFileKey, matchesContext } from './downloadsFileUtils';
+import {
+  buildAreaString,
+  checkPathsExist,
+  findFileById,
+  getFileKey,
+  matchesContext,
+  stopActiveDownload,
+} from './downloadsFileUtils';
 import {
   Action,
   ProgressAction,
@@ -158,14 +165,19 @@ export const useQueueManagement = ({
 
   const stopQueueDownload = useCallback(() => {
     state.activeIds.forEach(id => {
-      const file = state.queue.find(f => f.id === id);
+      const file = findFileById(state.queue, id);
       if (file) {
-        const download = state.downloads[getFileKey(file)];
-        if (download?.jobId !== undefined) fsStopDownload(download.jobId);
+        stopActiveDownload(
+          file,
+          state.downloads,
+          dispatch,
+          dispatchProgress,
+          fsStopDownload,
+        );
       }
     });
     dispatch({ type: 'STOP_DOWNLOAD' });
-  }, [state, dispatch]);
+  }, [state, dispatch, dispatchProgress]);
 
   const addFilesToQueue = useCallback(
     async (
@@ -193,7 +205,7 @@ export const useQueueManagement = ({
       dispatch({ type: 'ADD_FILES', files: filesWithContext });
 
       const fileDatabase = getFileDatabase();
-      const area = `course-${contextId}`;
+      const area = buildAreaString(downloadArea, String(contextId));
       const allFilesInArea = await fileDatabase.getFilesByArea(area);
       const filesMap = new Map(allFilesInArea.map((f: any) => [f.id, f]));
 
@@ -208,13 +220,7 @@ export const useQueueManagement = ({
             file.request.destination,
           ].filter(Boolean) as string[];
 
-          let fileExists = false;
-          for (const path of possiblePaths) {
-            if (await exists(path).catch(() => false)) {
-              fileExists = true;
-              break;
-            }
-          }
+          const fileExists = await checkPathsExist(possiblePaths);
 
           if (fileExists) {
             dispatch({
@@ -247,17 +253,15 @@ export const useQueueManagement = ({
     (fileIds: string[]) => {
       fileIds.forEach(id => {
         if (state.activeIds.has(id)) {
-          const file = state.queue.find(f => f.id === id);
+          const file = findFileById(state.queue, id);
           if (file) {
-            const download = state.downloads[getFileKey(file)];
-            if (download?.jobId !== undefined) {
-              fsStopDownload(download.jobId);
-            }
-            dispatch({ type: 'REMOVE_ACTIVE_ID', id });
-            dispatchProgress({
-              type: 'REMOVE_PROGRESS',
-              key: getFileKey(file),
-            });
+            stopActiveDownload(
+              file,
+              state.downloads,
+              dispatch,
+              dispatchProgress,
+              fsStopDownload,
+            );
           }
         }
       });
@@ -280,17 +284,15 @@ export const useQueueManagement = ({
       if (idsToRemove.length > 0) {
         idsToRemove.forEach(id => {
           if (state.activeIds.has(id)) {
-            const file = state.queue.find(f => f.id === id);
+            const file = findFileById(state.queue, id);
             if (file) {
-              const download = state.downloads[getFileKey(file)];
-              if (download?.jobId !== undefined) {
-                fsStopDownload(download.jobId);
-              }
-              dispatch({ type: 'REMOVE_ACTIVE_ID', id });
-              dispatchProgress({
-                type: 'REMOVE_PROGRESS',
-                key: getFileKey(file),
-              });
+              stopActiveDownload(
+                file,
+                state.downloads,
+                dispatch,
+                dispatchProgress,
+                fsStopDownload,
+              );
             }
           }
         });
