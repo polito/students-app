@@ -11,9 +11,13 @@ export enum DownloadArea {
   Course = 'course',
 }
 
+export type AreaIdMap = {
+  [DownloadArea.Course]: number;
+};
+
 export interface DownloadRequest<T extends DownloadArea = DownloadArea> {
   area: T;
-  id: string;
+  id: AreaIdMap[T];
   source: string;
   destination: string;
 }
@@ -26,12 +30,11 @@ export interface Download {
   error?: string;
 }
 
-export interface QueuedFile {
+export interface QueuedFile<T extends DownloadArea = DownloadArea> {
   id: string;
   name: string;
-  url: string;
-  filePath: string;
-  contextId: string | number;
+  request: DownloadRequest<T>;
+  contextId: AreaIdMap[T];
   contextType?: string;
 }
 
@@ -55,7 +58,7 @@ export const DownloadsContext = createContext<{
   stopQueueDownload: () => void;
   updateDownload: (_key: string, _updates: Partial<Download>) => void;
   addFilesToQueue: (
-    _files: Omit<QueuedFile, 'contextId' | 'contextType'>[],
+    _files: Array<{ id: string; name: string; url: string; filePath: string }>,
     _contextId: string | number,
     _contextType?: string,
   ) => void;

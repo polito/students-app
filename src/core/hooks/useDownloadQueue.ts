@@ -34,10 +34,7 @@ export const useGenericDownload = (
 
   const addFiles = useCallback(
     (
-      files: Omit<
-        import('../contexts/DownloadsContext').QueuedFile,
-        'contextId' | 'contextType'
-      >[],
+      files: Array<{ id: string; name: string; url: string; filePath: string }>,
     ) => {
       addFilesToQueue(files, contextId, contextType);
     },
