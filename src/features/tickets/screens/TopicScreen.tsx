@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Pressable, SafeAreaView } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { NestedList, NestedListSection } from '@lib/ui/components/NestedList';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { Theme } from '@lib/ui/types/Theme';
 import type { NavigationProp, RouteProp } from '@react-navigation/native';
 
 type Subtopic = {
@@ -32,7 +33,7 @@ type Props = {
 };
 
 export default function TopicScreen({ navigation, route }: Props) {
-  const { colors } = useTheme();
+  const styles = useStylesheet(createStyles);
   const [expandedIndex, setExpandedIndex] = useState<number | undefined>();
 
   const defaultTopics: Topic[] = [
@@ -103,7 +104,7 @@ export default function TopicScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView /* style={styles.container}*/>
+    <SafeAreaView style={styles.container}>
       <NestedList
         sections={sections}
         loading={false}
@@ -112,15 +113,16 @@ export default function TopicScreen({ navigation, route }: Props) {
         renderSectionHeader={({ section }) => (
           <Pressable
             onPress={() => toggleSection(section.index)}
-            // style={styles.sectionHeaderContainer}
+            style={styles.sectionHeaderContainer}
           >
             <SectionHeader
               title={section.title}
               separator={false}
+              titleStyle={styles.sectionHeaderTitle}
               trailingItem={
                 <Icon
                   icon={section.isExpanded ? faChevronUp : faChevronDown}
-                  color={colors.secondaryText}
+                  style={styles.chevronIcon}
                 />
               }
             />
@@ -131,6 +133,9 @@ export default function TopicScreen({ navigation, route }: Props) {
             <ListItem
               key={item.id}
               title={item.title}
+              titleProps={{ numberOfLines: undefined }}
+              style={styles.listItem}
+              containerStyle={styles.listItemContainer}
               onPress={() => handleSubtopicPress(section.sectionData!, item)}
               accessibilityRole="button"
             />
@@ -142,9 +147,27 @@ export default function TopicScreen({ navigation, route }: Props) {
   );
 }
 
-// const styles = StyleSheet.create({
-//   container: { flex: 1, backgroundColor: '#fff' },
-//   sectionHeaderContainer: {
-//     paddingVertical: 12,
-//   },
-// });
+const createStyles = ({ spacing, colors, palettes, dark }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    sectionHeaderContainer: {
+      paddingVertical: spacing[2],
+      marginHorizontal: spacing[4],
+    },
+    sectionHeaderTitle: {
+      color: dark ? palettes.info['400'] : palettes.info['700'],
+      textTransform: 'none',
+    },
+    chevronIcon: {
+      color: colors.secondaryText,
+    },
+    listItem: {
+      backgroundColor: dark ? colors.surfaceDark : palettes.gray['100'],
+      marginHorizontal: spacing[4],
+    },
+    listItemContainer: {
+      minHeight: 45,
+    },
+  });
