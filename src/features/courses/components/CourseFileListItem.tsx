@@ -20,7 +20,10 @@ import { Checkbox } from '~/core/components/Checkbox';
 
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
-import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
+import {
+  DownloadContext,
+  useDownloadsContext,
+} from '../../../core/contexts/DownloadsContext';
 import { useDownloadFile } from '../../../core/hooks/useDownloadFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
@@ -153,7 +156,13 @@ export const CourseFileListItem = memo(
       refreshDownload,
       removeDownload,
       openFile,
-    } = useDownloadFile(fileUrl, cachedFilePath, item.id, `course-${courseId}`);
+    } = useDownloadFile(
+      fileUrl,
+      cachedFilePath,
+      item.id,
+      DownloadContext.Course,
+      courseId.toString(),
+    );
 
     useEffect(() => {
       (async () => {
@@ -241,7 +250,7 @@ export const CourseFileListItem = memo(
             },
           ],
           courseId,
-          'course',
+          DownloadContext.Course,
         );
       }
     }, [

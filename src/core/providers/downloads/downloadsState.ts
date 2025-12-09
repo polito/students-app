@@ -56,13 +56,7 @@ export const reducer = (state: State, action: Action): State => {
       newIds.delete(action.id);
       return { ...state, activeIds: newIds };
     }
-    case 'SET_COMPLETED': {
-      const newDownloads = { ...state.downloads };
-      if (action.completedKeys) {
-        action.completedKeys.forEach(key => {
-          delete newDownloads[key];
-        });
-      }
+    case 'SET_COMPLETED':
       return {
         ...state,
         isDownloading: false,
@@ -70,9 +64,7 @@ export const reducer = (state: State, action: Action): State => {
         activeIds: new Set(),
         hasCompleted: true,
         hasFailure: false,
-        downloads: newDownloads,
       };
-    }
     case 'SET_FAILURE':
       return { ...state, hasFailure: true };
     case 'RESET':

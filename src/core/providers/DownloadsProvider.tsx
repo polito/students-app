@@ -18,6 +18,7 @@ import { mkdir, downloadFile as rnDownloadFile, stat } from 'react-native-fs';
 import { useApiContext } from '../contexts/ApiContext';
 import {
   Download,
+  DownloadContext,
   DownloadPhase,
   DownloadQueue,
   DownloadsContext,
@@ -25,8 +26,7 @@ import {
 } from '../contexts/DownloadsContext';
 import { getFileDatabase } from '../database/FileDatabase';
 import { calculateFileChecksum } from './downloads/downloadsChecksum';
-import { buildAreaString, getFileKey } from './downloads/downloadsFileUtils';
-import { useLoadQueue, useSaveQueue } from './downloads/downloadsPersistence';
+import { getFileKey } from './downloads/downloadsFileUtils';
 import { useQueueManagement } from './downloads/downloadsQueue';
 import {
   initialState,
@@ -66,11 +66,8 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     }
   }, [progresses]);
 
-  useSaveQueue(state);
-  useLoadQueue(dispatch);
-
   const downloadFile = useCallback(
-    async (file: QueuedFile) => {
+    async (file: QueuedFile<DownloadContext>) => {
       const key = getFileKey(file);
       try {
         await mkdir(
@@ -115,23 +112,28 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           },
         });
         dispatchProgress({ type: 'REMOVE_PROGRESS', key });
-        const stats = await stat(file.request.destination);
-        const checksum = await calculateFileChecksum(
-          file.request.destination,
-          stats.size,
-        );
-        const filename = file.request.destination.split('/').pop() || '';
-        await fileDatabase.insertFile({
-          id: file.id,
-          area: buildAreaString(file.request.area, String(file.request.id)),
-          path: file.request.destination,
-          filename,
-          mime: filename.split('.').pop() || 'application/octet-stream',
-          checksum,
-          sizeKb: Math.round(stats.size / 1024),
-          downloadTime: new Date().toISOString(),
-          updateTime: undefined,
-        });
+        try {
+          const stats = await stat(file.request.destination);
+          const checksum = await calculateFileChecksum(
+            file.request.destination,
+            stats.size,
+          );
+          const filename = file.request.destination.split('/').pop() || '';
+          await fileDatabase.insertFile({
+            id: file.id,
+            ctx: file.request.ctx,
+            ctxId: file.request.ctxId,
+            path: file.request.destination,
+            filename,
+            mime: filename.split('.').pop() || 'application/octet-stream',
+            checksum,
+            sizeKb: Math.round(stats.size / 1024),
+            downloadTime: new Date().toISOString(),
+            updateTime: undefined,
+          });
+        } catch (metadataError) {
+          console.error('Error saving file metadata to SQLite:', metadataError);
+        }
       } catch (error) {
         dispatch({
           type: 'UPDATE_DOWNLOAD',

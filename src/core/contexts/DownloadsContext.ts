@@ -7,17 +7,17 @@ export enum DownloadPhase {
   Error = 'error',
 }
 
-export enum DownloadArea {
+export enum DownloadContext {
   Course = 'course',
 }
 
 export type AreaIdMap = {
-  [DownloadArea.Course]: number;
+  [DownloadContext.Course]: number;
 };
 
-export interface DownloadRequest<T extends DownloadArea = DownloadArea> {
-  area: T;
-  id: AreaIdMap[T];
+export interface DownloadRequest<T extends DownloadContext> {
+  ctx: T;
+  ctxId: string;
   source: string;
   destination: string;
 }
@@ -30,16 +30,16 @@ export interface Download {
   error?: string;
 }
 
-export interface QueuedFile<T extends DownloadArea = DownloadArea> {
+export interface QueuedFile<T extends DownloadContext> {
   id: string;
   name: string;
   request: DownloadRequest<T>;
   contextId: AreaIdMap[T];
-  contextType?: string;
+  contextType?: T;
 }
 
 export interface DownloadQueue {
-  files: QueuedFile[];
+  files: QueuedFile<DownloadContext>[];
   isDownloading: boolean;
   currentFileIndex: number;
   activeDownloadIds: Set<string>;
@@ -57,20 +57,20 @@ export const DownloadsContext = createContext<{
   startQueueDownload: () => void;
   stopQueueDownload: () => void;
   updateDownload: (_key: string, _updates: Partial<Download>) => void;
-  addFilesToQueue: (
+  addFilesToQueue<T extends DownloadContext>(
     _files: Array<{ id: string; name: string; url: string; filePath: string }>,
-    _contextId: string | number,
-    _contextType?: string,
-  ) => void;
+    _contextId: AreaIdMap[T],
+    _contextType?: T,
+  ): void | Promise<void>;
   removeFilesFromQueue: (_fileIds: string[]) => void;
-  getFilesByContext: (
-    _contextId: string | number,
-    _contextType?: string,
-  ) => QueuedFile[];
-  clearContextFiles: (
-    _contextId: string | number,
-    _contextType?: string,
-  ) => void;
+  getFilesByContext<T extends DownloadContext>(
+    _contextId: AreaIdMap[T],
+    _contextType?: T,
+  ): QueuedFile<T>[];
+  clearContextFiles<T extends DownloadContext>(
+    _contextId: AreaIdMap[T],
+    _contextType?: T,
+  ): void;
 } | null>(null);
 
 export const useDownloadsContext = () => {

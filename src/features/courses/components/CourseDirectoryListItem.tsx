@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Checkbox } from '~/core/components/Checkbox';
 
 import {
+  DownloadContext,
   DownloadPhase,
   useDownloadsContext,
 } from '../../../core/contexts/DownloadsContext';
@@ -90,12 +91,10 @@ export const CourseDirectoryListItem = ({
       const fileUrl = buildCourseFileUrl(courseId, file.id);
       const downloadKey = `${fileUrl}:${cachedFilePath}`;
 
-      // First check if it's in downloads state
       if (downloads[downloadKey]?.isDownloaded === true) {
         return true;
       }
 
-      // If not in state, check if we've already verified it from DB
       return filesCheckedFromDB.has(file.id);
     });
   }, [item, courseFilesCache, courseId, downloads, filesCheckedFromDB]);
@@ -129,7 +128,6 @@ export const CourseDirectoryListItem = ({
     return fileChecks.every(fileExists => fileExists);
   }, [item, courseFilesCache]);
 
-  // Check files in database when component mounts or directory changes
   useEffect(() => {
     const checkFilesInDatabase = async () => {
       const directoryFiles = item.files.filter(isFile);
@@ -138,9 +136,13 @@ export const CourseDirectoryListItem = ({
       const downloadedFileIds = new Set<string>();
 
       try {
-        const area = `course-${courseId}`;
-        const allFilesInArea = await fileDatabase.getFilesByArea(area);
-        const filesMap = new Map(allFilesInArea.map(f => [f.id, f]));
+        const ctx = DownloadContext.Course;
+        const ctxId = courseId.toString();
+        const allFilesInContext = await fileDatabase.getFilesByContext(
+          ctx,
+          ctxId,
+        );
+        const filesMap = new Map(allFilesInContext.map(f => [f.id, f]));
 
         for (const file of directoryFiles) {
           try {
@@ -222,7 +224,6 @@ export const CourseDirectoryListItem = ({
         filePath: string;
       }>,
     ) => {
-      // Aggiungi tutti i file della directory corrente
       const directoryFiles = directory.files.filter(isFile);
       directoryFiles.forEach(file => {
         const fileUrl = buildCourseFileUrl(courseId, file.id);
@@ -242,7 +243,6 @@ export const CourseDirectoryListItem = ({
         });
       });
 
-      // Per ogni sottodirectory, ricorsivamente aggiungi i suoi file
       const subDirectories = directory.files.filter(isDirectory);
       subDirectories.forEach(subDir => {
         const subDirPath = basePath
@@ -265,7 +265,6 @@ export const CourseDirectoryListItem = ({
         filePath: string;
       }> = [];
 
-      // Trova la directory completa con tutte le sottodirectory
       if (courseFilesQuery.data) {
         const findDirectoryRecursive = (
           searchId: string,
@@ -291,16 +290,14 @@ export const CourseDirectoryListItem = ({
         if (fullDirectory) {
           collectAllFilesRecursively(fullDirectory, item.name, allFiles);
         } else {
-          // Fallback: usa solo i file della directory corrente se non trovata
           collectAllFilesRecursively(item, item.name, allFiles);
         }
       } else {
-        // Fallback: usa solo i file della directory corrente
         collectAllFilesRecursively(item, item.name, allFiles);
       }
 
       if (allFiles.length > 0) {
-        addFilesToQueue(allFiles, courseId, 'course');
+        addFilesToQueue(allFiles, courseId, DownloadContext.Course);
       }
     }
   }, [

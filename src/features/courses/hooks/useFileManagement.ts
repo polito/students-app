@@ -14,9 +14,12 @@ import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 
-import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
+import {
+  DownloadContext,
+  useDownloadsContext,
+} from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
-import { useGenericDownload } from '../../../core/hooks/useDownloadQueue';
+import { useDownloadQueue } from '../../../core/hooks/useDownloadQueue';
 import { getFileKey } from '../../../core/providers/downloads/downloadsFileUtils';
 import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
@@ -48,7 +51,7 @@ export const useFileManagement = ({
     clearFiles,
     startDownload,
     stopDownload,
-  } = useGenericDownload(courseId, 'course');
+  } = useDownloadQueue(courseId, DownloadContext.Course);
   const { updateDownload } = useDownloadsContext();
   const fileDatabase = getFileDatabase();
 
