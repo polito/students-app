@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 import { unlink } from 'react-native-fs';
@@ -32,6 +32,7 @@ import { formatFileSize } from '~/utils/files';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
+import { DownloadContext } from '../../../core/contexts/DownloadsContext';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
@@ -55,23 +56,19 @@ const CleanCourseFilesListItem = () => {
   });
 
   const fileDatabaseRef = useRef(getFileDatabase());
-  const courseArea = `course-${courseId}`;
+  const ctx = DownloadContext.Course;
+  const ctxId = courseId.toString();
 
-  const refreshSize = () => {
+  const refreshSize = useCallback(() => {
     fileDatabaseRef.current
-      .getTotalSizeByArea(courseArea)
+      .getTotalSizeByContext(ctx, ctxId)
       .then(size => {
         setCacheSize(size);
       })
       .catch(() => {
         setCacheSize(0);
       });
-  };
-
-  useEffect(() => {
-    refreshSize();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseArea]);
+  }, [ctx, ctxId]);
 
   return (
     <ListItem
@@ -84,7 +81,7 @@ const CleanCourseFilesListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (courseFilesCache && (await confirm())) {
-          await fileDatabaseRef.current.deleteFilesByArea(courseArea);
+          await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
           unlink(courseFilesCache).then(() => {
             setFeedback({
               text: t('coursePreferencesScreen.cleanCacheFeedback'),

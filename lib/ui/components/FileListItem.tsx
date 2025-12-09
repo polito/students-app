@@ -86,7 +86,6 @@ export const FileListItem = ({
   const { t } = useTranslation();
 
   const downloadLabel = t(`common.downloadStatus.${isDownloaded}`);
-
   const isDisabled = useOfflineDisabled(() => !isDownloaded);
   return (
     <ListItem

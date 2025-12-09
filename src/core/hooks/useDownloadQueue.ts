@@ -1,22 +1,37 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { useDownloadsContext } from '../contexts/DownloadsContext';
+import {
+  AreaIdMap,
+  DownloadContext,
+  DownloadQueue,
+  QueuedFile,
+  useDownloadsContext,
+} from '../contexts/DownloadsContext';
 
-export const useDownloadQueue = () => {
-  const { downloadQueue, startQueueDownload, stopQueueDownload } =
-    useDownloadsContext();
-
-  return {
-    downloadQueue,
-    startQueueDownload,
-    stopQueueDownload,
-  };
-};
-
-export const useGenericDownload = (
-  contextId: string | number,
-  contextType?: string,
-) => {
+export function useDownloadQueue<T extends DownloadContext>(
+  contextId?: AreaIdMap[T],
+  contextType?: T,
+): {
+  downloads: Record<string, import('../contexts/DownloadsContext').Download>;
+  downloadQueue: DownloadQueue;
+  startQueueDownload: () => void;
+  stopQueueDownload: () => void;
+  contextFiles: QueuedFile<T>[];
+  isDownloading: boolean;
+  hasFiles: boolean;
+  addFiles: (
+    files: Array<{
+      id: string;
+      name: string;
+      url: string;
+      filePath: string;
+    }>,
+  ) => void;
+  removeFiles: (fileIds: string[]) => void;
+  clearFiles: () => void;
+  startDownload: () => void;
+  stopDownload: () => void;
+} {
   const {
     downloads,
     downloadQueue,
@@ -28,15 +43,30 @@ export const useGenericDownload = (
     stopQueueDownload,
   } = useDownloadsContext();
 
-  const contextFiles = getFilesByContext(contextId, contextType);
-  const isDownloading = downloadQueue.isDownloading && contextFiles.length > 0;
-  const hasFiles = contextFiles.length > 0;
+  const contextFiles = useMemo(() => {
+    if (contextId !== undefined && contextType !== undefined) {
+      return getFilesByContext(contextId, contextType);
+    }
+    return [];
+  }, [contextId, contextType, getFilesByContext]);
+
+  const isDownloading = useMemo(
+    () => downloadQueue.isDownloading && contextFiles.length > 0,
+    [downloadQueue.isDownloading, contextFiles.length],
+  );
+
+  const hasFiles = useMemo(
+    () => contextFiles.length > 0,
+    [contextFiles.length],
+  );
 
   const addFiles = useCallback(
     (
       files: Array<{ id: string; name: string; url: string; filePath: string }>,
     ) => {
-      addFilesToQueue(files, contextId, contextType);
+      if (contextId !== undefined && contextType !== undefined) {
+        addFilesToQueue(files, contextId, contextType);
+      }
     },
     [addFilesToQueue, contextId, contextType],
   );
@@ -49,7 +79,9 @@ export const useGenericDownload = (
   );
 
   const clearFiles = useCallback(() => {
-    clearContextFiles(contextId, contextType);
+    if (contextId !== undefined && contextType !== undefined) {
+      clearContextFiles(contextId, contextType);
+    }
   }, [clearContextFiles, contextId, contextType]);
 
   const startDownload = useCallback(() => {
@@ -65,9 +97,28 @@ export const useGenericDownload = (
     }
   }, [isDownloading, stopQueueDownload, clearFiles]);
 
+  if (contextId === undefined || contextType === undefined) {
+    return {
+      downloads,
+      downloadQueue,
+      startQueueDownload,
+      stopQueueDownload,
+      contextFiles: [] as QueuedFile<T>[],
+      isDownloading: downloadQueue.isDownloading,
+      hasFiles: false,
+      addFiles: () => {},
+      removeFiles: removeFilesFromQueue,
+      clearFiles: () => {},
+      startDownload: startQueueDownload,
+      stopDownload: stopQueueDownload,
+    };
+  }
+
   return {
     downloads,
     downloadQueue,
+    startQueueDownload,
+    stopQueueDownload,
     contextFiles,
     isDownloading,
     hasFiles,
@@ -77,4 +128,4 @@ export const useGenericDownload = (
     startDownload,
     stopDownload,
   };
-};
+}
