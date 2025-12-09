@@ -23,7 +23,8 @@ export const useDownloadFile = (
   fromUrl: string,
   toFile: string,
   fileId: string,
-  area: string,
+  ctx: string,
+  ctxId: string,
   apiChecksum?: string,
 ) => {
   const { token } = useApiContext();
@@ -61,8 +62,7 @@ export const useDownloadFile = (
         isDownloaded: false,
         downloadProgress: undefined,
       },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [downloads[key], key],
+    [downloads, key],
   );
 
   const updateDownload = useCallback(
@@ -181,7 +181,8 @@ export const useDownloadFile = (
             }
             await insertFileToSQLite({
               id: fileId,
-              area,
+              ctx,
+              ctxId,
               path: toFile,
               filename,
               mime: mimeType,
@@ -215,7 +216,8 @@ export const useDownloadFile = (
       toFile,
       token,
       updateDownload,
-      area,
+      ctx,
+      ctxId,
       fileId,
       insertFileToSQLite,
       apiChecksum,

@@ -2,7 +2,8 @@ import { openDatabaseAsync } from 'expo-sqlite';
 
 export interface FileRecord {
   id: string;
-  area: string;
+  ctx: string;
+  ctxId: string;
   path: string;
   filename: string;
   mime: string;
@@ -40,7 +41,8 @@ class FileDatabase {
     await this.db.execAsync(`
       CREATE TABLE IF NOT EXISTS files (
         id VARCHAR(64) PRIMARY KEY NOT NULL,
-        area VARCHAR(64) NOT NULL,
+        ctx VARCHAR(64) NOT NULL,
+        ctxId VARCHAR(64) NOT NULL,
         path VARCHAR(2048) NOT NULL,
         filename VARCHAR(255) NOT NULL,
         mime VARCHAR(64) NOT NULL,
@@ -61,11 +63,12 @@ class FileDatabase {
     return queueDb(async () => {
       await this.db.runAsync(
         `INSERT OR REPLACE INTO files 
-         (id, area, path, filename, mime, checksum, sizeKb, downloadTime, updateTime) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         (id, ctx, ctxId, path, filename, mime, checksum, sizeKb, downloadTime, updateTime) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           file.id,
-          file.area,
+          file.ctx,
+          file.ctxId,
           file.path,
           file.filename,
           file.mime,
@@ -81,14 +84,9 @@ class FileDatabase {
   async updateFile(id: string, updates: Partial<FileRecord>): Promise<void> {
     await this.ensureInitialized();
     return queueDb(async () => {
-      const fields = Object.keys(updates)
-        .filter(key => key !== 'id')
-        .map(key => `${key} = ?`)
-        .join(', ');
-
-      const values = Object.values(updates).filter(
-        (_, index) => Object.keys(updates)[index] !== 'id',
-      );
+      const entries = Object.entries(updates).filter(([key]) => key !== 'id');
+      const fields = entries.map(([key]) => `${key} = ?`).join(', ');
+      const values = entries.map(([, value]) => value);
       values.push(id);
 
       await this.db.runAsync(`UPDATE files SET ${fields} WHERE id = ?`, values);
@@ -99,8 +97,19 @@ class FileDatabase {
     await this.ensureInitialized();
     return queueDb(async () => {
       const result = await this.db.getAllAsync(
-        'SELECT * FROM files WHERE area = ?',
+        'SELECT * FROM files WHERE ctx || "-" || ctxId = ?',
         [area],
+      );
+      return result || [];
+    });
+  }
+
+  async getFilesByContext(ctx: string, ctxId: string): Promise<FileRecord[]> {
+    await this.ensureInitialized();
+    return queueDb(async () => {
+      const result = await this.db.getAllAsync(
+        'SELECT * FROM files WHERE ctx = ? AND ctxId = ?',
+        [ctx, ctxId],
       );
       return result || [];
     });
@@ -135,7 +144,20 @@ class FileDatabase {
   async deleteFilesByArea(area: string): Promise<void> {
     await this.ensureInitialized();
     return queueDb(async () => {
-      await this.db.runAsync('DELETE FROM files WHERE area = ?', [area]);
+      await this.db.runAsync(
+        'DELETE FROM files WHERE ctx || "-" || ctxId = ?',
+        [area],
+      );
+    });
+  }
+
+  async deleteFilesByContext(ctx: string, ctxId: string): Promise<void> {
+    await this.ensureInitialized();
+    return queueDb(async () => {
+      await this.db.runAsync('DELETE FROM files WHERE ctx = ? AND ctxId = ?', [
+        ctx,
+        ctxId,
+      ]);
     });
   }
 
@@ -160,8 +182,19 @@ class FileDatabase {
     await this.ensureInitialized();
     return queueDb(async () => {
       const result = await this.db.getFirstAsync(
-        'SELECT COALESCE(SUM(sizeKb), 0) as total FROM files WHERE area = ?',
+        'SELECT COALESCE(SUM(sizeKb), 0) as total FROM files WHERE ctx || "-" || ctxId = ?',
         [area],
+      );
+      return result?.total || 0;
+    });
+  }
+
+  async getTotalSizeByContext(ctx: string, ctxId: string): Promise<number> {
+    await this.ensureInitialized();
+    return queueDb(async () => {
+      const result = await this.db.getFirstAsync(
+        'SELECT COALESCE(SUM(sizeKb), 0) as total FROM files WHERE ctx = ? AND ctxId = ?',
+        [ctx, ctxId],
       );
       return result?.total || 0;
     });

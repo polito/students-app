@@ -10,14 +10,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { MAX_CONCURRENT_DOWNLOADS } from '../../constants';
 import {
-  DownloadArea,
+  DownloadContext,
   DownloadPhase,
   QueuedFile,
 } from '../../contexts/DownloadsContext';
 import { useFeedbackContext } from '../../contexts/FeedbackContext';
 import { getFileDatabase } from '../../database/FileDatabase';
 import {
-  buildAreaString,
   checkPathsExist,
   findFileById,
   getFileKey,
@@ -31,12 +30,14 @@ import {
   State,
 } from './downloadsTypes';
 
-const getDownloadAreaFromContextType = (contextType?: string): DownloadArea => {
+const getDownloadAreaFromContextType = (
+  contextType?: string,
+): DownloadContext => {
   switch (contextType) {
     case 'course':
-      return DownloadArea.Course;
+      return DownloadContext.Course;
     default:
-      return DownloadArea.Course;
+      return DownloadContext.Course;
   }
 };
 
@@ -44,7 +45,7 @@ interface UseQueueManagementParams {
   state: State;
   dispatch: Dispatch<Action>;
   dispatchProgress: Dispatch<ProgressAction>;
-  downloadFile: (file: QueuedFile) => Promise<void>;
+  downloadFile: (file: QueuedFile<DownloadContext>) => Promise<void>;
 }
 
 export const useQueueManagement = ({
@@ -180,34 +181,37 @@ export const useQueueManagement = ({
   }, [state, dispatch, dispatchProgress]);
 
   const addFilesToQueue = useCallback(
-    async (
+    async <T extends DownloadContext>(
       files: Array<{ id: string; name: string; url: string; filePath: string }>,
       contextId: string | number,
-      contextType?: string,
+      contextType?: T,
     ) => {
       if (state.isDownloading) {
         return;
       }
       const downloadArea = getDownloadAreaFromContextType(contextType);
-      const filesWithContext: QueuedFile[] = files.map(file => ({
+      const ctxId = String(contextId);
+      const filesWithContext: QueuedFile<T>[] = files.map(file => ({
         id: file.id,
         name: file.name,
         request: {
-          area: downloadArea,
-          id: contextId as any,
+          ctx: downloadArea as T,
+          ctxId,
           source: file.url,
           destination: file.filePath,
         },
         contextId: contextId as any,
-        contextType,
+        contextType: contextType,
       }));
 
       dispatch({ type: 'ADD_FILES', files: filesWithContext });
 
       const fileDatabase = getFileDatabase();
-      const area = buildAreaString(downloadArea, String(contextId));
-      const allFilesInArea = await fileDatabase.getFilesByArea(area);
-      const filesMap = new Map(allFilesInArea.map((f: any) => [f.id, f]));
+      const allFilesInContext = await fileDatabase.getFilesByContext(
+        downloadArea,
+        ctxId,
+      );
+      const filesMap = new Map(allFilesInContext.map((f: any) => [f.id, f]));
 
       Promise.all(
         filesWithContext.map(async file => {
@@ -271,15 +275,20 @@ export const useQueueManagement = ({
   );
 
   const getFilesByContext = useCallback(
-    (contextId: string | number, contextType?: string) =>
-      state.queue.filter(file => matchesContext(file, contextId, contextType)),
+    <T extends DownloadContext>(contextId: string | number, contextType?: T) =>
+      state.queue.filter(file =>
+        matchesContext(file, contextId, contextType as any),
+      ) as QueuedFile<T>[],
     [state.queue],
   );
 
   const clearContextFiles = useCallback(
-    (contextId: string | number, contextType?: string) => {
+    <T extends DownloadContext>(
+      contextId: string | number,
+      contextType?: T,
+    ) => {
       const idsToRemove = state.queue
-        .filter(file => matchesContext(file, contextId, contextType))
+        .filter(file => matchesContext(file, contextId, contextType as any))
         .map(file => file.id);
       if (idsToRemove.length > 0) {
         idsToRemove.forEach(id => {

@@ -2,7 +2,11 @@
  * Types and constants for downloads: defines State, Action, and ProgressAction types,
  * along with configuration constants like throttle intervals.
  */
-import { Download, QueuedFile } from '../../contexts/DownloadsContext';
+import {
+  Download,
+  DownloadContext,
+  QueuedFile,
+} from '../../contexts/DownloadsContext';
 
 export const QUEUE_STORAGE_KEY = '@downloads_queue';
 export const PROGRESS_UPDATE_THROTTLE_MS = 200;
@@ -10,7 +14,7 @@ export const CONTEXT_PROGRESS_UPDATE_THROTTLE_MS = 500;
 
 export interface State {
   downloads: Record<string, Omit<Download, 'downloadProgress'>>;
-  queue: QueuedFile[];
+  queue: QueuedFile<DownloadContext>[];
   activeIds: Set<string>;
   isDownloading: boolean;
   hasCompleted: boolean;
@@ -18,7 +22,7 @@ export interface State {
 }
 
 export type Action =
-  | { type: 'ADD_FILES'; files: QueuedFile[] }
+  | { type: 'ADD_FILES'; files: QueuedFile<DownloadContext>[] }
   | { type: 'REMOVE_FILES'; ids: string[] }
   | {
       type: 'UPDATE_DOWNLOAD';

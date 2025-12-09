@@ -4,11 +4,15 @@
 import { Dispatch } from 'react';
 import { exists, stopDownload } from 'react-native-fs';
 
-import { Download, QueuedFile } from '../../contexts/DownloadsContext';
+import {
+  Download,
+  DownloadContext,
+  QueuedFile,
+} from '../../contexts/DownloadsContext';
 import { getFileDatabase } from '../../database/FileDatabase';
 import { Action, ProgressAction } from './downloadsTypes';
 
-export const getFileKey = (file: QueuedFile): string =>
+export const getFileKey = (file: QueuedFile<DownloadContext>): string =>
   `${file.request.source}:${file.request.destination}`;
 
 export const checkPathsExist = async (paths: string[]): Promise<boolean> => {
@@ -20,7 +24,9 @@ export const checkPathsExist = async (paths: string[]): Promise<boolean> => {
   return false;
 };
 
-export const checkFileExists = async (file: QueuedFile): Promise<boolean> => {
+export const checkFileExists = async (
+  file: QueuedFile<DownloadContext>,
+): Promise<boolean> => {
   try {
     const fileDatabase = getFileDatabase();
     const fileRecord = await fileDatabase.getFileById(file.id);
@@ -34,22 +40,22 @@ export const checkFileExists = async (file: QueuedFile): Promise<boolean> => {
 };
 
 export const matchesContext = (
-  file: QueuedFile,
+  file: QueuedFile<DownloadContext>,
   contextId: string | number,
   contextType?: string,
 ): boolean =>
-  String(file.request.id) === String(contextId) &&
+  String(file.request.ctxId) === String(contextId) &&
   (contextType === undefined || file.contextType === contextType);
 
 export const findFileById = (
-  queue: QueuedFile[],
+  queue: QueuedFile<DownloadContext>[],
   id: string,
-): QueuedFile | undefined => {
+): QueuedFile<DownloadContext> | undefined => {
   return queue.find(f => f.id === id);
 };
 
 export const stopActiveDownload = (
-  file: QueuedFile,
+  file: QueuedFile<DownloadContext>,
   downloads: Record<string, Omit<Download, 'downloadProgress'>>,
   dispatch: Dispatch<Action>,
   dispatchProgress: Dispatch<ProgressAction>,
