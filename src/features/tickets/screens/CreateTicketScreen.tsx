@@ -17,10 +17,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { CreateTicketRequest } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  useCreateTicket,
-  useGetTicketTopics,
-} from '../../../core/queries/ticketHooks';
+import { useCreateTicket } from '../../../core/queries/ticketHooks';
 import { darkTheme } from '../../../core/themes/dark';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { Attachment } from '../../services/types/Attachment';
@@ -34,11 +31,6 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
     route.params;
-  const ticketTopicQuery = useGetTicketTopics();
-  const _topics = useMemo(() => {
-    if (!ticketTopicQuery.data) return [];
-    return ticketTopicQuery.data;
-  }, [ticketTopicQuery.data]);
   const styles = useStylesheet(createStyles);
 
   const [_topicId, _setTopicId] = useState(initialTopicId?.toString());
