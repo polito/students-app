@@ -55,6 +55,8 @@ export type ServiceStackParamList = OfferingStackParamList & {
   CreateTicket: {
     topicId?: number;
     subtopicId?: number;
+    selectedTopic?: { id: string; title: string };
+    selectedSubtopic?: { id: string; title: string };
   };
   TopicScreen: undefined;
   TicketFaqs: undefined;

@@ -3,22 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
-// import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { TextField } from '@lib/ui/components/TextField';
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { CreateTicketRequest } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCreateTicket } from '../../../core/queries/ticketHooks';
-import { darkTheme } from '../../../core/themes/dark';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from '../components/MessagingView';
@@ -30,16 +26,37 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
-    route.params;
+    route.params ?? {};
   const styles = useStylesheet(createStyles);
 
-  const [_topicId, _setTopicId] = useState(initialTopicId?.toString());
+  const [, setTopicId] = useState(initialTopicId?.toString());
   const [ticketBody, setTicketBody] = useState<Partial<CreateTicketRequest>>({
     subject: undefined,
     message: undefined,
     subtopicId: initialSubtopicId,
     attachment: undefined,
   });
+
+  // Listen for navigation param changes (from TopicScreen)
+  useEffect(() => {
+    if (route.params?.selectedTopic && route.params?.selectedSubtopic) {
+      // Extract numeric IDs from the string IDs
+      const numericTopicId = parseInt(
+        route.params.selectedTopic.id.replace('t', ''),
+        10,
+      );
+      const numericSubtopicId = parseInt(
+        route.params.selectedSubtopic.id.replace('s', ''),
+        10,
+      );
+
+      setTopicId(numericTopicId.toString());
+      setTicketBody(prev => ({
+        ...prev,
+        subtopicId: numericSubtopicId,
+      }));
+    }
+  }, [route.params?.selectedTopic, route.params?.selectedSubtopic]);
   const {
     mutateAsync: handleCreateTicket,
     isPending,
@@ -76,7 +93,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   // const updateTopicId = (value: string) => {
   //   setTopicId(value);
   //   setTicketBody(prevState => ({
-  //     ...prevState,
+  //     ...prevState,faPaperclip
   //     subtopicId: undefined,
   //     attachment: undefined,
   //   }));
@@ -130,8 +147,24 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
       <Section>
         <OverviewList rounded>
           <ListItem
-            title={t('createTicketScreen.topicDropdownLabel')}
-            linkTo={{ screen: 'TopicScreen' }}
+            title={
+              route.params?.selectedTopic?.title ??
+              t('createTicketScreen.topicDropdownLabel')
+            }
+            subtitle={route.params?.selectedSubtopic?.title}
+            linkTo={{
+              screen: 'TopicScreen',
+              params: {
+                onSelect: ({ topic, subtopic }: any) => {
+                  navigation.setParams({
+                    selectedTopic: topic,
+                    selectedSubtopic: subtopic,
+                  });
+                },
+                topics: undefined,
+                returnScreen: 'CreateTicket',
+              },
+            }}
             accessibilityLabel={t(
               'createTicketScreen.topicDropdownLabelAccessibility',
             )}
@@ -151,6 +184,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
         {/* Subject input card */}
         <OverviewList rounded>
+          <ListItem title={t('createTicketScreen.subjectTitle')} />
           <TextField
             accessibilityLabel={subjectAccessibilityLabel}
             autoCapitalize="sentences"
@@ -161,22 +195,24 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
             onChangeText={updateTicketBodyField('subject')}
           />
         </OverviewList>
-        <ChatBubble style={styles.bubbleContainer} bubbleStyle={styles.bubble}>
-          <ThemeContext.Provider value={darkTheme}>
-            <MessagingView
-              translucent={false}
-              showSendButton={false}
-              message={ticketBody.message}
-              onMessageChange={updateTicketBodyField('message')}
-              attachment={ticketBody.attachment as unknown as Attachment}
-              onAttachmentChange={updateTicketBodyField('attachment') as any}
-              disabled={!ticketBody.subtopicId}
-              numberOfLines={5}
-              style={styles.bubbleInput}
-              textFieldStyle={styles.textField}
-            />
-          </ThemeContext.Provider>
-        </ChatBubble>
+
+        <OverviewList rounded>
+          <ListItem title={t('createTicketScreen.messageTitle')} />
+          <MessagingView
+            translucent={false}
+            showSendButton={false}
+            message={ticketBody.message}
+            onMessageChange={updateTicketBodyField('message')}
+            attachment={ticketBody.attachment as unknown as Attachment}
+            onAttachmentChange={attachment =>
+              updateTicketBodyField('attachment')(attachment as any)
+            }
+            disabled={!ticketBody.subtopicId}
+            numberOfLines={15}
+            style={[styles.bubbleInput, styles.messageContainer]}
+            textFieldStyle={[styles.textField, styles.messageInput]}
+          />
+        </OverviewList>
       </Section>
 
       <CtaButton
@@ -208,6 +244,11 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     },
     bubbleInput: {
       paddingRight: 0,
+    },
+    messageContainer: {},
+
+    messageInput: {
+      minHeight: 120,
     },
     objectSection: {
       height: 60,
