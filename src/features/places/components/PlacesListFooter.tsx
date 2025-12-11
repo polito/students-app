@@ -4,6 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 
+import { usePostHog } from 'posthog-react-native';
+
 interface PlacesListFooterProps {
   computeButtonState: number;
   startRoomLength: number;
@@ -24,6 +26,7 @@ const PlacesListFooterComponent = ({
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const isDisabled = startRoomLength === 0 || destinationRoomLength === 0;
+  const posthog = usePostHog();
 
   return (
     <View style={styles.ctaButtonContainer}>
@@ -38,8 +41,10 @@ const PlacesListFooterComponent = ({
         action={() => {
           if (computeButtonState > 0 && !isDisabled) {
             showItinerary();
-          } else if (computeButtonState === 0 && !isLoading)
+          } else if (computeButtonState === 0 && !isLoading) {
+            posthog.capture('Compute Path Button Pressed');
             handleComputeButtonState(1);
+          }
         }}
         disabled={isDisabled}
         loading={isLoading}

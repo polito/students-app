@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { capitalize } from 'lodash';
+import { usePostHog } from 'posthog-react-native';
 
 import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { notNullish } from '../../../utils/predicates';
@@ -51,6 +52,8 @@ export const MarkersLayer = ({
   const { accessibility } = usePreferencesContext();
   const { itineraryMode, setSelectedPlace, selectionIcon, selectionMode } =
     useContext(PlacesContext);
+
+  const posthog = usePostHog();
 
   const [selectedId, setSelectedId] = useState<string>('');
 
@@ -183,6 +186,7 @@ export const MarkersLayer = ({
             if (selectionMode)
               if (isPlace(selectedPoi)) {
                 if (selectedId === selectedPoi.id) {
+                  posthog.capture(`${selectedPoi.id} in Itinerary Mode`);
                   setSelectedPlace(null);
                   setSelectedId('');
                 } else {
@@ -219,6 +223,7 @@ export const MarkersLayer = ({
                 setSelectedId(selectedPoi.id);
               }
             } else {
+              posthog.capture(`${selectedPoi.id} Marker Clicked`);
               const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
               const params =
                 screen === 'Place'

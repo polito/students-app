@@ -6,6 +6,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
+  faCheckDouble,
   faClipboardQuestion,
   faComments,
   faEnvelope,
@@ -20,6 +21,8 @@ import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { useQueryClient } from '@tanstack/react-query';
+
+import { usePostHog } from 'posthog-react-native';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -52,6 +55,10 @@ export const ServicesScreen = () => {
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
   const unreadEmailsQuery = useGetUnreadEmails();
   const [fontSize, setFontSize] = useState(Number(accessibility?.fontSize));
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const posthog = usePostHog();
+
   useEffect(() => {
     setFontSize(Number(accessibility?.fontSize) ?? 0);
   }, [accessibility?.fontSize]);
@@ -187,6 +194,16 @@ export const ServicesScreen = () => {
           unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
         }`,
       },
+      {
+        id: 'testSession',
+        name: 'Start Test Session',
+        disabled: isDisabled,
+        icon: faCheckDouble,
+        onPress: () => {
+          setIsDisabled(true);
+          posthog.identify('test_userId');
+        },
+      },
     ];
   }, [
     t,
@@ -199,6 +216,8 @@ export const ServicesScreen = () => {
     emailGuideRead,
     unreadEmailsQuery.data,
     openWebmailLink,
+    isDisabled,
+    posthog,
   ]);
 
   const [favoriteServices, otherServices] = useMemo(

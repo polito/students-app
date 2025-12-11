@@ -16,6 +16,8 @@ import { TranslucentView } from '~/core/components/TranslucentView';
 import { useGetSite } from '~/core/queries/placesHooks';
 import { PlacesContext } from '~/features/places/contexts/PlacesContext';
 
+import { usePostHog } from 'posthog-react-native';
+
 type Props = {
   lineId?: number;
   pathFeatureCollection: NavigationResponseFeature[];
@@ -36,6 +38,7 @@ export const SubPathSelector = (props: Props) => {
   );
   const { colors, palettes, spacing, dark } = useTheme();
   const { t } = useTranslation();
+  const posthog = usePostHog();
 
   return (
     <>
@@ -53,6 +56,7 @@ export const SubPathSelector = (props: Props) => {
           style={[styles.icon, { backgroundColor: colors.background }]}
           disabled={currentSegmentIndex === 0}
           onPress={() => {
+            posthog.capture('Previous Segment Button Clicked');
             setCurrentSegmentIndex(prev => prev - 1);
             handleSelectSegment?.(
               currentSegmentIndex - 1,
@@ -99,6 +103,7 @@ export const SubPathSelector = (props: Props) => {
           style={[styles.icon, { backgroundColor: colors.background }]}
           disabled={currentSegmentIndex === numSegments}
           onPress={() => {
+            posthog.capture('Next Segment Button Clicked');
             setCurrentSegmentIndex(prev => prev + 1);
             handleSelectSegment?.(
               currentSegmentIndex + 1,

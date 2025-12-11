@@ -13,6 +13,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PlaceOverview } from '@polito/api-client';
 
+import { usePostHog } from 'posthog-react-native';
+
 import { Checkbox } from '../../../core/components/Checkbox';
 import { StatisticsContainer } from './StatisticsContainer';
 
@@ -69,6 +71,7 @@ const PlacesListHeaderComponent = ({
   const { dark, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const posthog = usePostHog();
 
   return (
     <View style={styles.bottomSheetContent}>
@@ -183,7 +186,10 @@ const PlacesListHeaderComponent = ({
             </Text>
             <View style={styles.checkBox}>
               <Checkbox
-                onPress={() => setAvoidStairs(!avoidStairs)}
+                onPress={() => {
+                  setAvoidStairs(!avoidStairs);
+                  posthog.capture('Avoid Stairs Toggled');
+                }}
                 isChecked={avoidStairs}
               />
             </View>

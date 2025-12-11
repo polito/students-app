@@ -35,6 +35,7 @@ import { PlaceOverview } from '@polito/api-client';
 import { notNullish } from '~/utils/predicates';
 
 import { debounce } from 'lodash';
+import { usePostHog } from 'posthog-react-native';
 
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
@@ -104,12 +105,13 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     siteId: campus?.id,
   });
   const innerRef = useRef<BottomSheet>(null);
+  const posthog = usePostHog();
 
   const headerRight = useCallback(
     () => (
       <TouchableOpacity
         onPress={() => {
-          Clarity.sendCustomEvent('Modify Button (IndicationsScreen) Clicked');
+          posthog.capture('Modify Button (Itinerary screen) Clicked');
           setComputeButtonState(0);
           setDebouncedSearch('');
         }}
@@ -127,7 +129,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         </View>
       </TouchableOpacity>
     ),
-    [t, styles, colors, setComputeButtonState],
+    [t, styles, colors, setComputeButtonState, posthog],
   );
 
   useLayoutEffect(() => {
@@ -173,6 +175,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       action: {
         label: t('common.ok'),
         onPress: () => {
+          posthog.capture('PathNotFoundFeedback Acknowledged');
           handleRoom(undefined as any, true);
           setSearchStart('');
           setDebouncedSearch('');
@@ -180,7 +183,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         },
       },
     });
-  }, [setFeedback, t, handleRoom, setDebouncedSearch, setSearchStart]);
+  }, [setFeedback, t, handleRoom, setDebouncedSearch, setSearchStart, posthog]);
 
   const { filteredPlaces: places } = useNavigationPlaces({
     siteId: campus?.id,
@@ -340,6 +343,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       const currentIsExpandedDest = isExpandedDestRef.current;
 
       if (item.type === 'special') {
+        posthog.capture('SelectPlaceFromMapButton Clicked');
         if (currentIsExpandedStart) {
           setSelectionIcon('start');
           navigation.navigate('MapSelection', {
@@ -354,10 +358,14 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       } else {
         const itemName = item.place.room.name ?? t('common.untitled');
         if (currentIsExpandedStart) {
+          posthog.capture(`Selected Start Place: ${item.place.id} from List`);
           handleRoom(item.place, true);
           setSearchStart(itemName);
           setIsExpandedStart(false);
         } else if (currentIsExpandedDest) {
+          posthog.capture(
+            `Selected Destination Place: ${item.place.id} from List`,
+          );
           handleRoom(item.place, false);
           setSearchDest(itemName);
           setIsExpandedDest(false);
@@ -378,6 +386,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       //setDebouncedSearch,
       //setSelectionMode,
       t,
+      posthog,
     ],
   );
 
@@ -487,7 +496,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
             pathFeat?.data.features.length
           ) {
             setSelectedSegmentId(0);
-            Clarity.sendCustomEvent('ShowItineraryButton Clicked');
+            posthog.capture('ShowItineraryButton Clicked');
             navigation.navigate('Itinerary', {
               pathFeat: pathFeat,
               startRoom: startRoom.placeId,
@@ -506,6 +515,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     setSelectedSegmentId,
     isLoadingPath,
     pathFeat,
+    posthog,
   ]);
 
   useEffect(() => {

@@ -2,6 +2,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Mapbox from '@rnmapbox/maps';
 
+import { PostHogProvider } from 'posthog-react-native';
+
 import { AppContent } from './core/components/AppContent';
 import { DialogProvider } from './core/components/Dialog';
 import { ApiProvider } from './core/providers/ApiProvider';
@@ -19,22 +21,34 @@ Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <SplashProvider>
-        <PreferencesProvider>
-          <UiProvider>
-            <FeedbackProvider>
-              <ApiProvider>
-                <DownloadsProvider>
-                  <DialogProvider />
-                  <AppContent />
-                </DownloadsProvider>
-              </ApiProvider>
-            </FeedbackProvider>
-          </UiProvider>
-        </PreferencesProvider>
-      </SplashProvider>
-    </SafeAreaProvider>
+    <PostHogProvider
+      apiKey={process.env.POSTHOG_API_KEY!}
+      options={{
+        host: process.env.POSTHOG_HOST!,
+        enableSessionReplay: true,
+        sessionReplayConfig: {
+          maskAllImages: false,
+          maskAllTextInputs: false,
+        },
+      }}
+    >
+      <SafeAreaProvider>
+        <SplashProvider>
+          <PreferencesProvider>
+            <UiProvider>
+              <FeedbackProvider>
+                <ApiProvider>
+                  <DownloadsProvider>
+                    <DialogProvider />
+                    <AppContent />
+                  </DownloadsProvider>
+                </ApiProvider>
+              </FeedbackProvider>
+            </UiProvider>
+          </PreferencesProvider>
+        </SplashProvider>
+      </SafeAreaProvider>
+    </PostHogProvider>
   );
 };
 

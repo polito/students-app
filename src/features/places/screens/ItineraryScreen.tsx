@@ -28,6 +28,7 @@ import { SubPathSelector } from '~/features/places/components/SubPathSelector';
 import { displayTabBar } from '~/utils/tab-bar';
 
 import { BBox } from 'geojson';
+import { usePostHog } from 'posthog-react-native';
 
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -60,11 +61,15 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
     Dimensions.get('window').height,
   );
   const [chosenBbox, setChosenBbox] = useState<BBox | null>(null);
+  const posthog = usePostHog();
 
   const headerRight = useCallback(
     () => (
       <TouchableOpacity
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          posthog.capture('Modify Button (ItineraryScreen) Clicked');
+          navigation.goBack();
+        }}
         style={styles.modifyButton}
       >
         <View>
@@ -79,7 +84,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
         </View>
       </TouchableOpacity>
     ),
-    [navigation, t, styles, colors],
+    [navigation, t, styles, colors, posthog],
   );
 
   useLayoutEffect(() => {

@@ -44,6 +44,8 @@ import {
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
 
+import { usePostHog } from 'posthog-react-native';
+
 import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
@@ -108,6 +110,7 @@ export const MapNavigator = ({
   const previousDescriptor = previousKey ? descriptors[previousKey] : undefined;
   const parentHeaderBack = useContext(HeaderBackContext);
   const { accessibility } = usePreferencesContext();
+  const posthog = usePostHog();
 
   const headerBack = previousDescriptor
     ? {
@@ -237,6 +240,7 @@ export const MapNavigator = ({
                                     : undefined
                                 }
                                 onPress={() => {
+                                  posthog.capture('Back Button Pressed');
                                   setSelectedId('');
                                   navigation.goBack();
                                 }}
