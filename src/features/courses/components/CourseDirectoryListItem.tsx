@@ -55,19 +55,6 @@ export const CourseDirectoryListItem = ({
   const [courseFilesCache] = useCourseFilesCachePath();
   const courseFilesQuery = useGetCourseFiles(courseId);
 
-  const directoryFileIds = useMemo(
-    () => item.files.filter(isFile).map(f => f.id),
-    [item.files],
-  );
-
-  const isInQueue = useMemo(
-    () =>
-      directoryFileIds.some(fileId =>
-        downloadQueue.files.some(queuedFile => queuedFile.id === fileId),
-      ),
-    [downloadQueue.files, directoryFileIds],
-  );
-
   const [filesCheckedFromDB, setFilesCheckedFromDB] = useState<Set<string>>(
     new Set(),
   );
@@ -254,59 +241,75 @@ export const CourseDirectoryListItem = ({
     [courseId, courseFilesCache],
   );
 
-  const handleSelection = useCallback(() => {
-    if (isInQueue) {
-      removeFilesFromQueue(directoryFileIds);
-    } else {
-      const allFiles: Array<{
-        id: string;
-        name: string;
-        url: string;
-        filePath: string;
-      }> = [];
+  const getAllFilesInDirectory = useCallback(() => {
+    const allFiles: Array<{
+      id: string;
+      name: string;
+      url: string;
+      filePath: string;
+    }> = [];
 
-      if (courseFilesQuery.data) {
-        const findDirectoryRecursive = (
-          searchId: string,
-          items: CourseDirectoryContentInner[],
-        ): CourseDirectory | null => {
-          for (const currentItem of items) {
-            if (isDirectory(currentItem) && currentItem.id === searchId) {
-              return currentItem;
-            }
-            if (isDirectory(currentItem)) {
-              const found = findDirectoryRecursive(searchId, currentItem.files);
-              if (found) return found;
-            }
+    if (courseFilesQuery.data) {
+      const findDirectoryRecursive = (
+        searchId: string,
+        items: CourseDirectoryContentInner[],
+      ): CourseDirectory | null => {
+        for (const currentItem of items) {
+          if (isDirectory(currentItem) && currentItem.id === searchId) {
+            return currentItem;
           }
-          return null;
-        };
-
-        const fullDirectory = findDirectoryRecursive(
-          item.id,
-          courseFilesQuery.data,
-        );
-
-        if (fullDirectory) {
-          collectAllFilesRecursively(fullDirectory, item.name, allFiles);
-        } else {
-          collectAllFilesRecursively(item, item.name, allFiles);
+          if (isDirectory(currentItem)) {
+            const found = findDirectoryRecursive(searchId, currentItem.files);
+            if (found) return found;
+          }
         }
+        return null;
+      };
+
+      const fullDirectory = findDirectoryRecursive(
+        item.id,
+        courseFilesQuery.data,
+      );
+
+      if (fullDirectory) {
+        collectAllFilesRecursively(fullDirectory, item.name, allFiles);
       } else {
         collectAllFilesRecursively(item, item.name, allFiles);
       }
+    } else {
+      collectAllFilesRecursively(item, item.name, allFiles);
+    }
 
-      if (allFiles.length > 0) {
-        addFilesToQueue(allFiles, courseId, DownloadContext.Course);
-      }
+    return allFiles;
+  }, [courseFilesQuery.data, item, collectAllFilesRecursively]);
+
+  const directoryFileIds = useMemo(
+    () => getAllFilesInDirectory().map(file => file.id),
+    [getAllFilesInDirectory],
+  );
+
+  const isInQueue = useMemo(
+    () =>
+      directoryFileIds.some(fileId =>
+        downloadQueue.files.some(queuedFile => queuedFile.id === fileId),
+      ),
+    [downloadQueue.files, directoryFileIds],
+  );
+
+  const handleSelection = useCallback(() => {
+    const allFiles = getAllFilesInDirectory();
+    if (allFiles.length === 0) return;
+
+    if (isInQueue) {
+      const fileIds = Array.from(new Set(allFiles.map(file => file.id)));
+      removeFilesFromQueue(fileIds);
+    } else {
+      addFilesToQueue(allFiles, courseId, DownloadContext.Course);
     }
   }, [
     isInQueue,
-    directoryFileIds,
-    item,
+    getAllFilesInDirectory,
     courseId,
-    courseFilesQuery.data,
-    collectAllFilesRecursively,
     addFilesToQueue,
     removeFilesFromQueue,
   ]);
