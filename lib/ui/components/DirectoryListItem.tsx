@@ -20,11 +20,13 @@ interface Props {
   subtitle?: string | ReactElement;
   trailingItem?: ReactElement;
   isDownloaded?: boolean;
+  unread?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
 }
 
 export const DirectoryListItem = ({
   isDownloaded = false,
+  unread = false,
   ...props
 }: TouchableHighlightProps & Props) => {
   const { palettes } = useTheme();
@@ -47,6 +49,7 @@ export const DirectoryListItem = ({
         </View>
       }
       isAction
+      unread={unread}
       {...props}
     />
   );

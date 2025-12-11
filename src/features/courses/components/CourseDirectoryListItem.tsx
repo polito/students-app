@@ -20,6 +20,7 @@ import {
   useDownloadsContext,
 } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
+import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseFiles } from '../../../core/queries/courseHooks';
 import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -54,6 +55,7 @@ export const CourseDirectoryListItem = ({
   } = useDownloadsContext();
   const [courseFilesCache] = useCourseFilesCachePath();
   const courseFilesQuery = useGetCourseFiles(courseId);
+  const { getUnreadsCount } = useNotifications();
 
   const [filesCheckedFromDB, setFilesCheckedFromDB] = useState<Set<string>>(
     new Set(),
@@ -327,6 +329,22 @@ export const CourseDirectoryListItem = ({
     [enableMultiSelect, isInQueue, handleSelection],
   );
 
+  const hasUnreadFiles = useMemo(() => {
+    const allFiles = getAllFilesInDirectory();
+    const totalUnreads = allFiles.reduce((count, file) => {
+      const fileNotificationScope = [
+        'teaching',
+        'courses',
+        courseId.toString(),
+        'files',
+        file.id,
+      ];
+      const unreadCount = getUnreadsCount(fileNotificationScope) ?? 0;
+      return count + unreadCount;
+    }, 0);
+    return totalUnreads > 0;
+  }, [getAllFilesInDirectory, courseId, getUnreadsCount]);
+
   return (
     <DirectoryListItem
       title={item.name}
@@ -346,6 +364,7 @@ export const CourseDirectoryListItem = ({
       }}
       trailingItem={trailingItem || undefined}
       isDownloaded={allFilesDownloaded}
+      unread={hasUnreadFiles}
       {...rest}
     />
   );
