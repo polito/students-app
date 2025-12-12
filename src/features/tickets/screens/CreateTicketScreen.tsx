@@ -219,8 +219,10 @@ const createStyles = ({ shapes, spacing }: Theme) =>
       marginTop: -spacing[2],
     },
     subjectTitleContainer: {
+      paddingVertical: spacing[1],
       paddingBottom: 0,
       marginBottom: -spacing[1],
+      minHeight: 32,
     },
     textField: {
       borderRadius: shapes.md,
