@@ -43,6 +43,7 @@ export const queryPersister = experimental_createQueryPersister({
   serialize: SuperJSON.stringify,
   deserialize: SuperJSON.parse,
   maxAge: DATA_MAX_AGE,
+  refetchOnRestore: 'always',
 });
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
