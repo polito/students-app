@@ -373,7 +373,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               const statusLabel = t(
                 getBookingSlotStatus(
                   item,
-                  'bookingScreen.bookingStatus.notAvailableBooking',
+                  'bookingScreen.bookingStatus.notAvailable',
                 ),
               );
 
@@ -518,7 +518,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                       t(
                         getBookingSlotStatus(
                           item,
-                          'bookingScreen.bookingStatus.notAvailableBooking',
+                          'bookingScreen.bookingStatus.notAvailable',
                         ),
                       ) + timeMessage
                     }

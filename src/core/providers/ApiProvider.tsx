@@ -34,7 +34,7 @@ import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 
-const QueryStorage = new SQLiteStorage('queryClient');
+export const QueryStorage = new SQLiteStorage('queryClient');
 
 const DATA_MAX_AGE = 1000 * 3600 * 24 * 7;
 
@@ -43,6 +43,7 @@ export const queryPersister = experimental_createQueryPersister({
   serialize: SuperJSON.stringify,
   deserialize: SuperJSON.parse,
   maxAge: DATA_MAX_AGE,
+  refetchOnRestore: 'always',
 });
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
@@ -135,12 +136,14 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       });
 
       setApiContext(() => {
-        return {
+        const newContext = {
           isLogged: !!credentials,
           username: credentials?.username ?? '',
           token: credentials?.token ?? '',
           refreshContext,
         };
+
+        return newContext;
       });
     };
 
@@ -161,7 +164,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
         console.warn("Keychain couldn't be accessed!", e);
         refreshContext();
       });
-  }, [language, username]);
+  }, [language, username, queryClient]);
 
   useEffect(() => {
     // Handle login status

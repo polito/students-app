@@ -387,14 +387,9 @@ export const CourseListItem = ({
                             );
                           }
                         }}
-                        accessibilityLabel={`${accessibilityLabel} ${module.name}, ${
-                          module.cfu
-                        } ${t('common.credits')}`}
+                        accessibilityLabel={`${accessibilityLabel} ${module.name}`}
                         title={module.name}
-                        subtitle={(() => {
-                          const teacherName = getTeacherName(module.teacherId);
-                          return teacherName ?? '';
-                        })()}
+                        subtitle={getTeacherName(module.teacherId) ?? undefined}
                         leadingItem={
                           <CourseIndicator
                             uniqueShortcode={
@@ -451,14 +446,9 @@ export const CourseListItem = ({
                           );
                         }
                       }}
-                      accessibilityLabel={`${accessibilityLabel} ${module.name}, ${
-                        module.cfu
-                      } ${t('common.credits')}`}
+                      accessibilityLabel={`${accessibilityLabel} ${module.name}`}
                       title={module.name}
-                      subtitle={(() => {
-                        const teacherName = getTeacherName(module.teacherId);
-                        return teacherName ?? '';
-                      })()}
+                      subtitle={getTeacherName(module.teacherId) ?? undefined}
                       leadingItem={
                         <CourseIndicator
                           uniqueShortcode={
