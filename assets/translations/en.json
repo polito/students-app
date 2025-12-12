@@ -526,8 +526,10 @@
   "createTicketScreen": {
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
+    "messageTitle": "Description",    
     "sendTicket": "Send ticket",
     "subject": "Subject",
+    "subjectTitle": "Subject",
     "subjectLabel": "Enter the subject of the ticket",
     "subtitle": "Enter your request",
     "subtopicDescription": "Select the subtopic",
