@@ -38,7 +38,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import Mapbox from '@rnmapbox/maps';
 
-import { TranslucentView } from '~/core/components/TranslucentView.ios';
+import { TranslucentView } from '~/core/components/TranslucentView';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
 import { useScreenTitle } from '~/core/hooks/useScreenTitle';
 

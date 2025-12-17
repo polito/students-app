@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -62,6 +62,7 @@ const createStyles = () =>
       gap: 10,
       alignSelf: 'stretch',
       marginTop: '20%',
+      marginBottom: Platform.OS === 'android' ? '20%' : 0,
     },
     button: {
       width: '100%',
