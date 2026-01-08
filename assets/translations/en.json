@@ -746,7 +746,29 @@
       "expired": "The session has expired, please log in again to continue",
       "Success": "Polito Authenticator has been successfully activated on this device",
       "devicePrompt": "The name below will be used to <b>identify this device</b> among your authentication factors. <b>You can change it</b> if you want to make it more recognizable.",
-      "deviceName": "Device name"
+      "deviceName": "Device name",
+      "storageSelection": {
+        "title": "Where do you want to store your cryptographic key?",
+        "systemKeychain": "System keychain",
+        "systemKeychainDescription": "Protection managed by your device",
+        "toothpic": "ToothPic Experimental",
+        "toothpicDescription": "Protection managed by ToothPic",
+        "toothpicInfo": "Experimental technology external to the University, in beta phase, incubated at I3P.<br/>Protects your key by binding it to the unique fingerprint of the phone's camera sensor."
+      },
+      "registration": {
+        "startPrompt": "Press START to begin credential registration",
+        "cameraInstruction": "Make sure to hold the phone in your hand with the camera uncovered in a well-lit environment for the entire duration of the procedure",
+        "camera": "Camera",
+        "cameraClickToAllow": "Click to allow access",
+        "cameraEnabled": "Enabled",
+        "cameraPermissionTitle": "Allow camera access",
+        "cameraPermissionMessage": "It is necessary to allow camera access to start registration",
+        "cameraPermissionDeny": "Don't allow",
+        "cameraPermissionAllow": "Allow",
+        "inProgress": "Registration in progress...",
+        "verifyingKey": "Verification of the secure and non-clonable key",
+        "completed": "Registration completed"
+      }
     },
     "auth": {
       "prompt": "New login request with multi-factor authentication. Do you want to proceed?",

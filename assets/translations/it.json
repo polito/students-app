@@ -764,7 +764,29 @@
       "expired": "Sessione scaduta. È necessario riautenticarsi.",
       "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo.",
       "devicePrompt": "Il nome sottostante verrà utilizzato per <b>identificare questo dispositivo</b> tra i tuoi fattori di autenticazione. <b>Puoi cambiarlo</b> se vuoi renderlo più riconoscibile.",
-      "deviceName": "Nome dispositivo"
+      "deviceName": "Nome dispositivo",
+      "storageSelection": {
+        "title": "Dove vuoi conservare la tua chiave crittografica?",
+        "systemKeychain": "Portachiavi di sistema",
+        "systemKeychainDescription": "Protezione gestita dal tuo dispositivo",
+        "toothpic": "ToothPic Sperimentale",
+        "toothpicDescription": "Protezione gestita da ToothPic",
+        "toothpicInfo": "Tecnologia sperimentale esterna all'Ateneo, in fase beta, incubata presso I3P.<br/>Protegge la tua chiave vincolandola all'impronta unica del sensore della fotocamera del telefono."
+      },
+      "registration": {
+        "startPrompt": "Premi START per avviare la registrazione della credenziale",
+        "cameraInstruction": "Assicurati di tenere il telefono in mano con la fotocamera scoperta in un ambiente illuminato per tutta la durata della procedura",
+        "camera": "Fotocamera",
+        "cameraClickToAllow": "Clicca per consentire l'accesso",
+        "cameraEnabled": "Abilitata",
+        "cameraPermissionTitle": "Consenti accesso fotocamera",
+        "cameraPermissionMessage": "È necessario consentire l'accesso alla fotocamera per avviare la registrazione",
+        "cameraPermissionDeny": "Non consentire",
+        "cameraPermissionAllow": "Consenti",
+        "inProgress": "Registrazione in corso...",
+        "verifyingKey": "Verifica della chiave sicura e non clonabile",
+        "completed": "Registrazione completata"
+      }
     },
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
