@@ -17,11 +17,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
+import { toOASTruncable } from '~/utils/dates.ts';
+import { filterUnread } from '~/utils/messages.ts';
+import { pluckData } from '~/utils/queries.ts';
+
 import { DateTime } from 'luxon';
 
-import { toOASTruncable } from '../../utils/dates.ts';
-import { filterUnread } from '../../utils/messages';
-import { pluckData } from '../../utils/queries';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
 import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
@@ -305,6 +306,19 @@ export const useMarkMessageAsRead = (invalidate: boolean = true) => {
       return (
         invalidate && client.invalidateQueries({ queryKey: MESSAGES_QUERY_KEY })
       );
+    },
+  });
+};
+
+export const useDeleteMessage = () => {
+  const studentClient = useStudentClient();
+  const client = useQueryClient();
+
+  return useMutation({
+    mutationFn: (messageId: number) =>
+      studentClient.deleteMessage({ messageId }),
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: MESSAGES_QUERY_KEY });
     },
   });
 };
