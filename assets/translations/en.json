@@ -524,6 +524,8 @@
     "total": "There are {{ total }} surveys"
   },
   "createTicketScreen": {
+    "duplicateMessage": "You have already created a similar ticket.",
+    "duplicateTitle": "Ticket already exists",
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
     "sendTicket": "Send ticket",
