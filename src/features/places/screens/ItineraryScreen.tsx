@@ -21,6 +21,7 @@ import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+//import * as Clarity from '@microsoft/react-native-clarity';
 import Mapbox from '@rnmapbox/maps';
 import bbox from '@turf/bbox';
 
@@ -64,7 +65,10 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   const headerRight = useCallback(
     () => (
       <TouchableOpacity
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          //Clarity.sendCustomEvent('Modify Button (ItineraryScreen) Clicked');
+          navigation.goBack();
+        }}
         style={styles.modifyButton}
       >
         <View>

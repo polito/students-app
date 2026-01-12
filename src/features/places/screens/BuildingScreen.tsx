@@ -1,6 +1,6 @@
 import { useContext, useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
 import {
   faDiamondTurnRight,
@@ -214,25 +214,17 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
                 subtitle={t('common.campus')}
                 trailingItem={
                   <IconButton
-                    icon={faDiamondTurnRight}
+                    icon={faDiamondTurnRight} //la roba dei building come MixTO, parti da qua
                     size={fontSizes.xl}
                     adjustSpacing="right"
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
-                      const scheme = Platform.select({
-                        ios: 'maps://0,0?q=',
-                        android: 'geo:0,0?q=',
+                      navigation.navigate('Indications', {
+                        toPlace: {
+                          placeId: site?.id || '',
+                          namePlace: placeName,
+                        },
                       });
-                      const latLng = [
-                        building?.latitude,
-                        building?.longitude,
-                      ].join(',');
-                      const label = building?.name;
-                      const url = Platform.select({
-                        ios: `${scheme}${label}@${latLng}`,
-                        android: `${scheme}${latLng}(${label})`,
-                      })!;
-                      Linking.openURL(url);
                     }}
                   />
                 }

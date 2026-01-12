@@ -10,6 +10,7 @@ import { IconButton } from '@lib/ui/components/IconButton';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+//import * as Clarity from '@microsoft/react-native-clarity';
 import { NavigationResponseFeature } from '@polito/api-client';
 
 import { TranslucentView } from '~/core/components/TranslucentView';
@@ -53,6 +54,7 @@ export const SubPathSelector = (props: Props) => {
           style={[styles.icon, { backgroundColor: colors.background }]}
           disabled={currentSegmentIndex === 0}
           onPress={() => {
+            // Clarity.sendCustomEvent('Previous Segment Button Clicked');
             setCurrentSegmentIndex(prev => prev - 1);
             handleSelectSegment?.(
               currentSegmentIndex - 1,

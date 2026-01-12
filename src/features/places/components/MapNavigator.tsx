@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+////import * as Clarity from '@microsoft/react-native-clarity';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
@@ -237,6 +238,9 @@ export const MapNavigator = ({
                                     : undefined
                                 }
                                 onPress={() => {
+                                  /*Clarity.sendCustomEvent(
+                                    'Back Button Clicked',
+                                  );*/
                                   setSelectedId('');
                                   navigation.goBack();
                                 }}
