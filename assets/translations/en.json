@@ -712,7 +712,9 @@
   "messageScreen": {
     "backTitle": "Archive",
     "sender": "Sender",
-    "title": "Message"
+    "title": "Message",
+    "viewProvisionalGrade": "Go to transcript",
+    "viewProvisionalGradeDescription": "Check your provisional grade and take action"
   },
   "messagesScreen": {
     "empty": "You have no messages",
