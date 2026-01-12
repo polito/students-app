@@ -84,6 +84,10 @@ try {
   console.log('🎵  cleaning Pods and build files');
   run('rm -rf ios/Pods ios/build ios/.xcode.env.local');
 
+  // Clean android build files
+  console.log('🤖  cleaning Android build files');
+  run('rm -rf android/app/build android/build');
+
   if (!process.argv.includes('--skip-modules')) {
     console.log('🪢  cleaning node_modules');
     run('rm -rf node_modules');

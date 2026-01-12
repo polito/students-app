@@ -64,6 +64,7 @@ export const ServicesScreen = () => {
         queryFn: GetWebmailLink,
         staleTime: 55 * 1000, // 55 seconds
         gcTime: 55 * 1000, // 55 seconds
+        persister: undefined, // disable persister
       })
       .then(res => openInAppLink(res.url));
   }, [openInAppLink, queryClient]);

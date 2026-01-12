@@ -30,7 +30,7 @@ import { useApiContext } from '../contexts/ApiContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
-import { RootParamList } from '../types/navigation.ts';
+import { QueryStorage } from '../providers/ApiProvider.tsx';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
 export const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
@@ -154,6 +154,9 @@ export const useLogout = () => {
     onSuccess: async () => {
       updatePreference('politoAuthnEnrolmentStatus', {});
       refreshContext();
+      QueryStorage.clear().catch(e => {
+        console.error('Error clearing query storage:', e);
+      });
       queryClient.removeQueries();
       await resetCredentials();
     },
@@ -247,22 +250,14 @@ export const useMfaEnrol = () => {
 
 export const useMfaAuth = () => {
   const authClient = useAuthClient();
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
 
   return useMutation({
-    mutationFn: (dto: ValidateMfaRequest) =>
+    mutationFn: async (dto: ValidateMfaRequest) =>
       authClient
         .validateMfa({ validateMfaRequest: dto })
         .then(pluckData)
-        .then(res => {
-          if (!res) throw new Error('MFA verification failed');
-          return res;
-        })
+        .then(({ success }) => success)
         .catch(rethrowApiError),
-
-    onSuccess: async data => {
-      data.success === true && navigation.goBack();
-    },
   });
 };
 

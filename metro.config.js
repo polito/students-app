@@ -1,5 +1,5 @@
-const {mergeConfig} = require('@react-native/metro-config');
-const {getSentryExpoConfig} = require('@sentry/react-native/metro');
+const { mergeConfig } = require('@react-native/metro-config');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 
 /**
  * Metro configuration
