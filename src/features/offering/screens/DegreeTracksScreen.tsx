@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SectionList, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { NestedList, NestedListSection } from '@lib/ui/components/NestedList';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -25,12 +23,7 @@ export type OfferingCourseYear = {
   data: OfferingCourseOverview[];
 };
 
-type DegreeTrackSection = {
-  title: string;
-  isExpanded?: boolean;
-  index: number;
-  data: OfferingCourseYear[];
-};
+type DegreeTrackSection = NestedListSection<OfferingCourseYear, never>;
 
 export const DegreeTracksScreen = () => {
   const bottomBarHeight = useBottomTabBarHeight();
@@ -58,57 +51,62 @@ export const DegreeTracksScreen = () => {
     );
   };
 
+  const renderSectionHeader = ({
+    section,
+  }: {
+    section: DegreeTrackSection;
+  }) => (
+    <Pressable
+      onPress={() => toggleSection(section.index)}
+      accessibilityLabel={`${section.title}. ${t(
+        `common.openedStatus.${section.isExpanded}`,
+      )}. ${t(`common.openedStatusAction.${section.isExpanded}`)}`}
+    >
+      <View
+        style={{
+          paddingLeft: safeAreaInsets.left,
+          paddingRight: safeAreaInsets.right,
+          ...styles.sectionHeader,
+        }}
+      >
+        <SectionHeader
+          title={section.title}
+          titleStyle={styles.titleStyle}
+          separator={false}
+          trailingItem={
+            <Icon
+              icon={section.isExpanded ? faChevronUp : faChevronDown}
+              color={colors.secondaryText}
+            />
+          }
+        />
+      </View>
+    </Pressable>
+  );
+
+  const renderItem = ({
+    item,
+    section,
+  }: {
+    item: OfferingCourseYear;
+    section: DegreeTrackSection;
+  }) => (section.isExpanded ? <DegreeTrackYear item={item} /> : null);
+
   return (
-    <OverviewList
+    <NestedList
+      sections={sections}
       loading={degreeQuery.isLoading}
-      indented={true}
+      queries={[degreeQuery]}
+      onToggleSection={toggleSection}
+      renderItem={renderItem}
+      renderSectionHeader={renderSectionHeader}
+      keyExtractor={(item, index) => `${item.teachingYear}-${index}`}
       style={{
         marginTop: spacing[4],
         marginBottom: bottomBarHeight + spacing[2],
       }}
-    >
-      <SectionList
-        refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
-        stickySectionHeadersEnabled
-        sections={sections}
-        keyExtractor={(item, index) => `${item.teachingYear}-${index}`}
-        renderSectionFooter={({ section: { index } }) =>
-          index !== sections.length - 1 ? <IndentedDivider indent={14} /> : null
-        }
-        initialNumToRender={2}
-        renderSectionHeader={({ section: { title, index, isExpanded } }) => (
-          <Pressable
-            onPress={() => toggleSection(index)}
-            accessibilityLabel={`${title}. ${t(
-              `common.openedStatus.${isExpanded}`,
-            )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}
-          >
-            <View
-              style={{
-                paddingLeft: safeAreaInsets.left,
-                paddingRight: safeAreaInsets.right,
-                ...styles.sectionHeader,
-              }}
-            >
-              <SectionHeader
-                title={title}
-                titleStyle={styles.titleStyle}
-                separator={false}
-                trailingItem={
-                  <Icon
-                    icon={isExpanded ? faChevronUp : faChevronDown}
-                    color={colors.secondaryText}
-                  />
-                }
-              />
-            </View>
-          </Pressable>
-        )}
-        renderItem={({ item, section }) =>
-          section?.isExpanded ? <DegreeTrackYear item={item} /> : null
-        }
-      />
-    </OverviewList>
+      indented={true}
+    />
   );
 };
 
@@ -116,7 +114,7 @@ const createStyles = ({ spacing, fontWeights, colors }: Theme) =>
   StyleSheet.create({
     sectionHeader: {
       paddingVertical: spacing[3],
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
     },
     titleStyle: {
       fontWeight: fontWeights.medium,

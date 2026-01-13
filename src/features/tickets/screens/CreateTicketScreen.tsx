@@ -3,26 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { CtaButton } from '@lib/ui/components/CtaButton';
+import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
+import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { ScreenContainer } from '@lib/ui/components/ScreenContainer';
 import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Select } from '@lib/ui/components/Select';
 import { TextField } from '@lib/ui/components/TextField';
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { CreateTicketRequest } from '@polito/api-client';
-import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  useCreateTicket,
-  useGetTicketTopics,
-} from '../../../core/queries/ticketHooks';
-import { darkTheme } from '../../../core/themes/dark';
+import { useCreateTicket } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from '../components/MessagingView';
@@ -32,21 +25,35 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
-    route.params;
-  const ticketTopicQuery = useGetTicketTopics();
-  const topics = useMemo(() => {
-    if (!ticketTopicQuery.data) return [];
-    return ticketTopicQuery.data;
-  }, [ticketTopicQuery.data]);
+    route.params ?? {};
   const styles = useStylesheet(createStyles);
 
-  const [topicId, setTopicId] = useState(initialTopicId?.toString());
+  const [, setTopicId] = useState(initialTopicId?.toString());
   const [ticketBody, setTicketBody] = useState<Partial<CreateTicketRequest>>({
     subject: undefined,
     message: undefined,
     subtopicId: initialSubtopicId,
     attachment: undefined,
   });
+
+  useEffect(() => {
+    if (route.params?.selectedTopic && route.params?.selectedSubtopic) {
+      const numericTopicId =
+        typeof route.params.selectedTopic.id === 'string'
+          ? parseInt(route.params.selectedTopic.id, 10)
+          : route.params.selectedTopic.id;
+      const numericSubtopicId =
+        typeof route.params.selectedSubtopic.id === 'string'
+          ? parseInt(route.params.selectedSubtopic.id, 10)
+          : route.params.selectedSubtopic.id;
+
+      setTopicId(numericTopicId.toString());
+      setTicketBody(prev => ({
+        ...prev,
+        subtopicId: numericSubtopicId,
+      }));
+    }
+  }, [route.params?.selectedTopic, route.params?.selectedSubtopic]);
   const {
     mutateAsync: handleCreateTicket,
     isPending,
@@ -66,12 +73,6 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }
   }, [isSuccess, data, initialTopicId, navigation]);
 
-  const subTopics = useMemo(
-    () =>
-      topics?.find(topic => topic.id.toString() === topicId)?.subtopics ?? [],
-    [topicId, topics],
-  );
-
   const updateTicketBodyField =
     (field: keyof CreateTicketRequest) => (value: string | number | Blob) => {
       setTicketBody(prevState => ({
@@ -79,40 +80,6 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         [field]: value,
       }));
     };
-
-  const updateTopicId = (value: string) => {
-    setTopicId(value);
-    setTicketBody(prevState => ({
-      ...prevState,
-      subtopicId: undefined,
-      attachment: undefined,
-    }));
-  };
-
-  const topicOptions = useMemo(() => {
-    return topics.map(topic => ({
-      id: topic.id.toString(),
-      title: topic.name,
-      state: (topic.id.toString() === topicId
-        ? 'on'
-        : 'off') as MenuAction['state'],
-    }));
-  }, [topicId, topics]);
-
-  const subtopicOptions = useMemo(
-    () =>
-      subTopics.map(subtopic => {
-        const subId = subtopic.id.toString();
-        return {
-          id: subId,
-          title: subtopic.name,
-          state: (subId === ticketBody.subtopicId?.toString()
-            ? 'on'
-            : 'off') as MenuAction['state'],
-        };
-      }),
-    [subTopics, ticketBody.subtopicId],
-  );
 
   const subjectAccessibilityLabel = useMemo(() => {
     const baseText = t('createTicketScreen.subjectLabel');
@@ -123,85 +90,83 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }
   }, [t, ticketBody?.subtopicId]);
 
-  const subtopicAccessibilityLabel = useMemo(() => {
-    const baseText = t('createTicketScreen.subtopicDropdownLabelAccessibility');
-    if (topicId) {
-      return baseText;
-    } else {
-      return [baseText, t('common.disabledPreviousValue')].join(', ');
-    }
-  }, [t, topicId]);
-
   return (
-    <ScreenContainer>
-      <Section>
-        <SectionHeader title={t('createTicketScreen.subtitle')} />
-        <OverviewList>
-          <Select
-            accessibilityLabel={t(
-              'createTicketScreen.topicDropdownLabelAccessibility',
-            )}
-            label={t('createTicketScreen.topicDropdownLabel')}
-            description={
-              initialTopicId ? '' : t('createTicketScreen.topicDescription')
-            }
-            options={topicOptions}
-            onSelectOption={updateTopicId}
-            disabled={!!initialTopicId}
-            hideChevron={!!initialTopicId}
-            value={topicId}
-          />
-        </OverviewList>
+    <>
+      <ScreenContainer>
+        <Section>
+          <OverviewList rounded>
+            <ListItem
+              title={
+                route.params?.selectedTopic?.title ??
+                t('createTicketScreen.topicDropdownLabel')
+              }
+              subtitle={route.params?.selectedSubtopic?.title}
+              trailingItem={<DisclosureIndicator />}
+              linkTo={{
+                screen: 'TopicScreen',
+                params: {
+                  onSelect: ({ topic, subtopic }: any) => {
+                    navigation.setParams({
+                      selectedTopic: topic,
+                      selectedSubtopic: subtopic,
+                    });
+                  },
+                  topics: undefined,
+                  returnScreen: 'CreateTicket',
+                },
+              }}
+              accessibilityLabel={t(
+                'createTicketScreen.topicDropdownLabelAccessibility',
+              )}
+            />
+          </OverviewList>
 
-        <OverviewList>
-          <Select
-            accessibilityLabel={subtopicAccessibilityLabel}
-            options={subtopicOptions}
-            onSelectOption={updateTicketBodyField('subtopicId')}
-            disabled={!topicId || !!initialTopicId}
-            hideChevron={!!initialTopicId}
-            value={ticketBody?.subtopicId?.toString()}
-            label={t('createTicketScreen.subtopicDropdownLabel')}
-            description={
-              initialSubtopicId
-                ? ''
-                : t('createTicketScreen.subtopicDescription')
-            }
-          />
-        </OverviewList>
+          <OverviewList rounded>
+            <ListItem
+              title={t('createTicketScreen.subjectTitle')}
+              containerStyle={styles.subjectTitleContainer}
+            />
+            <TextField
+              accessibilityLabel={subjectAccessibilityLabel}
+              autoCapitalize="sentences"
+              label={t('createTicketScreen.subjectLabel')}
+              style={styles.subjectTextField}
+              inputStyle={styles.textFieldInput}
+              editable={true}
+              value={ticketBody.subject}
+              onChangeText={updateTicketBodyField('subject')}
+            />
+          </OverviewList>
 
-        <OverviewList style={styles.objectSection}>
-          <TextField
-            accessibilityLabel={subjectAccessibilityLabel}
-            autoCapitalize="sentences"
-            label={t('createTicketScreen.subjectLabel')}
-            inputStyle={styles.textFieldInput}
-            editable={!!ticketBody?.subtopicId}
-            value={ticketBody.subject}
-            onChangeText={updateTicketBodyField('subject')}
-          />
-        </OverviewList>
-
-        <ChatBubble style={styles.bubbleContainer} bubbleStyle={styles.bubble}>
-          <ThemeContext.Provider value={darkTheme}>
+          <OverviewList rounded>
+            <ListItem
+              title={t('createTicketScreen.messageTitle')}
+              containerStyle={styles.messageTitleContainer}
+            />
             <MessagingView
               translucent={false}
               showSendButton={false}
               message={ticketBody.message}
               onMessageChange={updateTicketBodyField('message')}
               attachment={ticketBody.attachment as unknown as Attachment}
-              onAttachmentChange={updateTicketBodyField('attachment') as any}
+              onAttachmentChange={attachment =>
+                updateTicketBodyField('attachment')(attachment as any)
+              }
               disabled={!ticketBody.subtopicId}
-              numberOfLines={5}
-              style={styles.bubbleInput}
-              textFieldStyle={styles.textField}
+              numberOfLines={15}
+              style={[
+                styles.bubbleInput,
+                styles.messageContainer,
+                styles.messageField,
+              ]}
+              textFieldStyle={[styles.textField, styles.messageInput]}
             />
-          </ThemeContext.Provider>
-        </ChatBubble>
-      </Section>
+          </OverviewList>
+        </Section>
+      </ScreenContainer>
 
       <CtaButton
-        absolute={false}
+        absolute={true}
         disabled={!createTopicEnabled}
         title={t('createTicketScreen.sendTicket')}
         action={() =>
@@ -212,8 +177,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         }
         loading={isPending}
         icon={faPaperPlane}
+        containerStyle={{ left: 0, right: 0 }}
       />
-    </ScreenContainer>
+    </>
   );
 };
 
@@ -230,9 +196,33 @@ const createStyles = ({ shapes, spacing }: Theme) =>
     bubbleInput: {
       paddingRight: 0,
     },
+    messageContainer: {},
+    messageField: {
+      paddingTop: 0,
+      paddingBottom: spacing[2],
+      marginTop: -spacing[1],
+    },
+    messageInput: {
+      minHeight: 120,
+    },
+    messageTitleContainer: {
+      paddingBottom: 0,
+      marginBottom: -spacing[1],
+    },
     objectSection: {
       height: 60,
       justifyContent: 'center',
+    },
+    subjectTextField: {
+      paddingTop: 0,
+      paddingBottom: spacing[2],
+      marginTop: -spacing[2],
+    },
+    subjectTitleContainer: {
+      paddingVertical: spacing[1],
+      paddingBottom: 0,
+      marginBottom: -spacing[1],
+      minHeight: 32,
     },
     textField: {
       borderRadius: shapes.md,
