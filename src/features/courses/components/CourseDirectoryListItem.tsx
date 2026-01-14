@@ -6,7 +6,7 @@ import { exists } from 'react-native-fs';
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
 import {
   CourseDirectory,
-  CourseDirectoryContentInner,
+  CourseDirectoryEntry,
   CourseFileOverview,
 } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
@@ -254,7 +254,7 @@ export const CourseDirectoryListItem = ({
     if (courseFilesQuery.data) {
       const findDirectoryRecursive = (
         searchId: string,
-        items: CourseDirectoryContentInner[],
+        items: CourseDirectoryEntry[],
       ): CourseDirectory | null => {
         for (const currentItem of items) {
           if (isDirectory(currentItem) && currentItem.id === searchId) {
