@@ -1,5 +1,5 @@
 /**
- * File checksum calculation: computes SHA256 checksums for downloaded files.
+ * File checksum calculation: computes SHA1 checksums for downloaded files.
  */
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import { exists, stat } from 'react-native-fs';
@@ -16,7 +16,7 @@ export const calculateFileChecksum = async (
     if (expectedSize && fileStats.size !== expectedSize)
       throw new Error('File size mismatch');
 
-    const checksum = await ReactNativeBlobUtil.fs.hash(filePath, 'sha256');
+    const checksum = await ReactNativeBlobUtil.fs.hash(filePath, 'sha1');
     return checksum;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
