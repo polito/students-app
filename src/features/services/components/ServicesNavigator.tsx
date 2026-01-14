@@ -2,8 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { TicketStatus } from '@polito/api-client';
-import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
+import { TicketFAQ, TicketStatus } from '@polito/api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

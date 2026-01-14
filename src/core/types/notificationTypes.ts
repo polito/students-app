@@ -1,4 +1,4 @@
-import type { UpdateNotificationPreferencesRequestData } from '@polito/api-client/models/UpdateNotificationPreferencesRequestData';
+import type { UpdateNotificationPreferencesRequestData } from '@polito/api-client';
 
 // Create a type accepting any string declared as key of UpdateNotificationPreferencesRequest
 export type UpdateNotificationPreferencesRequestKey =

@@ -8,7 +8,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { ResponseError } from '@polito/api-client/runtime';
+import { ResponseError } from '@polito/api-client';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
 import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core';

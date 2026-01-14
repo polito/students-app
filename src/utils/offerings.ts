@@ -1,5 +1,4 @@
-import { Track } from '@polito/api-client';
-import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
+import { OfferingCourseOverview, Track } from '@polito/api-client';
 
 import { groupBy, map } from 'lodash';
 

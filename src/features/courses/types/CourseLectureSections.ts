@@ -1,9 +1,6 @@
-import { VideoLecture } from '@polito/api-client';
-import { GetCourseVirtualClassrooms200ResponseDataInner } from '@polito/api-client/models/GetCourseVirtualClassrooms200ResponseDataInner';
+import { VideoLecture, VirtualClassroom } from '@polito/api-client';
 
-export type CourseLecture =
-  | GetCourseVirtualClassrooms200ResponseDataInner
-  | VideoLecture;
+export type CourseLecture = VirtualClassroom | VideoLecture;
 
 interface BaseLectureTypeSection {
   courseId: number;
@@ -14,7 +11,7 @@ interface BaseLectureTypeSection {
 }
 
 interface VCSection extends BaseLectureTypeSection {
-  data: GetCourseVirtualClassrooms200ResponseDataInner[];
+  data: VirtualClassroom[];
   type: 'VirtualClassroom';
 }
 

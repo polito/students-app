@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 
-import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
-import { ResponseError } from '@polito/api-client/runtime';
+import {
+  Lecture as ApiLecture,
+  LecturesApi,
+  ResponseError,
+} from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
@@ -15,9 +18,11 @@ import {
   useGetCourses,
 } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
-import { APP_TIMEZONE } from '../../../utils/dates';
-import { isCurrentMonth } from '../../../utils/dates';
-import { toOASTruncable } from '../../../utils/dates.ts';
+import {
+  APP_TIMEZONE,
+  isCurrentMonth,
+  toOASTruncable,
+} from '../../../utils/dates';
 import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 import { formatNextLecture } from '../utils/formatters';

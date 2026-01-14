@@ -1,4 +1,4 @@
-import { Notification } from '@polito/api-client/models/Notification';
+import { Notification } from '@polito/api-client';
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 export interface RemoteMessage extends FirebaseMessagingTypes.RemoteMessage {

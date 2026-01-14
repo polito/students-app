@@ -7,9 +7,11 @@ import { Text } from '@lib/ui/components/Text.tsx';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
 import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import type { Theme } from '@lib/ui/types/Theme.ts';
-import type { CourseStatistics } from '@polito/api-client';
-import { GradeCount } from '@polito/api-client/models/GradeCount';
-import { GradeCountGradeEnum } from '@polito/api-client/models/GradeCount.ts';
+import {
+  CourseStatistics,
+  GradeCount,
+  GradeCountGradeEnum,
+} from '@polito/api-client';
 
 import { LegendItem } from './LegendItem.tsx';
 import { NoChartDataContainer } from './NoChartDataContainer.tsx';

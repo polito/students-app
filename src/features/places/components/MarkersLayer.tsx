@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { PlaceOverview } from '@polito/api-client';
-import { PlaceCategory } from '@polito/api-client/models';
+import { PlaceCategory, PlaceOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
