@@ -2,12 +2,14 @@ import { Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import { TemporaryDirectoryPath } from 'react-native-fs';
 
-import { BASE_PATH, CreateTicketRequest, TicketsApi } from '@polito/api-client';
 import {
+  BASE_PATH,
+  CreateTicketRequest,
   GetTicketAttachmentRequest,
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
-} from '@polito/api-client/apis/TicketsApi';
+  TicketsApi,
+} from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

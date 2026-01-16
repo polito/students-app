@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 
-import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
 import {
   GetBuildingsRequest,
   GetFreeRoomsRequest,
-} from '@polito/api-client/apis/PlacesApi';
+  GetPlacesRequest,
+  PlacesApi,
+} from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

@@ -7,8 +7,10 @@ import { Text } from '@lib/ui/components/Text';
 import { VerticalDashedLine } from '@lib/ui/components/VerticalDashedLine';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
-import { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
+import {
+  ProvisionalGradeState,
+  ProvisionalGradeStateEnum,
+} from '@polito/api-client';
 
 import { useGetProvisionalGradeStates } from '../../../core/queries/studentHooks';
 

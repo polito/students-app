@@ -4,11 +4,11 @@ import {
   ExamGrade,
   Message,
   MessageType,
+  ProvisionalGradeState,
   Student,
   StudentApi,
+  UpdateDevicePreferencesRequest,
 } from '@polito/api-client';
-import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
-import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,
@@ -403,7 +403,7 @@ export const useGetUnreadEmails = () => {
 
   return useQuery({
     queryKey: UNREAD_MAIL_QUERY_KEY,
-    queryFn: () => studentClient.getUnreadEmailslNumber().then(pluckData),
+    queryFn: () => studentClient.getUnreadEmailsNumber().then(pluckData),
     refetchInterval: 5 * 60 * 1000, // 5 minutes
   });
 };

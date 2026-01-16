@@ -3,8 +3,8 @@ import {
   BASE_PATH,
   Configuration,
   ConfigurationParameters,
+  DefaultConfig,
 } from '@polito/api-client';
-import { DefaultConfig } from '@polito/api-client/runtime';
 
 /**
  * Updates the global API configuration used by all clients
