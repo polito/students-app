@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Platform, View } from 'react-native';
 
-import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -35,7 +35,8 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext();
   const [courseFilesCache] = useCourseFilesCachePath();
-
+  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
+  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
   const {
     enableMultiSelect,
     allFilesSelected,
@@ -81,8 +82,14 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     }
   };
 
-  const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
-  const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
+  const { spacing } = useTheme();
+
+  const footerSpacerHeight = useMemo(() => {
+    if (enableMultiSelect) {
+      return spacing[12] * 2;
+    }
+    return spacing[20];
+  }, [enableMultiSelect, spacing]);
 
   return (
     <>
@@ -121,7 +128,7 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         })}
         ListFooterComponent={
           <>
-            <CtaButtonSpacer />
+            <View style={{ height: footerSpacerHeight }} />
             <BottomBarSpacer />
           </>
         }

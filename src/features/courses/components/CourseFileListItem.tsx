@@ -193,9 +193,12 @@ export const CourseFileListItem = memo(
       [showCreatedDate, item, showSize, showLocation],
     );
 
-    const openDownloadedFile = useCallback(async () => {
-      if (Platform.OS === 'android') {
-        if (!isDownloaded)
+    const openDownloadedFile = useCallback(
+      async (force = false) => {
+        if (!force && !isDownloaded) {
+          return;
+        }
+        if (Platform.OS === 'android' && (force || isDownloaded)) {
           setFeedback({
             text:
               Platform.Version > 29
@@ -205,13 +208,18 @@ export const CourseFileListItem = memo(
                   }),
             isPersistent: false,
           });
-      }
-      openFile().catch(e => {
-        if (e instanceof UnsupportedFileTypeError) {
-          Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
         }
-      });
-    }, [openFile, t, cachedFilePath, setFeedback, isDownloaded]);
+        openFile().catch(e => {
+          if (e instanceof UnsupportedFileTypeError) {
+            Alert.alert(
+              t('common.error'),
+              t('courseFileListItem.openFileError'),
+            );
+          }
+        });
+      },
+      [openFile, t, cachedFilePath, setFeedback, isDownloaded],
+    );
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
@@ -220,9 +228,11 @@ export const CourseFileListItem = memo(
           return;
         }
         if (!isDownloaded) {
-          await startDownload();
-        }
-        if (navigation.isFocused()) {
+          const downloadSuccess = await startDownload();
+          if (downloadSuccess && navigation.isFocused()) {
+            openDownloadedFile(true);
+          }
+        } else if (navigation.isFocused()) {
           openDownloadedFile();
         }
       }

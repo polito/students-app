@@ -233,9 +233,11 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         const progressValue = throttledProgresses[key] ?? progresses[key];
         const hasProgress = progressValue != null;
         const isDownloaded = download.isDownloaded ?? false;
+        const hasJobId = download.jobId !== undefined;
         const shouldShowProgress =
           !isDownloaded &&
           hasProgress &&
+          hasJobId &&
           (download.phase === DownloadPhase.Downloading ||
             download.phase === undefined);
         return {
