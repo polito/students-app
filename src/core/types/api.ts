@@ -1,5 +1,7 @@
-import { CourseOverview as ApiCourseOverview } from '@polito/api-client/models/CourseOverview';
-import { Exam as ApiExam } from '@polito/api-client/models/Exam';
+import {
+  CourseOverview as ApiCourseOverview,
+  Exam as ApiExam,
+} from '@polito/api-client';
 
 export type SuccessResponse<T> = {
   data: T;

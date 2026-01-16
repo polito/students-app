@@ -1,9 +1,9 @@
 import {
   Degree as ApiDegree,
   CourseStatistics,
+  GetCourseStatisticsRequest,
   OfferingApi,
 } from '@polito/api-client';
-import { GetCourseStatisticsRequest } from '@polito/api-client/apis/OfferingApi';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 

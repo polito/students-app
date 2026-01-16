@@ -11,7 +11,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
-} from '@polito/api-client/models/ProvisionalGrade';
+} from '@polito/api-client';
 
 import { IS_IOS } from '../../../core/constants';
 import { dateFormatter, formatDate } from '../../../utils/dates';

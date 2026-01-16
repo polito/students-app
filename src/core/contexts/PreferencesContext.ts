@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 import { PlaceOverview } from '@polito/api-client';
-import { PersonOverview } from '@polito/api-client/models';
+import { PersonOverview } from '@polito/api-client';
 
 import { AgendaTypesFilterState } from '~/features/agenda/types/AgendaTypesFilterState.ts';
 import {

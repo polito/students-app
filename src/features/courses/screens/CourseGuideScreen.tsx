@@ -7,7 +7,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
+import { GuideSection } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
@@ -21,7 +21,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   const { spacing } = useTheme();
   const guideQuery = useGetCourseGuide(courseId);
   const guideSections = useMemo(() => {
-    const sections: CourseGuideSection[] = [];
+    const sections: GuideSection[] = [];
 
     guideQuery.data?.forEach(section => {
       const content = section.content.replace(/[\f\n]+/g, '\n').trim();

@@ -22,7 +22,7 @@ import { Row } from '@lib/ui/components/Row';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { BookingSubtopic } from '@polito/api-client/models';
+import { BookingSubtopic } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';

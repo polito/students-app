@@ -3,12 +3,14 @@ import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
 
-import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
-import type {
+import {
   AppInfoRequest,
+  AuthApi,
   EnrolMfaRequest,
+  LoginRequest,
+  SwitchCareerRequest,
   ValidateMfaRequest,
-} from '@polito/api-client/models';
+} from '@polito/api-client';
 import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -170,7 +172,7 @@ export const useSwitchCareer = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto?: SwitchCareerRequest) =>
+    mutationFn: (dto: SwitchCareerRequest) =>
       authClient.switchCareer({ switchCareerRequest: dto }).then(pluckData),
     onSuccess: async data => {
       const { token, username, clientId } = data;

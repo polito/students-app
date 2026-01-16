@@ -1,19 +1,20 @@
-import { VideoLecture } from '@polito/api-client';
-import { instanceOfVideoLecture } from '@polito/api-client/models/VideoLecture';
 import {
-  VirtualClassroom,
-  instanceOfVirtualClassroom,
-} from '@polito/api-client/models/VirtualClassroom';
-import {
+  VideoLecture,
   VirtualClassroomLive,
+  VirtualClassroomRecording,
+  instanceOfVideoLecture,
   instanceOfVirtualClassroomLive,
-} from '@polito/api-client/models/VirtualClassroomLive';
+  instanceOfVirtualClassroomRecording,
+} from '@polito/api-client';
 
-export const isLiveVC = (l: object): l is VirtualClassroomLive =>
+import { CourseLecture } from '../types/CourseLectureSections';
+
+export const isLiveVC = (l: CourseLecture): l is VirtualClassroomLive =>
   instanceOfVirtualClassroomLive(l);
 
-export const isRecordedVC = (l: object): l is VirtualClassroom =>
-  instanceOfVirtualClassroom(l);
+export const isRecordedVC = (
+  l: CourseLecture,
+): l is VirtualClassroomRecording => instanceOfVirtualClassroomRecording(l);
 
-export const isVideoLecture = (l: object): l is VideoLecture =>
+export const isVideoLecture = (l: CourseLecture): l is VideoLecture =>
   instanceOfVideoLecture(l);
