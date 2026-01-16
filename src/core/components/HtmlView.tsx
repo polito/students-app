@@ -239,7 +239,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   );
 };
 
-const createStyles = ({ spacing, fontWeights, colors, dark }: Theme) =>
+const createStyles = ({ spacing, fontWeights }: Theme) =>
   StyleSheet.create({
     paragraph: { marginBottom: spacing[0], marginTop: spacing[3] },
     bold: { fontWeight: fontWeights.semibold },
@@ -248,7 +248,6 @@ const createStyles = ({ spacing, fontWeights, colors, dark }: Theme) =>
       justifyContent: 'flex-start',
     },
     link: {
-      color: dark ? colors.white : colors.black,
-      textDecorationColor: dark ? colors.white : colors.black,
+      textDecorationLine: 'underline',
     },
   });
