@@ -4,7 +4,7 @@ import { Alert, Text, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
+import { MessageType, MfaChallenge } from '@polito/api-client';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
@@ -27,9 +27,10 @@ import { createStyles } from './MfaEnrollContent';
 import { UserStackParamList } from './UserNavigator';
 
 type Props = {
-  challenge: FetchChallenge200ResponseData;
+  challenge: MfaChallenge;
   navigation: NativeStackNavigationProp<UserStackParamList>;
 };
+
 export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   const { t } = useTranslation();
   const { challenge: nonce } = challenge;

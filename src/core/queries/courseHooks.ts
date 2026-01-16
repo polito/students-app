@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import {
   CourseOverview as ApiCourseOverview,
   CourseDirectory,
-  CourseDirectoryContentInner,
+  CourseDirectoryEntry,
   CourseFileOverview,
-  CourseModulePreviousEditionsInner,
+  CourseModuleEdition,
   CoursePreferencesRequest,
   CourseVcOtherCoursesInner,
   CoursesApi,
@@ -194,7 +194,7 @@ export const useGetCourseEditions = (courseId: number) => {
         c =>
           c.id === courseId || c.previousEditions.some(e => +e.id === courseId),
       );
-      const editions: CourseModulePreviousEditionsInner[] = [];
+      const editions: CourseModuleEdition[] = [];
       if (!course || !course.previousEditions.length) return editions;
       if (course.id) {
         editions.push({
@@ -252,14 +252,14 @@ export const useGetCourseFilesRecent = (courseId: number) => {
 };
 
 const isFile = (
-  item: CourseDirectoryContentInner,
+  item: CourseDirectoryEntry,
 ): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
 
 /**
  * Assigns a location to each file
  */
 const computeFileLocations = (
-  directoryContent: CourseDirectoryContentInner[],
+  directoryContent: CourseDirectoryEntry[],
   location: string = '/',
 ): CourseDirectoryContentWithLocations[] => {
   const result: CourseDirectoryContentWithLocations[] = [];
@@ -339,13 +339,13 @@ export const useGetCourseDirectory = (
     queryFn: () => {
       if (!directoryId) {
         // Root directory
-        return new Promise<CourseDirectoryContentInner[]>(resolve => {
+        return new Promise<CourseDirectoryEntry[]>(resolve => {
           resolve(rootDirectoryContent!);
         });
       }
       const directory = findDirectory(directoryId, rootDirectoryContent!);
 
-      return new Promise<CourseDirectoryContentInner[] | null>(resolve => {
+      return new Promise<CourseDirectoryEntry[] | null>(resolve => {
         resolve(directory);
       });
     },
@@ -369,14 +369,14 @@ export const useGetCourseDirectory = (
  */
 const findDirectory = (
   searchDirectoryId: string,
-  directoryContent: CourseDirectoryContentInner[],
-): CourseDirectoryContentInner[] | null => {
+  directoryContent: CourseDirectoryEntry[],
+): CourseDirectoryEntry[] | null => {
   let result = null;
   const childDirectories = directoryContent.filter(
     f => f.type === 'directory',
   ) as CourseDirectory[];
 
-  let nextDepthFiles: CourseDirectoryContentInner[] = [];
+  let nextDepthFiles: CourseDirectoryEntry[] = [];
   for (let i = 0; i < childDirectories.length; i++) {
     const currentDir = childDirectories[i];
     if (currentDir.id === searchDirectoryId) {
@@ -454,7 +454,7 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (CourseModulePreviousEditionsInner | CourseVcOtherCoursesInner)[],
+  relatedVCs: (CourseModuleEdition | CourseVcOtherCoursesInner)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -498,7 +498,7 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseModulePreviousEditionsInner
+    | CourseModuleEdition
     | CourseVcOtherCoursesInner
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],

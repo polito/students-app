@@ -1,8 +1,5 @@
-import {
-  CourseDirectory,
-  CourseDirectoryContentInner,
-} from '@polito/api-client';
+import { CourseDirectory, CourseDirectoryEntry } from '@polito/api-client';
 
 export const isDirectory = (
-  obj: CourseDirectoryContentInner,
-): obj is { type: 'directory' } & CourseDirectory => obj.type === 'directory';
+  obj: CourseDirectoryEntry,
+): obj is CourseDirectory => obj.type === 'directory';

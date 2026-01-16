@@ -2,15 +2,17 @@ import { Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import { TemporaryDirectoryPath } from 'react-native-fs';
 
-import { BASE_PATH, CreateTicketRequest, TicketsApi } from '@polito/api-client';
 import {
+  BASE_PATH,
+  CreateTicketRequest,
   GetTicketAttachmentRequest,
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
-} from '@polito/api-client/apis/TicketsApi';
+  TicketsApi,
+} from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { pluckData } from '../../utils/queries';
+import { pluckData, rethrowApiError } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
@@ -38,8 +40,14 @@ export const useCreateTicket = () => {
   const ticketsClient = useTicketsClient();
 
   return useMutation({
-    mutationFn: (dto: CreateTicketRequest) =>
-      ticketsClient.createTicket(dto).then(pluckData),
+    mutationFn: async (dto: CreateTicketRequest) => {
+      try {
+        const res = await ticketsClient.createTicket(dto);
+        return pluckData(res);
+      } catch (err) {
+        await rethrowApiError(err as Error);
+      }
+    },
     onSuccess() {
       return client.invalidateQueries({ queryKey: TICKETS_QUERY_KEY });
     },

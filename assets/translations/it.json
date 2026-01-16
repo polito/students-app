@@ -536,6 +536,8 @@
     "total": "Sono presenti {{ total }} questionari"
   },
   "createTicketScreen": {
+    "duplicateMessage": "Hai già creato un ticket simile.",
+    "duplicateTitle": "Ticket già esistente",
     "addFile": "Aggiungi file",
     "insert": "Inserimento ticket",
     "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
