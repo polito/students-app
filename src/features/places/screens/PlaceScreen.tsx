@@ -20,10 +20,15 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { ResponseError } from '@polito/api-client/runtime';
+import { ResponseError } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
-import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
+import {
+  CameraBounds,
+  CameraPadding,
+  FillLayer,
+  LineLayer,
+  ShapeSource,
+} from '@rnmapbox/maps';
 
 import { Polygon } from 'geojson';
 

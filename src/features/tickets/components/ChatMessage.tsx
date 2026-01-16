@@ -6,7 +6,7 @@ import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketReply } from '@polito/api-client/models/TicketReply';
+import { TicketReply } from '@polito/api-client';
 
 import { HtmlMessage } from './HtmlMessage';
 import { TicketAttachmentChip } from './TicketAttachmentChip';

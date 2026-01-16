@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
 import {
-  CourseModulePreviousEditionsInner,
+  CourseModuleEdition,
   MessageType,
+  Notification,
 } from '@polito/api-client';
-import { Notification } from '@polito/api-client/models/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -151,10 +151,7 @@ export const useNotifications = () => {
   );
 
   const getUnreadsCountPerCourse = useCallback(
-    (
-      courseId?: number | null,
-      prevEditions?: CourseModulePreviousEditionsInner[],
-    ) => {
+    (courseId?: number | null, prevEditions?: CourseModuleEdition[]) => {
       if (courseId === undefined || !prevEditions) return 0;
       const courseIds = prevEditions.map(e => e.id);
       if (courseId) {

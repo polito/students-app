@@ -18,7 +18,7 @@ import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row.tsx';
 import { Swiper } from '@lib/ui/components/Swiper';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
+import { VirtualClassroomRecording } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';
@@ -31,7 +31,7 @@ import { GlobalStyles } from '~/core/styles/GlobalStyles.ts';
 import { convertMachineDateToFormatDate } from '~/utils/dates.ts';
 
 import { CourseIcon } from '../../courses/components/CourseIcon';
-import { isLiveVC, isRecordedVC } from '../../courses/utils/lectures';
+import { isRecordedVC } from '../../courses/utils/lectures';
 import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { useAgendaDialog } from '../hooks/useAgendaDialog';
@@ -83,7 +83,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const renderItem = ({
     item,
     index,
-  }: ListRenderItemInfo<VirtualClassroom>) => {
+  }: ListRenderItemInfo<VirtualClassroomRecording>) => {
     return (
       <View
         style={{
@@ -103,7 +103,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     );
   };
 
-  const [playingVC, setPlayingVC] = useState<VirtualClassroom[]>([]);
+  const [playingVC, setPlayingVC] = useState<VirtualClassroomRecording[]>([]);
 
   useEffect(() => {
     if (!associatedVirtualClassrooms || !virtualClassrooms) return;
@@ -114,7 +114,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         .map(vc => {
           const apiVC = virtualClassrooms.find(vcs => vcs.id === vc.id);
 
-          return apiVC as VirtualClassroom;
+          return apiVC as VirtualClassroomRecording;
         })
         .filter(vc => vc && vc?.videoUrl),
     );
@@ -195,9 +195,9 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             playingVC[0] &&
             isRecordedVC(playingVC[0]) && (
               <VideoPlayer
-                source={{ uri: playingVC[0]?.videoUrl }}
+                source={{ uri: playingVC[0].videoUrl }}
                 toggleFullScreen={toggleFullScreen}
-                poster={playingVC[0]?.coverUrl ?? undefined}
+                poster={playingVC[0].coverUrl ?? undefined}
               />
             )}
           {playingVC && playingVC.length > 1 && (
@@ -217,11 +217,11 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             </View>
           )}
 
-          {playingVC && isLiveVC(playingVC) && (
+          {/* playingVC && isLiveVC(playingVC[0]) && (
+          // TODO: handle live VC
             <View />
-            // TODO handle live VC
-            // <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
-          )}
+            <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
+          ) */}
           <Row justify="space-between" align="center">
             <EventDetails
               title={currentVideoTitle ?? lecture.title}

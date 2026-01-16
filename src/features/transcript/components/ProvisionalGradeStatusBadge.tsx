@@ -5,7 +5,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
-} from '@polito/api-client/models/ProvisionalGrade';
+} from '@polito/api-client';
 
 import { lightTheme } from '../../../core/themes/light';
 

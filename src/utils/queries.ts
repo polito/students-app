@@ -1,4 +1,4 @@
-import { ResponseError } from '@polito/api-client/runtime';
+import { ResponseError } from '@polito/api-client';
 
 import { SuccessResponse } from '../core/types/api';
 
