@@ -54,6 +54,7 @@
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-query-persist-client": "^5.90.2",
     "asn1js": "^3.0.6",
+    "autolinker": "^4.1.5",
     "base32-encode": "^2.0.0",
     "color": "^4.2.3",
     "dom-serializer": "^2.0.0",
