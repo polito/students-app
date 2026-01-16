@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import { open } from 'react-native-file-viewer';
@@ -14,7 +14,11 @@ import {
 import { dirname } from 'react-native-path';
 
 import { useApiContext } from '../contexts/ApiContext';
-import { Download, useDownloadsContext } from '../contexts/DownloadsContext';
+import {
+  Download,
+  DownloadPhase,
+  useDownloadsContext,
+} from '../contexts/DownloadsContext';
 import { FileRecord, getFileDatabase } from '../database/FileDatabase';
 import { calculateFileChecksum } from '../providers/downloads/downloadsChecksum';
 import { useNotifications } from './useNotifications';
@@ -34,6 +38,8 @@ export const useDownloadFile = (
   const { clearNotificationScope } = useNotifications();
 
   const fileDatabase = getFileDatabase();
+  const currentJobIdRef = useRef<number | undefined>(undefined);
+  const isStoppedRef = useRef<boolean>(false);
 
   const insertFileToSQLite = useCallback(
     async (file: FileRecord) => {
@@ -114,12 +120,16 @@ export const useDownloadFile = (
   }, [toFile, fileId, checkFileExistsInSQLite, updateDownload, fileDatabase]);
 
   const startDownload = useCallback(
-    async (force = false) => {
+    async (force = false): Promise<boolean> => {
       if (
         force ||
         (!download.isDownloaded && download.downloadProgress == null)
       ) {
-        updateDownload({ downloadProgress: 0 });
+        isStoppedRef.current = false;
+        updateDownload({
+          downloadProgress: 0,
+          phase: DownloadPhase.Downloading,
+        });
         try {
           await mkdir(dirname(toFile));
 
@@ -132,19 +142,37 @@ export const useDownloadFile = (
             progressInterval: 200,
             begin: () => {},
             progress: ({ bytesWritten, contentLength }) => {
-              updateDownload({
-                downloadProgress: bytesWritten / contentLength,
-              });
+              if (!isStoppedRef.current && currentJobIdRef.current === jobId) {
+                updateDownload({
+                  downloadProgress: bytesWritten / contentLength,
+                });
+              }
             },
           });
+          currentJobIdRef.current = jobId;
           updateDownload({ jobId });
+
+          if (isStoppedRef.current) {
+            return false;
+          }
+
           const result = await promise;
+
+          if (isStoppedRef.current) {
+            return false;
+          }
           if (result.statusCode !== 200) {
             throw new Error(t('common.downloadError'));
           }
+          if (isStoppedRef.current) {
+            return false;
+          }
+
+          currentJobIdRef.current = undefined;
           updateDownload({
             isDownloaded: true,
             downloadProgress: undefined,
+            phase: DownloadPhase.Completed,
           });
 
           try {
@@ -154,7 +182,7 @@ export const useDownloadFile = (
                 'File does not exist, skipping SQLite metadata save:',
                 toFile,
               );
-              return;
+              return false;
             }
 
             const fileStats = await stat(toFile);
@@ -191,23 +219,33 @@ export const useDownloadFile = (
               downloadTime: new Date().toISOString(),
               updateTime: undefined,
             });
+            return true;
           } catch (error) {
             console.error('Error saving file metadata to SQLite:', error);
+            return false;
           }
         } catch (e) {
-          if (!(e as Error).message?.includes('aborted')) {
-            console.error('Error downloading file:', e);
-            Alert.alert(
-              t('common.error'),
-              t('courseScreen.fileDownloadFailed'),
-            );
+          const isAborted = (e as Error).message?.includes('aborted');
+          if (isStoppedRef.current || isAborted) {
+            currentJobIdRef.current = undefined;
+            isStoppedRef.current = false;
+            return false;
           }
+
+          console.error('Error downloading file:', e);
+          Alert.alert(t('common.error'), t('courseScreen.fileDownloadFailed'));
+          currentJobIdRef.current = undefined;
+          isStoppedRef.current = false;
           updateDownload({
+            jobId: undefined,
             isDownloaded: false,
             downloadProgress: undefined,
+            phase: undefined,
           });
+          return false;
         }
       }
+      return download.isDownloaded;
     },
     [
       download,
@@ -225,15 +263,28 @@ export const useDownloadFile = (
   );
 
   const stopDownload = useCallback(() => {
-    const jobId = download.jobId;
+    const jobId = currentJobIdRef.current ?? download.jobId;
     if (jobId) {
-      fsStopDownload(jobId);
+      isStoppedRef.current = true;
+      currentJobIdRef.current = undefined;
       updateDownload({
+        jobId: undefined,
         isDownloaded: false,
         downloadProgress: undefined,
+        phase: undefined,
+      });
+      fsStopDownload(jobId);
+    } else if (download.downloadProgress != null) {
+      isStoppedRef.current = true;
+      currentJobIdRef.current = undefined;
+      updateDownload({
+        jobId: undefined,
+        isDownloaded: false,
+        downloadProgress: undefined,
+        phase: undefined,
       });
     }
-  }, [download.jobId, updateDownload]);
+  }, [download.jobId, download.downloadProgress, updateDownload]);
 
   const refreshDownload = useCallback(async () => {
     if (!download.isDownloaded) {

@@ -198,7 +198,9 @@ export const useFileManagement = ({
 
         const aDownloaded = downloads[aKey]?.isDownloaded ?? false;
         const bDownloaded = downloads[bKey]?.isDownloaded ?? false;
-        return bDownloaded ? 1 : aDownloaded ? -1 : 0;
+        if (aDownloaded && !bDownloaded) return 1;
+        if (!aDownloaded && bDownloaded) return -1;
+        return 0;
       });
     },
     [courseId, courseFilesCache, downloads],

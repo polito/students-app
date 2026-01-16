@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
@@ -10,9 +10,11 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
@@ -53,7 +55,8 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
   const [courseFilesCache] = useCourseFilesCachePath();
-
+  const { spacing } = useTheme();
+  const bottomBarHeight = useBottomTabBarHeight();
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
   }, [navigation]);
@@ -117,6 +120,14 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
         break;
     }
   };
+
+  const footerSpacerHeight = useMemo(() => {
+    if (enableMultiSelect) {
+      return spacing[12] * 2 + bottomBarHeight;
+    }
+    return 0;
+  }, [enableMultiSelect, spacing, bottomBarHeight]);
+
   return (
     <>
       {isFileNavigator && (
@@ -168,7 +179,12 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           ItemSeparatorComponent={Platform.select({
             ios: IndentedDivider,
           })}
-          ListFooterComponent={<BottomBarSpacer />}
+          ListFooterComponent={
+            <>
+              <View style={{ height: footerSpacerHeight }} />
+              <BottomBarSpacer />
+            </>
+          }
           ListEmptyComponent={
             !directoryQuery.isLoading ? (
               <OverviewList
