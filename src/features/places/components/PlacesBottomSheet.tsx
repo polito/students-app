@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import { faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -62,7 +62,6 @@ export const PlacesBottomSheet = forwardRef<
           Array.isArray(listItems) && listItems.length > 1 ? 58 : 100,
           Array.isArray(listItems) && listItems.length > 4 ? '50%' : '30%',
         ]}
-        keyboardBlurBehavior={Platform.OS === 'ios' ? 'restore' : undefined}
         enableBlurKeyboardOnGesture={Platform.OS === 'ios'}
         enableAndroidKeyboardHandling={Platform.OS === 'android'}
         {...props}
@@ -72,9 +71,6 @@ export const PlacesBottomSheet = forwardRef<
             label={searchFieldLabel ?? t('common.search')}
             returnKeyType="search"
             onSubmitEditing={() => {
-              if (Platform.OS === 'android') {
-                Keyboard.dismiss();
-              }
               onSearchTrigger?.();
             }}
             value={search}
