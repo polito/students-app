@@ -162,7 +162,13 @@ export const CtaButton = ({
           {/* {!loading && ( */}
           {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
           {/* )} */}
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              opacity: loading ? 0 : 1,
+            }}
+          >
             {icon && Number(accessibility?.fontSize) < 150 && (
               <Icon
                 icon={icon}
