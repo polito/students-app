@@ -1,5 +1,6 @@
 import { Document } from 'react-native-render-html';
 
+import Autolinker from 'autolinker';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
@@ -12,10 +13,7 @@ export const getHtmlTextContent = (text: string) => {
 };
 
 export const linkUrls = (html: string) => {
-  const regex =
-    /(?!<a[^>]*>[^<])(?<!<img[^>]*)(?:https?:\/\/(?:www\.)?|www\.)?(?:[A-Z0-9-]+(?:[-.][A-Z0-9]+)*\.[A-Z]{2,5})(?::[0-9]{1,5})?(?:\/[A-Z0-9\-._~:/?#[\]@!$&'()*+,;=]*)?(?:\?[A-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]*)?(?:#[A-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]*)?(?![^<]*<\/a>)(?<!\.)/gi;
-  return html.replace(regex, match => {
-    if (!match.startsWith('http')) match = `https://${match}`;
-    return `<a href="${match}">${match}</a>`;
+  return Autolinker.link(html, {
+    truncate: 48,
   });
 };
