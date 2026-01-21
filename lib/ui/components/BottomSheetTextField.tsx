@@ -76,7 +76,7 @@ const BottomSheetTextFieldComponent = ({
       <BottomSheetTextInput
         clearButtonMode="never"
         placeholder={label}
-        keyboardType="twitter"
+        keyboardType="default"
         placeholderTextColor={colors.secondaryText}
         selectionColor={colors.link}
         style={[
