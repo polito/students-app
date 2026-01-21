@@ -1,5 +1,6 @@
 import { memo, useCallback } from 'react';
 import {
+  Keyboard,
   NativeSyntheticEvent,
   Platform,
   StyleSheet,
@@ -30,6 +31,8 @@ export interface BottomSheetTextFieldProps
   containerStyle?: ViewStyle;
   isLoading?: boolean;
 }
+
+const KEYBOARD_DISMISS_DELAY_MS = 1000;
 
 const BottomSheetTextFieldComponent = ({
   containerStyle,
