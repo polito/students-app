@@ -53,6 +53,7 @@
     "@tanstack/query-persist-client-core": "^5.91.4",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-query-persist-client": "^5.90.2",
+    "android": "^0.0.8",
     "asn1js": "^3.0.6",
     "autolinker": "^4.1.5",
     "base32-encode": "^2.0.0",
