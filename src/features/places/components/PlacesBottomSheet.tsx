@@ -55,13 +55,25 @@ export const PlacesBottomSheet = forwardRef<
 
     const listItems = useMemo(() => listProps?.data ?? [], [listProps?.data]);
 
+    const isSearching = !!search?.trim();
+
+    const snapPoints = useMemo(() => {
+      if (isSearching) {
+        return [
+          Array.isArray(listItems) && listItems.length > 1 ? 120 : 160,
+          Array.isArray(listItems) && listItems.length > 4 ? '75%' : '50%',
+        ];
+      }
+      return [
+        Array.isArray(listItems) && listItems.length > 1 ? 58 : 100,
+        Array.isArray(listItems) && listItems.length > 4 ? '50%' : '30%',
+      ];
+    }, [isSearching, listItems]);
+
     return (
       <BottomSheet
         ref={innerRef}
-        snapPoints={[
-          Array.isArray(listItems) && listItems.length > 1 ? 58 : 100,
-          Array.isArray(listItems) && listItems.length > 4 ? '50%' : '30%',
-        ]}
+        snapPoints={snapPoints}
         enableBlurKeyboardOnGesture={Platform.OS === 'ios'}
         enableAndroidKeyboardHandling={Platform.OS === 'android'}
         {...props}

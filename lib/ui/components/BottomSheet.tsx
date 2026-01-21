@@ -65,7 +65,11 @@ export const BottomSheet = forwardRef(
     const previousIndexRef = useRef<number>(1);
     const isKeyboardHandlingRef = useRef<boolean>(false);
     const lastKeyboardHeightRef = useRef<number>(0);
-    const defaultSnapPoints = [24, `${middleSnapPoint}%`, '100%'];
+    const defaultSnapPoints = [
+      Platform.OS === 'android' ? 58 : 64,
+      `${middleSnapPoint}%`,
+      '100%',
+    ];
     const snapPoints = props.snapPoints ?? defaultSnapPoints;
     const handleKeyboardOpen = (height: number) => {
       if (
