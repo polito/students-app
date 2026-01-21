@@ -1,6 +1,5 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback } from 'react';
 import {
-  Keyboard,
   NativeSyntheticEvent,
   Platform,
   StyleSheet,
@@ -32,8 +31,6 @@ export interface BottomSheetTextFieldProps
   isLoading?: boolean;
 }
 
-const KEYBOARD_DISMISS_DELAY_MS = 1000;
-
 const BottomSheetTextFieldComponent = ({
   containerStyle,
   inputStyle,
@@ -50,29 +47,10 @@ const BottomSheetTextFieldComponent = ({
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const keyboardContext = useBottomSheetKeyboard();
-  const keyboardDismissTimeoutRef = useRef<ReturnType<
-    typeof setTimeout
-  > | null>(null);
-
-  useEffect(
-    () => () => {
-      if (keyboardDismissTimeoutRef.current) {
-        clearTimeout(keyboardDismissTimeoutRef.current);
-      }
-    },
-    [],
-  );
 
   const handleChangeText = useCallback(
     (text: string) => {
-      if (keyboardDismissTimeoutRef.current) {
-        clearTimeout(keyboardDismissTimeoutRef.current);
-      }
       onChangeText?.(text);
-      keyboardDismissTimeoutRef.current = setTimeout(() => {
-        Keyboard.dismiss();
-        keyboardDismissTimeoutRef.current = null;
-      }, KEYBOARD_DISMISS_DELAY_MS);
     },
     [onChangeText],
   );
