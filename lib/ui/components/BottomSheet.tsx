@@ -102,30 +102,6 @@ export const BottomSheet = forwardRef(
       });
     };
 
-    const handleKeyboardClose = () => {
-      if (
-        !IS_ANDROID ||
-        !enableAndroidKeyboardHandling ||
-        !baseBottomSheetRef.current ||
-        previousIndexRef.current === undefined ||
-        isKeyboardHandlingRef.current
-      ) {
-        return;
-      }
-
-      isKeyboardHandlingRef.current = true;
-      lastKeyboardHeightRef.current = 0;
-
-      requestAnimationFrame(() => {
-        if (baseBottomSheetRef.current) {
-          baseBottomSheetRef.current.snapToIndex(previousIndexRef.current);
-          setTimeout(() => {
-            isKeyboardHandlingRef.current = false;
-          }, 300);
-        }
-      });
-    };
-
     useAnimatedReaction(
       () => keyboard.height.value,
       (height, previous) => {
@@ -135,8 +111,6 @@ export const BottomSheet = forwardRef(
         const previousHeight = previous ?? 0;
         if (height > 0 && previousHeight === 0) {
           runOnJS(handleKeyboardOpen)(height);
-        } else if (height === 0 && previousHeight > 0) {
-          runOnJS(handleKeyboardClose)();
         }
       },
     );
