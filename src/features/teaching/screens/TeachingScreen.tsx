@@ -131,8 +131,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
                     let hiddenCount = 0;
 
                     coursesQuery.data.forEach(course => {
-                      if (!isCourseDetailed(course) || !course.uniqueShortcode)
+                      if (
+                        !isCourseDetailed(course) ||
+                        !course.uniqueShortcode
+                      ) {
+                        hiddenCount += 1 + (course.modules?.length || 0);
                         return;
+                      }
 
                       // Corsi nascosti
                       if (coursePreferences[course.uniqueShortcode]?.isHidden) {
