@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
 import { faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -53,24 +54,26 @@ export const PlacesBottomSheet = forwardRef<
     useImperativeHandle(ref, () => innerRef.current!);
 
     const listItems = useMemo(() => listProps?.data ?? [], [listProps?.data]);
+
+    const snapPoints = useMemo(() => {
+      return [Platform.OS === 'android' ? 58 : 64, '100%'];
+    }, []);
+
     return (
       <BottomSheet
         ref={innerRef}
-        snapPoints={[
-          Array.isArray(listItems) && listItems.length > 1 ? 58 : 100,
-          Array.isArray(listItems) && listItems.length > 4 ? '40%' : '30%',
-          '100%',
-        ]}
+        snapPoints={snapPoints}
+        enableBlurKeyboardOnGesture={Platform.OS === 'ios'}
+        enableAndroidKeyboardHandling={Platform.OS === 'android'}
         {...props}
       >
         {showSearchBar && (
           <BottomSheetTextField
             label={searchFieldLabel ?? t('common.search')}
-            onBlur={() => {
+            returnKeyType="search"
+            onSubmitEditing={() => {
               onSearchTrigger?.();
             }}
-            returnKeyType="search"
-            onSubmitEditing={onSearchTrigger}
             value={search}
             isClearable={!!search}
             onChangeText={onSearchChange}
