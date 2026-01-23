@@ -270,7 +270,7 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
         </SafeAreaView>
       </ScrollView>
       <CtaButton
-        title={t('courseHideEventScreen.button')}
+        tkey="courseHideEventScreen.button"
         action={onPress}
         disabled={!items.filter(item => item.restoreVisibility).length}
       />

@@ -67,7 +67,7 @@ export const BookingsScreen = ({ navigation }: Props) => {
           action={() => {
             navigation.navigate('BookingTopic');
           }}
-          title={t('bookingsScreen.newBooking')}
+          tkey="bookingsScreen.newBooking"
           icon={faPlus}
         />
       )}

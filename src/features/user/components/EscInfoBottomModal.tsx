@@ -90,7 +90,7 @@ export const EscInfoBottomModal = ({ onClose, scrollTo, ...rest }: Props) => {
           </Row>
         </Card>
         <CtaButton
-          title={t('escModalInfo.revoke')}
+          tkey="escModalInfo.revoke"
           action={onPressEvent}
           absolute={false}
           destructive

@@ -80,14 +80,14 @@ export const ExamCTA = ({ exam, absolute = false }: Props) => {
   return (
     <CtaButton
       destructive={!examAvailable && !examRequestable}
-      title={
+      tkey={
         examUnavailable
-          ? t('examScreen.notAvailable')
+          ? 'examScreen.notAvailable'
           : examRequestable
-            ? t('examScreen.ctaRequest')
+            ? 'examScreen.ctaRequest'
             : examAvailable
-              ? t('examScreen.ctaBook')
-              : t('examScreen.ctaCancel')
+              ? 'examScreen.ctaBook'
+              : 'examScreen.ctaCancel'
       }
       action={action}
       loading={mutationsLoading}

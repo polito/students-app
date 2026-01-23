@@ -177,7 +177,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       <View style={styles.buttonsRow}>
         <CtaButton
           absolute={false}
-          title={t('mfaScreen.auth.denyAccess')}
+          tkey="mfaScreen.auth.denyAccess"
           action={onNo}
           variant="outlined"
           disabled={isPending}
@@ -187,7 +187,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
         />
         <CtaButton
           absolute={false}
-          title={t('mfaScreen.auth.allow')}
+          tkey="mfaScreen.auth.allow"
           action={onYes}
           disabled={isPending}
           loading={isPending}

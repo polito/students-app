@@ -103,6 +103,7 @@ export interface Colors {
   yellow: string;
   black: string;
   readMore: string;
+  glass: string;
 }
 
 export interface Palettes {

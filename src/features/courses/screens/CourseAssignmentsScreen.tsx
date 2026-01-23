@@ -63,7 +63,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
         </SafeAreaView>
       </ScrollView>
       <CtaButton
-        title={t('courseAssignmentUploadScreen.title')}
+        tkey="courseAssignmentUploadScreen.title"
         action={() =>
           navigation.navigate({
             name: 'CourseAssignmentUpload',

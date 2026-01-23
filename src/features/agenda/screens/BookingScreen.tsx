@@ -285,10 +285,10 @@ export const BookingScreen = ({ navigation, route }: Props) => {
           <CtaButtonContainer absolute={false}>
             {hasCheckIn && (
               <CtaButton
-                title={
+                tkey={
                   completedCheckIn
-                    ? t('bookingScreen.checkInFeedback')
-                    : t('bookingScreen.checkIn')
+                    ? 'bookingScreen.checkInFeedback'
+                    : 'bookingScreen.checkIn'
                 }
                 action={onPressCheckIn}
                 loading={updateBookingMutation.isPending}
@@ -306,7 +306,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
             )}
             {canBeCancelled && (
               <CtaButton
-                title={t('bookingScreen.cancelBooking')}
+                tkey="bookingScreen.cancelBooking"
                 action={onPressDelete}
                 loading={deleteBookingMutation.isPending}
                 absolute={false}

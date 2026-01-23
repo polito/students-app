@@ -110,7 +110,7 @@ export const LoginScreen = () => {
           </TouchableOpacity>
           <CtaButton
             absolute={false}
-            title={t('loginScreen.cta')}
+            tkey="loginScreen.cta"
             action={handleLogin}
             loading={isLoading}
             disabled={!canLogin}

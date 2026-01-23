@@ -164,10 +164,10 @@ export const MfaSettings = () => {
         (mfa?.status === 'active' && !hasLocalMfaKey)) && (
         <View style={styles.buttonContainer}>
           <CtaButton
-            title={
+            tkey={
               mfa?.status === 'available' || mfa?.status === 'needsReauth'
-                ? t('mfaScreen.settings.enableNow')
-                : t('mfaScreen.settings.correctError')
+                ? 'mfaScreen.settings.enableNow'
+                : 'mfaScreen.settings.correctError'
             }
             action={() => {
               updatePreference('politoAuthnEnrolmentStatus', {

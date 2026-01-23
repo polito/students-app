@@ -219,7 +219,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
       <CtaButton
         absolute={false}
         disabled={!createTopicEnabled}
-        title={t('createTicketScreen.sendTicket')}
+        tkey="createTicketScreen.sendTicket"
         action={async () => {
           try {
             await handleCreateTicket({

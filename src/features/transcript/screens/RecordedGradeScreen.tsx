@@ -56,7 +56,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
         <View style={styles.textModal}>
           <Text>{t('recordedGradeScreen.textModal')}</Text>
           <CtaButton
-            title={t('recordedGradeScreen.ctaButtonModal')}
+            tkey="recordedGradeScreen.ctaButtonModal"
             action={() => navigation.navigate('TranscriptCareer')}
             absolute={false}
             containerStyle={{ paddingHorizontal: 0 }}

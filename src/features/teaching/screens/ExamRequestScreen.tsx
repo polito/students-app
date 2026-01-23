@@ -87,7 +87,7 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
       </ScrollView>
       {exam && (
         <CtaButton
-          title={t('common.confirm')}
+          tkey="common.confirm"
           action={onSubmit}
           loading={isBooking}
         />

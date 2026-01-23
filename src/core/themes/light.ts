@@ -165,6 +165,7 @@ export const lightTheme: Theme = {
     black: '#000000',
     yellow: '#FFD700',
     readMore: navy[400],
+    glass: 'rgba(255, 255, 255, 0.10)',
   },
   palettes: {
     navy,

@@ -281,7 +281,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
       </ScrollView>
       <CtaButtonContainer absolute>
         <CtaButton
-          title={t('lectureScreen.hideEventButtonTitle')}
+          tkey="lectureScreen.hideEventButtonTitle"
           action={hideEvent}
           destructive
           absolute={false}

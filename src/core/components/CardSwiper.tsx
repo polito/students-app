@@ -28,6 +28,7 @@ import { DateTime } from 'luxon';
 import { UserStackParamList } from '../../features/user/components/UserNavigator.tsx';
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation.ts';
 import { EscCard } from './EscCard.tsx';
+import { TextWithLinks } from './TextWithLinks.tsx';
 
 export interface CardSwiperProps {
   student: Student;
@@ -164,9 +165,7 @@ const SlideItem = ({
             <CtaButtonContainer absolute={true} style={styles.buttonContainer}>
               <CtaButton
                 absolute={false}
-                title="Request Card"
                 action={() => navigation.navigate('RequestESC')}
-                textStyle={{ color: colors.black, fontWeight: '600' }}
                 style={styles.button}
                 underlayColor={palettes.gray[200]}
                 containerStyle={{
@@ -174,7 +173,14 @@ const SlideItem = ({
                     ? CARD_LENGTH / 3
                     : CARD_LENGTH / 6,
                 }}
-              />
+              >
+                <TextWithLinks
+                  style={{ color: colors.black, fontWeight: '600' }}
+                  isCta={true}
+                >
+                  Request Card
+                </TextWithLinks>
+              </CtaButton>
             </CtaButtonContainer>
           )}
         </View>

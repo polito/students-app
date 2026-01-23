@@ -35,5 +35,6 @@ export const darkTheme: Theme = {
     errorCardText: lightTheme.palettes.rose[200],
     errorCardBorder: lightTheme.palettes.rose[500],
     readMore: lightTheme.palettes.navy[500],
+    glass: 'rgba(255, 255, 255, 0.10)',
   },
 };

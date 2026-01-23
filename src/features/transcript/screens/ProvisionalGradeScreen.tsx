@@ -191,7 +191,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
       </ScrollView>
       {grade?.state === ProvisionalGradeStateEnum.Published && (
         <CtaButton
-          title={t('provisionalGradeScreen.contactProfessorCta')}
+          tkey="provisionalGradeScreen.contactProfessorCta"
           action={() => navigation.navigate('Person', { id: grade?.teacherId })}
         />
       )}
@@ -202,7 +202,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
         >
           {grade?.canBeAccepted && (
             <CtaButton
-              title={t('provisionalGradeScreen.acceptGradeCta')}
+              tkey="provisionalGradeScreen.acceptGradeCta"
               action={() =>
                 confirmAcceptance().then(ok => {
                   if (ok) {
@@ -224,9 +224,10 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
           )}
           {grade?.canBeRejected && (
             <CtaButton
-              title={t('provisionalGradeScreen.rejectGradeCta', {
+              tkey="provisionalGradeScreen.rejectGradeCta"
+              tvalues={{
                 date: formatDateWithTimeIfNotNull(grade.rejectingExpiresAt),
-              })}
+              }}
               action={() =>
                 confirmRejection().then(ok => {
                   if (ok) {

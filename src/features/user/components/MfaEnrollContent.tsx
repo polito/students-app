@@ -188,14 +188,14 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         <View style={styles.buttonsRow}>
           <CtaButton
             absolute={false}
-            title={t('mfaScreen.enroll.cancel')}
+            tkey="mfaScreen.enroll.cancel"
             action={onNo}
             variant="outlined"
             style={styles.secondaryButton}
           />
           <CtaButton
             absolute={false}
-            title={t('mfaScreen.enroll.confirm')}
+            tkey="mfaScreen.enroll.confirm"
             action={onYes}
             style={styles.primaryButton}
             loading={isLoading}
@@ -229,7 +229,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
           <View style={{ width: '80%', alignItems: 'center' }}>
             <CtaButton
               absolute={false}
-              title={t('common.confirm')}
+              tkey="common.confirm"
               action={onYes}
               containerStyle={styles.confirmButtonContainer}
               loading={isLoading}

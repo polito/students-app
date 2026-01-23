@@ -52,7 +52,7 @@ export const BookingSeatsCta = ({
     >
       {children}
       <CtaButton
-        title={t('bookingSeatScreen.confirm')}
+        tkey="bookingSeatScreen.confirm"
         variant="filled"
         absolute={false}
         action={() =>

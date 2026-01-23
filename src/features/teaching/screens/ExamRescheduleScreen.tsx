@@ -113,7 +113,7 @@ export const ExamRescheduleScreen = ({ navigation, route }: Props) => {
           }
         />
         <CtaButton
-          title={t('examRescheduleScreen.button')}
+          tkey="examRescheduleScreen.button"
           action={onSubmit}
           loading={isBooking}
           disabled={!isCheck}

@@ -84,7 +84,7 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
       />
       {recentFilesQuery.data && navigation && (
         <CtaButton
-          title={t('courseFilesTab.navigateFolders')}
+          tkey="courseFilesTab.navigateFolders"
           icon={faFolderOpen}
           action={() => {
             navigation.replace('DirectoryFiles', { courseId });

@@ -183,7 +183,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <CtaButton
-            title={t('common.confirm')}
+            tkey="common.confirm"
             action={handleConfirmColor}
             disabled={!hasChanged}
             absolute={false}

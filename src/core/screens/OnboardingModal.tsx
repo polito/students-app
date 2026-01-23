@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -34,7 +33,6 @@ export const ONBOARDING_STEPS = 4;
 export const OnboardingModal = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors } = useTheme();
-  const { t } = useTranslation();
   const { hideOnboarding } = useSplashContext();
 
   const [width, setWidth] = useState<number>(0);
@@ -173,7 +171,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
               <CtaButton
                 variant="outlined"
                 absolute={false}
-                title={t('common.back')}
+                tkey="common.back"
                 action={onPrevPage}
                 containerStyle={styles.buttonContainer}
               />
@@ -183,7 +181,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
           <Col flex={1}>
             <CtaButton
               absolute={false}
-              title={isLastStep ? t('guideScreen.title') : t('common.next')}
+              tkey={isLastStep ? 'guideScreen.title' : 'common.next'}
               action={onNextPage}
               containerStyle={styles.buttonContainer}
             />

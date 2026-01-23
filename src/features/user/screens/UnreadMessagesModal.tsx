@@ -107,7 +107,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         {showExamButton && (
           <CtaButton
             absolute={false}
-            title={t('messageScreen.viewProvisionalGrade')}
+            tkey="messageScreen.viewProvisionalGrade"
             action={onViewProvisionalGrade}
             variant="filled"
             containerStyle={{ flex: 1 }}
@@ -117,7 +117,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         {showNextButton && (
           <CtaButton
             absolute={false}
-            title=""
+            tkey=""
             variant="outlined"
             action={onConfirm}
             icon={faChevronRight}
@@ -128,7 +128,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
         {showEndButton && (
           <CtaButton
             absolute={false}
-            title={t('messagesScreen.end')}
+            tkey="messagesScreen.end"
             action={onConfirm}
             icon={faCheckCircle}
             containerStyle={{ flex: 1 }}

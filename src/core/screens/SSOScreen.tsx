@@ -39,7 +39,7 @@ export const SSOScreen = ({ navigation }: Props) => {
       <CtaButtonContainer absolute={true} style={{ gap: spacing[0] }}>
         <CtaButton
           absolute={false}
-          title={t('ssoScreen.ssoButton')}
+          tkey="ssoScreen.ssoButton"
           action={() => handleSSO()}
           loading={isLoading}
         />

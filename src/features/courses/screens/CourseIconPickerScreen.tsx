@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity } from 'react-native';
 
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
@@ -21,7 +20,6 @@ const icons = Object.entries(courseIcons);
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
 
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
-  const { t } = useTranslation();
   const { spacing, fontSizes } = useTheme();
   const [searchFilter, setSearchFilter] = useState('');
   const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
@@ -87,7 +85,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
       />
       {coursePrefs.icon != null && (
         <CtaButton
-          title={t('common.remove')}
+          tkey="common.remove"
           destructive
           action={() => {
             updatePreference('courses', {

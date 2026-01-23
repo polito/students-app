@@ -140,14 +140,14 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
           </Card>
         </View>
         <CtaButton
-          title={t('escRequestScreen.authorize')}
+          tkey="escRequestScreen.authorize"
           action={onSubmit}
           absolute={false}
           containerStyle={{ paddingBottom: spacing[1.5] }}
           loading={mutationsLoading}
         />
         <CtaButton
-          title={t('common.cancel')}
+          tkey="common.cancel"
           action={() => navigation.pop()}
           absolute={false}
           variant="outlined"

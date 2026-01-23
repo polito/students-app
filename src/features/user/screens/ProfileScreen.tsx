@@ -224,7 +224,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           <CtaButton
             absolute={false}
             disabled={isOffline}
-            title={t('common.logout')}
+            tkey="common.logout"
             action={handleLogout}
             icon={faSignOut}
           />

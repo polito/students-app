@@ -24,11 +24,11 @@ export const NewVersionModal = ({ close, newVersion, url, source }: Props) => {
           {t('common.newVersionBody', { newVersion })}
         </Text>
         <CtaButton
-          title={
+          tkey={
             source === 'store'
-              ? t('common.goToStore')
+              ? 'common.goToStore'
               : source === 'github'
-                ? t('common.goToGithub')
+                ? 'common.goToGithub'
                 : ''
           }
           action={() => Linking.openURL(url)}

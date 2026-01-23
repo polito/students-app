@@ -36,7 +36,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
 
         <CtaButton
           absolute={false}
-          title={t('ticketFaqsScreen.writeTicket')}
+          tkey="ticketFaqsScreen.writeTicket"
           hint={t('ticketFaqsScreen.noResultFound')}
           action={() =>
             navigation.navigate('CreateTicket', {

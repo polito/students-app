@@ -278,7 +278,7 @@ export const HiddenEventsScreen = ({ navigation }: Props) => {
         </SafeAreaView>
       </ScrollView>
       <CtaButton
-        title={t('courseHideEventScreen.button')}
+        tkey="courseHideEventScreen.button"
         action={handleRestore}
         disabled={!hasSelectedItems}
       />

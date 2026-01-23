@@ -177,7 +177,6 @@ const ClosedTickets = ({ ticketsQuery }: TicketPageSection) => {
 };
 
 export const TicketsScreen = ({ navigation }: Props) => {
-  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
 
@@ -198,7 +197,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
       <CtaButton
         absolute={true}
         disabled={!onlineManager.isOnline()}
-        title={t('ticketsScreen.addNew')}
+        tkey="ticketsScreen.addNew"
         action={() => navigation.navigate('TicketFaqs')}
         icon={faPlus}
       />

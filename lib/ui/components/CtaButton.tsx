@@ -1,10 +1,13 @@
-import { ReactElement, useMemo } from 'react';
+import { ReactElement, ReactNode, useMemo } from 'react';
 import {
+  ColorValue,
   Platform,
+  Pressable,
+  PressableProps,
+  PressableStateCallbackType,
+  StyleProp,
   StyleSheet,
   TextStyle,
-  TouchableHighlight,
-  TouchableHighlightProps,
   View,
   ViewStyle,
 } from 'react-native';
@@ -18,16 +21,15 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { shadeColor } from '@lib/ui/utils/colors';
 
-import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
+import { RTFTrans } from '../../../src/core/components/RTFTrans';
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
-interface Props extends TouchableHighlightProps {
+interface BaseProps extends PressableProps {
   containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
-  title: string;
   rightExtra?: ReactElement;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
@@ -36,6 +38,51 @@ interface Props extends TouchableHighlightProps {
   success?: boolean;
   hint?: string;
   textStyle?: TextStyle;
+  underlayColor?: ColorValue;
+}
+
+/**
+ * **Children Mode**
+ * * Use this mode when you need full control over the button's internal content.
+ * Useful for passing raw strings, multiple text components, or custom layouts.
+ * * @example
+ * <CtaButton action={...}>
+ * <TextWitLink>Custom Label</TextWitLink>
+ * </CtaButton>
+ */
+
+interface ChildrenProps extends BaseProps {
+  children: ReactNode;
+  tkey?: never;
+  tvalues?: never;
+  tstyles?: never;
+  title?: never;
+}
+
+/**
+ * **Translation Mode**
+ * * Use this mode to automatically handle internationalization.
+ * The component will render an `<RTFTrans />` component internally.
+ * * @example
+ * <CtaButton
+ * action={...}
+ * tkey="auth.login.submit"
+ * tvalues={{ name: 'John' }}
+ * />
+ */
+
+interface TranslationProps extends BaseProps {
+  children?: never;
+  tkey: string;
+  tvalues?: Record<string, any>;
+  tstyles?: StyleProp<TextStyle>;
+  title?: never;
+}
+
+type Props = ChildrenProps | TranslationProps;
+
+function isChildrenProps(props: Props): props is ChildrenProps {
+  return 'children' in props && props.children !== undefined;
 }
 
 /**
@@ -44,7 +91,6 @@ interface Props extends TouchableHighlightProps {
 export const CtaButton = ({
   style,
   absolute = true,
-  title,
   loading,
   disabled,
   destructive = false,
@@ -58,6 +104,8 @@ export const CtaButton = ({
   textStyle,
   ...rest
 }: Props) => {
+  const props = rest as Props;
+
   const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
     useTheme();
   const styles = useStylesheet(createStyles);
@@ -100,6 +148,19 @@ export const CtaButton = ({
     success,
   ]);
 
+  const computedTextStyle = [
+    styles.textStyle,
+    variant === 'outlined' && {
+      borderColor: palettes.primary[400],
+    },
+    {
+      color: variant === 'filled' ? colors.white : color,
+      fontWeight: fontWeights.medium,
+    },
+    disabled ? { color: success ? color : colors.disableTitle } : undefined,
+    textStyle,
+  ] as StyleProp<TextStyle>;
+
   return (
     <View
       style={[
@@ -122,26 +183,33 @@ export const CtaButton = ({
           <Text style={styles.hint}>{hint}</Text>
         </View>
       )}
-      <TouchableHighlight
+      <Pressable
         accessibilityRole="button"
-        underlayColor={underlayColor}
         disabled={disabled || loading}
-        style={[
+        style={({ pressed }) => [
           styles.button,
           variant === 'outlined' && {
             borderColor: color,
             borderWidth: 1,
-            backgroundColor: colors.background,
+            backgroundColor: pressed ? underlayColor : colors.background,
           },
           variant === 'filled' && {
             borderColor: color,
             borderWidth: 1,
-            backgroundColor: color,
+            backgroundColor: pressed ? underlayColor : color,
           },
           disabled && variant === 'filled' && styles.disabledButton,
-          style,
+          typeof style === 'function'
+            ? (
+                style as (
+                  state: PressableStateCallbackType,
+                ) => StyleProp<ViewStyle>
+              )({
+                pressed,
+              })
+            : style,
         ]}
-        accessibilityLabel={title}
+        accessibilityLabel={isChildrenProps(props) ? undefined : props.tkey}
         onPress={action}
         {...rest}
       >
@@ -159,9 +227,6 @@ export const CtaButton = ({
               />
             )}
           </View>
-          {/* {!loading && ( */}
-          {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
-          {/* )} */}
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {icon && Number(accessibility?.fontSize) < 150 && (
               <Icon
@@ -171,35 +236,19 @@ export const CtaButton = ({
                 style={{ marginRight: spacing[2] }}
               />
             )}
-            <TextWithLinks
-              style={[
-                styles.textStyle,
-                variant === 'outlined' && {
-                  borderColor: palettes.primary[400],
-                },
-                {
-                  color: variant === 'filled' ? colors.white : color,
-                },
-                disabled
-                  ? { color: success ? color : colors.disableTitle }
-                  : undefined,
-                textStyle,
-              ]}
-              baseStyle={{
-                fontWeight: fontWeights.medium,
-                color: variant === 'filled' ? colors.white : color,
-                ...(disabled && {
-                  color: success ? color : colors.disableTitle,
-                }),
-              }}
-              isCta={true}
-            >
-              {title}
-            </TextWithLinks>
+            {isChildrenProps(props) ? (
+              props.children
+            ) : (
+              <RTFTrans
+                i18nKey={props.tkey}
+                values={props.tvalues}
+                style={[computedTextStyle, props.tstyles]}
+              />
+            )}
             {rightExtra && rightExtra}
           </View>
         </View>
-      </TouchableHighlight>
+      </Pressable>
     </View>
   );
 };

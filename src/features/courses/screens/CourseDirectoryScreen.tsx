@@ -154,7 +154,7 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
       </CourseFilesCacheProvider>
       {isFileNavigator && navigation && (
         <CtaButton
-          title={t('courseDirectoryScreen.navigateRecentFiles')}
+          tkey="courseDirectoryScreen.navigateRecentFiles"
           icon={faFile}
           action={() => {
             navigation.replace('RecentFiles', { courseId });
