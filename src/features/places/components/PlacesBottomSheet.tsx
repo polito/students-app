@@ -58,7 +58,6 @@ export const PlacesBottomSheet = forwardRef<
     const snapPoints = useMemo(() => {
       return [Platform.OS === 'android' ? 58 : 64, '100%'];
     }, []);
-
     return (
       <BottomSheet
         ref={innerRef}
