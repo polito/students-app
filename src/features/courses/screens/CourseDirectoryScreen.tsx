@@ -15,6 +15,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
@@ -57,6 +58,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const [courseFilesCache] = useCourseFilesCachePath();
   const { spacing } = useTheme();
   const bottomBarHeight = useBottomTabBarHeight();
+  const headerHeight = useHeaderHeight();
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
   }, [navigation]);
@@ -136,15 +138,24 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           setSearchFilter={setSearchFilter}
         />
       )}
-      <FileScreenHeader
-        enableMultiSelect={enableMultiSelect}
-        allFilesSelected={allFilesSelected}
-        activeSort={activeSort}
-        sortOptions={sortOptions}
-        onPressSortOption={onPressSortOption}
-        onPressOption={onPressOption}
-        isDirectoryView={true}
-      />
+      <View
+        style={[
+          paddingHorizontal,
+          Platform.OS === 'ios' &&
+            !isFileNavigator && { paddingTop: headerHeight + spacing[2] },
+        ]}
+      >
+        <FileScreenHeader
+          enableMultiSelect={enableMultiSelect}
+          allFilesSelected={allFilesSelected}
+          activeSort={activeSort}
+          sortOptions={sortOptions}
+          onPressSortOption={onPressSortOption}
+          onPressOption={onPressOption}
+          isDirectoryView={true}
+          isInsideFolder={!!directoryId}
+        />
+      </View>
 
       {searchFilter ? (
         <CourseFileSearchFlatList

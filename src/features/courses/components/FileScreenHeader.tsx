@@ -18,6 +18,7 @@ interface FileScreenHeaderProps {
   onPressSortOption: (event: string) => void;
   onPressOption: (event: NativeActionEvent) => void;
   isDirectoryView?: boolean;
+  isInsideFolder?: boolean;
 }
 
 export const FileScreenHeader = ({
@@ -28,6 +29,7 @@ export const FileScreenHeader = ({
   onPressSortOption,
   onPressOption,
   isDirectoryView = false,
+  isInsideFolder = false,
 }: FileScreenHeaderProps) => {
   const { t } = useTranslation();
   const { palettes, fontSizes } = useTheme();
@@ -50,14 +52,18 @@ export const FileScreenHeader = ({
             },
           ]
         : []),
-      {
-        id: MENU_ACTIONS.TOGGLE_FOLDERS,
-        title: isDirectoryView
-          ? t('common.hideFolders')
-          : t('common.showFolders'),
-      },
+      ...(isInsideFolder
+        ? []
+        : [
+            {
+              id: MENU_ACTIONS.TOGGLE_FOLDERS,
+              title: isDirectoryView
+                ? t('common.hideFolders')
+                : t('common.showFolders'),
+            },
+          ]),
     ],
-    [t, enableMultiSelect, allFilesSelected, isDirectoryView],
+    [t, enableMultiSelect, allFilesSelected, isDirectoryView, isInsideFolder],
   );
 
   return (
