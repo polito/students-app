@@ -11,7 +11,6 @@ import { BackHandler, Platform } from 'react-native';
 import {
   Extrapolation,
   interpolate,
-  runOnJS,
   useAnimatedKeyboard,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -46,7 +45,6 @@ export type BottomSheetProps = Omit<BaseBottomSheetProps, 'snapPoints'> & {
 export const BottomSheet = forwardRef(
   (
     {
-      middleSnapPoint = 25,
       children,
       style,
       animatedPosition,
@@ -62,80 +60,20 @@ export const BottomSheet = forwardRef(
     const [currentIndex, setCurrentIndex] = useState(0);
     const keyboard = useAnimatedKeyboard();
     const baseBottomSheetRef = useRef<BottomSheetMethods | null>(null);
-    const previousIndexRef = useRef<number>(1);
-    const isKeyboardHandlingRef = useRef<boolean>(false);
-    const lastKeyboardHeightRef = useRef<number>(0);
-    const defaultSnapPoints = [
-      Platform.OS === 'android' ? 58 : 64,
-      `${middleSnapPoint}%`,
-      '100%',
-    ];
+    const defaultSnapPoints = [Platform.OS === 'android' ? 58 : 64, '100%'];
     const snapPoints = props.snapPoints ?? defaultSnapPoints;
-    const handleKeyboardOpen = (height: number) => {
-      if (
-        !IS_ANDROID ||
-        !enableAndroidKeyboardHandling ||
-        !baseBottomSheetRef.current ||
-        isKeyboardHandlingRef.current
-      ) {
-        return;
-      }
-
-      const heightDiff = Math.abs(height - lastKeyboardHeightRef.current);
-      if (heightDiff < 10 && lastKeyboardHeightRef.current > 0) {
-        return;
-      }
-
-      isKeyboardHandlingRef.current = true;
-      previousIndexRef.current = currentIndex;
-      lastKeyboardHeightRef.current = height;
-
-      requestAnimationFrame(() => {
-        if (baseBottomSheetRef.current) {
-          const snapPointsArray = Array.isArray(snapPoints) ? snapPoints : [];
-          const targetIndex = snapPointsArray.length > 1 ? 1 : currentIndex;
-          baseBottomSheetRef.current.snapToIndex(targetIndex);
-          setTimeout(() => {
-            isKeyboardHandlingRef.current = false;
-          }, 300);
-        }
-      });
-    };
 
     useAnimatedReaction(
       () => keyboard.height.value,
-      (height, previous) => {
+      () => {
         if (!IS_ANDROID || !enableAndroidKeyboardHandling) {
           return;
-        }
-        const previousHeight = previous ?? 0;
-        if (height > 0 && previousHeight === 0) {
-          runOnJS(handleKeyboardOpen)(height);
         }
       },
     );
 
     const handleTextFieldFocus = () => {
-      if (
-        !IS_ANDROID ||
-        !enableAndroidKeyboardHandling ||
-        !baseBottomSheetRef.current ||
-        isKeyboardHandlingRef.current
-      ) {
-        return;
-      }
-      if (lastKeyboardHeightRef.current === 0) {
-        previousIndexRef.current = currentIndex;
-        const snapPointsArray = Array.isArray(snapPoints) ? snapPoints : [];
-        const targetIndex = snapPointsArray.length > 1 ? 1 : currentIndex;
-        if (targetIndex !== currentIndex) {
-          requestAnimationFrame(() => {
-            if (baseBottomSheetRef.current) {
-              baseBottomSheetRef.current.snapToIndex(targetIndex);
-            }
-          });
-        }
-      }
+      return;
     };
 
     const cornerStyles = useAnimatedStyle(() => {
@@ -174,7 +112,6 @@ export const BottomSheet = forwardRef(
         baseBottomSheetRef.current = ref.current;
       }
     }, [ref, currentIndex]);
-
     return (
       <BottomSheetKeyboardContext.Provider
         value={
@@ -222,9 +159,7 @@ export const BottomSheet = forwardRef(
           }
           {...props}
           onChange={(i: number, position: number, type: SNAP_POINT_TYPE) => {
-            if (!isKeyboardHandlingRef.current) {
-              setCurrentIndex(i);
-            }
+            setCurrentIndex(i);
             props.onChange?.(i, position, type);
           }}
         >
