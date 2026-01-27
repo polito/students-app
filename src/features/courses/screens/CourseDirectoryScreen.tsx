@@ -153,7 +153,6 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           onPressSortOption={onPressSortOption}
           onPressOption={onPressOption}
           isDirectoryView={true}
-          isInsideFolder={!!directoryId}
         />
       </View>
 

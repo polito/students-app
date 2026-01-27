@@ -169,20 +169,31 @@ export const CtaButton = ({
             {icon &&
               Number(accessibility?.fontSize) < 150 &&
               (progress !== undefined ? (
-                <IconWithProgress
-                  icon={icon}
-                  size={fontSizes.xl}
-                  color={variant === 'filled' ? colors.white : color}
-                  progress={progress}
-                  progressColor={variant === 'filled' ? colors.white : color}
-                  style={{ marginRight: spacing[2] }}
-                />
+                <View
+                  style={{
+                    marginRight: spacing[2],
+                    paddingHorizontal: spacing[1],
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <IconWithProgress
+                    icon={icon}
+                    size={fontSizes.xl}
+                    color={variant === 'filled' ? colors.white : color}
+                    progress={progress}
+                    progressColor={variant === 'filled' ? colors.white : color}
+                  />
+                </View>
               ) : (
                 <Icon
                   icon={icon}
                   size={fontSizes.xl}
                   color={variant === 'filled' ? colors.white : color}
-                  style={{ marginRight: spacing[2] }}
+                  style={{
+                    marginRight: spacing[2],
+                    paddingHorizontal: spacing[1],
+                  }}
                 />
               ))}
             <TextWithLinks
