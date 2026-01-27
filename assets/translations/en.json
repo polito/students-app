@@ -379,7 +379,12 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} files"
+    "subtitle_plural": "{{count}} files",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} files",
+    "folderCount": "{{count}} folder",
+    "folderCount_plural": "{{count}} folders",
+    "empty": "Empty"
   },
   "courseDirectoryScreen": {
     "clearSearch": "Clear search",

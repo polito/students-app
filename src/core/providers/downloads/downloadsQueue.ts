@@ -106,14 +106,35 @@ export const useQueueManagement = ({
         completedQueueKeys.forEach(key => {
           dispatchProgress({ type: 'REMOVE_PROGRESS', key });
         });
+
+        let successCount = 0;
+        let errorCount = 0;
+        const hasActualFailure = currentQueue.some(file => {
+          const key = getFileKey(file);
+          const download = currentDownloads[key];
+          if (download?.isDownloaded === true) {
+            successCount++;
+            return false;
+          }
+          if (
+            download?.phase === DownloadPhase.Error ||
+            download?.error !== undefined
+          ) {
+            errorCount++;
+            return true;
+          }
+          return false;
+        });
+
         dispatch({ type: 'SET_COMPLETED', completedKeys: completedQueueKeys });
         setFeedback({
-          text: state.hasFailure
-            ? t('common.downloadCompletedWithErrors', {
-                successCount: 0,
-                errorCount: 0,
-              })
-            : t('common.downloadCompleted'),
+          text:
+            hasActualFailure || (state.hasFailure && errorCount > 0)
+              ? t('common.downloadCompletedWithErrors', {
+                  successCount,
+                  errorCount,
+                })
+              : t('common.downloadCompleted'),
           isPersistent: false,
         });
         AsyncStorage.removeItem(QUEUE_STORAGE_KEY).catch(() => {});

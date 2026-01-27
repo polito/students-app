@@ -391,7 +391,12 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} file"
+    "subtitle_plural": "{{count}} file",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} file",
+    "folderCount": "{{count}} cartella",
+    "folderCount_plural": "{{count}} cartelle",
+    "empty": "Vuota"
   },
   "courseDirectoryScreen": {
     "clearSearch": "Cancella ricerca",

@@ -345,12 +345,38 @@ export const CourseDirectoryListItem = ({
     return totalUnreads > 0;
   }, [getAllFilesInDirectory, courseId, getUnreadsCount]);
 
+  const fileCount = useMemo(
+    () => item.files.filter(isFile).length,
+    [item.files],
+  );
+  const folderCount = useMemo(
+    () => item.files.filter(isDirectory).length,
+    [item.files],
+  );
+
+  const subtitle = useMemo(() => {
+    const parts: string[] = [];
+    if (fileCount > 0) {
+      parts.push(
+        t('courseDirectoryListItem.fileCount', {
+          count: fileCount,
+        }),
+      );
+    }
+    if (folderCount > 0) {
+      parts.push(
+        t('courseDirectoryListItem.folderCount', {
+          count: folderCount,
+        }),
+      );
+    }
+    return parts.join(', ') || t('courseDirectoryListItem.empty');
+  }, [fileCount, folderCount, t]);
+
   return (
     <DirectoryListItem
       title={item.name}
-      subtitle={t('courseDirectoryListItem.subtitle', {
-        count: item.files.length,
-      })}
+      subtitle={subtitle}
       onPress={() => {
         if (enableMultiSelect) {
           handleSelection();
