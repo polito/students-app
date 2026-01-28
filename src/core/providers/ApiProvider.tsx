@@ -170,8 +170,10 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     // Handle login status
     onlineManager.setEventListener(setOnline => {
       return NetInfo.addEventListener(state => {
+        const isConnected =
+          state.isConnected && state.isInternetReachable !== false;
         const wasOnline = onlineManager.isOnline();
-        if (wasOnline && !state.isConnected) {
+        if (wasOnline && !isConnected) {
           // Phone just went offline
           setOnline(false);
           setFeedback({
@@ -179,7 +181,7 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
             isError: true,
             isPersistent: true,
           });
-        } else if (!wasOnline && state.isConnected) {
+        } else if (!wasOnline && isConnected) {
           // Phone is back online
           setOnline(true);
           setFeedback(null);
