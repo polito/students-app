@@ -19,6 +19,7 @@ interface FileScreenHeaderProps {
   onPressOption: (event: NativeActionEvent) => void;
   isDirectoryView?: boolean;
   isInsideFolder?: boolean;
+  isSelectDisabled?: boolean;
 }
 
 export const FileScreenHeader = ({
@@ -30,26 +31,31 @@ export const FileScreenHeader = ({
   onPressOption,
   isDirectoryView = false,
   isInsideFolder = false,
+  isSelectDisabled = false,
 }: FileScreenHeaderProps) => {
   const { t } = useTranslation();
   const { palettes, fontSizes } = useTheme();
 
   const screenOptions = useMemo(
     () => [
-      {
-        id: MENU_ACTIONS.SELECT,
-        title: enableMultiSelect
-          ? t('common.cancelSelection')
-          : t('common.select'),
-      },
-      ...(enableMultiSelect
+      ...(!isSelectDisabled
         ? [
             {
-              id: MENU_ACTIONS.SELECT_ALL,
-              title: allFilesSelected
-                ? t('common.deselectAll')
-                : t('common.selectAll'),
+              id: MENU_ACTIONS.SELECT,
+              title: enableMultiSelect
+                ? t('common.cancelSelection')
+                : t('common.select'),
             },
+            ...(enableMultiSelect
+              ? [
+                  {
+                    id: MENU_ACTIONS.SELECT_ALL,
+                    title: allFilesSelected
+                      ? t('common.deselectAll')
+                      : t('common.selectAll'),
+                  },
+                ]
+              : []),
           ]
         : []),
       ...(isInsideFolder
@@ -63,7 +69,14 @@ export const FileScreenHeader = ({
             },
           ]),
     ],
-    [t, enableMultiSelect, allFilesSelected, isDirectoryView, isInsideFolder],
+    [
+      t,
+      enableMultiSelect,
+      allFilesSelected,
+      isDirectoryView,
+      isInsideFolder,
+      isSelectDisabled,
+    ],
   );
 
   return (

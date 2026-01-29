@@ -44,6 +44,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   const fileDatabase = getFileDatabase();
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isRemovalInProgress, setRemovalInProgress] = useState(false);
 
   const [progresses, dispatchProgress] = useReducer(progressReducer, {});
   const progressRef = useRef(progresses);
@@ -156,6 +157,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   const {
     startQueueDownload,
     stopQueueDownload,
+    stopAndClearAllDownloads,
     addFilesToQueue,
     removeFilesFromQueue,
     getFilesByContext,
@@ -257,8 +259,11 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     () => ({
       downloads: downloadsWithProgress,
       downloadQueue,
+      isRemovalInProgress,
+      setRemovalInProgress,
       startQueueDownload,
       stopQueueDownload,
+      stopAndClearAllDownloads,
       updateDownload,
       addFilesToQueue,
       removeFilesFromQueue,
@@ -268,8 +273,10 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     [
       downloadsWithProgress,
       downloadQueue,
+      isRemovalInProgress,
       startQueueDownload,
       stopQueueDownload,
+      stopAndClearAllDownloads,
       updateDownload,
       addFilesToQueue,
       removeFilesFromQueue,

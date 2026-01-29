@@ -2,7 +2,7 @@
  * File utility functions: generates file keys, checks file existence, and matches files by context.
  */
 import { Dispatch } from 'react';
-import { exists, stopDownload } from 'react-native-fs';
+import { exists, stopDownload, unlink } from 'react-native-fs';
 
 import {
   Download,
@@ -66,6 +66,7 @@ export const stopActiveDownload = (
   if (download?.jobId !== undefined) {
     fsStopDownload(download.jobId);
   }
+  unlink(file.request.destination).catch(() => {});
   dispatch({ type: 'REMOVE_ACTIVE_ID', id: file.id });
   dispatchProgress({ type: 'REMOVE_PROGRESS', key });
 };

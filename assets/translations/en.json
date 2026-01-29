@@ -168,8 +168,13 @@
     "doubleTapToDeactivate": "Tap twice to deactivate",
     "download": "Download",
     "downloadError": "Something went wrong with the download",
+    "downloadInProgress": "Download in progress",
+    "downloadInProgressCount": "Download in progress {{current}}/{{total}}",
     "downloadProgress": "Downloading {{current}} of {{total}}",
     "downloadCompleted": "All files downloaded successfully",
+    "downloadCompletedShort": "Download completed",
+    "removeInProgress": "Removing files",
+    "removeCompletedShort": "Files removed",
     "downloadCompletedWithErrors": "{{successCount}} files downloaded, {{errorCount}} failed",
     "downloadStatus": {
       "false": "Not downloaded",

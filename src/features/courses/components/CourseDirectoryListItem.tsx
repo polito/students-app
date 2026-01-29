@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 import { exists } from 'react-native-fs';
@@ -57,12 +57,14 @@ interface Props {
   courseId: number;
   item: CourseDirectory;
   enableMultiSelect?: boolean;
+  listRefreshKey?: number;
 }
 
 export const CourseDirectoryListItem = ({
   courseId,
   item,
   enableMultiSelect = false,
+  listRefreshKey,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const navigation =
@@ -83,146 +85,10 @@ export const CourseDirectoryListItem = ({
     new Set(),
   );
   const fileDatabase = getFileDatabase();
-
-  const checkAllFilesDownloadedFromState = useCallback(() => {
-    const directoryFiles = item.files.filter(isFile);
-
-    if (directoryFiles.length === 0) {
-      return false;
-    }
-
-    return directoryFiles.every(file => {
-      const cachedFilePath = buildCourseFilePath(
-        courseFilesCache,
-        `/${item.name}`,
-        file.id,
-        file.name,
-        file.mimeType,
-      );
-      const fileUrl = buildCourseFileUrl(courseId, file.id);
-      const downloadKey = `${fileUrl}:${cachedFilePath}`;
-
-      if (downloads[downloadKey]?.isDownloaded === true) {
-        return true;
-      }
-
-      return filesCheckedFromDB.has(file.id);
-    });
-  }, [item, courseFilesCache, courseId, downloads, filesCheckedFromDB]);
-
-  const allFilesDownloaded = useMemo(
-    () => checkAllFilesDownloadedFromState(),
-    [checkAllFilesDownloadedFromState],
-  );
-
-  const checkAllFilesDownloaded = useCallback(async () => {
-    const directoryFiles = item.files.filter(isFile);
-
-    if (directoryFiles.length === 0) {
-      return false;
-    }
-
-    const fileChecks = await Promise.all(
-      directoryFiles.map(async file => {
-        const cachedFilePath = buildCourseFilePath(
-          courseFilesCache,
-          `/${item.name}`,
-          file.id,
-          file.name,
-          file.mimeType,
-        );
-        const fileExists = await exists(cachedFilePath);
-        return fileExists;
-      }),
-    );
-
-    return fileChecks.every(fileExists => fileExists);
-  }, [item, courseFilesCache]);
-
-  useEffect(() => {
-    const checkFilesInDatabase = async () => {
-      const directoryFiles = item.files.filter(isFile);
-      if (directoryFiles.length === 0) return;
-
-      const downloadedFileIds = new Set<string>();
-
-      try {
-        const ctx = DownloadContext.Course;
-        const ctxId = courseId.toString();
-        const allFilesInContext = await fileDatabase.getFilesByContext(
-          ctx,
-          ctxId,
-        );
-        const filesMap = new Map(allFilesInContext.map(f => [f.id, f]));
-
-        for (const file of directoryFiles) {
-          try {
-            const fileRecord = filesMap.get(file.id);
-            if (fileRecord) {
-              const fileExists = await exists(fileRecord.path);
-              if (fileExists) {
-                downloadedFileIds.add(file.id);
-
-                const cachedFilePath = buildCourseFilePath(
-                  courseFilesCache,
-                  `/${item.name}`,
-                  file.id,
-                  file.name,
-                  file.mimeType,
-                );
-                const fileUrl = buildCourseFileUrl(courseId, file.id);
-                const downloadKey = `${fileUrl}:${cachedFilePath}`;
-
-                if (
-                  !downloads[downloadKey] ||
-                  !downloads[downloadKey].isDownloaded
-                ) {
-                  updateDownload(downloadKey, {
-                    phase: DownloadPhase.Completed,
-                    isDownloaded: true,
-                  });
-                }
-              }
-            } else {
-              const cachedFilePath = buildCourseFilePath(
-                courseFilesCache,
-                `/${item.name}`,
-                file.id,
-                file.name,
-                file.mimeType,
-              );
-              const fileExists = await exists(cachedFilePath);
-              if (fileExists) {
-                downloadedFileIds.add(file.id);
-              }
-            }
-          } catch (error) {}
-        }
-      } catch (error) {}
-
-      setFilesCheckedFromDB(downloadedFileIds);
-    };
-
-    checkFilesInDatabase();
-  }, [
-    item.files,
-    item.name,
-    courseFilesCache,
-    courseId,
-    fileDatabase,
-    downloads,
-    updateDownload,
-  ]);
-
-  useEffect(() => {
-    const handleFocus = () => {
-      checkAllFilesDownloaded();
-    };
-
-    checkAllFilesDownloaded();
-    const unsubscribe = navigation.addListener('focus', handleFocus);
-    return unsubscribe;
-  }, [navigation, checkAllFilesDownloaded]);
+  const downloadsRef = useRef(downloads);
+  const updateDownloadRef = useRef(updateDownload);
+  downloadsRef.current = downloads;
+  updateDownloadRef.current = updateDownload;
 
   const collectAllFilesRecursively = useCallback(
     (
@@ -306,6 +172,139 @@ export const CourseDirectoryListItem = ({
 
     return allFiles;
   }, [courseFilesQuery.data, item, collectAllFilesRecursively]);
+
+  const allFilesWithKeys = useMemo(
+    () =>
+      getAllFilesInDirectory().map(f => ({
+        id: f.id,
+        key: `${f.url}:${f.filePath}`,
+      })),
+    [getAllFilesInDirectory],
+  );
+
+  const checkAllFilesDownloadedFromState = useCallback(() => {
+    if (allFilesWithKeys.length === 0) {
+      return false;
+    }
+    return allFilesWithKeys.every(
+      f =>
+        downloads[f.key]?.isDownloaded === true || filesCheckedFromDB.has(f.id),
+    );
+  }, [allFilesWithKeys, downloads, filesCheckedFromDB]);
+
+  const allFilesDownloaded = useMemo(
+    () => checkAllFilesDownloadedFromState(),
+    [checkAllFilesDownloadedFromState],
+  );
+
+  const checkAllFilesDownloaded = useCallback(async () => {
+    const directoryFiles = item.files.filter(isFile);
+
+    if (directoryFiles.length === 0) {
+      return false;
+    }
+
+    const fileChecks = await Promise.all(
+      directoryFiles.map(async file => {
+        const cachedFilePath = buildCourseFilePath(
+          courseFilesCache,
+          `/${item.name}`,
+          file.id,
+          file.name,
+          file.mimeType,
+        );
+        const fileExists = await exists(cachedFilePath);
+        return fileExists;
+      }),
+    );
+
+    return fileChecks.every(fileExists => fileExists);
+  }, [item, courseFilesCache]);
+
+  useEffect(() => {
+    const checkFilesInDatabase = async () => {
+      const directoryFiles = item.files.filter(isFile);
+      if (directoryFiles.length === 0) return;
+
+      const downloadedFileIds = new Set<string>();
+
+      try {
+        const ctx = DownloadContext.Course;
+        const ctxId = courseId.toString();
+        const allFilesInContext = await fileDatabase.getFilesByContext(
+          ctx,
+          ctxId,
+        );
+        const filesMap = new Map(allFilesInContext.map(f => [f.id, f]));
+
+        for (const file of directoryFiles) {
+          try {
+            const fileRecord = filesMap.get(file.id);
+            if (fileRecord) {
+              const fileExists = await exists(fileRecord.path);
+              if (fileExists) {
+                downloadedFileIds.add(file.id);
+
+                const cachedFilePath = buildCourseFilePath(
+                  courseFilesCache,
+                  `/${item.name}`,
+                  file.id,
+                  file.name,
+                  file.mimeType,
+                );
+                const fileUrl = buildCourseFileUrl(courseId, file.id);
+                const downloadKey = `${fileUrl}:${cachedFilePath}`;
+                const currentDownloads = downloadsRef.current;
+
+                if (
+                  !currentDownloads[downloadKey] ||
+                  !currentDownloads[downloadKey].isDownloaded
+                ) {
+                  updateDownloadRef.current(downloadKey, {
+                    phase: DownloadPhase.Completed,
+                    isDownloaded: true,
+                  });
+                }
+              }
+            } else {
+              const cachedFilePath = buildCourseFilePath(
+                courseFilesCache,
+                `/${item.name}`,
+                file.id,
+                file.name,
+                file.mimeType,
+              );
+              const fileExists = await exists(cachedFilePath);
+              if (fileExists) {
+                downloadedFileIds.add(file.id);
+              }
+            }
+          } catch (error) {}
+        }
+      } catch (error) {}
+
+      setFilesCheckedFromDB(downloadedFileIds);
+    };
+
+    checkFilesInDatabase();
+  }, [
+    item.files,
+    item.name,
+    courseFilesCache,
+    courseId,
+    fileDatabase,
+    listRefreshKey,
+  ]);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      checkAllFilesDownloaded();
+    };
+
+    checkAllFilesDownloaded();
+    const unsubscribe = navigation.addListener('focus', handleFocus);
+    return unsubscribe;
+  }, [navigation, checkAllFilesDownloaded]);
 
   const directoryFileIds = useMemo(
     () => getAllFilesInDirectory().map(file => file.id),

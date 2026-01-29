@@ -198,7 +198,7 @@ export const CourseFileListItem = memo(
         if (!force && !isDownloaded) {
           return;
         }
-        if (Platform.OS === 'android' && (force || isDownloaded)) {
+        if (Platform.OS === 'android' && force) {
           setFeedback({
             text:
               Platform.Version > 29
