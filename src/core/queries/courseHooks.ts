@@ -394,6 +394,23 @@ const findDirectory = (
   return result;
 };
 
+export const getFlattenedCourseFiles = (
+  content: CourseDirectoryContentWithLocations[],
+  directoryId?: string,
+): CourseFileOverviewWithLocation[] => {
+  if (!directoryId) {
+    return flattenFiles(content);
+  }
+  const dirContent = findDirectory(
+    directoryId,
+    content as CourseDirectoryEntry[],
+  );
+  if (!dirContent) {
+    return [];
+  }
+  return flattenFiles(dirContent as CourseDirectoryContentWithLocations[]);
+};
+
 export const useGetCourseAssignments = (courseId: number) => {
   const coursesClient = useCoursesClient();
 

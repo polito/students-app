@@ -174,8 +174,13 @@
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadInProgress": "Download in corso",
+    "downloadInProgressCount": "Download in corso {{current}}/{{total}}",
     "downloadProgress": "Scaricando {{current}} di {{total}}",
     "downloadCompleted": "Tutti i file scaricati con successo",
+    "downloadCompletedShort": "Download completato",
+    "removeInProgress": "Rimozione file in corso",
+    "removeCompletedShort": "File rimossi",
     "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti",
     "downloadStatus": {
       "false": "Non scaricato",

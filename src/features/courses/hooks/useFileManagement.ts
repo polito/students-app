@@ -39,7 +39,7 @@ export const useFileManagement = ({
   isDirectoryView = false,
 }: UseFileManagementProps) => {
   const { t } = useTranslation();
-  const { palettes, spacing } = useTheme();
+  const { colors, palettes, spacing } = useTheme();
   const {
     downloads,
     downloadQueue,
@@ -52,7 +52,7 @@ export const useFileManagement = ({
     startDownload,
     stopDownload,
   } = useDownloadQueue(courseId, DownloadContext.Course);
-  const { updateDownload } = useDownloadsContext();
+  const { updateDownload, setRemovalInProgress } = useDownloadsContext();
   const fileDatabase = getFileDatabase();
 
   const [enableMultiSelect, setEnableMultiSelect] = useState(false);
@@ -103,15 +103,6 @@ export const useFileManagement = ({
     return downloadQueue.overallProgress;
   }, [isDownloading, downloadQueue.overallProgress]);
 
-  const downloadButtonStyle = useMemo(() => {
-    return {
-      backgroundColor: isDownloading
-        ? palettes.danger[600]
-        : palettes.primary[400],
-      borderColor: isDownloading ? palettes.danger[600] : palettes.primary[400],
-    };
-  }, [isDownloading, palettes]);
-
   const selectedDownloadedFiles = useMemo(() => {
     if (!isDownloading && courseFiles.length === 0) return [];
     return courseFiles.filter(file => {
@@ -129,26 +120,31 @@ export const useFileManagement = ({
   }, [courseFiles, downloads, isDownloading]);
 
   const downloadButtonTitle = useMemo(() => {
-    if (isDownloading) {
-      return t('common.downloadProgress', {
-        current: downloadQueue.currentFileIndex,
-        total: courseFiles.length,
-      });
-    }
     const notDownloadedCount = selectedNotDownloadedFiles.length;
     return notDownloadedCount > 0
       ? `${t('common.download')} (${notDownloadedCount})`
       : t('common.download');
-  }, [
-    isDownloading,
-    downloadQueue.currentFileIndex,
-    courseFiles.length,
-    selectedNotDownloadedFiles.length,
-    t,
-  ]);
+  }, [selectedNotDownloadedFiles.length, t]);
 
   const hasDownloadedFiles = selectedDownloadedFiles.length > 0;
   const hasNotDownloadedFiles = selectedNotDownloadedFiles.length > 0;
+
+  const isDownloadButtonDisabled = useMemo(() => {
+    return !hasNotDownloadedFiles && !isDownloading;
+  }, [hasNotDownloadedFiles, isDownloading]);
+
+  const downloadButtonStyle = useMemo(() => {
+    if (isDownloadButtonDisabled) {
+      return {
+        backgroundColor: colors.secondaryText,
+        borderColor: colors.secondaryText,
+      };
+    }
+    return {
+      backgroundColor: palettes.primary[400],
+      borderColor: palettes.primary[400],
+    };
+  }, [isDownloadButtonDisabled, colors.secondaryText, palettes]);
 
   const removeButtonTitle = useMemo(() => {
     return hasDownloadedFiles
@@ -156,21 +152,24 @@ export const useFileManagement = ({
       : t('common.remove');
   }, [hasDownloadedFiles, selectedDownloadedFiles.length, t]);
 
+  const isRemoveButtonDisabled = useMemo(() => {
+    return !hasDownloadedFiles;
+  }, [hasDownloadedFiles]);
+
   const removeButtonStyle = useMemo(() => {
+    if (isRemoveButtonDisabled) {
+      return {
+        backgroundColor: colors.secondaryText,
+        borderColor: colors.secondaryText,
+        marginBottom: spacing[16],
+      };
+    }
     return {
       backgroundColor: palettes.danger[600],
       borderColor: palettes.danger[600],
       marginBottom: spacing[16],
     };
-  }, [palettes, spacing]);
-
-  const isDownloadButtonDisabled = useMemo(() => {
-    return !hasNotDownloadedFiles && !isDownloading;
-  }, [hasNotDownloadedFiles, isDownloading]);
-
-  const isRemoveButtonDisabled = useMemo(() => {
-    return !hasDownloadedFiles;
-  }, [hasDownloadedFiles]);
+  }, [isRemoveButtonDisabled, colors.secondaryText, palettes, spacing]);
 
   const sortByDownloadStatus = useCallback(
     (files: (CourseDirectory | CourseFileOverview)[]) => {
@@ -389,76 +388,83 @@ export const useFileManagement = ({
     }
   }, [isDownloading, hasFiles, stopDownload, startDownload]);
 
-  const handleRemoveAction = useCallback(() => {
-    if (!hasDownloadedFiles) return;
+  const handleRemoveAction = useCallback(
+    (onConfirmed?: () => void) => {
+      if (!hasDownloadedFiles) return;
 
-    const fileCount = selectedDownloadedFiles.length;
-    const message =
-      fileCount === 1
-        ? t('courseFilesTab.removeFileConfirmation')
-        : t('courseFilesTab.removeFilesConfirmation', { count: fileCount });
+      const fileCount = selectedDownloadedFiles.length;
+      const message =
+        fileCount === 1
+          ? t('courseFilesTab.removeFileConfirmation')
+          : t('courseFilesTab.removeFilesConfirmation', { count: fileCount });
 
-    Alert.alert(t('courseFilesTab.removeFilesTitle'), message, [
-      {
-        text: t('common.no'),
-        style: 'cancel',
-      },
-      {
-        text: t('common.yes'),
-        onPress: async () => {
-          setIsRemoving(true);
-          try {
-            const removePromises = selectedDownloadedFiles.map(async file => {
-              const key = getFileKey(file);
-              const filePath = file.request.destination;
-
-              try {
-                await unlink(filePath);
-              } catch (error) {
-                console.error(`Error removing file ${filePath}:`, error);
-              }
-
-              try {
-                await fileDatabase.deleteFile(file.id);
-              } catch (error) {
-                console.error(
-                  `Error removing file metadata from SQLite for ${file.id}:`,
-                  error,
-                );
-              }
-
-              updateDownload(key, {
-                jobId: undefined,
-                isDownloaded: false,
-                downloadProgress: undefined,
-              });
-            });
-
-            await Promise.all(removePromises);
-
-            const fileIdsToRemove = selectedDownloadedFiles.map(
-              file => file.id,
-            );
-            removeFiles(fileIdsToRemove);
-
-            setEnableMultiSelect(false);
-            clearFiles();
-            setAllFilesSelectedState(false);
-          } finally {
-            setIsRemoving(false);
-          }
+      Alert.alert(t('courseFilesTab.removeFilesTitle'), message, [
+        {
+          text: t('common.no'),
+          style: 'cancel',
         },
-      },
-    ]);
-  }, [
-    hasDownloadedFiles,
-    selectedDownloadedFiles,
-    t,
-    fileDatabase,
-    updateDownload,
-    removeFiles,
-    clearFiles,
-  ]);
+        {
+          text: t('common.yes'),
+          onPress: async () => {
+            onConfirmed?.();
+            setIsRemoving(true);
+            setRemovalInProgress(true);
+            try {
+              const removePromises = selectedDownloadedFiles.map(async file => {
+                const key = getFileKey(file);
+                const filePath = file.request.destination;
+
+                try {
+                  await unlink(filePath);
+                } catch (error) {
+                  console.error(`Error removing file ${filePath}:`, error);
+                }
+
+                try {
+                  await fileDatabase.deleteFile(file.id);
+                } catch (error) {
+                  console.error(
+                    `Error removing file metadata from SQLite for ${file.id}:`,
+                    error,
+                  );
+                }
+
+                updateDownload(key, {
+                  jobId: undefined,
+                  isDownloaded: false,
+                  downloadProgress: undefined,
+                });
+              });
+
+              await Promise.all(removePromises);
+
+              const fileIdsToRemove = selectedDownloadedFiles.map(
+                file => file.id,
+              );
+              removeFiles(fileIdsToRemove);
+
+              setEnableMultiSelect(false);
+              clearFiles();
+              setAllFilesSelectedState(false);
+            } finally {
+              setIsRemoving(false);
+              setRemovalInProgress(false);
+            }
+          },
+        },
+      ]);
+    },
+    [
+      hasDownloadedFiles,
+      selectedDownloadedFiles,
+      t,
+      fileDatabase,
+      updateDownload,
+      removeFiles,
+      clearFiles,
+      setRemovalInProgress,
+    ],
+  );
 
   const renderCtaButtons = useCallback(
     (useContainer: boolean = false) => {
@@ -558,6 +564,7 @@ export const useFileManagement = ({
     onPressSortOption,
     handleDownloadAction,
     handleRemoveAction,
+    stopDownload,
 
     downloadButtonTitle,
     downloadButtonIcon,
@@ -565,10 +572,13 @@ export const useFileManagement = ({
     downloadButtonStyle,
     isDownloadButtonDisabled,
     isDownloading,
+    downloadCurrentIndex: downloadQueue.currentFileIndex + 1,
+    downloadTotalCount: courseFiles.length,
 
     removeButtonTitle,
     removeButtonStyle,
     isRemoveButtonDisabled,
+    isRemoving,
 
     renderCtaButtons,
   };

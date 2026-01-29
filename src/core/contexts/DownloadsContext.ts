@@ -54,8 +54,11 @@ export type Downloads = Record<string, Download>;
 export const DownloadsContext = createContext<{
   downloads: Downloads;
   downloadQueue: DownloadQueue;
+  isRemovalInProgress: boolean;
+  setRemovalInProgress: (_value: boolean) => void;
   startQueueDownload: () => void;
   stopQueueDownload: () => void;
+  stopAndClearAllDownloads: () => void;
   updateDownload: (_key: string, _updates: Partial<Download>) => void;
   addFilesToQueue<T extends DownloadContext>(
     _files: Array<{ id: string; name: string; url: string; filePath: string }>,

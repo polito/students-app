@@ -58,6 +58,8 @@ export const useQueueManagement = ({
   const { setFeedback } = useFeedbackContext();
   const isProcessingQueueRef = useRef(false);
   const processQueueTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   const processQueue = useCallback(() => {
     if (isProcessingQueueRef.current) return;
@@ -134,7 +136,7 @@ export const useQueueManagement = ({
                   successCount,
                   errorCount,
                 })
-              : t('common.downloadCompleted'),
+              : t('common.downloadCompletedShort'),
           isPersistent: false,
         });
         AsyncStorage.removeItem(QUEUE_STORAGE_KEY).catch(() => {});
@@ -200,6 +202,27 @@ export const useQueueManagement = ({
     });
     dispatch({ type: 'STOP_DOWNLOAD' });
   }, [state, dispatch, dispatchProgress]);
+
+  const stopAndClearAllDownloads = useCallback(() => {
+    const current = stateRef.current;
+    current.activeIds.forEach(id => {
+      const file = findFileById(current.queue, id);
+      if (file) {
+        stopActiveDownload(
+          file,
+          current.downloads,
+          dispatch,
+          dispatchProgress,
+          fsStopDownload,
+        );
+      }
+    });
+    dispatch({ type: 'STOP_DOWNLOAD' });
+    const idsToRemove = current.queue.map(f => f.id);
+    if (idsToRemove.length > 0) {
+      dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
+    }
+  }, [dispatch, dispatchProgress]);
 
   const addFilesToQueue = useCallback(
     async <T extends DownloadContext>(
@@ -336,6 +359,7 @@ export const useQueueManagement = ({
     processQueue,
     startQueueDownload,
     stopQueueDownload,
+    stopAndClearAllDownloads,
     addFilesToQueue,
     removeFilesFromQueue,
     getFilesByContext,

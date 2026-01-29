@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
@@ -14,17 +14,19 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
+  getFlattenedCourseFiles,
   useGetCourseDirectory,
+  useGetCourseFiles,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
@@ -33,6 +35,10 @@ import { sortByNameAsc } from '../../../utils/sorting';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
+import {
+  CourseFileMultiSelectModal,
+  type DirectoryOrFile,
+} from '../components/CourseFileMultiSelectModal';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { FileScreenHeader } from '../components/FileScreenHeader';
 import { ITEM_TYPES, MENU_ACTIONS } from '../constants';
@@ -52,12 +58,14 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
+  const [multiSelectModalVisible, setMultiSelectModalVisible] = useState(false);
+  const [listRefreshKey, setListRefreshKey] = useState(0);
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
+  const courseFilesQuery = useGetCourseFiles(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
   const [courseFilesCache] = useCourseFilesCachePath();
   const { spacing } = useTheme();
-  const bottomBarHeight = useBottomTabBarHeight();
   const headerHeight = useHeaderHeight();
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
@@ -73,13 +81,54 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     toggleMultiSelect,
     toggleSelectAll,
     onPressSortOption,
-    renderCtaButtons,
+    handleDownloadAction,
+    handleRemoveAction,
+    downloadButtonTitle,
+    removeButtonTitle,
+    isDownloadButtonDisabled,
+    isRemoveButtonDisabled,
+    isRemoving,
+    isDownloading,
+    downloadButtonProgress,
+    downloadButtonStyle,
+    removeButtonStyle,
   } = useFileManagement({
     courseId,
     courseFilesCache,
     data: directoryQuery.data || undefined,
     isDirectoryView: true,
   });
+  const { downloads } = useDownloadsContext();
+  const wasRemovingRef = useRef(false);
+
+  const handleCloseModalOnly = useCallback(() => {
+    setMultiSelectModalVisible(false);
+  }, []);
+
+  const handleCloseMultiSelectModal = useCallback(() => {
+    setMultiSelectModalVisible(false);
+    toggleMultiSelect();
+  }, [toggleMultiSelect]);
+
+  useEffect(() => {
+    if (isRemoving) {
+      wasRemovingRef.current = true;
+    } else if (wasRemovingRef.current) {
+      wasRemovingRef.current = false;
+      setListRefreshKey(k => k + 1);
+    }
+  }, [isRemoving]);
+
+  const handleModalHide = useCallback(
+    (reason?: 'download' | 'remove') => {
+      setListRefreshKey(k => k + 1);
+      if (reason !== 'download' && reason !== 'remove') {
+        handleCloseMultiSelectModal();
+        return;
+      }
+    },
+    [handleCloseMultiSelectModal],
+  );
 
   useEffect(() => {
     if (directoryQuery.data) {
@@ -98,6 +147,11 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     return sortedData;
   }, [sortedData]) as (CourseDirectory | CourseFileOverview)[];
 
+  const flatFileList = useMemo(() => {
+    if (!courseFilesQuery.data) return [];
+    return getFlattenedCourseFiles(courseFilesQuery.data, directoryId);
+  }, [courseFilesQuery.data, directoryId]);
+
   useEffect(() => {
     if (!isFileNavigator) {
       navigation.setOptions({
@@ -109,7 +163,16 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
     switch (event) {
       case MENU_ACTIONS.SELECT:
-        toggleMultiSelect();
+        if (isDownloading || isRemoving) {
+          return;
+        }
+        if (multiSelectModalVisible) {
+          setMultiSelectModalVisible(false);
+          toggleMultiSelect();
+        } else {
+          toggleMultiSelect();
+          setMultiSelectModalVisible(true);
+        }
         break;
       case MENU_ACTIONS.SELECT_ALL:
         toggleSelectAll();
@@ -123,12 +186,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     }
   };
 
-  const footerSpacerHeight = useMemo(() => {
-    if (enableMultiSelect) {
-      return spacing[12] * 2 + bottomBarHeight;
-    }
-    return 0;
-  }, [enableMultiSelect, spacing, bottomBarHeight]);
+  const footerSpacerHeight = 0;
 
   return (
     <>
@@ -153,6 +211,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           onPressSortOption={onPressSortOption}
           onPressOption={onPressOption}
           isDirectoryView={true}
+          isSelectDisabled={isDownloading || isRemoving}
         />
       </View>
 
@@ -165,6 +224,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={flattenedData}
+          extraData={{ downloads, listRefreshKey }}
           scrollEnabled={scrollEnabled}
           contentContainerStyle={paddingHorizontal}
           keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
@@ -174,14 +234,15 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
               <CourseDirectoryListItem
                 courseId={courseId}
                 item={item as CourseDirectory}
-                enableMultiSelect={enableMultiSelect}
+                enableMultiSelect={false}
+                listRefreshKey={listRefreshKey}
               />
             ) : (
               <CourseFileListItem
                 item={item as CourseFileOverview}
                 onSwipeStart={() => setScrollEnabled(false)}
                 onSwipeEnd={() => setScrollEnabled(true)}
-                enableMultiSelect={enableMultiSelect}
+                enableMultiSelect={false}
               />
             )
           }
@@ -208,7 +269,27 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           }
         />
       )}
-      {navigation && renderCtaButtons(false)}
+      <CourseFileMultiSelectModal
+        visible={multiSelectModalVisible}
+        onClose={handleCloseMultiSelectModal}
+        onCloseModalOnly={handleCloseModalOnly}
+        onModalHide={handleModalHide}
+        courseId={courseId}
+        courseFilesCache={courseFilesCache}
+        flatFileList={flatFileList}
+        displayItems={flattenedData as DirectoryOrFile[]}
+        courseFilesTree={courseFilesQuery.data ?? undefined}
+        handleDownloadAction={handleDownloadAction}
+        handleRemoveAction={handleRemoveAction}
+        downloadButtonTitle={downloadButtonTitle}
+        removeButtonTitle={removeButtonTitle}
+        isDownloadButtonDisabled={isDownloadButtonDisabled}
+        isRemoveButtonDisabled={isRemoveButtonDisabled}
+        isDownloading={isDownloading}
+        downloadButtonProgress={downloadButtonProgress}
+        downloadButtonStyle={downloadButtonStyle}
+        removeButtonStyle={removeButtonStyle}
+      />
     </>
   );
 };
