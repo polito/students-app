@@ -22,7 +22,11 @@ import {
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseFiles } from '../../../core/queries/courseHooks';
-import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
+import {
+  buildCourseFilePath,
+  buildCourseFileUrl,
+  formatFileSize,
+} from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 import { isDirectory } from '../utils/fs-entry';
@@ -30,6 +34,24 @@ import { isDirectory } from '../utils/fs-entry';
 const isFile = (item: {
   type: string;
 }): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
+
+const getDirectoryStatsRecursive = (
+  dir: CourseDirectory,
+): { fileCount: number; totalSizeInKiloBytes: number } => {
+  let fileCount = 0;
+  let totalSizeInKiloBytes = 0;
+  for (const entry of dir.files) {
+    if (isFile(entry)) {
+      fileCount += 1;
+      totalSizeInKiloBytes += entry.sizeInKiloBytes ?? 0;
+    } else {
+      const sub = getDirectoryStatsRecursive(entry);
+      fileCount += sub.fileCount;
+      totalSizeInKiloBytes += sub.totalSizeInKiloBytes;
+    }
+  }
+  return { fileCount, totalSizeInKiloBytes };
+};
 
 interface Props {
   courseId: number;
@@ -345,33 +367,60 @@ export const CourseDirectoryListItem = ({
     return totalUnreads > 0;
   }, [getAllFilesInDirectory, courseId, getUnreadsCount]);
 
-  const fileCount = useMemo(
-    () => item.files.filter(isFile).length,
-    [item.files],
+  const fullDirectory = useMemo(() => {
+    if (!courseFilesQuery.data) return null;
+    const findDirectoryRecursive = (
+      searchId: string,
+      items: CourseDirectoryEntry[],
+    ): CourseDirectory | null => {
+      for (const currentItem of items) {
+        if (isDirectory(currentItem) && currentItem.id === searchId) {
+          return currentItem;
+        }
+        if (isDirectory(currentItem)) {
+          const found = findDirectoryRecursive(searchId, currentItem.files);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    return findDirectoryRecursive(item.id, courseFilesQuery.data) ?? item;
+  }, [courseFilesQuery.data, item]);
+
+  const { fileCount: recursiveFileCount, totalSizeInKiloBytes } = useMemo(
+    () => getDirectoryStatsRecursive(fullDirectory ?? item),
+    [fullDirectory, item],
   );
+
   const folderCount = useMemo(
     () => item.files.filter(isDirectory).length,
     [item.files],
   );
 
   const subtitle = useMemo(() => {
-    const parts: string[] = [];
-    if (fileCount > 0) {
-      parts.push(
+    const countParts: string[] = [];
+    if (recursiveFileCount > 0) {
+      countParts.push(
         t('courseDirectoryListItem.fileCount', {
-          count: fileCount,
+          count: recursiveFileCount,
         }),
       );
     }
     if (folderCount > 0) {
-      parts.push(
+      countParts.push(
         t('courseDirectoryListItem.folderCount', {
           count: folderCount,
         }),
       );
     }
-    return parts.join(', ') || t('courseDirectoryListItem.empty');
-  }, [fileCount, folderCount, t]);
+    const countText = countParts.join(', ');
+    const sizeText =
+      totalSizeInKiloBytes > 0 ? formatFileSize(totalSizeInKiloBytes) : '';
+    if (countText && sizeText) {
+      return `${countText} - ${sizeText}`;
+    }
+    return countText || sizeText || t('courseDirectoryListItem.empty');
+  }, [recursiveFileCount, folderCount, totalSizeInKiloBytes, t]);
 
   return (
     <DirectoryListItem
