@@ -1,10 +1,8 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { CtaButton } from '@lib/ui/components/CtaButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -12,14 +10,15 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
+import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
-import { useFocusEffect } from '@react-navigation/native';
+import { NativeActionEvent } from '@react-native-menu/menu';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
-
-import { DateTime } from 'luxon';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -30,14 +29,17 @@ import {
 } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CourseFileOverviewWithLocation } from '../../../core/types/files';
+import { sortByNameAsc } from '../../../utils/sorting';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
+import { FileScreenHeader } from '../components/FileScreenHeader';
+import { ITEM_TYPES, MENU_ACTIONS } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
-import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<
@@ -45,20 +47,7 @@ type Props = NativeStackScreenProps<
   'CourseDirectory' | 'DirectoryFiles'
 >;
 
-const FileCacheChecker = () => {
-  const { refresh } = useContext(CourseFilesCacheContext);
-
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh]),
-  );
-
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <></>;
-};
-
-export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
+const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const { courseId, directoryId, directoryName } = route.params;
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -66,10 +55,48 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
-
+  const [courseFilesCache] = useCourseFilesCachePath();
+  const { spacing } = useTheme();
+  const bottomBarHeight = useBottomTabBarHeight();
+  const headerHeight = useHeaderHeight();
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
   }, [navigation]);
+
+  const {
+    enableMultiSelect,
+    allFilesSelected,
+    sortedData,
+    setSortedData,
+    activeSort,
+    sortOptions,
+    toggleMultiSelect,
+    toggleSelectAll,
+    onPressSortOption,
+    renderCtaButtons,
+  } = useFileManagement({
+    courseId,
+    courseFilesCache,
+    data: directoryQuery.data || undefined,
+    isDirectoryView: true,
+  });
+
+  useEffect(() => {
+    if (directoryQuery.data) {
+      const directories = directoryQuery.data.filter(item => isDirectory(item));
+      const files = directoryQuery.data.filter(item => !isDirectory(item));
+
+      const sortedDirectories = sortByNameAsc(directories);
+      const sortedFiles = sortByNameAsc(files);
+
+      setSortedData([...sortedDirectories, ...sortedFiles]);
+    }
+  }, [directoryQuery.data, setSortedData]);
+
+  const flattenedData = useMemo(() => {
+    if (!sortedData) return [];
+    return sortedData;
+  }, [sortedData]) as (CourseDirectory | CourseFileOverview)[];
 
   useEffect(() => {
     if (!isFileNavigator) {
@@ -79,90 +106,110 @@ export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
     }
   }, [directoryName, isFileNavigator, navigation, t]);
 
-  directoryQuery.data?.sort((a, b) => {
-    if (a.type !== 'directory' && b.type !== 'directory') {
-      const dateA = DateTime.fromJSDate(a.createdAt).startOf('minute');
-      const dateB = DateTime.fromJSDate(b.createdAt).startOf('minute');
+  const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
+    switch (event) {
+      case MENU_ACTIONS.SELECT:
+        toggleMultiSelect();
+        break;
+      case MENU_ACTIONS.SELECT_ALL:
+        toggleSelectAll();
+        break;
+      case MENU_ACTIONS.TOGGLE_FOLDERS:
+        navigation.replace('RecentFiles', { courseId });
+        updatePreference('filesScreen', 'filesView');
+        break;
+      default:
+        break;
+    }
+  };
 
-      if (dateA.equals(dateB)) {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      }
-
-      return dateA > dateB ? -1 : 1;
+  const footerSpacerHeight = useMemo(() => {
+    if (enableMultiSelect) {
+      return spacing[12] * 2 + bottomBarHeight;
     }
     return 0;
-  });
+  }, [enableMultiSelect, spacing, bottomBarHeight]);
 
   return (
-    <CourseContext.Provider value={courseId}>
-      <CourseFilesCacheProvider>
-        <FileCacheChecker />
-
-        {isFileNavigator && (
-          <CourseSearchBar
-            searchFilter={searchFilter}
-            setSearchFilter={setSearchFilter}
-          />
-        )}
-
-        {searchFilter ? (
-          <CourseFileSearchFlatList
-            courseId={courseId}
-            searchFilter={searchFilter}
-          />
-        ) : (
-          <FlatList
-            contentInsetAdjustmentBehavior="automatic"
-            data={directoryQuery.data}
-            scrollEnabled={scrollEnabled}
-            contentContainerStyle={paddingHorizontal}
-            keyExtractor={(item: CourseDirectory | CourseFileOverview) =>
-              item.id
-            }
-            initialNumToRender={15}
-            renderItem={({ item }) =>
-              isDirectory(item) ? (
-                <CourseDirectoryListItem item={item} courseId={courseId} />
-              ) : (
-                <CourseFileListItem
-                  item={item}
-                  onSwipeStart={() => setScrollEnabled(false)}
-                  onSwipeEnd={() => setScrollEnabled(true)}
-                />
-              )
-            }
-            refreshControl={
-              <RefreshControl manual queries={[directoryQuery]} />
-            }
-            ItemSeparatorComponent={Platform.select({
-              ios: IndentedDivider,
-            })}
-            ListFooterComponent={<BottomBarSpacer />}
-            ListEmptyComponent={
-              !directoryQuery.isLoading ? (
-                <OverviewList
-                  emptyStateText={
-                    isFileNavigator
-                      ? t('courseDirectoryScreen.emptyRootFolder')
-                      : t('courseDirectoryScreen.emptyFolder')
-                  }
-                />
-              ) : null
-            }
-          />
-        )}
-      </CourseFilesCacheProvider>
-      {isFileNavigator && navigation && (
-        <CtaButton
-          title={t('courseDirectoryScreen.navigateRecentFiles')}
-          icon={faFile}
-          action={() => {
-            navigation.replace('RecentFiles', { courseId });
-            updatePreference('filesScreen', 'filesView');
-          }}
+    <>
+      {isFileNavigator && (
+        <CourseSearchBar
+          searchFilter={searchFilter}
+          setSearchFilter={setSearchFilter}
         />
       )}
-    </CourseContext.Provider>
+      <View
+        style={[
+          paddingHorizontal,
+          Platform.OS === 'ios' &&
+            !isFileNavigator && { paddingTop: headerHeight + spacing[2] },
+        ]}
+      >
+        <FileScreenHeader
+          enableMultiSelect={enableMultiSelect}
+          allFilesSelected={allFilesSelected}
+          activeSort={activeSort}
+          sortOptions={sortOptions}
+          onPressSortOption={onPressSortOption}
+          onPressOption={onPressOption}
+          isDirectoryView={true}
+        />
+      </View>
+
+      {searchFilter ? (
+        <CourseFileSearchFlatList
+          courseId={courseId}
+          searchFilter={searchFilter}
+        />
+      ) : (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={flattenedData}
+          scrollEnabled={scrollEnabled}
+          contentContainerStyle={paddingHorizontal}
+          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+          initialNumToRender={15}
+          renderItem={({ item }) =>
+            (item as any).type === ITEM_TYPES.DIRECTORY ? (
+              <CourseDirectoryListItem
+                courseId={courseId}
+                item={item as CourseDirectory}
+                enableMultiSelect={enableMultiSelect}
+              />
+            ) : (
+              <CourseFileListItem
+                item={item as CourseFileOverview}
+                onSwipeStart={() => setScrollEnabled(false)}
+                onSwipeEnd={() => setScrollEnabled(true)}
+                enableMultiSelect={enableMultiSelect}
+              />
+            )
+          }
+          refreshControl={<RefreshControl manual queries={[directoryQuery]} />}
+          ItemSeparatorComponent={Platform.select({
+            ios: IndentedDivider,
+          })}
+          ListFooterComponent={
+            <>
+              <View style={{ height: footerSpacerHeight }} />
+              <BottomBarSpacer />
+            </>
+          }
+          ListEmptyComponent={
+            !directoryQuery.isLoading ? (
+              <OverviewList
+                emptyStateText={
+                  isFileNavigator
+                    ? t('courseDirectoryScreen.emptyRootFolder')
+                    : t('courseDirectoryScreen.emptyFolder')
+                }
+              />
+            ) : null
+          }
+        />
+      )}
+      {navigation && renderCtaButtons(false)}
+    </>
   );
 };
 
@@ -269,3 +316,13 @@ const createStyles = ({ spacing, shapes, colors }: Theme) =>
       backgroundColor: colors.background,
     },
   });
+
+export const CourseDirectoryScreen = ({ route, navigation }: Props) => {
+  const { courseId } = route.params;
+
+  return (
+    <CourseContext.Provider value={courseId}>
+      <CourseDirectoryScreenContent route={route} navigation={navigation} />
+    </CourseContext.Provider>
+  );
+};
