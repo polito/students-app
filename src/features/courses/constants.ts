@@ -566,3 +566,14 @@ export const pdfSizes =
         height: 1410,
       }
     : {};
+
+export const MENU_ACTIONS = {
+  SELECT: 'select',
+  SELECT_ALL: 'selectAll',
+  TOGGLE_FOLDERS: 'toggleFolders',
+} as const;
+
+export const ITEM_TYPES = {
+  DIRECTORY: 'directory',
+  FILE: 'file',
+} as const;

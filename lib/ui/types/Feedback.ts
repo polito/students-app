@@ -1,6 +1,7 @@
 import { GestureResponderEvent } from 'react-native';
 
 export type Feedback = {
+  id?: string;
   text: string;
   isError?: boolean;
   isPersistent?: boolean;
