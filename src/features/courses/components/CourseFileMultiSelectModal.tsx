@@ -18,7 +18,6 @@ import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
 import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
 import { TextButton } from '@lib/ui/components/TextButton';
 import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -38,6 +37,7 @@ import {
   CourseDirectoryContentWithLocations,
   CourseFileOverviewWithLocation,
 } from '../../../core/types/files';
+import { formatDateTime } from '../../../utils/dates';
 import {
   buildCourseFilePath,
   buildCourseFileUrl,
@@ -383,15 +383,6 @@ export const CourseFileMultiSelectModal = ({
           ItemSeparatorComponent={Platform.select({
             ios: IndentedDivider,
           })}
-          ListEmptyComponent={
-            <Row align="center" justify="center" style={styles.emptyList}>
-              <Text>
-                {searchFilter
-                  ? t('courseDirectoryScreen.noResult')
-                  : t('courseDirectoryScreen.emptyFolder')}
-              </Text>
-            </Row>
-          }
           renderItem={({ item }) => {
             if (isDirectory(item)) {
               const dir = item as CourseDirectory;
@@ -428,10 +419,21 @@ export const CourseFileMultiSelectModal = ({
             const downloadState = downloads[downloadKey];
             const isDownloaded = !!downloadState?.isDownloaded;
             const downloadProgress = downloadState?.downloadProgress;
+            const fileSubtitle = [
+              file.createdAt &&
+                formatDateTime(
+                  file.createdAt instanceof Date
+                    ? file.createdAt
+                    : new Date(file.createdAt),
+                ),
+              formatFileSize(file.sizeInKiloBytes ?? 0),
+            ]
+              .filter(Boolean)
+              .join(' - ');
             return (
               <FileListItem
                 title={file.name ?? t('common.unnamedFile')}
-                subtitle={formatFileSize(file.sizeInKiloBytes ?? 0)}
+                subtitle={fileSubtitle}
                 mimeType={file.mimeType}
                 isDownloaded={isDownloaded}
                 downloadProgress={downloadProgress}
@@ -511,9 +513,6 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     listContent: {
       paddingHorizontal: spacing[4],
       paddingBottom: spacing[4],
-    },
-    emptyList: {
-      paddingVertical: spacing[8],
     },
     ctaRow: {
       paddingVertical: 0,
