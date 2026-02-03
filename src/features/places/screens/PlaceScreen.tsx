@@ -322,7 +322,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
         index={1}
-        onAnimate={() => {}} // trigger animation with index = 1 when clicked
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>

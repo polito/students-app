@@ -195,6 +195,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
       <BottomSheet
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
+        index={1}
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
