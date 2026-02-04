@@ -99,6 +99,7 @@ export const CourseDirectoryListItem = ({
         name: string;
         url: string;
         filePath: string;
+        sizeInKiloBytes?: number;
       }>,
     ) => {
       const directoryFiles = directory.files.filter(isFile);
@@ -117,6 +118,7 @@ export const CourseDirectoryListItem = ({
           name: file.name,
           url: fileUrl,
           filePath: cachedFilePath,
+          sizeInKiloBytes: file.sizeInKiloBytes,
         });
       });
 
@@ -137,6 +139,7 @@ export const CourseDirectoryListItem = ({
       name: string;
       url: string;
       filePath: string;
+      sizeInKiloBytes?: number;
     }> = [];
 
     if (courseFilesQuery.data) {
@@ -188,9 +191,16 @@ export const CourseDirectoryListItem = ({
     }
     return allFilesWithKeys.every(
       f =>
-        downloads[f.key]?.isDownloaded === true || filesCheckedFromDB.has(f.id),
+        (downloads[f.key]?.isDownloaded === true ||
+          filesCheckedFromDB.has(f.id)) &&
+        !downloadQueue.activeDownloadIds.has(f.id),
     );
-  }, [allFilesWithKeys, downloads, filesCheckedFromDB]);
+  }, [
+    allFilesWithKeys,
+    downloads,
+    filesCheckedFromDB,
+    downloadQueue.activeDownloadIds,
+  ]);
 
   const allFilesDownloaded = useMemo(
     () => checkAllFilesDownloadedFromState(),

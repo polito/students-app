@@ -36,6 +36,7 @@ export interface QueuedFile<T extends DownloadContext> {
   request: DownloadRequest<T>;
   contextId: AreaIdMap[T];
   contextType?: T;
+  sizeInKiloBytes?: number;
 }
 
 export interface DownloadQueue {
@@ -61,7 +62,13 @@ export const DownloadsContext = createContext<{
   stopAndClearAllDownloads: () => void;
   updateDownload: (_key: string, _updates: Partial<Download>) => void;
   addFilesToQueue<T extends DownloadContext>(
-    _files: Array<{ id: string; name: string; url: string; filePath: string }>,
+    _files: Array<{
+      id: string;
+      name: string;
+      url: string;
+      filePath: string;
+      sizeInKiloBytes?: number;
+    }>,
     _contextId: AreaIdMap[T],
     _contextType?: T,
   ): void | Promise<void>;

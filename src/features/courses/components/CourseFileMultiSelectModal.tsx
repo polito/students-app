@@ -130,7 +130,7 @@ export const CourseFileMultiSelectModal = ({
   const [searchFilter, setSearchFilter] = useState('');
   const closingForActionRef = useRef<'download' | 'remove' | false>(false);
   const { height: windowHeight } = useWindowDimensions();
-  const { top: safeAreaTop } = useSafeAreaInsets();
+  const { top: safeAreaTop, bottom: safeAreaBottom } = useSafeAreaInsets();
   const { spacing } = useTheme();
   const styles = useStylesheet(createStyles);
 
@@ -251,6 +251,7 @@ export const CourseFileMultiSelectModal = ({
               file.name ?? '',
               file.mimeType,
             ),
+            sizeInKiloBytes: file.sizeInKiloBytes,
           },
         ]);
       }
@@ -278,6 +279,7 @@ export const CourseFileMultiSelectModal = ({
               f.name ?? '',
               f.mimeType,
             ),
+            sizeInKiloBytes: f.sizeInKiloBytes,
           })),
         );
       }
@@ -308,6 +310,7 @@ export const CourseFileMultiSelectModal = ({
             f.name ?? '',
             f.mimeType,
           ),
+          sizeInKiloBytes: f.sizeInKiloBytes,
         })),
       );
     }
@@ -354,6 +357,7 @@ export const CourseFileMultiSelectModal = ({
           {
             height: windowHeight - spacing[12],
             paddingTop: safeAreaTop,
+            paddingBottom: safeAreaBottom,
           },
         ]}
       >

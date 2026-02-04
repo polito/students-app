@@ -58,16 +58,16 @@ export const FileScreenHeader = ({
               : []),
           ]
         : []),
-      ...(isInsideFolder
-        ? []
-        : [
+      ...(!isSelectDisabled && !isInsideFolder
+        ? [
             {
               id: MENU_ACTIONS.TOGGLE_FOLDERS,
               title: isDirectoryView
                 ? t('common.hideFolders')
                 : t('common.showFolders'),
             },
-          ]),
+          ]
+        : []),
     ],
     [
       t,
@@ -79,18 +79,10 @@ export const FileScreenHeader = ({
     ],
   );
 
-  return (
-    <View
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        alignSelf: 'stretch',
-        flexDirection: 'row',
-      }}
-    >
+  const headerContent = (
+    <>
       <MenuView
-        actions={sortOptions}
+        actions={isSelectDisabled ? [] : sortOptions}
         onPressAction={e => {
           onPressSortOption(e.nativeEvent.event);
         }}
@@ -106,6 +98,36 @@ export const FileScreenHeader = ({
           accessibilityLabel={t('common.options')}
         />
       </MenuView>
+    </>
+  );
+
+  return (
+    <View
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        flexDirection: 'row',
+      }}
+    >
+      {isSelectDisabled ? (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            alignSelf: 'stretch',
+            opacity: 0.5,
+          }}
+          pointerEvents="none"
+        >
+          {headerContent}
+        </View>
+      ) : (
+        headerContent
+      )}
     </View>
   );
 };

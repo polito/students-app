@@ -25,6 +25,7 @@ export function useDownloadQueue<T extends DownloadContext>(
       name: string;
       url: string;
       filePath: string;
+      sizeInKiloBytes?: number;
     }>,
   ) => void;
   removeFiles: (fileIds: string[]) => void;
@@ -62,7 +63,13 @@ export function useDownloadQueue<T extends DownloadContext>(
 
   const addFiles = useCallback(
     (
-      files: Array<{ id: string; name: string; url: string; filePath: string }>,
+      files: Array<{
+        id: string;
+        name: string;
+        url: string;
+        filePath: string;
+        sizeInKiloBytes?: number;
+      }>,
     ) => {
       if (contextId !== undefined && contextType !== undefined) {
         addFilesToQueue(files, contextId, contextType);

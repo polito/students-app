@@ -226,7 +226,13 @@ export const useQueueManagement = ({
 
   const addFilesToQueue = useCallback(
     async <T extends DownloadContext>(
-      files: Array<{ id: string; name: string; url: string; filePath: string }>,
+      files: Array<{
+        id: string;
+        name: string;
+        url: string;
+        filePath: string;
+        sizeInKiloBytes?: number;
+      }>,
       contextId: string | number,
       contextType?: T,
     ) => {
@@ -246,6 +252,7 @@ export const useQueueManagement = ({
         },
         contextId: contextId as any,
         contextType: contextType,
+        sizeInKiloBytes: file.sizeInKiloBytes,
       }));
 
       dispatch({ type: 'ADD_FILES', files: filesWithContext });
