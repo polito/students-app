@@ -197,6 +197,8 @@ const createStyles = ({ dark, palettes, shapes, spacing }: Theme) =>
       marginHorizontal: spacing[4],
       marginVertical: 14,
       flex: 1,
+      flexShrink: 1,
+      minWidth: 0,
       fontWeight: '500',
       color: palettes.gray[dark ? 800 : 50],
     },
@@ -205,6 +207,7 @@ const createStyles = ({ dark, palettes, shapes, spacing }: Theme) =>
       justifyContent: 'flex-end',
       alignItems: 'center',
       minHeight: 48,
+      flexShrink: 0,
     },
     button: {
       marginRight: 8,

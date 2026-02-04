@@ -223,7 +223,12 @@ export const useFileManagement = ({
   const selectAllFiles = useCallback(async () => {
     if (!sortedData) return;
 
-    const allFiles: Array<{ id: string; name: string; location?: string }> = [];
+    const allFiles: Array<{
+      id: string;
+      name: string;
+      location?: string;
+      sizeInKiloBytes?: number;
+    }> = [];
 
     sortedData.forEach(item => {
       if (isDirectoryView && isDirectory(item as any)) {
@@ -235,6 +240,7 @@ export const useFileManagement = ({
             id: file.id,
             name: file.name,
             location: `/${item.name}`,
+            sizeInKiloBytes: file.sizeInKiloBytes,
           });
         });
       } else {
@@ -242,6 +248,7 @@ export const useFileManagement = ({
           id: item.id,
           name: item.name,
           location: (item as any).location,
+          sizeInKiloBytes: (item as any).sizeInKiloBytes,
         });
       }
     });
@@ -260,6 +267,7 @@ export const useFileManagement = ({
         name: file.name,
         url: fileUrl,
         filePath: cachedFilePath,
+        sizeInKiloBytes: file.sizeInKiloBytes,
       };
     });
 

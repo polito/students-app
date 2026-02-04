@@ -257,6 +257,7 @@ export const CourseFileListItem = memo(
               name: item.name,
               url: fileUrl,
               filePath: cachedFilePath,
+              sizeInKiloBytes: item.sizeInKiloBytes,
             },
           ],
           courseId,
@@ -272,6 +273,7 @@ export const CourseFileListItem = memo(
       courseId,
       removeFilesFromQueue,
       addFilesToQueue,
+      item.sizeInKiloBytes,
     ]);
 
     const trailingItem = useMemo(
