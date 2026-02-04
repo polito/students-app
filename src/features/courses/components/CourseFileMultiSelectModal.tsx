@@ -7,6 +7,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faCloudArrowDown,
@@ -129,6 +130,7 @@ export const CourseFileMultiSelectModal = ({
   const [searchFilter, setSearchFilter] = useState('');
   const closingForActionRef = useRef<'download' | 'remove' | false>(false);
   const { height: windowHeight } = useWindowDimensions();
+  const { top: safeAreaTop } = useSafeAreaInsets();
   const { spacing } = useTheme();
   const styles = useStylesheet(createStyles);
 
@@ -347,7 +349,13 @@ export const CourseFileMultiSelectModal = ({
       }}
     >
       <View
-        style={[styles.modalContent, { height: windowHeight - spacing[12] }]}
+        style={[
+          styles.modalContent,
+          {
+            height: windowHeight - spacing[12],
+            paddingTop: safeAreaTop,
+          },
+        ]}
       >
         <Row align="center" justify="space-between" style={styles.header}>
           <TextButton onPress={onClose}>{t('common.done')}</TextButton>
