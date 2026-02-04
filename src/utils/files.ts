@@ -1,4 +1,6 @@
-import { ReadDirItem, readDir, unlink } from 'react-native-fs';
+import { extension, lookup } from 'react-native-mime-types';
+
+import { BASE_PATH } from '@polito/api-client';
 
 export const formatFileSize = (
   sizeInKiloBytes: number,
@@ -14,41 +16,56 @@ export const formatFileSize = (
 };
 
 export const splitNameAndExtension = (filePath?: string) => {
-  const [_, name, extension] = filePath?.match(/(.+)\.(.+)$/) ?? [];
-  return [name, extension] as [string | null, string | null];
+  const [_, name, fileExtension] = filePath?.match(/(.+)\.(.+)$/) ?? [];
+  return [name, fileExtension] as [string | null, string | null];
 };
 
 /**
- * Returns a flattened list of files in the subtree of rootPath
+ * Ottiene l'estensione del file dal mimeType o dal nome del file
  */
-export const readDirRecursively = async (rootPath: string) => {
-  const files: ReadDirItem[] = [];
-  const visitNode = async (path: string) => {
-    for (const item of await readDir(path)) {
-      if (item.isFile()) {
-        files.push(item);
-      } else {
-        await visitNode(item.path);
-      }
+export const getFileExtension = (
+  mimeType: string | null | undefined,
+  fileName: string,
+): string | null => {
+  let ext: string | null = extension(mimeType ?? '');
+  if (!ext) {
+    const [, extensionFromName] = splitNameAndExtension(fileName);
+    if (extensionFromName && lookup(extensionFromName)) {
+      ext = extensionFromName;
     }
-  };
-  await visitNode(rootPath);
-  return files;
+  }
+  return ext;
 };
 
 /**
- * Cleans up folders that don't contain at least one file in their subtree
+ * Costruisce il filePath per il download di un file del corso
  */
-export const cleanupEmptyFolders = async (rootPath: string) => {
-  const deleteIfEmpty = async (folderPath: string, skip = false) => {
-    for (const item of await readDir(folderPath)) {
-      if (item.isDirectory()) {
-        await deleteIfEmpty(item.path);
-      }
-    }
-    if (!skip && !(await readDir(folderPath)).length) {
-      await unlink(folderPath);
-    }
-  };
-  await deleteIfEmpty(rootPath, true);
+export const buildCourseFilePath = (
+  courseFilesCache: string,
+  location: string | null | undefined,
+  fileId: string,
+  fileName: string,
+  mimeType?: string | null,
+): string => {
+  const [filename] = splitNameAndExtension(fileName);
+  const ext = getFileExtension(mimeType, fileName);
+  const filenameWithId = filename ? `${filename} (${fileId})` : fileId;
+
+  return [
+    courseFilesCache,
+    location?.replace(/^\//, ''),
+    [filenameWithId, ext].filter(Boolean).join('.'),
+  ]
+    .filter(Boolean)
+    .join('/');
+};
+
+/**
+ * Costruisce l'URL per il download di un file del corso
+ */
+export const buildCourseFileUrl = (
+  courseId: number,
+  fileId: string,
+): string => {
+  return `${BASE_PATH}/courses/${courseId}/files/${fileId}`;
 };
