@@ -7,11 +7,19 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faCrosshairs, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { Col } from '@lib/ui/components/Col';
@@ -43,6 +51,8 @@ import { useNavigationPlaces } from '../hooks/useSearchPlaces';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Itinerary'>;
 
+const windowHeight = Dimensions.get('window').height;
+
 export const ItineraryScreen = ({ navigation, route }: Props) => {
   const { pathFeat, startRoom, destRoom } = route.params;
   const styles = useStylesheet(createStyles);
@@ -57,10 +67,10 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
     selectedSegmentId,
   } = useContext(PlacesContext);
   const bottomSheetPosition = useSharedValue(0);
-  const [screenHeight, setScreenHeight] = useState(
-    Dimensions.get('window').height,
-  );
+  const [screenHeight, setScreenHeight] = useState(windowHeight);
   const [chosenBbox, setChosenBbox] = useState<BBox | null>(null);
+
+  const insets = useSafeAreaInsets();
 
   const headerRight = useCallback(
     () => (
@@ -185,7 +195,9 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
       opacity: 1,
       transform: [
         {
-          translateY: Math.max(0.8 * screenHeight, bottomSheetPosition.value),
+          translateY:
+            Math.max(0.8 * screenHeight, bottomSheetPosition.value) -
+            (Platform.OS === 'android' ? insets.bottom : 0),
         },
       ],
     };
@@ -234,7 +246,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
   useScreenTitle(t('itineraryScreen.title'));
 
   return (
-    <View
+    <SafeAreaView
       style={GlobalStyles.grow}
       pointerEvents="box-none"
       onLayout={({
@@ -270,7 +282,7 @@ export const ItineraryScreen = ({ navigation, route }: Props) => {
           />
         )}
       </Animated.View>
-    </View>
+    </SafeAreaView>
   );
 };
 

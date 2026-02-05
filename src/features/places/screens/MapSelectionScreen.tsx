@@ -18,6 +18,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   faChevronDown,
@@ -66,6 +67,8 @@ export const MapSelectionScreen = ({ navigation, route }: Props) => {
   const bottomSheetPosition = useSharedValue(0);
   const { accessibility } = usePreferencesContext();
   const [confirmSelection, setConfirmSelection] = useState<boolean>(false);
+
+  const insets = useSafeAreaInsets();
 
   const { filteredPlaces: places } = useNavigationPlaces({
     siteId: campus?.id,
@@ -197,7 +200,9 @@ export const MapSelectionScreen = ({ navigation, route }: Props) => {
       opacity: 1,
       transform: [
         {
-          translateY: Math.max(0.53 * screenHeight, bottomSheetPosition.value),
+          translateY:
+            Math.max(0.53 * screenHeight, bottomSheetPosition.value) -
+            (Platform.OS === 'android' ? insets.bottom : 0),
         },
       ],
     };
@@ -322,7 +327,7 @@ const createStyles = ({ spacing }: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: 12,
+      gap: spacing[3],
       alignSelf: 'stretch',
     },
     divider: {
@@ -337,23 +342,23 @@ const createStyles = ({ spacing }: Theme) =>
     },
     chevronIcon: {
       position: 'absolute',
-      right: 15,
+      right: '4%',
     },
     markerSelectorContainer: {
       position: 'absolute',
       bottom: 0,
       display: 'flex',
       width: '100%',
-      paddingHorizontal: 18,
+      paddingHorizontal: '5%',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 10,
+      gap: '2.5%',
     },
     textContainer: {
       display: 'flex',
-      paddingVertical: 8,
-      paddingHorizontal: 8,
+      paddingVertical: '2%',
+      paddingHorizontal: '2%',
       flexDirection: 'column',
       alignItems: 'flex-start',
       alignSelf: 'stretch',
@@ -363,7 +368,7 @@ const createStyles = ({ spacing }: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      gap: 9,
+      gap: '2%',
       alignSelf: 'stretch',
     },
     text: {
@@ -389,7 +394,7 @@ const createStyles = ({ spacing }: Theme) =>
     },
     ctaButtonContainer: {
       display: 'flex',
-      paddingHorizontal: 21,
+      paddingHorizontal: '5%',
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'stretch',
