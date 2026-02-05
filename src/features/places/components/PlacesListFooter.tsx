@@ -44,6 +44,7 @@ const PlacesListFooterComponent = ({
           } else if (computeButtonState === 0 && !isLoading) {
             //Clarity.sendCustomEvent('ComputePathButton Clicked');
             handleComputeButtonState(1);
+          }
         }}
         disabled={isDisabled}
         loading={isLoading}

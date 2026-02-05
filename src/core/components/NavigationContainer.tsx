@@ -34,14 +34,6 @@ export const NavigationContainer = ({
           );
         }*/
       }}
-      onStateChange={() => {
-        const previousRouteName = routeNameRef.current;
-        const currentRouteName = navigationRef.getCurrentRoute()?.name;
-        if (previousRouteName !== currentRouteName) {
-          routeNameRef.current = currentRouteName;
-          //Clarity.setCurrentScreenName(currentRouteName ?? null);
-        }
-      }}
       {...rest}
     >
       {children}

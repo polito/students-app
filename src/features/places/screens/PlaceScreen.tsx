@@ -260,7 +260,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       onPress={() => {
                         setItineraryMode(true);
                         setSelectionMode(false);
-                        Clarity.sendCustomEvent(`Navigate To ${name}`);
+                        //Clarity.sendCustomEvent(`Navigate To ${name}`);
                         navigation.navigate('Indications', {
                           toPlace: { placeId: placeId, namePlace: name },
                         });
@@ -348,9 +348,9 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     onPress={() => {
                       setItineraryMode(true);
                       setSelectionMode(false);
-                      Clarity.sendCustomEvent(
+                      /*Clarity.sendCustomEvent(
                         `Navigate To ${place?.room.name || place?.category.name || ''}`,
-                      );
+                      );*/
                       navigation.navigate('Indications', {
                         toPlace: {
                           placeId: place?.id || '',

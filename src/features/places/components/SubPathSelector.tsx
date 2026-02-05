@@ -124,8 +124,8 @@ const createStyles = () =>
     subPathSelector: {
       display: 'flex',
       flexDirection: 'row',
-      paddingHorizontal: 18,
-      paddingVertical: 12,
+      paddingHorizontal: '5%',
+      paddingVertical: '3%',
       justifyContent: 'space-between',
       alignItems: 'center',
       alignSelf: 'stretch',
@@ -156,7 +156,7 @@ const createStyles = () =>
     },
     icon: {
       display: 'flex',
-      padding: 18,
+      padding: '5%',
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 6,
