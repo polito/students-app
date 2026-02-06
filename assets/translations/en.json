@@ -735,6 +735,14 @@
     "headerTitle": "Authenticator",
     "biometricPrompt": "Unlock to use PoliTO Authenticator",
     "modalTitle": "PoliTO Authenticator",
+    "toothpic": {
+      "capturingPhotons": "Capturing light photons",
+      "analyzingFingerprint": "Analyzing camera fingerprint",
+      "creatingUnclonableKey": "Creating your secure unclonable key",
+      "verifyingUnclonableKey": "Verifying your secure unclonable key",
+      "uncoverTheCamera": "Uncover the camera or better illuminate the environment",
+      "enrollFailed": "An error occurred while generating a key, please retry"
+    },
     "enroll": {
       "title": "MFA Activation",
       "prompt": "Do you want to activate <b>PoliTO Authenticator</b> on this device?",

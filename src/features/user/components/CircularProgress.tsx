@@ -36,7 +36,7 @@ export const CircularProgress = ({
 
   useEffect(() => {
     animatedProgress.value = withTiming(progress, {
-      duration: 1000,
+      duration: 100,
       easing: Easing.out(Easing.ease),
     });
   }, [progress, animatedProgress]);
@@ -100,7 +100,7 @@ const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
       height: '100%',
     },
     text: {
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.md,
       color: colors.heading,
       textAlign: 'center',
       paddingHorizontal: spacing[4],

@@ -753,13 +753,21 @@
     "modalTitle": "PoliTO Authenticator",
     "headerTitle": "Authenticator",
     "biometricPrompt": "Sblocca PoliTO Authenticator per continuare",
+    "toothpic": {
+      "capturingPhotons": "Cattura dei fotoni",
+      "analyzingFingerprint": "Analisi della fingerprint della fotocamera",
+      "creatingUnclonableKey": "Creazione della chiave sicura e non clonabile",
+      "verifyingUnclonableKey": "Verifica della chiave sicura e non clonabile",
+      "uncoverTheCamera": "Scopri la fotocamera o illumina meglio l'ambiente",
+      "enrollFailed": "Si è verificato un errore durante la generazione della chiave, riprova"
+    },
     "enroll": {
       "title": "Attivazione Mfa",
       "note": "Attivando PoliTO Authenticator potrai accedere in modo più semplice e sicuro <b>ai servizi digitali dell'Ateneo</b>. Non dovrai più attendere SMS o utilizzare app esterne per confermare la tua identità.<br/><br/>Potrai disattivare PoliTO Authenticator in qualsiasi momento, effettuando il logout dall'app oppure accedendo a <b>idp.polito.it > Gestione MFA</b>.",
       "prompt": "Vuoi attivare PoliTO Authenticator su questo dispositivo?",
       "confirm": "Si, attiva",
       "unsupported": "Attenzione. Su questo dispositivo non è impostata una schermata di blocco sicura. Per poter utilizzare PoliTO Authenticator è necessario impostare una schermata di blocco sicura (PIN, password o riconoscimento biometrico).",
-      "saveFailure": "Attenzione. Non è stato possibile salvare la chiave di autenticazione su questo dispositivo. È necassario rimuovere il metodo appena aggiunto visitando idp.polito.it > Gestione MFA e riprovare.",
+      "saveFailure": "Attenzione. Non è stato possibile salvare la chiave di autenticazione su questo dispositivo. È necessario rimuovere il metodo appena aggiunto visitando idp.polito.it > Gestione MFA e riprovare.",
       "cancel": "Non ora",
       "expired": "Sessione scaduta. È necessario riautenticarsi.",
       "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo.",

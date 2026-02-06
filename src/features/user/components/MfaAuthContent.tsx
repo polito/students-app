@@ -1,14 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Text, View } from 'react-native';
+import { Alert, EventSubscription, Platform, Text, View } from 'react-native';
+import { PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {
+  State,
+  ToothPicError,
+  ToothPicSDK,
+} from '@toothpic.eu/react-native-toothpic-sdk';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
+import { ToothPicLogoPayoff } from '~/core/components/ToothPicLogo';
 import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
+
+import base32Encode from 'base32-encode';
+// ts/linter does not complain without Buffer, but it's needed at runtime
+import { Buffer } from 'buffer';
 
 import { useMfaAuth } from '../../../core/queries/authHooks';
 import {
@@ -23,7 +34,9 @@ import {
   resetPrivateKeyMFA,
 } from '../../../utils/keychain';
 import useAppState from '../../../utils/useAppState';
-import { createStyles } from './MfaEnrollContent';
+import { CircularProgress } from './CircularProgress';
+import { IndeterminateCircularProgress } from './IndeterminateCircularProgress';
+import { createStyles, useControlledProgress } from './MfaEnrollContent';
 import { UserStackParamList } from './UserNavigator';
 
 type Props = {
@@ -36,14 +49,12 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   const expiryMs = challenge?.expirationTs
     ? new Date(challenge.expirationTs).getTime()
     : 0;
-
   const calcSeconds = useCallback(
     () => Math.max(Math.ceil((expiryMs - Date.now()) / 1000), 0),
     [expiryMs],
   );
 
   const [remainingSeconds, setRemainingSeconds] = useState(calcSeconds);
-
   const formattedTime = useMemo(() => {
     const mis = Math.floor(remainingSeconds / 60);
     const secs = (remainingSeconds % 60).toString().padStart(2, '0');
@@ -57,6 +68,13 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   const [authPk, setAuthPk] = useState<
     AuthenticatorPrivKey | null | undefined
   >();
+  const [progressMessage, setProgressMessage] = useState(
+    t('mfaScreen.toothpic.capturingPhotons'),
+  );
+  const [showIndeterminateProgressBar, setShowIndeterminateProgressBar] =
+    useState(true);
+  const [step, setStep] = useState(0);
+  const { progress, setProgress, setMaxProgress } = useControlledProgress();
   const { setFeedback } = useFeedbackContext();
   const markMfaMessageAsRead = useCallback(() => {
     const messages = messagesQuery.data;
@@ -99,6 +117,54 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       cancelled = true;
     };
   }, [expiryMs, calcSeconds, finalizeAuth]);
+
+  const listenerSubscription = useRef<null | EventSubscription>(null);
+
+  useEffect(() => {
+    listenerSubscription.current = ToothPicSDK?.onProgress(state => {
+      handleAuthenticationProgress(state);
+    });
+
+    return () => {
+      listenerSubscription.current?.remove();
+      listenerSubscription.current = null;
+    };
+  });
+
+  const checkCameraPermission = useCallback(async () => {
+    const permission = Platform.select({
+      ios: PERMISSIONS.IOS.CAMERA,
+      android: PERMISSIONS.ANDROID.CAMERA,
+    });
+    if (!permission) return;
+
+    try {
+      const result = await request(permission);
+      if (result === RESULTS.GRANTED) {
+        return true;
+      } else {
+        Alert.alert(
+          t('mfaScreen.enroll.registration.cameraPermissionTitle'),
+          t('mfaScreen.enroll.registration.cameraPermissionMessage'),
+          [
+            {
+              text: t('mfaScreen.enroll.registration.cameraPermissionDeny'),
+              style: 'cancel',
+              onPress: () => navigation.goBack(),
+            },
+            {
+              text: t('mfaScreen.enroll.registration.cameraPermissionAllow'),
+              onPress: () => checkCameraPermission(),
+            },
+          ],
+        );
+        return false;
+      }
+    } catch (error) {
+      console.error('Camera permission error:', error);
+      return false;
+    }
+  }, [t, navigation]);
 
   useEffect(() => {
     if (authPk || appState !== 'active') return;
@@ -143,60 +209,187 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
 
   const onNo = async () => {
     if (!authPk) return;
-    const signature = signSecp256k1(nonce, authPk, true);
-    const success = await verifyMfa({
-      decline: true,
-      serial: authPk.serial,
-      nonce,
-      signature,
-    });
-    finalizeAuth('mfaScreen.auth.rejected', success);
+
+    const decline = true;
+
+    if (authPk.type === 'secp256k1') {
+      await sign(decline);
+    } else if (authPk.type === 'toothpic') {
+      await signWithToothPic(decline);
+    }
   };
 
   const onYes = async () => {
     if (!authPk) return;
+
+    const decline = false;
+
+    if (authPk.type === 'secp256k1') {
+      await sign(decline);
+    } else if (authPk.type === 'toothpic') {
+      await signWithToothPic(decline);
+    }
+  };
+
+  const sign = async (decline: boolean) => {
     let success = false;
     try {
-      const signature = signSecp256k1(nonce, authPk);
+      const signature = signSecp256k1(nonce, authPk!, decline);
       success = await verifyMfa({
-        serial: authPk.serial,
+        decline: decline,
+        serial: authPk!.serial,
         nonce,
         signature,
       });
     } catch (err) {
       Alert.alert(t('common.error'));
     }
-    finalizeAuth('mfaScreen.auth.accepted', success);
+    if (decline) {
+      finalizeAuth('mfaScreen.auth.rejected', success);
+    } else {
+      finalizeAuth('mfaScreen.auth.accepted', success);
+    }
   };
 
-  return (
-    <>
-      <Text style={styles.subtitle}>{t('mfaScreen.auth.prompt')}</Text>
+  const signWithToothPic = async (decline: boolean) => {
+    if (step === 0) {
+      setStep(1);
+    }
 
-      <View style={styles.buttonsRow}>
-        <CtaButton
-          absolute={false}
-          title={t('mfaScreen.auth.denyAccess')}
-          action={onNo}
-          variant="outlined"
-          disabled={isPending}
-          loading={isPending}
-          style={styles.secondaryButton}
-          textStyle={styles.secondaryButton}
-        />
-        <CtaButton
-          absolute={false}
-          title={t('mfaScreen.auth.allow')}
-          action={onYes}
-          disabled={isPending}
-          loading={isPending}
-          style={styles.primaryButton}
-        />
-      </View>
-      <Text style={styles.time}>
-        {t('mfaScreen.auth.expiration', { time: formattedTime })}
-      </Text>
-      <RTFTrans style={styles.note} i18nKey="mfaScreen.auth.note" />
-    </>
-  );
+    const granted = await checkCameraPermission();
+    if (!granted) {
+      return;
+    }
+
+    const messageParts = [nonce, authPk!.serial];
+
+    if (decline) {
+      messageParts.push('decline');
+    }
+
+    const message = new Uint8Array(
+      Buffer.from(messageParts.join('|'), 'utf-8'),
+    );
+
+    setProgressMessage(t('mfaScreen.toothpic.capturingPhotons'));
+    setProgress(0.0);
+    setMaxProgress(0.4);
+    let success = false;
+
+    try {
+      const signatureData = await ToothPicSDK.signWithCredential(
+        authPk!.privateKeyB64,
+        message,
+      );
+
+      const base32Signature = base32Encode(
+        new Uint8Array(signatureData.signature),
+        'RFC4648',
+      );
+
+      success = await verifyMfa({
+        decline: decline,
+        serial: authPk!.serial,
+        nonce,
+        signature: base32Signature,
+      });
+    } catch (error: any) {
+      setMaxProgress(0);
+
+      if (error instanceof ToothPicError) {
+        //Can be used for debug purposes
+        //const toothpicError = error.toString()
+        //const shootParameters = error.shootParameters;
+      }
+    }
+
+    if (decline) {
+      finalizeAuth('mfaScreen.auth.rejected', success);
+    } else {
+      finalizeAuth('mfaScreen.auth.accepted', success);
+    }
+  };
+
+  const handleAuthenticationProgress = (state: State) => {
+    switch (state) {
+      case 'AUTOPARAMETER_SIGNATURE':
+        setProgress(0.4);
+        setMaxProgress(0.8);
+        setProgressMessage(t('mfaScreen.toothpic.analyzingFingerprint'));
+        break;
+      case 'CAPTURE_COMPLETED_SIGNATURE':
+        setProgress(0.8);
+        setMaxProgress(0.99);
+        setProgressMessage(t('mfaScreen.toothpic.creatingUnclonableKey'));
+        break;
+      case 'DONE_SIGNATURE':
+        setProgress(1.0);
+        setMaxProgress(1.0);
+        break;
+      case 'PREVIEW_OK':
+        setShowIndeterminateProgressBar(false);
+        setFeedback(null);
+        break;
+      case 'PREVIEW_TOO_DARK':
+        setShowIndeterminateProgressBar(true);
+        setFeedback({
+          text: t('mfaScreen.toothpic.uncoverTheCamera'),
+          isPersistent: false,
+        });
+        break;
+    }
+  };
+
+  if (step === 0) {
+    return (
+      <>
+        <Text style={styles.subtitle}>{t('mfaScreen.auth.prompt')}</Text>
+
+        <View style={styles.buttonsRow}>
+          <CtaButton
+            absolute={false}
+            title={t('mfaScreen.auth.denyAccess')}
+            action={onNo}
+            variant="outlined"
+            disabled={isPending}
+            loading={isPending}
+            style={styles.secondaryButton}
+            textStyle={styles.secondaryButton}
+          />
+          <CtaButton
+            absolute={false}
+            title={t('mfaScreen.auth.allow')}
+            action={onYes}
+            disabled={isPending}
+            loading={isPending}
+            style={styles.primaryButton}
+          />
+        </View>
+        <Text style={styles.time}>
+          {t('mfaScreen.auth.expiration', { time: formattedTime })}
+        </Text>
+        <RTFTrans style={styles.note} i18nKey="mfaScreen.auth.note" />
+      </>
+    );
+  }
+  if (step === 1) {
+    return (
+      <>
+        <Text style={styles.registrationInProgress}>{progressMessage}</Text>
+        {showIndeterminateProgressBar ? (
+          <IndeterminateCircularProgress />
+        ) : (
+          <CircularProgress
+            progress={progress}
+            text={`${Math.round(progress * 100)}` + '%'}
+          />
+        )}
+
+        <Text style={styles.cameraInstruction}>
+          {t('mfaScreen.enroll.registration.cameraInstruction')}
+        </Text>
+        <ToothPicLogoPayoff style={styles.toothpicLogoPayoff} />
+      </>
+    );
+  }
 };
