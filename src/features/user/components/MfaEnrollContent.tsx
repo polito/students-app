@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Dimensions,
+  EventSubscription,
   Platform,
   StyleSheet,
   Text,
@@ -28,12 +29,23 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
+import {
+  ErrorCodes,
+  State,
+  ToothPicError,
+  ToothPicSDK,
+} from '@toothpic.eu/react-native-toothpic-sdk';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
+import { ToothPicLogoPayoff } from '~/core/components/ToothPicLogo';
 import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
 import { resetNavigationStatusTo } from '~/utils/navigation';
 import { ApiError } from '~/utils/queries';
+
+import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
+// ts/linter does not complain without Buffer, but it's needed at runtime
+import { Buffer } from 'buffer';
 
 import {
   MFA_STATUS_QUERY_KEY,
@@ -46,6 +58,7 @@ import {
   savePrivateKeyMFA,
 } from '../../../utils/keychain';
 import { CircularProgress } from './CircularProgress';
+import { IndeterminateCircularProgress } from './IndeterminateCircularProgress';
 import { UserStackParamList } from './UserNavigator';
 
 type Props = {
@@ -53,6 +66,37 @@ type Props = {
 };
 
 type StorageType = 'system' | 'toothpic';
+
+export const useControlledProgress = ({ delay = 200, step = 0.01 } = {}) => {
+  const [progress, setProgress] = useState(0);
+  const [maxProgress, setMaxProgress] = useState(0);
+  const intervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (maxProgress === 0) {
+      if (intervalRef.current !== null) clearInterval(intervalRef.current);
+      return;
+    }
+
+    intervalRef.current = setInterval(() => {
+      setProgress(prev => {
+        let next = prev + step;
+        if (next >= maxProgress) {
+          if (intervalRef.current !== null) clearInterval(intervalRef.current);
+          return maxProgress;
+        }
+        next = Math.round(next * 100) / 100;
+        return next;
+      });
+    }, delay) as unknown as number;
+
+    return () => {
+      if (intervalRef.current !== null) clearInterval(intervalRef.current);
+    };
+  }, [progress, maxProgress, delay, step]);
+
+  return { progress, setProgress, setMaxProgress };
+};
 
 export const MfaEnrollScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
@@ -65,8 +109,15 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   const [cameraPermission, setCameraPermission] = useState<
     'granted' | 'denied' | 'checking' | null
   >(null);
-  const [registrationProgress, setRegistrationProgress] = useState(0);
-  const { publicKey, privateKey } = generateSecp256k1KeyPair();
+  const [progressMessage, setProgressMessage] = useState(
+    t('mfaScreen.toothpic.capturingPhotons'),
+  );
+  const { progress, setProgress, setMaxProgress } = useControlledProgress();
+  const [showIndeterminateProgressBar, setShowIndeterminateProgressBar] =
+    useState(true);
+  const [{ privateKey, publicKey }, setKeys] = useState(() =>
+    generateSecp256k1KeyPair(),
+  );
   const { politoAuthnEnrolmentStatus, updatePreference } =
     usePreferencesContext();
   const styles = useStylesheet(createStyles);
@@ -92,6 +143,19 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     navigation.goBack();
   }, [navigation, politoAuthnEnrolmentStatus, updatePreference]);
 
+  const listenerSubscription = useRef<null | EventSubscription>(null);
+
+  useEffect(() => {
+    listenerSubscription.current = ToothPicSDK?.onProgress(state => {
+      handleGenerationProgress(state);
+    });
+
+    return () => {
+      listenerSubscription.current?.remove();
+      listenerSubscription.current = null;
+    };
+  });
+
   const executeEnrollment = useCallback(async () => {
     const dtoMfa = {
       description:
@@ -104,7 +168,8 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     try {
       setIsLoading(true);
       const res = await enrolMfa(dtoMfa);
-      await savePrivateKeyMFA(res.serial, privateKey, {
+      const type = storageType === 'system' ? 'secp256k1' : 'toothpic';
+      await savePrivateKeyMFA(res.serial, privateKey, type, {
         title: t('mfaScreen.biometricPrompt'),
       });
       await queryClient.invalidateQueries({ queryKey: MFA_STATUS_QUERY_KEY });
@@ -122,6 +187,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
           inSettings: false,
           insertedDeviceName: undefined,
           hideInitialPrompt: true,
+          toothpicTempKeyID: undefined,
         });
       }
     } catch (e) {
@@ -133,6 +199,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
               text: t('common.ok'),
               onPress: () => {
                 updatePreference('politoAuthnEnrolmentStatus', {
+                  ...politoAuthnEnrolmentStatus,
                   inSettings: true,
                   insertedDeviceName: deviceName,
                   hideInitialPrompt: false,
@@ -164,6 +231,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     updatePreference,
     navigation,
     handleSSO,
+    storageType,
   ]);
 
   const checkCameraPermission = useCallback(async () => {
@@ -204,15 +272,127 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     }
   }, [t, navigation]);
 
-  const simulateRegistration = useCallback(async () => {
-    setRegistrationProgress(0);
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      setRegistrationProgress(i / 100);
+  const toothPicRegistration = useCallback(async () => {
+    try {
+      setProgressMessage(t('mfaScreen.toothpic.capturingPhotons'));
+      setProgress(0.0);
+      setMaxProgress(0.2);
+
+      const generationData = await ToothPicSDK.generateCredential(
+        true,
+        true,
+        true,
+      );
+
+      const keyID = generationData.keyID;
+      const pubKey = generationData.publicKey;
+      const subjectPublicKeyInfo = encodePublicKey(pubKey);
+
+      setKeys({ privateKey: keyID, publicKey: subjectPublicKeyInfo });
+
+      //store the ToothPic keyID. It could be used to resume the enrollment if the session expires
+      updatePreference('politoAuthnEnrolmentStatus', {
+        ...politoAuthnEnrolmentStatus,
+        toothpicTempKeyID: keyID,
+      });
+
+      setStep(5);
+    } catch (error: any) {
+      setMaxProgress(0);
+
+      if (error instanceof ToothPicError) {
+        //Can be used for debug purposes
+        //const toothpicError = error.toString()
+        //const shootParameters = error.shootParameters;
+
+        const errorCode = error.errorCode;
+        var feedbackMessage = t('mfaScreen.toothpic.enrollFailed');
+
+        if (errorCode === ErrorCodes.ERROR_INSUFFICIENT_LUMINOSITY) {
+          feedbackMessage = t('mfaScreen.toothpic.uncoverTheCamera');
+        }
+
+        updatePreference('politoAuthnEnrolmentStatus', {
+          ...politoAuthnEnrolmentStatus,
+          hideInitialPrompt: true,
+        });
+        setFeedback({
+          text: feedbackMessage,
+          isPersistent: false,
+        });
+        navigation.goBack();
+      }
     }
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setStep(5);
-  }, []);
+  }, [
+    navigation,
+    politoAuthnEnrolmentStatus,
+    setFeedback,
+    setMaxProgress,
+    setProgress,
+    t,
+    updatePreference,
+  ]);
+
+  //Encode an EC public key as SubjectPublicKeyInfo
+  const encodePublicKey = (uncompressedPublicKey: Uint8Array): string => {
+    const pemOUT = (key: any) =>
+      Buffer.from(key.toBER(false)).toString('base64');
+
+    const publicKeyInfo = new Sequence({
+      value: [
+        new Sequence({
+          value: [
+            new ObjectIdentifier({ value: '1.2.840.10045.2.1' }),
+            new ObjectIdentifier({ value: '1.2.840.10045.3.1.7' }),
+          ],
+        }),
+        new BitString({
+          unusedBits: 0,
+          valueHex: uncompressedPublicKey.buffer as ArrayBuffer,
+        }),
+      ],
+    });
+
+    return pemOUT(publicKeyInfo);
+  };
+
+  //receive updates about the generation process
+  const handleGenerationProgress = (state: State) => {
+    switch (state) {
+      case 'AUTOPARAMETER_GENERATION':
+        setProgressMessage(t('mfaScreen.toothpic.analyzingFingerprint'));
+        setProgress(0.2);
+        setMaxProgress(0.6);
+        break;
+      case 'CAPTURE_COMPLETED_GENERATION':
+        setProgress(0.6);
+        setMaxProgress(0.9);
+        setProgressMessage(t('mfaScreen.toothpic.creatingUnclonableKey'));
+        break;
+      case 'AUTOPARAMETER_VERIFICATION':
+        setProgressMessage(t('mfaScreen.toothpic.verifyingUnclonableKey'));
+        break;
+      case 'CAPTURE_COMPLETED_VERIFICATION':
+        setProgress(0.9);
+        setMaxProgress(0.99);
+        break;
+      case 'DONE_VERIFICATION':
+        setProgress(1.0);
+        setMaxProgress(1.0);
+        break;
+      case 'PREVIEW_OK':
+        setShowIndeterminateProgressBar(false);
+        setFeedback(null);
+        break;
+      case 'PREVIEW_TOO_DARK':
+        setShowIndeterminateProgressBar(true);
+        setFeedback({
+          text: t('mfaScreen.toothpic.uncoverTheCamera'),
+          isPersistent: false,
+        });
+        break;
+    }
+  };
 
   const onYes = useCallback(async () => {
     if (step === 0) {
@@ -228,6 +408,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     if (step === 1) {
       if (!storageType) return;
       if (storageType === 'system') {
+        setKeys(generateSecp256k1KeyPair());
         setStep(6);
       } else {
         setStep(2);
@@ -246,8 +427,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
 
     if (step === 3) {
       setStep(4);
-      await simulateRegistration();
-      return;
+      await toothPicRegistration();
     }
 
     if (step === 5) {
@@ -266,20 +446,34 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     navigation,
     executeEnrollment,
     checkCameraPermission,
-    simulateRegistration,
+    toothPicRegistration,
   ]);
 
   useEffect(() => {
     if (isAutoEnrollment && step === 0) {
       setDeviceName(politoAuthnEnrolmentStatus.insertedDeviceName || deviceId);
-      setStorageType('system');
-      setStep(6);
-      executeEnrollment();
+
+      //continue the enrollment of a ToothPic key
+      const keyID = politoAuthnEnrolmentStatus.toothpicTempKeyID;
+      if (keyID) {
+        (async () => {
+          setStorageType('toothpic');
+          //retrieve public key
+          const pubKey = await ToothPicSDK.getPublicKey(keyID);
+          const subjectPublicKeyInfo = encodePublicKey(pubKey);
+          setKeys({ privateKey: keyID, publicKey: subjectPublicKeyInfo });
+          setStep(6);
+        })();
+      } else {
+        setStorageType('system');
+        setStep(6);
+      }
     }
   }, [
     isAutoEnrollment,
     step,
     politoAuthnEnrolmentStatus?.insertedDeviceName,
+    politoAuthnEnrolmentStatus?.toothpicTempKeyID,
     executeEnrollment,
     deviceId,
   ]);
@@ -439,17 +633,19 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   if (step === 4) {
     return (
       <>
-        <Text style={styles.registrationInProgress}>
-          {t('mfaScreen.enroll.registration.inProgress')}
-        </Text>
-        <CircularProgress
-          progress={registrationProgress}
-          size={200}
-          text={t('mfaScreen.enroll.registration.verifyingKey')}
-        />
+        <Text style={styles.registrationInProgress}>{progressMessage}</Text>
+        {showIndeterminateProgressBar ? (
+          <IndeterminateCircularProgress />
+        ) : (
+          <CircularProgress
+            progress={progress}
+            text={`${Math.round(progress * 100)}` + '%'}
+          />
+        )}
         <Text style={styles.cameraInstruction}>
           {t('mfaScreen.enroll.registration.cameraInstruction')}
         </Text>
+        <ToothPicLogoPayoff style={styles.toothpicLogoPayoff} />
       </>
     );
   }
@@ -463,9 +659,6 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         <View style={styles.completedIcon}>
           <Icon icon={faCheck} size={64} color="#2196F3" />
         </View>
-        <Text style={styles.cameraInstruction}>
-          {t('mfaScreen.enroll.registration.cameraInstruction')}
-        </Text>
         <View style={styles.startButtonWrapper}>
           <CtaButton
             absolute={false}
@@ -661,6 +854,7 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
     },
     registrationInProgress: {
       fontSize: 16,
+      minHeight: 40,
       color: dark ? colors.white : colors.black,
       textAlign: 'center',
       marginBottom: spacing[6],
@@ -681,5 +875,10 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: spacing[6],
+    },
+    toothpicLogoPayoff: {
+      width: '60%',
+      height: 100,
+      resizeMode: 'contain',
     },
   });

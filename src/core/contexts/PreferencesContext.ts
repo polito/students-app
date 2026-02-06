@@ -100,6 +100,7 @@ export interface PreferencesContextBase {
     inSettings?: boolean;
     insertedDeviceName?: string;
     hideInitialPrompt?: boolean;
+    toothpicTempKeyID?: string;
   };
 }
 
