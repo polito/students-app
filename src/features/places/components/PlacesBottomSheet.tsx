@@ -14,8 +14,10 @@ import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { TranslucentTextFieldProps } from '@lib/ui/components/TranslucentTextField';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
-export interface PlacesBottomSheetProps
-  extends Omit<BottomSheetProps, 'children'> {
+export interface PlacesBottomSheetProps extends Omit<
+  BottomSheetProps,
+  'children'
+> {
   textFieldProps?: Partial<TranslucentTextFieldProps>;
   searchFieldLabel?: string;
   listProps?: Partial<BottomSheetFlatListProps<ListItemProps>>;

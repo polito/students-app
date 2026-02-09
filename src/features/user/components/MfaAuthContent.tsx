@@ -392,4 +392,5 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       </>
     );
   }
+  return null;
 };
