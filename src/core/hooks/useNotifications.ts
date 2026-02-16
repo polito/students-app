@@ -93,6 +93,17 @@ const extractSubtreeNotifications = (root: any) => {
   return notifications;
 };
 
+type PathExtractor<T, Paths extends readonly unknown[] = readonly []> =
+  T extends Array<Notification>
+    ? Paths
+    : T extends object
+      ?
+          | Paths
+          | {
+              [K in keyof T]: PathExtractor<T[K], readonly [...Paths, K]>;
+            }[keyof T]
+      : Paths;
+
 export const useNotifications = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
   const unreadNotifications = useUnreadNotificationsByScope();
@@ -101,7 +112,7 @@ export const useNotifications = () => {
   const queryClient = useQueryClient();
 
   const clearNotificationScope = useCallback(
-    (notificationScope: Array<string | number>) => {
+    (notificationScope: PathExtractor<UnreadNotificationsByScope>) => {
       if (!has(unreadNotifications, notificationScope!)) {
         return;
       }
@@ -109,7 +120,11 @@ export const useNotifications = () => {
         get(unreadNotifications, notificationScope!),
       );
 
-      if (!Array.isArray(notificationsToClear)) {
+      if (
+        !Array.isArray(notificationsToClear) ||
+        !notificationsToClear.length
+        // BEWARE! Promise.all([]) is like Promise.resolve()!
+      ) {
         return;
       }
 
@@ -124,14 +139,12 @@ export const useNotifications = () => {
 
   const getUnreadsCount = useCallback(
     (
-      path: Array<string | number>,
+      path: PathExtractor<UnreadNotificationsByScope>,
       /**
        * Only count direct children
        */
       summarize = false,
     ) => {
-      // TODO PathExtractor<UnreadNotificationsByScope>
-      // https://github.com/polito/students-app/blob/v1.6.9/src/core/hooks/useNotifications.ts#L24
       const root = get(unreadNotifications, path!);
       const visitNode = (node: object | Notification[]): number => {
         if (Array.isArray(node)) {
@@ -160,7 +173,7 @@ export const useNotifications = () => {
       return (
         courseIds.reduce(
           (acc, eid) =>
-            acc + (getUnreadsCount(['teaching', 'courses', eid]) ?? 0),
+            acc + (getUnreadsCount(['teaching', 'courses', `${eid}`]) ?? 0),
           0,
         ) || undefined
       );

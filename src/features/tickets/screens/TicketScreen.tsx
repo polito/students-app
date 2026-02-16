@@ -127,20 +127,20 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   useScreenTitle(ticket?.subject);
 
-  useEffect(() => {
+  const markAsReadIfNeeded = useCallback(async () => {
     if (!ticket) {
       return;
     }
-    clearNotificationScope([
-      'services',
-      'tickets',
-      ticket.id.toString(),
-    ] as unknown as Parameters<typeof clearNotificationScope>['0']); // TODO check PathExtractor type
-    if (ticket.unreadCount === 0) {
+    await clearNotificationScope(['services', 'tickets', ticket.id.toString()]);
+    if (!ticket.unreadCount) {
       return;
     }
     markAsRead();
   }, [markAsRead, clearNotificationScope, ticket]);
+
+  useEffect(() => {
+    markAsReadIfNeeded();
+  }, [markAsReadIfNeeded]);
 
   const headerRight = useCallback(
     () =>

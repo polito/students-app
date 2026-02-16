@@ -37,10 +37,10 @@ export interface UnreadNotificationsByScope {
     courses?: {
       [courseId: string]: {
         files?: {
-          [fileId: number]: Notification[];
+          [fileId: string]: Notification[];
         };
         notices?: {
-          [noticeId: number]: Notification[];
+          [noticeId: string]: Notification[];
         };
         lectures?: Notification[];
       };
