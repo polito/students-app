@@ -2,7 +2,7 @@ name: Fastlane
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     types:
       - opened
@@ -19,7 +19,7 @@ on:
         type: choice
         description: Push to PlayStore
         options:
-          - 'false'
+          - "false"
           - internal
           - beta
           - production
@@ -147,14 +147,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LANG: en_US.UTF-8
-      CI: 'true'
+      CI: "true"
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
-      SUPPLY_GOOGLE_JSON_PATH: './pc-api-secret.json'
+      SUPPLY_GOOGLE_JSON_PATH: "./pc-api-secret.json"
       KEYSTORE_PW: ${{ secrets.ANDROID_KEYSTORE_PW }}
-      KEYSTORE_PATH: './keystore.jks'
-      CCACHE_CONFIGPATH: '${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf'
-      SENTRY_ALLOW_FAILURE: 'true'
+      KEYSTORE_PATH: "./keystore.jks"
+      CCACHE_CONFIGPATH: "${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf"
+      SENTRY_ALLOW_FAILURE: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -208,7 +208,7 @@ jobs:
         if: needs.configure.outputs.push_to_playstore == 'false'
         working-directory: ./android
         env:
-          SENTRY_DISABLE_AUTO_UPLOAD: 'true'
+          SENTRY_DISABLE_AUTO_UPLOAD: "true"
         run: bundle exec fastlane verify
       - name: Fastlane RELEASE lane
         id: fastlane_release_android
@@ -224,7 +224,7 @@ jobs:
         run: bundle exec fastlane apk
         working-directory: ./android
         env:
-          SENTRY_DISABLE_AUTO_UPLOAD: 'true'
+          SENTRY_DISABLE_AUTO_UPLOAD: "true"
       - name: Upload Artifacts
         if: |
           (github.event_name == 'push' && github.ref_type == 'tag') ||
@@ -238,24 +238,24 @@ jobs:
     name: ${{ needs.configure.outputs.push_to_testflight == 'false' && 'Build' || 'Build & Deploy' }} iOS
     env:
       LANG: en_US.UTF-8
-      CI: 'true'
+      CI: "true"
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
       MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_KEY }}
-      MATCH_GIT_PRIVATE_KEY: './github_access.pk'
+      MATCH_GIT_PRIVATE_KEY: "./github_access.pk"
       FASTLANE_USERNAME: ${{ secrets.FASTLANE_POLI_MOBILE_USER }}
       FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
-      SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: './GoogleService-Info.plist'
-      CCACHE_CONFIGPATH: '${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf'
-      SENTRY_ALLOW_FAILURE: 'true'
+      SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: "./GoogleService-Info.plist"
+      CCACHE_CONFIGPATH: "${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf"
+      SENTRY_ALLOW_FAILURE: "true"
     needs: configure
     runs-on: [macos-15]
     steps:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.3'
+          xcode-version: "16.3"
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set .env
@@ -309,7 +309,7 @@ jobs:
         if: needs.configure.outputs.push_to_testflight == 'false'
         working-directory: ./ios
         env:
-          SENTRY_DISABLE_AUTO_UPLOAD: 'true'
+          SENTRY_DISABLE_AUTO_UPLOAD: "true"
         run: |
           bundle exec fastlane verify
       - name: Fastlane RELEASE lane
