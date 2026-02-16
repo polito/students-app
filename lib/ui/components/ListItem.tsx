@@ -42,6 +42,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   multilineTitle?: boolean;
   unread?: boolean;
   isInVisibleRange?: boolean;
+  badge?: ReactElement;
 }
 
 /**
@@ -70,6 +71,7 @@ export const ListItem = ({
   titleProps,
   unread = false,
   onLongPress,
+  badge,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
@@ -106,6 +108,7 @@ export const ListItem = ({
         >
           {title}
         </Text>
+        {badge}
       </Row>
     ) : (
       title
@@ -142,9 +145,9 @@ export const ListItem = ({
       onPress={
         linkTo
           ? () => {
-              const resolved = resolveLinkTo(linkTo);
-              navigation.navigate(resolved.name as any, resolved.params);
-            }
+            const resolved = resolveLinkTo(linkTo);
+            navigation.navigate(resolved.name as any, resolved.params);
+          }
           : onPress
       }
       style={[

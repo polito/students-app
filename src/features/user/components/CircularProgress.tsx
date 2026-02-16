@@ -8,6 +8,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -20,6 +22,7 @@ interface Props {
   size?: number;
   strokeWidth?: number;
   text?: string;
+  showCompletedIcon?: boolean;
 }
 
 export const CircularProgress = ({
@@ -27,6 +30,7 @@ export const CircularProgress = ({
   size = 200,
   strokeWidth = 8,
   text,
+  showCompletedIcon,
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { palettes } = useTheme();
@@ -56,7 +60,7 @@ export const CircularProgress = ({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={palettes.primary[200]}
+          stroke={palettes.lightBlue[100]}
           strokeWidth={strokeWidth}
           fill="transparent"
         />
@@ -78,11 +82,14 @@ export const CircularProgress = ({
           <Text style={styles.text}>{text}</Text>
         </View>
       )}
+      {showCompletedIcon && (
+        <Icon icon={faCheckCircle} size={48} color={palettes.primary[600]} />
+      )}
     </View>
   );
 };
 
-const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
+const createStyles = ({ colors, spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
       position: 'relative',
@@ -100,7 +107,8 @@ const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
       height: '100%',
     },
     text: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.medium,
       color: colors.heading,
       textAlign: 'center',
       paddingHorizontal: spacing[4],
