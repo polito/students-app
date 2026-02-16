@@ -24,7 +24,7 @@ export const PolitoAuthenticatorScreen = ({ route, navigation }: Props) => {
   if (!activeView) return null;
 
   return (
-    <View style={[styles.container, { paddingBottom: bottom }]}>
+    <View style={[styles.container, { paddingVertical: bottom }]}>
       <PolitoAuthenticatorLogo style={styles.logo} />
       {activeView === 'enroll' ? (
         <MfaEnrollScreen navigation={navigation} />
