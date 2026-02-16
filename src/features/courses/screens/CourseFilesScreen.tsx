@@ -34,7 +34,7 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
   const { updatePreference } = usePreferencesContext();
 
   useOnLeaveScreen(() => {
-    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
+    clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
   });
 
   useFocusEffect(

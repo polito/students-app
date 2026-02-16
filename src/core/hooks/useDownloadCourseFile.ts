@@ -188,7 +188,13 @@ export const useDownloadCourseFile = (
         throw new UnsupportedFileTypeError(`Cannot open file ${fromUrl}`);
       }
     });
-    clearNotificationScope(['teaching', 'courses', courseId, 'files', fileId]);
+    clearNotificationScope([
+      'teaching',
+      'courses',
+      `${courseId}`,
+      'files',
+      fileId,
+    ]);
   }, [fromUrl, toFile, clearNotificationScope, courseId, fileId]);
 
   return {
