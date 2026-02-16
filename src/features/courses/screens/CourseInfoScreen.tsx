@@ -85,7 +85,11 @@ export const CourseInfoScreen = () => {
     courseQuery.data?.staff.map(s => s.id),
   );
 
-  const unreadsCurrentYear = getUnreadsCount(['teaching', 'courses', courseId]);
+  const unreadsCurrentYear = getUnreadsCount([
+    'teaching',
+    'courses',
+    `${courseId}`,
+  ]);
   const unreadsPrevEditions =
     (getUnreadsCountPerCourse(null, editions) ?? 0) - (unreadsCurrentYear ?? 0);
 
@@ -118,7 +122,7 @@ export const CourseInfoScreen = () => {
   const menuActions = useMemo(() => {
     if (!editions) return [];
     return editions.map(e => {
-      const editionsCount = getUnreadsCount(['teaching', 'courses', e.id]);
+      const editionsCount = getUnreadsCount(['teaching', 'courses', `${e.id}`]);
       return {
         id: `${e.id}`,
         title: e.year.toString(),

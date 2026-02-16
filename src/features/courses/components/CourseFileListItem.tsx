@@ -112,7 +112,7 @@ export const CourseFileListItem = memo(
     const { setFeedback } = useFeedbackContext();
     const { getUnreadsCount } = useNotifications();
     const fileNotificationScope = useMemo(
-      () => ['teaching', 'courses', courseId.toString(), 'files', item.id],
+      () => ['teaching', 'courses', `${courseId}`, 'files', item.id] as const,
       [courseId, item.id],
     );
     const [isCorrupted, setIsCorrupted] = useState(false);
