@@ -42,6 +42,7 @@ export interface ListItemProps extends TouchableHighlightProps {
   multilineTitle?: boolean;
   unread?: boolean;
   isInVisibleRange?: boolean;
+  badge?: ReactElement;
 }
 
 /**
@@ -69,6 +70,7 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
+  badge,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
@@ -105,6 +107,7 @@ export const ListItem = ({
         >
           {title}
         </Text>
+        {badge}
       </Row>
     ) : (
       title

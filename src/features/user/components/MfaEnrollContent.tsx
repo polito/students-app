@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Dimensions,
   EventSubscription,
   Platform,
   StyleSheet,
@@ -17,14 +16,19 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-import { faCamera, faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faCamera,
+  faCheckCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import { Card } from '@lib/ui/components/Card';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { Icon } from '@lib/ui/components/Icon';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RadioGroup } from '@lib/ui/components/RadioGroup';
+import { RadioButtons } from '@lib/ui/components/RadioButtons';
+import { Row } from '@lib/ui/components/Row';
 import { TextField } from '@lib/ui/components/TextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Option } from '@lib/ui/types/Input';
+import { RadioButtonOption } from '@lib/ui/types/Input';
 import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -40,8 +44,10 @@ import { RTFTrans } from '~/core/components/RTFTrans';
 import { ToothPicLogoPayoff } from '~/core/components/ToothPicLogo';
 import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
 import { usePreferencesContext } from '~/core/contexts/PreferencesContext';
+import { useOpenInAppLink } from '~/core/hooks/useOpenInAppLink';
 import { resetNavigationStatusTo } from '~/utils/navigation';
 import { ApiError } from '~/utils/queries';
+import { Sentry } from '~/utils/sentry';
 
 import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
 // ts/linter does not complain without Buffer, but it's needed at runtime
@@ -70,42 +76,41 @@ type StorageType = 'system' | 'toothpic';
 export const useControlledProgress = ({ delay = 200, step = 0.01 } = {}) => {
   const [progress, setProgress] = useState(0);
   const [maxProgress, setMaxProgress] = useState(0);
-  const intervalRef = useRef<number | null>(null);
+
+  const isInProgress = progress < maxProgress;
 
   useEffect(() => {
-    if (maxProgress === 0) {
-      if (intervalRef.current !== null) clearInterval(intervalRef.current);
+    if (!isInProgress || maxProgress <= 0) {
       return;
     }
 
-    intervalRef.current = setInterval(() => {
+    const intervalId = setInterval(() => {
       setProgress(prev => {
-        let next = prev + step;
+        const next = Math.round((prev + step) * 100) / 100;
+
         if (next >= maxProgress) {
-          if (intervalRef.current !== null) clearInterval(intervalRef.current);
           return maxProgress;
         }
-        next = Math.round(next * 100) / 100;
         return next;
       });
-    }, delay) as unknown as number;
+    }, delay);
 
-    return () => {
-      if (intervalRef.current !== null) clearInterval(intervalRef.current);
-    };
-  }, [progress, maxProgress, delay, step]);
+    return () => clearInterval(intervalId);
+  }, [isInProgress, maxProgress, delay, step]);
 
   return { progress, setProgress, setMaxProgress };
 };
-
 export const MfaEnrollScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { mutateAsync: enrolMfa } = useMfaEnrol();
   const queryClient = useQueryClient();
   const handleSSO = useSSOLoginInitiator();
   const { setFeedback } = useFeedbackContext();
+  const openInAppLink = useOpenInAppLink();
   const [step, setStep] = useState(0);
-  const [storageType, setStorageType] = useState<StorageType | undefined>();
+  const [storageType, setStorageType] = useState<StorageType | undefined>(
+    'system',
+  );
   const [cameraPermission, setCameraPermission] = useState<
     'granted' | 'denied' | 'checking' | null
   >(null);
@@ -129,7 +134,8 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   const animatedBottomPadding = useAnimatedStyle(() => ({
     paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
   }));
-
+  const [showWarning, setShowWarning] = useState(false);
+  const [isToothPicSupported, setIsToothPicSupported] = useState(false);
   const isAutoEnrollment =
     politoAuthnEnrolmentStatus?.inSettings === true &&
     politoAuthnEnrolmentStatus?.insertedDeviceName !== undefined &&
@@ -297,15 +303,20 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
       });
 
       setStep(5);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setStep(6);
     } catch (error: any) {
       setMaxProgress(0);
 
       if (error instanceof ToothPicError) {
-        //Can be used for debug purposes
-        //const toothpicError = error.toString()
-        //const shootParameters = error.shootParameters;
-
         const errorCode = error.errorCode;
+        const toothpicError = error.toString();
+        const shootParameters = error.shootParameters;
+
+        Sentry.captureMessage(
+          'Generation error ' + toothpicError + ' ' + shootParameters,
+          'warning',
+        );
         var feedbackMessage = t('mfaScreen.toothpic.enrollFailed');
 
         if (errorCode === ErrorCodes.ERROR_INSUFFICIENT_LUMINOSITY) {
@@ -366,15 +377,11 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         break;
       case 'CAPTURE_COMPLETED_GENERATION':
         setProgress(0.6);
-        setMaxProgress(0.9);
+        setMaxProgress(0.99);
         setProgressMessage(t('mfaScreen.toothpic.creatingUnclonableKey'));
         break;
       case 'AUTOPARAMETER_VERIFICATION':
         setProgressMessage(t('mfaScreen.toothpic.verifyingUnclonableKey'));
-        break;
-      case 'CAPTURE_COMPLETED_VERIFICATION':
-        setProgress(0.9);
-        setMaxProgress(0.99);
         break;
       case 'DONE_VERIFICATION':
         setProgress(1.0);
@@ -382,20 +389,19 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         break;
       case 'PREVIEW_OK':
         setShowIndeterminateProgressBar(false);
-        setFeedback(null);
+        setShowWarning(false);
         break;
       case 'PREVIEW_TOO_DARK':
         setShowIndeterminateProgressBar(true);
-        setFeedback({
-          text: t('mfaScreen.toothpic.uncoverTheCamera'),
-          isPersistent: false,
-        });
+        setShowWarning(true);
         break;
     }
   };
 
   const onYes = useCallback(async () => {
     if (step === 0) {
+      setIsToothPicSupported(await ToothPicSDK.isPremiumSupported());
+
       if (!(await checkCanSavePrivateKeyMFA())) {
         Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
         navigation.goBack();
@@ -409,6 +415,8 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
       if (!storageType) return;
       if (storageType === 'system') {
         setKeys(generateSecp256k1KeyPair());
+        setStep(5);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         setStep(6);
       } else {
         setStep(2);
@@ -448,6 +456,13 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     checkCameraPermission,
     toothPicRegistration,
   ]);
+
+  const goBack = useCallback(async () => {
+    if (step === 2 || step === 3) {
+      setStep(1);
+      return;
+    }
+  }, [step]);
 
   useEffect(() => {
     if (isAutoEnrollment && step === 0) {
@@ -504,14 +519,19 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   }
 
   if (step === 1) {
-    const storageOptions: Option<StorageType>[] = [
+    const toothpicWebSite = 'www.toothpic.eu';
+    const storageOptions: RadioButtonOption<StorageType>[] = [
       {
-        label: t('mfaScreen.enroll.storageSelection.systemKeychain'),
-        value: 'system',
+        key: 'system',
+        title: t('mfaScreen.enroll.storageSelection.systemKeychain'),
+        description: t(
+          'mfaScreen.enroll.storageSelection.systemKeychainDescription',
+        ),
       },
       {
-        label: t('mfaScreen.enroll.storageSelection.toothpic'),
-        value: 'toothpic',
+        key: 'toothpic',
+        title: t('mfaScreen.enroll.storageSelection.toothpic'),
+        description: t('mfaScreen.enroll.storageSelection.toothpicDescription'),
       },
     ];
 
@@ -521,25 +541,39 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
           {t('mfaScreen.enroll.storageSelection.title')}
         </Text>
         <View style={styles.storageOptions}>
-          <RadioGroup
+          <RadioButtons
             options={storageOptions}
             value={storageType}
             setValue={setStorageType}
           />
           {storageType === 'system' && (
             <Text style={styles.storageDescription}>
-              {t('mfaScreen.enroll.storageSelection.systemKeychainDescription')}
+              {t('mfaScreen.enroll.storageSelection.systemKeyChainInfo')}
             </Text>
           )}
           {storageType === 'toothpic' && (
             <>
-              <Text style={styles.storageDescription}>
-                {t('mfaScreen.enroll.storageSelection.toothpicDescription')}
-              </Text>
               <RTFTrans
                 i18nKey="mfaScreen.enroll.storageSelection.toothpicInfo"
-                style={styles.toothpicInfo}
+                style={styles.toothpicDescription}
               />
+              {isToothPicSupported ? (
+                <Text style={styles.toothpicDescription}>
+                  {t('mfaScreen.toothpic.learnMore')}
+                  <Text
+                    style={styles.toothpicLink}
+                    onPress={() => {
+                      openInAppLink('https://' + toothpicWebSite);
+                    }}
+                  >
+                    {toothpicWebSite}
+                  </Text>
+                </Text>
+              ) : (
+                <Text style={styles.toothpicUnsupported}>
+                  {t('mfaScreen.toothpic.unsupported')}
+                </Text>
+              )}
             </>
           )}
         </View>
@@ -548,7 +582,10 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
             absolute={false}
             title={t('common.confirm')}
             action={onYes}
-            disabled={!storageType}
+            disabled={
+              !storageType ||
+              (storageType === 'toothpic' && !isToothPicSupported)
+            }
             loading={isLoading}
           />
         </View>
@@ -559,9 +596,10 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   if (step === 2) {
     return (
       <>
-        <Text style={styles.registrationPrompt}>
-          {t('mfaScreen.enroll.registration.startPrompt')}
-        </Text>
+        <RTFTrans
+          i18nKey="mfaScreen.enroll.registration.startPrompt"
+          style={styles.registrationPrompt}
+        />
         <Text style={styles.cameraInstruction}>
           {t('mfaScreen.enroll.registration.cameraInstruction')}
         </Text>
@@ -582,15 +620,34 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <View style={styles.startButtonWrapper}>
-          <CtaButton
-            absolute={false}
-            title="START"
-            action={onYes}
-            disabled={cameraPermission === 'checking'}
-            loading={cameraPermission === 'checking'}
-          />
-        </View>
+        <Text style={styles.cameraInstruction}>
+          {t('mfaScreen.enroll.registration.cameraPermissionInfo')}
+        </Text>
+        <View style={{ flex: 1 }} />
+        <Row gap={4} style={{ width: '100%' }}>
+          <View style={{ flex: 1 }}>
+            <CtaButton
+              absolute={false}
+              icon={faArrowLeft}
+              variant="outlined"
+              title=""
+              action={goBack}
+              loading={isLoading}
+              containerStyle={{ paddingHorizontal: 0 }}
+              style={{ borderRadius: 12 }}
+            />
+          </View>
+          <View style={{ flex: 4 }}>
+            <CtaButton
+              absolute={false}
+              title={t('mfaScreen.start')}
+              disabled={cameraPermission !== 'granted'}
+              action={onYes}
+              loading={isLoading}
+              containerStyle={{ paddingHorizontal: 0 }}
+            />
+          </View>
+        </Row>
       </>
     );
   }
@@ -598,9 +655,10 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   if (step === 3) {
     return (
       <>
-        <Text style={styles.registrationPrompt}>
-          {t('mfaScreen.enroll.registration.startPrompt')}
-        </Text>
+        <RTFTrans
+          i18nKey="mfaScreen.enroll.registration.startPrompt"
+          style={styles.registrationPrompt}
+        />
         <Text style={styles.cameraInstruction}>
           {t('mfaScreen.enroll.registration.cameraInstruction')}
         </Text>
@@ -614,18 +672,38 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
               <Text style={styles.cameraCardSubtitle}>
                 {t('mfaScreen.enroll.registration.cameraEnabled')}
               </Text>
-              <Icon icon={faCheck} size={16} color="#4CAF50" />
             </View>
           </View>
+          <Icon icon={faCheckCircle} size={18} color="#4CAF50" />
         </View>
-        <View style={styles.startButtonWrapper}>
-          <CtaButton
-            absolute={false}
-            title="START"
-            action={onYes}
-            loading={isLoading}
-          />
-        </View>
+        <Text style={styles.cameraInstruction}>
+          {t('mfaScreen.enroll.registration.cameraPermissionInfo')}
+        </Text>
+        <View style={{ flex: 1 }} />
+        <Row gap={4} style={{ width: '100%' }}>
+          <View style={{ flex: 1 }}>
+            <CtaButton
+              containerStyle={{ paddingHorizontal: 0 }}
+              icon={faArrowLeft}
+              absolute={false}
+              style={{ borderRadius: 12 }}
+              variant="outlined"
+              title=""
+              action={goBack}
+              loading={isLoading}
+            />
+          </View>
+          <View style={{ flex: 4 }}>
+            <CtaButton
+              containerStyle={{ paddingHorizontal: 0 }}
+              title={t('mfaScreen.start')}
+              disabled={cameraPermission !== 'granted'}
+              absolute={false}
+              action={onYes}
+              loading={isLoading}
+            />
+          </View>
+        </Row>
       </>
     );
   }
@@ -633,19 +711,32 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   if (step === 4) {
     return (
       <>
-        <Text style={styles.registrationInProgress}>{progressMessage}</Text>
+        <Text style={styles.registrationInProgress}>
+          {t('mfaScreen.enroll.registration.inProgress')}
+        </Text>
         {showIndeterminateProgressBar ? (
-          <IndeterminateCircularProgress />
+          <IndeterminateCircularProgress strokeWidth={16} />
         ) : (
           <CircularProgress
+            strokeWidth={16}
             progress={progress}
-            text={`${Math.round(progress * 100)}` + '%'}
+            text={progressMessage}
           />
         )}
+        <Text style={[styles.cameraWarning, !showWarning && styles.hidden]}>
+          {t('mfaScreen.toothpic.uncoverTheCamera')}
+        </Text>
         <Text style={styles.cameraInstruction}>
           {t('mfaScreen.enroll.registration.cameraInstruction')}
         </Text>
-        <ToothPicLogoPayoff style={styles.toothpicLogoPayoff} />
+        <View style={styles.containerLogo}>
+          <ToothPicLogoPayoff
+            style={[
+              styles.toothpicLogoPayoff,
+              storageType === 'system' && styles.hidden,
+            ]}
+          />
+        </View>
       </>
     );
   }
@@ -656,15 +747,23 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         <Text style={styles.registrationCompleted}>
           {t('mfaScreen.enroll.registration.completed')}
         </Text>
-        <View style={styles.completedIcon}>
-          <Icon icon={faCheck} size={64} color="#2196F3" />
-        </View>
-        <View style={styles.startButtonWrapper}>
-          <CtaButton
-            absolute={false}
-            title={t('common.confirm')}
-            action={onYes}
-            loading={isLoading}
+        <CircularProgress
+          strokeWidth={16}
+          progress={1}
+          showCompletedIcon={true}
+        />
+        <Text style={[styles.cameraWarning, !showWarning && styles.hidden]}>
+          {t('mfaScreen.toothpic.uncoverTheCamera')}
+        </Text>
+        <Text style={styles.cameraInstruction}>
+          {t('mfaScreen.enroll.registration.cameraInstruction')}
+        </Text>
+        <View style={styles.containerLogo}>
+          <ToothPicLogoPayoff
+            style={[
+              styles.toothpicLogoPayoff,
+              storageType === 'system' && styles.hidden,
+            ]}
           />
         </View>
       </>
@@ -677,27 +776,25 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         <RTFTrans i18nKey="mfaScreen.enroll.devicePrompt" style={styles.note} />
         <Animated.View
           style={[
-            { width: '100%', alignItems: 'center' },
+            { width: '100%', alignItems: 'center', paddingHorizontal: 10 },
             animatedBottomPadding,
           ]}
         >
-          <View style={{ width: '80%', alignItems: 'center' }}>
-            <OverviewList style={styles.sectionList} accessible={false}>
-              <TextField
-                accessible={true}
-                label={t('mfaScreen.enroll.deviceName')}
-                value={deviceName}
-                onChangeText={setDeviceName}
-                inputStyle={styles.textFieldInput}
-              />
-            </OverviewList>
-          </View>
-          <View style={{ width: '80%', alignItems: 'center' }}>
+          <Card padded={true} rounded={true} style={{ width: '100%' }}>
+            <TextField
+              accessible={true}
+              label={t('mfaScreen.enroll.deviceName')}
+              value={deviceName}
+              onChangeText={setDeviceName}
+              inputStyle={[styles.textFieldInput, { borderBottomWidth: 0 }]}
+            />
+          </Card>
+          <View style={styles.confirmButtonWrapper}>
             <CtaButton
               absolute={false}
               title={t('common.confirm')}
               action={onYes}
-              containerStyle={styles.confirmButtonContainer}
+              containerStyle={{ paddingHorizontal: 0 }}
               loading={isLoading}
               disabled={deviceName.length === 0}
             />
@@ -710,7 +807,13 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   return null;
 };
 
-export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
+export const createStyles = ({
+  colors,
+  spacing,
+  palettes,
+  dark,
+  fontWeights,
+}: Theme) =>
   StyleSheet.create({
     prompt: {
       fontSize: 16,
@@ -760,10 +863,6 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
     },
     textFieldInput: {
       textAlign: 'center',
-      minWidth: Dimensions.get('window').width,
-    },
-    sectionList: {
-      paddingBottom: Platform.select({ android: spacing[4] }),
     },
     enrollNote: {
       fontSize: 16,
@@ -772,40 +871,59 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
       marginTop: spacing[3],
       marginHorizontal: spacing[5],
     },
+    storageItemTitle: {
+      fontWeight: fontWeights.semibold,
+    },
     storageTitle: {
       fontSize: 18,
       fontWeight: '600',
-      color: dark ? colors.white : colors.black,
+      color: dark ? colors.white : palettes.primary[600],
       textAlign: 'center',
-      marginBottom: spacing[6],
+      marginBottom: spacing[4],
       marginHorizontal: spacing[5],
     },
     storageOptions: {
       width: '100%',
-      marginBottom: spacing[6],
+      flex: 1,
     },
     storageDescription: {
-      fontSize: 14,
-      color: dark ? colors.white : colors.black,
-      marginTop: spacing[2],
+      fontSize: 16,
+      textAlign: 'center',
+      color: dark ? colors.white : palettes.primary[600],
+      marginTop: spacing[4],
       marginHorizontal: spacing[5],
-      paddingLeft: spacing[10],
     },
-    toothpicInfo: {
-      fontSize: 14,
-      color: palettes.primary[600],
-      marginTop: spacing[3],
+    toothpicDescription: {
+      fontSize: 16,
+      textAlign: 'center',
+      color: dark ? colors.white : palettes.primary[600],
+      marginTop: spacing[4],
       marginHorizontal: spacing[5],
-      paddingLeft: spacing[10],
+    },
+    toothpicLink: {
+      color: palettes.primary[600],
+      textDecorationLine: 'underline',
+      fontWeight: fontWeights.semibold,
+    },
+    toothpicWebsite: {
+      fontSize: 16,
+      textAlign: 'center',
+      color: palettes.primary[600],
+      marginTop: spacing[4],
+      marginHorizontal: spacing[5],
+    },
+    toothpicUnsupported: {
+      fontSize: 16,
+      textAlign: 'center',
+      color: palettes.red[500],
+      marginTop: spacing[4],
+      marginHorizontal: spacing[5],
     },
     confirmButtonWrapper: {
       width: '100%',
-      paddingHorizontal: spacing[5],
-      marginTop: spacing[4],
     },
     registrationPrompt: {
       fontSize: 16,
-      fontWeight: '600',
       color: palettes.primary[600],
       textAlign: 'center',
       marginBottom: spacing[4],
@@ -815,18 +933,27 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
       fontSize: 14,
       color: palettes.primary[600],
       textAlign: 'center',
-      marginTop: spacing[4],
-      marginBottom: spacing[3],
-      marginHorizontal: spacing[5],
+      marginTop: spacing[2],
+      marginBottom: spacing[2],
+    },
+    cameraWarning: {
+      fontSize: 14,
+      marginTop: spacing[2],
+      fontWeight: 'bold',
+      color: palettes.red[500],
+      textAlign: 'center',
+    },
+    hidden: {
+      opacity: 0,
     },
     cameraCard: {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: colors.surface,
       padding: spacing[4],
-      borderRadius: 8,
-      marginHorizontal: spacing[5],
-      marginBottom: spacing[6],
+      borderRadius: 16,
+      marginBottom: spacing[4],
+      marginTop: spacing[4],
     },
     cameraCardText: {
       marginLeft: spacing[4],
@@ -840,7 +967,7 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
     },
     cameraCardSubtitle: {
       fontSize: 14,
-      color: colors.heading,
+      color: palettes.muted[400],
     },
     cameraEnabledRow: {
       flexDirection: 'row',
@@ -854,15 +981,14 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
     },
     registrationInProgress: {
       fontSize: 16,
-      minHeight: 40,
-      color: dark ? colors.white : colors.black,
+      color: dark ? colors.white : palettes.primary[600],
       textAlign: 'center',
       marginBottom: spacing[6],
       marginHorizontal: spacing[5],
     },
     registrationCompleted: {
       fontSize: 16,
-      color: dark ? colors.white : colors.black,
+      color: dark ? colors.white : palettes.primary[600],
       textAlign: 'center',
       marginBottom: spacing[6],
       marginHorizontal: spacing[5],
@@ -876,9 +1002,15 @@ export const createStyles = ({ colors, spacing, palettes, dark }: Theme) =>
       justifyContent: 'center',
       marginBottom: spacing[6],
     },
+    containerLogo: {
+      width: '100%',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     toothpicLogoPayoff: {
       width: '60%',
-      height: 100,
+      aspectRatio: 3,
       resizeMode: 'contain',
     },
   });

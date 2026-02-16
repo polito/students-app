@@ -735,13 +735,17 @@
     "headerTitle": "Authenticator",
     "biometricPrompt": "Unlock to use PoliTO Authenticator",
     "modalTitle": "PoliTO Authenticator",
+    "start": "Start",
+    "experimental": "Experimental",
     "toothpic": {
       "capturingPhotons": "Capturing light photons",
       "analyzingFingerprint": "Analyzing camera fingerprint",
       "creatingUnclonableKey": "Creating your secure unclonable key",
       "verifyingUnclonableKey": "Verifying your secure unclonable key",
       "uncoverTheCamera": "Uncover the camera or better illuminate the environment",
-      "enrollFailed": "An error occurred while generating a key, please retry"
+      "enrollFailed": "An error occurred while generating a key, please retry",
+      "unsupported": "Your device is not compatible with ToothPic",
+      "learnMore": "Learn more at "
     },
     "enroll": {
       "title": "MFA Activation",
@@ -759,15 +763,17 @@
         "title": "Where do you want to store your cryptographic key?",
         "systemKeychain": "System keychain",
         "systemKeychainDescription": "Protection managed by your device",
-        "toothpic": "ToothPic Experimental",
+        "systemKeyChainInfo": "Save the key in the system credential storage.\nProtected by the device's PIN/Face/Touch ID.",
+        "toothpic": "ToothPic",
         "toothpicDescription": "Protection managed by ToothPic",
-        "toothpicInfo": "Experimental technology external to the University, in beta phase, incubated at I3P.<br/>Protects your key by binding it to the unique fingerprint of the phone's camera sensor."
+        "toothpicInfo": "Experimental technology external to the University, incubated at I3P, spin-off of Politecnico di Torino.<br/>Protects your key by binding it to the unique fingerprint of the phone's camera sensor."
       },
       "registration": {
-        "startPrompt": "Press START to begin credential registration",
+        "startPrompt": "Press <b>START</b> to begin credential registration",
         "cameraInstruction": "Make sure to hold the phone in your hand with the camera uncovered in a well-lit environment for the entire duration of the procedure",
         "camera": "Camera",
         "cameraClickToAllow": "Click to allow access",
+        "cameraPermissionInfo": "ToothPic requires access to the camera to generate the device sensor’s unique fingerprint. The contents of the photos are not analyzed, and the photos are neither transmitted nor stored on the device.",
         "cameraEnabled": "Enabled",
         "cameraPermissionTitle": "Allow camera access",
         "cameraPermissionMessage": "It is necessary to allow camera access to start registration",
@@ -786,6 +792,7 @@
       "denyAccess": "Deny access",
       "expiration": "Time remaining to authorize: {{time}}",
       "expired": "Authentication request expired",
+      "inProgress": "Authentication in progress...",
       "rejected": "Authentication request rejected",
       "accepted": "Authentication request accepted",
       "failed": "An error occurred while processing the authentication signature"

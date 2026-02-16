@@ -16,6 +16,7 @@ import {
 import { RTFTrans } from '~/core/components/RTFTrans';
 import { ToothPicLogoPayoff } from '~/core/components/ToothPicLogo';
 import { useFeedbackContext } from '~/core/contexts/FeedbackContext';
+import { Sentry } from '~/utils/sentry';
 
 import base32Encode from 'base32-encode';
 // ts/linter does not complain without Buffer, but it's needed at runtime
@@ -73,6 +74,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   );
   const [showIndeterminateProgressBar, setShowIndeterminateProgressBar] =
     useState(true);
+  const [showWarning, setShowWarning] = useState(false);
   const [step, setStep] = useState(0);
   const { progress, setProgress, setMaxProgress } = useControlledProgress();
   const { setFeedback } = useFeedbackContext();
@@ -297,9 +299,12 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       setMaxProgress(0);
 
       if (error instanceof ToothPicError) {
-        //Can be used for debug purposes
-        //const toothpicError = error.toString()
-        //const shootParameters = error.shootParameters;
+        const toothpicError = error.toString();
+        const shootParameters = error.shootParameters;
+        Sentry.captureMessage(
+          'Signature error: ' + toothpicError + ' ' + shootParameters,
+          'warning',
+        );
       }
     }
 
@@ -328,14 +333,11 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
         break;
       case 'PREVIEW_OK':
         setShowIndeterminateProgressBar(false);
-        setFeedback(null);
+        setShowWarning(false);
         break;
       case 'PREVIEW_TOO_DARK':
         setShowIndeterminateProgressBar(true);
-        setFeedback({
-          text: t('mfaScreen.toothpic.uncoverTheCamera'),
-          isPersistent: false,
-        });
+        setShowWarning(true);
         break;
     }
   };
@@ -375,20 +377,32 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   if (step === 1) {
     return (
       <>
-        <Text style={styles.registrationInProgress}>{progressMessage}</Text>
+        <Text style={styles.registrationInProgress}>
+          {t('mfaScreen.auth.inProgress')}
+        </Text>
         {showIndeterminateProgressBar ? (
-          <IndeterminateCircularProgress />
+          <IndeterminateCircularProgress strokeWidth={16} />
         ) : (
           <CircularProgress
+            strokeWidth={16}
             progress={progress}
-            text={`${Math.round(progress * 100)}` + '%'}
+            text={progressMessage}
           />
         )}
-
+        <Text style={[styles.cameraWarning, !showWarning && styles.hidden]}>
+          {t('mfaScreen.toothpic.uncoverTheCamera')}
+        </Text>
         <Text style={styles.cameraInstruction}>
           {t('mfaScreen.enroll.registration.cameraInstruction')}
         </Text>
-        <ToothPicLogoPayoff style={styles.toothpicLogoPayoff} />
+        <View style={styles.containerLogo}>
+          <ToothPicLogoPayoff
+            style={[
+              styles.toothpicLogoPayoff,
+              authPk?.type !== 'toothpic' && styles.hidden,
+            ]}
+          />
+        </View>
       </>
     );
   }

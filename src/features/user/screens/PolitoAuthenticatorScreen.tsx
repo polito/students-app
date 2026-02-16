@@ -41,6 +41,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
       width: spacing[96],
       height: spacing[32],
       marginBottom: spacing[8],
+      marginTop: spacing[8],
     },
     container: {
       backgroundColor: colors.background,
@@ -48,6 +49,6 @@ const createStyles = ({ colors, spacing }: Theme) =>
       paddingHorizontal: spacing[4],
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
     },
   });

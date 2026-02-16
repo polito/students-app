@@ -751,15 +751,19 @@
   "mfaScreen": {
     "description": "<b>PoliTO Authenticator</b> è un metodo per l'autenticazione multifattore che consente un accesso sicuro e rapido ai servizi dell’Ateneo inviando una notifica al tuo dispositivo per confermare la tua identità.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per-dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni rimuoveranno questa installazione di PoliTO Authenticator dal tuo dispositivo:<br/>- Effettuare il logout <br/>- Disinstallare l’app <br/>- Cancellare i dati dell’app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando <b>idp.polito.it > Gestione MFA</b>",
     "modalTitle": "PoliTO Authenticator",
+    "start": "Start",
     "headerTitle": "Authenticator",
     "biometricPrompt": "Sblocca PoliTO Authenticator per continuare",
+    "experimental": "Sperimentale",
     "toothpic": {
       "capturingPhotons": "Cattura dei fotoni",
       "analyzingFingerprint": "Analisi della fingerprint della fotocamera",
       "creatingUnclonableKey": "Creazione della chiave sicura e non clonabile",
       "verifyingUnclonableKey": "Verifica della chiave sicura e non clonabile",
       "uncoverTheCamera": "Scopri la fotocamera o illumina meglio l'ambiente",
-      "enrollFailed": "Si è verificato un errore durante la generazione della chiave, riprova"
+      "enrollFailed": "Si è verificato un errore durante la generazione della chiave, riprova",
+      "unsupported": "Il tuo dispositivo non è compatibile con ToothPic",
+      "learnMore": "Scopri di più su "
     },
     "enroll": {
       "title": "Attivazione Mfa",
@@ -777,15 +781,17 @@
         "title": "Dove vuoi conservare la tua chiave crittografica?",
         "systemKeychain": "Portachiavi di sistema",
         "systemKeychainDescription": "Protezione gestita dal tuo dispositivo",
-        "toothpic": "ToothPic Sperimentale",
+        "systemKeyChainInfo": "Salva la chiave nell'archivo credenziali di sistema.\nProtezione legata a PIN/Face/Touch ID del dispositivo.",
+        "toothpic": "ToothPic",
         "toothpicDescription": "Protezione gestita da ToothPic",
-        "toothpicInfo": "Tecnologia sperimentale esterna all'Ateneo, in fase beta, incubata presso I3P.<br/>Protegge la tua chiave vincolandola all'impronta unica del sensore della fotocamera del telefono."
+        "toothpicInfo": "Tecnologia sperimentale esterna all'Ateneo, incubata presso I3P, spin-off del Politecnico di Torino.<br/>Protegge la tua chiave vincolandola all'impronta unica del sensore della fotocamera del telefono."
       },
       "registration": {
-        "startPrompt": "Premi START per avviare la registrazione della credenziale",
+        "startPrompt": "Premi <b>START</b> per avviare la registrazione della credenziale",
         "cameraInstruction": "Assicurati di tenere il telefono in mano con la fotocamera scoperta in un ambiente illuminato per tutta la durata della procedura",
         "camera": "Fotocamera",
         "cameraClickToAllow": "Clicca per consentire l'accesso",
+        "cameraPermissionInfo": "ToothPic richiede l'accesso alla fotocamera per generare l'impronta unica del sensore del dispositivo. I contenuti delle foto non vengono analizzati e le foto non vengono nè trasmesse nè memorizzate sul dispositivo.",
         "cameraEnabled": "Abilitata",
         "cameraPermissionTitle": "Consenti accesso fotocamera",
         "cameraPermissionMessage": "È necessario consentire l'accesso alla fotocamera per avviare la registrazione",
@@ -803,6 +809,7 @@
       "allow": "Si, autorizza",
       "denyAccess": "Nega accesso",
       "expiration": "Tempo rimanente per autorizzare: {{time}}",
+      "inProgress": "Autenticazione in corso...",
       "expired": "Richiesta di accesso scaduta",
       "rejected": "Richiesta di accesso respinta",
       "accepted": "Richiesta di accesso accettata",
