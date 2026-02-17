@@ -178,6 +178,13 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     titleProps={listTitleProps}
                     subtitle={t('degreeCourseScreen.lecture')}
                     leadingItem={<Icon size={20} icon={faBriefcase} />}
+                    accessibilityLabel={`${t('degreeCourseScreen.lecture')}: ${t(
+                      'degreeCourseScreen.hours',
+                      {
+                        hours: offeringCourse.hours.lecture.toString(),
+                      },
+                    )}`}
+                    accessibilityRole="text"
                   />
                 )}
                 {!!offeringCourse?.hours?.classroomExercise && (
@@ -190,6 +197,14 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     titleProps={listTitleProps}
                     subtitle={t('degreeCourseScreen.classroomExercise')}
                     leadingItem={<Icon size={20} icon={faMicroscope} />}
+                    accessibilityLabel={`${t('degreeCourseScreen.classroomExercise')}: ${t(
+                      'degreeCourseScreen.hours',
+                      {
+                        hours:
+                          offeringCourse.hours.classroomExercise.toString(),
+                      },
+                    )}`}
+                    accessibilityRole="text"
                   />
                 )}
                 {!!offeringCourse?.hours?.labExercise && (
@@ -202,6 +217,13 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     titleProps={listTitleProps}
                     subtitle={t('degreeCourseScreen.labExercise')}
                     leadingItem={<Icon size={20} icon={faFlaskVial} />}
+                    accessibilityLabel={`${t('degreeCourseScreen.labExercise')}: ${t(
+                      'degreeCourseScreen.hours',
+                      {
+                        hours: offeringCourse?.hours?.labExercise?.toString(),
+                      },
+                    )}`}
+                    accessibilityRole="text"
                   />
                 )}
                 {!!offeringCourse?.hours?.tutoring && (
@@ -214,6 +236,13 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     titleProps={listTitleProps}
                     subtitle={t('degreeCourseScreen.tutoring')}
                     leadingItem={<Icon size={20} icon={faPersonChalkboard} />}
+                    accessibilityLabel={`${t('degreeCourseScreen.tutoring')}: ${t(
+                      'degreeCourseScreen.hours',
+                      {
+                        hours: offeringCourse.hours.tutoring.toString(),
+                      },
+                    )}`}
+                    accessibilityRole="text"
                   />
                 )}
                 {offeringCourse && (
@@ -231,6 +260,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                       },
                     }}
                     leadingItem={<Icon size={20} icon={faChartLine} />}
+                    accessibilityLabel={`${t('degreeCourseScreen.statistics')} ${t('common.forCourse')} ${offeringCourse.name}`}
+                    accessibilityRole="button"
+                    accessibilityHint={t('common.tapToNavigate')}
                   />
                 )}
               </OverviewList>
@@ -274,6 +306,9 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                     year: initialYear,
                   },
                 }}
+                accessibilityLabel={`${t('courseGuideScreen.title')} ${t('common.forCourse')} ${offeringCourse?.name}`}
+                accessibilityRole="button"
+                accessibilityHint={t('common.tapToNavigate')}
               />
             </OverviewList>
           </Section>

@@ -36,15 +36,52 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
 
   const { year } = useDegreeContext();
 
+  const accessibilityYearLabel = useMemo(() => {
+    const textNumber = [
+      'first',
+      'second',
+      'third',
+      'quarto',
+      'fifth',
+      'sixth',
+      'seventh',
+      'eighth',
+      'ninth',
+      'tenth',
+    ];
+    if (teachingYear >= 1 && teachingYear <= 10) {
+      const yearText = t(`common.${textNumber[teachingYear - 1]}`);
+      const yearWord = t('common.year');
+      return `${yearText} ${yearWord}`;
+    }
+    return `${year}° ${t('common.year')}`;
+  }, [t, teachingYear, year]);
+
   const [expandedGroupIndex, setExpandedGroupIndex] = useState<number>();
   return (
     <View style={styles.trackSectionContainer}>
-      <Text variant="subHeading" style={styles.subHeading}>
+      <Text
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={accessibilityYearLabel}
+        variant="subHeading"
+        style={styles.subHeading}
+      >
         {teachingYear}° {t('common.year')}
       </Text>
-      <OverviewList rounded={true} style={styles.firstLevelOverviewList}>
+      <OverviewList
+        rounded={true}
+        style={styles.firstLevelOverviewList}
+        accessible={true}
+        accessibilityRole="list"
+        accessibilityLabel={`${t('common.coursesList')} ${accessibilityYearLabel} - ${firstLevelCourses.length + coursesByGroup.length} elementi`}
+      >
         {firstLevelCourses.map((course, index) => (
           <ListItem
+            accessible={true}
+            accessibilityLabel={[course.name, course.cfu, t('common.cfu')].join(
+              ', ',
+            )}
             title={course.name}
             titleProps={{ numberOfLines: undefined }}
             key={`${course.teachingYear.toString()}-${
@@ -60,18 +97,19 @@ export const DegreeTrackYear = ({ item }: DegreeTrackYearProps) => {
               },
             }}
             accessibilityRole="button"
+            accessibilityHint={t('common.tapToViewCourseDetails')}
             trailingItem={<CourseTrailingItem cfu={course.cfu} />}
             disabled={isOffline}
           />
         ))}
         {coursesByGroup.map((group, index) => (
           <GroupCourses
-            key={index}
+            key={`group-${group.name}-${index}`}
             group={group}
             isExpanded={expandedGroupIndex === index}
             toggleExpand={() =>
               setExpandedGroupIndex(prevIndex =>
-                prevIndex !== index ? index : undefined,
+                prevIndex === index ? undefined : index,
               )
             }
             disabled={isOffline}

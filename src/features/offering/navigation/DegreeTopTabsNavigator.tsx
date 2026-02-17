@@ -60,7 +60,8 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
       t('profileScreen.enrollmentYear', {
         enrollmentYear: `${previousDegreeYear}/${getShortYear(degreeYear)}`,
       }),
-    ].join(' ');
+      t('profileScreen.year click'),
+    ].join(', ');
     navigation.setOptions({
       headerRight: () => (
         <View

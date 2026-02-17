@@ -125,6 +125,7 @@ export const CourseListItem = ({
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
+  // const isHidden = coursePrefs?.isHidden ?? false;
   const styles = useStylesheet(createStyles);
   const { getUnreadsCountPerCourse } = useNotifications();
 
@@ -154,7 +155,7 @@ export const CourseListItem = ({
 
   const prefs = usePreferencesContext();
   const coursePrefs = prefs.courses[course?.uniqueShortcode];
-  // const isHidden = coursePrefs?.isHidden ?? false;
+  const isHidden = coursePrefs?.isHidden ?? false;
 
   const hasDetails = isCourseDetailed(course);
   const courseInfo = getLatestCourseInfo(course);
@@ -196,6 +197,25 @@ export const CourseListItem = ({
     course.isInPersonalStudyPlan,
     course.isOverBooking,
     course.year,
+    t,
+  ]);
+
+  const accessibleExtraText = useMemo(() => {
+    return IS_ANDROID ? '' : t('coursesScreen.longPress');
+  }, [t]);
+
+  const accessibleText = useMemo(() => {
+    return `${accessibilityLabel || ''} ${course.name},  ${course.cfu} ${t(
+      'common.credits',
+    )},  ${
+      isHidden ? t('coursesScreen.notVisible') : ''
+    }   ${accessibleExtraText}   `;
+  }, [
+    course.name,
+    course.cfu,
+    isHidden,
+    accessibleExtraText,
+    accessibilityLabel,
     t,
   ]);
 

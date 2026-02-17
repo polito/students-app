@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -14,6 +15,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Staff'>;
 
 export const StaffScreen = ({ route }: Props) => {
   const { staff } = route.params;
+  const { t } = useTranslation();
 
   const staffIds = useMemo(() => staff.map(s => s.id), [staff]);
 
@@ -26,13 +28,13 @@ export const StaffScreen = ({ route }: Props) => {
 
     const staffData: (Person & OfferingCourseStaff)[] = [];
 
-    staffQueries.forEach((staffQuery, index) => {
-      if (!staffQuery.data) return;
+    for (const [index, staffQuery] of staffQueries.entries()) {
+      if (!staffQuery.data) continue;
       staffData.push({
         ...staffQuery.data,
         ...staff[index],
       });
-    });
+    }
 
     return staffData;
   }, [isLoading, staff, staffQueries]);
@@ -41,7 +43,12 @@ export const StaffScreen = ({ route }: Props) => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         <Section>
-          <OverviewList loading={isLoading}>
+          <OverviewList
+            loading={isLoading}
+            accessible={true}
+            accessibilityRole="list"
+            accessibilityLabel={`${t('common.staffList')} - ${staffPeople.length} ${t('common.members')}`}
+          >
             {staffPeople.map(person => (
               <StaffListItem
                 key={`${person.id}${person.courseId}`}

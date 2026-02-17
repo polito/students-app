@@ -404,6 +404,7 @@
     "day": "Giorno",
     "deadline": "Scadenza",
     "deadline_plural": "Scadenze",
+    "degreeTracksAndCourses": "Piano di studi e corsi",
     "delete": "Elimina",
     "department": "Dipartimento",
     "desk": "Cattedra",
@@ -451,6 +452,7 @@
     "facilities": "Dotazioni",
     "faculty": "Collegio",
     "file": "File",
+    "forCourse": "per il corso",
     "file_plural": "File",
     "floor": "Piano",
     "follow": "Segui",
@@ -478,6 +480,7 @@
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
     "module": "Modulo",
+    "members": "membri",
     "minutes": "Minuti",
     "more": "Più",
     "navigate": "Naviga",
@@ -486,6 +489,7 @@
     "newVersionTitle": "Nuova versione disponibile!",
     "newVersionBody": "È disponibile una nuova versione di PoliTO Students ({{newVersion}}).\n\nAggiornala per avere a disposizione tutte le nuove funzionalità e non incorrere in malfunzionamenti.",
     "next": "Avanti",
+    "noDataAvailable": "Nessun dato disponibile",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "noValue": "Nessun valore",
     "notFound": "Luogo inesistente",
@@ -538,6 +542,7 @@
     "show": "Mostra",
     "shortUsername": "Matr.",
     "somethingWentWrong": "Qualcosa è andato storto, riprova più tardi",
+    "staffList": "Lista personale",
     "startRefresh": "Caricamento in corso",
     "status": "Stato",
     "stop": "Stop",
@@ -547,6 +552,7 @@
     "tapToNavigate": "Tocca per navigare",
     "tapToToggle": "Tocca per attivare/disattivare",
     "activate": "Attiva",
+    "tapToToggleSection": "Tocca per espandere/comprimere sezione",
     "teacher": "Docente",
     "theme": "Tema",
     "ticket_plural": "Ticket",
@@ -585,7 +591,17 @@
     "fromTime": "dalle",
     "toTime": "alle",
     "document": "Allegato",
-    "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
+    "sizeExc": "File di dimensioni eccessive, massimo 32 MB",
+    "first": "Primo",
+    "second": "Secondo",
+    "third": "Terzo",
+    "quarto": "Quarto",
+    "fifth": "Quinto",
+    "sixth": "Sesto",
+    "seventh": "Settimo",
+    "eighth": "Ottavo",
+    "ninth": "Nono",
+    "tenth": "Decimo"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -1125,6 +1141,7 @@
     "title": "Lauree magistrali"
   },
   "offeringScreen": {
+    "section": "Intestazione",
     "bachelor": "Laurea triennale",
     "emptyState": "Nessun corso disponibile",
     "master": "Laurea magistrale",
@@ -1188,6 +1205,7 @@
     "searchPlaceholder": "Prova con \"Aula 1\""
   },
   "profileScreen": {
+    "year click": "clicca due volte per cambiare anno del corso",
     "careerStatus": "Stato carriera:",
     "careerStatusEnum": {
       "active": "Attiva",

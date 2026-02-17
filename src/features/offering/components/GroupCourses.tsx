@@ -29,7 +29,14 @@ export const GroupCourses = ({
   const styles = useStylesheet(createStyles);
   return (
     <Col style={styles.container}>
-      <Pressable onPress={toggleExpand}>
+      <Pressable
+        onPress={toggleExpand}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`${group.name} ${group.data.length} corsi`}
+        accessibilityState={{ expanded: isExpanded }}
+        accessibilityHint="Tocca per espandere o collassare il gruppo di corsi"
+      >
         <Row justify="space-between" align="center">
           <Text variant="title" style={styles.title}>
             {group.name}
