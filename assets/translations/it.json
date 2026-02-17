@@ -490,6 +490,7 @@
     "newVersionBody": "È disponibile una nuova versione di PoliTO Students ({{newVersion}}).\n\nAggiornala per avere a disposizione tutte le nuove funzionalità e non incorrere in malfunzionamenti.",
     "next": "Avanti",
     "noDataAvailable": "Nessun dato disponibile",
+    "noImage": "Nessuna immagine disponibile",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "noValue": "Nessun valore",
     "notFound": "Luogo inesistente",
@@ -525,6 +526,7 @@
     "preferences": "Preferenze",
     "preferencesAgenda": "Preferenze agenda",
     "profilePic": "Immagine di profilo",
+    "profilePicture": "Immagine di profilo",
     "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
     "remaining": "{{value}} rimanenti",
@@ -553,6 +555,7 @@
     "tapToToggle": "Tocca per attivare/disattivare",
     "activate": "Attiva",
     "tapToToggleSection": "Tocca per espandere/comprimere sezione",
+    "tapToViewContact": "Tocca per visualizzare i dettagli del contatto",
     "teacher": "Docente",
     "theme": "Tema",
     "ticket_plural": "Ticket",
@@ -611,10 +614,19 @@
     "cancelRecentSearchText": "Rimuovi ricerca recente",
     "clearSearch": "Cancella ricerca",
     "clearSearches": "Cancella ricerche",
+    "clearSearchesHint": "Rimuovi tutte le ricerche recenti",
+    "contactsFound": "contatti trovati",
     "emptyState": "Nessun contatto trovato",
     "recentSearch": "Ricerca recente",
     "recentSearches": "Ricerche recenti",
+    "resultFound": "{{count}} persona trovata",
+    "resultFound_plural": "{{count}} persone trovate",
+    "resultFoundRes": "{{count}} risultato",
+    "resultFoundRes_plural": "{{count}} risultati",
     "search": "Cerca contatti",
+    "searchHint": "Digita per cercare persone per nome",
+    "searchPlaceholder": "Cerca docenti, personale e studenti",
+    "searchResults": "Risultati di ricerca",
     "title": "Contatti"
   },
   "courseAssignmentPdfCreationScreen": {
@@ -867,6 +879,7 @@
     "topicDropdownPlaceholder": "Seleziona l'argomento"
   },
   "degreeCourseScreen": {
+    "periodSelect": "clicca due volte per cambiare anno del corso",
     "classroomExercise": "Esercitazioni in aula",
     "examMode": "Modalità di esame",
     "hours": "{{hours}} Ore",
@@ -1173,6 +1186,7 @@
     "title": "Novità"
   },
   "personScreen": {
+    "noProfileImage": "Nessuna immagine di profilo",
     "call": "Chiama",
     "contacts": "Contatti",
     "coursesLabel": "Lista dei corsi offerti dal docente",

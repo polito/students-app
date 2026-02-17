@@ -63,11 +63,15 @@ export const RecentSearch = () => {
     <FlatList
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
+      accessible={true}
+      accessibilityRole="list"
+      accessibilityLabel={`${t('contactsScreen.recentSearches')} - ${peopleSearched.length} ${t('contactsScreen.contactsFound')}`}
       ListHeaderComponent={
         <Row align="center" justify="space-between" style={styles.header}>
           <Text
             style={[styles.heading, { color: infoColor }]}
             variant="heading"
+            accessibilityRole="header"
           >
             {t('contactsScreen.recentSearches')}
           </Text>
@@ -77,6 +81,7 @@ export const RecentSearch = () => {
             icon={faTimes}
             accessibilityRole="button"
             accessibilityLabel={t('contactsScreen.clearSearches')}
+            accessibilityHint={t('contactsScreen.clearSearchesHint')}
             color={infoColor}
           />
         </Row>
@@ -110,7 +115,13 @@ export const RecentSearch = () => {
             ]}
           />
         ) : (
-          <View key={person.id} accessible={true} accessibilityRole="button">
+          <View
+            key={person.id}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`${person.firstName} ${person.lastName}, ${person.role || ''}`}
+            accessibilityHint={t('contactsScreen.cancelRecentSearchText')}
+          >
             <Menu person={person}>
               <PersonOverviewListItem
                 totalData={peopleSearched.length}

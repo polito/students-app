@@ -1,4 +1,5 @@
 import { ReactElement, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Image,
   StyleProp,
@@ -46,6 +47,7 @@ export const PersonOverviewListItem = ({
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
   const { accessibilityListLabel } = useAccessibility();
+  const { t } = useTranslation();
   const { updatePreference, peopleSearched } = usePreferencesContext();
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const subtitle = person.role ?? '';
@@ -70,7 +72,7 @@ export const PersonOverviewListItem = ({
   const queryClient = useQueryClient();
 
   const isDataMissing = useCallback(
-    () => queryClient.getQueryData(getPersonKey(person!.id)) === undefined,
+    () => queryClient.getQueryData(getPersonKey(person.id)) === undefined,
     [person, queryClient],
   );
 
@@ -80,13 +82,20 @@ export const PersonOverviewListItem = ({
       onPress={navigateToPerson}
       leadingItem={
         person?.picture ? (
-          <Image source={{ uri: person.picture }} style={styles.picture} />
+          <Image
+            source={{ uri: person.picture }}
+            style={styles.picture}
+            accessible={true}
+            accessibilityLabel={`${t('common.profilePicture')} ${title}`}
+          />
         ) : (
           <Icon icon={faUser} size={fontSizes.xl} />
         )
       }
       title={<HighlightedText text={title} highlight={searchString || ''} />}
       accessibilityLabel={[accessibilityLabel, title, subtitle].join(', ')}
+      accessibilityRole="button"
+      accessibilityHint={t('common.tapToViewContact')}
       subtitle={subtitle}
       trailingItem={trailingItem}
       style={[

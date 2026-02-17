@@ -60,18 +60,37 @@ export const PersonScreen = ({ route }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
+  const profileImageAccessibleLabel = [
+    t('common.profilePic'),
+    person?.firstName,
+    person?.lastName,
+    person?.picture ? '' : t('common.noImage'),
+  ]
+    .filter(notNullish)
+    .join(', ');
+
   const header = (
     <Col ph={5} gap={6} mb={6}>
-      <Text weight="bold" variant="title" style={styles.title}>
+      <Text
+        weight="bold"
+        variant="title"
+        style={styles.title}
+        accessible={true}
+        accessibilityRole="header"
+        accessibilityLabel={`${fullName}, ${person?.role || ''}`}
+      >
         {fullName}
       </Text>
       {(!person ||
-        person?.picture ||
-        person?.role ||
-        person?.facilityShortName ||
-        person?.profileUrl) && (
+        !!person?.picture ||
+        !!person?.role ||
+        !!person?.facilityShortName ||
+        !!person?.profileUrl) && (
         <Row gap={6}>
-          <View accessible={true} accessibilityLabel={t('common.profilePic')}>
+          <View
+            accessible={true}
+            accessibilityLabel={profileImageAccessibleLabel}
+          >
             {person?.picture ? (
               <Image
                 source={{ uri: person.picture }}
@@ -110,6 +129,8 @@ export const PersonScreen = ({ route }: Props) => {
                 onPress={() => openInAppLink(person.profileUrl)}
                 accessible={true}
                 accessibilityRole="link"
+                accessibilityLabel={t('personScreen.moreInfo')}
+                accessibilityHint={t('common.externalLink')}
               >
                 <Row align="center">
                   <Icon
@@ -129,15 +150,23 @@ export const PersonScreen = ({ route }: Props) => {
   );
 
   const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
+    const phoneLabel = [phoneNumber.full, phoneNumber?.internal]
+      .filter(notNullish)
+      .join(' / ');
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         key={index}
         isAction
         leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
         title={t('common.phone')}
-        subtitle={[phoneNumber.full, phoneNumber?.internal]
-          .filter(notNullish)
-          .join(' / ')}
+        subtitle={phoneLabel}
+        accessibilityLabel={`${accessibilityListLabel(
+          index,
+          phoneNumbers?.length || 0,
+        )}. ${t('personScreen.call')} ${phoneLabel}`}
+        accessibilityHint={t('personScreen.call')}
         onPress={() => Linking.openURL(`tel:${phoneNumber.full}`)}
       />
     );
@@ -154,6 +183,8 @@ export const PersonScreen = ({ route }: Props) => {
 
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
@@ -184,17 +215,29 @@ export const PersonScreen = ({ route }: Props) => {
           <Section>
             <SectionHeader
               title={t('personScreen.contacts')}
+              accessible={true}
               accessibilityLabel={`${t('personScreen.contacts')}. ${
-                phoneNumbers?.length && t('common.phoneContacts')
-              }. ${t('personScreen.sentEmail')}`}
+                phoneNumbers?.length
+                  ? `${phoneNumbers.length} ${t('common.phone')}, `
+                  : ''
+              }${t('common.email')}`}
             />
-            <OverviewList indented loading={personQuery.isLoading}>
+            <OverviewList
+              indented
+              loading={personQuery.isLoading}
+              accessible={true}
+              accessibilityRole="list"
+            >
               {phoneNumbers?.map(renderPhoneNumber)}
               <ListItem
+                accessible={true}
+                accessibilityRole="button"
                 isAction
                 leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
                 title={t('common.email')}
                 subtitle={person?.email}
+                accessibilityLabel={`${t('personScreen.sentEmail')} ${person?.email}`}
+                accessibilityHint={t('personScreen.sentEmail')}
                 onPress={() => Linking.openURL(`mailto:${person?.email}`)}
               />
             </OverviewList>
@@ -209,7 +252,7 @@ export const PersonScreen = ({ route }: Props) => {
                   { total: courses.length },
                 )}`}
               />
-              <OverviewList>
+              <OverviewList accessible={true} accessibilityRole="list">
                 {courses.map((course, index) => (
                   <RenderedCourse
                     key={course.id}

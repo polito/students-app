@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
@@ -32,6 +37,20 @@ export const ContactsScreen = () => {
 
   const isInputDisabled = useOfflineDisabled();
 
+  useEffect(() => {
+    if (people && people.length > 0) {
+      AccessibilityInfo.announceForAccessibility(
+        [
+          t('contactsScreen.resultFound'),
+          ', ',
+          people.length,
+          ', ',
+          t('contactsScreen.resultFoundRes'),
+        ].join(', '),
+      );
+    }
+  }, [people, t]);
+
   return (
     <>
       <HeaderAccessory style={styles.searchBar}>
@@ -48,6 +67,8 @@ export const ContactsScreen = () => {
             isClearable={!!search}
             onClear={() => setSearch('')}
             onClearLabel={t('contactsScreen.clearSearch')}
+            accessibilityLabel={t('contactsScreen.searchPlaceholder')}
+            accessibilityHint={t('contactsScreen.searchHint')}
           />
         </Row>
       </HeaderAccessory>
@@ -64,6 +85,9 @@ export const ContactsScreen = () => {
                 loading={isLoading}
                 style={{ marginTop: spacing[4] }}
                 emptyStateText={t('contactsScreen.emptyState')}
+                accessible={true}
+                accessibilityRole="list"
+                accessibilityLabel={`${t('contactsScreen.searchResults')} - ${people?.length || 0} ${t('contactsScreen.contactsFound')}`}
               >
                 {people?.map((person, index) => (
                   <PersonOverviewListItem

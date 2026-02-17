@@ -122,15 +122,22 @@ export const DegreeCourseScreen = ({ route }: Props) => {
                       await courseQuery.refetch();
                     }}
                   >
-                    <Row justify="flex-start" align="center">
+                    <Row
+                      accessible={true}
+                      accessibilityRole="button"
+                      accessibilityLabel={[
+                        t('degreeCourseScreen.period'),
+                        `${offeringCourse?.teachingPeriod ?? '--'} - ${
+                          currentYear ?? '--'
+                        }`,
+                        t('degreeCourseScreen.periodSelect'),
+                      ].join(', ')}
+                      justify="flex-start"
+                      align="center"
+                    >
                       <Metric
                         title={t('degreeCourseScreen.period')}
                         value={`${offeringCourse?.teachingPeriod ?? '--'} - ${
-                          currentYear ?? '--'
-                        }`}
-                        accessibilityLabel={`${t(
-                          'degreeCourseScreen.period',
-                        )}: ${offeringCourse?.teachingPeriod ?? '--'} - ${
                           currentYear ?? '--'
                         }`}
                       />

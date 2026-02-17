@@ -42,6 +42,7 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
                 key={`guide-section-${section.title}-${i}`}
                 accessible={true}
                 accessibilityRole="text"
+                accessibilityLabel={[section.title, section.content].join(', ')}
               >
                 <Text variant="subHeading" accessibilityRole="header">
                   {section.title}
