@@ -185,12 +185,16 @@ export const CourseInfoScreen = () => {
   const isStatisticsDisabled = !courseQuery.data?.shortcode;
 
   const editionAccessibleLabel = useMemo(() => {
-    const yearLabel =
-      (editions?.length ?? 0) > 0 ? t('courseInfoTab.selectYear') : '';
-
-    return `${courseQuery.data?.teachingPeriod ?? '--'} - ${
+    const hasEditions = (editions?.length ?? 0) > 0;
+    const periodLabel = `${t('common.period')}: ${courseQuery.data?.teachingPeriod ?? '--'} - ${
       courseQuery.data?.year ?? '--'
-    }, ${yearLabel}`;
+    }`;
+    
+    if (hasEditions) {
+      return `${periodLabel}. ${t('courseInfoTab.selectYear')}`;
+    }
+    
+    return periodLabel;
   }, [
     courseQuery.data?.teachingPeriod,
     courseQuery.data?.year,
@@ -198,11 +202,13 @@ export const CourseInfoScreen = () => {
     t,
   ]);
 
+  const hasEditions = (editions?.length ?? 0) > 0;
+  
   const CoursesRow = (
     <View
       style={GlobalStyles.grow}
       importantForAccessibility="yes"
-      accessibilityRole="button"
+      accessibilityRole={hasEditions ? "button" : undefined}
       accessible={true}
     >
       <View accessible accessibilityLabel={editionAccessibleLabel}>
@@ -221,7 +227,7 @@ export const CourseInfoScreen = () => {
             });
           }}
         >
-          <Row justify="flex-start" align="center">
+          <Row justify="flex-start" align="center" importantForAccessibility="no-hide-descendants">
             <Metric
               title={t('common.period')}
               value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
@@ -287,13 +293,14 @@ export const CourseInfoScreen = () => {
           accessibilityRole="text"
           accessibilityLabel={[
             courseQuery.data?.name,
-            t('courseInfoTab.shortcode'),
-            courseQuery.data?.shortcode,
-          ].join(', ')}
+            `${t('courseInfoTab.shortcode')}: ${courseQuery.data?.shortcode}`,
+          ].join('. ')}
           style={styles.heading}
+          importantForAccessibility="yes"
         >
-          <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">
+          <View importantForAccessibility="no-hide-descendants">
+            <ScreenTitle title={courseQuery.data?.name} />
+            <Text variant="caption">
             {courseQuery.data?.shortcode ?? ' '}
             {isModule && ` - ${parentCourse?.name}`}
             {!isModule && courseQuery.data?.cfu && (
@@ -303,20 +310,21 @@ export const CourseInfoScreen = () => {
               </Text>
             )}
           </Text>
+          </View>
         </Section>
         {/* this is for ios accessibility*/}
         {isScreenReaderEnabledValue && (
           <View>
-            <Card style={styles.metricsCard} accessible={true}>
+            <Card style={styles.metricsCard} importantForAccessibility="no">
               {CoursesRow}
             </Card>
-            <Card style={styles.metricsCard} accessible={true}>
+            <Card style={styles.metricsCard} importantForAccessibility="no">
               {CreditsRow}
             </Card>
           </View>
         )}
         {!isScreenReaderEnabledValue && (
-          <Card style={styles.metricsCard} accessible={true}>
+          <Card style={styles.metricsCard} importantForAccessibility="no">
             <Grid>
               {CoursesRow}
               {CreditsRow}
@@ -426,6 +434,7 @@ export const CourseInfoScreen = () => {
                   link.description ?? t('courseInfoTab.linkDefaultTitle'),
                   link.url,
                 ].join(', ')}
+                accessibilityHint={t('common.openInBrowser')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
@@ -440,13 +449,18 @@ export const CourseInfoScreen = () => {
           <OverviewList>
             <ListItem
               accessible
-              accessibilityLabel={t('courseGuideScreen.title')}
+              accessibilityLabel={`${t('courseGuideScreen.title')}`}
+              accessibilityHint={t('common.tapToNavigate')}
               accessibilityRole="button"
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
               disabled={isGuideDisabled}
             />
             <ListItem
+              accessible
+              accessibilityLabel={`${t('courseStatisticsScreen.title')}. ${t('courseStatisticsScreen.subtitle')}`}
+              accessibilityHint={t('common.tapToNavigate')}
+              accessibilityRole="button"
               title={t('courseStatisticsScreen.title')}
               subtitle={t('courseStatisticsScreen.subtitle')}
               linkTo={{

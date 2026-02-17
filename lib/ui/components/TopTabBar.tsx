@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
 import { Tab } from '@lib/ui/components/Tab';
 import { Tabs } from '@lib/ui/components/Tabs';
@@ -11,6 +12,8 @@ export const TopTabBar = ({
   navigation,
 }: MaterialTopTabBarProps) => {
   const { accessibility } = usePreferencesContext();
+  const { t } = useTranslation();
+  
   return (
     <HeaderAccessory>
       <Tabs>
@@ -55,11 +58,23 @@ export const TopTabBar = ({
               ? ((badgeElement as any).props.children as string | number)
               : undefined;
 
+          // Create comprehensive accessibility label
+          const accessibilityLabel = options.tabBarAccessibilityLabel ||
+            (() => {
+              if (badgeText) {
+                const badgeCount = typeof badgeText === 'number' ? badgeText : parseInt(String(badgeText), 10);
+                if (!isNaN(badgeCount) && badgeCount > 0) {
+                  return `${label}, ${t('common.newItems', { count: badgeCount })}`;
+                }
+              }
+              return label as string;
+            })();
+
           return (
             <Tab
               key={route.key}
               selected={isFocused}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
+              accessibilityLabel={accessibilityLabel}
               testID={route.key}
               onPress={onPress}
               onLongPress={onLongPress}

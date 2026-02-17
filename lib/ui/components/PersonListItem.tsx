@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -19,6 +20,17 @@ export const PersonListItem = ({
   navigateEnabled = true,
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
+  const { t } = useTranslation();
+
+  const accessibilityLabel = person
+    ? typeof subtitle === 'string'
+      ? `${subtitle}: ${person.firstName} ${person.lastName}${
+          navigateEnabled ? `. ${t('common.tapToViewContact')}` : ''
+        }`
+      : `${person.firstName} ${person.lastName}${
+          navigateEnabled ? `. ${t('common.tapToViewContact')}` : ''
+        }`
+    : undefined;
 
   return (
     <ListItem
@@ -36,11 +48,7 @@ export const PersonListItem = ({
         )
       }
       title={person ? `${person.firstName} ${person.lastName}` : ''}
-      accessibilityLabel={
-        person
-          ? `${subtitle}: ${person.firstName} ${person.lastName}`
-          : undefined
-      }
+      accessibilityLabel={accessibilityLabel}
       linkTo={
         person?.id && navigateEnabled
           ? {

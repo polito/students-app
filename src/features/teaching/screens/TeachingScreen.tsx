@@ -390,7 +390,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           </Pressable>
 
           <View style={GlobalStyles.relative}>
-            <Card style={styles.transcriptCard}>
+            <Card style={styles.transcriptCard} importantForAccessibility="no">
               {studentQuery.isLoading ? (
                 isOffline ? (
                   <OverviewList emptyStateText={t('common.cacheMiss')} />

@@ -46,6 +46,7 @@ export const Tab = ({
     <TouchableOpacity
       accessibilityRole="tab"
       accessible={true}
+      accessibilityLabel={rest.accessibilityLabel}
       accessibilityState={{
         selected,
       }}
@@ -60,7 +61,10 @@ export const Tab = ({
       ]}
       {...rest}
     >
-      <View style={{ position: 'relative' }}>
+      <View
+        style={{ position: 'relative' }}
+        importantForAccessibility="no-hide-descendants"
+      >
         <Text
           style={[
             {

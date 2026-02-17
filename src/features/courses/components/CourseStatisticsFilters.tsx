@@ -37,7 +37,7 @@ export const CourseStatisticsFilters = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   return (
-    <Card style={styles.metricsCard} accessible={true}>
+    <Card style={styles.metricsCard} importantForAccessibility="no">
       <Grid>
         <View style={GlobalStyles.grow}>
           {(filterType === CourseStatisticsFilterType.YEAR ||
