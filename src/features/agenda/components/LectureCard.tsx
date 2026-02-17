@@ -43,6 +43,7 @@ export const LectureCard = ({
 
   return (
     <AgendaCard
+      date={item?.date}
       title={item.title}
       type={t('common.lecture')}
       time={`${item.fromTime} - ${item.toTime}`}

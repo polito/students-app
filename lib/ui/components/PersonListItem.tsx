@@ -22,8 +22,8 @@ export const PersonListItem = ({
 
   return (
     <ListItem
-      accessible
       accessibilityRole="button"
+      accessible
       leadingItem={
         person?.picture ? (
           <Image

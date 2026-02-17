@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
@@ -9,7 +9,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { MenuAction, MenuView } from '@react-native-menu/menu';
+import { MenuAction } from '@react-native-menu/menu';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { ALL_AGENDA_TYPES, AgendaItemType } from '../types/AgendaItem';
@@ -75,6 +75,19 @@ export const AgendaTypeFilter = () => {
     }
   }, [filters, colorsMap, getLocalizedType, styles.buttonType, t]);
 
+  const pillContentText = useMemo(() => {
+    const selectedTypes: AgendaItemType[] = [];
+    Object.entries(filters).forEach(([type, enabled]) => {
+      if (enabled) selectedTypes.push(type as AgendaItemType);
+    });
+
+    if (selectedTypes.length === 0 || selectedTypes.length === 4) {
+      return t('common.all');
+    } else {
+      return selectedTypes.map(type => getLocalizedType(type)).join(', ');
+    }
+  }, [filters, getLocalizedType, t]);
+
   const typeActions = useMemo(() => {
     return ALL_AGENDA_TYPES.map(eventType => {
       const typedEventType = eventType as AgendaItemType;
@@ -94,14 +107,18 @@ export const AgendaTypeFilter = () => {
   }, [filters, colorsMap, getLocalizedType]);
 
   return (
-    <MenuView
-      actions={typeActions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        const type = event as AgendaItemType;
-        toggleFilter(type);
-      }}
+    <Pressable
+      accessible={true}
+      accessibilityLabel={[t('common.filterFor'), pillContentText].join(', ')}
+      style={styles.typeFilter}
     >
-      <PillDropdownActivator variant="neutral">
+      <PillDropdownActivator
+        variant="neutral"
+        accessibilityRole="button"
+        accessibilityLabel={t('agendaTypeFilter.filterButton')}
+        accessibilityHint={t('agendaTypeFilter.filterHint')}
+        accessibilityState={{ expanded: false }}
+      >
         <View style={styles.typeFilter}>
           <Text key="events">{t('common.event_plural')} </Text>
           <Text
@@ -119,7 +136,7 @@ export const AgendaTypeFilter = () => {
           </Text>
         </View>
       </PillDropdownActivator>
-    </MenuView>
+    </Pressable>
   );
 };
 

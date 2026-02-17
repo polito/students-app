@@ -19,6 +19,7 @@ export const DeadlineCard = ({ item, compact = false }: Props) => {
 
   return (
     <AgendaCard
+      date={item?.date}
       title={item.title}
       type={t('common.deadline')}
       color={colors.deadlineCardBorder}

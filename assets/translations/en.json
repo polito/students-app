@@ -41,7 +41,9 @@
   "AgendaPreferences": {
     "hideInAgenda": "Hide in agenda",
     "hideEvent": "Hide event",
-    "showInAgenda": "Show on the agenda"
+    "showInAgenda": "Show on the agenda",
+    "previous week": "Previous week",
+    "next week": "Next week"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -199,6 +201,7 @@
     "faculty": "Faculty",
     "file": "File",
     "file_plural": "Files",
+    "filterFor": "Filter for",
     "floor": "Floor",
     "follow": "Follow",
     "free": "Free",
@@ -460,8 +463,14 @@
     }
   },
   "courseHideEventScreen": {
-    "button": "Show in agenda",
-    "selectItems": "Select all"
+    "button": "Show in Agenda",
+    "selectItems": "Select all",
+    "eventWithRoom": "{{time}} - {{room}}",
+    "eventWithoutRoom": "{{time}}"
+  },
+  "agendaTypeFilter": {
+    "filterButton": "Event type filter",
+    "filterHint": "Open menu to select which event types to show in agenda"
   },
   "courseIconPickerScreen": {
     "title": "Pick an icon"

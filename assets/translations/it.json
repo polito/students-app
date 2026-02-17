@@ -41,7 +41,11 @@
   "AgendaPreferences": {
     "hideInAgenda": "Nascondi in agenda",
     "hideEvent": "Nascondi evento",
-    "showInAgenda": "Mostra in agenda"
+    "showInAgenda": "Mostra in agenda",
+    "next week": "Prossima settimana",
+    "previous week": "Settimana precedente",
+    "totalEvents": "Numero prenotazioni settimanali",
+    "noEvents": "Questa settimana non hai prenotazioni"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -574,7 +578,14 @@
     "retracted": "Ritirato",
     "note": "Note",
     "activated": "Attivato",
-    "deactivated": "Disattivato"
+    "deactivated": "Disattivato",
+    "week": "Settimana",
+    "room": "Aula",
+    "filterFor": "Filtra eventi per",
+    "fromTime": "dalle",
+    "toTime": "alle",
+    "document": "Allegato",
+    "sizeExc": "File di dimensioni eccessive, massimo 32 MB"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -729,8 +740,14 @@
     }
   },
   "courseHideEventScreen": {
-    "button": "Mostra in agenda",
-    "selectItems": "Seleziona tutti"
+    "button": "Mostra in Agenda",
+    "selectItems": "Seleziona tutti",
+    "eventWithRoom": "{{time}} - {{room}}",
+    "eventWithoutRoom": "{{time}}"
+  },
+  "agendaTypeFilter": {
+    "filterButton": "Filtro tipo eventi",
+    "filterHint": "Apri menu per selezionare quali tipi di eventi mostrare in agenda"
   },
   "courseIconPickerScreen": {
     "title": "Seleziona un'icona"

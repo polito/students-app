@@ -31,14 +31,7 @@ export const EventDetails = ({
       {...rest}
       accessible
       accessibilityRole="text"
-      accessibilityLabel={[
-        title,
-        type,
-        typeof time === 'string'
-          ? `${time} ${endTime ? ` - ${formatHHmm(endTime)}` : ''}`
-          : time,
-        timeLabel,
-      ].join(', ')}
+      accessibilityLabel={[title, type, time, endTime, timeLabel].join(' ')}
     >
       <ScreenTitle style={{ marginBottom: spacing[2] }} title={title} />
       <Text

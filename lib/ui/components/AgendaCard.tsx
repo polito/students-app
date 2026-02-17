@@ -1,4 +1,5 @@
 import { PropsWithChildren, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableHighlight, ViewProps } from 'react-native';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 
@@ -63,6 +64,9 @@ export interface AgendaCardProps {
    */
   onPress?: () => void;
   /**
+   * The date of the event
+   */
+  date: string;
   /**
    * If true, the card will be compact
    */
@@ -96,10 +100,13 @@ export const AgendaCard = ({
   style,
   nextLecture = false,
   nextDate,
+  date,
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
+  const { t } = useTranslation();
+
   const isTablet = useMemo(() => isTabletHelper(), []);
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
 
@@ -107,6 +114,13 @@ export const AgendaCard = ({
     () => ({ color: colors.lectureCardSecondary }),
     [colors.lectureCardSecondary],
   );
+
+  const accessibilityLabel = useMemo(() => {
+    const parts = [type, title];
+    if (time) parts.push(time);
+    if (location) parts.push(location);
+    return parts.join(', ');
+  }, [type, title, time, location]);
 
   return (
     <Card
@@ -141,6 +155,9 @@ export const AgendaCard = ({
             },
         ]}
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        disabled={!onPress}
       >
         <Col
           gap={isCompact ? 0.5 : 2}
