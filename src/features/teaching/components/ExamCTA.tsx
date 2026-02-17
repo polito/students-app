@@ -77,24 +77,34 @@ export const ExamCTA = ({ exam, absolute = false }: Props) => {
 
   const mutationsLoading = isBooking || isCancelingBooking;
 
+  let accessibilityHint: string;
+  let buttonTitle: string;
+
+  if (examUnavailable) {
+    accessibilityHint = t('examScreen.notAvailableHint');
+    buttonTitle = t('examScreen.notAvailable');
+  } else if (examRequestable) {
+    accessibilityHint = t('examScreen.ctaRequestHint');
+    buttonTitle = t('examScreen.ctaRequest');
+  } else if (examAvailable) {
+    accessibilityHint = t('examScreen.ctaBookHint');
+    buttonTitle = t('examScreen.ctaBook');
+  } else {
+    accessibilityHint = t('examScreen.ctaCancelHint');
+    buttonTitle = t('examScreen.ctaCancel');
+  }
+
   return (
     <CtaButton
       destructive={!examAvailable && !examRequestable}
-      title={
-        examUnavailable
-          ? t('examScreen.notAvailable')
-          : examRequestable
-            ? t('examScreen.ctaRequest')
-            : examAvailable
-              ? t('examScreen.ctaBook')
-              : t('examScreen.ctaCancel')
-      }
+      title={buttonTitle}
       action={action}
       loading={mutationsLoading}
       disabled={!onlineManager.isOnline() || examUnavailable}
       variant="filled"
       absolute={absolute}
       containerStyle={{ paddingVertical: 0 }}
+      accessibilityHint={accessibilityHint}
     />
   );
 };

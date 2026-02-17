@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform } from 'react-native';
+import { AccessibilityInfo, Alert, Platform, Pressable } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 import { stat } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
@@ -200,6 +200,13 @@ export const CourseFileListItem = memo(
           return;
         }
         if (!isDownloaded) {
+          if (item?.sizeInKiloBytes > 3500) {
+            setTimeout(() => {
+              AccessibilityInfo.announceForAccessibility(
+                t('courseFileListItem.downloadPending'),
+              );
+            }, 500);
+          }
           await startDownload();
         }
         if (navigation.isFocused()) {
@@ -214,6 +221,8 @@ export const CourseFileListItem = memo(
       openDownloadedFile,
       refreshDownload,
       startDownload,
+      t,
+      item.sizeInKiloBytes,
     ]);
 
     const trailingItem = useMemo(
@@ -277,16 +286,23 @@ export const CourseFileListItem = memo(
       ],
     );
 
+    const accessibilityLabel = [
+      item.name ?? t('common.unnamedFile'),
+      metrics,
+      !isDownloaded
+        ? downloadProgress == null
+          ? t('common.downloadClick')
+          : t('common.stop')
+        : t('common.openClick'),
+      IS_IOS ? t('courseFilesTab.longPress') : '',
+    ].join(', ');
+
     const listItem = (
       <FileListItem
         {...rest}
-        accessibilityLabel={
-          !isDownloaded
-            ? downloadProgress == null
-              ? t('common.download')
-              : t('common.stop')
-            : t('common.open')
-        }
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
         onPress={downloadFile}
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
@@ -301,13 +317,18 @@ export const CourseFileListItem = memo(
 
     if (IS_IOS) {
       return (
-        <Menu
-          onRefreshDownload={refreshDownload}
-          onRemoveDownload={removeDownload}
-          isDownloaded={isDownloaded}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={accessibilityLabel}
         >
-          {listItem}
-        </Menu>
+          <Menu
+            onRefreshDownload={refreshDownload}
+            onRemoveDownload={removeDownload}
+            isDownloaded={isDownloaded}
+          >
+            {listItem}
+          </Menu>
+        </Pressable>
       );
     }
 

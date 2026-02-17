@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform } from 'react-native';
+import { AccessibilityInfo, FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
@@ -41,6 +41,18 @@ export const CourseFilesScreen = ({ navigation, route }: Props) => {
     useCallback(() => {
       refresh();
     }, [refresh]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!recentFilesQuery?.data || recentFilesQuery?.data?.length === 0) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseFilesTab.emptyState'),
+          );
+        }, 500);
+      }
+    }, [recentFilesQuery.data, t]),
   );
 
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);

@@ -6,7 +6,7 @@ import {
 
 import { Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, View } from 'react-native';
+import { AccessibilityInfo, Alert, Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 import Animated, {
   useAnimatedStyle,
@@ -30,6 +30,8 @@ import { Theme } from '@lib/ui/types/Theme';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useGetPersons } from '~/core/queries/peopleHooks';
+import { AGENDA_QUERY_PREFIX } from '~/features/agenda/queries/agendaHooks';
+import { LECTURES_QUERY_PREFIX } from '~/features/agenda/queries/lectureHooks';
 
 import { IS_ANDROID, courseColors } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
@@ -57,6 +59,7 @@ const Menu = ({
   const { t } = useTranslation();
   const preferences = usePreferencesContext();
   const { dark, colors } = useTheme();
+  const queryClient = useQueryClient();
   const isHidden = course.uniqueShortcode
     ? (preferences.courses[course.uniqueShortcode]?.isHidden ?? false)
     : false;
@@ -79,7 +82,19 @@ const Menu = ({
         isHidden: !isHidden,
       },
     });
-  }, [preferences, course.uniqueShortcode, isHidden]);
+    queryClient
+      .invalidateQueries({ queryKey: [LECTURES_QUERY_PREFIX] })
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: [AGENDA_QUERY_PREFIX] });
+      });
+    let message = '';
+    if (!isHidden) {
+      message = t('courseListItem.courseHidden');
+    } else {
+      message = t('courseListItem.courseShown');
+    }
+    AccessibilityInfo.announceForAccessibility(message);
+  }, [preferences, course.uniqueShortcode, isHidden, queryClient, t]);
 
   return (
     <ContextMenu
@@ -136,6 +151,10 @@ export const CourseListItem = ({
     },
     [styles],
   );
+
+  const prefs = usePreferencesContext();
+  const coursePrefs = prefs.courses[course?.uniqueShortcode];
+  // const isHidden = coursePrefs?.isHidden ?? false;
 
   const hasDetails = isCourseDetailed(course);
   const courseInfo = getLatestCourseInfo(course);
@@ -271,9 +290,8 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
-      accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
-        course.cfu
-      } ${t('common.credits')}`}
+      accessibilityLabel={accessibleText}
+      accessibilityRole="button"
       title={course.name}
       subtitle={subtitle}
       leadingItem={

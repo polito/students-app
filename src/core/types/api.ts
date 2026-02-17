@@ -13,5 +13,6 @@ export interface Exam extends ApiExam {
 }
 
 export interface CourseOverview extends ApiCourseOverview {
+  modules: any;
   uniqueShortcode: string;
 }

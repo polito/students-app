@@ -42,6 +42,9 @@ export const Checkbox = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <TouchableOpacity
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: isChecked, disabled: disable ?? false }}
+        accessibilityLabel={text}
         style={[
           styles.checkbox,
           checkboxStyle,
@@ -58,6 +61,8 @@ export const Checkbox = ({
             justifyContent: 'center',
             alignItems: 'center',
           }}
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={true}
         >
           {isChecked ? (
             <Icon
@@ -76,7 +81,13 @@ export const Checkbox = ({
           )}
         </View>
       </TouchableOpacity>
-      <Text style={[styles.text, textStyle]}>{text}</Text>
+      <Text
+        style={[styles.text, textStyle]}
+        importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden={true}
+      >
+        {text}
+      </Text>
     </View>
   );
 };

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Animated,
   Platform,
   Pressable,
@@ -25,6 +26,8 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { useFocusEffect } from '@react-navigation/native';
+
+import _ from 'lodash';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { TranslucentView } from '../../../core/components/TranslucentView';
@@ -109,6 +112,26 @@ export const CourseLecturesScreen = () => {
       });
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const hasExpandedWithData = _.some(
+        lectures,
+        item => item?.isExpanded && item?.data?.length > 0,
+      );
+      const hasAllNoExpanded = _.every(lectures, item => !item?.isExpanded);
+      if (
+        (!hasExpandedWithData && !hasAllNoExpanded) ||
+        lectures?.length === 0
+      ) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseLecturesTab.emptyState'),
+          );
+        }, 1000);
+      }
+    }, [lectures, t]),
+  );
 
   return (
     <SectionList

@@ -77,6 +77,8 @@ export const ExamListItem = ({
         }}
         title={exam.courseName}
         accessibilityRole="button"
+        accessibilityHint={t('common.tapToNavigate')}
+        focusable
         leadingItem={
           <CourseIcon
             icon={coursesPreferences[exam.uniqueShortcode]?.icon}
@@ -95,7 +97,15 @@ export const ExamListItem = ({
         subtitle={
           accessibility?.fontSize && accessibility.fontSize < 175 ? (
             <Row gap={2.5} pt={1}>
-              <Row gap={1}>
+              <Row
+                gap={1}
+                accessible
+                accessibilityLabel={`${t('common.date')}, ${
+                  exam.examStartsAt
+                    ? formatReadableDate(exam.examStartsAt, true)
+                    : t('common.dateToBeDefined')
+                }`}
+              >
                 <Icon icon={faCalendar} color={colors.secondaryText} />
                 <Text variant="secondaryText">
                   {exam.examStartsAt && isValidDate(exam?.examStartsAt)
@@ -104,7 +114,12 @@ export const ExamListItem = ({
                 </Text>
               </Row>
               {(exam.places?.length ?? 0) > 0 && (
-                <Row gap={1} flexShrink={1}>
+                <Row
+                  gap={1}
+                  flexShrink={1}
+                  accessible
+                  accessibilityLabel={`${t('common.location')}, ${exam.places?.map(place => place.name).join(', ')}`}
+                >
                   <Icon icon={faLocationDot} color={colors.secondaryText} />
                   <Text
                     variant="secondaryText"

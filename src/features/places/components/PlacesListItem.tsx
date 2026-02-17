@@ -36,6 +36,14 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
 
   return (
     <ListItem
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={[
+        t('examScreen.location'),
+        places.length > 0
+          ? places.map(p => p.name).join(', ')
+          : t('examScreen.noLocation'),
+      ].join(', ')}
       leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
       title={
         places.length > 0

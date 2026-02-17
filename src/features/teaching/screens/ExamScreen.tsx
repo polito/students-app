@@ -96,12 +96,19 @@ export const ExamScreen = ({ route, navigation }: Props) => {
       }
     }
 
-    const classrooms = exam?.places?.map(p => p.name).join(', ');
+    const classrooms =
+      exam?.places?.length && exam?.places?.length > 0
+        ? exam?.places?.map(p => p.name).join(', ')
+        : t('examScreen.noLocation');
     const teacher = `${t('common.teacher')}: ${teacherQuery.data.firstName} ${
       teacherQuery.data.lastName
     }`;
 
-    return `${exam.courseName}. ${accessibleDateTime}. ${classrooms} ${teacher}`;
+    return `${exam.courseName}. ${accessibleDateTime}, ${t(
+      'examScreen.location',
+    )}  ${classrooms} ${teacher}, ${t('common.status')}  ${t(
+      `common.examStatus.${exam.status}`,
+    )}`;
   }, [exam, t, teacherQuery, formatHHmm]);
 
   useLayoutEffect(() => {
@@ -195,13 +202,20 @@ export const ExamScreen = ({ route, navigation }: Props) => {
                   <Icon icon={faNoteSticky} size={fontSizes['2xl']} />
                 }
                 title={exam.notes}
-                accessibilityLabel="a"
+                accessibilityLabel={[t('common.note'), exam.notes].join(', ')}
                 subtitle={t('examScreen.notes')}
                 inverted
                 titleProps={{ numberOfLines: 0 }}
               />
             )}
             <ListItem
+              accessible
+              accessibilityLabel={[
+                t('examScreen.bookingEndsAt'),
+                exam?.bookingEndsAt
+                  ? formatDateTime(exam?.bookingEndsAt)
+                  : t('common.dateToBeDefined'),
+              ].join(', ')}
               leadingItem={
                 <Icon icon={faHourglassEnd} size={fontSizes['2xl']} />
               }
@@ -230,6 +244,13 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             />
 
             <ListItem
+              accessible
+              accessibilityLabel={[
+                t('examScreen.bookedCount'),
+                exam?.bookedCount !== undefined
+                  ? getExam(exam.bookedCount, exam.availableCount)
+                  : t('examScreen.noBookedCount'),
+              ].join(', ')}
               leadingItem={<Icon icon={faUsers} size={fontSizes['2xl']} />}
               inverted
               /* check using undefined since the fields can be 0 */

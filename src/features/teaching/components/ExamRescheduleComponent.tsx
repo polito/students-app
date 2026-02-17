@@ -40,6 +40,8 @@ export const ExamRescheduleComponent = ({
       >
         <TextField
           label={t('examRescheduleScreen.requestReason')}
+          accessibilityLabel={t('examRescheduleScreen.requestReason')}
+          accessibilityHint={t('examRescheduleScreen.requestReasonTitle')}
           multiline
           numberOfLines={5}
           value={firstState.value}
@@ -65,6 +67,8 @@ export const ExamRescheduleComponent = ({
       >
         <TextField
           label={t('examRescheduleScreen.requestDetails')}
+          accessibilityLabel={t('examRescheduleScreen.requestDetails')}
+          accessibilityHint={t('examRescheduleScreen.requestDetailsTitle')}
           multiline
           numberOfLines={5}
           value={secondState.value}

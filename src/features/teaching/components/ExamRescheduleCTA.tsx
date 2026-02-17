@@ -22,6 +22,7 @@ export const ExamRescheduleCTA = ({ exam }: Props) => {
       absolute={false}
       containerStyle={{ paddingVertical: 0 }}
       variant="outlined"
+      accessibilityHint={t('examRescheduleScreen.ctaRequestHint')}
     />
   );
 };
