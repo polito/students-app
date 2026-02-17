@@ -893,6 +893,9 @@
     "statistics": "Statistiche",
     "statisticsSubtitle": "Accedi alle statistiche d'esame"
   },
+  "degreeJobOpportunitiesScreen": {
+    "jobOpportunities": "Sbocchi professionali"
+  },
   "degreeScreen": {
     "cohort": "Coorte",
     "degreeClass": "Classe di laurea",
@@ -1012,21 +1015,31 @@
   "jobOfferScreen": {
     "application": "Candidatura",
     "companyMission": "Mission",
+    "companyName": "Azienda",
     "contactInformation": "Per informazioni contattare",
     "contractType": "Tipo di contratto: ",
     "description": "Compiti",
     "email": "E-mail: ",
     "endsAtDate": "Scadenza: ",
     "freePositions": "Posti disponibili: ",
+    "jobDetails": "Dettagli offerta",
+    "jobOfferTitle": "Offerta di lavoro",
     "location": "Sede di lavoro: ",
     "requirements": "Requisiti",
     "salary": "Retribuzione: ",
+    "sendEmail": "Invia email",
     "title": "Offerte di lavoro",
     "url": "Sito web: "
   },
   "jobOffersScreen": {
+    "emptyState": "Nessuna offerta di lavoro disponibile",
     "endsAtDate": "Scadenza: ",
+    "jobOffersList": "Lista offerte di lavoro",
+    "jobOffersAvailable": "offerte di lavoro disponibili",
     "title": "Offerte di lavoro"
+  },
+  "jobOfferListItem": {
+    "tapToViewDetails": "Tocca per visualizzare i dettagli dell'offerta"
   },
   "josOffersScreen": {
     "title": "Offerte di lavoro"
