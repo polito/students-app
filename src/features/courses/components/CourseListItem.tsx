@@ -34,6 +34,7 @@ import { AGENDA_QUERY_PREFIX } from '~/features/agenda/queries/agendaHooks';
 import { LECTURES_QUERY_PREFIX } from '~/features/agenda/queries/lectureHooks';
 
 import { IS_ANDROID, courseColors } from '../../../core/constants';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
@@ -45,7 +46,18 @@ import { CourseIndicator } from './CourseIndicator';
 interface Props {
   course: CourseOverview;
   accessible?: boolean;
+  /**
+   * @deprecated Use index and total instead for proper translation support
+   */
   accessibilityLabel?: string;
+  /**
+   * Index of the item in the list (0-based). Used for accessibility.
+   */
+  index?: number;
+  /**
+   * Total number of items in the list. Used for accessibility.
+   */
+  total?: number;
   badge?: number;
   showAllModules?: boolean;
 }
@@ -121,9 +133,12 @@ export const CourseListItem = ({
   accessible,
   badge,
   showAllModules = false,
+  index,
+  total,
 }: Props) => {
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
   const { t } = useTranslation();
+  const { accessibilityListLabel } = useAccessibility();
   const preferences = usePreferencesContext();
   // const isHidden = coursePrefs?.isHidden ?? false;
   const styles = useStylesheet(createStyles);
@@ -204,25 +219,6 @@ export const CourseListItem = ({
     return IS_ANDROID ? '' : t('coursesScreen.longPress');
   }, [t]);
 
-  const accessibleText = useMemo(() => {
-    return `${accessibilityLabel || ''} ${course.name},  ${course.cfu} ${t(
-      'common.credits',
-    )},  ${
-      isHidden ? t('coursesScreen.notVisible') : ''
-    }   ${accessibleExtraText}   `;
-  }, [
-    course.name,
-    course.cfu,
-    isHidden,
-    accessibleExtraText,
-    accessibilityLabel,
-    t,
-  ]);
-
-  const tap = Gesture.Tap().onTouchesUp(() => {
-    pressed.value = !pressed.value;
-  });
-
   const hasModules = course.modules && course.modules.length > 0;
 
   const getModuleUniqueShortcode = useCallback(
@@ -251,6 +247,51 @@ export const CourseListItem = ({
       return total;
     }, 0);
   }, [hasModules, course.modules, getUnreadsCountPerCourse]);
+
+  const accessibleText = useMemo(() => {
+    // Build position label with proper translations
+    const positionLabel =
+      index !== undefined && total !== undefined
+        ? accessibilityListLabel(index, total)
+        : accessibilityLabel || '';
+
+    // Calculate badge count (same logic as in render)
+    let badgeCount = 0;
+    if (hasModules) {
+      badgeCount = getTotalModuleBadges();
+    } else if (badge) {
+      badgeCount = badge;
+    }
+
+    // Build badge text if there are unread items
+    const badgeText =
+      badgeCount > 0
+        ? `, ${t('common.newItems', { count: badgeCount })}`
+        : '';
+
+    const baseText = `${course.name}, ${course.cfu} ${t(
+      'common.credits',
+    )}${badgeText}, ${isHidden ? t('coursesScreen.notVisible') : ''} ${accessibleExtraText}`;
+
+    return positionLabel ? `${positionLabel}. ${baseText}` : baseText;
+  }, [
+    course.name,
+    course.cfu,
+    isHidden,
+    accessibleExtraText,
+    accessibilityLabel,
+    index,
+    total,
+    accessibilityListLabel,
+    badge,
+    hasModules,
+    getTotalModuleBadges,
+    t,
+  ]);
+
+  const tap = Gesture.Tap().onTouchesUp(() => {
+    pressed.value = !pressed.value;
+  });
 
   const allModulesHidden = useMemo(() => {
     if (!hasModules || showAllModules) return false;
@@ -325,13 +366,19 @@ export const CourseListItem = ({
             if (hasModules) {
               const totalModuleBadges = getTotalModuleBadges();
               return totalModuleBadges > 0 ? (
-                <UnreadBadge
-                  text={totalModuleBadges}
-                  style={Platform.OS === 'android' ? styles.badge : undefined}
-                />
+                <View importantForAccessibility="no-hide-descendants">
+                  <UnreadBadge
+                    text={totalModuleBadges}
+                    style={Platform.OS === 'android' ? styles.badge : undefined}
+                  />
+                </View>
               ) : null;
             }
-            return badge ? <UnreadBadge text={badge} /> : null;
+            return badge ? (
+              <View importantForAccessibility="no-hide-descendants">
+                <UnreadBadge text={badge} />
+              </View>
+            ) : null;
           })()}
           {hasModules ? (
             <GestureDetector gesture={tap}>

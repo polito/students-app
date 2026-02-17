@@ -6,14 +6,12 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
 
 export const ExamsScreen = () => {
   const { t } = useTranslation();
   const examsQuery = useGetExams();
-  const { accessibilityListLabel } = useAccessibility();
 
   return (
     <ScrollView
@@ -40,10 +38,8 @@ export const ExamsScreen = () => {
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(
-                  index,
-                  examsQuery.data.length,
-                )}
+                index={index}
+                total={examsQuery.data.length}
               />
             ))}
           </OverviewList>

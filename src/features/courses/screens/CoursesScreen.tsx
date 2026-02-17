@@ -8,7 +8,6 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer';
-import { useAccessibility } from '~/core/hooks/useAccessibilty';
 import { useGetCourses } from '~/core/queries/courseHooks';
 import { CourseOverview } from '~/core/types/api';
 
@@ -18,7 +17,6 @@ export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const coursesQuery = useGetCourses();
-  const { accessibilityListLabel } = useAccessibility();
 
   return (
     <ScrollView
@@ -60,10 +58,8 @@ export const CoursesScreen = () => {
                       key={course.shortcode + '' + course.id}
                       course={course}
                       accessible={true}
-                      accessibilityLabel={accessibilityListLabel(
-                        index,
-                        courses.length,
-                      )}
+                      index={index}
+                      total={courses.length}
                       showAllModules={true}
                     />
                   ))}

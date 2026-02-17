@@ -49,10 +49,12 @@ export const StaffScreen = ({ route }: Props) => {
             accessibilityRole="list"
             accessibilityLabel={`${t('common.staffList')} - ${staffPeople.length} ${t('common.members')}`}
           >
-            {staffPeople.map(person => (
+            {staffPeople.map((person, index) => (
               <StaffListItem
                 key={`${person.id}${person.courseId}`}
                 staff={person}
+                index={index}
+                total={staffPeople.length}
               />
             ))}
           </OverviewList>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ViewProps } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -13,6 +14,11 @@ type Props = ViewProps & {
   icon?: IconDefinition;
   backgroundColor: string;
   foregroundColor: string;
+  /**
+   * If true, the badge represents an unread count and accessibility
+   * will announce it as "X new items".
+   */
+  isUnreadCount?: boolean;
 };
 
 export const Badge = ({
@@ -21,13 +27,25 @@ export const Badge = ({
   backgroundColor,
   foregroundColor,
   style,
+  isUnreadCount = false,
+  accessibilityLabel: customAccessibilityLabel,
 }: Props) => {
+  const { t } = useTranslation();
   const { spacing, shapes, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
+
+  // For unread counts, create a more descriptive label
+  const accessibilityLabel =
+    customAccessibilityLabel ??
+    (isUnreadCount
+      ? t('common.newItems', { count: Number.parseInt(text, 10) || 0 })
+      : text);
+
   return (
     <Row
       accessible={true}
-      accessibilityLabel={text}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole={isUnreadCount ? 'text' : undefined}
       gap={2}
       style={[
         {

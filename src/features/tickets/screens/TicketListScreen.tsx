@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Platform, View } from 'react-native';
 
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
@@ -9,6 +9,7 @@ import { TicketStatus } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
@@ -22,6 +23,8 @@ export const TicketListScreen = ({ route }: Props) => {
   const { statuses } = route.params;
   const ticketsQuery = useGetTickets();
   const { paddingHorizontal } = useSafeAreaSpacing();
+  const { accessibilityListLabel, getListAccessibilityProps } =
+    useAccessibility();
 
   const tickets = useMemo(
     () =>
@@ -50,17 +53,31 @@ export const TicketListScreen = ({ route }: Props) => {
   }
 
   return (
-    <FlatList
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={paddingHorizontal}
-      refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
-      data={tickets}
-      renderItem={({ item }) => <TicketListItem ticket={item} key={item.id} />}
-      ItemSeparatorComponent={Platform.select({
-        ios: IndentedDivider,
-      })}
-      ListFooterComponent={<BottomBarSpacer />}
-      ListEmptyComponent={<OverviewList emptyStateText={labels.emptyState} />}
-    />
+    <View {...getListAccessibilityProps(labels.title, tickets.length)}>
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={paddingHorizontal}
+        refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
+        data={tickets}
+        renderItem={({ item, index }) => (
+          <TicketListItem
+            ticket={item}
+            key={item.id}
+            index={index}
+            total={tickets.length}
+            accessibilityLabel={accessibilityListLabel(
+              index,
+              tickets.length,
+              item.subject,
+            )}
+          />
+        )}
+        ItemSeparatorComponent={Platform.select({
+          ios: IndentedDivider,
+        })}
+        ListFooterComponent={<BottomBarSpacer />}
+        ListEmptyComponent={<OverviewList emptyStateText={labels.emptyState} />}
+      />
+    </View>
   );
 };

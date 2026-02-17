@@ -70,7 +70,13 @@ export const SectionHeader = ({
 
   const Header = () => {
     return (
-      <View accessible={false} style={{ ...styles.innerContainer }}>
+      <View
+        accessible={false}
+        importantForAccessibility={
+          accessibilityLabel ? 'no-hide-descendants' : undefined
+        }
+        style={{ ...styles.innerContainer }}
+      >
         <View accessible={false} style={styles.titleContainer}>
           {separator && <Separator />}
 

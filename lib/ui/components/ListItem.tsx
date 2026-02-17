@@ -160,6 +160,9 @@ export const ListItem = ({
       delayLongPress={100}
     >
       <View
+        importantForAccessibility={
+          rest.accessibilityLabel ? 'no-hide-descendants' : undefined
+        }
         style={[
           {
             minHeight: 60,

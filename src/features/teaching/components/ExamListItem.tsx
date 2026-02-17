@@ -13,6 +13,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 
 import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { Exam } from '../../../core/types/api';
 import {
   dateFormatter,
@@ -26,17 +27,31 @@ import { ExamStatusBadge } from './ExamStatusBadge';
 interface Props {
   exam: Exam;
   accessible?: boolean;
+  /**
+   * @deprecated Use index and total instead for proper translation support
+   */
   accessibilityLabel?: string;
+  /**
+   * Index of the item in the list (0-based). Used for accessibility.
+   */
+  index?: number;
+  /**
+   * Total number of items in the list. Used for accessibility.
+   */
+  total?: number;
   bottomBorder?: boolean;
 }
 
 export const ExamListItem = ({
   exam,
   accessibilityLabel = '',
+  index,
+  total,
   bottomBorder = true,
   ...rest
 }: Props) => {
   const { t } = useTranslation();
+  const { accessibilityListLabel } = useAccessibility();
 
   const { courses: coursesPreferences, accessibility } =
     usePreferencesContext();
@@ -63,10 +78,27 @@ export const ExamListItem = ({
       }
     }
 
+    // Build complete accessibility label with proper translations
+    const baseLabel = `${exam.courseName} ${accessibleDateTime} ${status}`;
+    const positionLabel =
+      index !== undefined && total !== undefined
+        ? accessibilityListLabel(index, total)
+        : accessibilityLabel;
+
     return {
-      accessibilityLabel: `${accessibilityLabel} ${exam.courseName} ${accessibleDateTime} ${status}`,
+      accessibilityLabel: positionLabel
+        ? `${positionLabel}. ${baseLabel}`
+        : baseLabel,
     };
-  }, [accessibilityLabel, exam, t, formatHHmm]);
+  }, [
+    accessibilityLabel,
+    exam,
+    t,
+    formatHHmm,
+    index,
+    total,
+    accessibilityListLabel,
+  ]);
 
   return (
     <View style={{ rowGap: spacing[3] }}>

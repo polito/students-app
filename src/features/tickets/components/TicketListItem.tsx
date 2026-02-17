@@ -33,9 +33,22 @@ import { getHtmlTextContent } from '../../../utils/html';
 
 interface TicketListItemProps extends Partial<ListItemProps> {
   ticket: TicketOverview;
+  /**
+   * Index of the item in the list (0-based). Used for accessibility.
+   */
+  index?: number;
+  /**
+   * Total number of items in the list. Used for accessibility.
+   */
+  total?: number;
 }
 
-export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
+export const TicketListItem = ({
+  ticket,
+  index,
+  total,
+  ...props
+}: TicketListItemProps) => {
   const { fontSizes, colors, palettes, spacing, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();

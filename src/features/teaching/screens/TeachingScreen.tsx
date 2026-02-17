@@ -33,7 +33,6 @@ import { DateTime } from 'luxon';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { useGetCourses } from '../../../core/queries/courseHooks';
@@ -66,7 +65,6 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
-  const { accessibilityListLabel } = useAccessibility();
 
   const transcriptBadge = null;
 
@@ -124,28 +122,38 @@ export const TeachingScreen = ({ navigation }: Props) => {
       ].join('. ');
     }
 
+    // Helper function to format grade values for accessibility
+    const formatGradeForAccessibility = (
+      grade: number | null | undefined,
+      max: number,
+    ) => {
+      if (grade == null) {
+        return t('common.notAvailable');
+      }
+      return `${grade} ${t('common.on')} ${max}`;
+    };
+
     const firstLabel =
       studentQuery.data?.averageGradePurged != null
         ? t('transcriptMetricsScreen.finalAverageLabel')
         : t('transcriptMetricsScreen.weightedAverageLabel');
-    const firstLabelValue = hideGrades
-      ? t('common.notAvailable')
-      : (studentQuery.data?.averageGradePurged ??
-        studentQuery.data?.averageGrade ??
-        t('common.notAvailable'));
+    const firstLabelValue = formatGradeForAccessibility(
+      studentQuery.data?.averageGradePurged ?? studentQuery.data?.averageGrade,
+      30,
+    );
 
     const secondLabel = studentQuery.data?.estimatedFinalGradePurged
       ? t('transcriptMetricsScreen.estimatedFinalGradePurged')
       : t('transcriptMetricsScreen.estimatedFinalGrade');
     const secondPreValue = studentQuery.data?.estimatedFinalGradePurged
-      ? studentQuery.data?.estimatedFinalGradePurged || 0
-      : studentQuery.data?.estimatedFinalGrade || 0;
-    const secondLabelValue = `${secondPreValue} ${t('common.on')} 110`;
+      ? studentQuery.data?.estimatedFinalGradePurged
+      : studentQuery.data?.estimatedFinalGrade;
+    const secondLabelValue = formatGradeForAccessibility(secondPreValue, 110);
 
     const thirdLabel = t('transcriptMetricsScreen.totalCredits');
-    const thirdLabelValue = `${studentQuery.data?.totalAcquiredCredits} ${t(
-      'common.on',
-    )} ${studentQuery.data?.totalCredits}`;
+    const thirdLabelValue = studentQuery.data?.totalAcquiredCredits
+      ? `${studentQuery.data?.totalAcquiredCredits} ${t('common.on')} ${studentQuery.data?.totalCredits}`
+      : t('common.notAvailable');
 
     return [
       firstLabel,
@@ -178,11 +186,16 @@ export const TeachingScreen = ({ navigation }: Props) => {
           })
         : undefined;
 
-    return [
+    const parts = [
       t('coursesScreen.title'),
       t('coursesScreen.total', { total: courses.length }),
-      `  ${t('common.and')} ${notVisibleCourseCountLabel} `,
-    ].join('. ');
+    ];
+
+    if (notVisibleCourseCountLabel) {
+      parts.push(`${t('common.and')} ${notVisibleCourseCountLabel}`);
+    }
+
+    return parts.join('. ');
   }, [courses.length, coursesQuery?.data?.length, t]);
 
   const examsSectionLabelAccessible = useMemo(() => {
@@ -195,11 +208,17 @@ export const TeachingScreen = ({ navigation }: Props) => {
             total: notVisibleExamCount,
           })
         : undefined;
-    return [
+
+    const parts = [
       t('examsScreen.title'),
       t('examsScreen.total', { total: exams.length }),
-      `  ${t('common.and')} ${notVisibleExamCountLabel} `,
-    ].join('. ');
+    ];
+
+    if (notVisibleExamCountLabel) {
+      parts.push(`${t('common.and')} ${notVisibleExamCountLabel}`);
+    }
+
+    return parts.join('. ');
   }, [exams.length, examsQuery?.data?.length, t]);
 
   const onHide = (value: boolean) => {
@@ -287,7 +306,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {courses.filter(hasValidModules).map(course => (
+            {courses.filter(hasValidModules).map((course, index) => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
@@ -295,6 +314,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   course.id,
                   course.previousEditions,
                 )}
+                index={index}
+                total={courses.filter(hasValidModules).length}
               />
             ))}
           </OverviewList>
@@ -328,7 +349,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 exam={exam}
                 bottomBorder={index < exams.length - 1}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(index, exams.length)}
+                index={index}
+                total={exams.length}
               />
             ))}
           </OverviewList>
@@ -385,7 +407,13 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   underlayColor={colors.touchableHighlight}
                   focusable
                 >
-                  <Row p={5} gap={5} align="center" justify="space-between">
+                  <Row
+                    p={5}
+                    gap={5}
+                    align="center"
+                    justify="space-between"
+                    importantForAccessibility="no-hide-descendants"
+                  >
                     <Col justify="center" flexShrink={1} gap={5}>
                       <Metric
                         title={t('transcriptMetricsScreen.weightedAverage')}

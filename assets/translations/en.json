@@ -224,6 +224,8 @@
     "lecture_plural": "Lectures",
     "less": "Less",
     "legend": "Legend",
+    "listWithCount": "{{name}}, {{count}} elements",
+    "listWithCount_one": "{{name}}, 1 element",
     "loading": "Loading",
     "location": "Location",
     "logout": "Logout",
@@ -233,8 +235,8 @@
     "module": "Module",
     "more": "More",
     "navigate": "Navigate",
-    "newItems": "New item",
-    "newItems_plural": "New items",
+    "newItems": "{{count}} new item",
+    "newItems_plural": "{{count}} new items",
     "newVersionTitle": "New version available!",
     "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it to access all the new features and avoid malfunctions.",
     "next": "Next",
@@ -292,6 +294,7 @@
     "somethingWentWrong": "Something went wrong, try again later",
     "startRefresh": "Loading",
     "staffList": "Staff list",
+    "staffMemberUnavailable": "Staff member unavailable",
     "status": "Status",
     "stop": "Stop",
     "stopFollowing": "Stop following",
@@ -1112,7 +1115,14 @@
       "formula": "sum (grade * credits) / sum of credits"
     },
     "yourCareer": "Your career",
-    "hideAndShowButton": "grades visibility toggle"
+    "totalCredits": "Total credits",
+    "notShown": "Grades hidden",
+    "showDetails": "Click to open the complete transcript",
+    "hideAndShowButton": "grades visibility toggle",
+    "finalAverageLabel": "Admission average",
+    "weightedAverageLabel": "Weighted average of grades",
+    "estimatedFinalGrade": "Estimated final grade",
+    "estimatedFinalGradePurged": "Estimated final grade purged"
   },
   "videoControls": {
     "changePlaybackRate": "Change playback rate",
