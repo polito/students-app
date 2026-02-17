@@ -694,13 +694,26 @@
     "fail": "Fail",
     "pass": "Pass"
   },
+  "guideFieldListItem": {
+    "copyToClipboard": "Copy to clipboard",
+    "copyValue": "Copy value",
+    "tapToCopy": "tap to copy"
+  },
   "guideScreen": {
     "copiedFieldFeedback": "{{field}} copied",
+    "fieldsAvailable": "fields available",
+    "guideFields": "Guide fields",
+    "guideSections": "Guide sections",
+    "introduction": "Introduction",
+    "sectionsAvailable": "sections available",
     "title": "Guide"
   },
   "guidesScreen": {
+    "guidesList": "Guides list",
+    "tapToOpenGuide": "Tap to open guide",
     "title": "Guides",
-    "total": "There are {{ total }} guides"
+    "total": "There are {{ total }} guides",
+    "unreadGuide": "unread"
   },
   "jobOfferScreen": {
     "application": "Application",

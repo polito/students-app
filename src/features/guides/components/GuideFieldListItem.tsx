@@ -27,12 +27,32 @@ export const GuideFieldListItem = ({ field }: Props) => {
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={[
+        field.label,
+        ' - ',
+        field.value,
+        field.isCopyEnabled ? `, ${t('guideFieldListItem.tapToCopy')}` : '',
+      ].join('')}
       title={
         <View style={styles.row}>
           <Text style={[styles.text, styles.label]}>{field.label}</Text>
           <TouchableOpacity
             activeOpacity={field.isCopyEnabled ? 0.2 : 1}
             onPress={copyToClipboard}
+            accessible={field.isCopyEnabled}
+            accessibilityRole={field.isCopyEnabled ? 'button' : undefined}
+            accessibilityLabel={
+              field.isCopyEnabled
+                ? `${t('guideFieldListItem.copyValue')} ${field.value}`
+                : undefined
+            }
+            accessibilityHint={
+              field.isCopyEnabled
+                ? t('guideFieldListItem.copyToClipboard')
+                : undefined
+            }
           >
             <Text weight="semibold" style={styles.text}>
               {field.value}

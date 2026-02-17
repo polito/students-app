@@ -47,17 +47,26 @@ export const GuidesScreen = (_props: Props) => {
             }
             indented
             loading={guidesQuery.isLoading}
+            accessible={true}
+            accessibilityRole="list"
+            accessibilityLabel={t('guidesScreen.guidesList')}
           >
             {guidesQuery.data?.map((guide, index) => (
               <ListItem
+                accessibilityRole="button"
                 key={guide.id}
                 title={guide.listTitle}
                 unread={isUnread(guide.id)}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(
-                  index,
-                  guidesQuery.data.length,
-                )}
+                accessibilityLabel={[
+                  accessibilityListLabel(index, guidesQuery.data.length),
+                  ' - ',
+                  guide.listTitle,
+                  isUnread(guide.id)
+                    ? `, ${t('guidesScreen.unreadGuide')}`
+                    : '',
+                ].join('')}
+                accessibilityHint={t('guidesScreen.tapToOpenGuide')}
                 linkTo={{
                   screen: 'Guide',
                   params: { id: guide.id },

@@ -1004,13 +1004,26 @@
     "fail": "Ins",
     "pass": "Sup"
   },
+  "guideFieldListItem": {
+    "copyToClipboard": "Copia negli appunti",
+    "copyValue": "Copia valore",
+    "tapToCopy": "tocca per copiare"
+  },
   "guideScreen": {
     "copiedFieldFeedback": "{{field}} copiato",
+    "fieldsAvailable": "campi disponibili",
+    "guideFields": "Campi guida",
+    "guideSections": "Sezioni guida",
+    "introduction": "Introduzione",
+    "sectionsAvailable": "sezioni disponibili",
     "title": "Guida"
   },
   "guidesScreen": {
+    "guidesList": "Lista guide",
+    "tapToOpenGuide": "Tocca per aprire la guida",
     "title": "Guide",
-    "total": "Sono presenti {{ total }} guide"
+    "total": "Sono presenti {{ total }} guide",
+    "unreadGuide": "non letta"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
