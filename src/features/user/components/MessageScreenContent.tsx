@@ -10,6 +10,8 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
 
+import { DateTime, IANAZone } from 'luxon';
+
 import { HtmlView } from '../../../core/components/HtmlView';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { formatDateTime } from '../../../utils/dates';
@@ -28,6 +30,10 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
   const title = message?.title;
   const text = message?.message;
   const date = formatDateTime(message?.sentAt);
+  const accessibleDate = DateTime.fromJSDate(message?.sentAt, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).toFormat('dd MMMM yyyy HH:mm');
+
   const personQuery = useGetPerson(message?.senderId || undefined);
 
   // replace every url in string with a link
@@ -38,17 +44,36 @@ export const MessageScreenContent = ({ message, modal }: Props) => {
 
   return (
     <SafeAreaView>
-      <Section>
-        <Text variant="title" role="heading" style={styles.heading}>
+      <Section
+        accessible={true}
+        accessibilityLabel={[
+          title,
+          t('messagesScreen.sentAt'),
+          accessibleDate,
+          text,
+        ].join(', ')}
+        accessibilityRole="text"
+      >
+        <Text
+          accessible={false}
+          variant="title"
+          role="heading"
+          style={styles.heading}
+        >
           {title ?? ''}
         </Text>
         {!!hasDate && (
-          <Text variant="secondaryText" role="contentinfo" style={styles.date}>
+          <Text
+            accessible={false}
+            variant="secondaryText"
+            role="contentinfo"
+            style={styles.date}
+          >
             {date}
           </Text>
         )}
         {!!text && (
-          <View style={styles.textMessage}>
+          <View accessible={false} style={styles.textMessage}>
             <HtmlView
               props={{ source: { html }, baseStyle: { padding: 0 } }}
               variant="longProse"

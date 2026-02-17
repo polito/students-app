@@ -5,6 +5,8 @@ import { Message } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { DateTime, IANAZone } from 'luxon';
+
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useMarkMessageAsRead } from '../../../core/queries/studentHooks';
 import { formatDateTime } from '../../../utils/dates';
@@ -32,6 +34,9 @@ export const MessageListItem = ({
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(messageItem?.title);
   const sentAt = formatDateTime(messageItem.sentAt);
+  const accessibleDate = DateTime.fromJSDate(messageItem?.sentAt, {
+    zone: IANAZone.create('Europe/Rome'),
+  }).toFormat('dd MMMM yyyy HH:mm');
 
   const onPressItem = () => {
     if (isSwiping) return;
@@ -54,7 +59,8 @@ export const MessageListItem = ({
         accessibilityLabel,
         title,
         t('messagesScreen.sentAt'),
-        sentAt,
+        accessibleDate,
+        t('messagesScreen.clickToNavigate'),
       ].join(', ')}
       subtitle={sentAt}
     />

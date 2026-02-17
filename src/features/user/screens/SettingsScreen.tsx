@@ -55,30 +55,22 @@ import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
 import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
 
-const CleanCacheListItem = () => {
+type CleanCacheListItemProps = {
+  cacheSize?: number;
+  refreshSize: () => void;
+};
+const CleanCacheListItem = ({
+  cacheSize,
+  refreshSize,
+}: CleanCacheListItemProps) => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-
   const { fontSizes } = useTheme();
   const filesCache = useCoursesFilesCachePath();
-  const [cacheSize, setCacheSize] = useState<number>();
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('settingsScreen.cleanCacheConfirmMessage'),
   });
-  const refreshSize = () => {
-    if (filesCache) {
-      stat(filesCache)
-        .then(({ size }) => {
-          setCacheSize(size);
-        })
-        .catch(() => {
-          setCacheSize(0);
-        });
-    }
-  };
-
-  useEffect(refreshSize, [filesCache]);
   return (
     <ListItem
       isAction
@@ -86,6 +78,12 @@ const CleanCacheListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
+      accessibilityLabel={[
+        t('common.cleanCourseFiles'),
+        t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
+          size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
+        }),
+      ].join(', ')}
       accessibilityRole="button"
       disabled={cacheSize === 0}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
@@ -265,10 +263,13 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.important')}. ${t(
-          `common.activeStatus.${notifications?.important}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.important'),
+          notifications?.important ? t('common.enabled') : t('common.disabled'),
+          // notifications?.important
+          //   ? t('common.click2Deactivate')
+          //   : t('common.click2Active'),
+        ].join(', ')}
         title={t('notifications.important')}
         value={notifications?.important}
         onChange={onChangeNotification('important')}
@@ -279,10 +280,13 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.events')}. ${t(
-          `common.activeStatus.${notifications?.events}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.events'),
+          notifications?.events ? t('common.enabled') : t('common.disabled'),
+          // notifications?.events
+          //   ? t('common.click2Deactivate')
+          //   : t('common.click2Active'),
+        ].join(', ')}
         title={t('notifications.events')}
         value={notifications?.events}
         onChange={onChangeNotification('events')}
@@ -291,10 +295,13 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.presence')}. ${t(
-          `common.activeStatus.${notifications?.presence}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.activeStatus'),
+          notifications?.presence ? t('common.enabled') : t('common.disabled'),
+          // notifications?.presence
+          //   ? t('common.click2Deactivate')
+          //   : t('common.click2Active'),
+        ].join(', ')}
         title={t('notifications.reservationPresence')}
         value={notifications?.presence}
         onChange={onChangeNotification('presence')}
@@ -378,18 +385,48 @@ export const SettingsScreen = () => {
       handleKeyRemoval();
     }
   }, [mfaStatus?.status, localMfaKey, handleKeyRemoval]);
+  const { colorScheme } = usePreferencesContext();
+  const { language } = usePreferencesContext();
+  const [cacheSize, setCacheSize] = useState<number>();
+  const filesCache = useCoursesFilesCachePath();
+  const refreshSize = () => {
+    if (filesCache) {
+      stat(filesCache)
+        .then(({ size }) => {
+          setCacheSize(size);
+        })
+        .catch(() => {
+          setCacheSize(0);
+        });
+    }
+  };
+  useEffect(refreshSize, [filesCache]);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         <View style={styles.container}>
-          <Section>
+          <Section
+            accessible={true}
+            accessibilityLabel={[
+              t('common.theme'),
+              t(`theme.${colorScheme}`),
+              t('settingsScreen.openThemeMenu'),
+            ].join(', ')}
+          >
             <SectionHeader title={t('common.theme')} />
             <OverviewList indented>
               <VisualizationListItem />
             </OverviewList>
           </Section>
-          <Section>
+          <Section
+            accessible={true}
+            accessibilityLabel={[
+              t('common.language'),
+              t(`common.${language}`),
+              t('settingsScreen.openLanguageMenu'),
+            ].join(', ')}
+          >
             <SectionHeader title={t('common.language')} />
             <OverviewList indented>
               <LanguageListItem />
@@ -437,10 +474,22 @@ export const SettingsScreen = () => {
               />
             </OverviewList>
           </Section>
-          <Section>
+          <Section
+            accessible={true}
+            accessibilityLabel={[
+              t('common.cache'),
+              t('common.cleanCourseFiles'),
+              t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
+                size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
+              }),
+            ].join(', ')}
+          >
             <SectionHeader title={t('common.cache')} />
             <OverviewList indented>
-              <CleanCacheListItem />
+              <CleanCacheListItem
+                refreshSize={refreshSize}
+                cacheSize={cacheSize}
+              />
             </OverviewList>
           </Section>
           <Col ph={4}>
