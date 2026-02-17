@@ -485,10 +485,12 @@
     "members": "membri",
     "minutes": "Minuti",
     "more": "Più",
+    "notVisibleCourseCountLabel": "Sono presenti {{total}} corsi nascosti",
     "navigate": "Naviga",
     "newItems": "{{count}} nuovo elemento",
     "newItems_plural": "{{count}} nuovi elementi",
     "newVersionTitle": "Nuova versione disponibile!",
+    "openInBrowser": "Apre nel browser",
     "newVersionBody": "È disponibile una nuova versione di PoliTO Students ({{newVersion}}).\n\nAggiornala per avere a disposizione tutte le nuove funzionalità e non incorrere in malfunzionamenti.",
     "next": "Avanti",
     "noDataAvailable": "Nessun dato disponibile",
@@ -801,7 +803,8 @@
     "shortcode": "Codice insegnamento",
     "selectYear": "clicca per accedere agli anni precedenti",
     "nextLectureLabel": "Corso nell'agenda",
-    "nextLectureEmptyState": "Nessun corso trovato nell'agenda"
+    "nextLectureEmptyState": "Nessun corso trovato nell'agenda",
+    "preferencesHint": "Visualizza le preferenze del corso"
   },
   "courseLecturesTab": {
     "emptyState": "Non ci sono lezioni",

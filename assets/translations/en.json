@@ -238,6 +238,7 @@
     "newItems": "{{count}} new item",
     "newItems_plural": "{{count}} new items",
     "newVersionTitle": "New version available!",
+    "openInBrowser": "Opens in browser",
     "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it to access all the new features and avoid malfunctions.",
     "next": "Next",
     "noDataAvailable": "No data available",
@@ -508,8 +509,11 @@
     "teacherLabel": "Teacher",
     "title": "Info",
     "yearLabel": "Year",
+    "shortcode": "Course code",
+    "selectYear": "tap to access previous years",
     "nextLectureLabel": "Course in agenda",
-    "nextLectureEmptyState": "No course found in agenda"
+    "nextLectureEmptyState": "No course found in agenda",
+    "preferencesHint": "View course preferences"
   },
   "courseLecturesTab": {
     "emptyState": "There are no lectures here",
