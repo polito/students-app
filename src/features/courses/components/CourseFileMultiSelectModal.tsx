@@ -130,7 +130,7 @@ export const CourseFileMultiSelectModal = ({
   const [searchFilter, setSearchFilter] = useState('');
   const closingForActionRef = useRef<'download' | 'remove' | false>(false);
   const { height: windowHeight } = useWindowDimensions();
-  const { top: safeAreaTop, bottom: safeAreaBottom } = useSafeAreaInsets();
+  const { top: safeAreaTop } = useSafeAreaInsets();
   const { spacing } = useTheme();
   const styles = useStylesheet(createStyles);
 
@@ -357,7 +357,6 @@ export const CourseFileMultiSelectModal = ({
           {
             height: windowHeight - spacing[12],
             paddingTop: safeAreaTop,
-            paddingBottom: safeAreaBottom,
           },
         ]}
       >
@@ -466,30 +465,26 @@ export const CourseFileMultiSelectModal = ({
           }}
         />
 
-        <View style={[styles.ctaRow, { paddingBottom: spacing[2] }]}>
-          <View style={styles.ctaButtonWrap}>
-            <CtaButton
-              title={modalDownloadButtonTitle}
-              icon={faCloudArrowDown}
-              action={handleDownloadPress}
-              disabled={isModalDownloadButtonDisabled}
-              absolute={false}
-              variant="filled"
-              style={downloadButtonStyle}
-              progress={downloadButtonProgress}
-            />
-          </View>
-          <View style={styles.ctaButtonWrap}>
-            <CtaButton
-              title={removeButtonTitle}
-              icon={faTrash}
-              action={handleRemovePress}
-              style={removeButtonStyle}
-              disabled={isRemoveButtonDisabled}
-              absolute={false}
-              destructive={true}
-            />
-          </View>
+        <View style={styles.ctaRow}>
+          <CtaButton
+            title={modalDownloadButtonTitle}
+            icon={faCloudArrowDown}
+            action={handleDownloadPress}
+            disabled={isModalDownloadButtonDisabled}
+            absolute={false}
+            variant="filled"
+            style={downloadButtonStyle}
+            progress={downloadButtonProgress}
+          />
+          <CtaButton
+            title={removeButtonTitle}
+            icon={faTrash}
+            action={handleRemovePress}
+            style={removeButtonStyle}
+            disabled={isRemoveButtonDisabled}
+            absolute={false}
+            destructive={true}
+          />
         </View>
       </View>
     </BottomModal>
@@ -506,7 +501,6 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     },
     header: {
       paddingHorizontal: spacing[4],
-      paddingVertical: spacing[2],
     },
     searchBarWrap: {
       overflow: 'hidden',
@@ -524,16 +518,11 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     },
     listContent: {
       paddingHorizontal: spacing[4],
-      paddingBottom: spacing[4],
     },
     ctaRow: {
-      paddingVertical: 0,
       flexDirection: 'row',
       gap: spacing[4],
-      paddingHorizontal: spacing[4],
-      backgroundColor: colors.background,
-    },
-    ctaButtonWrap: {
-      flex: 1,
+      paddingHorizontal: spacing[6],
+      //backgroundColor: colors.background,
     },
   });
