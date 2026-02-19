@@ -42,6 +42,7 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
   const {
     enableMultiSelect,
+    setEnableMultiSelect,
     allFilesSelected,
     sortedData,
     setSortedData,
@@ -82,10 +83,10 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     (reason?: 'download' | 'remove') => {
       if (reason !== 'download' && reason !== 'remove') {
         handleCloseMultiSelectModal();
-        return;
       }
+      setEnableMultiSelect(false);
     },
-    [handleCloseMultiSelectModal],
+    [handleCloseMultiSelectModal, setEnableMultiSelect],
   );
 
   useEffect(() => {
