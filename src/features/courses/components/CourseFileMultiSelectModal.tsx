@@ -412,11 +412,8 @@ export const CourseFileMultiSelectModal = ({
                       <Checkbox
                         isChecked={isSelected}
                         onPress={() => handleToggleDirectory(dir)}
-                        textStyle={{ marginHorizontal: 0 }}
-                        containerStyle={{
-                          marginHorizontal: 0,
-                          marginVertical: 0,
-                        }}
+                        textStyle={styles.checkboxTrailingText}
+                        containerStyle={styles.checkboxTrailingContainer}
                       />
                     ) : undefined
                   }
@@ -452,11 +449,8 @@ export const CourseFileMultiSelectModal = ({
                   <Checkbox
                     isChecked={isSelected}
                     onPress={() => handleToggleFile(file)}
-                    textStyle={{ marginHorizontal: 0 }}
-                    containerStyle={{
-                      marginHorizontal: 0,
-                      marginVertical: 0,
-                    }}
+                    textStyle={styles.checkboxTrailingText}
+                    containerStyle={styles.checkboxTrailingContainer}
                   />
                 }
                 onPress={() => handleToggleFile(file)}
@@ -475,15 +469,17 @@ export const CourseFileMultiSelectModal = ({
             variant="filled"
             style={downloadButtonStyle}
             progress={downloadButtonProgress}
+            containerStyle={styles.ctaButtonContainer}
           />
           <CtaButton
             title={removeButtonTitle}
             icon={faTrash}
             action={handleRemovePress}
-            style={removeButtonStyle}
+            style={[removeButtonStyle, styles.ctaButton]}
             disabled={isRemoveButtonDisabled}
             absolute={false}
             destructive={true}
+            containerStyle={styles.ctaButtonContainer}
           />
         </View>
       </View>
@@ -518,11 +514,27 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     },
     listContent: {
       paddingHorizontal: spacing[4],
+      paddingBottom: spacing[20],
     },
     ctaRow: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
       flexDirection: 'row',
-      gap: spacing[4],
-      paddingHorizontal: spacing[6],
-      //backgroundColor: colors.background,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'stretch',
+    },
+    ctaButtonContainer: {},
+    ctaButton: {
+      marginBottom: 0,
+    },
+    checkboxTrailingText: {
+      marginHorizontal: 0,
+    },
+    checkboxTrailingContainer: {
+      marginHorizontal: 0,
+      marginVertical: 0,
     },
   });
