@@ -129,10 +129,15 @@ export const CourseFileMultiSelectModal = ({
   const { t } = useTranslation();
   const [searchFilter, setSearchFilter] = useState('');
   const closingForActionRef = useRef<'download' | 'remove' | false>(false);
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { top: safeAreaTop } = useSafeAreaInsets();
-  const { spacing } = useTheme();
+  const { spacing, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
+
+  const modalCtaTextStyle = useMemo(
+    () => (windowWidth < 400 ? { fontSize: fontSizes.sm } : undefined),
+    [windowWidth, fontSizes.sm],
+  );
 
   const { addFiles, removeFiles, contextFiles, downloads } = useDownloadQueue(
     courseId,
@@ -470,6 +475,7 @@ export const CourseFileMultiSelectModal = ({
             style={downloadButtonStyle}
             progress={downloadButtonProgress}
             containerStyle={styles.ctaButtonContainer}
+            textStyle={modalCtaTextStyle}
           />
           <CtaButton
             title={removeButtonTitle}
@@ -480,6 +486,7 @@ export const CourseFileMultiSelectModal = ({
             absolute={false}
             destructive={true}
             containerStyle={styles.ctaButtonContainer}
+            textStyle={modalCtaTextStyle}
           />
         </View>
       </View>

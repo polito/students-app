@@ -23,8 +23,11 @@ import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import {
+  CourseSectionEnum,
+  getCourseKey,
   useGetCourse,
   useUpdateCoursePreferences,
 } from '~/core/queries/courseHooks';
@@ -40,7 +43,6 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { buildCourseFileUrl } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext, useCourseContext } from '../contexts/CourseContext';
@@ -50,6 +52,7 @@ const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
   const { downloads, updateDownload } = useDownloadsContext();
+  const queryClient = useQueryClient();
 
   const { fontSizes } = useTheme();
   const [courseFilesCache] = useCourseFilesCachePath();
@@ -90,22 +93,14 @@ const CleanCourseFilesListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (courseFilesCache && (await confirm())) {
-          // Ottieni tutti i file del contesto prima di eliminarli
-          const filesInContext =
-            await fileDatabaseRef.current.getFilesByContext(ctx, ctxId);
-
-          // Aggiorna lo stato dei download per tutti i file del corso
-          filesInContext.forEach(file => {
-            const fileUrl = buildCourseFileUrl(courseId, String(file.id));
-            // Cerca tutte le chiavi di download che corrispondono a questo file
-            Object.keys(downloads).forEach(key => {
-              if (key.startsWith(fileUrl + ':')) {
-                updateDownload(key, {
-                  isDownloaded: false,
-                  phase: undefined,
-                });
-              }
-            });
+          // Aggiorna lo stato dei download: tutte le chiavi che riferiscono questa cache
+          Object.keys(downloads).forEach(key => {
+            if (key.includes(courseFilesCache)) {
+              updateDownload(key, {
+                isDownloaded: false,
+                phase: undefined,
+              });
+            }
           });
 
           // Elimina i file dal database
@@ -115,6 +110,9 @@ const CleanCourseFilesListItem = () => {
               text: t('coursePreferencesScreen.cleanCacheFeedback'),
             });
             refreshSize();
+            queryClient.invalidateQueries({
+              queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+            });
           });
         }
       }}

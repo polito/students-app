@@ -73,6 +73,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
 
   const {
     enableMultiSelect,
+    setEnableMultiSelect,
     allFilesSelected,
     sortedData,
     setSortedData,
@@ -124,10 +125,10 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
       setListRefreshKey(k => k + 1);
       if (reason !== 'download' && reason !== 'remove') {
         handleCloseMultiSelectModal();
-        return;
       }
+      setEnableMultiSelect(false);
     },
-    [handleCloseMultiSelectModal],
+    [handleCloseMultiSelectModal, setEnableMultiSelect],
   );
 
   useEffect(() => {
@@ -211,6 +212,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           onPressSortOption={onPressSortOption}
           onPressOption={onPressOption}
           isDirectoryView={true}
+          isInsideFolder={!!directoryId}
           isSelectDisabled={isDownloading || isRemoving}
         />
       </View>

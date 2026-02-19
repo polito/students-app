@@ -561,6 +561,7 @@ export const useFileManagement = ({
 
   return {
     enableMultiSelect,
+    setEnableMultiSelect,
     allFilesSelected,
     sortedData,
     setSortedData,
