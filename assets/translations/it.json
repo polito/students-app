@@ -402,7 +402,8 @@
     "fileCount_plural": "{{count}} file",
     "folderCount": "{{count}} cartella",
     "folderCount_plural": "{{count}} cartelle",
-    "empty": "Vuota"
+    "empty": "Vuota",
+    "unavailableDuringDownload": "cartella non accessibile durante il download"
   },
   "courseDirectoryScreen": {
     "clearSearch": "Cancella ricerca",

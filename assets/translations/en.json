@@ -390,7 +390,8 @@
     "fileCount_plural": "{{count}} files",
     "folderCount": "{{count}} folder",
     "folderCount_plural": "{{count}} folders",
-    "empty": "Empty"
+    "empty": "Empty",
+    "unavailableDuringDownload": "folder not available during download"
   },
   "courseDirectoryScreen": {
     "clearSearch": "Clear search",

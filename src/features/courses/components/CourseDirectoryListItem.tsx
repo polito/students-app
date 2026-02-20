@@ -73,6 +73,7 @@ export const CourseDirectoryListItem = ({
   const {
     downloads,
     downloadQueue,
+    getFilesByContext,
     addFilesToQueue,
     removeFilesFromQueue,
     updateDownload,
@@ -321,12 +322,25 @@ export const CourseDirectoryListItem = ({
     [getAllFilesInDirectory],
   );
 
+  const queueFilesForCourse = useMemo(
+    () => getFilesByContext(courseId, DownloadContext.Course),
+    [getFilesByContext, courseId],
+  );
+
   const isInQueue = useMemo(
     () =>
       directoryFileIds.some(fileId =>
-        downloadQueue.files.some(queuedFile => queuedFile.id === fileId),
+        queueFilesForCourse.some(queuedFile => queuedFile.id === fileId),
       ),
-    [downloadQueue.files, directoryFileIds],
+    [queueFilesForCourse, directoryFileIds],
+  );
+
+  const isFolderBeingDownloaded = useMemo(
+    () =>
+      downloadQueue.isDownloading &&
+      queueFilesForCourse.length > 0 &&
+      isInQueue,
+    [downloadQueue.isDownloading, queueFilesForCourse.length, isInQueue],
   );
 
   const handleSelection = useCallback(() => {
@@ -435,10 +449,11 @@ export const CourseDirectoryListItem = ({
     <DirectoryListItem
       title={item.name}
       subtitle={subtitle}
+      disabled={isFolderBeingDownloaded}
       onPress={() => {
         if (enableMultiSelect) {
           handleSelection();
-        } else {
+        } else if (!isFolderBeingDownloaded) {
           navigation.navigate('CourseDirectory', {
             courseId,
             directoryId: item.id,
@@ -449,6 +464,11 @@ export const CourseDirectoryListItem = ({
       trailingItem={trailingItem || undefined}
       isDownloaded={allFilesDownloaded}
       unread={hasUnreadFiles}
+      accessibilityLabel={
+        isFolderBeingDownloaded
+          ? `${item.name}, ${t('courseDirectoryListItem.unavailableDuringDownload')}`
+          : undefined
+      }
       {...rest}
     />
   );
