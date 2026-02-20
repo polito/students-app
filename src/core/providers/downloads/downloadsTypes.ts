@@ -19,6 +19,7 @@ export interface State {
   isDownloading: boolean;
   hasCompleted: boolean;
   hasFailure: boolean;
+  alreadyDownloadedKeysAtStart: Set<string>;
 }
 
 export type Action =
