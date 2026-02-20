@@ -109,13 +109,17 @@ export const useQueueManagement = ({
           dispatchProgress({ type: 'REMOVE_PROGRESS', key });
         });
 
+        const alreadyDownloadedAtStart =
+          state.alreadyDownloadedKeysAtStart ?? new Set<string>();
         let successCount = 0;
         let errorCount = 0;
         const hasActualFailure = currentQueue.some(file => {
           const key = getFileKey(file);
           const download = currentDownloads[key];
           if (download?.isDownloaded === true) {
-            successCount++;
+            if (!alreadyDownloadedAtStart.has(key)) {
+              successCount++;
+            }
             return false;
           }
           if (

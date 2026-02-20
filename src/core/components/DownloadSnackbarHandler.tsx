@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useDownloadsContext } from '../contexts/DownloadsContext';
 import { useFeedbackContext } from '../contexts/FeedbackContext';
+import { getFileKey } from '../providers/downloads/downloadsFileUtils';
 
 const DOWNLOAD_SNACKBAR_ID = 'download-progress';
 
@@ -14,8 +15,12 @@ const LARGE_FILES_MESSAGE_DELAY_MS = 4000;
 export const DownloadSnackbarHandler = () => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-  const { downloadQueue, stopAndClearAllDownloads, isRemovalInProgress } =
-    useDownloadsContext();
+  const {
+    downloads,
+    downloadQueue,
+    stopAndClearAllDownloads,
+    isRemovalInProgress,
+  } = useDownloadsContext();
   const downloadSnackbarShownRef = useRef(false);
   const removeSnackbarShownRef = useRef(false);
   const stopAndClearAllDownloadsRef = useRef(stopAndClearAllDownloads);
@@ -30,11 +35,30 @@ export const DownloadSnackbarHandler = () => {
 
   const isDownloading =
     downloadQueue.isDownloading && downloadQueue.files.length > 0;
-  const totalCount = downloadQueue.files.length;
-  const currentIndex = Math.min(downloadQueue.currentFileIndex + 1, totalCount);
-  const hasLargeFilesInQueue = downloadQueue.files.some(
-    f => (f.sizeInKiloBytes ?? 0) > LARGE_FILE_SIZE_KB,
-  );
+  const filesToDownloadCount = downloadQueue.files.filter(
+    f => !downloads[getFileKey(f)]?.isDownloaded,
+  ).length;
+  const totalToDownloadRef = useRef(0);
+  if (
+    isDownloading &&
+    totalToDownloadRef.current === 0 &&
+    filesToDownloadCount > 0
+  ) {
+    totalToDownloadRef.current = filesToDownloadCount;
+  }
+  if (!isDownloading) {
+    totalToDownloadRef.current = 0;
+  }
+  const totalCount = isDownloading
+    ? totalToDownloadRef.current || filesToDownloadCount
+    : 0;
+  const completedNewCount = isDownloading
+    ? totalCount - filesToDownloadCount
+    : 0;
+  const currentIndex = Math.min(completedNewCount + 1, totalCount) || 1;
+  const hasLargeFilesInQueue = downloadQueue.files
+    .filter(f => !downloads[getFileKey(f)]?.isDownloaded)
+    .some(f => (f.sizeInKiloBytes ?? 0) > LARGE_FILE_SIZE_KB);
 
   const [largeFilesMessageVisible, setLargeFilesMessageVisible] =
     useState(false);

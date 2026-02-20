@@ -11,6 +11,7 @@ export const initialState: State = {
   isDownloading: false,
   hasCompleted: false,
   hasFailure: false,
+  alreadyDownloadedKeysAtStart: new Set(),
 };
 
 export const reducer = (state: State, action: Action): State => {
@@ -36,14 +37,23 @@ export const reducer = (state: State, action: Action): State => {
           [action.key]: { ...state.downloads[action.key], ...action.updates },
         },
       };
-    case 'START_DOWNLOAD':
+    case 'START_DOWNLOAD': {
+      const keyOf = (f: (typeof state.queue)[0]) =>
+        `${f.request.source}:${f.request.destination}`;
+      const alreadyDownloadedKeysAtStart = new Set(
+        state.queue
+          .filter(f => state.downloads[keyOf(f)]?.isDownloaded === true)
+          .map(keyOf),
+      );
       return {
         ...state,
         isDownloading: true,
         activeIds: new Set(),
         hasCompleted: false,
         hasFailure: false,
+        alreadyDownloadedKeysAtStart,
       };
+    }
     case 'STOP_DOWNLOAD':
       return { ...state, isDownloading: false, activeIds: new Set() };
     case 'ADD_ACTIVE_ID':
@@ -64,13 +74,18 @@ export const reducer = (state: State, action: Action): State => {
         activeIds: new Set(),
         hasCompleted: true,
         hasFailure: false,
+        alreadyDownloadedKeysAtStart: new Set(),
       };
     case 'SET_FAILURE':
       return { ...state, hasFailure: true };
     case 'RESET':
       return initialState;
     case 'RESTORE':
-      return action.state;
+      return {
+        ...action.state,
+        alreadyDownloadedKeysAtStart:
+          action.state.alreadyDownloadedKeysAtStart ?? new Set(),
+      };
     default:
       return state;
   }
