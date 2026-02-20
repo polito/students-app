@@ -35,27 +35,10 @@ export const DownloadSnackbarHandler = () => {
 
   const isDownloading =
     downloadQueue.isDownloading && downloadQueue.files.length > 0;
-  const filesToDownloadCount = downloadQueue.files.filter(
-    f => !downloads[getFileKey(f)]?.isDownloaded,
-  ).length;
-  const totalToDownloadRef = useRef(0);
-  if (
-    isDownloading &&
-    totalToDownloadRef.current === 0 &&
-    filesToDownloadCount > 0
-  ) {
-    totalToDownloadRef.current = filesToDownloadCount;
-  }
-  if (!isDownloading) {
-    totalToDownloadRef.current = 0;
-  }
-  const totalCount = isDownloading
-    ? totalToDownloadRef.current || filesToDownloadCount
-    : 0;
-  const completedNewCount = isDownloading
-    ? totalCount - filesToDownloadCount
-    : 0;
-  const currentIndex = Math.min(completedNewCount + 1, totalCount) || 1;
+  const totalCount = downloadQueue.totalToDownloadAtStart || 0;
+  const completedToDownloadCount = downloadQueue.completedToDownloadCount || 0;
+  const currentIndex =
+    totalCount > 0 ? Math.min(completedToDownloadCount + 1, totalCount) : 1;
   const hasLargeFilesInQueue = downloadQueue.files
     .filter(f => !downloads[getFileKey(f)]?.isDownloaded)
     .some(f => (f.sizeInKiloBytes ?? 0) > LARGE_FILE_SIZE_KB);
