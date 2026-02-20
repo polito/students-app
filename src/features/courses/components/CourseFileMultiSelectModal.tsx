@@ -12,11 +12,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   faCloudArrowDown,
   faSearch,
+  faTimes,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
 import { FileListItem } from '@lib/ui/components/FileListItem';
+import { IconButton } from '@lib/ui/components/IconButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Row } from '@lib/ui/components/Row';
 import { TextButton } from '@lib/ui/components/TextButton';
@@ -366,7 +368,13 @@ export const CourseFileMultiSelectModal = ({
         ]}
       >
         <Row align="center" justify="space-between" style={styles.header}>
-          <TextButton onPress={onClose}>{t('common.done')}</TextButton>
+          <IconButton
+            accessibilityLabel={t('common.close')}
+            accessibilityRole="button"
+            icon={faTimes}
+            onPress={onClose}
+            adjustSpacing="left"
+          />
           <TextButton onPress={handleToggleSelectAll}>
             {allFilesSelected ? t('common.deselectAll') : t('common.selectAll')}
           </TextButton>
