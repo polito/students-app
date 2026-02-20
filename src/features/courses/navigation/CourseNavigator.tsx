@@ -15,7 +15,6 @@ import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseContext } from '../contexts/CourseContext';
-import { CourseFilesCacheProvider } from '../providers/CourseFilesCacheProvider';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
 import { CourseInfoScreen } from '../screens/CourseInfoScreen';
 import { CourseLecturesScreen } from '../screens/CourseLecturesScreen';
@@ -137,72 +136,70 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
   ]);
   return (
     <CourseContext.Provider value={id}>
-      <CourseFilesCacheProvider>
-        <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
-          <TopTabs.Screen
-            name="CourseInfoScreen"
-            component={CourseInfoScreen}
-            options={{
-              title: t('courseInfoTab.title'),
-            }}
-          />
-          <TopTabs.Screen
-            name="CourseNoticesScreen"
-            component={CourseNoticesScreen}
-            options={{
-              title: t('courseNoticesTab.title'),
-              tabBarBadge: () => {
-                const count = getUnreadsCount([
-                  'teaching',
-                  'courses',
-                  id.toString(),
-                  'notices',
-                ]);
-                return count && count > 0 ? <Text>{count}</Text> : <Text />;
-              },
-            }}
-          />
-          <TopTabs.Screen
-            name="CourseFilesScreen"
-            component={FileNavigator}
-            options={{
-              title: t('courseFilesTab.title'),
-              tabBarBadge: () => {
-                const count = getUnreadsCount([
-                  'teaching',
-                  'courses',
-                  id.toString(),
-                  'files',
-                ]);
-                return count && count > 0 ? <Text>{count}</Text> : <Text />;
-              },
-            }}
-          />
-          <TopTabs.Screen
-            name="CourseLecturesScreen"
-            component={CourseLecturesScreen}
-            options={{
-              title: t('courseLecturesTab.title'),
-              tabBarBadge: () => {
-                const count = getUnreadsCount([
-                  'teaching',
-                  'courses',
-                  id.toString(),
-                  'lectures',
-                ]);
-                return count && count > 0 ? <Text>{count}</Text> : <Text />;
-              },
-            }}
-          />
-          <TopTabs.Screen
-            name="CourseAssignmentsScreen"
-            component={CourseAssignmentsScreen}
-            options={{
-              title: t('courseAssignmentsTab.title'),
-            }}
-          />
-        </TopTabs.Navigator>
-      </CourseFilesCacheProvider>
+      <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
+        <TopTabs.Screen
+          name="CourseInfoScreen"
+          component={CourseInfoScreen}
+          options={{
+            title: t('courseInfoTab.title'),
+          }}
+        />
+        <TopTabs.Screen
+          name="CourseNoticesScreen"
+          component={CourseNoticesScreen}
+          options={{
+            title: t('courseNoticesTab.title'),
+            tabBarBadge: () => {
+              const count = getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'notices',
+              ]);
+              return count && count > 0 ? <Text>{count}</Text> : <Text />;
+            },
+          }}
+        />
+        <TopTabs.Screen
+          name="CourseFilesScreen"
+          component={FileNavigator}
+          options={{
+            title: t('courseFilesTab.title'),
+            tabBarBadge: () => {
+              const count = getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'files',
+              ]);
+              return count && count > 0 ? <Text>{count}</Text> : <Text />;
+            },
+          }}
+        />
+        <TopTabs.Screen
+          name="CourseLecturesScreen"
+          component={CourseLecturesScreen}
+          options={{
+            title: t('courseLecturesTab.title'),
+            tabBarBadge: () => {
+              const count = getUnreadsCount([
+                'teaching',
+                'courses',
+                id.toString(),
+                'lectures',
+              ]);
+              return count && count > 0 ? <Text>{count}</Text> : <Text />;
+            },
+          }}
+        />
+        <TopTabs.Screen
+          name="CourseAssignmentsScreen"
+          component={CourseAssignmentsScreen}
+          options={{
+            title: t('courseAssignmentsTab.title'),
+          }}
+        />
+      </TopTabs.Navigator>
     </CourseContext.Provider>
   );
 };

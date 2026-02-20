@@ -4,6 +4,7 @@ import Mapbox from '@rnmapbox/maps';
 
 import { AppContent } from './core/components/AppContent';
 import { DialogProvider } from './core/components/Dialog';
+import { DownloadSnackbarHandler } from './core/components/DownloadSnackbarHandler';
 import { ApiProvider } from './core/providers/ApiProvider';
 import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { FeedbackProvider } from './core/providers/FeedbackProvider';
@@ -26,6 +27,7 @@ const App = () => {
             <FeedbackProvider>
               <ApiProvider>
                 <DownloadsProvider>
+                  <DownloadSnackbarHandler />
                   <DialogProvider />
                   <AppContent />
                 </DownloadsProvider>

@@ -162,11 +162,27 @@
     "department": "Dipartimento",
     "desk": "Cattedra",
     "done": "Fatto",
+    "cancelSelection": "Annulla selezione",
+    "selectAll": "Seleziona tutto",
+    "deselectAll": "Deseleziona tutto",
+    "selectDirectories": "Seleziona directory",
+    "hideFolders": "Visualizza per file",
+    "showFolders": "Visualizza per cartelle",
+    "selectEverything": "Seleziona tutto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadInProgress": "Download in corso",
+    "downloadInProgressCount": "Download in corso {{current}}/{{total}}",
+    "downloadLargeFilesPleaseWait": "Alcuni file sono molto grandi, attendere.",
+    "downloadProgress": "Scaricando {{current}} di {{total}}",
+    "downloadCompleted": "Tutti i file scaricati con successo",
+    "downloadCompletedShort": "Download completato",
+    "removeInProgress": "Rimozione file in corso",
+    "removeCompletedShort": "File rimossi",
+    "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti",
     "downloadStatus": {
       "false": "Non scaricato",
       "true": "Scaricato"
@@ -234,6 +250,7 @@
     "minutes": "Minuti",
     "more": "Più",
     "navigate": "Naviga",
+    "newest": "Più recente",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "newVersionTitle": "Nuova versione disponibile!",
@@ -250,6 +267,9 @@
     "objectives": "Obiettivi formativi",
     "of": "Su",
     "ok": "Ok",
+    "oldest": "Meno recente",
+    "yes": "Sì",
+    "no": "No",
     "or": "oppure",
     "open": "Apri",
     "openSettings": "Apri impostazioni",
@@ -264,6 +284,8 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "orderByNameAZ": "Nome A-Z",
+    "orderByNameZA": "Nome Z-A",
     "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
@@ -277,12 +299,17 @@
     "refresh": "Aggiorna",
     "remaining": "{{value}} rimanenti",
     "remove": "Rimuovi",
+    "removeAll": "Rimuovi tutti",
+    "removeAllDownloaded": "Rimuovi tutti i file scaricati",
+    "downloadAttachment": "Scarica allegato",
+    "removeAttachment": "Rimuovi allegato",
     "reset": "Reimposta",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
     "search": "Cerca",
     "seat": "Postazione",
+    "select": "Seleziona",
     "selectAnOption": "Seleziona una delle opzioni",
     "selectColor": "Seleziona il colore",
     "series": "Serie",
@@ -370,7 +397,13 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} file"
+    "subtitle_plural": "{{count}} file",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} file",
+    "folderCount": "{{count}} cartella",
+    "folderCount_plural": "{{count}} cartelle",
+    "empty": "Vuota",
+    "unavailableDuringDownload": "cartella non accessibile durante il download"
   },
   "courseDirectoryScreen": {
     "clearSearch": "Cancella ricerca",
@@ -378,7 +411,9 @@
     "emptyFolder": "La cartella è vuota",
     "noResult": "Nessun risultato trovato",
     "navigateRecentFiles": "Sfoglia file recenti",
-    "search": "Cerca"
+    "search": "Cerca",
+    "downloadSelected": "Scarica file selezionati",
+    "stopDownload": "Ferma download"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
@@ -391,6 +426,9 @@
     "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
+    "removeFilesTitle": "Rimuovi file",
+    "removeFileConfirmation": "Il file verrà rimosso solo localmente dal tuo dispositivo. Vuoi continuare?",
+    "removeFilesConfirmation": "I {{count}} file verranno rimossi solo localmente dal tuo dispositivo. Vuoi continuare?",
     "title": "Materiale"
   },
   "courseGuideScreen": {
@@ -519,7 +557,9 @@
     "showInExtractsSubtitle": "In home screen e agenda"
   },
   "courseScreen": {
-    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi.",
+    "fileIntegrityCheckFailed": "Controllo integrità file fallito. Il file scaricato potrebbe essere corrotto.",
+    "fileNotFound": "Il file non è stato trovato sul dispositivo. Prova a riscaricarlo."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Collegati alla diretta",

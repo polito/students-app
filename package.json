@@ -112,7 +112,6 @@
     "react-native-uuid": "^2.0.3",
     "react-native-video": "^6.16.1",
     "react-string-replace": "^1.1.1",
-    "react-usestateref": "^1.0.9",
     "reanimated-color-picker": "^4.0.1",
     "semver": "^7.6.3",
     "superjson": "^2.2.1",

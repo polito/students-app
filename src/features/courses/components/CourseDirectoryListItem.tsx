@@ -1,39 +1,473 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
+import { exists } from 'react-native-fs';
 
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
-import { CourseDirectory } from '@polito/api-client';
+import {
+  CourseDirectory,
+  CourseDirectoryEntry,
+  CourseFileOverview,
+} from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { Checkbox } from '~/core/components/Checkbox';
+
+import {
+  DownloadContext,
+  DownloadPhase,
+  useDownloadsContext,
+} from '../../../core/contexts/DownloadsContext';
+import { getFileDatabase } from '../../../core/database/FileDatabase';
+import { useNotifications } from '../../../core/hooks/useNotifications';
+import { useGetCourseFiles } from '../../../core/queries/courseHooks';
+import {
+  buildCourseFilePath,
+  buildCourseFileUrl,
+  formatFileSize,
+} from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+import { isDirectory } from '../utils/fs-entry';
+
+const isFile = (item: {
+  type: string;
+}): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
+
+const getDirectoryStatsRecursive = (
+  dir: CourseDirectory,
+): { fileCount: number; totalSizeInKiloBytes: number } => {
+  let fileCount = 0;
+  let totalSizeInKiloBytes = 0;
+  for (const entry of dir.files) {
+    if (isFile(entry)) {
+      fileCount += 1;
+      totalSizeInKiloBytes += entry.sizeInKiloBytes ?? 0;
+    } else {
+      const sub = getDirectoryStatsRecursive(entry);
+      fileCount += sub.fileCount;
+      totalSizeInKiloBytes += sub.totalSizeInKiloBytes;
+    }
+  }
+  return { fileCount, totalSizeInKiloBytes };
+};
 
 interface Props {
   courseId: number;
   item: CourseDirectory;
+  enableMultiSelect?: boolean;
+  listRefreshKey?: number;
 }
 
 export const CourseDirectoryListItem = ({
   courseId,
   item,
+  enableMultiSelect = false,
+  listRefreshKey,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList, any>>();
   const { t } = useTranslation();
+  const {
+    downloads,
+    downloadQueue,
+    getFilesByContext,
+    addFilesToQueue,
+    removeFilesFromQueue,
+    updateDownload,
+  } = useDownloadsContext();
+  const [courseFilesCache] = useCourseFilesCachePath();
+  const courseFilesQuery = useGetCourseFiles(courseId);
+  const { getUnreadsCount } = useNotifications();
+
+  const [filesCheckedFromDB, setFilesCheckedFromDB] = useState<Set<string>>(
+    new Set(),
+  );
+  const fileDatabase = getFileDatabase();
+  const downloadsRef = useRef(downloads);
+  const updateDownloadRef = useRef(updateDownload);
+  downloadsRef.current = downloads;
+  updateDownloadRef.current = updateDownload;
+
+  const collectAllFilesRecursively = useCallback(
+    (
+      directory: CourseDirectory,
+      basePath: string,
+      allFiles: Array<{
+        id: string;
+        name: string;
+        url: string;
+        filePath: string;
+        sizeInKiloBytes?: number;
+      }>,
+    ) => {
+      const directoryFiles = directory.files.filter(isFile);
+      directoryFiles.forEach(file => {
+        const fileUrl = buildCourseFileUrl(courseId, file.id);
+        const cachedFilePath = buildCourseFilePath(
+          courseFilesCache,
+          basePath ? `/${basePath}` : undefined,
+          file.id,
+          file.name,
+          file.mimeType,
+        );
+
+        allFiles.push({
+          id: file.id,
+          name: file.name,
+          url: fileUrl,
+          filePath: cachedFilePath,
+          sizeInKiloBytes: file.sizeInKiloBytes,
+        });
+      });
+
+      const subDirectories = directory.files.filter(isDirectory);
+      subDirectories.forEach(subDir => {
+        const subDirPath = basePath
+          ? `${basePath}/${subDir.name}`
+          : subDir.name;
+        collectAllFilesRecursively(subDir, subDirPath, allFiles);
+      });
+    },
+    [courseId, courseFilesCache],
+  );
+
+  const getAllFilesInDirectory = useCallback(() => {
+    const allFiles: Array<{
+      id: string;
+      name: string;
+      url: string;
+      filePath: string;
+      sizeInKiloBytes?: number;
+    }> = [];
+
+    if (courseFilesQuery.data) {
+      const findDirectoryRecursive = (
+        searchId: string,
+        items: CourseDirectoryEntry[],
+      ): CourseDirectory | null => {
+        for (const currentItem of items) {
+          if (isDirectory(currentItem) && currentItem.id === searchId) {
+            return currentItem;
+          }
+          if (isDirectory(currentItem)) {
+            const found = findDirectoryRecursive(searchId, currentItem.files);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+
+      const fullDirectory = findDirectoryRecursive(
+        item.id,
+        courseFilesQuery.data,
+      );
+
+      if (fullDirectory) {
+        collectAllFilesRecursively(fullDirectory, item.name, allFiles);
+      } else {
+        collectAllFilesRecursively(item, item.name, allFiles);
+      }
+    } else {
+      collectAllFilesRecursively(item, item.name, allFiles);
+    }
+
+    return allFiles;
+  }, [courseFilesQuery.data, item, collectAllFilesRecursively]);
+
+  const allFilesWithKeys = useMemo(
+    () =>
+      getAllFilesInDirectory().map(f => ({
+        id: f.id,
+        key: `${f.url}:${f.filePath}`,
+      })),
+    [getAllFilesInDirectory],
+  );
+
+  const checkAllFilesDownloadedFromState = useCallback(() => {
+    if (allFilesWithKeys.length === 0) {
+      return false;
+    }
+    return allFilesWithKeys.every(
+      f =>
+        (downloads[f.key]?.isDownloaded === true ||
+          filesCheckedFromDB.has(f.id)) &&
+        !downloadQueue.activeDownloadIds.has(f.id),
+    );
+  }, [
+    allFilesWithKeys,
+    downloads,
+    filesCheckedFromDB,
+    downloadQueue.activeDownloadIds,
+  ]);
+
+  const allFilesDownloaded = useMemo(
+    () => checkAllFilesDownloadedFromState(),
+    [checkAllFilesDownloadedFromState],
+  );
+
+  const checkAllFilesDownloaded = useCallback(async () => {
+    const directoryFiles = item.files.filter(isFile);
+
+    if (directoryFiles.length === 0) {
+      return false;
+    }
+
+    const fileChecks = await Promise.all(
+      directoryFiles.map(async file => {
+        const cachedFilePath = buildCourseFilePath(
+          courseFilesCache,
+          `/${item.name}`,
+          file.id,
+          file.name,
+          file.mimeType,
+        );
+        const fileExists = await exists(cachedFilePath);
+        return fileExists;
+      }),
+    );
+
+    return fileChecks.every(fileExists => fileExists);
+  }, [item, courseFilesCache]);
+
+  useEffect(() => {
+    const checkFilesInDatabase = async () => {
+      const directoryFiles = item.files.filter(isFile);
+      if (directoryFiles.length === 0) return;
+
+      const downloadedFileIds = new Set<string>();
+
+      try {
+        const ctx = DownloadContext.Course;
+        const ctxId = courseId.toString();
+        const allFilesInContext = await fileDatabase.getFilesByContext(
+          ctx,
+          ctxId,
+        );
+        const filesMap = new Map(allFilesInContext.map(f => [f.id, f]));
+
+        for (const file of directoryFiles) {
+          try {
+            const fileRecord = filesMap.get(file.id);
+            if (fileRecord) {
+              const fileExists = await exists(fileRecord.path);
+              if (fileExists) {
+                downloadedFileIds.add(file.id);
+
+                const cachedFilePath = buildCourseFilePath(
+                  courseFilesCache,
+                  `/${item.name}`,
+                  file.id,
+                  file.name,
+                  file.mimeType,
+                );
+                const fileUrl = buildCourseFileUrl(courseId, file.id);
+                const downloadKey = `${fileUrl}:${cachedFilePath}`;
+                const currentDownloads = downloadsRef.current;
+
+                if (
+                  !currentDownloads[downloadKey] ||
+                  !currentDownloads[downloadKey].isDownloaded
+                ) {
+                  updateDownloadRef.current(downloadKey, {
+                    phase: DownloadPhase.Completed,
+                    isDownloaded: true,
+                  });
+                }
+              }
+            } else {
+              const cachedFilePath = buildCourseFilePath(
+                courseFilesCache,
+                `/${item.name}`,
+                file.id,
+                file.name,
+                file.mimeType,
+              );
+              const fileExists = await exists(cachedFilePath);
+              if (fileExists) {
+                downloadedFileIds.add(file.id);
+              }
+            }
+          } catch (error) {}
+        }
+      } catch (error) {}
+
+      setFilesCheckedFromDB(downloadedFileIds);
+    };
+
+    checkFilesInDatabase();
+  }, [
+    item.files,
+    item.name,
+    courseFilesCache,
+    courseId,
+    fileDatabase,
+    listRefreshKey,
+  ]);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      checkAllFilesDownloaded();
+    };
+
+    checkAllFilesDownloaded();
+    const unsubscribe = navigation.addListener('focus', handleFocus);
+    return unsubscribe;
+  }, [navigation, checkAllFilesDownloaded]);
+
+  const directoryFileIds = useMemo(
+    () => getAllFilesInDirectory().map(file => file.id),
+    [getAllFilesInDirectory],
+  );
+
+  const queueFilesForCourse = useMemo(
+    () => getFilesByContext(courseId, DownloadContext.Course),
+    [getFilesByContext, courseId],
+  );
+
+  const isInQueue = useMemo(
+    () =>
+      directoryFileIds.some(fileId =>
+        queueFilesForCourse.some(queuedFile => queuedFile.id === fileId),
+      ),
+    [queueFilesForCourse, directoryFileIds],
+  );
+
+  const isFolderBeingDownloaded = useMemo(
+    () =>
+      downloadQueue.isDownloading &&
+      queueFilesForCourse.length > 0 &&
+      isInQueue,
+    [downloadQueue.isDownloading, queueFilesForCourse.length, isInQueue],
+  );
+
+  const handleSelection = useCallback(() => {
+    const allFiles = getAllFilesInDirectory();
+    if (allFiles.length === 0) return;
+
+    if (isInQueue) {
+      const fileIds = Array.from(new Set(allFiles.map(file => file.id)));
+      removeFilesFromQueue(fileIds);
+    } else {
+      addFilesToQueue(allFiles, courseId, DownloadContext.Course);
+    }
+  }, [
+    isInQueue,
+    getAllFilesInDirectory,
+    courseId,
+    addFilesToQueue,
+    removeFilesFromQueue,
+  ]);
+
+  const trailingItem = useMemo(
+    () =>
+      enableMultiSelect ? (
+        <Checkbox
+          isChecked={isInQueue}
+          onPress={handleSelection}
+          textStyle={{ marginHorizontal: 0 }}
+          containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
+        />
+      ) : null,
+    [enableMultiSelect, isInQueue, handleSelection],
+  );
+
+  const hasUnreadFiles = useMemo(() => {
+    const allFiles = getAllFilesInDirectory();
+    const totalUnreads = allFiles.reduce((count, file) => {
+      const fileNotificationScope = [
+        'teaching',
+        'courses',
+        courseId.toString(),
+        'files',
+        file.id,
+      ];
+      const unreadCount = getUnreadsCount(fileNotificationScope) ?? 0;
+      return count + unreadCount;
+    }, 0);
+    return totalUnreads > 0;
+  }, [getAllFilesInDirectory, courseId, getUnreadsCount]);
+
+  const fullDirectory = useMemo(() => {
+    if (!courseFilesQuery.data) return null;
+    const findDirectoryRecursive = (
+      searchId: string,
+      items: CourseDirectoryEntry[],
+    ): CourseDirectory | null => {
+      for (const currentItem of items) {
+        if (isDirectory(currentItem) && currentItem.id === searchId) {
+          return currentItem;
+        }
+        if (isDirectory(currentItem)) {
+          const found = findDirectoryRecursive(searchId, currentItem.files);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    return findDirectoryRecursive(item.id, courseFilesQuery.data) ?? item;
+  }, [courseFilesQuery.data, item]);
+
+  const { fileCount: recursiveFileCount, totalSizeInKiloBytes } = useMemo(
+    () => getDirectoryStatsRecursive(fullDirectory ?? item),
+    [fullDirectory, item],
+  );
+
+  const folderCount = useMemo(
+    () => item.files.filter(isDirectory).length,
+    [item.files],
+  );
+
+  const subtitle = useMemo(() => {
+    const countParts: string[] = [];
+    if (recursiveFileCount > 0) {
+      countParts.push(
+        t('courseDirectoryListItem.fileCount', {
+          count: recursiveFileCount,
+        }),
+      );
+    }
+    if (folderCount > 0) {
+      countParts.push(
+        t('courseDirectoryListItem.folderCount', {
+          count: folderCount,
+        }),
+      );
+    }
+    const countText = countParts.join(', ');
+    const sizeText =
+      totalSizeInKiloBytes > 0 ? formatFileSize(totalSizeInKiloBytes) : '';
+    if (countText && sizeText) {
+      return `${countText} - ${sizeText}`;
+    }
+    return countText || sizeText || t('courseDirectoryListItem.empty');
+  }, [recursiveFileCount, folderCount, totalSizeInKiloBytes, t]);
 
   return (
     <DirectoryListItem
       title={item.name}
-      subtitle={t('courseDirectoryListItem.subtitle', {
-        count: item.files.length,
-      })}
-      onPress={() =>
-        navigation.navigate('CourseDirectory', {
-          courseId,
-          directoryId: item.id,
-          directoryName: item.name,
-        })
+      subtitle={subtitle}
+      disabled={isFolderBeingDownloaded}
+      onPress={() => {
+        if (enableMultiSelect) {
+          handleSelection();
+        } else if (!isFolderBeingDownloaded) {
+          navigation.navigate('CourseDirectory', {
+            courseId,
+            directoryId: item.id,
+            directoryName: item.name,
+          });
+        }
+      }}
+      trailingItem={trailingItem || undefined}
+      isDownloaded={allFilesDownloaded}
+      unread={hasUnreadFiles}
+      accessibilityLabel={
+        isFolderBeingDownloaded
+          ? `${item.name}, ${t('courseDirectoryListItem.unavailableDuringDownload')}`
+          : undefined
       }
       {...rest}
     />

@@ -156,11 +156,27 @@
     "department": "Department",
     "desk": "Desk",
     "done": "Done",
+    "cancelSelection": "Cancel selection",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "selectDirectories": "Select directories",
+    "hideFolders": "View by files",
+    "showFolders": "View by folders",
+    "selectEverything": "Select everything",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
     "doubleTapToDeactivate": "Tap twice to deactivate",
     "download": "Download",
     "downloadError": "Something went wrong with the download",
+    "downloadInProgress": "Download in progress",
+    "downloadInProgressCount": "Download in progress {{current}}/{{total}}",
+    "downloadLargeFilesPleaseWait": "Some files are very large, please wait.",
+    "downloadProgress": "Downloading {{current}} of {{total}}",
+    "downloadCompleted": "All files downloaded successfully",
+    "downloadCompletedShort": "Download completed",
+    "removeInProgress": "Removing files",
+    "removeCompletedShort": "Files removed",
+    "downloadCompletedWithErrors": "{{successCount}} files downloaded, {{errorCount}} failed",
     "downloadStatus": {
       "false": "Not downloaded",
       "true": "Downloaded"
@@ -227,6 +243,7 @@
     "module": "Module",
     "more": "More",
     "navigate": "Navigate",
+    "newest": "Newest",
     "newItems": "New item",
     "newItems_plural": "New items",
     "newVersionTitle": "New version available!",
@@ -243,6 +260,9 @@
     "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
+    "oldest": "Oldest",
+    "yes": "Yes",
+    "no": "No",
     "or": "or",
     "open": "Open",
     "openSettings": "Open settings",
@@ -256,6 +276,8 @@
       "true": "Double tap to close"
     },
     "options": "Options",
+    "orderByNameAZ": "Name A-Z",
+    "orderByNameZA": "Name Z-A",
     "other": "Other",
     "pause": "Pause",
     "period": "Period",
@@ -269,11 +291,16 @@
     "refresh": "Refresh",
     "remaining": "{{value}} remaining",
     "remove": "Remove",
+    "removeAll": "Remove all",
+    "removeAllDownloaded": "Remove all downloaded files",
+    "downloadAttachment": "Download attachment",
+    "removeAttachment": "Remove attachment",
     "reset": "Reset",
     "retract": "Retract",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
     "search": "Search",
+    "select": "Select",
     "seat": "Seat",
     "selectAnOption": "Please select an option",
     "series": "Series",
@@ -358,7 +385,13 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} files"
+    "subtitle_plural": "{{count}} files",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} files",
+    "folderCount": "{{count}} folder",
+    "folderCount_plural": "{{count}} folders",
+    "empty": "Empty",
+    "unavailableDuringDownload": "folder not available during download"
   },
   "courseDirectoryScreen": {
     "clearSearch": "Clear search",
@@ -366,7 +399,9 @@
     "emptyFolder": "The folder is empty",
     "noResult": "No results found",
     "navigateRecentFiles": "View recent",
-    "search": "Search"
+    "search": "Search",
+    "downloadSelected": "Download selected files",
+    "stopDownload": "Stop download"
   },
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
@@ -379,6 +414,9 @@
     "empty": "There are no files",
     "navigateFolders": "Navigate folders",
     "recentSectionTitle": "Recent files",
+    "removeFilesTitle": "Remove files",
+    "removeFileConfirmation": "The file will be removed only locally from your device. Do you want to continue?",
+    "removeFilesConfirmation": "The {{count}} files will be removed only locally from your device. Do you want to continue?",
     "title": "Files"
   },
   "courseGuideScreen": {
@@ -507,7 +545,9 @@
     "showInExtractsSubtitle": "In home screen and agenda"
   },
   "courseScreen": {
-    "fileDownloadFailed": "The download failed. Please try again later."
+    "fileDownloadFailed": "The download failed. Please try again later.",
+    "fileIntegrityCheckFailed": "File integrity check failed. The downloaded file may be corrupted.",
+    "fileNotFound": "File not found on device. Please try downloading it again."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Join live streaming",

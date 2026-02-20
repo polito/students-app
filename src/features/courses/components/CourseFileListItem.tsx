@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 import { stat } from 'react-native-fs';
-import { extension, lookup } from 'react-native-mime-types';
 
 import {
   faCloudArrowDown,
@@ -14,16 +13,25 @@ import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
+import { CourseFileOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
+
+import { Checkbox } from '~/core/components/Checkbox';
 
 import { useFeedbackContext } from '../../../../src/core/contexts/FeedbackContext';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
-import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';
+import {
+  DownloadContext,
+  useDownloadsContext,
+} from '../../../core/contexts/DownloadsContext';
+import { useDownloadFile } from '../../../core/hooks/useDownloadFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { formatDateTime } from '../../../utils/dates';
-import { formatFileSize, splitNameAndExtension } from '../../../utils/files';
-import { notNullish } from '../../../utils/predicates';
+import {
+  buildCourseFilePath,
+  buildCourseFileUrl,
+  formatFileSize,
+} from '../../../utils/files';
 import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -39,6 +47,7 @@ export interface Props extends Partial<ListItemProps> {
   showCreatedDate?: boolean;
   onSwipeStart?: () => void;
   onSwipeEnd?: () => void;
+  enableMultiSelect?: boolean;
 }
 
 interface MenuProps extends Partial<ContextMenuProps> {
@@ -95,6 +104,7 @@ export const CourseFileListItem = memo(
     showSize = true,
     showLocation = false,
     showCreatedDate = true,
+    enableMultiSelect,
     ...rest
   }: Props) => {
     const { t } = useTranslation();
@@ -116,23 +126,27 @@ export const CourseFileListItem = memo(
       [courseId, item.id],
     );
     const [isCorrupted, setIsCorrupted] = useState(false);
-    const fileUrl = `${BASE_PATH}/courses/${courseId}/files/${item.id}`;
-    const cachedFilePath = useMemo(() => {
-      let ext: string | null = extension(item.mimeType!);
-      const [filename, extensionFromName] = splitNameAndExtension(item.name);
-      if (!ext && extensionFromName && lookup(extensionFromName)) {
-        ext = extensionFromName;
-      }
-      return [
-        courseFilesCache,
-        item.location?.substring(1), // Files in the top-level directory have an empty location, hence the `filter(Boolean)` below
-        [filename ? `${filename} (${item.id})` : item.id, ext]
-          .filter(notNullish)
-          .join('.'),
-      ]
-        .filter(Boolean)
-        .join('/');
-    }, [courseFilesCache, item]);
+    const { downloadQueue, addFilesToQueue, removeFilesFromQueue } =
+      useDownloadsContext();
+    const isInQueue = useMemo(
+      () => downloadQueue.files.some(f => f.id === item.id),
+      [downloadQueue.files, item.id],
+    );
+    const fileUrl = useMemo(
+      () => buildCourseFileUrl(courseId, item.id),
+      [courseId, item.id],
+    );
+    const cachedFilePath = useMemo(
+      () =>
+        buildCourseFilePath(
+          courseFilesCache,
+          item.location,
+          item.id,
+          item.name,
+          item.mimeType,
+        ),
+      [courseFilesCache, item.location, item.id, item.name, item.mimeType],
+    );
 
     const {
       isDownloaded,
@@ -142,7 +156,13 @@ export const CourseFileListItem = memo(
       refreshDownload,
       removeDownload,
       openFile,
-    } = useDownloadCourseFile(fileUrl, cachedFilePath, item.id);
+    } = useDownloadFile(
+      fileUrl,
+      cachedFilePath,
+      item.id,
+      DownloadContext.Course,
+      courseId.toString(),
+    );
 
     useEffect(() => {
       (async () => {
@@ -173,9 +193,12 @@ export const CourseFileListItem = memo(
       [showCreatedDate, item, showSize, showLocation],
     );
 
-    const openDownloadedFile = useCallback(async () => {
-      if (Platform.OS === 'android') {
-        if (!isDownloaded)
+    const openDownloadedFile = useCallback(
+      async (force = false) => {
+        if (!force && !isDownloaded) {
+          return;
+        }
+        if (Platform.OS === 'android' && force) {
           setFeedback({
             text:
               Platform.Version > 29
@@ -185,13 +208,18 @@ export const CourseFileListItem = memo(
                   }),
             isPersistent: false,
           });
-      }
-      openFile().catch(e => {
-        if (e instanceof UnsupportedFileTypeError) {
-          Alert.alert(t('common.error'), t('courseFileListItem.openFileError'));
         }
-      });
-    }, [openFile, t, cachedFilePath, setFeedback, isDownloaded]);
+        openFile().catch(e => {
+          if (e instanceof UnsupportedFileTypeError) {
+            Alert.alert(
+              t('common.error'),
+              t('courseFileListItem.openFileError'),
+            );
+          }
+        });
+      },
+      [openFile, t, cachedFilePath, setFeedback, isDownloaded],
+    );
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
@@ -200,9 +228,11 @@ export const CourseFileListItem = memo(
           return;
         }
         if (!isDownloaded) {
-          await startDownload();
-        }
-        if (navigation.isFocused()) {
+          const downloadSuccess = await startDownload();
+          if (downloadSuccess && navigation.isFocused()) {
+            openDownloadedFile(true);
+          }
+        } else if (navigation.isFocused()) {
           openDownloadedFile();
         }
       }
@@ -216,9 +246,46 @@ export const CourseFileListItem = memo(
       startDownload,
     ]);
 
+    const handleToggleQueue = useCallback(() => {
+      if (isInQueue) {
+        removeFilesFromQueue([item.id]);
+      } else {
+        addFilesToQueue(
+          [
+            {
+              id: item.id,
+              name: item.name,
+              url: fileUrl,
+              filePath: cachedFilePath,
+              sizeInKiloBytes: item.sizeInKiloBytes,
+            },
+          ],
+          courseId,
+          DownloadContext.Course,
+        );
+      }
+    }, [
+      isInQueue,
+      item.id,
+      item.name,
+      fileUrl,
+      cachedFilePath,
+      courseId,
+      removeFilesFromQueue,
+      addFilesToQueue,
+      item.sizeInKiloBytes,
+    ]);
+
     const trailingItem = useMemo(
       () =>
-        !isDownloaded ? (
+        enableMultiSelect ? (
+          <Checkbox
+            isChecked={isInQueue}
+            onPress={handleToggleQueue}
+            textStyle={{ marginHorizontal: 0 }}
+            containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
+          />
+        ) : !isDownloaded ? (
           downloadProgress == null ? (
             <IconButton
               icon={faCloudArrowDown}
@@ -236,9 +303,7 @@ export const CourseFileListItem = memo(
               icon={faXmark}
               accessibilityLabel={t('common.stop')}
               adjustSpacing="right"
-              onPress={() => {
-                stopDownload();
-              }}
+              onPress={stopDownload}
               {...iconProps}
               hitSlop={{
                 left: +spacing[2],
@@ -265,15 +330,18 @@ export const CourseFileListItem = memo(
           })
         ),
       [
+        enableMultiSelect,
+        isInQueue,
+        handleToggleQueue,
         isDownloaded,
         downloadProgress,
         t,
         downloadFile,
         iconProps,
         spacing,
+        stopDownload,
         refreshDownload,
         removeDownload,
-        stopDownload,
       ],
     );
 
@@ -287,7 +355,7 @@ export const CourseFileListItem = memo(
               : t('common.stop')
             : t('common.open')
         }
-        onPress={downloadFile}
+        onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
         title={item.name ?? t('common.unnamedFile')}

@@ -10,6 +10,18 @@ export const FeedbackProvider = ({ children }: PropsWithChildren) => {
   const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
 
   const setNextFeedback = (nextFeedback: Feedback | null) => {
+    if (
+      isSnackbarVisible &&
+      feedback &&
+      nextFeedback?.id &&
+      nextFeedback.id === feedback.id
+    ) {
+      setFeedback({
+        ...feedback,
+        ...nextFeedback,
+      });
+      return;
+    }
     if (isSnackbarVisible) {
       // A snackbar is already visible, so we need to hide it and then show the new one
       setIsSnackbarVisible(false);
