@@ -204,6 +204,18 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           ? (completedFiles + activeProgressSum / activeCount) / totalFiles
           : completedFiles / totalFiles
         : 0;
+    const alreadyDownloadedAtStart =
+      state.alreadyDownloadedKeysAtStart ?? new Set<string>();
+    const totalToDownloadAtStart = state.isDownloading
+      ? Math.max(0, state.queue.length - alreadyDownloadedAtStart.size)
+      : 0;
+    const completedToDownloadCount = state.isDownloading
+      ? state.queue.filter(
+          f =>
+            !alreadyDownloadedAtStart.has(getFileKey(f)) &&
+            state.downloads[getFileKey(f)]?.isDownloaded === true,
+        ).length
+      : 0;
     return {
       files: state.queue,
       isDownloading: state.isDownloading,
@@ -213,6 +225,8 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
       hasCompleted: state.hasCompleted,
       isProcessingFile: state.activeIds.size > 0,
       hasFailure: state.hasFailure,
+      totalToDownloadAtStart,
+      completedToDownloadCount,
     };
   }, [
     state.queue,
@@ -221,6 +235,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     state.hasCompleted,
     state.hasFailure,
     state.downloads,
+    state.alreadyDownloadedKeysAtStart,
     throttledProgresses,
   ]);
 

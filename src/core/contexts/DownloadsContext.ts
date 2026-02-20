@@ -48,6 +48,8 @@ export interface DownloadQueue {
   hasCompleted: boolean;
   isProcessingFile: boolean;
   hasFailure: boolean;
+  totalToDownloadAtStart: number;
+  completedToDownloadCount: number;
 }
 
 export type Downloads = Record<string, Download>;
