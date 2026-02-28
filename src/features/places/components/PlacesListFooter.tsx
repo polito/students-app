@@ -64,9 +64,8 @@ const createStyles = () =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'stretch',
-      gap: 10,
       alignSelf: 'stretch',
-      marginTop: '20%',
+      marginTop: '22%',
       marginBottom: Platform.OS === 'android' ? '20%' : 0,
     },
     button: {

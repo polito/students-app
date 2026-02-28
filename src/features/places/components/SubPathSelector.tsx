@@ -81,6 +81,18 @@ export const SubPathSelector = (props: Props) => {
               )?.name
             }
           </Text>
+          {props.pathFeatureCollection[currentSegmentIndex]._private === 1 && (
+            <Text
+              style={[
+                styles.privateIndicator,
+                { color: dark ? palettes.text[200] : palettes.text[900] },
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {t('itineraryScreen.privateSection')}
+            </Text>
+          )}
           <Text
             style={[
               styles.instruction,
@@ -93,6 +105,10 @@ export const SubPathSelector = (props: Props) => {
               ? t('itineraryScreen.continueTo') +
                 `${floorMapNames?.find(floor => floor.id === props.pathFeatureCollection[currentSegmentIndex + 1].features.properties.fnFlId)?.name}`
               : t('itineraryScreen.continuteToDestination')}
+            {currentSegmentIndex < numSegments &&
+              props.pathFeatureCollection[currentSegmentIndex + 1]._private ===
+                1 &&
+              ` ${t('itineraryScreen.toPrivate')}`}
           </Text>
         </View>
         <IconButton
@@ -143,6 +159,13 @@ const createStyles = () =>
       textAlign: 'center',
       fontFamily: 'Montserrat',
       fontSize: 16,
+      fontStyle: 'normal',
+      fontWeight: 600,
+    },
+    privateIndicator: {
+      textAlign: 'center',
+      fontFamily: 'Montserrat',
+      fontSize: 13,
       fontStyle: 'normal',
       fontWeight: 600,
     },

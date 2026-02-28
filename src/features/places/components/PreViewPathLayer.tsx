@@ -1,13 +1,14 @@
-import { useLayoutEffect, useMemo } from 'react';
+import React, { useLayoutEffect } from 'react';
 
 import {
-  GeoJSONFeatureGeometry,
   GetDirections200Response,
   NavigationResponseFeature,
 } from '@polito/api-client';
-import { LineLayer, ShapeSource } from '@rnmapbox/maps';
+import { LineLayer, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { courseColors } from '~/core/constants';
+import { useGetSite } from '~/core/queries/placesHooks';
+import { getIcon } from '~/features/places/utils/getIconPath';
 
 import { getCoordinatesBounds } from '../utils/getCoordinatesBounds';
 import { MapNavigationProp } from './MapNavigator';
@@ -47,41 +48,104 @@ export const PreViewPathLayer = ({
     });
   }, [pathFeat, navigation, bottomSheetHeight]);
 
+  const floorMapNames = useGetSite('TO_CENCIT')?.floors;
+
   return (
     <>
       {pathFeat.data.features.map(
-        (featuresArray: NavigationResponseFeature) => (
-          <ShapeLine
-            key={`shape-line-${featuresArray.segmentId}`}
-            index={featuresArray.segmentId || 0}
-            features={featuresArray.features}
-          />
+        ({
+          features,
+          startPoint: { coordinates: startP },
+          endPoint: { coordinates: endP },
+          segmentId,
+          _private: privateSegment,
+        }: NavigationResponseFeature) => (
+          <React.Fragment key={`path-fragment-${segmentId}`}>
+            <ShapeSource id={`line-source-${segmentId}`} shape={features}>
+              <LineLayer
+                id={`line-layer-${segmentId}`}
+                style={{
+                  lineWidth: 8,
+                  lineCap: 'round' as const,
+                  lineJoin: 'round' as const,
+                  lineOpacity: 1,
+                  lineColor:
+                    courseColors[segmentId % courseColors.length].color,
+                  ...(privateSegment === 1 && { lineDasharray: [2, 2] }),
+                }}
+              />
+            </ShapeSource>
+            <ShapeSource
+              id={`start-point-source-${segmentId}`}
+              shape={{
+                type: 'FeatureCollection',
+                features: [
+                  {
+                    type: 'Feature',
+                    geometry: { type: 'Point', coordinates: startP },
+                    properties: {},
+                  },
+                ],
+              }}
+            >
+              <SymbolLayer
+                id={`start-point-layer-${segmentId}`}
+                style={{
+                  ...styles.startIcon,
+                  iconImage:
+                    segmentId === 0
+                      ? 'start_selection'
+                      : privateSegment === 0
+                        ? 'start'
+                        : 'private_access',
+                }}
+              />
+            </ShapeSource>
+
+            <ShapeSource
+              id={`end-point-source-${segmentId}`}
+              shape={{
+                type: 'FeatureCollection',
+                features: [
+                  {
+                    type: 'Feature',
+                    geometry: { type: 'Point', coordinates: endP },
+                    properties: {},
+                  },
+                ],
+              }}
+            >
+              <SymbolLayer
+                id={`end-point-layer-${segmentId}`}
+                style={{
+                  ...styles.icon,
+                  iconImage:
+                    segmentId === pathFeat.data.features.length - 1
+                      ? 'destination_selection'
+                      : privateSegment === 0
+                        ? getIcon(
+                            segmentId || 0,
+                            floorMapNames || [],
+                            pathFeat.data.features,
+                          )
+                        : 'start',
+                }}
+              />
+            </ShapeSource>
+          </React.Fragment>
         ),
       )}
     </>
   );
 };
 
-const ShapeLine = ({
-  index,
-  features,
-}: {
-  index: number;
-  features: GeoJSONFeatureGeometry;
-}) => {
-  const style = useMemo(
-    () => ({
-      lineWidth: 8,
-      lineCap: 'round' as const,
-      lineJoin: 'round' as const,
-      lineOpacity: 1,
-      lineColor: courseColors[index % courseColors.length].color,
-    }),
-    [index],
-  );
-  return (
-    <ShapeSource id={`line-source-${index}`} shape={features}>
-      <LineLayer id={`line-layer-${index}`} style={style} />
-    </ShapeSource>
-  );
+const styles = {
+  startIcon: {
+    iconSize: 0.35,
+    iconAllowOverlap: true,
+  },
+  icon: {
+    iconSize: 0.45,
+    iconAllowOverlap: true,
+  },
 };

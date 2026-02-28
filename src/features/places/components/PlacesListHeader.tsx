@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import {
   faCircleDot,
+  faCircleExclamation,
   faCircleInfo,
   faEllipsisV,
   faFlagCheckered,
@@ -27,6 +28,7 @@ interface PlacesListHeaderProps {
   stairs: number;
   elevators: number;
   steps: number;
+  privatePaths: boolean;
   avoidStairs: boolean;
   isLoadingPath: boolean;
   dark: boolean;
@@ -54,6 +56,7 @@ const PlacesListHeaderComponent = ({
   stairs,
   elevators,
   steps,
+  privatePaths,
   avoidStairs,
   isLoadingPath,
   setIsExpandedStart,
@@ -117,7 +120,6 @@ const PlacesListHeaderComponent = ({
                   setIsExpandedStart(true);
                   setIsExpandedDest(false);
                 }}
-                style={styles.filter}
               />
             )}
             {!isExpandedStart && (
@@ -145,7 +147,6 @@ const PlacesListHeaderComponent = ({
                   setIsExpandedDest(true);
                   setIsExpandedStart(false);
                 }}
-                style={styles.filter}
               />
             )}
           </View>
@@ -193,25 +194,50 @@ const PlacesListHeaderComponent = ({
             </View>
           </View>
         )}
-        {steps > 0 && computeButtonState > 0 && !isLoadingPath && (
-          <View style={styles.stepsInfoContainer}>
-            <View style={styles.stepsInfo}>
-              <Icon
-                icon={faCircleInfo}
-                color={dark ? palettes.primary[200] : palettes.primary[600]}
-                style={styles.icon}
-              />
-              <Text
-                style={[
-                  styles.textStairsButton,
-                  {
-                    color: dark ? palettes.primary[200] : palettes.primary[600],
-                  },
-                ]}
-              >
-                {t('indicationsScreen.stepsInfo')}
-              </Text>
-            </View>
+        {computeButtonState > 0 && !isLoadingPath && (
+          <View style={styles.infoContainer}>
+            {steps > 0 && (
+              <View style={styles.pathInfo}>
+                <Icon
+                  icon={faCircleInfo}
+                  color={dark ? palettes.primary[200] : palettes.primary[600]}
+                  style={styles.icon}
+                />
+                <Text
+                  style={[
+                    styles.textStairsButton,
+                    {
+                      color: dark
+                        ? palettes.primary[200]
+                        : palettes.primary[600],
+                    },
+                  ]}
+                >
+                  {t('indicationsScreen.stepsInfo')}
+                </Text>
+              </View>
+            )}
+            {privatePaths && (
+              <View style={styles.pathInfo}>
+                <Icon
+                  icon={faCircleExclamation}
+                  color={dark ? palettes.warning[500] : palettes.warning[600]}
+                  style={styles.icon}
+                />
+                <Text
+                  style={[
+                    styles.textStairsButton,
+                    {
+                      color: dark
+                        ? palettes.warning[500]
+                        : palettes.warning[600],
+                    },
+                  ]}
+                >
+                  {t('indicationsScreen.privateInfo')}
+                </Text>
+              </View>
+            )}
           </View>
         )}
       </View>
@@ -247,11 +273,10 @@ const createStyles = () =>
     icons: {
       display: 'flex',
       width: 16,
-      paddingVertical: '1%',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      gap: '13%',
+      gap: '10%',
       flexShrink: 0,
       alignSelf: 'stretch',
     },
@@ -305,19 +330,21 @@ const createStyles = () =>
       alignItems: 'center',
       flexShrink: 0,
     },
-    stepsInfoContainer: {
+    infoContainer: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       width: '100%',
-      paddingBottom: '15.3%',
+      paddingBottom: '15%',
       paddingHorizontal: '5%',
+      gap: 12,
       justifyContent: 'flex-start',
       alignItems: 'center',
     },
-    stepsInfo: {
+    pathInfo: {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
+      alignSelf: 'stretch',
       gap: 8,
     },
     icon: {

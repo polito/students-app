@@ -24,6 +24,8 @@ const up = require('../../../../assets/map-icons/up.png');
 const down = require('../../../../assets/map-icons/down.png');
 const start = require('../../../../assets/map-icons/start.png');
 const destination = require('../../../../assets/map-icons/destination.png');
+const private_access = require('../../../../assets/map-icons/private.png');
+
 export interface MarkersLayerProps {
   selectedPoiId?: string;
   search?: string;
@@ -261,6 +263,7 @@ export const MarkersLayer = ({
           down,
           start,
           destination,
+          private_access,
         }}
       />
       <SymbolLayer

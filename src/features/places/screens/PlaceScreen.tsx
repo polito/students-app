@@ -14,6 +14,7 @@ import { EmptyState } from '@lib/ui/components/EmptyState';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { OverviewList } from '@lib/ui/components/OverviewList';
+import { Row } from '@lib/ui/components/Row';
 import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
@@ -240,9 +241,25 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         >
           <BottomSheetScrollView>
             <Col ph={5} mb={5}>
-              <Text variant="title" style={styles.title}>
-                {placeName}
-              </Text>
+              <Row style={{ alignItems: 'center' }}>
+                <Text variant="title" style={styles.title}>
+                  {placeName}
+                </Text>
+                <IconButton
+                  icon={faDiamondTurnRight}
+                  size={fontSizes.xl}
+                  adjustSpacing="right"
+                  accessibilityLabel={t('common.navigate')}
+                  onPress={() => {
+                    setItineraryMode(true);
+                    setSelectionMode(false);
+                    //Clarity.sendCustomEvent(`Navigate To ${name}`);
+                    navigation.navigate('Indications', {
+                      toPlace: { placeId: placeId, namePlace: name },
+                    });
+                  }}
+                />
+              </Row>
             </Col>
 
             <Section>
@@ -251,22 +268,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                   inverted
                   multilineTitle
                   title={t('placeScreen.getDirections')}
-                  trailingItem={
-                    <IconButton
-                      icon={faDiamondTurnRight}
-                      size={fontSizes.xl}
-                      adjustSpacing="right"
-                      accessibilityLabel={t('common.navigate')}
-                      onPress={() => {
-                        setItineraryMode(true);
-                        setSelectionMode(false);
-                        //Clarity.sendCustomEvent(`Navigate To ${name}`);
-                        navigation.navigate('Indications', {
-                          toPlace: { placeId: placeId, namePlace: name },
-                        });
-                      }}
-                    />
-                  }
                 />
               </OverviewList>
             </Section>
@@ -322,9 +323,30 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
-            <Text variant="title" style={styles.title}>
-              {placeName}
-            </Text>
+            <Row style={{ alignItems: 'center' }}>
+              <Text variant="title" style={styles.title}>
+                {placeName}
+              </Text>
+              <IconButton
+                icon={faDiamondTurnRight}
+                size={fontSizes.xl}
+                adjustSpacing="right"
+                accessibilityLabel={t('common.navigate')}
+                onPress={() => {
+                  setItineraryMode(true);
+                  setSelectionMode(false);
+                  /*Clarity.sendCustomEvent(
+                        `Navigate To ${place?.room.name || place?.category.name || ''}`,
+                      );*/
+                  navigation.navigate('Indications', {
+                    toPlace: {
+                      placeId: place?.id || '',
+                      namePlace: place?.room.name || place?.category.name || '',
+                    },
+                  });
+                }}
+              />
+            </Row>
             <Text>{place?.site.name}</Text>
             <Text variant="caption" style={{ textTransform: 'capitalize' }}>
               {formatPlaceCategory(place?.category.name)}
@@ -339,28 +361,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 multilineTitle
                 title={(place && place.site.name) ?? ''}
                 subtitle={t('common.campus')}
-                trailingItem={
-                  <IconButton
-                    icon={faDiamondTurnRight}
-                    size={fontSizes.xl}
-                    adjustSpacing="right"
-                    accessibilityLabel={t('common.navigate')}
-                    onPress={() => {
-                      setItineraryMode(true);
-                      setSelectionMode(false);
-                      /*Clarity.sendCustomEvent(
-                        `Navigate To ${place?.room.name || place?.category.name || ''}`,
-                      );*/
-                      navigation.navigate('Indications', {
-                        toPlace: {
-                          placeId: place?.id || '',
-                          namePlace:
-                            place?.room.name || place?.category.name || '',
-                        },
-                      });
-                    }}
-                  />
-                }
               />
               <ListItem
                 inverted

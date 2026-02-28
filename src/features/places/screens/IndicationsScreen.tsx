@@ -73,6 +73,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
   const [stairs, setStairs] = useState<number | null>(null);
   const [elevators, setElevators] = useState<number | null>(null);
   const [steps, setSteps] = useState<number | null>(null);
+  const [privatePaths, setPrivatePaths] = useState<boolean>(false);
 
   const { fromPlace: startRoom, toPlace: destRoom } = route.params;
 
@@ -213,6 +214,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       setStairs(pathFeat.data.stairsCount || 0);
       setElevators(pathFeat.data.elevatorsCount || 0);
       setSteps(pathFeat.data.stepsCount || 0);
+      setPrivatePaths(pathFeat.data.features.some(f => f._private === 1));
     }
   }, [pathFeat]);
 
@@ -223,14 +225,11 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
       computeButtonState === 1
     ) {
       return (
-        <>
-          <MarkersLayer places={places} />
-          <PreViewPathLayer
-            pathFeat={pathFeat}
-            bottomSheetHeight={bottomSheetHeight}
-            navigation={navigation}
-          />
-        </>
+        <PreViewPathLayer
+          pathFeat={pathFeat}
+          bottomSheetHeight={bottomSheetHeight}
+          navigation={navigation}
+        />
       );
     }
 
@@ -449,6 +448,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
         stairs={stairs ? stairs : 0}
         elevators={elevators ? elevators : 0}
         steps={steps ? steps : 0}
+        privatePaths={privatePaths}
         avoidStairs={avoidStairs}
         isLoadingPath={isLoadingPath}
         dark={dark}
@@ -472,6 +472,7 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     stairs,
     elevators,
     steps,
+    privatePaths,
     avoidStairs,
     isLoadingPath,
     dark,

@@ -65,6 +65,7 @@ export const PathLayer = ({
           startPoint: { coordinates: startP },
           endPoint: { coordinates: endP },
           segmentId,
+          _private: privateSegment,
         }: NavigationResponseFeature) => (
           <React.Fragment key={`path-fragment-${segmentId}`}>
             <ShapeSource id={`line-source-${segmentId}`} shape={features}>
@@ -73,6 +74,7 @@ export const PathLayer = ({
                 style={{
                   ...styles.line,
                   lineOpacity: handleOpacity(segmentId),
+                  ...(privateSegment === 1 && { lineDasharray: [2, 2] }),
                 }}
               />
             </ShapeSource>
@@ -93,7 +95,13 @@ export const PathLayer = ({
                 >
                   <SymbolLayer
                     id={`start-point-layer-${segmentId}`}
-                    style={styles.startIcon}
+                    style={
+                      segmentId === 0
+                        ? styles.startIcon
+                        : privateSegment === 1
+                          ? { ...styles.icon, iconImage: 'private_access' }
+                          : styles.startIcon
+                    }
                   />
                 </ShapeSource>
 
@@ -112,14 +120,18 @@ export const PathLayer = ({
                 >
                   <SymbolLayer
                     id={`end-point-layer-${segmentId}`}
-                    style={{
-                      ...styles.icon,
-                      iconImage: getIcon(
-                        segmentId || 0,
-                        floorMapNames || [],
-                        pathFeatureCollection,
-                      ),
-                    }}
+                    style={
+                      privateSegment === 0
+                        ? {
+                            ...styles.icon,
+                            iconImage: getIcon(
+                              segmentId || 0,
+                              floorMapNames || [],
+                              pathFeatureCollection,
+                            ),
+                          }
+                        : styles.icon
+                    }
                   />
                 </ShapeSource>
               </>

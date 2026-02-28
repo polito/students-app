@@ -17,7 +17,11 @@ export const getIcon = (
   );
 
   if (currentFloor && nextFloor) {
-    return currentFloor.level > nextFloor.level ? 'down' : 'up';
+    return currentFloor.level > nextFloor.level
+      ? 'down'
+      : pathFeatureCollection[index + 1]._private === 1
+        ? 'private_access'
+        : 'up';
   }
 
   return 'unknown';

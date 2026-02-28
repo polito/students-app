@@ -877,7 +877,8 @@
     "computePath": "Compute path",
     "showIndications": "Start itinerary",
     "pathNotFound": "No drivable path available.",
-    "stepsInfo": "The route includes steps"
+    "stepsInfo": "The route includes steps",
+    "privateInfo": "The route includes private areas"
   },
   "mapSelectionScreen": {
     "title": "Select from map",
@@ -890,8 +891,10 @@
   "itineraryScreen": {
     "title": "Itinerary",
     "backTitle": "Edit",
+    "privateSection": "Private section",
     "itineraryError": "There was an error attempting to start the navigation for this route.",
     "continueTo": "continue to ",
+    "toPrivate": "private access at gate",
     "continuteToDestination": "continue to the destination"
   },
   "placesSearchScreen": {

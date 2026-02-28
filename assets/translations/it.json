@@ -895,7 +895,8 @@
     "computePath": "Calcola percorso",
     "showIndications": "Avvia itinerario",
     "pathNotFound": "Nessun percorso disponibile.",
-    "stepsInfo": "Il percorso include scalini"
+    "stepsInfo": "Il percorso include scalini",
+    "privateInfo": "Il percorso attraversa aree private"
   },
   "mapSelectionScreen": {
     "title": "Seleziona dalla mappa",
@@ -908,8 +909,10 @@
   "itineraryScreen": {
     "title": "Itinerario",
     "backTitle": "Modifica",
+    "privateSection": "Tratto privato",
     "itineraryError": "Si è verificato un errore durante il tentativo di avviare l'itinerario per questo percorso.",
     "continueTo": "prosegui al ",
+    "toPrivate": "accesso privato al varco",
     "continuteToDestination": "prosegui fino alla destinazione"
   },
   "placesSearchScreen": {
