@@ -13,8 +13,10 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { mkdir, downloadFile as rnDownloadFile, stat } from 'react-native-fs';
+import { downloadFile as rnDownloadFile, stat, unlink } from 'react-native-fs';
+import { lookup } from 'react-native-mime-types';
 
+import { mkdirRecursive } from '../../utils/files';
 import { useApiContext } from '../contexts/ApiContext';
 import {
   Download,
@@ -37,6 +39,7 @@ import {
   CONTEXT_PROGRESS_UPDATE_THROTTLE_MS,
   PROGRESS_UPDATE_THROTTLE_MS,
 } from './downloads/downloadsTypes';
+import { moveToSafAfterDownload } from './downloads/safMirror';
 
 export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   const { token } = useApiContext();
@@ -70,17 +73,15 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
   const downloadFile = useCallback(
     async (file: QueuedFile<DownloadContext>) => {
       const key = getFileKey(file);
+      const dest = file.request.destination;
       try {
-        await mkdir(
-          file.request.destination.substring(
-            0,
-            file.request.destination.lastIndexOf('/'),
-          ),
-          { NSURLIsExcludedFromBackupKey: true },
-        ).catch(() => {});
+        await mkdirRecursive(dest.substring(0, dest.lastIndexOf('/')), {
+          NSURLIsExcludedFromBackupKey: true,
+        });
+
         const { jobId, promise } = rnDownloadFile({
           fromUrl: file.request.source,
-          toFile: file.request.destination,
+          toFile: dest,
           headers: { Authorization: `Bearer ${token}` },
           progress: ({ bytesWritten, contentLength }) => {
             const fileProgress = bytesWritten / contentLength;
@@ -114,24 +115,33 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         });
         dispatchProgress({ type: 'REMOVE_PROGRESS', key });
         try {
-          const stats = await stat(file.request.destination);
-          const checksum = await calculateFileChecksum(
-            file.request.destination,
-            stats.size,
-          );
-          const filename = file.request.destination.split('/').pop() || '';
+          const stats = await stat(dest);
+          const checksum = await calculateFileChecksum(dest, stats.size);
+          const filename = dest.split('/').pop() || '';
+          const ext = filename.split('.').pop() || '';
+          const mime = lookup(ext) || 'application/octet-stream';
           await fileDatabase.insertFile({
             id: file.id,
             ctx: file.request.ctx,
             ctxId: file.request.ctxId,
-            path: file.request.destination,
+            path: dest,
             filename,
-            mime: filename.split('.').pop() || 'application/octet-stream',
+            mime,
             checksum,
             sizeKb: Math.round(stats.size / 1024),
             downloadTime: new Date().toISOString(),
             updateTime: undefined,
           });
+
+          moveToSafAfterDownload(dest, mime)
+            .then(safPath => {
+              if (safPath) {
+                fileDatabase
+                  .updateFile(file.id, { path: safPath })
+                  .catch(() => {});
+              }
+            })
+            .catch(e => console.error('SAF move after download failed:', e));
         } catch (metadataError) {
           console.error('Error saving file metadata to SQLite:', metadataError);
         }
@@ -147,6 +157,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         });
         dispatchProgress({ type: 'REMOVE_PROGRESS', key });
         dispatch({ type: 'SET_FAILURE' });
+        unlink(dest).catch(() => {});
       } finally {
         dispatch({ type: 'REMOVE_ACTIVE_ID', id: file.id });
       }

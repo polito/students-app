@@ -1,6 +1,3 @@
-/**
- * File utility functions: generates file keys, checks file existence, and matches files by context.
- */
 import { Dispatch } from 'react';
 import { exists, stopDownload, unlink } from 'react-native-fs';
 

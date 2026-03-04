@@ -4,6 +4,7 @@ import { readDir } from 'react-native-fs';
 import { PUBLIC_APP_DIRECTORY_PATH } from '../../../core/constants';
 import { useApiContext } from '../../../core/contexts/ApiContext';
 import { useGetCourse } from '../../../core/queries/courseHooks';
+import { stripIdInParentheses } from '../../../utils/files';
 import { useCourseContext } from '../contexts/CourseContext';
 
 export const useCourseFilesCachePath = () => {
@@ -12,7 +13,9 @@ export const useCourseFilesCachePath = () => {
   const { data: course } = useGetCourse(courseId);
   const cacheFolderName = useMemo(
     () =>
-      course?.name ? `${course?.name} (${courseId})` : courseId.toString(),
+      course?.name
+        ? stripIdInParentheses(`${course.name} (${courseId})`)
+        : courseId.toString(),
     [course?.name, courseId],
   );
   const principalCachePath = useMemo(() => {

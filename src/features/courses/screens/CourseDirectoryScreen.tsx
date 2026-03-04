@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -60,6 +61,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const [searchFilter, setSearchFilter] = useState('');
   const [multiSelectModalVisible, setMultiSelectModalVisible] = useState(false);
   const [listRefreshKey, setListRefreshKey] = useState(0);
+  const [checkCompleteCount, setCheckCompleteCount] = useState(0);
   const directoryQuery = useGetCourseDirectory(courseId, directoryId);
   const courseFilesQuery = useGetCourseFiles(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
@@ -161,6 +163,17 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     }
   }, [directoryName, isFileNavigator, navigation, t]);
 
+  useEffect(() => {
+    setCheckCompleteCount(0);
+  }, [flattenedData.length]);
+
+  const onCheckComplete = useCallback(() => {
+    setCheckCompleteCount(c => Math.min(c + 1, flattenedData.length));
+  }, [flattenedData.length]);
+
+  const isCheckingInitial =
+    flattenedData.length > 0 && checkCompleteCount < flattenedData.length;
+
   const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
     switch (event) {
       case MENU_ACTIONS.SELECT:
@@ -213,7 +226,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           onPressOption={onPressOption}
           isDirectoryView={true}
           isInsideFolder={!!directoryId}
-          isSelectDisabled={isDownloading || isRemoving}
+          isSelectDisabled={isDownloading || isRemoving || isCheckingInitial}
         />
       </View>
 
@@ -223,53 +236,78 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
           searchFilter={searchFilter}
         />
       ) : (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={flattenedData}
-          extraData={{ downloads, listRefreshKey }}
-          scrollEnabled={scrollEnabled}
-          contentContainerStyle={paddingHorizontal}
-          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-          initialNumToRender={15}
-          renderItem={({ item }) =>
-            (item as any).type === ITEM_TYPES.DIRECTORY ? (
-              <CourseDirectoryListItem
-                courseId={courseId}
-                item={item as CourseDirectory}
-                enableMultiSelect={false}
-                listRefreshKey={listRefreshKey}
-              />
-            ) : (
-              <CourseFileListItem
-                item={item as CourseFileOverview}
-                onSwipeStart={() => setScrollEnabled(false)}
-                onSwipeEnd={() => setScrollEnabled(true)}
-                enableMultiSelect={false}
-              />
-            )
-          }
-          refreshControl={<RefreshControl manual queries={[directoryQuery]} />}
-          ItemSeparatorComponent={Platform.select({
-            ios: IndentedDivider,
-          })}
-          ListFooterComponent={
-            <>
-              <View style={{ height: footerSpacerHeight }} />
-              <BottomBarSpacer />
-            </>
-          }
-          ListEmptyComponent={
-            !directoryQuery.isLoading ? (
-              <OverviewList
-                emptyStateText={
-                  isFileNavigator
-                    ? t('courseDirectoryScreen.emptyRootFolder')
-                    : t('courseDirectoryScreen.emptyFolder')
-                }
-              />
-            ) : null
-          }
-        />
+        <View style={{ flex: 1 }}>
+          <FlatList
+            contentInsetAdjustmentBehavior="automatic"
+            data={flattenedData}
+            extraData={{ downloads, listRefreshKey, checkCompleteCount }}
+            scrollEnabled={scrollEnabled}
+            contentContainerStyle={paddingHorizontal}
+            keyExtractor={(item: CourseDirectory | CourseFileOverview) =>
+              item.id
+            }
+            initialNumToRender={15}
+            renderItem={({ item }) =>
+              (item as any).type === ITEM_TYPES.DIRECTORY ? (
+                <CourseDirectoryListItem
+                  courseId={courseId}
+                  item={item as CourseDirectory}
+                  enableMultiSelect={false}
+                  listRefreshKey={listRefreshKey}
+                  onCheckComplete={onCheckComplete}
+                  disabled={isCheckingInitial}
+                />
+              ) : (
+                <CourseFileListItem
+                  item={item as CourseFileOverview}
+                  onSwipeStart={() => setScrollEnabled(false)}
+                  onSwipeEnd={() => setScrollEnabled(true)}
+                  enableMultiSelect={false}
+                  onCheckComplete={onCheckComplete}
+                  disabled={isCheckingInitial}
+                />
+              )
+            }
+            refreshControl={
+              <RefreshControl manual queries={[directoryQuery]} />
+            }
+            ItemSeparatorComponent={Platform.select({
+              ios: IndentedDivider,
+            })}
+            ListFooterComponent={
+              <>
+                <View style={{ height: footerSpacerHeight }} />
+                <BottomBarSpacer />
+              </>
+            }
+            ListEmptyComponent={
+              !directoryQuery.isLoading ? (
+                <OverviewList
+                  emptyStateText={
+                    isFileNavigator
+                      ? t('courseDirectoryScreen.emptyRootFolder')
+                      : t('courseDirectoryScreen.emptyFolder')
+                  }
+                />
+              ) : null
+            }
+          />
+          {isCheckingInitial && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <ActivityIndicator size="large" />
+            </View>
+          )}
+        </View>
       )}
       <CourseFileMultiSelectModal
         visible={multiSelectModalVisible}

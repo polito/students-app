@@ -281,7 +281,7 @@ export const useQueueManagement = ({
 
           const fileExists = await checkPathsExist(possiblePaths);
 
-          if (fileExists) {
+          if (fileExists && fileRecord) {
             dispatch({
               type: 'UPDATE_DOWNLOAD',
               key,

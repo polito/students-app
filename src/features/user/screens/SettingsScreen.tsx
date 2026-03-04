@@ -17,6 +17,7 @@ import {
   faCalendarDay,
   faCircleExclamation,
   faCircleHalfStroke,
+  faFolderOpen,
   faFont,
   faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
@@ -51,6 +52,8 @@ import {
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { removeFileSafAware } from '../../../core/providers/downloads/safMirror';
+import { pickSafDirectory } from '../../../core/providers/downloads/safStorage';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
@@ -95,13 +98,16 @@ const CleanCacheListItem = () => {
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
+          const allFiles = await fileDatabaseRef.current.getAllFiles();
+          await Promise.all(
+            allFiles.map(f => removeFileSafAware(f.path).catch(() => {})),
+          );
           await fileDatabaseRef.current.deleteAllFiles();
-          unlink(filesCache).then(() => {
-            setFeedback({
-              text: t('coursePreferencesScreen.cleanCacheFeedback'),
-            });
-            refreshSize();
+          unlink(filesCache).catch(() => {});
+          setFeedback({
+            text: t('coursePreferencesScreen.cleanCacheFeedback'),
           });
+          refreshSize();
         }
       }}
     />
@@ -309,6 +315,145 @@ const Notifications = () => {
   );
 };
 
+const StorageLocationListItem = () => {
+  const { t } = useTranslation();
+  const { fontSizes } = useTheme();
+  const {
+    fileStorageLocation,
+    customStoragePath,
+    customStorageDisplayPath,
+    updatePreference,
+  } = usePreferencesContext();
+  const { setFeedback } = useFeedbackContext();
+  const [isMoving, setIsMoving] = useState(false);
+  const currentLocation =
+    fileStorageLocation === 'custom' ? 'custom' : 'internal';
+  const confirmStorageChange = useConfirmationDialog({
+    title: t('settingsScreen.storageChangeConfirmTitle'),
+    message: t('settingsScreen.storageChangeConfirmMessage'),
+  });
+
+  const choices = useMemo(
+    () => [
+      { id: 'internal', title: t('settingsScreen.storageInternal') },
+      { id: 'custom', title: t('settingsScreen.storageCustom') },
+    ],
+    [t],
+  );
+
+  const handlePickDirectory = useCallback(async () => {
+    if (!(await confirmStorageChange())) return;
+    try {
+      const result = await pickSafDirectory();
+
+      setIsMoving(true);
+      setFeedback({ text: t('settingsScreen.storageChanging') });
+
+      try {
+        const fileDatabase = getFileDatabase();
+        const allFiles = await fileDatabase.getAllFiles();
+        await Promise.all(
+          allFiles.map(f => removeFileSafAware(f.path).catch(() => {})),
+        );
+        await fileDatabase.deleteAllFiles();
+      } catch (deleteError) {
+        console.error('Error removing files before switch:', deleteError);
+      }
+
+      updatePreference('customStoragePath', result.uri);
+      updatePreference('customStorageDisplayPath', result.displayPath);
+      updatePreference('fileStorageLocation', 'custom');
+      setFeedback({ text: t('settingsScreen.storageCustomSet') });
+    } catch (error: any) {
+      if (error?.code !== 'CANCELLED') {
+        console.error('Error picking directory:', error);
+        setFeedback({ text: t('common.error'), isError: true });
+      }
+    } finally {
+      setIsMoving(false);
+    }
+  }, [confirmStorageChange, updatePreference, setFeedback, t]);
+
+  const handleSwitchToInternal = useCallback(async () => {
+    if (!customStoragePath) {
+      updatePreference('fileStorageLocation', 'internal');
+      return;
+    }
+    if (!(await confirmStorageChange())) return;
+
+    setIsMoving(true);
+    setFeedback({ text: t('settingsScreen.storageChanging') });
+
+    try {
+      const fileDatabase = getFileDatabase();
+      const allFiles = await fileDatabase.getAllFiles();
+      await Promise.all(
+        allFiles.map(f => removeFileSafAware(f.path).catch(() => {})),
+      );
+      await fileDatabase.deleteAllFiles();
+    } catch (deleteError) {
+      console.error('Error removing files before switch:', deleteError);
+    } finally {
+      setIsMoving(false);
+    }
+
+    updatePreference('fileStorageLocation', 'internal');
+    setFeedback({ text: t('settingsScreen.storageInternalSet') });
+  }, [
+    customStoragePath,
+    confirmStorageChange,
+    updatePreference,
+    setFeedback,
+    t,
+  ]);
+
+  const handleChange = useCallback(
+    async (newLocation: string) => {
+      if (newLocation === currentLocation || isMoving) return;
+      if (newLocation === 'custom') {
+        await handlePickDirectory();
+      } else {
+        await handleSwitchToInternal();
+      }
+    },
+    [currentLocation, isMoving, handlePickDirectory, handleSwitchToInternal],
+  );
+
+  const subtitle = useMemo(() => {
+    if (currentLocation === 'custom' && customStorageDisplayPath) {
+      return customStorageDisplayPath;
+    }
+    return currentLocation === 'custom'
+      ? t('settingsScreen.storageCustomDescription')
+      : t('settingsScreen.storageInternalDescription');
+  }, [currentLocation, customStorageDisplayPath, t]);
+
+  return (
+    <StatefulMenuView
+      actions={choices.map(c => ({
+        id: c.id,
+        title: c.title,
+        state: c.id === currentLocation ? 'on' : undefined,
+      }))}
+      onPressAction={({ nativeEvent: { event } }) => {
+        handleChange(event);
+      }}
+    >
+      <ListItem
+        isAction
+        disabled={isMoving}
+        title={
+          currentLocation === 'custom'
+            ? t('settingsScreen.storageCustom')
+            : t('settingsScreen.storageInternal')
+        }
+        subtitle={subtitle}
+        leadingItem={<Icon icon={faFolderOpen} size={fontSizes['2xl']} />}
+      />
+    </StatefulMenuView>
+  );
+};
+
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -442,6 +587,14 @@ export const SettingsScreen = () => {
               />
             </OverviewList>
           </Section>
+          {Platform.OS === 'android' && (
+            <Section>
+              <SectionHeader title={t('settingsScreen.storageTitle')} />
+              <OverviewList indented>
+                <StorageLocationListItem />
+              </OverviewList>
+            </Section>
+          )}
           <Section>
             <SectionHeader title={t('common.cache')} />
             <OverviewList indented>

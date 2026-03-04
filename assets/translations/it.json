@@ -418,8 +418,7 @@
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file",
-    "fileSavedDocumentsPath": "File salvato nella cartella documenti",
-    "fileSaved": "File salvato in {{cachedFilePath}}"
+    "fileSavedPrefix": "File salvato in"
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
@@ -989,7 +988,19 @@
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni",
     "securityTitle": "Sicurezza",
-    "authenticatorTitle": "PoliTO Authenticator"
+    "authenticatorTitle": "PoliTO Authenticator",
+    "storageTitle": "Archiviazione file",
+    "storageInternal": "Interno app",
+    "storageCustom": "Percorso personalizzato",
+    "storageInternalDescription": "I file vengono salvati nella cartella privata dell'app",
+    "storageCustomDescription": "I file vengono copiati anche nella cartella scelta",
+    "storageChangeConfirmMessage": "Tutti i file dei corsi scaricati in locale verranno rimossi. Dovrai riscaricarli se confermi.",
+    "storageChangeConfirmTitle": "Cambiare posizione di archiviazione?",
+    "storageChanging": "Cambio storage in corso...",
+    "storageCustomSet": "Cartella personalizzata impostata",
+    "storageInternalSet": "Storage interno impostato",
+    "storageMovingFiles": "Spostamento file in corso...",
+    "storageMovedFiles": "{{count}} file spostati"
   },
   "ssoScreen": {
     "ssoButton": "Entra con Single-Sign-On",

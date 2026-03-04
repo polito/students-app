@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, View } from 'react-native';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
@@ -32,6 +33,7 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [multiSelectModalVisible, setMultiSelectModalVisible] = useState(false);
+  const [checkCompleteCount, setCheckCompleteCount] = useState(0);
   const courseId = route.params.courseId;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
@@ -95,6 +97,20 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     }
   }, [recentFilesQuery.data, setSortedData]);
 
+  const fileListData = sortedData || recentFilesQuery.data;
+  const fileListLength = fileListData?.length ?? 0;
+
+  useEffect(() => {
+    setCheckCompleteCount(0);
+  }, [fileListLength]);
+
+  const onCheckComplete = useCallback(() => {
+    setCheckCompleteCount(c => Math.min(c + 1, fileListLength));
+  }, [fileListLength]);
+
+  const isCheckingInitial =
+    fileListLength > 0 && checkCompleteCount < fileListLength;
+
   useOnLeaveScreen(() => {
     clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
   });
@@ -139,45 +155,64 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         onPressSortOption={onPressSortOption}
         onPressOption={onPressOption}
         isDirectoryView={false}
-        isSelectDisabled={isDownloading || isRemoving}
+        isSelectDisabled={isDownloading || isRemoving || isCheckingInitial}
       />
 
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        data={sortedData || recentFilesQuery.data}
-        extraData={downloads}
-        contentContainerStyle={paddingHorizontal}
-        scrollEnabled={scrollEnabled}
-        keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-        initialNumToRender={15}
-        maxToRenderPerBatch={15}
-        windowSize={4}
-        renderItem={({ item }) => {
-          return (
-            <CourseRecentFileListItem
-              item={item as CourseFileOverview}
-              onSwipeStart={onSwipeStart}
-              onSwipeEnd={onSwipeEnd}
-              enableMultiSelect={false}
-            />
-          );
-        }}
-        refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
-        ItemSeparatorComponent={Platform.select({
-          ios: IndentedDivider,
-        })}
-        ListFooterComponent={
-          <>
-            <View style={{ height: footerSpacerHeight }} />
-            <BottomBarSpacer />
-          </>
-        }
-        ListEmptyComponent={
-          !recentFilesQuery.isLoading ? (
-            <OverviewList emptyStateText={t('courseFilesTab.empty')} />
-          ) : null
-        }
-      />
+      <View style={{ flex: 1 }}>
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={sortedData || recentFilesQuery.data}
+          extraData={{ downloads, checkCompleteCount }}
+          contentContainerStyle={paddingHorizontal}
+          scrollEnabled={scrollEnabled}
+          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+          initialNumToRender={15}
+          maxToRenderPerBatch={15}
+          windowSize={4}
+          renderItem={({ item }) => {
+            return (
+              <CourseRecentFileListItem
+                item={item as CourseFileOverview}
+                onSwipeStart={onSwipeStart}
+                onSwipeEnd={onSwipeEnd}
+                enableMultiSelect={false}
+                onCheckComplete={onCheckComplete}
+                disabled={isCheckingInitial}
+              />
+            );
+          }}
+          refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
+          ItemSeparatorComponent={Platform.select({
+            ios: IndentedDivider,
+          })}
+          ListFooterComponent={
+            <>
+              <View style={{ height: footerSpacerHeight }} />
+              <BottomBarSpacer />
+            </>
+          }
+          ListEmptyComponent={
+            !recentFilesQuery.isLoading ? (
+              <OverviewList emptyStateText={t('courseFilesTab.empty')} />
+            ) : null
+          }
+        />
+        {isCheckingInitial && (
+          <View
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ActivityIndicator size="large" />
+          </View>
+        )}
+      </View>
       <CourseFileMultiSelectModal
         visible={multiSelectModalVisible}
         onClose={handleCloseMultiSelectModal}

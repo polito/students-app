@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
-import { unlink } from 'react-native-fs';
 
 import {
   faCloudArrowDown,
@@ -21,6 +20,7 @@ import {
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useDownloadQueue } from '../../../core/hooks/useDownloadQueue';
 import { getFileKey } from '../../../core/providers/downloads/downloadsFileUtils';
+import { removeFileSafAware } from '../../../core/providers/downloads/safMirror';
 import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
 import { isDirectory } from '../utils/fs-entry';
@@ -418,12 +418,21 @@ export const useFileManagement = ({
             setIsRemoving(true);
             setRemovalInProgress(true);
             try {
+              const ctx = DownloadContext.Course;
+              const ctxId = courseId.toString();
+              const filesFromDb = await fileDatabase.getFilesByContext(
+                ctx,
+                ctxId,
+              );
+              const dbFilesById = new Map(filesFromDb.map(f => [f.id, f]));
+
               const removePromises = selectedDownloadedFiles.map(async file => {
                 const key = getFileKey(file);
-                const filePath = file.request.destination;
+                const fileRecord = dbFilesById.get(file.id);
+                const filePath = fileRecord?.path ?? file.request.destination;
 
                 try {
-                  await unlink(filePath);
+                  await removeFileSafAware(filePath);
                 } catch (error) {
                   console.error(`Error removing file ${filePath}:`, error);
                 }
@@ -465,6 +474,7 @@ export const useFileManagement = ({
     [
       hasDownloadedFiles,
       selectedDownloadedFiles,
+      courseId,
       t,
       fileDatabase,
       updateDownload,

@@ -126,7 +126,7 @@ export const FileListItem = ({
         </View>
       }
       subtitle={subtitle}
-      disabled={isDisabled}
+      disabled={isDisabled || rest.disabled}
       {...rest}
     />
   );

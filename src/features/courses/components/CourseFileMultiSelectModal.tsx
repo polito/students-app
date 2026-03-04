@@ -45,6 +45,7 @@ import {
   buildCourseFilePath,
   buildCourseFileUrl,
   formatFileSize,
+  stripIdInParentheses,
 } from '../../../utils/files';
 import { isDirectory } from '../utils/fs-entry';
 
@@ -453,7 +454,10 @@ export const CourseFileMultiSelectModal = ({
               .join(' - ');
             return (
               <FileListItem
-                title={file.name ?? t('common.unnamedFile')}
+                title={
+                  stripIdInParentheses(file.name ?? '') ||
+                  t('common.unnamedFile')
+                }
                 subtitle={fileSubtitle}
                 mimeType={file.mimeType}
                 isDownloaded={isDownloaded}

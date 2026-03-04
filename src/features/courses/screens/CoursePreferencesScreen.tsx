@@ -43,6 +43,7 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
+import { removeFileSafAware } from '../../../core/providers/downloads/safMirror';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext, useCourseContext } from '../contexts/CourseContext';
@@ -103,16 +104,22 @@ const CleanCourseFilesListItem = () => {
             }
           });
 
-          // Elimina i file dal database
+          const files = await fileDatabaseRef.current.getFilesByContext(
+            ctx,
+            ctxId,
+          );
+          await Promise.all(
+            files.map(f => removeFileSafAware(f.path).catch(() => {})),
+          );
+
           await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
-          unlink(courseFilesCache).then(() => {
-            setFeedback({
-              text: t('coursePreferencesScreen.cleanCacheFeedback'),
-            });
-            refreshSize();
-            queryClient.invalidateQueries({
-              queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
-            });
+          unlink(courseFilesCache).catch(() => {});
+          setFeedback({
+            text: t('coursePreferencesScreen.cleanCacheFeedback'),
+          });
+          refreshSize();
+          queryClient.invalidateQueries({
+            queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
           });
         }
       }}

@@ -2,7 +2,6 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
-import { stat } from 'react-native-fs';
 
 import {
   faCloudArrowDown,
@@ -24,13 +23,16 @@ import {
   DownloadContext,
   useDownloadsContext,
 } from '../../../core/contexts/DownloadsContext';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useDownloadFile } from '../../../core/hooks/useDownloadFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
+import { getFileSizeSafAware } from '../../../core/providers/downloads/safMirror';
 import { formatDateTime } from '../../../utils/dates';
 import {
   buildCourseFilePath,
   buildCourseFileUrl,
   formatFileSize,
+  stripIdInParentheses,
 } from '../../../utils/files';
 import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
@@ -48,6 +50,8 @@ export interface Props extends Partial<ListItemProps> {
   onSwipeStart?: () => void;
   onSwipeEnd?: () => void;
   enableMultiSelect?: boolean;
+  onCheckComplete?: () => void;
+  disabled?: boolean;
 }
 
 interface MenuProps extends Partial<ContextMenuProps> {
@@ -105,6 +109,8 @@ export const CourseFileListItem = memo(
     showLocation = false,
     showCreatedDate = true,
     enableMultiSelect,
+    onCheckComplete,
+    disabled,
     ...rest
   }: Props) => {
     const { t } = useTranslation();
@@ -120,6 +126,8 @@ export const CourseFileListItem = memo(
     const courseId = useCourseContext();
     const [courseFilesCache] = useCourseFilesCachePath();
     const { setFeedback } = useFeedbackContext();
+    const { fileStorageLocation, customStorageDisplayPath } =
+      usePreferencesContext();
     const { getUnreadsCount } = useNotifications();
     const fileNotificationScope = useMemo(
       () => ['teaching', 'courses', `${courseId}`, 'files', item.id] as const,
@@ -150,6 +158,7 @@ export const CourseFileListItem = memo(
 
     const {
       isDownloaded,
+      isCheckingDownloadStatus,
       downloadProgress,
       startDownload,
       stopDownload,
@@ -165,19 +174,38 @@ export const CourseFileListItem = memo(
     );
 
     useEffect(() => {
+      let cancelled = false;
       (async () => {
         if (!isDownloaded) {
-          setIsCorrupted(false);
+          if (!cancelled) setIsCorrupted(false);
           return;
         }
-        const fileStats = await stat(cachedFilePath);
-        setIsCorrupted(
-          Math.abs(fileStats.size - item.sizeInKiloBytes * 1024) /
-            Math.max(fileStats.size, item.sizeInKiloBytes * 1024) >
-            0.1,
-        );
+        try {
+          const fileSize = await getFileSizeSafAware(cachedFilePath);
+          if (fileSize == null || cancelled) {
+            if (!cancelled) setIsCorrupted(false);
+            return;
+          }
+          const expectedSize = item.sizeInKiloBytes * 1024;
+          const sizeMismatch =
+            Math.abs(fileSize - expectedSize) /
+              Math.max(fileSize, expectedSize) >
+            0.1;
+          if (!cancelled) setIsCorrupted(sizeMismatch);
+        } catch {
+          if (!cancelled) setIsCorrupted(false);
+        }
       })();
+      return () => {
+        cancelled = true;
+      };
     }, [cachedFilePath, isDownloaded, item.sizeInKiloBytes]);
+
+    useEffect(() => {
+      if (!isCheckingDownloadStatus) {
+        onCheckComplete?.();
+      }
+    }, [isCheckingDownloadStatus, onCheckComplete]);
 
     const metrics = useMemo(
       () =>
@@ -199,13 +227,12 @@ export const CourseFileListItem = memo(
           return;
         }
         if (Platform.OS === 'android' && force) {
+          const savedPath =
+            fileStorageLocation === 'custom' && customStorageDisplayPath
+              ? customStorageDisplayPath
+              : cachedFilePath;
           setFeedback({
-            text:
-              Platform.Version > 29
-                ? t('courseFileListItem.fileSavedDocumentsPath')
-                : t('courseFileListItem.fileSaved', {
-                    cachedFilePath: cachedFilePath,
-                  }),
+            text: `${t('courseFileListItem.fileSavedPrefix')} ${savedPath}`,
             isPersistent: false,
           });
         }
@@ -218,7 +245,15 @@ export const CourseFileListItem = memo(
           }
         });
       },
-      [openFile, t, cachedFilePath, setFeedback, isDownloaded],
+      [
+        openFile,
+        t,
+        cachedFilePath,
+        setFeedback,
+        isDownloaded,
+        fileStorageLocation,
+        customStorageDisplayPath,
+      ],
     );
 
     const downloadFile = useCallback(async () => {
@@ -285,7 +320,7 @@ export const CourseFileListItem = memo(
             textStyle={{ marginHorizontal: 0 }}
             containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
           />
-        ) : !isDownloaded ? (
+        ) : !isDownloaded || isCheckingDownloadStatus ? (
           downloadProgress == null ? (
             <IconButton
               icon={faCloudArrowDown}
@@ -333,6 +368,7 @@ export const CourseFileListItem = memo(
         enableMultiSelect,
         isInQueue,
         handleToggleQueue,
+        isCheckingDownloadStatus,
         isDownloaded,
         downloadProgress,
         t,
@@ -348,6 +384,7 @@ export const CourseFileListItem = memo(
     const listItem = (
       <FileListItem
         {...rest}
+        disabled={disabled}
         accessibilityLabel={
           !isDownloaded
             ? downloadProgress == null
@@ -358,7 +395,7 @@ export const CourseFileListItem = memo(
         onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
         isDownloaded={isDownloaded}
         downloadProgress={downloadProgress}
-        title={item.name ?? t('common.unnamedFile')}
+        title={stripIdInParentheses(item.name ?? '') || t('common.unnamedFile')}
         subtitle={metrics}
         trailingItem={trailingItem}
         mimeType={item.mimeType}

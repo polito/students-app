@@ -20,12 +20,17 @@ import {
   useDownloadsContext,
 } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
-import { useNotifications } from '../../../core/hooks/useNotifications';
+// import { useNotifications } from '../../../core/hooks/useNotifications';
+import {
+  fileExistsSafAware,
+  getCustomStoragePrefs,
+} from '../../../core/providers/downloads/safMirror';
 import { useGetCourseFiles } from '../../../core/queries/courseHooks';
 import {
   buildCourseFilePath,
   buildCourseFileUrl,
   formatFileSize,
+  stripIdInParentheses,
 } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
@@ -58,6 +63,8 @@ interface Props {
   item: CourseDirectory;
   enableMultiSelect?: boolean;
   listRefreshKey?: number;
+  onCheckComplete?: () => void;
+  disabled?: boolean;
 }
 
 export const CourseDirectoryListItem = ({
@@ -65,6 +72,8 @@ export const CourseDirectoryListItem = ({
   item,
   enableMultiSelect = false,
   listRefreshKey,
+  onCheckComplete,
+  disabled,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const navigation =
@@ -80,11 +89,12 @@ export const CourseDirectoryListItem = ({
   } = useDownloadsContext();
   const [courseFilesCache] = useCourseFilesCachePath();
   const courseFilesQuery = useGetCourseFiles(courseId);
-  const { getUnreadsCount } = useNotifications();
+  // const { getUnreadsCount } = useNotifications();
 
   const [filesCheckedFromDB, setFilesCheckedFromDB] = useState<Set<string>>(
     new Set(),
   );
+  const [isCheckingDownloaded, setIsCheckingDownloaded] = useState(true);
   const fileDatabase = getFileDatabase();
   const downloadsRef = useRef(downloads);
   const updateDownloadRef = useRef(updateDownload);
@@ -125,9 +135,10 @@ export const CourseDirectoryListItem = ({
 
       const subDirectories = directory.files.filter(isDirectory);
       subDirectories.forEach(subDir => {
+        const segmentName = stripIdInParentheses(subDir.name);
         const subDirPath = basePath
-          ? `${basePath}/${subDir.name}`
-          : subDir.name;
+          ? `${basePath}/${segmentName}`
+          : segmentName;
         collectAllFilesRecursively(subDir, subDirPath, allFiles);
       });
     },
@@ -166,12 +177,24 @@ export const CourseDirectoryListItem = ({
       );
 
       if (fullDirectory) {
-        collectAllFilesRecursively(fullDirectory, item.name, allFiles);
+        collectAllFilesRecursively(
+          fullDirectory,
+          stripIdInParentheses(item.name),
+          allFiles,
+        );
       } else {
-        collectAllFilesRecursively(item, item.name, allFiles);
+        collectAllFilesRecursively(
+          item,
+          stripIdInParentheses(item.name),
+          allFiles,
+        );
       }
     } else {
-      collectAllFilesRecursively(item, item.name, allFiles);
+      collectAllFilesRecursively(
+        item,
+        stripIdInParentheses(item.name),
+        allFiles,
+      );
     }
 
     return allFiles;
@@ -215,31 +238,46 @@ export const CourseDirectoryListItem = ({
       return false;
     }
 
+    const prefs = await getCustomStoragePrefs();
+    const checkFileExists = async (path: string): Promise<boolean> =>
+      prefs ? fileExistsSafAware(path) : exists(path).catch(() => false);
+
+    const pathLocation =
+      (item as CourseDirectory & { location?: string }).location ??
+      `/${item.name}`;
+
     const fileChecks = await Promise.all(
       directoryFiles.map(async file => {
         const cachedFilePath = buildCourseFilePath(
           courseFilesCache,
-          `/${item.name}`,
+          pathLocation,
           file.id,
           file.name,
           file.mimeType,
         );
-        const fileExists = await exists(cachedFilePath);
-        return fileExists;
+        return checkFileExists(cachedFilePath);
       }),
     );
 
-    return fileChecks.every(fileExists => fileExists);
+    return fileChecks.every(Boolean);
   }, [item, courseFilesCache]);
 
   useEffect(() => {
     const checkFilesInDatabase = async () => {
       const directoryFiles = item.files.filter(isFile);
-      if (directoryFiles.length === 0) return;
+      if (directoryFiles.length === 0) {
+        setIsCheckingDownloaded(false);
+        return;
+      }
+
+      const pathLocation =
+        (item as CourseDirectory & { location?: string }).location ??
+        `/${item.name}`;
 
       const downloadedFileIds = new Set<string>();
 
       try {
+        const prefs = await getCustomStoragePrefs();
         const ctx = DownloadContext.Course;
         const ctxId = courseId.toString();
         const allFilesInContext = await fileDatabase.getFilesByContext(
@@ -248,17 +286,20 @@ export const CourseDirectoryListItem = ({
         );
         const filesMap = new Map(allFilesInContext.map(f => [f.id, f]));
 
+        const checkFileExists = async (path: string): Promise<boolean> =>
+          prefs ? fileExistsSafAware(path) : exists(path).catch(() => false);
+
         for (const file of directoryFiles) {
           try {
             const fileRecord = filesMap.get(file.id);
             if (fileRecord) {
-              const fileExists = await exists(fileRecord.path);
+              const fileExists = await checkFileExists(fileRecord.path);
               if (fileExists) {
                 downloadedFileIds.add(file.id);
 
                 const cachedFilePath = buildCourseFilePath(
                   courseFilesCache,
-                  `/${item.name}`,
+                  pathLocation,
                   file.id,
                   file.name,
                   file.mimeType,
@@ -280,20 +321,22 @@ export const CourseDirectoryListItem = ({
             } else {
               const cachedFilePath = buildCourseFilePath(
                 courseFilesCache,
-                `/${item.name}`,
+                pathLocation,
                 file.id,
                 file.name,
                 file.mimeType,
               );
-              const fileExists = await exists(cachedFilePath);
+              const fileExists = await checkFileExists(cachedFilePath);
               if (fileExists) {
                 downloadedFileIds.add(file.id);
               }
             }
           } catch (error) {}
         }
-      } catch (error) {}
-
+      } catch (error) {
+      } finally {
+        setIsCheckingDownloaded(false);
+      }
       setFilesCheckedFromDB(downloadedFileIds);
     };
 
@@ -301,11 +344,18 @@ export const CourseDirectoryListItem = ({
   }, [
     item.files,
     item.name,
+    item,
     courseFilesCache,
     courseId,
     fileDatabase,
     listRefreshKey,
   ]);
+
+  useEffect(() => {
+    if (!isCheckingDownloaded) {
+      onCheckComplete?.();
+    }
+  }, [isCheckingDownloaded, onCheckComplete]);
 
   useEffect(() => {
     const handleFocus = () => {
@@ -370,25 +420,26 @@ export const CourseDirectoryListItem = ({
           textStyle={{ marginHorizontal: 0 }}
           containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
         />
-      ) : null,
-    [enableMultiSelect, isInQueue, handleSelection],
+      ) : isCheckingDownloaded ? null : null,
+    [enableMultiSelect, isInQueue, handleSelection, isCheckingDownloaded],
   );
 
   const hasUnreadFiles = useMemo(() => {
     const allFiles = getAllFilesInDirectory();
-    const totalUnreads = allFiles.reduce((count, file) => {
-      const fileNotificationScope = [
-        'teaching',
-        'courses',
-        courseId.toString(),
-        'files',
-        file.id,
-      ];
-      const unreadCount = getUnreadsCount(fileNotificationScope) ?? 0;
+    const totalUnreads = allFiles.reduce((count, _file) => {
+      // const fileNotificationScope = [
+      //   'teaching',
+      //   'courses',
+      //   courseId.toString(),
+      //   'files',
+      //   file.id,
+      // ];
+      // const unreadCount = getUnreadsCount(fileNotificationScope) ?? 0;
+      const unreadCount = 0;
       return count + unreadCount;
     }, 0);
     return totalUnreads > 0;
-  }, [getAllFilesInDirectory, courseId, getUnreadsCount]);
+  }, [getAllFilesInDirectory]);
 
   const fullDirectory = useMemo(() => {
     if (!courseFilesQuery.data) return null;
@@ -447,9 +498,9 @@ export const CourseDirectoryListItem = ({
 
   return (
     <DirectoryListItem
-      title={item.name}
+      title={stripIdInParentheses(item.name)}
       subtitle={subtitle}
-      disabled={isFolderBeingDownloaded}
+      disabled={disabled || isFolderBeingDownloaded}
       onPress={() => {
         if (enableMultiSelect) {
           handleSelection();
@@ -457,7 +508,7 @@ export const CourseDirectoryListItem = ({
           navigation.navigate('CourseDirectory', {
             courseId,
             directoryId: item.id,
-            directoryName: item.name,
+            directoryName: stripIdInParentheses(item.name),
           });
         }
       }}
@@ -466,7 +517,7 @@ export const CourseDirectoryListItem = ({
       unread={hasUnreadFiles}
       accessibilityLabel={
         isFolderBeingDownloaded
-          ? `${item.name}, ${t('courseDirectoryListItem.unavailableDuringDownload')}`
+          ? `${stripIdInParentheses(item.name)}, ${t('courseDirectoryListItem.unavailableDuringDownload')}`
           : undefined
       }
       {...rest}
