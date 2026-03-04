@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -8,16 +8,18 @@ import { useSplashContext } from '../contexts/SplashContext';
 import { useBottomModal } from '../hooks/useBottomModal';
 import { useCheckForUpdate } from '../hooks/useCheckForUpdate';
 import { MigrationService } from '../migrations/MigrationService';
+import { syncLocalFilesToDb } from '../providers/downloads/syncLocalFilesToDb';
 import { BottomModal } from './BottomModal';
 import { GuestNavigator } from './GuestNavigator';
 import { NewVersionModal } from './NewVersionModal';
 import { RootNavigator } from './RootNavigator';
 
 export const AppContent = () => {
-  const { isLogged } = useApiContext();
+  const { isLogged, username } = useApiContext();
   const preferences = usePreferencesContext();
   const queryClient = useQueryClient();
   const { isSplashLoaded } = useSplashContext();
+  const hasSyncedFiles = useRef(false);
 
   const {
     close: closeModal,
@@ -64,6 +66,15 @@ export const AppContent = () => {
   useEffect(() => {
     MigrationService.migrateIfNeeded(preferences, queryClient);
   }, [preferences, queryClient]);
+
+  useEffect(() => {
+    if (isLogged && username && !hasSyncedFiles.current) {
+      hasSyncedFiles.current = true;
+      syncLocalFilesToDb(username, preferences.fileStorageLocation).catch(
+        () => {},
+      );
+    }
+  }, [isLogged, username, preferences.fileStorageLocation]);
 
   if (MigrationService.needsMigration(preferences)) return null;
   return (

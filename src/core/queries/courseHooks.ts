@@ -21,6 +21,7 @@ import {
 
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { isCourseDetailed } from '../../features/courses/utils/courses';
+import { stripIdInParentheses } from '../../utils/files';
 import { notNullish } from '../../utils/predicates';
 import { pluckData } from '../../utils/queries';
 import { courseColors } from '../constants';
@@ -256,7 +257,7 @@ const isFile = (
 ): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
 
 /**
- * Assigns a location to each file
+ * Assigns a location to each file (folder path segments without "(number)" id suffix).
  */
 const computeFileLocations = (
   directoryContent: CourseDirectoryEntry[],
@@ -267,13 +268,18 @@ const computeFileLocations = (
     if (isFile(item)) {
       result.push({ ...item, location });
     } else {
+      const segmentName = stripIdInParentheses(item.name);
       result.push({
         ...item,
+        location:
+          location.length === 1
+            ? location + segmentName
+            : location + '/' + segmentName,
         files: computeFileLocations(
           item.files,
           location.length === 1
-            ? location + item.name
-            : location + '/' + item.name,
+            ? location + segmentName
+            : location + '/' + segmentName,
         ),
       });
     }
@@ -392,6 +398,23 @@ const findDirectory = (
   }
 
   return result;
+};
+
+export const getFlattenedCourseFiles = (
+  content: CourseDirectoryContentWithLocations[],
+  directoryId?: string,
+): CourseFileOverviewWithLocation[] => {
+  if (!directoryId) {
+    return flattenFiles(content);
+  }
+  const dirContent = findDirectory(
+    directoryId,
+    content as CourseDirectoryEntry[],
+  );
+  if (!dirContent) {
+    return [];
+  }
+  return flattenFiles(dirContent as CourseDirectoryContentWithLocations[]);
 };
 
 export const useGetCourseAssignments = (courseId: number) => {

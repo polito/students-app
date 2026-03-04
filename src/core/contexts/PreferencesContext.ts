@@ -31,6 +31,9 @@ export const editablePreferenceKeys = [
   'hideGrades',
   'loginUid',
   'politoAuthnEnrolmentStatus',
+  'fileStorageLocation',
+  'customStoragePath',
+  'customStorageDisplayPath',
 ] as const;
 
 export type PreferenceKey = (typeof editablePreferenceKeys)[number];
@@ -101,6 +104,9 @@ export interface PreferencesContextBase {
     insertedDeviceName?: string;
     hideInitialPrompt?: boolean;
   };
+  fileStorageLocation?: 'internal' | 'custom';
+  customStoragePath?: string;
+  customStorageDisplayPath?: string;
 }
 
 export interface PreferencesContextProps extends PreferencesContextBase {
