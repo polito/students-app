@@ -130,7 +130,16 @@ export const PathLayer = ({
                               pathFeatureCollection,
                             ),
                           }
-                        : styles.icon
+                        : segmentId === pathFeatureCollection.length - 1
+                          ? {
+                              ...styles.icon,
+                              iconImage: getIcon(
+                                segmentId || 0,
+                                floorMapNames || [],
+                                pathFeatureCollection,
+                              ),
+                            }
+                          : styles.icon
                     }
                   />
                 </ShapeSource>
