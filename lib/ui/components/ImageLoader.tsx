@@ -1,21 +1,22 @@
-import { useState } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-
-import FastImage, {
-  FastImageProps,
-  FastImageStaticProperties,
+import { ComponentProps, useState } from 'react';
+import {
   ImageStyle,
-  ResizeMode,
-} from '@d11/react-native-fast-image';
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
+
 import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 
-type Props = Partial<Omit<FastImageStaticProperties, 'resizeMode'>> &
-  FastImageProps & {
-    containerStyle?: StyleProp<ViewStyle>;
-    source: { uri: string };
-    resizeMode: ResizeMode;
-    imageStyle?: StyleProp<ImageStyle>;
-  };
+import { Image, ImageSource } from 'expo-image';
+
+type Props = Omit<ComponentProps<typeof Image>, 'source' | 'style'> & {
+  containerStyle?: StyleProp<ViewStyle>;
+  source: ImageSource;
+  resizeMode?: NonNullable<ComponentProps<typeof Image>['contentFit']>;
+  imageStyle?: StyleProp<ImageStyle>;
+};
 
 export const ImageLoader = ({ resizeMode, imageStyle, ...rest }: Props) => {
   const [loading, setLoading] = useState(true);
@@ -26,10 +27,10 @@ export const ImageLoader = ({ resizeMode, imageStyle, ...rest }: Props) => {
 
   return (
     <View style={rest.containerStyle} onLayout={() => setSrc(rest.source)}>
-      <FastImage
+      <Image
         {...rest}
         style={imageStyle}
-        resizeMode={resizeMode}
+        contentFit={resizeMode}
         onLoadEnd={onLoadEnd}
         onLoadStart={onLoadStart}
         source={src}

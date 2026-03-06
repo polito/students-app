@@ -1,5 +1,3 @@
-# ENV['RCT_NEW_ARCH_ENABLED'] = '0'
-
 require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 # from zoontek/react-native-permissions
 def node_require(script)
