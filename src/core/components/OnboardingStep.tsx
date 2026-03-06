@@ -6,12 +6,13 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import FastImage from '@d11/react-native-fast-image';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+
+import { Image } from 'expo-image';
 
 import { HtmlView } from './HtmlView';
 
@@ -57,16 +58,16 @@ export const OnboardingStep = ({
     >
       {cover && (
         <View style={styles.coverImageContainer}>
-          <FastImage
+          <Image
             source={{ uri: cover }}
             style={{
               borderRadius: shapes.lg,
               width: coverWidth,
               aspectRatio: coverAspectRatio ?? 16 / 9,
             }}
-            resizeMode={FastImage.resizeMode.cover}
+            contentFit="cover"
             onLoad={e => {
-              const { width: w, height: h } = e.nativeEvent;
+              const { width: w, height: h } = e.source;
               if (w > 0) setCoverAspectRatio(w / h);
             }}
           />

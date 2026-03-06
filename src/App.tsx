@@ -1,5 +1,4 @@
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-
+import { SafeAreaProviderCompat } from '@react-navigation/elements';
 import Mapbox from '@rnmapbox/maps';
 
 import { AppContent } from './core/components/AppContent';
@@ -18,7 +17,7 @@ Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
 
 const App = () => {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProviderCompat>
       <SplashProvider>
         <PreferencesProvider>
           <UiProvider>
@@ -31,7 +30,7 @@ const App = () => {
           </UiProvider>
         </PreferencesProvider>
       </SplashProvider>
-    </SafeAreaProvider>
+    </SafeAreaProviderCompat>
   );
 };
 

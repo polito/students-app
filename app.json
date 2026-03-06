@@ -1,6 +1,5 @@
 {
   "name": "students",
-  "displayName": "Polito Students",
   "plugins": [
     [
       "@sentry/react-native/expo",
@@ -9,6 +8,15 @@
         "project": "students-app",
         "organization": "polito"
       }
-    ]
+    ],
+    "@sentry/react-native",
+    "expo-asset",
+    "expo-sqlite",
+    "expo-web-browser",
+    "@rnmapbox/maps"
+  ],
+  "platforms": [
+    "ios",
+    "android"
   ]
 }

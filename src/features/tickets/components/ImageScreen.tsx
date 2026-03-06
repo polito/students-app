@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 
-import FastImage from '@d11/react-native-fast-image';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
@@ -69,7 +68,7 @@ export const ImageScreen = ({ route }: Props) => {
                   height: imageProps.imageHeight,
                   width: imageProps.imageWidth,
                 }}
-                resizeMode={FastImage.resizeMode.contain}
+                resizeMode="contain"
               />
             </ReactNativeZoomableView>
           )}
