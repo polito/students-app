@@ -79,7 +79,11 @@ export const pickSafDirectory = async (): Promise<PickDirectoryResult> => {
   }
   const doc = await openDocumentTree(true);
   if (!doc?.uri) {
-    throw new Error('Directory selection cancelled');
+    const err = new Error('Directory selection cancelled') as Error & {
+      code: string;
+    };
+    err.code = 'CANCELLED';
+    throw err;
   }
   const displayPath = getDisplayPathFromSafUri(doc.uri);
   return { uri: doc.uri, displayPath };

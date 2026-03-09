@@ -141,7 +141,7 @@ export const sortWithDirectoriesFirstByDate = <T extends { type: string }>(
 };
 
 /**
- * Sort items with directories first, then by download status (downloaded first)
+ * Sort items with directories first, then by download status (not downloaded first)
  */
 export const sortWithDirectoriesFirstByDownloadStatus = <
   T extends { type: string; name: string; id: string },

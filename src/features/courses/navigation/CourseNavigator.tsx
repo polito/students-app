@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowDimensions } from 'react-native';
 
-import { faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { Text } from '@lib/ui/components/Text';
 import { TopTabBar } from '@lib/ui/components/TopTabBar';
@@ -103,7 +103,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
       ),
       headerRight: () => (
         <IconButton
-          icon={faSliders}
+          icon={faCog}
           color={palettes.primary[400]}
           size={fontSizes.lg}
           accessibilityRole="button"

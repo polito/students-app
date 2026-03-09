@@ -86,7 +86,9 @@ export const getFileExtension = (
 
 /**
  * Builds the file path for a course file download.
- * Does not add the id in parentheses to the name; strips any " (number)" from file name and path segments.
+ * Preserves the base name when the filename has no extension (e.g. "README" → "README (fileId).txt").
+ * Uses fileId in parentheses when the name has no extension to avoid overwrites.
+ * Strips any " (number)" from file name and path segments.
  */
 export const buildCourseFilePath = (
   courseFilesCache: string,
@@ -98,11 +100,17 @@ export const buildCourseFilePath = (
   const cleanFileName = stripIdInParentheses(fileName);
   const [filenamePart] = splitNameAndExtension(cleanFileName);
   const ext = getFileExtension(mimeType, cleanFileName);
-  const nameForPath = filenamePart
-    ? [filenamePart, ext].filter(Boolean).join('.')
-    : ext
-      ? `${fileId}.${ext}`
-      : fileId;
+  let nameForPath: string;
+  if (filenamePart) {
+    nameForPath = [filenamePart, ext].filter(Boolean).join('.');
+  } else if (cleanFileName) {
+    // No extension in name (e.g. "README"): preserve base name and add fileId for uniqueness
+    nameForPath = ext
+      ? `${cleanFileName} (${fileId}).${ext}`
+      : `${cleanFileName} (${fileId})`;
+  } else {
+    nameForPath = ext ? `${fileId}.${ext}` : fileId;
+  }
 
   const cleanLocation = location
     ? stripIdFromPathSegments(location.replace(/^\//, ''))
