@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
-import { stat, unlink } from 'react-native-fs';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -22,9 +21,13 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import {
+  CourseSectionEnum,
+  getCourseKey,
   useGetCourse,
   useUpdateCoursePreferences,
 } from '~/core/queries/courseHooks';
@@ -32,39 +35,110 @@ import { formatFileSize } from '~/utils/files';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { courseColors } from '../../../core/constants';
+import {
+  DownloadContext,
+  useDownloadsContext,
+} from '../../../core/contexts/DownloadsContext';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
-import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+import { CourseContext, useCourseContext } from '../contexts/CourseContext';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
+  const {
+    downloads,
+    updateDownload,
+    getCourseFolderPath,
+    deleteLocalPath,
+    removeFileFromStorage,
+    cacheSizeVersion,
+    refreshCacheVersion,
+    isAnyDownloadInProgress,
+  } = useDownloadsContext();
+  const queryClient = useQueryClient();
 
   const { fontSizes } = useTheme();
-  const [courseFilesCache] = useCourseFilesCachePath();
+  const courseId = useCourseContext();
+  const { data: course } = useGetCourse(courseId);
+  const courseFilesCache = getCourseFolderPath(courseId, course?.name);
   const [cacheSize, setCacheSize] = useState<number>(0);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
   });
 
-  const refreshSize = () => {
-    if (courseFilesCache) {
-      stat(courseFilesCache)
-        .then(({ size }) => {
-          setCacheSize(size);
-        })
-        .catch(() => {
-          setCacheSize(0);
-        });
-    }
-  };
+  const fileDatabaseRef = useRef(getFileDatabase());
+  const ctx = DownloadContext.Course;
+  const ctxId = courseId.toString();
 
-  useEffect(refreshSize, [courseFilesCache]);
+  const refreshSize = useCallback(() => {
+    fileDatabaseRef.current
+      .getTotalSizeByContext(ctx, ctxId)
+      .then(size => {
+        setCacheSize(size);
+      })
+      .catch(() => {
+        setCacheSize(0);
+      });
+  }, [ctx, ctxId]);
+
+  useEffect(() => {
+    refreshSize();
+  }, [cacheSizeVersion, refreshSize]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshSize();
+    }, [refreshSize]),
+  );
+
+  const handleCleanPress = useCallback(async () => {
+    if (!courseFilesCache || !(await confirm())) return;
+    Object.keys(downloads).forEach(key => {
+      if (key.includes(courseFilesCache)) {
+        updateDownload(key, {
+          isDownloaded: false,
+          phase: undefined,
+        });
+      }
+    });
+
+    const files = await fileDatabaseRef.current.getFilesByContext(ctx, ctxId);
+    await Promise.all(
+      files.map(f => removeFileFromStorage(f.path).catch(() => {})),
+    );
+
+    await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
+    await deleteLocalPath(courseFilesCache).catch(() => {});
+    refreshCacheVersion();
+    setFeedback({
+      text: t('coursePreferencesScreen.cleanCacheFeedback'),
+    });
+    refreshSize();
+    queryClient.invalidateQueries({
+      queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+    });
+  }, [
+    courseFilesCache,
+    confirm,
+    downloads,
+    updateDownload,
+    ctx,
+    ctxId,
+    setFeedback,
+    t,
+    refreshSize,
+    queryClient,
+    courseId,
+    deleteLocalPath,
+    removeFileFromStorage,
+    refreshCacheVersion,
+  ]);
 
   return (
     <ListItem
@@ -73,18 +147,9 @@ const CleanCourseFilesListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
-      disabled={cacheSize === 0}
+      disabled={cacheSize === 0 || isAnyDownloadInProgress}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
-      onPress={async () => {
-        if (courseFilesCache && (await confirm())) {
-          unlink(courseFilesCache).then(() => {
-            setFeedback({
-              text: t('coursePreferencesScreen.cleanCacheFeedback'),
-            });
-            refreshSize();
-          });
-        }
-      }}
+      onPress={handleCleanPress}
     />
   );
 };

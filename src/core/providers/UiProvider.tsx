@@ -71,7 +71,7 @@ export const UiProvider = ({ children }: PropsWithChildren) => {
   }, [language]);
 
   useEffect(() => {
-    // Ottieni l'URL iniziale e naviga a `PlacesTab` con i parametri
+    // Get initial URL and navigate to PlacesTab with the params
     const GoToUrlOnMap = () => {
       Linking.getInitialURL().then(url => {
         if (url) {

@@ -127,7 +127,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkToMoreCount={
               coursesQuery.data
                 ? (() => {
-                    // Calcola gli elementi nascosti direttamente
+                    // Compute hidden items directly
                     let hiddenCount = 0;
 
                     coursesQuery.data.forEach(course => {

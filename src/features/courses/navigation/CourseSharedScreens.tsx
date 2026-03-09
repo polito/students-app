@@ -33,6 +33,7 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
+    skipInitialDownloadCheck?: boolean;
   };
   CourseVideolecture: {
     courseId: number;

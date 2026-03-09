@@ -6,6 +6,7 @@ export type CourseFileOverviewWithLocation = CourseFileOverview & {
 
 export type CourseDirectoryContentWithLocations =
   | ({ type: 'directory' } & CourseDirectory & {
+        location?: string;
         files: CourseDirectoryContentWithLocations[];
       })
   | ({ type: 'file' } & CourseFileOverviewWithLocation);

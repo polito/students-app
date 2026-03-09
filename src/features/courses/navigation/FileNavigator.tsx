@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useCourseContext } from '../contexts/CourseContext';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
@@ -17,6 +16,7 @@ export type FileStackParamList = {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
+    skipInitialDownloadCheck?: boolean;
   };
 };
 
@@ -26,7 +26,6 @@ const Stack = createNativeStackNavigator<
 >();
 export const FileNavigator = () => {
   const theme = useTheme();
-  const { filesScreen } = usePreferencesContext();
   const courseId = useCourseContext();
 
   return (
@@ -36,9 +35,7 @@ export const FileNavigator = () => {
         headerShown: false,
         ...useTitlesStyles(theme),
       }}
-      initialRouteName={
-        filesScreen === 'filesView' ? 'RecentFiles' : 'DirectoryFiles'
-      }
+      initialRouteName="DirectoryFiles"
     >
       <Stack.Screen
         name="RecentFiles"

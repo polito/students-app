@@ -1,6 +1,5 @@
 import { Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
-import { TemporaryDirectoryPath } from 'react-native-fs';
 
 import {
   BASE_PATH,
@@ -14,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData, rethrowApiError } from '../../utils/queries';
 import { useApiContext } from '../contexts/ApiContext';
+import { cacheDirectory } from '../storage/fileSystem';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
 export const TICKET_QUERY_PREFIX = 'ticket';
@@ -141,7 +141,7 @@ export const useGetTicketReplyAttachment = (
       ReactNativeBlobUtil.config({
         fileCache: true,
         path:
-          TemporaryDirectoryPath +
+          cacheDirectory +
           Platform.select({ android: '/', ios: '' }) +
           fileName,
       })
@@ -173,7 +173,7 @@ export const useGetTicketAttachment = (
       ReactNativeBlobUtil.config({
         fileCache: true,
         path:
-          TemporaryDirectoryPath +
+          cacheDirectory +
           Platform.select({ android: '/', ios: '' }) +
           fileName,
       })
