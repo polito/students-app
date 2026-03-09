@@ -1,17 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
-import { open } from 'react-native-file-viewer';
-import {
-  downloadFile,
-  exists,
-  stopDownload as fsStopDownload,
-  stat,
-} from 'react-native-fs';
-import { lookup } from 'react-native-mime-types';
-import { dirname } from 'react-native-path';
 
-import { mkdirRecursive } from '../../utils/files';
+import { dirname, mkdirRecursive } from '../../utils/files';
 import { useApiContext } from '../contexts/ApiContext';
 import {
   Download,
@@ -19,14 +10,10 @@ import {
   useDownloadsContext,
 } from '../contexts/DownloadsContext';
 import { FileRecord, getFileDatabase } from '../database/FileDatabase';
-import { calculateFileChecksum } from '../providers/downloads/downloadsChecksum';
 import {
-  fileExistsSafAware,
-  getCustomStoragePrefs,
-  getUriForOpening,
-  moveToSafAfterDownload,
-  removeFileSafAware,
-} from '../providers/downloads/safMirror';
+  type DownloadProgressData,
+  createResumableDownload,
+} from '../storage/fileSystem';
 
 // import { useNotifications } from './useNotifications';
 
@@ -40,8 +27,16 @@ export const useDownloadFile = (
 ) => {
   const { token } = useApiContext();
   const { t } = useTranslation();
-  const { downloads, updateDownload: updateDownloadFromContext } =
-    useDownloadsContext();
+  const {
+    downloads,
+    updateDownload: updateDownloadFromContext,
+    fileExistsInStorage,
+    openFile: openFileFromContext,
+    removeFileFromStorage,
+    persistDownloadedFile,
+    cacheSizeVersion,
+    refreshCacheVersion,
+  } = useDownloadsContext();
   // const { clearNotificationScope } = useNotifications();
 
   const fileDatabase = getFileDatabase();
@@ -49,13 +44,6 @@ export const useDownloadFile = (
   const isStoppedRef = useRef<boolean>(false);
   const [isCheckingDownloadStatus, setIsCheckingDownloadStatus] =
     useState(true);
-
-  const insertFileToSQLite = useCallback(
-    async (file: FileRecord) => {
-      await fileDatabase.insertFile(file);
-    },
-    [fileDatabase],
-  );
 
   const deleteFileFromSQLite = useCallback(
     async (id: string) => {
@@ -89,33 +77,42 @@ export const useDownloadFile = (
 
   useEffect(() => {
     (async () => {
-      if (toFile) {
-        try {
-          const fileRecord = await checkFileExistsInSQLite(fileId);
-          if (fileRecord) {
-            const prefs = await getCustomStoragePrefs();
-            const fileOnDisk = prefs
-              ? await fileExistsSafAware(toFile)
-              : await exists(toFile).catch(() => false);
-            if (fileOnDisk) {
-              updateDownload({ isDownloaded: true });
-            } else {
-              updateDownload({ isDownloaded: false });
-            }
+      if (!toFile) {
+        setIsCheckingDownloadStatus(false);
+        return;
+      }
+      try {
+        const fileRecord = await checkFileExistsInSQLite(fileId);
+        if (fileRecord) {
+          const fileOnDisk = await fileExistsInStorage(toFile);
+          if (fileOnDisk) {
+            updateDownload({ isDownloaded: true });
           } else {
             updateDownload({ isDownloaded: false });
           }
-        } catch (error) {
-          console.error('Error checking file status:', error);
+        } else {
           updateDownload({ isDownloaded: false });
-        } finally {
-          setIsCheckingDownloadStatus(false);
         }
-      } else {
+      } catch (error) {
+        console.error('Error checking file status:', error);
+        updateDownload({ isDownloaded: false });
+      } finally {
         setIsCheckingDownloadStatus(false);
       }
     })();
-  }, [toFile, fileId, checkFileExistsInSQLite, updateDownload, fileDatabase]);
+  }, [
+    toFile,
+    fileId,
+    checkFileExistsInSQLite,
+    updateDownload,
+    fileDatabase,
+    fileExistsInStorage,
+    cacheSizeVersion,
+  ]);
+
+  const resumableRef = useRef<ReturnType<
+    typeof createResumableDownload
+  > | null>(null);
 
   const startDownload = useCallback(
     async (force = false): Promise<boolean> => {
@@ -131,22 +128,28 @@ export const useDownloadFile = (
         try {
           await mkdirRecursive(dirname(toFile));
 
-          const { jobId, promise } = downloadFile({
+          const jobId = 1;
+          const resumable = createResumableDownload(
             fromUrl,
             toFile,
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            progressInterval: 200,
-            begin: () => {},
-            progress: ({ bytesWritten, contentLength }) => {
-              if (!isStoppedRef.current && currentJobIdRef.current === jobId) {
+            { headers: { Authorization: `Bearer ${token}` } },
+            ({
+              totalBytesWritten,
+              totalBytesExpectedToWrite,
+            }: DownloadProgressData) => {
+              if (
+                !isStoppedRef.current &&
+                currentJobIdRef.current === jobId &&
+                totalBytesExpectedToWrite > 0
+              ) {
                 updateDownload({
-                  downloadProgress: bytesWritten / contentLength,
+                  downloadProgress:
+                    totalBytesWritten / totalBytesExpectedToWrite,
                 });
               }
             },
-          });
+          );
+          resumableRef.current = resumable;
           currentJobIdRef.current = jobId;
           updateDownload({ jobId });
 
@@ -154,12 +157,13 @@ export const useDownloadFile = (
             return false;
           }
 
-          const result = await promise;
+          const result = await resumable.downloadAsync();
+          resumableRef.current = null;
 
           if (isStoppedRef.current) {
             return false;
           }
-          if (result.statusCode !== 200) {
+          if (result == null || result.status !== 200) {
             throw new Error(t('common.downloadError'));
           }
           if (isStoppedRef.current) {
@@ -174,50 +178,18 @@ export const useDownloadFile = (
           });
 
           try {
-            const fileStats = await stat(toFile);
-            const filename = toFile.split('/').pop() || '';
-            const ext = filename.split('.').pop() || '';
-            const mimeType = lookup(ext) || 'application/octet-stream';
-
-            let checksum = 'checksum_error';
-            try {
-              checksum = await calculateFileChecksum(toFile);
-
-              if (apiChecksum && checksum !== apiChecksum) {
-                Alert.alert(
-                  t('common.warning'),
-                  t('courseScreen.fileIntegrityCheckFailed'),
-                  [{ text: t('common.ok') }],
-                );
-              }
-            } catch (checksumError) {
-              console.warn(
-                'Could not calculate checksum, using placeholder:',
-                checksumError,
-              );
-            }
-            await insertFileToSQLite({
+            const { checksum } = await persistDownloadedFile(toFile, {
               id: fileId,
               ctx,
               ctxId,
-              path: toFile,
-              filename,
-              mime: mimeType,
-              checksum,
-              sizeKb: Math.round(fileStats.size / 1024),
-              downloadTime: new Date().toISOString(),
-              updateTime: undefined,
             });
-
-            try {
-              const safPath = await moveToSafAfterDownload(toFile, mimeType);
-              if (safPath) {
-                await fileDatabase.updateFile(fileId, { path: safPath });
-              }
-            } catch (e) {
-              console.error('SAF move after download failed:', e);
+            if (apiChecksum && checksum !== apiChecksum) {
+              Alert.alert(
+                t('common.warning'),
+                t('courseScreen.fileIntegrityCheckFailed'),
+                [{ text: t('common.ok') }],
+              );
             }
-
             return true;
           } catch (error) {
             console.error('Error saving file metadata to SQLite:', error);
@@ -256,24 +228,24 @@ export const useDownloadFile = (
       ctx,
       ctxId,
       fileId,
-      insertFileToSQLite,
       apiChecksum,
-      fileDatabase,
+      persistDownloadedFile,
     ],
   );
 
   const stopDownload = useCallback(() => {
     const jobId = currentJobIdRef.current ?? download.jobId;
-    if (jobId) {
+    if (jobId && resumableRef.current) {
       isStoppedRef.current = true;
       currentJobIdRef.current = undefined;
+      resumableRef.current.cancelAsync();
+      resumableRef.current = null;
       updateDownload({
         jobId: undefined,
         isDownloaded: false,
         downloadProgress: undefined,
         phase: undefined,
       });
-      fsStopDownload(jobId);
     } else if (download.downloadProgress != null) {
       isStoppedRef.current = true;
       currentJobIdRef.current = undefined;
@@ -292,7 +264,7 @@ export const useDownloadFile = (
     }
     const fileRecord = await fileDatabase.getFileById(fileId);
     const pathToRemove = fileRecord?.path ?? toFile;
-    await removeFileSafAware(pathToRemove);
+    await removeFileFromStorage(pathToRemove);
     updateDownload({
       jobId: undefined,
       isDownloaded: false,
@@ -306,12 +278,13 @@ export const useDownloadFile = (
     updateDownload,
     fileId,
     fileDatabase,
+    removeFileFromStorage,
   ]);
 
   const removeDownload = useCallback(async () => {
     const fileRecord = await fileDatabase.getFileById(fileId);
     const pathToRemove = fileRecord?.path ?? toFile;
-    await removeFileSafAware(pathToRemove);
+    await removeFileFromStorage(pathToRemove);
 
     try {
       await deleteFileFromSQLite(fileId);
@@ -319,17 +292,25 @@ export const useDownloadFile = (
       console.error('Error removing file metadata from SQLite:', error);
     }
 
+    refreshCacheVersion();
     updateDownload({
       jobId: undefined,
       isDownloaded: false,
       downloadProgress: undefined,
     });
-  }, [toFile, updateDownload, fileId, deleteFileFromSQLite, fileDatabase]);
+  }, [
+    toFile,
+    updateDownload,
+    fileId,
+    deleteFileFromSQLite,
+    fileDatabase,
+    removeFileFromStorage,
+    refreshCacheVersion,
+  ]);
 
   const openFile = useCallback(async () => {
     try {
-      const uri = await getUriForOpening(toFile);
-      await open(uri);
+      await openFileFromContext(toFile);
     } catch (e: any) {
       if (e?.message === 'No app associated with this mime type') {
         Alert.alert(t('common.error'), `Cannot open file: ${e.message}`, [
@@ -341,8 +322,7 @@ export const useDownloadFile = (
         ]);
       }
     }
-    //clearNotificationScope(['files', fileId]);
-  }, [toFile, t]);
+  }, [toFile, t, openFileFromContext]);
 
   return {
     ...(download ?? {}),

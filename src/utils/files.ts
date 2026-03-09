@@ -1,25 +1,25 @@
-import { exists, mkdir } from 'react-native-fs';
 import { extension, lookup } from 'react-native-mime-types';
 
 import { BASE_PATH } from '@polito/api-client';
 
+import { makeDirectoryAsync } from '../core/storage/fileSystem';
+
 /**
  * Create directory and all parent directories (mkdir -p).
- * react-native-fs mkdir does not create intermediates.
+ * Uses centralized file system makeDirectoryAsync with intermediates option.
  */
 export const mkdirRecursive = async (
   dirPath: string,
-  options?: { NSURLIsExcludedFromBackupKey?: boolean },
+  _options?: { NSURLIsExcludedFromBackupKey?: boolean },
 ): Promise<void> => {
-  const parts = dirPath.replace(/\/+$/, '').split('/').filter(Boolean);
-  if (parts.length === 0) return;
-  let current = dirPath.startsWith('/') ? '' : '.';
-  for (const part of parts) {
-    current = current ? `${current}/${part}` : `/${part}`;
-    if (await exists(current).catch(() => false)) continue;
-    await mkdir(current, options).catch(() => {});
-  }
+  const normalized = dirPath.replace(/\/+$/, '') || dirPath;
+  if (!normalized) return;
+  await makeDirectoryAsync(normalized, { intermediates: true });
 };
+
+/** Returns the directory name of a path (like path.dirname). */
+export const dirname = (path: string): string =>
+  path.replace(/\/[^/]*$/, '') || path;
 
 export const formatFileSize = (
   sizeInKiloBytes: number,
@@ -40,9 +40,8 @@ export const splitNameAndExtension = (filePath?: string) => {
 };
 
 /**
- * Rimuove il suffisso " (numero)" da file o cartella (es. "name (123).pdf" → "name.pdf").
- * Sostituisce ":" con "_" (carattere non valido in path su molti filesystem).
- * Usato per path e DB.
+ * Strips the " (number)" suffix from file or folder name (e.g. "name (123).pdf" → "name.pdf").
+ * Replaces ":" with "_" (invalid on many filesystems). Used for paths and DB.
  */
 export const stripIdInParentheses = (name: string): string => {
   const lastDot = name.lastIndexOf('.');
@@ -61,7 +60,7 @@ export const stripIdInParentheses = (name: string): string => {
 };
 
 /**
- * Applica stripIdInParentheses a ogni segmento di un path (nomi cartelle).
+ * Applies stripIdInParentheses to each segment of a path (folder names).
  */
 export const stripIdFromPathSegments = (path: string): string => {
   if (!path.trim()) return path;
@@ -69,7 +68,7 @@ export const stripIdFromPathSegments = (path: string): string => {
 };
 
 /**
- * Ottiene l'estensione del file dal mimeType o dal nome del file
+ * Gets the file extension from mimeType or from the file name.
  */
 export const getFileExtension = (
   mimeType: string | null | undefined,
@@ -86,8 +85,8 @@ export const getFileExtension = (
 };
 
 /**
- * Costruisce il filePath per il download di un file del corso.
- * Non aggiunge l'id tra parentesi al nome; rimuove eventuali " (numero)" da nome file e dai segmenti del path.
+ * Builds the file path for a course file download.
+ * Does not add the id in parentheses to the name; strips any " (number)" from file name and path segments.
  */
 export const buildCourseFilePath = (
   courseFilesCache: string,
@@ -115,7 +114,7 @@ export const buildCourseFilePath = (
 };
 
 /**
- * Costruisce l'URL per il download di un file del corso
+ * Builds the download URL for a course file.
  */
 export const buildCourseFileUrl = (
   courseId: number,

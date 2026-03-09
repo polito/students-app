@@ -16,6 +16,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { FileNavigatorID } from '~/core/constants';
@@ -32,7 +33,6 @@ import {
 } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CourseFileOverviewWithLocation } from '../../../core/types/files';
-import { sortByNameAsc } from '../../../utils/sorting';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseDirectoryListItem } from '../components/CourseDirectoryListItem';
 import { CourseFileListItem } from '../components/CourseFileListItem';
@@ -44,10 +44,8 @@ import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem
 import { FileScreenHeader } from '../components/FileScreenHeader';
 import { ITEM_TYPES, MENU_ACTIONS } from '../constants';
 import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
-import { isDirectory } from '../utils/fs-entry';
 
 type Props = NativeStackScreenProps<
   TeachingStackParamList & FileStackParamList,
@@ -66,19 +64,23 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const courseFilesQuery = useGetCourseFiles(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { updatePreference } = usePreferencesContext();
-  const [courseFilesCache] = useCourseFilesCachePath();
   const { spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const isFileNavigator = useMemo(() => {
     return navigation.getId() === FileNavigatorID;
   }, [navigation]);
 
+  useFocusEffect(
+    useCallback(() => {
+      setListRefreshKey(k => k + 1);
+    }, []),
+  );
+
   const {
     enableMultiSelect,
     setEnableMultiSelect,
     allFilesSelected,
     sortedData,
-    setSortedData,
     activeSort,
     sortOptions,
     toggleMultiSelect,
@@ -97,7 +99,6 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     removeButtonStyle,
   } = useFileManagement({
     courseId,
-    courseFilesCache,
     data: directoryQuery.data || undefined,
     isDirectoryView: true,
   });
@@ -133,18 +134,6 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     [handleCloseMultiSelectModal, setEnableMultiSelect],
   );
 
-  useEffect(() => {
-    if (directoryQuery.data) {
-      const directories = directoryQuery.data.filter(item => isDirectory(item));
-      const files = directoryQuery.data.filter(item => !isDirectory(item));
-
-      const sortedDirectories = sortByNameAsc(directories);
-      const sortedFiles = sortByNameAsc(files);
-
-      setSortedData([...sortedDirectories, ...sortedFiles]);
-    }
-  }, [directoryQuery.data, setSortedData]);
-
   const flattenedData = useMemo(() => {
     if (!sortedData) return [];
     return sortedData;
@@ -171,8 +160,30 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     setCheckCompleteCount(c => Math.min(c + 1, flattenedData.length));
   }, [flattenedData.length]);
 
-  const isCheckingInitial =
-    flattenedData.length > 0 && checkCompleteCount < flattenedData.length;
+  const isCheckingInitial = useMemo(() => {
+    const skipCheck = route.params?.skipInitialDownloadCheck === true;
+    if (skipCheck) return false;
+    return (
+      flattenedData.length > 0 && checkCompleteCount < flattenedData.length
+    );
+  }, [
+    route.params?.skipInitialDownloadCheck,
+    flattenedData.length,
+    checkCompleteCount,
+  ]);
+
+  const checkingOverlayStyle = useMemo(
+    () => ({
+      position: 'absolute' as const,
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+      justifyContent: 'center' as const,
+      alignItems: 'center' as const,
+    }),
+    [],
+  );
 
   const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
     switch (event) {
@@ -293,17 +304,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
             }
           />
           {isCheckingInitial && (
-            <View
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <View style={checkingOverlayStyle}>
               <ActivityIndicator size="large" />
             </View>
           )}
@@ -315,7 +316,6 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
         onCloseModalOnly={handleCloseModalOnly}
         onModalHide={handleModalHide}
         courseId={courseId}
-        courseFilesCache={courseFilesCache}
         flatFileList={flatFileList}
         displayItems={flattenedData as DirectoryOrFile[]}
         courseFilesTree={courseFilesQuery.data ?? undefined}

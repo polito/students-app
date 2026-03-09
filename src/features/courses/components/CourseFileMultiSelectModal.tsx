@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
@@ -31,10 +31,17 @@ import { CourseDirectory } from '@polito/api-client';
 import { Checkbox } from '~/core/components/Checkbox';
 
 import { BottomModal } from '../../../core/components/BottomModal';
-import { DownloadContext } from '../../../core/contexts/DownloadsContext';
+import {
+  DownloadContext,
+  useDownloadsContext,
+} from '../../../core/contexts/DownloadsContext';
+import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useDownloadQueue } from '../../../core/hooks/useDownloadQueue';
-import { getFileKey } from '../../../core/providers/downloads/downloadsFileUtils';
-import { getFlattenedCourseFiles } from '../../../core/queries/courseHooks';
+import { getFileKey } from '../../../core/providers/downloads/downloadsQueue';
+import {
+  getFlattenedCourseFiles,
+  useGetCourse,
+} from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import {
   CourseDirectoryContentWithLocations,
@@ -42,7 +49,6 @@ import {
 } from '../../../core/types/files';
 import { formatDateTime } from '../../../utils/dates';
 import {
-  buildCourseFilePath,
   buildCourseFileUrl,
   formatFileSize,
   stripIdInParentheses,
@@ -57,7 +63,6 @@ export interface CourseFileMultiSelectModalProps {
   onCloseModalOnly?: () => void;
   onModalHide?: (reason?: 'download' | 'remove') => void;
   courseId: number;
-  courseFilesCache: string;
   flatFileList: CourseFileOverviewWithLocation[];
   displayItems?: DirectoryOrFile[];
   courseFilesTree?: CourseDirectoryContentWithLocations[];
@@ -114,7 +119,6 @@ export const CourseFileMultiSelectModal = ({
   onCloseModalOnly,
   onModalHide,
   courseId,
-  courseFilesCache,
   flatFileList,
   displayItems,
   courseFilesTree,
@@ -130,7 +134,12 @@ export const CourseFileMultiSelectModal = ({
   downloadButtonStyle,
 }: CourseFileMultiSelectModalProps) => {
   const { t } = useTranslation();
+  const { getCourseFilePath, cacheSizeVersion } = useDownloadsContext();
+  const { data: course } = useGetCourse(courseId);
   const [searchFilter, setSearchFilter] = useState('');
+  const [downloadedFileIdsFromDb, setDownloadedFileIdsFromDb] = useState<
+    Set<string>
+  >(new Set());
   const closingForActionRef = useRef<'download' | 'remove' | false>(false);
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { top: safeAreaTop } = useSafeAreaInsets();
@@ -146,6 +155,17 @@ export const CourseFileMultiSelectModal = ({
     courseId,
     DownloadContext.Course,
   );
+
+  useEffect(() => {
+    if (!visible || courseId == null) return;
+    const fileDatabase = getFileDatabase();
+    fileDatabase
+      .getFilesByContext(DownloadContext.Course, String(courseId))
+      .then(files => {
+        setDownloadedFileIdsFromDb(new Set(files.map(f => f.id)));
+      })
+      .catch(() => setDownloadedFileIdsFromDb(new Set()));
+  }, [visible, courseId, cacheSizeVersion]);
 
   const selectedFileIds = useMemo(
     () => new Set(contextFiles.map(f => f.id)),
@@ -175,13 +195,14 @@ export const CourseFileMultiSelectModal = ({
   const getFileDownloadKey = useCallback(
     (file: CourseFileOverviewWithLocation) => {
       const url = buildCourseFileUrl(courseId, file.id);
-      const path = buildCourseFilePath(
-        courseFilesCache,
-        file.location,
-        file.id,
-        file.name ?? '',
-        file.mimeType,
-      );
+      const path = getCourseFilePath({
+        courseId,
+        courseName: course?.name,
+        location: file.location,
+        fileId: file.id,
+        fileName: file.name ?? '',
+        mimeType: file.mimeType,
+      });
       return getFileKey({
         id: file.id,
         name: file.name ?? '',
@@ -195,16 +216,15 @@ export const CourseFileMultiSelectModal = ({
         contextType: DownloadContext.Course,
       });
     },
-    [courseId, courseFilesCache],
+    [courseId, course?.name, getCourseFilePath],
   );
 
   const notDownloadedSelectedCount = useMemo(() => {
     return flatFileList.filter(f => {
-      const key = getFileDownloadKey(f);
-      const isDownloaded = downloads[key]?.isDownloaded === true;
+      const isDownloaded = downloadedFileIdsFromDb.has(f.id);
       return selectedFileIds.has(f.id) && !isDownloaded;
     }).length;
-  }, [flatFileList, selectedFileIds, downloads, getFileDownloadKey]);
+  }, [flatFileList, selectedFileIds, downloadedFileIdsFromDb]);
 
   const modalDownloadButtonTitle = useMemo(() => {
     if (isDownloading && downloadButtonTitle) {
@@ -232,14 +252,10 @@ export const CourseFileMultiSelectModal = ({
       if (!courseFilesTree) return false;
       const files = getFlattenedCourseFiles(courseFilesTree, dir.id);
       return (
-        files.length > 0 &&
-        files.every(f => {
-          const key = getFileDownloadKey(f);
-          return downloads[key]?.isDownloaded === true;
-        })
+        files.length > 0 && files.every(f => downloadedFileIdsFromDb.has(f.id))
       );
     },
-    [courseFilesTree, downloads, getFileDownloadKey],
+    [courseFilesTree, downloadedFileIdsFromDb],
   );
 
   const handleToggleFile = useCallback(
@@ -252,19 +268,27 @@ export const CourseFileMultiSelectModal = ({
             id: file.id,
             name: file.name ?? '',
             url: buildCourseFileUrl(courseId, file.id),
-            filePath: buildCourseFilePath(
-              courseFilesCache,
-              file.location,
-              file.id,
-              file.name ?? '',
-              file.mimeType,
-            ),
+            filePath: getCourseFilePath({
+              courseId,
+              courseName: course?.name,
+              location: file.location,
+              fileId: file.id,
+              fileName: file.name ?? '',
+              mimeType: file.mimeType,
+            }),
             sizeInKiloBytes: file.sizeInKiloBytes,
           },
         ]);
       }
     },
-    [selectedFileIds, addFiles, removeFiles, courseId, courseFilesCache],
+    [
+      selectedFileIds,
+      addFiles,
+      removeFiles,
+      courseId,
+      course?.name,
+      getCourseFilePath,
+    ],
   );
 
   const handleToggleDirectory = useCallback(
@@ -280,13 +304,14 @@ export const CourseFileMultiSelectModal = ({
             id: f.id,
             name: f.name ?? '',
             url: buildCourseFileUrl(courseId, f.id),
-            filePath: buildCourseFilePath(
-              courseFilesCache,
-              f.location,
-              f.id,
-              f.name ?? '',
-              f.mimeType,
-            ),
+            filePath: getCourseFilePath({
+              courseId,
+              courseName: course?.name,
+              location: f.location,
+              fileId: f.id,
+              fileName: f.name ?? '',
+              mimeType: f.mimeType,
+            }),
             sizeInKiloBytes: f.sizeInKiloBytes,
           })),
         );
@@ -298,7 +323,8 @@ export const CourseFileMultiSelectModal = ({
       addFiles,
       removeFiles,
       courseId,
-      courseFilesCache,
+      course?.name,
+      getCourseFilePath,
     ],
   );
 
@@ -311,13 +337,14 @@ export const CourseFileMultiSelectModal = ({
           id: f.id,
           name: f.name ?? '',
           url: buildCourseFileUrl(courseId, f.id),
-          filePath: buildCourseFilePath(
-            courseFilesCache,
-            f.location,
-            f.id,
-            f.name ?? '',
-            f.mimeType,
-          ),
+          filePath: getCourseFilePath({
+            courseId,
+            courseName: course?.name,
+            location: f.location,
+            fileId: f.id,
+            fileName: f.name ?? '',
+            mimeType: f.mimeType,
+          }),
           sizeInKiloBytes: f.sizeInKiloBytes,
         })),
       );
@@ -328,7 +355,8 @@ export const CourseFileMultiSelectModal = ({
     addFiles,
     removeFiles,
     courseId,
-    courseFilesCache,
+    course?.name,
+    getCourseFilePath,
   ]);
 
   const handleDownloadPress = useCallback(() => {
@@ -400,7 +428,7 @@ export const CourseFileMultiSelectModal = ({
 
         <FlatList
           data={listData}
-          extraData={downloads}
+          extraData={{ downloads, downloadedFileIdsFromDb }}
           keyExtractor={item => item.id}
           style={styles.list}
           contentContainerStyle={styles.listContent}
@@ -439,7 +467,7 @@ export const CourseFileMultiSelectModal = ({
             const isSelected = selectedFileIds.has(file.id);
             const downloadKey = getFileDownloadKey(file);
             const downloadState = downloads[downloadKey];
-            const isDownloaded = !!downloadState?.isDownloaded;
+            const isDownloaded = downloadedFileIdsFromDb.has(file.id);
             const downloadProgress = downloadState?.downloadProgress;
             const fileSubtitle = [
               file.createdAt &&

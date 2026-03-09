@@ -23,11 +23,12 @@ export const IconWithProgress = ({
   progressColor,
   style,
 }: Props) => {
-  const { palettes } = useTheme();
+  const { palettes, colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const finalColor = color || palettes.primary[400];
   const finalProgressColor = progressColor || palettes.primary[500];
+  const unfilledColor = colors.touchableHighlight;
 
   return (
     <View style={[styles.container, style]}>
@@ -40,7 +41,7 @@ export const IconWithProgress = ({
             thickness={3}
             color={finalProgressColor}
             borderWidth={0}
-            unfilledColor="rgba(255, 255, 255, 0.3)"
+            unfilledColor={unfilledColor}
             showsText={false}
           />
         </View>

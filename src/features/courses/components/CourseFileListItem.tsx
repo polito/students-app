@@ -26,17 +26,15 @@ import {
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useDownloadFile } from '../../../core/hooks/useDownloadFile';
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { getFileSizeSafAware } from '../../../core/providers/downloads/safMirror';
+import { useGetCourse } from '../../../core/queries/courseHooks';
 import { formatDateTime } from '../../../utils/dates';
 import {
-  buildCourseFilePath,
   buildCourseFileUrl,
   formatFileSize,
   stripIdInParentheses,
 } from '../../../utils/files';
 import { useCourseContext } from '../contexts/CourseContext';
 import { UnsupportedFileTypeError } from '../errors/UnsupportedFileTypeError';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 export type CourseRecentFile = CourseFileOverview & {
   location?: string;
@@ -124,18 +122,23 @@ export const CourseFileListItem = memo(
       [colors, fontSizes],
     );
     const courseId = useCourseContext();
-    const [courseFilesCache] = useCourseFilesCachePath();
+    const { data: course } = useGetCourse(courseId);
     const { setFeedback } = useFeedbackContext();
     const { fileStorageLocation, customStorageDisplayPath } =
       usePreferencesContext();
     const { getUnreadsCount } = useNotifications();
+    const {
+      getCourseFilePath,
+      getFileSizeInStorage,
+      downloadQueue,
+      addFilesToQueue,
+      removeFilesFromQueue,
+    } = useDownloadsContext();
     const fileNotificationScope = useMemo(
       () => ['teaching', 'courses', `${courseId}`, 'files', item.id] as const,
       [courseId, item.id],
     );
     const [isCorrupted, setIsCorrupted] = useState(false);
-    const { downloadQueue, addFilesToQueue, removeFilesFromQueue } =
-      useDownloadsContext();
     const isInQueue = useMemo(
       () => downloadQueue.files.some(f => f.id === item.id),
       [downloadQueue.files, item.id],
@@ -146,14 +149,23 @@ export const CourseFileListItem = memo(
     );
     const cachedFilePath = useMemo(
       () =>
-        buildCourseFilePath(
-          courseFilesCache,
-          item.location,
-          item.id,
-          item.name,
-          item.mimeType,
-        ),
-      [courseFilesCache, item.location, item.id, item.name, item.mimeType],
+        getCourseFilePath({
+          courseId,
+          courseName: course?.name,
+          location: item.location,
+          fileId: item.id,
+          fileName: item.name ?? '',
+          mimeType: item.mimeType,
+        }),
+      [
+        getCourseFilePath,
+        courseId,
+        course?.name,
+        item.location,
+        item.id,
+        item.name,
+        item.mimeType,
+      ],
     );
 
     const {
@@ -181,7 +193,7 @@ export const CourseFileListItem = memo(
           return;
         }
         try {
-          const fileSize = await getFileSizeSafAware(cachedFilePath);
+          const fileSize = await getFileSizeInStorage(cachedFilePath);
           if (fileSize == null || cancelled) {
             if (!cancelled) setIsCorrupted(false);
             return;
@@ -199,7 +211,12 @@ export const CourseFileListItem = memo(
       return () => {
         cancelled = true;
       };
-    }, [cachedFilePath, isDownloaded, item.sizeInKiloBytes]);
+    }, [
+      cachedFilePath,
+      isDownloaded,
+      item.sizeInKiloBytes,
+      getFileSizeInStorage,
+    ]);
 
     useEffect(() => {
       if (!isCheckingDownloadStatus) {

@@ -16,6 +16,7 @@ export type FileStackParamList = {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
+    skipInitialDownloadCheck?: boolean;
   };
 };
 

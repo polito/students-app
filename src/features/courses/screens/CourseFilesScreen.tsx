@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform, View } from 'react-native';
 
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
 import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
@@ -17,13 +18,16 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
+import {
+  CourseSectionEnum,
+  getCourseKey,
+  useGetCourseFilesRecent,
+} from '../../../core/queries/courseHooks';
 import { sortByNameAsc } from '../../../utils/sorting';
 import { CourseFileMultiSelectModal } from '../components/CourseFileMultiSelectModal';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { FileScreenHeader } from '../components/FileScreenHeader';
 import { MENU_ACTIONS } from '../constants';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 
@@ -31,17 +35,24 @@ type Props = NativeStackScreenProps<FileStackParamList, 'RecentFiles'>;
 
 const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [multiSelectModalVisible, setMultiSelectModalVisible] = useState(false);
-  const [checkCompleteCount, setCheckCompleteCount] = useState(0);
   const courseId = route.params.courseId;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext();
-  const [courseFilesCache] = useCourseFilesCachePath();
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+      });
+    }, [courseId, queryClient]),
+  );
   const {
     enableMultiSelect,
     setEnableMultiSelect,
@@ -66,7 +77,6 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     removeButtonStyle,
   } = useFileManagement({
     courseId,
-    courseFilesCache,
     data: recentFilesQuery.data,
     isDirectoryView: false,
   });
@@ -97,19 +107,10 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     }
   }, [recentFilesQuery.data, setSortedData]);
 
-  const fileListData = sortedData || recentFilesQuery.data;
-  const fileListLength = fileListData?.length ?? 0;
-
-  useEffect(() => {
-    setCheckCompleteCount(0);
-  }, [fileListLength]);
-
-  const onCheckComplete = useCallback(() => {
-    setCheckCompleteCount(c => Math.min(c + 1, fileListLength));
-  }, [fileListLength]);
-
-  const isCheckingInitial =
-    fileListLength > 0 && checkCompleteCount < fileListLength;
+  const fileListData = useMemo(
+    () => (sortedData || recentFilesQuery.data) ?? [],
+    [sortedData, recentFilesQuery.data],
+  );
 
   useOnLeaveScreen(() => {
     clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
@@ -155,14 +156,14 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         onPressSortOption={onPressSortOption}
         onPressOption={onPressOption}
         isDirectoryView={false}
-        isSelectDisabled={isDownloading || isRemoving || isCheckingInitial}
+        isSelectDisabled={isDownloading || isRemoving}
       />
 
       <View style={{ flex: 1 }}>
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
-          data={sortedData || recentFilesQuery.data}
-          extraData={{ downloads, checkCompleteCount }}
+          data={fileListData}
+          extraData={{ downloads }}
           contentContainerStyle={paddingHorizontal}
           scrollEnabled={scrollEnabled}
           keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
@@ -176,8 +177,6 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
                 onSwipeStart={onSwipeStart}
                 onSwipeEnd={onSwipeEnd}
                 enableMultiSelect={false}
-                onCheckComplete={onCheckComplete}
-                disabled={isCheckingInitial}
               />
             );
           }}
@@ -197,21 +196,6 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
             ) : null
           }
         />
-        {isCheckingInitial && (
-          <View
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <ActivityIndicator size="large" />
-          </View>
-        )}
       </View>
       <CourseFileMultiSelectModal
         visible={multiSelectModalVisible}
@@ -219,7 +203,6 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         onCloseModalOnly={handleCloseModalOnly}
         onModalHide={handleModalHide}
         courseId={courseId}
-        courseFilesCache={courseFilesCache}
         flatFileList={recentFilesQuery.data ?? []}
         handleDownloadAction={handleDownloadAction}
         handleRemoveAction={handleRemoveAction}

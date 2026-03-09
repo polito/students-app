@@ -9,7 +9,6 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import { unlink } from 'react-native-fs';
 
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -35,6 +34,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { useCheckMfa } from '~/core/queries/authHooks';
 import { hasPrivateKeyMFA, resetPrivateKeyMFA } from '~/utils/keychain';
@@ -44,6 +44,7 @@ import { Settings } from 'luxon';
 
 import { version } from '../../../../package.json';
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';
+import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import {
   PreferencesContextBase,
@@ -52,19 +53,23 @@ import {
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
-import { removeFileSafAware } from '../../../core/providers/downloads/safMirror';
-import { pickSafDirectory } from '../../../core/providers/downloads/safStorage';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { lightTheme } from '../../../core/themes/light';
 import { formatFileSize } from '../../../utils/files';
-import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-
   const { fontSizes } = useTheme();
-  const filesCache = useCoursesFilesCachePath();
+  const {
+    getCoursesCachePath,
+    removeFileFromStorage,
+    deleteLocalPath,
+    cacheSizeVersion,
+    refreshCacheVersion,
+    isAnyDownloadInProgress,
+  } = useDownloadsContext();
+  const filesCache = getCoursesCachePath();
   const [cacheSize, setCacheSize] = useState<number>();
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -72,7 +77,7 @@ const CleanCacheListItem = () => {
   });
   const fileDatabaseRef = useRef(getFileDatabase());
 
-  const refreshSize = () => {
+  const refreshSize = useCallback(() => {
     fileDatabaseRef.current
       .getTotalSize()
       .then(size => {
@@ -81,11 +86,17 @@ const CleanCacheListItem = () => {
       .catch(() => {
         setCacheSize(0);
       });
-  };
+  }, []);
 
   useEffect(() => {
     refreshSize();
-  }, []);
+  }, [cacheSizeVersion, refreshSize]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshSize();
+    }, [refreshSize]),
+  );
   return (
     <ListItem
       isAction
@@ -94,16 +105,17 @@ const CleanCacheListItem = () => {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
       accessibilityRole="button"
-      disabled={cacheSize === 0}
+      disabled={cacheSize === 0 || isAnyDownloadInProgress}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
           const allFiles = await fileDatabaseRef.current.getAllFiles();
           await Promise.all(
-            allFiles.map(f => removeFileSafAware(f.path).catch(() => {})),
+            allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
           );
           await fileDatabaseRef.current.deleteAllFiles();
-          unlink(filesCache).catch(() => {});
+          await deleteLocalPath(filesCache).catch(() => {});
+          refreshCacheVersion();
           setFeedback({
             text: t('coursePreferencesScreen.cleanCacheFeedback'),
           });
@@ -325,6 +337,7 @@ const StorageLocationListItem = () => {
     updatePreference,
   } = usePreferencesContext();
   const { setFeedback } = useFeedbackContext();
+  const { pickStorageFolder, removeFileFromStorage } = useDownloadsContext();
   const [isMoving, setIsMoving] = useState(false);
   const currentLocation =
     fileStorageLocation === 'custom' ? 'custom' : 'internal';
@@ -344,7 +357,7 @@ const StorageLocationListItem = () => {
   const handlePickDirectory = useCallback(async () => {
     if (!(await confirmStorageChange())) return;
     try {
-      const result = await pickSafDirectory();
+      const result = await pickStorageFolder();
 
       setIsMoving(true);
       setFeedback({ text: t('settingsScreen.storageChanging') });
@@ -353,7 +366,7 @@ const StorageLocationListItem = () => {
         const fileDatabase = getFileDatabase();
         const allFiles = await fileDatabase.getAllFiles();
         await Promise.all(
-          allFiles.map(f => removeFileSafAware(f.path).catch(() => {})),
+          allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
         );
         await fileDatabase.deleteAllFiles();
       } catch (deleteError) {
@@ -372,7 +385,14 @@ const StorageLocationListItem = () => {
     } finally {
       setIsMoving(false);
     }
-  }, [confirmStorageChange, updatePreference, setFeedback, t]);
+  }, [
+    confirmStorageChange,
+    updatePreference,
+    setFeedback,
+    t,
+    pickStorageFolder,
+    removeFileFromStorage,
+  ]);
 
   const handleSwitchToInternal = useCallback(async () => {
     if (!customStoragePath) {
@@ -388,7 +408,7 @@ const StorageLocationListItem = () => {
       const fileDatabase = getFileDatabase();
       const allFiles = await fileDatabase.getAllFiles();
       await Promise.all(
-        allFiles.map(f => removeFileSafAware(f.path).catch(() => {})),
+        allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
       );
       await fileDatabase.deleteAllFiles();
     } catch (deleteError) {
@@ -405,6 +425,7 @@ const StorageLocationListItem = () => {
     updatePreference,
     setFeedback,
     t,
+    removeFileFromStorage,
   ]);
 
   const handleChange = useCallback(

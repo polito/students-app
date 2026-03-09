@@ -1,34 +1,224 @@
 /**
- * Queue management for downloads: processes the download queue with concurrency limits,
- * handles queue operations (add/remove files, start/stop downloads), and manages completion logic.
+ * Download queue: types, state, reducers, file utils, and useQueueManagement.
+ * Single module for queue types, state management, and queue operations.
  */
 import { Dispatch, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { stopDownload as fsStopDownload } from 'react-native-fs';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { MAX_CONCURRENT_DOWNLOADS } from '../../constants';
 import {
+  Download,
   DownloadContext,
   DownloadPhase,
   QueuedFile,
 } from '../../contexts/DownloadsContext';
 import { useFeedbackContext } from '../../contexts/FeedbackContext';
 import { getFileDatabase } from '../../database/FileDatabase';
-import {
-  checkPathsExist,
-  findFileById,
-  getFileKey,
-  matchesContext,
-  stopActiveDownload,
-} from './downloadsFileUtils';
-import {
-  Action,
-  ProgressAction,
-  QUEUE_STORAGE_KEY,
-  State,
-} from './downloadsTypes';
+import { deleteAsync, pathExists } from '../../storage/fileSystem';
+
+// --- Types & constants ---
+
+export const QUEUE_STORAGE_KEY = '@downloads_queue';
+export const PROGRESS_UPDATE_THROTTLE_MS = 200;
+export const CONTEXT_PROGRESS_UPDATE_THROTTLE_MS = 500;
+
+export interface State {
+  downloads: Record<string, Omit<Download, 'downloadProgress'>>;
+  queue: QueuedFile<DownloadContext>[];
+  activeIds: Set<string>;
+  isDownloading: boolean;
+  hasCompleted: boolean;
+  hasFailure: boolean;
+  alreadyDownloadedKeysAtStart: Set<string>;
+}
+
+export type Action =
+  | { type: 'ADD_FILES'; files: QueuedFile<DownloadContext>[] }
+  | { type: 'REMOVE_FILES'; ids: string[] }
+  | {
+      type: 'UPDATE_DOWNLOAD';
+      key: string;
+      updates: Partial<Omit<Download, 'downloadProgress'>>;
+    }
+  | { type: 'START_DOWNLOAD' }
+  | { type: 'STOP_DOWNLOAD' }
+  | { type: 'ADD_ACTIVE_ID'; id: string }
+  | { type: 'REMOVE_ACTIVE_ID'; id: string }
+  | { type: 'SET_COMPLETED'; completedKeys?: Set<string> }
+  | { type: 'SET_FAILURE' }
+  | { type: 'RESET' }
+  | { type: 'RESTORE'; state: State };
+
+export type ProgressAction =
+  | { type: 'UPDATE_PROGRESS'; key: string; progress: number }
+  | { type: 'REMOVE_PROGRESS'; key: string };
+
+// --- State & reducers ---
+
+export const initialState: State = {
+  downloads: {},
+  queue: [],
+  activeIds: new Set(),
+  isDownloading: false,
+  hasCompleted: false,
+  hasFailure: false,
+  alreadyDownloadedKeysAtStart: new Set(),
+};
+
+export const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'ADD_FILES':
+      return {
+        ...state,
+        queue: [
+          ...state.queue.filter(f => !action.files.some(nf => nf.id === f.id)),
+          ...action.files,
+        ],
+      };
+    case 'REMOVE_FILES':
+      return {
+        ...state,
+        queue: state.queue.filter(f => !action.ids.includes(f.id)),
+      };
+    case 'UPDATE_DOWNLOAD':
+      return {
+        ...state,
+        downloads: {
+          ...state.downloads,
+          [action.key]: { ...state.downloads[action.key], ...action.updates },
+        },
+      };
+    case 'START_DOWNLOAD': {
+      const keyOf = (f: (typeof state.queue)[0]) =>
+        `${f.request.source}:${f.request.destination}`;
+      const alreadyDownloadedKeysAtStart = new Set(
+        state.queue
+          .filter(f => state.downloads[keyOf(f)]?.isDownloaded === true)
+          .map(keyOf),
+      );
+      return {
+        ...state,
+        isDownloading: true,
+        activeIds: new Set(),
+        hasCompleted: false,
+        hasFailure: false,
+        alreadyDownloadedKeysAtStart,
+      };
+    }
+    case 'STOP_DOWNLOAD':
+      return { ...state, isDownloading: false, activeIds: new Set() };
+    case 'ADD_ACTIVE_ID':
+      return {
+        ...state,
+        activeIds: new Set([...state.activeIds, action.id]),
+      };
+    case 'REMOVE_ACTIVE_ID': {
+      const newIds = new Set(state.activeIds);
+      newIds.delete(action.id);
+      return { ...state, activeIds: newIds };
+    }
+    case 'SET_COMPLETED':
+      return {
+        ...state,
+        isDownloading: false,
+        queue: [],
+        activeIds: new Set(),
+        hasCompleted: true,
+        hasFailure: false,
+        alreadyDownloadedKeysAtStart: new Set(),
+      };
+    case 'SET_FAILURE':
+      return { ...state, hasFailure: true };
+    case 'RESET':
+      return initialState;
+    case 'RESTORE':
+      return {
+        ...action.state,
+        alreadyDownloadedKeysAtStart:
+          action.state.alreadyDownloadedKeysAtStart ?? new Set(),
+      };
+    default:
+      return state;
+  }
+};
+
+export const progressReducer = (
+  progressState: Record<string, number>,
+  action: ProgressAction,
+): Record<string, number> => {
+  switch (action.type) {
+    case 'UPDATE_PROGRESS':
+      return { ...progressState, [action.key]: action.progress };
+    case 'REMOVE_PROGRESS': {
+      const newState = { ...progressState };
+      delete newState[action.key];
+      return newState;
+    }
+    default:
+      return progressState;
+  }
+};
+
+// --- File utils ---
+
+export const getFileKey = (file: QueuedFile<DownloadContext>): string =>
+  `${file.request.source}:${file.request.destination}`;
+
+export const checkPathsExist = async (paths: string[]): Promise<boolean> => {
+  for (const path of paths) {
+    if (await pathExists(path)) return true;
+  }
+  return false;
+};
+
+export const checkFileExists = async (
+  file: QueuedFile<DownloadContext>,
+): Promise<boolean> => {
+  try {
+    const fileDatabase = getFileDatabase();
+    const fileRecord = await fileDatabase.getFileById(file.id);
+    const possiblePaths = [fileRecord?.path, file.request.destination].filter(
+      Boolean,
+    ) as string[];
+    return await checkPathsExist(possiblePaths);
+  } catch {
+    return false;
+  }
+};
+
+export const matchesContext = (
+  file: QueuedFile<DownloadContext>,
+  contextId: string | number,
+  contextType?: string,
+): boolean =>
+  String(file.request.ctxId) === String(contextId) &&
+  (contextType === undefined || file.contextType === contextType);
+
+export const findFileById = (
+  queue: QueuedFile<DownloadContext>[],
+  id: string,
+): QueuedFile<DownloadContext> | undefined => queue.find(f => f.id === id);
+
+export const stopActiveDownload = (
+  file: QueuedFile<DownloadContext>,
+  downloads: Record<string, Omit<Download, 'downloadProgress'>>,
+  dispatch: Dispatch<Action>,
+  dispatchProgress: Dispatch<ProgressAction>,
+  fsStopDownload: (jobId: number) => void | Promise<void>,
+): void => {
+  const key = getFileKey(file);
+  const download = downloads[key];
+  if (download?.jobId !== undefined) {
+    Promise.resolve(fsStopDownload(download.jobId)).catch(() => {});
+  }
+  deleteAsync(file.request.destination).catch(() => {});
+  dispatch({ type: 'REMOVE_ACTIVE_ID', id: file.id });
+  dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+};
+
+// --- Queue hook ---
 
 const getDownloadAreaFromContextType = (
   contextType?: string,
@@ -46,6 +236,7 @@ interface UseQueueManagementParams {
   dispatch: Dispatch<Action>;
   dispatchProgress: Dispatch<ProgressAction>;
   downloadFile: (file: QueuedFile<DownloadContext>) => Promise<void>;
+  stopDownload: (jobId: number) => void | Promise<void>;
 }
 
 export const useQueueManagement = ({
@@ -53,6 +244,7 @@ export const useQueueManagement = ({
   dispatch,
   dispatchProgress,
   downloadFile,
+  stopDownload: fsStopDownload,
 }: UseQueueManagementParams) => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
@@ -205,7 +397,7 @@ export const useQueueManagement = ({
       }
     });
     dispatch({ type: 'STOP_DOWNLOAD' });
-  }, [state, dispatch, dispatchProgress]);
+  }, [state, dispatch, dispatchProgress, fsStopDownload]);
 
   const stopAndClearAllDownloads = useCallback(() => {
     const current = stateRef.current;
@@ -226,7 +418,7 @@ export const useQueueManagement = ({
     if (idsToRemove.length > 0) {
       dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
     }
-  }, [dispatch, dispatchProgress]);
+  }, [dispatch, dispatchProgress, fsStopDownload]);
 
   const addFilesToQueue = useCallback(
     async <T extends DownloadContext>(
@@ -326,7 +518,7 @@ export const useQueueManagement = ({
       });
       dispatch({ type: 'REMOVE_FILES', ids: fileIds });
     },
-    [state, dispatch, dispatchProgress],
+    [state, dispatch, dispatchProgress, fsStopDownload],
   );
 
   const getFilesByContext = useCallback(
@@ -363,7 +555,7 @@ export const useQueueManagement = ({
         dispatch({ type: 'REMOVE_FILES', ids: idsToRemove });
       }
     },
-    [state, dispatch, dispatchProgress],
+    [state, dispatch, dispatchProgress, fsStopDownload],
   );
 
   return {

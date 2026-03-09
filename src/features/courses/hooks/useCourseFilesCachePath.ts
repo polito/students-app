@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { readDir } from 'react-native-fs';
 
-import { PUBLIC_APP_DIRECTORY_PATH } from '../../../core/constants';
-import { useApiContext } from '../../../core/contexts/ApiContext';
+import { useDownloadsContext } from '../../../core/contexts/DownloadsContext';
 import { useGetCourse } from '../../../core/queries/courseHooks';
+import { readDirectoryWithInfo } from '../../../core/storage/fileSystem';
 import { stripIdInParentheses } from '../../../utils/files';
 import { useCourseContext } from '../contexts/CourseContext';
 
 export const useCourseFilesCachePath = () => {
-  const coursesFilesCachePath = useCoursesFilesCachePath();
+  const { getCourseFolderPath, getCoursesCachePath } = useDownloadsContext();
   const courseId = useCourseContext();
   const { data: course } = useGetCourse(courseId);
   const cacheFolderName = useMemo(
@@ -18,19 +17,21 @@ export const useCourseFilesCachePath = () => {
         : courseId.toString(),
     [course?.name, courseId],
   );
-  const principalCachePath = useMemo(() => {
-    return [coursesFilesCachePath, cacheFolderName].join('/');
-  }, [cacheFolderName, coursesFilesCachePath]);
+  const principalCachePath = useMemo(
+    () => getCourseFolderPath(courseId, course?.name),
+    [courseId, course?.name, getCourseFolderPath],
+  );
+  const coursesFilesCachePath = getCoursesCachePath();
   const [alternativeCachePaths, setAlternativeCachePaths] = useState<string[]>(
     [],
   );
 
   useEffect(() => {
-    readDir(coursesFilesCachePath)
+    readDirectoryWithInfo(coursesFilesCachePath)
       .then(coursesCaches =>
         coursesCaches.filter(
           c =>
-            c.isDirectory() &&
+            c.isDirectory &&
             c.name !== cacheFolderName &&
             c.name.includes(courseId.toString()),
         ),
@@ -46,7 +47,8 @@ export const useCourseFilesCachePath = () => {
   return [principalCachePath, alternativeCachePaths] as const;
 };
 
+/** Base path for all courses (internal or staging). Use from SettingsScreen or when you need only the root. */
 export const useCoursesFilesCachePath = () => {
-  const { username } = useApiContext();
-  return [PUBLIC_APP_DIRECTORY_PATH, username, 'Courses'].join('/');
+  const { getCoursesCachePath } = useDownloadsContext();
+  return getCoursesCachePath();
 };

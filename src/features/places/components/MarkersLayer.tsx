@@ -69,7 +69,7 @@ export const MarkersLayer = ({
     ) {
       const selected = result.find(x => x.id === selectedId);
       if (selected) {
-        const R = 6371000; // raggio terrestre in metri
+        const R = 6371000; // Earth radius in metres
         const degToRad = (deg: number) => (deg * Math.PI) / 180;
 
         result = result.filter(p => {
@@ -169,7 +169,7 @@ export const MarkersLayer = ({
 
         if (selectedPoi) {
           if (isAccessibleFont) {
-            // Se è già selezionato, naviga alla pagina di dettaglio
+            // If already selected, navigate to the detail page
             if (selectedId === selectedPoi.id) {
               const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
               const params =

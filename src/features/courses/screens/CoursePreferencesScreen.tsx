@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
-import { unlink } from 'react-native-fs';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -22,6 +21,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -43,21 +43,29 @@ import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { removeFileSafAware } from '../../../core/providers/downloads/safMirror';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { courseIcons } from '../constants';
 import { CourseContext, useCourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
-  const { downloads, updateDownload } = useDownloadsContext();
+  const {
+    downloads,
+    updateDownload,
+    getCourseFolderPath,
+    deleteLocalPath,
+    removeFileFromStorage,
+    cacheSizeVersion,
+    refreshCacheVersion,
+    isAnyDownloadInProgress,
+  } = useDownloadsContext();
   const queryClient = useQueryClient();
 
   const { fontSizes } = useTheme();
-  const [courseFilesCache] = useCourseFilesCachePath();
   const courseId = useCourseContext();
+  const { data: course } = useGetCourse(courseId);
+  const courseFilesCache = getCourseFolderPath(courseId, course?.name);
   const [cacheSize, setCacheSize] = useState<number>(0);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
@@ -81,7 +89,56 @@ const CleanCourseFilesListItem = () => {
 
   useEffect(() => {
     refreshSize();
-  }, [refreshSize]);
+  }, [cacheSizeVersion, refreshSize]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshSize();
+    }, [refreshSize]),
+  );
+
+  const handleCleanPress = useCallback(async () => {
+    if (!courseFilesCache || !(await confirm())) return;
+    Object.keys(downloads).forEach(key => {
+      if (key.includes(courseFilesCache)) {
+        updateDownload(key, {
+          isDownloaded: false,
+          phase: undefined,
+        });
+      }
+    });
+
+    const files = await fileDatabaseRef.current.getFilesByContext(ctx, ctxId);
+    await Promise.all(
+      files.map(f => removeFileFromStorage(f.path).catch(() => {})),
+    );
+
+    await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
+    await deleteLocalPath(courseFilesCache).catch(() => {});
+    refreshCacheVersion();
+    setFeedback({
+      text: t('coursePreferencesScreen.cleanCacheFeedback'),
+    });
+    refreshSize();
+    queryClient.invalidateQueries({
+      queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+    });
+  }, [
+    courseFilesCache,
+    confirm,
+    downloads,
+    updateDownload,
+    ctx,
+    ctxId,
+    setFeedback,
+    t,
+    refreshSize,
+    queryClient,
+    courseId,
+    deleteLocalPath,
+    removeFileFromStorage,
+    refreshCacheVersion,
+  ]);
 
   return (
     <ListItem
@@ -90,39 +147,9 @@ const CleanCourseFilesListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
-      disabled={cacheSize === 0}
+      disabled={cacheSize === 0 || isAnyDownloadInProgress}
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
-      onPress={async () => {
-        if (courseFilesCache && (await confirm())) {
-          // Aggiorna lo stato dei download: tutte le chiavi che riferiscono questa cache
-          Object.keys(downloads).forEach(key => {
-            if (key.includes(courseFilesCache)) {
-              updateDownload(key, {
-                isDownloaded: false,
-                phase: undefined,
-              });
-            }
-          });
-
-          const files = await fileDatabaseRef.current.getFilesByContext(
-            ctx,
-            ctxId,
-          );
-          await Promise.all(
-            files.map(f => removeFileSafAware(f.path).catch(() => {})),
-          );
-
-          await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
-          unlink(courseFilesCache).catch(() => {});
-          setFeedback({
-            text: t('coursePreferencesScreen.cleanCacheFeedback'),
-          });
-          refreshSize();
-          queryClient.invalidateQueries({
-            queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
-          });
-        }
-      }}
+      onPress={handleCleanPress}
     />
   );
 };

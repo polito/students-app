@@ -19,27 +19,28 @@ import {
 } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useDownloadQueue } from '../../../core/hooks/useDownloadQueue';
-import { getFileKey } from '../../../core/providers/downloads/downloadsFileUtils';
-import { removeFileSafAware } from '../../../core/providers/downloads/safMirror';
-import { buildCourseFilePath, buildCourseFileUrl } from '../../../utils/files';
+import { getFileKey } from '../../../core/providers/downloads/downloadsQueue';
+import { useGetCourse } from '../../../core/queries/courseHooks';
+import { buildCourseFileUrl } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
 import { isDirectory } from '../utils/fs-entry';
 
 interface UseFileManagementProps {
   courseId: number;
-  courseFilesCache: string;
   data: (CourseDirectory | CourseFileOverview)[] | null | undefined;
   isDirectoryView?: boolean;
 }
 
 export const useFileManagement = ({
   courseId,
-  courseFilesCache,
   data,
   isDirectoryView = false,
 }: UseFileManagementProps) => {
   const { t } = useTranslation();
   const { colors, palettes, spacing } = useTheme();
+  const { getCourseFilePath, removeFileFromStorage, refreshCacheVersion } =
+    useDownloadsContext();
+  const { data: course } = useGetCourse(courseId);
   const {
     downloads,
     downloadQueue,
@@ -60,6 +61,19 @@ export const useFileManagement = ({
   const [sortedData, setSortedData] = useState<typeof data>(undefined);
   const [wasDownloading, setWasDownloading] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      setSortedData(
+        isDirectoryView
+          ? [
+              ...sortByNameAsc(data.filter(item => isDirectory(item))),
+              ...sortByNameAsc(data.filter(item => !isDirectory(item))),
+            ]
+          : sortByNameAsc(data),
+      );
+    }
+  }, [data, isDirectoryView]);
 
   const sortOptions = useMemo(
     () => [
@@ -177,22 +191,24 @@ export const useFileManagement = ({
         return files;
       }
       return files.sort((a, b) => {
-        const aFilePath = buildCourseFilePath(
-          courseFilesCache,
-          (a as any).location,
-          a.id,
-          a.name,
-          (a as any).mimeType,
-        );
+        const aFilePath = getCourseFilePath({
+          courseId,
+          courseName: course?.name,
+          location: (a as any).location,
+          fileId: a.id,
+          fileName: a.name,
+          mimeType: (a as any).mimeType,
+        });
         const aKey = `${buildCourseFileUrl(courseId, a.id)}:${aFilePath}`;
 
-        const bFilePath = buildCourseFilePath(
-          courseFilesCache,
-          (b as any).location,
-          b.id,
-          b.name,
-          (b as any).mimeType,
-        );
+        const bFilePath = getCourseFilePath({
+          courseId,
+          courseName: course?.name,
+          location: (b as any).location,
+          fileId: b.id,
+          fileName: b.name,
+          mimeType: (b as any).mimeType,
+        });
         const bKey = `${buildCourseFileUrl(courseId, b.id)}:${bFilePath}`;
 
         const aDownloaded = downloads[aKey]?.isDownloaded ?? false;
@@ -202,7 +218,7 @@ export const useFileManagement = ({
         return 0;
       });
     },
-    [courseId, courseFilesCache, downloads],
+    [courseId, course?.name, getCourseFilePath, downloads],
   );
 
   const sortByDate = useCallback(
@@ -255,12 +271,13 @@ export const useFileManagement = ({
 
     const filesToAdd = allFiles.map(file => {
       const fileUrl = buildCourseFileUrl(courseId, file.id);
-      const cachedFilePath = buildCourseFilePath(
-        courseFilesCache,
-        file.location,
-        file.id,
-        file.name,
-      );
+      const cachedFilePath = getCourseFilePath({
+        courseId,
+        courseName: course?.name,
+        location: file.location,
+        fileId: file.id,
+        fileName: file.name,
+      });
 
       return {
         id: file.id,
@@ -277,7 +294,14 @@ export const useFileManagement = ({
     } else {
       setAllFilesSelectedState(true);
     }
-  }, [sortedData, addFiles, courseId, courseFilesCache, isDirectoryView]);
+  }, [
+    sortedData,
+    addFiles,
+    courseId,
+    course?.name,
+    getCourseFilePath,
+    isDirectoryView,
+  ]);
 
   const deselectAllFiles = useCallback(() => {
     if (!sortedData) return;
@@ -432,7 +456,7 @@ export const useFileManagement = ({
                 const filePath = fileRecord?.path ?? file.request.destination;
 
                 try {
-                  await removeFileSafAware(filePath);
+                  await removeFileFromStorage(filePath);
                 } catch (error) {
                   console.error(`Error removing file ${filePath}:`, error);
                 }
@@ -454,6 +478,8 @@ export const useFileManagement = ({
               });
 
               await Promise.all(removePromises);
+
+              refreshCacheVersion();
 
               const fileIdsToRemove = selectedDownloadedFiles.map(
                 file => file.id,
@@ -481,6 +507,8 @@ export const useFileManagement = ({
       removeFiles,
       clearFiles,
       setRemovalInProgress,
+      removeFileFromStorage,
+      refreshCacheVersion,
     ],
   );
 

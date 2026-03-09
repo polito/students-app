@@ -58,7 +58,7 @@ const setupCourses = (
   courses?.forEach(c => {
     const newC = c as CourseOverview;
     const hasDetails = isCourseDetailed(newC);
-    // Corsi senza moduli: shortcode + '1', corsi con moduli: shortcode
+    // Courses without modules: shortcode + '1'; courses with modules: shortcode
     newC.uniqueShortcode =
       c.modules && c.modules.length > 0 ? c.shortcode : c.shortcode + '1';
 

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
-import { exists } from 'react-native-fs';
 
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
 import {
@@ -20,20 +19,16 @@ import {
   useDownloadsContext,
 } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
-// import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
-  fileExistsSafAware,
-  getCustomStoragePrefs,
-} from '../../../core/providers/downloads/safMirror';
-import { useGetCourseFiles } from '../../../core/queries/courseHooks';
+  useGetCourse,
+  useGetCourseFiles,
+} from '../../../core/queries/courseHooks';
 import {
-  buildCourseFilePath,
   buildCourseFileUrl,
   formatFileSize,
   stripIdInParentheses,
 } from '../../../utils/files';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
 import { isDirectory } from '../utils/fs-entry';
 
 const isFile = (item: {
@@ -86,8 +81,11 @@ export const CourseDirectoryListItem = ({
     addFilesToQueue,
     removeFilesFromQueue,
     updateDownload,
+    getCourseFilePath,
+    fileExistsInStorage,
+    cacheSizeVersion,
   } = useDownloadsContext();
-  const [courseFilesCache] = useCourseFilesCachePath();
+  const { data: course } = useGetCourse(courseId);
   const courseFilesQuery = useGetCourseFiles(courseId);
   // const { getUnreadsCount } = useNotifications();
 
@@ -116,13 +114,14 @@ export const CourseDirectoryListItem = ({
       const directoryFiles = directory.files.filter(isFile);
       directoryFiles.forEach(file => {
         const fileUrl = buildCourseFileUrl(courseId, file.id);
-        const cachedFilePath = buildCourseFilePath(
-          courseFilesCache,
-          basePath ? `/${basePath}` : undefined,
-          file.id,
-          file.name,
-          file.mimeType,
-        );
+        const cachedFilePath = getCourseFilePath({
+          courseId,
+          courseName: course?.name,
+          location: basePath ? `/${basePath}` : undefined,
+          fileId: file.id,
+          fileName: file.name,
+          mimeType: file.mimeType,
+        });
 
         allFiles.push({
           id: file.id,
@@ -142,7 +141,7 @@ export const CourseDirectoryListItem = ({
         collectAllFilesRecursively(subDir, subDirPath, allFiles);
       });
     },
-    [courseId, courseFilesCache],
+    [courseId, course?.name, getCourseFilePath],
   );
 
   const getAllFilesInDirectory = useCallback(() => {
@@ -213,15 +212,16 @@ export const CourseDirectoryListItem = ({
     if (allFilesWithKeys.length === 0) {
       return false;
     }
-    return allFilesWithKeys.every(
-      f =>
-        (downloads[f.key]?.isDownloaded === true ||
-          filesCheckedFromDB.has(f.id)) &&
-        !downloadQueue.activeDownloadIds.has(f.id),
-    );
+    if (isCheckingDownloaded) {
+      return false;
+    }
+    return allFilesWithKeys.every(f => {
+      if (downloadQueue.activeDownloadIds.has(f.id)) return false;
+      return filesCheckedFromDB.has(f.id);
+    });
   }, [
     allFilesWithKeys,
-    downloads,
+    isCheckingDownloaded,
     filesCheckedFromDB,
     downloadQueue.activeDownloadIds,
   ]);
@@ -238,46 +238,38 @@ export const CourseDirectoryListItem = ({
       return false;
     }
 
-    const prefs = await getCustomStoragePrefs();
-    const checkFileExists = async (path: string): Promise<boolean> =>
-      prefs ? fileExistsSafAware(path) : exists(path).catch(() => false);
-
     const pathLocation =
       (item as CourseDirectory & { location?: string }).location ??
       `/${item.name}`;
 
     const fileChecks = await Promise.all(
       directoryFiles.map(async file => {
-        const cachedFilePath = buildCourseFilePath(
-          courseFilesCache,
-          pathLocation,
-          file.id,
-          file.name,
-          file.mimeType,
-        );
-        return checkFileExists(cachedFilePath);
+        const cachedFilePath = getCourseFilePath({
+          courseId,
+          courseName: course?.name,
+          location: pathLocation,
+          fileId: file.id,
+          fileName: file.name,
+          mimeType: file.mimeType,
+        });
+        return fileExistsInStorage(cachedFilePath);
       }),
     );
 
     return fileChecks.every(Boolean);
-  }, [item, courseFilesCache]);
+  }, [item, courseId, course?.name, getCourseFilePath, fileExistsInStorage]);
 
   useEffect(() => {
     const checkFilesInDatabase = async () => {
-      const directoryFiles = item.files.filter(isFile);
-      if (directoryFiles.length === 0) {
+      const allFiles = getAllFilesInDirectory();
+      if (allFiles.length === 0) {
         setIsCheckingDownloaded(false);
         return;
       }
 
-      const pathLocation =
-        (item as CourseDirectory & { location?: string }).location ??
-        `/${item.name}`;
-
       const downloadedFileIds = new Set<string>();
 
       try {
-        const prefs = await getCustomStoragePrefs();
         const ctx = DownloadContext.Course;
         const ctxId = courseId.toString();
         const allFilesInContext = await fileDatabase.getFilesByContext(
@@ -286,28 +278,17 @@ export const CourseDirectoryListItem = ({
         );
         const filesMap = new Map(allFilesInContext.map(f => [f.id, f]));
 
-        const checkFileExists = async (path: string): Promise<boolean> =>
-          prefs ? fileExistsSafAware(path) : exists(path).catch(() => false);
-
-        for (const file of directoryFiles) {
+        for (const file of allFiles) {
           try {
             const fileRecord = filesMap.get(file.id);
-            if (fileRecord) {
-              const fileExists = await checkFileExists(fileRecord.path);
-              if (fileExists) {
-                downloadedFileIds.add(file.id);
-
-                const cachedFilePath = buildCourseFilePath(
-                  courseFilesCache,
-                  pathLocation,
-                  file.id,
-                  file.name,
-                  file.mimeType,
-                );
+            const pathToCheck = fileRecord?.path ?? file.filePath;
+            const fileExists = await fileExistsInStorage(pathToCheck);
+            if (fileExists) {
+              downloadedFileIds.add(file.id);
+              if (fileRecord) {
                 const fileUrl = buildCourseFileUrl(courseId, file.id);
-                const downloadKey = `${fileUrl}:${cachedFilePath}`;
+                const downloadKey = `${fileUrl}:${file.filePath}`;
                 const currentDownloads = downloadsRef.current;
-
                 if (
                   !currentDownloads[downloadKey] ||
                   !currentDownloads[downloadKey].isDownloaded
@@ -317,18 +298,6 @@ export const CourseDirectoryListItem = ({
                     isDownloaded: true,
                   });
                 }
-              }
-            } else {
-              const cachedFilePath = buildCourseFilePath(
-                courseFilesCache,
-                pathLocation,
-                file.id,
-                file.name,
-                file.mimeType,
-              );
-              const fileExists = await checkFileExists(cachedFilePath);
-              if (fileExists) {
-                downloadedFileIds.add(file.id);
               }
             }
           } catch (error) {}
@@ -342,13 +311,12 @@ export const CourseDirectoryListItem = ({
 
     checkFilesInDatabase();
   }, [
-    item.files,
-    item.name,
-    item,
-    courseFilesCache,
+    getAllFilesInDirectory,
     courseId,
+    fileExistsInStorage,
     fileDatabase,
     listRefreshKey,
+    cacheSizeVersion,
   ]);
 
   useEffect(() => {
@@ -509,6 +477,7 @@ export const CourseDirectoryListItem = ({
             courseId,
             directoryId: item.id,
             directoryName: stripIdInParentheses(item.name),
+            skipInitialDownloadCheck: allFilesDownloaded,
           });
         }
       }}

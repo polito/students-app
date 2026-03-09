@@ -1729,6 +1729,8 @@ PODS:
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
+  - react-native-saf-x (2.2.3):
+    - React-Core
   - react-native-safe-area-context (5.6.2):
     - DoubleConversion
     - glog
@@ -2823,6 +2825,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-pdf-light (from `../node_modules/react-native-pdf-light`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
+  - react-native-saf-x (from `../node_modules/react-native-saf-x`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -3028,6 +3031,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pdf-light"
   react-native-render-html:
     :path: "../node_modules/react-native-render-html"
+  react-native-saf-x:
+    :path: "../node_modules/react-native-saf-x"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -3215,6 +3220,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: f79b095ad2f207028f17626dd7aaf8411c42accc
   react-native-pdf-light: 53139b084304650c3495dd8765e43d363d30bfce
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
+  react-native-saf-x: 684113757246eb8f86d2bae21d965652f78f8eeb
   react-native-safe-area-context: 0b8555c40461feb7198e999912a3446602e7c601
   react-native-video: 8b867791128487bf82c9b6070ceddd2697bfabec
   React-NativeModulesApple: d94850b316446b0c39a82eb278d6efaa1a634055
