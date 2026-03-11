@@ -4,7 +4,7 @@ import {
   CourseModuleEdition,
   MessageType,
   Notification,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

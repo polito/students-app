@@ -7,7 +7,7 @@ import {
   CourseDirectory,
   CourseDirectoryEntry,
   CourseFileOverview,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

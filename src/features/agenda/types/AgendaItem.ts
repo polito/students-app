@@ -1,4 +1,4 @@
-import { PlaceRef, RelatedVirtualClassroom } from '@polito/api-client';
+import { PlaceRef, RelatedVirtualClassroom } from '@polito/student-api-client';
 
 import { DateTime } from 'luxon';
 

@@ -1,4 +1,4 @@
-import { OfferingCourseOverview, Track } from '@polito/api-client';
+import { OfferingCourseOverview, Track } from '@polito/student-api-client';
 
 import { groupBy, map } from 'lodash';
 

@@ -1027,7 +1027,16 @@
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",
     "title": "Ticket",
-    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply"
+    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply",
+    "incomingMessage": "Your reply",
+    "outgoingMessage": "Reply from operator number",
+    "yourQuestion": "Your question",
+    "send": "Send",
+    "virtualOperator": "VIRTUAL OPERATOR",
+    "feedbackTitle": "You have spoken with a virtual operator",
+    "feedbackDescription": "This new service was created to give you faster and more effective support. If you need further assistance, our team will respond to you as soon as possible!",
+    "feedbackQuestion": "Are you satisfied with the answer?",
+    "realOperatorWillReply": "A real operator will reply to you as soon as possible."
   },
   "tickets": {
     "close": "Close ticket",

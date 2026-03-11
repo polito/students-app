@@ -12,7 +12,7 @@ import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { faSeat } from '@lib/ui/icons/faSeat';
 import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { Booking } from '@polito/api-client';
+import { Booking } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

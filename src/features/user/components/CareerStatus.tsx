@@ -6,7 +6,7 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { StudentStatusEnum } from '@polito/api-client';
+import { StudentStatusEnum } from '@polito/student-api-client';
 
 type Props = {
   status: StudentStatusEnum;

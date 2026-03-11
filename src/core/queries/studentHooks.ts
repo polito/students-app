@@ -8,7 +8,7 @@ import {
   Student,
   StudentApi,
   UpdateDevicePreferencesRequest,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,

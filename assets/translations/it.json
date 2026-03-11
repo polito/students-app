@@ -1054,7 +1054,12 @@
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
-    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
+    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta",
+    "virtualOperator": "OPERATORE VIRTUALE",
+    "feedbackTitle": "Hai parlato con un operatore virtuale",
+    "feedbackDescription": "Questo nuovo servizio nasce per darti un supporto più veloce ed efficace. Se hai bisogno di ulteriore assistenza, il nostro team ti risponderà al più presto!",
+    "feedbackQuestion": "La risposta ti soddisfa?",
+    "realOperatorWillReply": "Un operatore reale ti risponderà al più presto."
   },
   "tickets": {
     "close": "Chiudi ticket",

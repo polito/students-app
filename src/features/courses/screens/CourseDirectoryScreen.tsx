@@ -13,7 +13,10 @@ import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import {
+  CourseDirectory,
+  CourseFileOverview,
+} from '@polito/student-api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useFocusEffect } from '@react-navigation/native';

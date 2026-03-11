@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
+import { Booking, Deadline, ExamStatusEnum } from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { DateTime, Interval } from 'luxon';

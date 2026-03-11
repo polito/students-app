@@ -1,4 +1,4 @@
-import { NewsApi } from '@polito/api-client';
+import { NewsApi } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

@@ -26,7 +26,7 @@ import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { CourseDirectory } from '@polito/api-client';
+import { CourseDirectory } from '@polito/student-api-client';
 
 import { Checkbox } from '~/core/components/Checkbox';
 

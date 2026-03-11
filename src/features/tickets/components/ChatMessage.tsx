@@ -6,7 +6,7 @@ import { ChatBubble } from '@lib/ui/components/ChatBubble';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketReply } from '@polito/api-client';
+import { TicketReply } from '@polito/student-api-client';
 
 import { HtmlMessage } from './HtmlMessage';
 import { TicketAttachmentChip } from './TicketAttachmentChip';
@@ -17,6 +17,8 @@ interface ChatMessageProps {
   ticketId: number;
 }
 
+type TicketReplyWithAi = TicketReply & { isAiAgent?: boolean };
+
 export const ChatMessage = ({
   received,
   message,
@@ -24,10 +26,13 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const reply = message as TicketReplyWithAi;
 
   const messageFirstPart = !message.agentId
     ? t('ticketScreen.incomingMessage')
-    : [t('ticketScreen.outgoingMessage'), message.agentId].join(', ');
+    : reply.isAiAgent
+      ? t('ticketScreen.virtualOperator')
+      : [t('ticketScreen.outgoingMessage'), message.agentId].join(', ');
   const accessibilityMessageText = [messageFirstPart, message.message].join(
     ', ',
   );
@@ -65,7 +70,9 @@ export const ChatMessage = ({
       >
         {message.agentId && (
           <Text style={styles.agentText}>
-            {t('common.agent')} {message.agentId}
+            {reply.isAiAgent
+              ? t('ticketScreen.virtualOperator')
+              : [t('common.agent'), message.agentId].join(' ')}
           </Text>
         )}
         <HtmlMessage

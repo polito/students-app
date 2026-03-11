@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { MfaChallenge, OfferingCourseStaff } from '@polito/api-client';
+import { MfaChallenge, OfferingCourseStaff } from '@polito/student-api-client';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

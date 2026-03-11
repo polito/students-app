@@ -13,7 +13,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -41,6 +41,11 @@ import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
+import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
+
+type TicketReplyWithAi = import('@polito/student-api-client').TicketReply & {
+  isAiAgent?: boolean;
+};
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 
@@ -161,6 +166,21 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     [ticket],
   );
 
+  const lastReply = replies[0] as TicketReplyWithAi | undefined;
+  const [feedbackSentForReplyIds, setFeedbackSentForReplyIds] = useState(
+    () => new Set<number>(),
+  );
+
+  const isLastReplyFromAi = !!lastReply?.isFromAgent && !!lastReply?.isAiAgent;
+  const showFeedbackBar =
+    !!lastReply &&
+    !feedbackSentForReplyIds.has(lastReply.id) &&
+    isLastReplyFromAi;
+
+  const handleFeedbackSent = useCallback((replyId: number) => {
+    setFeedbackSentForReplyIds(prev => new Set(prev).add(replyId));
+  }, []);
+
   useEffect(() => {
     const changeStyle = () => {
       setStyless(prevStyles => ({
@@ -251,7 +271,15 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      <TicketMessagingView ticketId={id} />
+      {showFeedbackBar && lastReply ? (
+        <VirtualOperatorFeedbackBar
+          ticketId={id}
+          replyId={lastReply.id}
+          onFeedbackSent={() => handleFeedbackSent(lastReply.id)}
+        />
+      ) : (
+        <TicketMessagingView ticketId={id} />
+      )}
     </Animated.View>
   );
 };

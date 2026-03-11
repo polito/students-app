@@ -16,7 +16,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';

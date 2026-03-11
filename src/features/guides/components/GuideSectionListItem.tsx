@@ -1,5 +1,5 @@
 import { Text } from '@lib/ui/components/Text';
-import { GuideSection } from '@polito/api-client';
+import { GuideSection } from '@polito/student-api-client';
 
 import { HtmlView } from '../../../core/components/HtmlView';
 

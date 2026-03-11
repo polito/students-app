@@ -12,7 +12,7 @@ import { FileListItem } from '@lib/ui/components/FileListItem';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseFileOverview } from '@polito/api-client';
+import { CourseFileOverview } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 
 import { Checkbox } from '~/core/components/Checkbox';

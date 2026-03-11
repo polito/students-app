@@ -5,7 +5,7 @@ import { FlatList, Platform } from 'react-native';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { TicketStatus } from '@polito/api-client';
+import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';

@@ -1,4 +1,4 @@
-import { PlaceCategory } from '@polito/api-client';
+import { PlaceCategory } from '@polito/student-api-client';
 
 import { useGetPlaceCategories } from '../../../core/queries/placesHooks';
 
