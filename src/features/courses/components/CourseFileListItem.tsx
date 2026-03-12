@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, View } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 
 import {
@@ -9,7 +9,6 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
-import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
@@ -375,19 +374,12 @@ export const CourseFileListItem = memo(
                 onRemoveDownload={removeDownload}
                 isDownloaded={isDownloaded}
               >
-                <View
-                  style={{ padding: spacing[3] as number }}
+                <IconButton
+                  icon={faEllipsisVertical}
                   accessibilityLabel={t('common.options')}
-                >
-                  <Icon
-                    icon={faEllipsisVertical}
-                    color={colors.secondaryText}
-                    size={fontSizes.xl}
-                    style={{
-                      marginRight: -(spacing[3] as number),
-                    }}
-                  />
-                </View>
+                  adjustSpacing="right"
+                  {...iconProps}
+                />
               </Menu>
             ),
           })
@@ -406,8 +398,6 @@ export const CourseFileListItem = memo(
         stopDownload,
         refreshDownload,
         removeDownload,
-        colors.secondaryText,
-        fontSizes.xl,
       ],
     );
 
