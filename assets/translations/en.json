@@ -394,6 +394,7 @@
     "unavailableDuringDownload": "folder not available during download"
   },
   "courseDirectoryScreen": {
+    "selectFiles": "Select files",
     "clearSearch": "Clear search",
     "emptyRootFolder": "There are no files",
     "emptyFolder": "The folder is empty",
@@ -416,7 +417,13 @@
     "removeFilesTitle": "Remove files",
     "removeFileConfirmation": "The file will be removed only locally from your device. Do you want to continue?",
     "removeFilesConfirmation": "The {{count}} files will be removed only locally from your device. Do you want to continue?",
-    "title": "Files"
+    "title": "Files",
+    "updateDownloadedTitle": "Update downloaded files",
+    "updateDownloadedMessage": "{{count}} selected files are already downloaded. Do you want to update them?",
+    "updateDownloadedInfoTitle": "Download",
+    "updateDownloadedInfoMessage": "{{downloadedCount}} already downloaded file(s) will be updated and {{newCount}} new file(s) will be downloaded.",
+    "downloadOnlyNew": "New only",
+    "downloadAll": "Download all"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -1027,16 +1034,7 @@
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",
     "title": "Ticket",
-    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply",
-    "incomingMessage": "Your reply",
-    "outgoingMessage": "Reply from operator number",
-    "yourQuestion": "Your question",
-    "send": "Send",
-    "virtualOperator": "VIRTUAL OPERATOR",
-    "feedbackTitle": "You have spoken with a virtual operator",
-    "feedbackDescription": "This new service was created to give you faster and more effective support. If you need further assistance, our team will respond to you as soon as possible!",
-    "feedbackQuestion": "Are you satisfied with the answer?",
-    "realOperatorWillReply": "A real operator will reply to you as soon as possible."
+    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply"
   },
   "tickets": {
     "close": "Close ticket",

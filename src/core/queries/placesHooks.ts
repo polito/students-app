@@ -5,7 +5,7 @@ import {
   GetFreeRoomsRequest,
   GetPlacesRequest,
   PlacesApi,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

@@ -24,7 +24,7 @@ import { Section } from '@lib/ui/components/Section';
 import { SectionHeader } from '@lib/ui/components/SectionHeader';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamStatusEnum } from '@polito/student-api-client';
+import { ExamStatusEnum } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer';

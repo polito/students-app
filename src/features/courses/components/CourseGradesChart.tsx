@@ -11,7 +11,7 @@ import {
   CourseStatistics,
   GradeCount,
   GradeCountGradeEnum,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 
 import { LegendItem } from './LegendItem.tsx';
 import { NoChartDataContainer } from './NoChartDataContainer.tsx';

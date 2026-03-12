@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
-import { ExamStatusEnum } from '@polito/student-api-client';
+import { ExamStatusEnum } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';

@@ -26,7 +26,7 @@ import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
 import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { PlaceOverview } from '@polito/student-api-client';
+import { PlaceOverview } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 

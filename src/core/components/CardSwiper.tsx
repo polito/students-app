@@ -18,8 +18,8 @@ import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer.tsx';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme.ts';
 import { Theme } from '@lib/ui/types/Theme';
-import { Student } from '@polito/student-api-client';
-import { EuropeanStudentCard } from '@polito/student-api-client';
+import { Student } from '@polito/api-client';
+import { EuropeanStudentCard } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

@@ -1,4 +1,4 @@
-import { CoursesApi } from '@polito/student-api-client';
+import { CoursesApi } from '@polito/api-client';
 
 import { pluckData } from '../../../utils/queries';
 import {

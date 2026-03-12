@@ -2,23 +2,22 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  KeyboardAvoidingView,
   Platform,
   StyleSheet,
   View,
   useWindowDimensions,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   faCloudArrowDown,
   faSearch,
-  faTimes,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { DirectoryListItem } from '@lib/ui/components/DirectoryListItem';
 import { FileListItem } from '@lib/ui/components/FileListItem';
-import { IconButton } from '@lib/ui/components/IconButton';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { Row } from '@lib/ui/components/Row';
 import { TextButton } from '@lib/ui/components/TextButton';
@@ -26,21 +25,25 @@ import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { CourseDirectory } from '@polito/student-api-client';
+import { CourseDirectory } from '@polito/api-client';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Checkbox } from '~/core/components/Checkbox';
 
-import { BottomModal } from '../../../core/components/BottomModal';
 import {
   DownloadContext,
   useDownloadsContext,
 } from '../../../core/contexts/DownloadsContext';
 import { getFileDatabase } from '../../../core/database/FileDatabase';
 import { useDownloadQueue } from '../../../core/hooks/useDownloadQueue';
+import { useHideTabs } from '../../../core/hooks/useHideTabs';
 import { getFileKey } from '../../../core/providers/downloads/downloadsQueue';
 import {
   getFlattenedCourseFiles,
   useGetCourse,
+  useGetCourseDirectory,
+  useGetCourseFiles,
+  useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
 import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import {
@@ -53,34 +56,14 @@ import {
   formatFileSize,
   stripIdInParentheses,
 } from '../../../utils/files';
+import { useFileManagement } from '../hooks/useFileManagement';
+import type { CourseSharedScreensParamList } from '../navigation/CourseSharedScreens';
 import { isDirectory } from '../utils/fs-entry';
 
-export type DirectoryOrFile = CourseDirectory | CourseFileOverviewWithLocation;
-
-export interface CourseFileMultiSelectModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onCloseModalOnly?: () => void;
-  onModalHide?: (reason?: 'download' | 'remove') => void;
-  courseId: number;
-  flatFileList: CourseFileOverviewWithLocation[];
-  displayItems?: DirectoryOrFile[];
-  courseFilesTree?: CourseDirectoryContentWithLocations[];
-  handleDownloadAction: () => void;
-  handleRemoveAction: (onConfirmed?: () => void) => void;
-  removeButtonTitle: string;
-  isRemoveButtonDisabled: boolean;
-  downloadButtonTitle?: string;
-  isDownloadButtonDisabled?: boolean;
-  isDownloading?: boolean;
-  downloadButtonProgress?: number;
-  downloadButtonStyle?: { backgroundColor: string; borderColor: string };
-  removeButtonStyle: {
-    backgroundColor: string;
-    borderColor: string;
-    marginBottom?: number;
-  };
-}
+type Props = NativeStackScreenProps<
+  CourseSharedScreensParamList,
+  'CourseFileMultiSelect'
+>;
 
 function getDirectorySubtitle(
   dir: CourseDirectory,
@@ -113,59 +96,106 @@ function getDirectorySubtitle(
   return countText || sizeText || t('courseDirectoryListItem.empty');
 }
 
-export const CourseFileMultiSelectModal = ({
-  visible,
-  onClose,
-  onCloseModalOnly,
-  onModalHide,
-  courseId,
-  flatFileList,
-  displayItems,
-  courseFilesTree,
-  handleDownloadAction,
-  handleRemoveAction,
-  removeButtonTitle,
-  isRemoveButtonDisabled,
-  removeButtonStyle,
-  downloadButtonTitle,
-  isDownloadButtonDisabled,
-  isDownloading,
-  downloadButtonProgress,
-  downloadButtonStyle,
-}: CourseFileMultiSelectModalProps) => {
+export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
+  const { courseId, mode, directoryId } = route.params;
   const { t } = useTranslation();
-  const { getCourseFilePath, cacheSizeVersion } = useDownloadsContext();
+  const { getCourseFilePath, cacheSizeVersion, updateDownload } =
+    useDownloadsContext();
   const { data: course } = useGetCourse(courseId);
+  const directoryQuery = useGetCourseDirectory(courseId, directoryId);
+  const courseFilesQuery = useGetCourseFiles(courseId);
+  const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  const { width: windowWidth } = useWindowDimensions();
+  const { fontSizes } = useTheme();
+  const styles = useStylesheet(createStyles);
+
+  // Hide bottom tab bar (Android needs explicit hide; iOS hides automatically for modal)
+  useHideTabs();
+
+  // --- Data source based on mode ---
+
+  const data = useMemo(() => {
+    if (mode === 'directory') return directoryQuery.data ?? undefined;
+    return recentFilesQuery.data ?? undefined;
+  }, [mode, directoryQuery.data, recentFilesQuery.data]);
+
+  // --- File management (sorting, download/remove actions) ---
+
+  const {
+    setEnableMultiSelect,
+    sortedData,
+    handleDownloadAction,
+    handleRemoveAction,
+    removeButtonTitle,
+    isRemoveButtonDisabled,
+    downloadButtonStyle,
+    removeButtonStyle,
+    isDownloading,
+    downloadButtonProgress,
+  } = useFileManagement({
+    courseId,
+    data,
+    isDirectoryView: mode === 'directory',
+  });
+
+  // --- Download queue (shared via context) ---
+
+  const { addFiles, removeFiles, contextFiles, downloads, clearFiles } =
+    useDownloadQueue(courseId, DownloadContext.Course);
+
+  // --- Flat file list and tree for selection ---
+
+  const flatFileList = useMemo((): CourseFileOverviewWithLocation[] => {
+    if (mode === 'directory' && courseFilesQuery.data) {
+      return getFlattenedCourseFiles(courseFilesQuery.data, directoryId);
+    }
+    return recentFilesQuery.data ?? [];
+  }, [mode, courseFilesQuery.data, directoryId, recentFilesQuery.data]);
+
+  const courseFilesTree =
+    mode === 'directory' ? courseFilesQuery.data : undefined;
+
+  const displayItems = useMemo(() => sortedData ?? [], [sortedData]);
+
+  // --- Local state ---
+
   const [searchFilter, setSearchFilter] = useState('');
   const [downloadedFileIdsFromDb, setDownloadedFileIdsFromDb] = useState<
     Set<string>
   >(new Set());
-  const closingForActionRef = useRef<'download' | 'remove' | false>(false);
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const { top: safeAreaTop } = useSafeAreaInsets();
-  const { spacing, fontSizes } = useTheme();
-  const styles = useStylesheet(createStyles);
+  const closingForActionRef = useRef(false);
 
-  const modalCtaTextStyle = useMemo(
-    () => (windowWidth < 400 ? { fontSize: fontSizes.sm } : undefined),
-    [windowWidth, fontSizes.sm],
-  );
-
-  const { addFiles, removeFiles, contextFiles, downloads } = useDownloadQueue(
-    courseId,
-    DownloadContext.Course,
-  );
+  // --- Mount: enable multi-select and clear queue ---
 
   useEffect(() => {
-    if (!visible || courseId == null) return;
+    setEnableMultiSelect(true);
+    clearFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // --- Cleanup on close (X / swipe), NOT on action-driven goBack ---
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      if (!closingForActionRef.current) {
+        clearFiles();
+      }
+    });
+    return unsubscribe;
+  }, [navigation, clearFiles]);
+
+  // --- Load downloaded file IDs from DB ---
+
+  useEffect(() => {
+    if (courseId == null) return;
     const fileDatabase = getFileDatabase();
     fileDatabase
       .getFilesByContext(DownloadContext.Course, String(courseId))
-      .then(files => {
-        setDownloadedFileIdsFromDb(new Set(files.map(f => f.id)));
-      })
+      .then(files => setDownloadedFileIdsFromDb(new Set(files.map(f => f.id))))
       .catch(() => setDownloadedFileIdsFromDb(new Set()));
-  }, [visible, courseId, cacheSizeVersion]);
+  }, [courseId, cacheSizeVersion]);
+
+  // --- Selection state ---
 
   const selectedFileIds = useMemo(
     () => new Set(contextFiles.map(f => f.id)),
@@ -179,18 +209,21 @@ export const CourseFileMultiSelectModal = ({
     [flatFileList, selectedFileIds],
   );
 
+  // --- Filtered list ---
+
   const listData = useMemo(() => {
-    const source = displayItems ?? flatFileList;
-    if (!searchFilter.trim()) return source;
+    if (!searchFilter.trim()) return displayItems;
     const q = searchFilter.trim().toLowerCase();
-    return source.filter(item => {
+    return displayItems.filter(item => {
       if (isDirectory(item)) {
         return (item as CourseDirectory).name.toLowerCase().includes(q);
       }
       const file = item as CourseFileOverviewWithLocation;
       return (file.name ?? '').toLowerCase().includes(q);
     });
-  }, [displayItems, flatFileList, searchFilter]);
+  }, [displayItems, searchFilter]);
+
+  // --- Helpers ---
 
   const getFileDownloadKey = useCallback(
     (file: CourseFileOverviewWithLocation) => {
@@ -219,24 +252,32 @@ export const CourseFileMultiSelectModal = ({
     [courseId, course?.name, getCourseFilePath],
   );
 
-  const notDownloadedSelectedCount = useMemo(() => {
-    return flatFileList.filter(f => {
-      const isDownloaded = downloadedFileIdsFromDb.has(f.id);
-      return selectedFileIds.has(f.id) && !isDownloaded;
-    }).length;
-  }, [flatFileList, selectedFileIds, downloadedFileIdsFromDb]);
+  // --- Selection count ---
+
+  const totalSelectedCount = useMemo(
+    () => flatFileList.filter(f => selectedFileIds.has(f.id)).length,
+    [flatFileList, selectedFileIds],
+  );
+
+  // --- Button state ---
 
   const modalDownloadButtonTitle = useMemo(() => {
-    if (isDownloading && downloadButtonTitle) {
-      return downloadButtonTitle;
+    if (isDownloading) {
+      return t('common.download');
     }
-    return notDownloadedSelectedCount > 0
-      ? `${t('common.download')} (${notDownloadedSelectedCount})`
+    return totalSelectedCount > 0
+      ? `${t('common.download')} (${totalSelectedCount})`
       : t('common.download');
-  }, [isDownloading, notDownloadedSelectedCount, downloadButtonTitle, t]);
+  }, [isDownloading, totalSelectedCount, t]);
 
-  const isModalDownloadButtonDisabled =
-    (isDownloadButtonDisabled ?? false) || notDownloadedSelectedCount === 0;
+  const isModalDownloadButtonDisabled = totalSelectedCount === 0;
+
+  const modalCtaTextStyle = useMemo(
+    () => (windowWidth < 400 ? { fontSize: fontSizes.sm } : undefined),
+    [windowWidth, fontSizes.sm],
+  );
+
+  // --- Directory helpers ---
 
   const isDirectoryFullySelected = useCallback(
     (dir: CourseDirectory) => {
@@ -257,6 +298,8 @@ export const CourseFileMultiSelectModal = ({
     },
     [courseFilesTree, downloadedFileIdsFromDb],
   );
+
+  // --- Toggle handlers ---
 
   const handleToggleFile = useCallback(
     (file: CourseFileOverviewWithLocation) => {
@@ -359,73 +402,74 @@ export const CourseFileMultiSelectModal = ({
     getCourseFilePath,
   ]);
 
+  // --- Download press ---
+
   const handleDownloadPress = useCallback(() => {
-    closingForActionRef.current = 'download';
-    onCloseModalOnly?.();
+    // Reset download state for any already-downloaded files so they get re-downloaded
+    flatFileList.forEach(f => {
+      if (selectedFileIds.has(f.id) && downloadedFileIdsFromDb.has(f.id)) {
+        const key = getFileDownloadKey(f);
+        updateDownload(key, {
+          isDownloaded: false,
+          downloadProgress: undefined,
+          jobId: undefined,
+        });
+      }
+    });
+    closingForActionRef.current = true;
     handleDownloadAction();
-  }, [onCloseModalOnly, handleDownloadAction]);
+    navigation.goBack();
+  }, [
+    flatFileList,
+    selectedFileIds,
+    downloadedFileIdsFromDb,
+    getFileDownloadKey,
+    updateDownload,
+    handleDownloadAction,
+    navigation,
+  ]);
+
+  // --- Remove press ---
 
   const handleRemovePress = useCallback(() => {
     handleRemoveAction(() => {
-      closingForActionRef.current = 'remove';
-      onCloseModalOnly?.();
+      closingForActionRef.current = true;
+      navigation.goBack();
     });
-  }, [onCloseModalOnly, handleRemoveAction]);
+  }, [handleRemoveAction, navigation]);
+
+  // --- Render ---
 
   return (
-    <BottomModal
-      visible={visible}
-      onClose={onClose}
-      dismissable={true}
-      onModalHide={() => {
-        setSearchFilter('');
-        const reason =
-          closingForActionRef.current !== false
-            ? closingForActionRef.current
-            : undefined;
-        closingForActionRef.current = false;
-        onModalHide?.(reason);
-      }}
-    >
-      <View
-        style={[
-          styles.modalContent,
-          {
-            height: windowHeight - spacing[12],
-            paddingTop: safeAreaTop,
-          },
-        ]}
-      >
-        <Row align="center" justify="space-between" style={styles.header}>
-          <IconButton
-            accessibilityLabel={t('common.close')}
-            accessibilityRole="button"
-            icon={faTimes}
-            onPress={onClose}
-            adjustSpacing="left"
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <View style={styles.header}>
+        <TextButton onPress={handleToggleSelectAll}>
+          {allFilesSelected ? t('common.deselectAll') : t('common.selectAll')}
+        </TextButton>
+      </View>
+
+      <View style={styles.searchBarWrap}>
+        <Row align="center" style={styles.searchBar}>
+          <TranslucentTextField
+            autoCorrect={false}
+            leadingIcon={faSearch}
+            value={searchFilter}
+            onChangeText={setSearchFilter}
+            style={[GlobalStyles.grow, styles.textField]}
+            label={t('courseDirectoryScreen.search')}
+            editable={true}
+            isClearable={!!searchFilter}
+            onClear={() => setSearchFilter('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
           />
-          <TextButton onPress={handleToggleSelectAll}>
-            {allFilesSelected ? t('common.deselectAll') : t('common.selectAll')}
-          </TextButton>
         </Row>
+      </View>
 
-        <View style={styles.searchBarWrap}>
-          <Row align="center" style={styles.searchBar}>
-            <TranslucentTextField
-              autoCorrect={false}
-              leadingIcon={faSearch}
-              value={searchFilter}
-              onChangeText={setSearchFilter}
-              style={[GlobalStyles.grow, styles.textField]}
-              label={t('courseDirectoryScreen.search')}
-              editable={true}
-              isClearable={!!searchFilter}
-              onClear={() => setSearchFilter('')}
-              onClearLabel={t('contactsScreen.clearSearch')}
-            />
-          </Row>
-        </View>
-
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoiding}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+      >
         <FlatList
           data={listData}
           extraData={{ downloads, downloadedFileIdsFromDb }}
@@ -529,21 +573,21 @@ export const CourseFileMultiSelectModal = ({
             textStyle={modalCtaTextStyle}
           />
         </View>
-      </View>
-    </BottomModal>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const createStyles = ({ colors, shapes, spacing }: Theme) =>
   StyleSheet.create({
-    modalContent: {
+    container: {
+      flex: 1,
       backgroundColor: colors.background,
-      borderTopLeftRadius: shapes.lg,
-      borderTopRightRadius: shapes.lg,
-      overflow: 'hidden',
     },
     header: {
       paddingHorizontal: spacing[4],
+      paddingVertical: spacing[2],
+      alignItems: 'flex-end',
     },
     searchBarWrap: {
       overflow: 'hidden',
@@ -551,6 +595,10 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     },
     searchBar: {
       paddingBottom: spacing[2],
+    },
+    keyboardAvoiding: {
+      flex: 1,
+      minHeight: 0,
     },
     textField: {
       borderRadius: shapes.lg,
@@ -564,14 +612,12 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
       paddingBottom: spacing[20],
     },
     ctaRow: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
       flexDirection: 'row',
       backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'stretch',
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[2],
     },
     ctaButtonContainer: {},
     ctaButton: {

@@ -44,6 +44,7 @@ export const useDownloadFile = (
   const isStoppedRef = useRef<boolean>(false);
   const [isCheckingDownloadStatus, setIsCheckingDownloadStatus] =
     useState(true);
+  const [isOutdated, setIsOutdated] = useState(false);
 
   const deleteFileFromSQLite = useCallback(
     async (id: string) => {
@@ -86,11 +87,19 @@ export const useDownloadFile = (
         if (fileRecord) {
           const fileOnDisk = await fileExistsInStorage(toFile);
           if (fileOnDisk) {
+            // Check if API checksum differs from stored checksum
+            const outdated =
+              !!apiChecksum &&
+              !!fileRecord.checksum &&
+              apiChecksum !== fileRecord.checksum;
+            setIsOutdated(outdated);
             updateDownload({ isDownloaded: true });
           } else {
+            setIsOutdated(false);
             updateDownload({ isDownloaded: false });
           }
         } else {
+          setIsOutdated(false);
           updateDownload({ isDownloaded: false });
         }
       } catch (error) {
@@ -108,6 +117,7 @@ export const useDownloadFile = (
     fileDatabase,
     fileExistsInStorage,
     cacheSizeVersion,
+    apiChecksum,
   ]);
 
   const resumableRef = useRef<ReturnType<
@@ -327,6 +337,7 @@ export const useDownloadFile = (
   return {
     ...(download ?? {}),
     isCheckingDownloadStatus,
+    isOutdated,
     startDownload,
     stopDownload,
     refreshDownload,

@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform } from 'react-native';
+import { Alert, Platform, View } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 
 import {
@@ -9,10 +9,11 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FileListItem } from '@lib/ui/components/FileListItem';
+import { Icon } from '@lib/ui/components/Icon';
 import { IconButton } from '@lib/ui/components/IconButton';
 import { ListItemProps } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseFileOverview } from '@polito/student-api-client';
+import { CourseFileOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 
 import { Checkbox } from '~/core/components/Checkbox';
@@ -171,6 +172,7 @@ export const CourseFileListItem = memo(
     const {
       isDownloaded,
       isCheckingDownloadStatus,
+      isOutdated,
       downloadProgress,
       startDownload,
       stopDownload,
@@ -183,6 +185,7 @@ export const CourseFileListItem = memo(
       item.id,
       DownloadContext.Course,
       courseId.toString(),
+      item.checksum,
     );
 
     useEffect(() => {
@@ -275,7 +278,7 @@ export const CourseFileListItem = memo(
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
-        if (isCorrupted) {
+        if (isCorrupted || isOutdated) {
           await refreshDownload();
           return;
         }
@@ -291,6 +294,7 @@ export const CourseFileListItem = memo(
     }, [
       downloadProgress,
       isCorrupted,
+      isOutdated,
       isDownloaded,
       navigation,
       openDownloadedFile,
@@ -371,12 +375,19 @@ export const CourseFileListItem = memo(
                 onRemoveDownload={removeDownload}
                 isDownloaded={isDownloaded}
               >
-                <IconButton
-                  icon={faEllipsisVertical}
+                <View
+                  style={{ padding: spacing[3] as number }}
                   accessibilityLabel={t('common.options')}
-                  adjustSpacing="right"
-                  {...iconProps}
-                />
+                >
+                  <Icon
+                    icon={faEllipsisVertical}
+                    color={colors.secondaryText}
+                    size={fontSizes.xl}
+                    style={{
+                      marginRight: -(spacing[3] as number),
+                    }}
+                  />
+                </View>
               </Menu>
             ),
           })
@@ -395,6 +406,8 @@ export const CourseFileListItem = memo(
         stopDownload,
         refreshDownload,
         removeDownload,
+        colors.secondaryText,
+        fontSizes.xl,
       ],
     );
 
@@ -417,7 +430,7 @@ export const CourseFileListItem = memo(
         trailingItem={trailingItem}
         mimeType={item.mimeType}
         unread={!!getUnreadsCount(fileNotificationScope)}
-        isCorrupted={isCorrupted}
+        isCorrupted={isCorrupted || isOutdated}
       />
     );
 

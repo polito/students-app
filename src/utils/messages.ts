@@ -1,4 +1,4 @@
-import { Message } from '@polito/student-api-client';
+import { Message } from '@polito/api-client';
 
 export const hasUnreadMessages = (messages: Message[]) =>
   messages.some(m => !m.isRead);

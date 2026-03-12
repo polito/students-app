@@ -1,4 +1,4 @@
-import { CourseStatistics, Teacher } from '@polito/student-api-client';
+import { CourseStatistics, Teacher } from '@polito/api-client';
 import { MenuAction } from '@react-native-menu/menu';
 
 const teachersToMenuAction = (

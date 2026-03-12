@@ -1,4 +1,4 @@
-import { Survey, SurveysApi } from '@polito/student-api-client';
+import { Survey, SurveysApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
 import { SurveyType } from '../../features/surveys/types/SurveyType';

@@ -77,11 +77,19 @@ export const reducer = (state: State, action: Action): State => {
           ...action.files,
         ],
       };
-    case 'REMOVE_FILES':
+    case 'REMOVE_FILES': {
+      const removedFiles = state.queue.filter(f => action.ids.includes(f.id));
+      const keysToRemove = new Set(removedFiles.map(f => getFileKey(f)));
+      const newDownloads = { ...state.downloads };
+      keysToRemove.forEach(k => {
+        delete newDownloads[k];
+      });
       return {
         ...state,
         queue: state.queue.filter(f => !action.ids.includes(f.id)),
+        downloads: newDownloads,
       };
+    }
     case 'UPDATE_DOWNLOAD':
       return {
         ...state,

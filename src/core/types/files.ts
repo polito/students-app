@@ -1,7 +1,4 @@
-import type {
-  CourseDirectory,
-  CourseFileOverview,
-} from '@polito/student-api-client';
+import type { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 
 export type CourseFileOverviewWithLocation = CourseFileOverview & {
   location: string;

@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { Section } from '@lib/ui/components/Section';
-import { OfferingCourseStaff, Person } from '@polito/student-api-client';
+import { OfferingCourseStaff, Person } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetPersons } from '../../../core/queries/peopleHooks';

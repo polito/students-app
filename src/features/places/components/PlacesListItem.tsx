@@ -4,7 +4,7 @@ import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@lib/ui/components/Icon';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { PlaceRef } from '@polito/student-api-client';
+import { PlaceRef } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

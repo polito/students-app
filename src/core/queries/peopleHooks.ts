@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { PeopleApi } from '@polito/student-api-client';
+import { PeopleApi } from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { ignoreNotFound, pluckData } from '../../utils/queries';

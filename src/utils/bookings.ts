@@ -1,5 +1,5 @@
 import { Theme } from '@lib/ui/types/Theme';
-import { Booking, BookingTopic } from '@polito/student-api-client';
+import { Booking, BookingTopic } from '@polito/api-client';
 
 import { inRange } from 'lodash';
 import { DateTime } from 'luxon';

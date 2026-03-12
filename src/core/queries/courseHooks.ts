@@ -11,7 +11,7 @@ import {
   CourseVcOtherCoursesInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 import {
   useMutation,
   useQueries,

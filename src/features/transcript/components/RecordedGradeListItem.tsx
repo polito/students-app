@@ -7,7 +7,7 @@ import { Row } from '@lib/ui/components/Row';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { ExamGrade } from '@polito/student-api-client';
+import { ExamGrade } from '@polito/api-client';
 
 import { formatDate } from '../../../utils/dates';
 import { formatGrade } from '../../../utils/grades';

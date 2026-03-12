@@ -1,4 +1,4 @@
-import { Building, PlaceOverview } from '@polito/student-api-client';
+import { Building, PlaceOverview } from '@polito/api-client';
 
 export type SearchPlace = PlaceOverview | Building;
 

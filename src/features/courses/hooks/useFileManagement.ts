@@ -11,10 +11,7 @@ import {
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import {
-  CourseDirectory,
-  CourseFileOverview,
-} from '@polito/student-api-client';
+import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 
 import {
   DownloadContext,
@@ -41,8 +38,12 @@ export const useFileManagement = ({
 }: UseFileManagementProps) => {
   const { t } = useTranslation();
   const { colors, palettes, spacing } = useTheme();
-  const { getCourseFilePath, removeFileFromStorage, refreshCacheVersion } =
-    useDownloadsContext();
+  const {
+    getCourseFilePath,
+    removeFileFromStorage,
+    refreshCacheVersion,
+    cacheSizeVersion,
+  } = useDownloadsContext();
   const { data: course } = useGetCourse(courseId);
   const {
     downloads,
@@ -64,6 +65,19 @@ export const useFileManagement = ({
   const [sortedData, setSortedData] = useState<typeof data>(undefined);
   const [wasDownloading, setWasDownloading] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
+  const [downloadedFileIdsFromDb, setDownloadedFileIdsFromDb] = useState<
+    Set<string>
+  >(new Set());
+
+  useEffect(() => {
+    if (courseId == null) return;
+    const ctx = DownloadContext.Course;
+    const ctxId = courseId.toString();
+    fileDatabase
+      .getFilesByContext(ctx, ctxId)
+      .then(files => setDownloadedFileIdsFromDb(new Set(files.map(f => f.id))))
+      .catch(() => setDownloadedFileIdsFromDb(new Set()));
+  }, [courseId, cacheSizeVersion, fileDatabase]);
 
   useEffect(() => {
     if (data) {
@@ -122,19 +136,13 @@ export const useFileManagement = ({
 
   const selectedDownloadedFiles = useMemo(() => {
     if (!isDownloading && courseFiles.length === 0) return [];
-    return courseFiles.filter(file => {
-      const key = getFileKey(file);
-      return downloads[key]?.isDownloaded === true;
-    });
-  }, [courseFiles, downloads, isDownloading]);
+    return courseFiles.filter(file => downloadedFileIdsFromDb.has(file.id));
+  }, [courseFiles, downloadedFileIdsFromDb, isDownloading]);
 
   const selectedNotDownloadedFiles = useMemo(() => {
     if (!isDownloading && courseFiles.length === 0) return [];
-    return courseFiles.filter(file => {
-      const key = getFileKey(file);
-      return downloads[key]?.isDownloaded !== true;
-    });
-  }, [courseFiles, downloads, isDownloading]);
+    return courseFiles.filter(file => !downloadedFileIdsFromDb.has(file.id));
+  }, [courseFiles, downloadedFileIdsFromDb, isDownloading]);
 
   const downloadButtonTitle = useMemo(() => {
     const notDownloadedCount = selectedNotDownloadedFiles.length;
@@ -144,11 +152,10 @@ export const useFileManagement = ({
   }, [selectedNotDownloadedFiles.length, t]);
 
   const hasDownloadedFiles = selectedDownloadedFiles.length > 0;
-  const hasNotDownloadedFiles = selectedNotDownloadedFiles.length > 0;
 
   const isDownloadButtonDisabled = useMemo(() => {
-    return !hasNotDownloadedFiles && !isDownloading;
-  }, [hasNotDownloadedFiles, isDownloading]);
+    return courseFiles.length === 0 && !isDownloading;
+  }, [courseFiles.length, isDownloading]);
 
   const downloadButtonStyle = useMemo(() => {
     if (isDownloadButtonDisabled) {

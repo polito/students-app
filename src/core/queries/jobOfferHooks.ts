@@ -1,4 +1,4 @@
-import { JobOffersApi } from '@polito/student-api-client';
+import { JobOffersApi } from '@polito/api-client';
 import { useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

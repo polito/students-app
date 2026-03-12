@@ -1,8 +1,4 @@
-import {
-  DegreeOverview,
-  OfferingResponse,
-  Student,
-} from '@polito/student-api-client';
+import { DegreeOverview, OfferingResponse, Student } from '@polito/api-client';
 
 export const getStudentEnrollmentYear = (student?: Student) => {
   if (!student) return '...';

@@ -10,7 +10,7 @@ import {
   LoginRequest,
   SwitchCareerRequest,
   ValidateMfaRequest,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -107,7 +107,6 @@ export const useLogin = () => {
               version: `${Platform.Version}`,
               model,
               manufacturer,
-              toothPicCompatible: false,
             };
             dto.client = {
               name: 'students-app',

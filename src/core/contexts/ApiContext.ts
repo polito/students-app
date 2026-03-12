@@ -13,7 +13,7 @@ import {
   PlacesApi,
   StudentApi,
   TicketsApi,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 
 export interface Credentials {
   username: string;

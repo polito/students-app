@@ -26,7 +26,7 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { faSeat } from '@lib/ui/icons/faSeat';
 import { WeekNum } from '@lib/ui/types/Calendar';
 import { CALENDAR_CELL_HEIGHT } from '@lib/ui/utils/calendar';
-import { BookingSlot } from '@polito/student-api-client';
+import { BookingSlot } from '@polito/api-client';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
-import { Booking } from '@polito/student-api-client';
+import { Booking } from '@polito/api-client';
 
 import { dateFormatter, formatReadableDate } from '../../../utils/dates';
 

@@ -1,4 +1,4 @@
-import { EscApi } from '@polito/student-api-client';
+import { EscApi } from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries.ts';

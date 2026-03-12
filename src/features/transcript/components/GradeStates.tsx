@@ -10,7 +10,7 @@ import { Theme } from '@lib/ui/types/Theme';
 import {
   ProvisionalGradeState,
   ProvisionalGradeStateEnum,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 
 import { useGetProvisionalGradeStates } from '../../../core/queries/studentHooks';
 

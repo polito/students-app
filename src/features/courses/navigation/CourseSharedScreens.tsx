@@ -4,11 +4,13 @@ import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseColorPickerScreen } from '../screens/CourseColorPickerScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
+import { CourseFileMultiSelectScreen } from '../screens/CourseFileMultiSelectScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
@@ -51,6 +53,12 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseIconPicker: { courseId: number; uniqueShortcode: string };
   CourseColorPicker: { courseId: number; uniqueShortcode: string };
   CourseHideEvent: { courseId: number; uniqueShortcode: string };
+  CourseFileMultiSelect: {
+    courseId: number;
+    mode: 'directory' | 'recent';
+    directoryId?: string;
+    directoryName?: string;
+  };
 }
 
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
@@ -203,6 +211,19 @@ export const CourseSharedScreens = () => {
           title: t('courseColorPickerScreen.title'),
           headerLargeTitle: false,
         }}
+      />
+      <Stack.Screen
+        name="CourseFileMultiSelect"
+        component={CourseFileMultiSelectScreen}
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          title: t('courseDirectoryScreen.selectFiles'),
+          headerLeft: () => null,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
       />
     </>
   );

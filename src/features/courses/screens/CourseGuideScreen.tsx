@@ -7,7 +7,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { Section } from '@lib/ui/components/Section';
 import { Text } from '@lib/ui/components/Text';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GuideSection } from '@polito/student-api-client';
+import { GuideSection } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '../../../core/components/BottomBarSpacer';

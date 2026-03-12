@@ -8,7 +8,7 @@ import {
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
   TicketsApi,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData, rethrowApiError } from '../../utils/queries';
@@ -24,28 +24,6 @@ export const FAQS_QUERY_KEY = ['faqs'];
 
 const useTicketsClient = (): TicketsApi => {
   return new TicketsApi();
-};
-
-export const useGiveTicketReplyFeedback = (
-  ticketId: number,
-  replyId: number,
-) => {
-  const client = useQueryClient();
-  const ticketsClient = useTicketsClient();
-  const invalidatesQueries = [
-    TICKETS_QUERY_KEY,
-    [TICKET_QUERY_PREFIX, ticketId],
-  ];
-
-  return useMutation({
-    mutationFn: (positive: boolean) =>
-      ticketsClient.setTicketReplyFeedback({ ticketId, replyId, positive }),
-    onSuccess() {
-      invalidatesQueries.forEach(queryKey =>
-        client.invalidateQueries({ queryKey }),
-      );
-    },
-  });
 };
 
 export const useGetTickets = () => {

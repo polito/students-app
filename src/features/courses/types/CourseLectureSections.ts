@@ -1,4 +1,4 @@
-import { VideoLecture, VirtualClassroom } from '@polito/student-api-client';
+import { VideoLecture, VirtualClassroom } from '@polito/api-client';
 
 export type CourseLecture = VirtualClassroom | VideoLecture;
 

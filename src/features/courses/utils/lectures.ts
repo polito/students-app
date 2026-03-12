@@ -5,7 +5,7 @@ import {
   instanceOfVideoLecture,
   instanceOfVirtualClassroomLive,
   instanceOfVirtualClassroomRecording,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 
 import { CourseLecture } from '../types/CourseLectureSections';
 

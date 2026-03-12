@@ -4,7 +4,7 @@ import {
   Configuration,
   ConfigurationParameters,
   DefaultConfig,
-} from '@polito/student-api-client';
+} from '@polito/api-client';
 
 /**
  * Updates the global API configuration used by all clients

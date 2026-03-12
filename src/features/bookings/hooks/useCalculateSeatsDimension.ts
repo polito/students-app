@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { BookingSeats } from '@polito/student-api-client';
+import { BookingSeats } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { isEmpty } from 'lodash';

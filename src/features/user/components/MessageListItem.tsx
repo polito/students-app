@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { ListItem } from '@lib/ui/components/ListItem';
-import { Message } from '@polito/student-api-client';
+import { Message } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

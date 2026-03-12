@@ -18,7 +18,7 @@ import { PersonListItem } from '@lib/ui/components/PersonListItem';
 import { Row } from '@lib/ui/components/Row.tsx';
 import { Swiper } from '@lib/ui/components/Swiper';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { VirtualClassroomRecording } from '@polito/student-api-client';
+import { VirtualClassroomRecording } from '@polito/api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { BottomBarSpacer } from '~/core/components/BottomBarSpacer.tsx';

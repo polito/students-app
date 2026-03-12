@@ -6,7 +6,7 @@ import { ListItem } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { NewsItemOverview } from '@polito/student-api-client';
+import { NewsItemOverview } from '@polito/api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';

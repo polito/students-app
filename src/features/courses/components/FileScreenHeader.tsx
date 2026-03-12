@@ -1,9 +1,13 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
-import { IconButton } from '@lib/ui/components/IconButton';
+import {
+  faChevronDown,
+  faChevronUp,
+  faEllipsisH,
+} from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@lib/ui/components/Icon';
 import { TextButton } from '@lib/ui/components/TextButton';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
@@ -34,7 +38,26 @@ export const FileScreenHeader = ({
   isSelectDisabled = false,
 }: FileScreenHeaderProps) => {
   const { t } = useTranslation();
-  const { palettes, fontSizes } = useTheme();
+  const { palettes, fontSizes, spacing } = useTheme();
+  const [isSortMenuOpen, setSortMenuOpen] = useState(false);
+  const [isOptionsMenuPressed, setOptionsMenuPressed] = useState(false);
+  const optionsPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!isOptionsMenuPressed) return;
+    optionsPressTimeoutRef.current = setTimeout(() => {
+      setOptionsMenuPressed(false);
+      optionsPressTimeoutRef.current = null;
+    }, 150);
+    return () => {
+      if (optionsPressTimeoutRef.current) {
+        clearTimeout(optionsPressTimeoutRef.current);
+        optionsPressTimeoutRef.current = null;
+      }
+    };
+  }, [isOptionsMenuPressed]);
 
   const screenOptions = useMemo(
     () => [
@@ -86,17 +109,49 @@ export const FileScreenHeader = ({
         onPressAction={e => {
           onPressSortOption(e.nativeEvent.event);
         }}
+        onCloseMenu={() => setSortMenuOpen(false)}
+        onOpenMenu={() => setSortMenuOpen(true)}
       >
-        <TextButton>{activeSort}</TextButton>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TextButton>{activeSort}</TextButton>
+          <Icon
+            icon={isSortMenuOpen ? faChevronUp : faChevronDown}
+            size={fontSizes.md}
+            color={palettes.primary[400]}
+            style={{ marginLeft: 4 }}
+          />
+        </View>
       </MenuView>
-      <MenuView actions={screenOptions} onPressAction={onPressOption}>
-        <IconButton
-          icon={faEllipsisH}
-          color={palettes.primary[400]}
-          size={fontSizes.lg}
-          adjustSpacing="left"
+      <MenuView
+        actions={screenOptions}
+        onPressAction={onPressOption}
+        onOpenMenu={() => setOptionsMenuPressed(true)}
+        onCloseMenu={() => {
+          setOptionsMenuPressed(false);
+          if (optionsPressTimeoutRef.current) {
+            clearTimeout(optionsPressTimeoutRef.current);
+            optionsPressTimeoutRef.current = null;
+          }
+        }}
+      >
+        <View
+          style={{
+            padding: spacing[3],
+            marginLeft: -spacing[3],
+            justifyContent: 'center',
+            alignItems: 'center',
+            opacity: isOptionsMenuPressed ? 0.6 : 1,
+          }}
+          hitSlop={{ left: spacing[3] }}
+          accessibilityRole="button"
           accessibilityLabel={t('common.options')}
-        />
+        >
+          <Icon
+            icon={faEllipsisH}
+            color={palettes.primary[400]}
+            size={fontSizes.lg}
+          />
+        </View>
       </MenuView>
     </>
   );
