@@ -1,6 +1,6 @@
 import { extension, lookup } from 'react-native-mime-types';
 
-import { BASE_PATH } from '@polito/api-client';
+import { BASE_PATH } from '@polito/student-api-client';
 
 import { makeDirectoryAsync } from '../core/storage/fileSystem';
 

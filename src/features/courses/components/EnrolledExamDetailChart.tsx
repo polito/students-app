@@ -7,7 +7,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import type { Theme } from '@lib/ui/types/Theme';
-import type { CourseStatistics } from '@polito/api-client';
+import type { CourseStatistics } from '@polito/student-api-client';
 
 import { emptyChartData, kChartAnimationDuration } from '../chartConstant.ts';
 import { LegendItem } from './LegendItem.tsx';

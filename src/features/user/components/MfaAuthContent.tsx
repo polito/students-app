@@ -4,7 +4,7 @@ import { Alert, Text, View } from 'react-native';
 
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { MessageType, MfaChallenge } from '@polito/api-client';
+import { MessageType, MfaChallenge } from '@polito/student-api-client';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';

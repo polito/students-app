@@ -9,7 +9,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { JobOfferOverview } from '@polito/api-client';
+import { JobOfferOverview } from '@polito/student-api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { formatDate } from '../../../utils/dates';

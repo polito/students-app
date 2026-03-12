@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamGrade } from '@polito/api-client';
+import { ExamGrade } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

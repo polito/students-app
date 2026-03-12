@@ -11,7 +11,10 @@ import {
 import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import {
+  CourseDirectory,
+  CourseFileOverview,
+} from '@polito/student-api-client';
 
 import {
   DownloadContext,

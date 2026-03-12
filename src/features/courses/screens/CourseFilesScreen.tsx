@@ -6,7 +6,10 @@ import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useTheme } from '@lib/ui/hooks/useTheme';
-import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import {
+  CourseDirectory,
+  CourseFileOverview,
+} from '@polito/student-api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

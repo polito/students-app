@@ -13,7 +13,7 @@ import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -23,7 +23,6 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -41,6 +40,7 @@ import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
+import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 
@@ -117,9 +117,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
-  const [styless, setStyless] = useState(styles);
-  const { accessibility } = usePreferencesContext();
-  const { fontSizes } = useTheme();
   const accessibilityMessageText = [
     t('ticketScreen.yourQuestion'),
     ticket?.message,
@@ -151,31 +148,31 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     navigation.setOptions({ headerRight });
-  }, [navigation, ticket, headerRight]);
+  }, [navigation, headerRight]);
 
   const replies = useMemo(
     () =>
-      ticket?.replies.sort(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-      ) ?? [],
+      ticket?.replies != null
+        ? [...ticket.replies].sort(
+            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+          )
+        : [],
     [ticket],
   );
 
-  useEffect(() => {
-    const changeStyle = () => {
-      setStyless(prevStyles => ({
-        ...prevStyles,
-        text: {
-          ...prevStyles.text,
-          lineHeight: accessibility?.lineHeight
-            ? fontSizes.sm * 1.5
-            : undefined,
-          marginBottom: accessibility?.paragraphSpacing ? fontSizes.sm * 2 : 0,
-        },
-      }));
-    };
-    changeStyle();
-  }, [accessibility, fontSizes]);
+  const lastReply = replies[0];
+  const [feedbackSentForReplyIds, setFeedbackSentForReplyIds] = useState(
+    () => new Set<number>(),
+  );
+
+  const showFeedbackBar =
+    !!lastReply &&
+    !feedbackSentForReplyIds.has(lastReply.id) &&
+    lastReply.needsFeedback === true;
+
+  const handleFeedbackSent = useCallback((replyId: number) => {
+    setFeedbackSentForReplyIds(prev => new Set(prev).add(replyId));
+  }, []);
 
   const keyboard = useAnimatedKeyboard();
   const animatedBottomPadding = useAnimatedStyle(() => ({
@@ -183,8 +180,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   }));
 
   const ItemsSeparator = useCallback(
-    () => <View style={styless.separator} />,
-    [styless],
+    () => <View style={styles.separator} />,
+    [styles],
   );
 
   // TODO: traslucent does not work anymore because now views
@@ -220,11 +217,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 <ChatBubble
                   accessibilityRole="text"
                   accessibilityLabel={accessibilityMessageText}
-                  style={styless.requestMessage}
+                  style={styles.requestMessage}
                 >
                   <HtmlMessage
                     message={ticket?.message}
-                    baseStyle={styless.text}
+                    baseStyle={styles.text}
                   />
                   {ticket.hasAttachments && (
                     <View>
@@ -251,7 +248,15 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      <TicketMessagingView ticketId={id} />
+      {showFeedbackBar && lastReply ? (
+        <VirtualOperatorFeedbackBar
+          ticketId={id}
+          replyId={lastReply.id}
+          onFeedbackSent={() => handleFeedbackSent(lastReply.id)}
+        />
+      ) : (
+        <TicketMessagingView ticketId={id} />
+      )}
     </Animated.View>
   );
 };

@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { ListItem } from '@lib/ui/components/ListItem';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { Theme } from '@lib/ui/types/Theme';
-import { Booking } from '@polito/api-client';
+import { Booking } from '@polito/student-api-client';
 
 import { DateTime } from 'luxon';
 

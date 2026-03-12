@@ -1,7 +1,7 @@
 import {
   CourseOverview as ApiCourseOverview,
   Exam as ApiExam,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 
 export type SuccessResponse<T> = {
   data: T;

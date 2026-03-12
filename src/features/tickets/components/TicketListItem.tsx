@@ -18,7 +18,7 @@ import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { IS_IOS } from '../../../core/constants';

@@ -48,7 +48,7 @@ import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
-import { PlaceOverview } from '@polito/api-client';
+import { PlaceOverview } from '@polito/student-api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox from '@rnmapbox/maps';
 

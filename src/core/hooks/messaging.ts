@@ -5,7 +5,7 @@ import {
   requestNotifications,
 } from 'react-native-permissions';
 
-import { MessageType } from '@polito/api-client';
+import { MessageType } from '@polito/student-api-client';
 import { getApp } from '@react-native-firebase/app';
 import {
   AuthorizationStatus,
