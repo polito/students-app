@@ -38,8 +38,8 @@ export const useGiveTicketReplyFeedback = (
   ];
 
   return useMutation({
-    mutationFn: (feedback: boolean) =>
-      ticketsClient.giveTicketReplyFeedback({ ticketId, replyId, feedback }),
+    mutationFn: (positive: boolean) =>
+      ticketsClient.setTicketReplyFeedback({ ticketId, replyId, positive }),
     onSuccess() {
       invalidatesQueries.forEach(queryKey =>
         client.invalidateQueries({ queryKey }),

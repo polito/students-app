@@ -23,7 +23,6 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
-import { usePreferencesContext } from '../../../../src/core/contexts/PreferencesContext';
 import { IS_IOS } from '../../../core/constants';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -42,10 +41,6 @@ import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketStatusInfo } from '../components/TicketStatusInfo';
 import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
-
-type TicketReplyWithAi = import('@polito/student-api-client').TicketReply & {
-  isAiAgent?: boolean;
-};
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 
@@ -122,9 +117,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
-  const [styless, setStyless] = useState(styles);
-  const { accessibility } = usePreferencesContext();
-  const { fontSizes } = useTheme();
   const accessibilityMessageText = [
     t('ticketScreen.yourQuestion'),
     ticket?.message,
@@ -156,46 +148,31 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   useEffect(() => {
     navigation.setOptions({ headerRight });
-  }, [navigation, ticket, headerRight]);
+  }, [navigation, headerRight]);
 
   const replies = useMemo(
     () =>
-      ticket?.replies.sort(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-      ) ?? [],
+      ticket?.replies != null
+        ? [...ticket.replies].sort(
+            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+          )
+        : [],
     [ticket],
   );
 
-  const lastReply = replies[0] as TicketReplyWithAi | undefined;
+  const lastReply = replies[0];
   const [feedbackSentForReplyIds, setFeedbackSentForReplyIds] = useState(
     () => new Set<number>(),
   );
 
-  const isLastReplyFromAi = !!lastReply?.isFromAgent && !!lastReply?.isAiAgent;
   const showFeedbackBar =
     !!lastReply &&
     !feedbackSentForReplyIds.has(lastReply.id) &&
-    isLastReplyFromAi;
+    lastReply.needsFeedback === true;
 
   const handleFeedbackSent = useCallback((replyId: number) => {
     setFeedbackSentForReplyIds(prev => new Set(prev).add(replyId));
   }, []);
-
-  useEffect(() => {
-    const changeStyle = () => {
-      setStyless(prevStyles => ({
-        ...prevStyles,
-        text: {
-          ...prevStyles.text,
-          lineHeight: accessibility?.lineHeight
-            ? fontSizes.sm * 1.5
-            : undefined,
-          marginBottom: accessibility?.paragraphSpacing ? fontSizes.sm * 2 : 0,
-        },
-      }));
-    };
-    changeStyle();
-  }, [accessibility, fontSizes]);
 
   const keyboard = useAnimatedKeyboard();
   const animatedBottomPadding = useAnimatedStyle(() => ({
@@ -203,8 +180,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   }));
 
   const ItemsSeparator = useCallback(
-    () => <View style={styless.separator} />,
-    [styless],
+    () => <View style={styles.separator} />,
+    [styles],
   );
 
   // TODO: traslucent does not work anymore because now views
@@ -240,11 +217,11 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 <ChatBubble
                   accessibilityRole="text"
                   accessibilityLabel={accessibilityMessageText}
-                  style={styless.requestMessage}
+                  style={styles.requestMessage}
                 >
                   <HtmlMessage
                     message={ticket?.message}
-                    baseStyle={styless.text}
+                    baseStyle={styles.text}
                   />
                   {ticket.hasAttachments && (
                     <View>
