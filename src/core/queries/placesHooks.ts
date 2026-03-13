@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import {
   GetBuildingsRequest,
+  GetDepartmentsRequest,
   GetFreeRoomsRequest,
   GetPlacesRequest,
   PlacesApi,
@@ -16,6 +17,7 @@ export const PLACES_QUERY_KEY = 'places';
 export const PLACE_QUERY_KEY = 'place';
 export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
+export const DEPARTMENTS_QUERY_KEY = 'departments';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -95,6 +97,16 @@ export const useGetFreeRooms = (params: Partial<GetFreeRoomsRequest>) => {
     queryKey: key,
     queryFn: () => placesClient.getFreeRooms(params as GetFreeRoomsRequest),
     enabled: params.siteId != null,
+    staleTime: Infinity,
+  });
+};
+
+export const useGetDepartments = (params?: GetDepartmentsRequest) => {
+  const placesClient = usePlacesClient();
+
+  return useQuery({
+    queryKey: [DEPARTMENTS_QUERY_KEY, JSON.stringify(params)],
+    queryFn: () => placesClient.getDepartments(params || {}),
     staleTime: Infinity,
   });
 };

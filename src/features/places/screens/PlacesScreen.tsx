@@ -58,6 +58,7 @@ import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
+  useGetDepartments,
   useGetPlaceCategory,
   useGetPlaceSubCategory,
 } from '../../../core/queries/placesHooks';
@@ -80,7 +81,7 @@ import { formatPlaceCategory } from '../utils/category';
 type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
-  const { categoryId, subCategoryId } = route.params ?? {};
+  const { categoryId, subCategoryId, departmentId } = route.params ?? {};
   const styles = useStylesheet(createStyles);
   const { spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
@@ -99,6 +100,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const [floorId, setFloorId] = useState<string>();
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const bottomSheetPosition = useSharedValue(0);
+
   const [screenHeight, setScreenHeight] = useState(
     Dimensions.get('window').height,
   );
@@ -109,12 +111,22 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     floorId,
     categoryId,
     subCategoryId,
+    departmentId,
   });
 
-  const categoryFilterName = useMemo(
-    () => formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name),
-    [placeCategory, placeSubCategory],
-  );
+  const { data: departments } = useGetDepartments({
+    siteId: campus?.id,
+    departmentType: 'DIP.',
+  });
+
+  const categoryFilterName = useMemo(() => {
+    if (departmentId) {
+      return (
+        departments?.data?.find(d => d.id === departmentId)?.id ?? departmentId
+      );
+    }
+    return formatPlaceCategory(placeSubCategory?.name ?? placeCategory?.name);
+  }, [placeCategory, placeSubCategory, departmentId, departments?.data]);
 
   useScreenTitle(categoryFilterName);
 
@@ -127,8 +139,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   }, [cameraRef]);
 
   const categoryFilterActive = useMemo(
-    () => categoryId || subCategoryId,
-    [categoryId, subCategoryId],
+    () => categoryId || subCategoryId || departmentId,
+    [categoryId, subCategoryId, departmentId],
   );
 
   const mapInsetTop = useMemo(() => {
@@ -263,11 +275,11 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   });
 
   const listPlaces = useMemo((): SearchPlace[] => {
-    if (!debouncedSearch && !categoryId && !subCategoryId) {
+    if (!debouncedSearch && !categoryId && !subCategoryId && !departmentId) {
       return places.filter(p => isPlace(p) && p.room.name != null);
     }
     return places;
-  }, [categoryId, debouncedSearch, places, subCategoryId]);
+  }, [categoryId, debouncedSearch, places, subCategoryId, departmentId]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const triggerSearch = useCallback(
@@ -310,16 +322,14 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
               : {
                   flexShrink: 1,
                   flexGrow: 1,
-                  marginRight: 20,
+                  maxWidth: '75%',
                 })}
           >
             {campus?.floors.find(f => f.id === floorId)?.name}
           </Text>
-          <Icon
-            icon={faChevronDown}
-            size={fontSizes.xs}
-            style={{ position: 'absolute', right: 15 }}
-          />
+          <View style={{ width: 20, alignItems: 'center' }}>
+            <Icon icon={faChevronDown} size={fontSizes.xs} />
+          </View>
         </Row>
       </TouchableOpacity>
     </TranslucentCard>
@@ -367,6 +377,33 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           >
             {t('freeRoomsScreen.title')}
           </PillIconButton>
+          <StatefulMenuView
+            onPressAction={({ nativeEvent: { event: deptId } }) => {
+              navigation.navigate('Places', {
+                departmentId: deptId,
+              });
+            }}
+            actions={[
+              ...(departments?.data ?? []).map(dept => ({
+                id: dept.id,
+                title: dept.id,
+              })),
+            ]}
+          >
+            <PillIconButton
+              icon={
+                accessibility?.fontSize && Number(accessibility?.fontSize) < 150
+                  ? faChevronDown
+                  : undefined
+              }
+              iconTrailing={true}
+            >
+              {departmentId
+                ? (departments?.data?.find(d => d.id === departmentId)?.id ??
+                  t('common.department'))
+                : t('common.department')}
+            </PillIconButton>
+          </StatefulMenuView>
           <PillIconButton
             icon={
               accessibility?.fontSize && Number(accessibility?.fontSize) < 150

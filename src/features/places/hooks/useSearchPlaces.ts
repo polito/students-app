@@ -12,6 +12,7 @@ interface UseSearchPlacesOptions {
   floorId?: string;
   categoryId?: string;
   subCategoryId?: string;
+  departmentId?: string;
 }
 
 export const useSearchPlaces = ({
@@ -20,6 +21,7 @@ export const useSearchPlaces = ({
   floorId,
   categoryId,
   subCategoryId,
+  departmentId,
 }: UseSearchPlacesOptions): { data: SearchPlace[]; isLoading: boolean } => {
   const buildingsQuery = useGetBuildings({
     siteId,
@@ -33,6 +35,7 @@ export const useSearchPlaces = ({
     floorId: search ? undefined : floorId,
     placeCategoryId: categoryId,
     placeSubCategoryId: subCategoryId ? [subCategoryId] : undefined,
+    departmentId,
   });
   const data = useMemo(() => {
     return [
@@ -40,6 +43,7 @@ export const useSearchPlaces = ({
       ...(buildingsQuery.data?.data ?? []),
     ];
   }, [buildingsQuery.data?.data, placesQuery.data?.data]);
+
   return {
     data,
     isLoading: buildingsQuery.isLoading || placesQuery.isLoading,
