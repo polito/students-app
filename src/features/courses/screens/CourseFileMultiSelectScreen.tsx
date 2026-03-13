@@ -835,7 +835,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
           renderItem={renderItem}
         />
 
-        <View style={[styles.ctaRow, paddingHorizontal]}>
+        <View style={styles.ctaRow}>
           <CtaButton
             title={modalDownloadButtonTitle}
             icon={faCloudArrowDown}
@@ -913,11 +913,13 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
       backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'stretch',
-      paddingHorizontal: spacing[5],
+      paddingHorizontal: 18,
       paddingVertical: spacing[2],
-      gap: spacing[2],
+      gap: 8,
     },
-    ctaButtonContainer: {},
+    ctaButtonContainer: {
+      flex: 1,
+    },
     ctaButton: {
       marginBottom: 0,
     },
