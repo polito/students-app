@@ -913,7 +913,7 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
       backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'stretch',
-      paddingHorizontal: 18,
+      paddingHorizontal: spacing[5],
       paddingVertical: spacing[2],
       gap: 8,
     },
