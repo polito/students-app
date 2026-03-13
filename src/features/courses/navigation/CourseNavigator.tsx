@@ -108,10 +108,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           size={fontSizes.lg}
           accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}
-          hitSlop={{
-            left: +spacing[3],
-            right: +spacing[3],
-          }}
+          adjustSpacing="left"
           onPress={() => {
             navigation.navigate('CoursePreferences', {
               courseId: id,

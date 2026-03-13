@@ -154,10 +154,15 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
         if (isDownloading || isRemoving) {
           return;
         }
-        (navigation.getParent()?.getParent() as any)?.navigate(
-          'CourseFileMultiSelect',
-          { courseId, mode: 'directory', directoryId, directoryName },
-        );
+        const targetNav = isFileNavigator
+          ? (navigation.getParent()?.getParent() as any)
+          : navigation;
+        targetNav?.navigate('CourseFileMultiSelect', {
+          courseId,
+          mode: 'directory',
+          directoryId,
+          directoryName,
+        });
         break;
       case MENU_ACTIONS.SELECT_ALL:
         toggleSelectAll();

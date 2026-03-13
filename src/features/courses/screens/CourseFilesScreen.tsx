@@ -1,11 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
+import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
 import { NativeActionEvent } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
@@ -23,7 +28,7 @@ import {
   getCourseKey,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
-import { sortByNameAsc } from '../../../utils/sorting';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { FileScreenHeader } from '../components/FileScreenHeader';
 import { MENU_ACTIONS } from '../constants';
@@ -41,6 +46,8 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext();
+  const [searchFilter, setSearchFilter] = useState('');
+  const styles = useStylesheet(createStyles);
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
@@ -55,7 +62,6 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     enableMultiSelect,
     allFilesSelected,
     sortedData,
-    setSortedData,
     activeSort,
     sortOptions,
     toggleSelectAll,
@@ -69,16 +75,12 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   });
   const { downloads } = useDownloadsContext();
 
-  useEffect(() => {
-    if (recentFilesQuery.data) {
-      setSortedData(sortByNameAsc(recentFilesQuery.data));
-    }
-  }, [recentFilesQuery.data, setSortedData]);
-
-  const fileListData = useMemo(
-    () => (sortedData || recentFilesQuery.data) ?? [],
-    [sortedData, recentFilesQuery.data],
-  );
+  const fileListData = useMemo(() => {
+    const base = (sortedData || recentFilesQuery.data) ?? [];
+    if (!searchFilter.trim()) return base;
+    const q = searchFilter.trim().toLowerCase();
+    return base.filter(item => (item.name ?? '').toLowerCase().includes(q));
+  }, [sortedData, recentFilesQuery.data, searchFilter]);
 
   useOnLeaveScreen(() => {
     clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
@@ -113,6 +115,21 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
 
   return (
     <>
+      <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
+        <TranslucentTextField
+          autoFocus={searchFilter.length !== 0}
+          autoCorrect={false}
+          leadingIcon={faSearch}
+          value={searchFilter}
+          onChangeText={setSearchFilter}
+          style={[GlobalStyles.grow, styles.textField]}
+          label={t('courseDirectoryScreen.search')}
+          editable={true}
+          isClearable={!!searchFilter}
+          onClear={() => setSearchFilter('')}
+          onClearLabel={t('contactsScreen.clearSearch')}
+        />
+      </Row>
       <FileScreenHeader
         enableMultiSelect={enableMultiSelect}
         allFilesSelected={allFilesSelected}
@@ -166,6 +183,18 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     </>
   );
 };
+
+const createStyles = ({ spacing, shapes, colors }: Theme) =>
+  StyleSheet.create({
+    textField: {
+      borderRadius: shapes.lg,
+    },
+    searchBar: {
+      paddingBottom: spacing[2],
+      paddingTop: spacing[2],
+      backgroundColor: colors.background,
+    },
+  });
 
 export const CourseFilesScreen = ({ navigation, route }: Props) => {
   return <CourseFilesScreenContent navigation={navigation} route={route} />;

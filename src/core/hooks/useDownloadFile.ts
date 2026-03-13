@@ -77,17 +77,23 @@ export const useDownloadFile = (
   );
 
   useEffect(() => {
+    if (!toFile) {
+      setIsCheckingDownloadStatus(false);
+      return;
+    }
+    if (download.isDownloaded) {
+      setIsCheckingDownloadStatus(false);
+      return;
+    }
+    let cancelled = false;
     (async () => {
-      if (!toFile) {
-        setIsCheckingDownloadStatus(false);
-        return;
-      }
       try {
         const fileRecord = await checkFileExistsInSQLite(fileId);
+        if (cancelled) return;
         if (fileRecord) {
           const fileOnDisk = await fileExistsInStorage(toFile);
+          if (cancelled) return;
           if (fileOnDisk) {
-            // Check if API checksum differs from stored checksum
             const outdated =
               !!apiChecksum &&
               !!fileRecord.checksum &&
@@ -103,18 +109,23 @@ export const useDownloadFile = (
           updateDownload({ isDownloaded: false });
         }
       } catch (error) {
-        console.error('Error checking file status:', error);
-        updateDownload({ isDownloaded: false });
+        if (!cancelled) {
+          console.error('Error checking file status:', error);
+          updateDownload({ isDownloaded: false });
+        }
       } finally {
-        setIsCheckingDownloadStatus(false);
+        if (!cancelled) setIsCheckingDownloadStatus(false);
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [
     toFile,
     fileId,
+    download.isDownloaded,
     checkFileExistsInSQLite,
     updateDownload,
-    fileDatabase,
     fileExistsInStorage,
     cacheSizeVersion,
     apiChecksum,
@@ -181,11 +192,6 @@ export const useDownloadFile = (
           }
 
           currentJobIdRef.current = undefined;
-          updateDownload({
-            isDownloaded: true,
-            downloadProgress: undefined,
-            phase: DownloadPhase.Completed,
-          });
 
           try {
             const { checksum } = await persistDownloadedFile(toFile, {
@@ -200,9 +206,19 @@ export const useDownloadFile = (
                 [{ text: t('common.ok') }],
               );
             }
+            updateDownload({
+              isDownloaded: true,
+              downloadProgress: undefined,
+              phase: DownloadPhase.Completed,
+            });
             return true;
           } catch (error) {
             console.error('Error saving file metadata to SQLite:', error);
+            updateDownload({
+              isDownloaded: false,
+              downloadProgress: undefined,
+              phase: DownloadPhase.Error,
+            });
             return false;
           }
         } catch (e) {

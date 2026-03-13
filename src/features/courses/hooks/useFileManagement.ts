@@ -12,6 +12,7 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   DownloadContext,
@@ -24,6 +25,8 @@ import { useGetCourse } from '../../../core/queries/courseHooks';
 import { buildCourseFileUrl } from '../../../utils/files';
 import { sortByNameAsc, sortByNameDesc } from '../../../utils/sorting';
 import { isDirectory } from '../utils/fs-entry';
+
+const SORT_KEYS = ['nameAZ', 'nameZA', 'downloadStatus', 'newest', 'oldest'];
 
 interface UseFileManagementProps {
   courseId: number;
@@ -79,19 +82,6 @@ export const useFileManagement = ({
       .catch(() => setDownloadedFileIdsFromDb(new Set()));
   }, [courseId, cacheSizeVersion, fileDatabase]);
 
-  useEffect(() => {
-    if (data) {
-      setSortedData(
-        isDirectoryView
-          ? [
-              ...sortByNameAsc(data.filter(item => isDirectory(item))),
-              ...sortByNameAsc(data.filter(item => !isDirectory(item))),
-            ]
-          : sortByNameAsc(data),
-      );
-    }
-  }, [data, isDirectoryView]);
-
   const sortOptions = useMemo(
     () => [
       {
@@ -118,7 +108,21 @@ export const useFileManagement = ({
     [t],
   );
 
+  const SORT_STORAGE_KEY = `@files_sort_${courseId}`;
   const [activeSort, setActiveSort] = useState(sortOptions[0].title);
+
+  useEffect(() => {
+    AsyncStorage.getItem(SORT_STORAGE_KEY)
+      .then(stored => {
+        if (!stored) return;
+        const idx = SORT_KEYS.indexOf(stored);
+        if (idx >= 0 && idx < sortOptions.length) {
+          setActiveSort(sortOptions[idx].title);
+        }
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const allFilesSelected = useMemo(() => {
     if (!enableMultiSelect) return false;
@@ -356,14 +360,13 @@ export const useFileManagement = ({
     }
   }, [allFilesSelected, deselectAllFiles, selectAllFiles]);
 
-  const onPressSortOption = useCallback(
-    (event: string) => {
-      setActiveSort(event);
-      if (!data) return;
+  const applySortToData = useCallback(
+    (event: string, sourceData: typeof data) => {
+      if (!sourceData) return;
 
       if (isDirectoryView) {
-        const directories = data.filter(item => isDirectory(item as any));
-        const files = data.filter(item => !isDirectory(item as any));
+        const directories = sourceData.filter(item => isDirectory(item as any));
+        const files = sourceData.filter(item => !isDirectory(item as any));
         let sortedDirectories = directories;
         let sortedFiles = files;
 
@@ -394,23 +397,23 @@ export const useFileManagement = ({
 
         setSortedData([...sortedDirectories, ...sortedFiles]);
       } else {
-        let sortedFiles = data;
+        let sortedFiles = sourceData;
 
         switch (event) {
           case sortOptions[0].id:
-            sortedFiles = sortByNameAsc(data);
+            sortedFiles = sortByNameAsc(sourceData);
             break;
           case sortOptions[1].id:
-            sortedFiles = sortByNameDesc(data);
+            sortedFiles = sortByNameDesc(sourceData);
             break;
           case sortOptions[2].id:
-            sortedFiles = sortByDownloadStatus(data);
+            sortedFiles = sortByDownloadStatus(sourceData);
             break;
           case sortOptions[3].id:
-            sortedFiles = sortByDate(data, false);
+            sortedFiles = sortByDate(sourceData, false);
             break;
           case sortOptions[4].id:
-            sortedFiles = sortByDate(data, true);
+            sortedFiles = sortByDate(sourceData, true);
             break;
           default:
             break;
@@ -419,7 +422,27 @@ export const useFileManagement = ({
         setSortedData(sortedFiles);
       }
     },
-    [data, isDirectoryView, sortOptions, sortByDownloadStatus, sortByDate],
+    [isDirectoryView, sortOptions, sortByDownloadStatus, sortByDate],
+  );
+
+  useEffect(() => {
+    if (!data) {
+      setSortedData(undefined);
+      return;
+    }
+    applySortToData(activeSort, data);
+  }, [data, activeSort, applySortToData]);
+
+  const onPressSortOption = useCallback(
+    (event: string) => {
+      setActiveSort(event);
+      const idx = sortOptions.findIndex(o => o.id === event);
+      if (idx >= 0 && idx < SORT_KEYS.length) {
+        AsyncStorage.setItem(SORT_STORAGE_KEY, SORT_KEYS[idx]).catch(() => {});
+      }
+      applySortToData(event, data);
+    },
+    [data, sortOptions, applySortToData, SORT_STORAGE_KEY],
   );
 
   const handleDownloadAction = useCallback(() => {

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { ParamListBase } from '@react-navigation/native';
@@ -217,12 +218,15 @@ export const CourseSharedScreens = () => {
         component={CourseFileMultiSelectScreen}
         options={({ navigation }) => ({
           presentation: 'modal',
-          headerShown: true,
+          headerShown: Platform.OS === 'android' ? true : false,
           headerLargeTitle: false,
           headerTransparent: false,
           title: t('courseDirectoryScreen.selectFiles'),
           headerLeft: () => null,
-          headerRight: createHeaderCloseButton(navigation),
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
         })}
       />
     </>

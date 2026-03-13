@@ -152,16 +152,7 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
 
         if (result == null) throw new Error(t('common.downloadError'));
         if (result.status !== 200) throw new Error(t('common.downloadError'));
-        dispatch({
-          type: 'UPDATE_DOWNLOAD',
-          key,
-          updates: {
-            phase: DownloadPhase.Completed,
-            isDownloaded: true,
-            error: undefined,
-          },
-        });
-        dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+        dispatchProgress({ type: 'UPDATE_PROGRESS', key, progress: 1 });
         try {
           await persistDownloadedFileToDb(dest, {
             id: file.id,
@@ -169,8 +160,28 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
             ctxId: file.request.ctxId,
           });
           setCacheSizeVersion(v => v + 1);
+          dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+          dispatch({
+            type: 'UPDATE_DOWNLOAD',
+            key,
+            updates: {
+              phase: DownloadPhase.Completed,
+              isDownloaded: true,
+              error: undefined,
+            },
+          });
         } catch (metadataError) {
           console.error('Error saving file metadata to SQLite:', metadataError);
+          dispatchProgress({ type: 'REMOVE_PROGRESS', key });
+          dispatch({
+            type: 'UPDATE_DOWNLOAD',
+            key,
+            updates: {
+              phase: DownloadPhase.Error,
+              isDownloaded: false,
+              error: String(metadataError),
+            },
+          });
         }
       } catch (error) {
         dispatch({
@@ -345,17 +356,11 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
           ? (completedFiles + activeProgressSum / activeCount) / totalFiles
           : completedFiles / totalFiles
         : 0;
-    const alreadyDownloadedAtStart =
-      state.alreadyDownloadedKeysAtStart ?? new Set<string>();
     const totalToDownloadAtStart = state.isDownloading
-      ? Math.max(0, state.queue.length - alreadyDownloadedAtStart.size)
+      ? state.downloadRunTotal
       : 0;
     const completedToDownloadCount = state.isDownloading
-      ? state.queue.filter(
-          f =>
-            !alreadyDownloadedAtStart.has(getFileKey(f)) &&
-            state.downloads[getFileKey(f)]?.isDownloaded === true,
-        ).length
+      ? state.downloadRunCompletedCount
       : 0;
     return {
       files: state.queue,
@@ -376,7 +381,8 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
     state.hasCompleted,
     state.hasFailure,
     state.downloads,
-    state.alreadyDownloadedKeysAtStart,
+    state.downloadRunTotal,
+    state.downloadRunCompletedCount,
     throttledProgresses,
   ]);
 

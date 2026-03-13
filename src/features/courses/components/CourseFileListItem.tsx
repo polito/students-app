@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
@@ -129,7 +129,6 @@ export const CourseFileListItem = memo(
     const { getUnreadsCount } = useNotifications();
     const {
       getCourseFilePath,
-      getFileSizeInStorage,
       downloadQueue,
       addFilesToQueue,
       removeFilesFromQueue,
@@ -138,7 +137,6 @@ export const CourseFileListItem = memo(
       () => ['teaching', 'courses', `${courseId}`, 'files', item.id] as const,
       [courseId, item.id],
     );
-    const [isCorrupted, setIsCorrupted] = useState(false);
     const isInQueue = useMemo(
       () => downloadQueue.files.some(f => f.id === item.id),
       [downloadQueue.files, item.id],
@@ -186,39 +184,6 @@ export const CourseFileListItem = memo(
       courseId.toString(),
       item.checksum,
     );
-
-    useEffect(() => {
-      let cancelled = false;
-      (async () => {
-        if (!isDownloaded) {
-          if (!cancelled) setIsCorrupted(false);
-          return;
-        }
-        try {
-          const fileSize = await getFileSizeInStorage(cachedFilePath);
-          if (fileSize == null || cancelled) {
-            if (!cancelled) setIsCorrupted(false);
-            return;
-          }
-          const expectedSize = item.sizeInKiloBytes * 1024;
-          const sizeMismatch =
-            Math.abs(fileSize - expectedSize) /
-              Math.max(fileSize, expectedSize) >
-            0.1;
-          if (!cancelled) setIsCorrupted(sizeMismatch);
-        } catch {
-          if (!cancelled) setIsCorrupted(false);
-        }
-      })();
-      return () => {
-        cancelled = true;
-      };
-    }, [
-      cachedFilePath,
-      isDownloaded,
-      item.sizeInKiloBytes,
-      getFileSizeInStorage,
-    ]);
 
     useEffect(() => {
       if (!isCheckingDownloadStatus) {
@@ -277,7 +242,7 @@ export const CourseFileListItem = memo(
 
     const downloadFile = useCallback(async () => {
       if (downloadProgress == null) {
-        if (isCorrupted || isOutdated) {
+        if (isOutdated) {
           await refreshDownload();
           return;
         }
@@ -292,7 +257,6 @@ export const CourseFileListItem = memo(
       }
     }, [
       downloadProgress,
-      isCorrupted,
       isOutdated,
       isDownloaded,
       navigation,
@@ -413,14 +377,14 @@ export const CourseFileListItem = memo(
             : t('common.open')
         }
         onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
-        isDownloaded={isDownloaded}
+        isDownloaded={isDownloaded && !isCheckingDownloadStatus}
         downloadProgress={downloadProgress}
         title={stripIdInParentheses(item.name ?? '') || t('common.unnamedFile')}
         subtitle={metrics}
         trailingItem={trailingItem}
         mimeType={item.mimeType}
         unread={!!getUnreadsCount(fileNotificationScope)}
-        isCorrupted={isCorrupted || isOutdated}
+        isCorrupted={isOutdated}
       />
     );
 

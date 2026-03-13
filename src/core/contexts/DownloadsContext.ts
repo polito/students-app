@@ -89,6 +89,7 @@ export const DownloadsContext = createContext<{
     }>,
     _contextId: AreaIdMap[T],
     _contextType?: T,
+    _options?: { startImmediately?: boolean },
   ): void | Promise<void>;
   removeFilesFromQueue: (_fileIds: string[]) => void;
   getFilesByContext<T extends DownloadContext>(
