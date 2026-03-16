@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Image, StyleSheet, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Image, StyleSheet, View, useWindowDimensions } from 'react-native';
 import RenderHTML, {
+  HTMLContentModel,
+  HTMLElementModel,
   InternalRendererProps,
   RenderHTMLProps,
   TNodeChildrenRenderer,
   useInternalRenderer,
 } from 'react-native-render-html';
+import Video from 'react-native-video';
 
+import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
 import { ImageLoader } from '@lib/ui/components/ImageLoader';
 import { Text, calculateValueOfPercentage } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -28,35 +32,119 @@ type ImageData = {
   height: number;
   uri: string;
 };
-const CustomImageRenderer = (props: InternalRendererProps<any>) => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { rendererProps } = useInternalRenderer('img', props);
-  const uri = rendererProps.source.uri ?? '';
-  const [imageData, setImageData] = useState<ImageData>();
+const createCustomImageRenderer = (variant: string) => {
+  return (props: InternalRendererProps<any>) => {
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
+    const { rendererProps } = useInternalRenderer('img', props);
+    const uri = rendererProps.source.uri ?? '';
+    const [imageData, setImageData] = useState<ImageData>();
+    const { spacing } = useTheme();
 
-  const onPress = () => {
-    if (imageData) {
-      navigation.navigate('ImageScreen', {
-        ...imageData,
+    const onPress = () => {
+      if (imageData) {
+        navigation.navigate('ImageScreen', {
+          ...imageData,
+        });
+      }
+    };
+
+    useEffect(() => {
+      Image.getSize(uri, (width, height) => {
+        setImageData({ width, height, uri });
       });
+    }, [uri]);
+
+    if (variant === 'onboarding') {
+      return (
+        <ImageLoader
+          source={{ uri: uri ?? '' }}
+          imageStyle={{ height: 200 }}
+          containerStyle={{ height: 200, marginVertical: spacing[3] }}
+          resizeMode="cover"
+        />
+      );
     }
+
+    return (
+      <ImageLoader
+        source={{ uri: uri ?? '' }}
+        imageStyle={{ height: 200 }}
+        containerStyle={{ height: 200 }}
+        resizeMode="cover"
+        onTouchStart={onPress}
+      />
+    );
   };
+};
 
-  useEffect(() => {
-    Image.getSize(uri, (width, height) => {
-      setImageData({ width, height, uri });
-    });
-  }, [uri]);
+const customHTMLElementModels = {
+  video: HTMLElementModel.fromCustomModel({
+    tagName: 'video',
+    contentModel: HTMLContentModel.block,
+  }),
+};
 
-  return (
-    <ImageLoader
-      source={{ uri: uri ?? '' }}
-      imageStyle={{ height: 200 }}
-      containerStyle={{ height: 200 }}
-      resizeMode="cover"
-      onTouchStart={onPress}
-    />
-  );
+const createCustomVideoRenderer = (variant: string) => {
+  return (props: InternalRendererProps<any>) => {
+    const { width } = useWindowDimensions();
+    const uri = props.tnode.attributes.src ?? '';
+    const [isLoading, setIsLoading] = useState(true);
+    const { spacing } = useTheme();
+
+    const onBuffer = useCallback(
+      ({ isBuffering }: { isBuffering: boolean }) => {
+        setIsLoading(isBuffering);
+      },
+      [],
+    );
+
+    const onLoad = useCallback(() => {
+      setIsLoading(false);
+    }, []);
+
+    if (variant === 'onboarding') {
+      const videoWidth = width * 0.5;
+      const videoHeight = videoWidth * (2340 / 1080);
+
+      return (
+        <View style={{ alignSelf: 'center', padding: spacing[3] }}>
+          <Video
+            source={{ uri }}
+            controls={false}
+            muted={true}
+            resizeMode="contain"
+            paused={false}
+            repeat={true}
+            onBuffer={onBuffer}
+            onLoad={onLoad}
+            style={{
+              width: videoWidth,
+              height: videoHeight,
+              borderRadius: 25,
+            }}
+          />
+          {isLoading && (
+            <ActivityIndicator
+              style={{ position: 'absolute', alignSelf: 'center', top: '45%' }}
+            />
+          )}
+        </View>
+      );
+    }
+
+    return (
+      <Video
+        source={{ uri }}
+        controls={false}
+        resizeMode="contain"
+        paused={false}
+        style={{
+          width: '100%',
+          minHeight: (width / 16) * 9,
+        }}
+      />
+    );
+  };
 };
 
 const createCustomTextRenderer = (variant: string) => {
@@ -202,7 +290,8 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
     i: createCustomTextRenderer(variant),
     em: createCustomTextRenderer(variant),
     p: createCustomTextRenderer(variant),
-    img: CustomImageRenderer,
+    img: createCustomImageRenderer(variant),
+    video: createCustomVideoRenderer(variant),
   };
   return (
     <RenderHTML
@@ -235,6 +324,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         'height',
       ]}
       renderers={renderers}
+      customHTMLElementModels={customHTMLElementModels}
     />
   );
 };

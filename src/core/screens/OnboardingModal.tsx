@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
@@ -23,13 +16,14 @@ import { resetNavigationStatusTo } from '~/utils/navigation';
 
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';
 import { OnboardingStep } from '../components/OnboardingStep';
-import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
 import { useHideTabs } from '../hooks/useHideTabs';
+import {
+  useGetOnboardingAnnouncements,
+  useMarkAnnouncementAsRead,
+} from '../queries/announcementHooks';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'OnboardingModal'>;
-
-export const ONBOARDING_STEPS = 4;
 
 export const OnboardingModal = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
@@ -40,28 +34,37 @@ export const OnboardingModal = ({ navigation }: Props) => {
   const [width, setWidth] = useState<number>(0);
   const stepsRef = useRef<ScrollView>(null);
 
-  // Init data as the memoized array from 0 to ONBOARDING_STEPS
-  const data = useMemo(() => [...Array(ONBOARDING_STEPS).keys()], []);
+  const { data: announcements } = useGetOnboardingAnnouncements();
+  const { mutate: markAsRead } = useMarkAnnouncementAsRead();
 
-  const { updatePreference, onboardingStep } = usePreferencesContext();
+  const unseenAnnouncements = useMemo(
+    () => announcements?.filter(a => !a.seen) ?? [],
+    [announcements],
+  );
 
-  const [currentStep, setCurrentStep] = useState<number>(onboardingStep ?? 0);
+  const totalSteps = unseenAnnouncements.length;
+
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const markedAsReadRef = useRef<Set<string>>(new Set());
 
   const isLastStep = useMemo(
-    () => currentStep === data.length - 1,
-    [currentStep, data],
+    () => totalSteps > 0 && currentStep === totalSteps - 1,
+    [currentStep, totalSteps],
+  );
+
+  const markStepAsRead = useCallback(
+    (stepIndex: number) => {
+      const announcement = unseenAnnouncements[stepIndex];
+      if (announcement && !markedAsReadRef.current.has(announcement.id)) {
+        markedAsReadRef.current.add(announcement.id);
+        markAsRead(announcement.id);
+        console.warn('read');
+      }
+    },
+    [unseenAnnouncements, markAsRead],
   );
 
   useHideTabs(undefined, hideOnboarding);
-
-  // Update the onboarding step in preferences
-  useEffect(() => {
-    if (onboardingStep !== undefined && currentStep <= onboardingStep) {
-      // Don't update the preference if the user is going back
-      return;
-    }
-    updatePreference('onboardingStep', currentStep);
-  }, [currentStep, onboardingStep, updatePreference]);
 
   useLayoutEffect(() => {
     if (width === 0) {
@@ -85,6 +88,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
     });
 
   const onNextPage = useCallback(() => {
+    markStepAsRead(currentStep);
     if (isLastStep) {
       navigation.popToTop();
       resetNavigationStatusTo(navigation, 'ServicesTab', [
@@ -97,7 +101,11 @@ export const OnboardingModal = ({ navigation }: Props) => {
       animated: true,
       x: (currentStep + 1) * width,
     });
-  }, [currentStep, isLastStep, navigation, width]);
+  }, [currentStep, isLastStep, navigation, width, markStepAsRead]);
+
+  if (totalSteps === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -114,6 +122,7 @@ export const OnboardingModal = ({ navigation }: Props) => {
           if (currentIndex === currentStep) {
             return;
           }
+          markStepAsRead(currentStep);
           setCurrentStep(currentIndex);
         }}
         scrollEventThrottle={100}
@@ -123,16 +132,22 @@ export const OnboardingModal = ({ navigation }: Props) => {
           setWidth(scrollViewWidth);
         }}
       >
-        {data.map(item => (
-          <OnboardingStep key={item} stepNumber={item} width={width} />
+        {unseenAnnouncements.map(announcement => (
+          <OnboardingStep
+            key={announcement.id}
+            title={announcement.title}
+            description={announcement.description}
+            html={announcement.contents}
+            width={width}
+          />
         ))}
       </ScrollView>
       <SafeAreaView style={styles.fixedContainer}>
         <View style={styles.dotsContainer}>
           <AnimatedDotsCarousel
-            length={4}
+            length={totalSteps}
             currentIndex={currentStep}
-            maxIndicators={4}
+            maxIndicators={totalSteps}
             activeIndicatorConfig={{
               color: colors.heading,
               margin: 3,
