@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -27,6 +27,8 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
 
   const showMfaPrompt = mfaStatus?.status === 'available' && !hideInitialPrompt;
 
+  const [isOnboardingVisible, setIsOnboardingVisible] = useState(false);
+
   useEffect(() => {
     if (!isSplashLoaded) return;
     if (!showMfaPrompt) return;
@@ -42,13 +44,9 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
     if (didHideOnboarding) return;
     if (!hasUnseenOnboarding) return;
     if (versionModalIsOpen) return;
-    navigation.navigate('TeachingTab', {
-      screen: 'OnboardingModal',
-      initial: false,
-    });
+    setIsOnboardingVisible(true);
   }, [
     isSplashLoaded,
-    navigation,
     versionModalIsOpen,
     didHideOnboarding,
     hasUnseenOnboarding,
@@ -76,4 +74,9 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
     hasUnseenOnboarding,
     mfaStatusPending,
   ]);
+
+  return {
+    isOnboardingVisible,
+    closeOnboarding: () => setIsOnboardingVisible(false),
+  };
 };

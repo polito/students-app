@@ -28,7 +28,7 @@ interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
-  title: string;
+  title?: string;
   rightExtra?: ReactElement;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
@@ -165,13 +165,19 @@ export const CtaButton = ({
           {/* {!loading && ( */}
           {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
           {/* )} */}
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: title ? undefined : 'center',
+            }}
+          >
             {icon &&
               Number(accessibility?.fontSize) < 150 &&
               (progress !== undefined ? (
                 <View
                   style={{
-                    marginRight: spacing[2],
+                    marginRight: title ? spacing[2] : 0,
                     paddingHorizontal: spacing[1],
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -191,36 +197,38 @@ export const CtaButton = ({
                   size={fontSizes.xl}
                   color={variant === 'filled' ? colors.white : color}
                   style={{
-                    marginRight: spacing[2],
+                    marginRight: title ? spacing[2] : 0,
                     paddingHorizontal: spacing[1],
                   }}
                 />
               ))}
-            <TextWithLinks
-              style={[
-                styles.textStyle,
-                variant === 'outlined' && {
-                  borderColor: palettes.primary[400],
-                },
-                {
+            {title ? (
+              <TextWithLinks
+                style={[
+                  styles.textStyle,
+                  variant === 'outlined' && {
+                    borderColor: palettes.primary[400],
+                  },
+                  {
+                    color: variant === 'filled' ? colors.white : color,
+                  },
+                  disabled
+                    ? { color: success ? color : colors.disableTitle }
+                    : undefined,
+                  textStyle,
+                ]}
+                baseStyle={{
+                  fontWeight: fontWeights.medium,
                   color: variant === 'filled' ? colors.white : color,
-                },
-                disabled
-                  ? { color: success ? color : colors.disableTitle }
-                  : undefined,
-                textStyle,
-              ]}
-              baseStyle={{
-                fontWeight: fontWeights.medium,
-                color: variant === 'filled' ? colors.white : color,
-                ...(disabled && {
-                  color: success ? color : colors.disableTitle,
-                }),
-              }}
-              isCta={true}
-            >
-              {title}
-            </TextWithLinks>
+                  ...(disabled && {
+                    color: success ? color : colors.disableTitle,
+                  }),
+                }}
+                isCta={true}
+              >
+                {title}
+              </TextWithLinks>
+            ) : null}
             {rightExtra && rightExtra}
           </View>
         </View>

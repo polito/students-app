@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Image, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import RenderHTML, {
   HTMLContentModel,
   HTMLElementModel,
@@ -27,47 +27,131 @@ import { parseDocument } from 'htmlparser2';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 
-type ImageData = {
-  width: number;
-  height: number;
-  uri: string;
+const parseInlineStyle = (
+  styleStr: string | undefined,
+): Record<string, string> => {
+  if (!styleStr) return {};
+  const result: Record<string, string> = {};
+  styleStr.split(';').forEach(rule => {
+    const [key, value] = rule.split(':').map(s => s.trim());
+    if (key && value) {
+      const camelKey = key.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+      result[camelKey] = value;
+    }
+  });
+  return result;
+};
+
+const resolveNumericStyle = (
+  value: string | undefined,
+  relativeTo?: number,
+): number | undefined => {
+  if (!value) return undefined;
+  if (value.endsWith('%') && relativeTo != null) {
+    return (parseFloat(value) / 100) * relativeTo;
+  }
+  const num = parseFloat(value);
+  return isNaN(num) ? undefined : num;
+};
+
+const computeMediaDimensions = (
+  explicitWidth: number | undefined,
+  explicitHeight: number | undefined,
+  naturalAspectRatio: number | undefined,
+  fallbackWidth: number,
+): { width: number; height: number | undefined } => {
+  if (explicitWidth && explicitHeight) {
+    return { width: explicitWidth, height: explicitHeight };
+  }
+  if (explicitWidth) {
+    return {
+      width: explicitWidth,
+      height: naturalAspectRatio
+        ? explicitWidth / naturalAspectRatio
+        : undefined,
+    };
+  }
+  if (explicitHeight) {
+    return {
+      width: naturalAspectRatio
+        ? explicitHeight * naturalAspectRatio
+        : fallbackWidth,
+      height: explicitHeight,
+    };
+  }
+  return {
+    width: fallbackWidth,
+    height: naturalAspectRatio ? fallbackWidth / naturalAspectRatio : undefined,
+  };
 };
 const createCustomImageRenderer = (variant: string) => {
   return (props: InternalRendererProps<any>) => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { rendererProps } = useInternalRenderer('img', props);
     const uri = rendererProps.source.uri ?? '';
-    const [imageData, setImageData] = useState<ImageData>();
+    const [naturalSize, setNaturalSize] = useState<{
+      width: number;
+      height: number;
+    }>();
     const { spacing } = useTheme();
+    const { width: screenWidth } = useWindowDimensions();
+    const onImageLoad = useCallback((e: any) => {
+      const { width: w, height: h } = e.nativeEvent ?? {};
+      if (w && h) {
+        setNaturalSize({ width: w, height: h });
+      }
+    }, []);
 
     const onPress = () => {
-      if (imageData) {
-        navigation.navigate('ImageScreen', {
-          ...imageData,
-        });
+      if (naturalSize) {
+        navigation.navigate('ImageScreen', { ...naturalSize, uri });
       }
     };
 
-    useEffect(() => {
-      Image.getSize(uri, (width, height) => {
-        setImageData({ width, height, uri });
-      });
-    }, [uri]);
-
     if (variant === 'onboarding') {
+      const inlineStyle = parseInlineStyle(props.tnode.attributes.style);
+      const contentWidth = screenWidth - spacing[5] * 2;
+      const borderRadius = resolveNumericStyle(inlineStyle.borderRadius) ?? 0;
+      const naturalAspectRatio =
+        naturalSize && naturalSize.height > 0
+          ? naturalSize.width / naturalSize.height
+          : undefined;
+      const { width: imgWidth, height: imgHeight } = computeMediaDimensions(
+        resolveNumericStyle(
+          inlineStyle.width ?? props.tnode.attributes.width,
+          contentWidth,
+        ),
+        resolveNumericStyle(
+          inlineStyle.height ?? props.tnode.attributes.height,
+        ),
+        naturalAspectRatio,
+        contentWidth,
+      );
+
       return (
         <ImageLoader
-          source={{ uri: uri ?? '' }}
-          imageStyle={{ height: 200 }}
-          containerStyle={{ height: 200, marginVertical: spacing[3] }}
-          resizeMode="cover"
+          source={{ uri }}
+          onLoad={onImageLoad}
+          imageStyle={{
+            width: imgWidth,
+            ...(imgHeight != null && { height: imgHeight }),
+            borderRadius,
+          }}
+          containerStyle={{
+            width: imgWidth,
+            ...(imgHeight != null && { height: imgHeight }),
+            alignSelf: 'center',
+            marginVertical: spacing[3],
+          }}
+          resizeMode="contain"
         />
       );
     }
 
     return (
       <ImageLoader
-        source={{ uri: uri ?? '' }}
+        source={{ uri }}
+        onLoad={onImageLoad}
         imageStyle={{ height: 200 }}
         containerStyle={{ height: 200 }}
         resizeMode="cover"
@@ -81,16 +165,20 @@ const customHTMLElementModels = {
   video: HTMLElementModel.fromCustomModel({
     tagName: 'video',
     contentModel: HTMLContentModel.block,
+    isVoid: true,
   }),
 };
 
 const createCustomVideoRenderer = (variant: string) => {
   return (props: InternalRendererProps<any>) => {
-    const { width } = useWindowDimensions();
+    const { width: screenWidth } = useWindowDimensions();
     const uri = props.tnode.attributes.src ?? '';
     const [isLoading, setIsLoading] = useState(true);
+    const [naturalSize, setNaturalSize] = useState<{
+      width: number;
+      height: number;
+    }>();
     const { spacing } = useTheme();
-
     const onBuffer = useCallback(
       ({ isBuffering }: { isBuffering: boolean }) => {
         setIsLoading(isBuffering);
@@ -98,13 +186,28 @@ const createCustomVideoRenderer = (variant: string) => {
       [],
     );
 
-    const onLoad = useCallback(() => {
+    const onLoad = useCallback((data: any) => {
       setIsLoading(false);
+      const { width: w, height: h } = data.naturalSize ?? {};
+      if (w && h) {
+        setNaturalSize({ width: w, height: h });
+      }
     }, []);
 
     if (variant === 'onboarding') {
-      const videoWidth = width * 0.5;
-      const videoHeight = videoWidth * (2340 / 1080);
+      const inlineStyle = parseInlineStyle(props.tnode.attributes.style);
+      const contentWidth = screenWidth - spacing[5] * 2;
+      const borderRadius = resolveNumericStyle(inlineStyle.borderRadius) ?? 25;
+      const naturalAspectRatio =
+        naturalSize && naturalSize.height > 0
+          ? naturalSize.width / naturalSize.height
+          : undefined;
+      const { width: videoWidth, height: videoHeight } = computeMediaDimensions(
+        resolveNumericStyle(inlineStyle.width, contentWidth),
+        resolveNumericStyle(inlineStyle.height),
+        naturalAspectRatio,
+        contentWidth,
+      );
 
       return (
         <View style={{ alignSelf: 'center', padding: spacing[3] }}>
@@ -119,13 +222,17 @@ const createCustomVideoRenderer = (variant: string) => {
             onLoad={onLoad}
             style={{
               width: videoWidth,
-              height: videoHeight,
-              borderRadius: 25,
+              ...(videoHeight != null && { height: videoHeight }),
+              borderRadius,
             }}
           />
           {isLoading && (
             <ActivityIndicator
-              style={{ position: 'absolute', alignSelf: 'center', top: '45%' }}
+              style={{
+                position: 'absolute',
+                alignSelf: 'center',
+                top: '45%',
+              }}
             />
           )}
         </View>
@@ -140,7 +247,7 @@ const createCustomVideoRenderer = (variant: string) => {
         paused={false}
         style={{
           width: '100%',
-          minHeight: (width / 16) * 9,
+          minHeight: (screenWidth / 16) * 9,
         }}
       />
     );
@@ -185,7 +292,10 @@ const createCustomTextRenderer = (variant: string) => {
     };
 
     return (
-      <Text selectable style={[props.style, dynamicStyle]}>
+      <Text
+        selectable={variant !== 'onboarding'}
+        style={[props.style, dynamicStyle]}
+      >
         {isTextNode ? spacedText : <TNodeChildrenRenderer tnode={tnode} />}
       </Text>
     );
@@ -282,22 +392,26 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         }
       : undefined;
 
-  const renderers = {
-    text: createCustomTextRenderer(variant),
-    span: createCustomTextRenderer(variant),
-    b: createCustomTextRenderer(variant),
-    strong: createCustomTextRenderer(variant),
-    i: createCustomTextRenderer(variant),
-    em: createCustomTextRenderer(variant),
-    p: createCustomTextRenderer(variant),
-    img: createCustomImageRenderer(variant),
-    video: createCustomVideoRenderer(variant),
-  };
+  const renderers = useMemo(
+    () => ({
+      text: createCustomTextRenderer(variant),
+      span: createCustomTextRenderer(variant),
+      b: createCustomTextRenderer(variant),
+      strong: createCustomTextRenderer(variant),
+      i: createCustomTextRenderer(variant),
+      em: createCustomTextRenderer(variant),
+      p: createCustomTextRenderer(variant),
+      img: createCustomImageRenderer(variant),
+      video: createCustomVideoRenderer(variant),
+    }),
+    [variant],
+  );
+
   return (
     <RenderHTML
       contentWidth={width}
       defaultTextProps={{
-        selectable: true,
+        selectable: variant !== 'onboarding',
         selectionColor: palettes.secondary[600],
       }}
       systemFonts={['Montserrat']}
@@ -315,6 +429,12 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         b: styles.bold,
         img: styles.image,
         a: styles.link,
+        h1: styles.h1,
+        h2: styles.h2,
+        h3: styles.h3,
+        h4: styles.h4,
+        h5: styles.h5,
+        h6: styles.h6,
       }}
       ignoredStyles={[
         'fontFamily',
@@ -323,13 +443,15 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         'width',
         'height',
       ]}
+      enableExperimentalBRCollapsing
+      enableExperimentalGhostLinesPrevention
       renderers={renderers}
       customHTMLElementModels={customHTMLElementModels}
     />
   );
 };
 
-const createStyles = ({ spacing, fontWeights }: Theme) =>
+const createStyles = ({ spacing, fontWeights, fontSizes }: Theme) =>
   StyleSheet.create({
     paragraph: { marginBottom: spacing[0], marginTop: spacing[3] },
     bold: { fontWeight: fontWeights.semibold },
@@ -339,5 +461,41 @@ const createStyles = ({ spacing, fontWeights }: Theme) =>
     },
     link: {
       textDecorationLine: 'underline',
+    },
+    h1: {
+      fontSize: fontSizes['2xl'],
+      fontWeight: fontWeights.bold,
+      marginTop: spacing[4],
+      marginBottom: spacing[2],
+    },
+    h2: {
+      fontSize: fontSizes.xl,
+      fontWeight: fontWeights.bold,
+      marginTop: spacing[4],
+      marginBottom: spacing[2],
+    },
+    h3: {
+      fontSize: fontSizes.lg,
+      fontWeight: fontWeights.semibold,
+      marginTop: spacing[3],
+      marginBottom: spacing[1],
+    },
+    h4: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+      marginTop: spacing[3],
+      marginBottom: spacing[1],
+    },
+    h5: {
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      marginTop: spacing[2],
+      marginBottom: spacing[1],
+    },
+    h6: {
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.semibold,
+      marginTop: spacing[2],
+      marginBottom: spacing[1],
     },
   });
