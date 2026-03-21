@@ -1,12 +1,12 @@
-import { ComponentType, ReactNode, useEffect, useState } from 'react';
+import { ComponentType, ReactNode, useState } from 'react';
 import {
-  Image,
   ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
 } from 'react-native';
 
+import FastImage from '@d11/react-native-fast-image';
 import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
 import { Text } from '@lib/ui/components/Text';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
@@ -38,33 +38,28 @@ export const OnboardingStep = ({
 
   const coverWidth = screenWidth - spacing[5] * 2;
 
-  useEffect(() => {
-    if (cover) {
-      Image.getSize(cover, (w, h) => {
-        if (w > 0) setCoverAspectRatio(w / h);
-      });
-    }
-  }, [cover]);
-
   return (
     <ScrollViewComponent
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      {cover && coverAspectRatio && (
+      {cover && (
         <View style={styles.coverImageContainer}>
-          <Image
+          <FastImage
             source={{ uri: cover }}
             style={[
               styles.coverImage,
               {
                 borderRadius: shapes.lg,
                 width: coverWidth,
-                aspectRatio: coverAspectRatio,
+                aspectRatio: coverAspectRatio ?? 16 / 9,
               },
             ]}
-            resizeMode="cover"
-            accessibilityIgnoresInvertColors
+            resizeMode={FastImage.resizeMode.cover}
+            onLoad={e => {
+              const { width: w, height: h } = e.nativeEvent;
+              if (w > 0) setCoverAspectRatio(w / h);
+            }}
           />
         </View>
       )}

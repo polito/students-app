@@ -2,7 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Platform, StyleSheet, View } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -58,7 +58,6 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   );
   const totalSteps = unseenAnnouncements.length;
 
-  // Preload all media from all steps
   const { imageUrls, videoUrls } = useMemo(() => {
     const images: string[] = [];
     const videos: string[] = [];
@@ -82,7 +81,6 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
 
   const mediaReady = imagesReady && videosReadyCount >= videoUrls.length;
 
-  // Prefetch images natively
   useEffect(() => {
     if (preloadStarted.current || imageUrls.length === 0) return;
     preloadStarted.current = true;
@@ -159,7 +157,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
           )}
           <CtaButton
             absolute={false}
-            title={isLastStep ? t('common.close') : t('common.next')}
+            title={isLastStep ? t('common.gotIt') : t('common.next')}
             action={onNextPage}
             containerStyle={{ flex: 1 }}
           />
@@ -202,8 +200,10 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
         <Video
           key={src}
           source={{ uri: src }}
-          paused
+          paused={Platform.OS === 'ios'}
           muted
+          ignoreSilentSwitch="ignore"
+          playInBackground={false}
           onLoad={onVideoPreloaded}
           onError={onVideoPreloaded}
           style={styles.hiddenVideo}
