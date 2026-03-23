@@ -47,14 +47,11 @@ export const OnboardingStep = ({
         <View style={styles.coverImageContainer}>
           <FastImage
             source={{ uri: cover }}
-            style={[
-              styles.coverImage,
-              {
-                borderRadius: shapes.lg,
-                width: coverWidth,
-                aspectRatio: coverAspectRatio ?? 16 / 9,
-              },
-            ]}
+            style={{
+              borderRadius: shapes.lg,
+              width: coverWidth,
+              aspectRatio: coverAspectRatio ?? 16 / 9,
+            }}
             resizeMode={FastImage.resizeMode.cover}
             onLoad={e => {
               const { width: w, height: h } = e.nativeEvent;
@@ -98,8 +95,5 @@ const createStyles = ({ spacing }: Theme) =>
     coverImageContainer: {
       paddingHorizontal: spacing[5],
       marginBottom: spacing[2],
-    },
-    coverImage: {
-      width: '100%',
     },
   });

@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { AnnouncementScope } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
-import { useGetOnboardingAnnouncements } from '../queries/announcementHooks';
+import { useGetAnnouncements } from '../queries/announcementHooks';
 import { useCheckMfa } from '../queries/authHooks';
 import { useGetModalMessages } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
@@ -18,7 +19,10 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
 
   const { data: messages } = useGetModalMessages();
-  const { data: onboardingAnnouncements } = useGetOnboardingAnnouncements();
+  const { data: onboardingAnnouncements } = useGetAnnouncements(
+    false,
+    AnnouncementScope.Onboarding,
+  );
 
   const hasUnseenOnboarding = useMemo(
     () => onboardingAnnouncements?.some(a => !a.seen) ?? false,

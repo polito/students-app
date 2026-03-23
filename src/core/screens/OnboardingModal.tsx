@@ -21,11 +21,12 @@ import { CtaButton } from '@lib/ui/components/CtaButton';
 import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Theme } from '@lib/ui/types/Theme';
+import { AnnouncementScope } from '@polito/student-api-client';
 
 import { OnboardingStep } from '../components/OnboardingStep';
 import { useSplashContext } from '../contexts/SplashContext';
 import {
-  useGetOnboardingAnnouncements,
+  useGetAnnouncements,
   useMarkAnnouncementAsRead,
 } from '../queries/announcementHooks';
 
@@ -42,7 +43,10 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   const bottomSheetRef = useRef<BaseBottomSheet>(null);
   const animatedPosition = useSharedValue(SCREEN_HEIGHT);
 
-  const { data: announcements } = useGetOnboardingAnnouncements();
+  const { data: announcements } = useGetAnnouncements(
+    false,
+    AnnouncementScope.Onboarding,
+  );
   const { mutate: markAsRead } = useMarkAnnouncementAsRead();
 
   const stepsRef = useRef<typeof announcements>(undefined);
