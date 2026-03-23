@@ -24,9 +24,8 @@ export const RecordedGradeListItem = ({ grade }: RecordedGradeProps) => {
     <ListItem
       key={grade.courseName}
       title={grade.courseName}
-      subtitle={`${formatDate(grade.date)} - ${t('common.creditsWithUnit', {
-        credits: grade.credits,
-      })}`}
+      subtitle={[formatDate(grade.date), t('common.creditsWithUnit', { credits: grade.credits })].join(' - ')}
+
       trailingItem={
         <Row align="center" pl={2}>
           <Text
