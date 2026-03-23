@@ -445,6 +445,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       ]}
       enableExperimentalBRCollapsing
       enableExperimentalGhostLinesPrevention
+      enableCSSInlineProcessing
       renderers={renderers}
       customHTMLElementModels={customHTMLElementModels}
     />

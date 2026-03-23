@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 
 import {
   CourseOverview as ApiCourseOverview,
+  CourseAllOfVcOtherCourses,
   CourseDirectory,
   CourseDirectoryEntry,
   CourseFileOverview,
   CourseModuleEdition,
   CoursePreferencesRequest,
-  CourseVcOtherCoursesInner,
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/student-api-client';
@@ -477,7 +477,7 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
 };
 
 export const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (CourseModuleEdition | CourseVcOtherCoursesInner)[],
+  relatedVCs: (CourseModuleEdition | CourseAllOfVcOtherCourses)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -522,7 +522,7 @@ export const useGetCourseLectures = (courseId: number) => {
 
   const relatedVCDefinitions: (
     | CourseModuleEdition
-    | CourseVcOtherCoursesInner
+    | CourseAllOfVcOtherCourses
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],
   );
