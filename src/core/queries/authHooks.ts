@@ -107,7 +107,7 @@ export const useLogin = () => {
               version: `${Platform.Version}`,
               model,
               manufacturer,
-              toothPicCompatible: false,
+              toothPicCompatible: true,
             };
             dto.client = {
               name: 'students-app',

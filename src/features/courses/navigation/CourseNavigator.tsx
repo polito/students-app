@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useWindowDimensions } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@lib/ui/components/IconButton';
@@ -108,10 +108,10 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           size={fontSizes.lg}
           accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}
-          hitSlop={{
-            left: +spacing[3],
-            right: +spacing[3],
-          }}
+          adjustSpacing="right"
+          {...(Platform.OS === 'ios' && Platform.Version >= '26'
+            ? { noPadding: true, iconStyle: { marginLeft: spacing[2] } }
+            : {})}
           onPress={() => {
             navigation.navigate('CoursePreferences', {
               courseId: id,

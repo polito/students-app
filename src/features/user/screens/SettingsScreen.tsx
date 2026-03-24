@@ -84,7 +84,7 @@ const CleanCacheListItem = () => {
         setCacheSize(size);
       })
       .catch(() => {
-        setCacheSize(0);
+        setCacheSize(undefined);
       });
   }, []);
 
@@ -105,21 +105,28 @@ const CleanCacheListItem = () => {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
       accessibilityRole="button"
-      disabled={cacheSize === 0 || isAnyDownloadInProgress}
+      disabled={
+        (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
+      }
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
-          const allFiles = await fileDatabaseRef.current.getAllFiles();
-          await Promise.all(
-            allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
-          );
-          await fileDatabaseRef.current.deleteAllFiles();
-          await deleteLocalPath(filesCache).catch(() => {});
-          refreshCacheVersion();
-          setFeedback({
-            text: t('coursePreferencesScreen.cleanCacheFeedback'),
-          });
-          refreshSize();
+          try {
+            const allFiles = await fileDatabaseRef.current.getAllFiles();
+            await Promise.all(
+              allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
+            );
+            await fileDatabaseRef.current.deleteAllFiles();
+            await deleteLocalPath(filesCache).catch(() => {});
+            refreshCacheVersion();
+            setFeedback({
+              text: t('coursePreferencesScreen.cleanCacheFeedback'),
+              isPersistent: false,
+            });
+            refreshSize();
+          } catch {
+            setFeedback({ text: t('common.error'), isPersistent: false });
+          }
         }
       }}
     />

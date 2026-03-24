@@ -69,6 +69,7 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
+  onLongPress,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
@@ -156,8 +157,7 @@ export const ListItem = ({
       {...rest}
       // These two added due to the issue #60 indicated in react-native-context-menu-view
       // https://github.com/mpiannucci/react-native-context-menu-view/issues/60
-      onLongPress={() => {}}
-      delayLongPress={100}
+      {...(onLongPress != null ? { onLongPress, delayLongPress: 100 } : {})}
     >
       <View
         style={[

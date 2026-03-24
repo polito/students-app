@@ -1,16 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
 import { OverviewList } from '@lib/ui/components/OverviewList';
 import { RefreshControl } from '@lib/ui/components/RefreshControl';
+import { Row } from '@lib/ui/components/Row';
+import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
+import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Theme } from '@lib/ui/types/Theme';
 import {
   CourseDirectory,
   CourseFileOverview,
 } from '@polito/student-api-client';
-import { NativeActionEvent } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -26,11 +30,9 @@ import {
   getCourseKey,
   useGetCourseFilesRecent,
 } from '../../../core/queries/courseHooks';
-import { sortByNameAsc } from '../../../utils/sorting';
-import { CourseFileMultiSelectModal } from '../components/CourseFileMultiSelectModal';
+import { GlobalStyles } from '../../../core/styles/GlobalStyles';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { FileScreenHeader } from '../components/FileScreenHeader';
-import { MENU_ACTIONS } from '../constants';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 
@@ -40,12 +42,15 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const [multiSelectModalVisible, setMultiSelectModalVisible] = useState(false);
   const courseId = route.params.courseId;
+  const multiSelectNav =
+    (navigation.getParent()?.getParent() as any) ?? navigation;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext();
+  const [searchFilter, setSearchFilter] = useState('');
+  const styles = useStylesheet(createStyles);
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
@@ -57,27 +62,12 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     }, [courseId, queryClient]),
   );
   const {
-    enableMultiSelect,
-    setEnableMultiSelect,
-    allFilesSelected,
     sortedData,
-    setSortedData,
     activeSort,
     sortOptions,
-    toggleMultiSelect,
-    toggleSelectAll,
     onPressSortOption,
-    handleDownloadAction,
-    handleRemoveAction,
-    downloadButtonTitle,
-    removeButtonTitle,
-    isDownloadButtonDisabled,
-    isRemoveButtonDisabled,
     isRemoving,
     isDownloading,
-    downloadButtonProgress,
-    downloadButtonStyle,
-    removeButtonStyle,
   } = useFileManagement({
     courseId,
     data: recentFilesQuery.data,
@@ -85,65 +75,21 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   });
   const { downloads } = useDownloadsContext();
 
-  const handleCloseModalOnly = useCallback(() => {
-    setMultiSelectModalVisible(false);
-  }, []);
-
-  const handleCloseMultiSelectModal = useCallback(() => {
-    setMultiSelectModalVisible(false);
-    toggleMultiSelect();
-  }, [toggleMultiSelect]);
-
-  const handleModalHide = useCallback(
-    (reason?: 'download' | 'remove') => {
-      if (reason !== 'download' && reason !== 'remove') {
-        handleCloseMultiSelectModal();
-      }
-      setEnableMultiSelect(false);
-    },
-    [handleCloseMultiSelectModal, setEnableMultiSelect],
-  );
-
-  useEffect(() => {
-    if (recentFilesQuery.data) {
-      setSortedData(sortByNameAsc(recentFilesQuery.data));
-    }
-  }, [recentFilesQuery.data, setSortedData]);
-
-  const fileListData = useMemo(
-    () => (sortedData || recentFilesQuery.data) ?? [],
-    [sortedData, recentFilesQuery.data],
-  );
+  const fileListData = useMemo(() => {
+    const base = (sortedData || recentFilesQuery.data) ?? [];
+    if (!searchFilter.trim()) return base;
+    const q = searchFilter.trim().toLowerCase();
+    return base.filter(item => (item.name ?? '').toLowerCase().includes(q));
+  }, [sortedData, recentFilesQuery.data, searchFilter]);
 
   useOnLeaveScreen(() => {
     clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
   });
 
-  const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    switch (event) {
-      case MENU_ACTIONS.SELECT:
-        if (isDownloading || isRemoving) {
-          return;
-        }
-        if (multiSelectModalVisible) {
-          setMultiSelectModalVisible(false);
-          toggleMultiSelect();
-        } else {
-          toggleMultiSelect();
-          setMultiSelectModalVisible(true);
-        }
-        break;
-      case MENU_ACTIONS.SELECT_ALL:
-        toggleSelectAll();
-        break;
-      case MENU_ACTIONS.TOGGLE_FOLDERS:
-        navigation.replace('DirectoryFiles', { courseId });
-        updatePreference('filesScreen', 'directoryView');
-        break;
-      default:
-        break;
-    }
-  };
+  const onToggleView = useCallback(() => {
+    navigation.replace('DirectoryFiles', { courseId });
+    updatePreference('filesScreen', 'directoryView');
+  }, [navigation, courseId, updatePreference]);
 
   const { spacing } = useTheme();
 
@@ -151,14 +97,27 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
 
   return (
     <>
+      <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
+        <TranslucentTextField
+          autoFocus={searchFilter.length !== 0}
+          autoCorrect={false}
+          leadingIcon={faSearch}
+          value={searchFilter}
+          onChangeText={setSearchFilter}
+          style={[GlobalStyles.grow, styles.textField]}
+          label={t('courseDirectoryScreen.search')}
+          editable={true}
+          isClearable={!!searchFilter}
+          onClear={() => setSearchFilter('')}
+          onClearLabel={t('contactsScreen.clearSearch')}
+        />
+      </Row>
       <FileScreenHeader
-        enableMultiSelect={enableMultiSelect}
-        allFilesSelected={allFilesSelected}
         activeSort={activeSort}
         sortOptions={sortOptions}
         onPressSortOption={onPressSortOption}
-        onPressOption={onPressOption}
         isDirectoryView={false}
+        onToggleView={onToggleView}
         isSelectDisabled={isDownloading || isRemoving}
       />
 
@@ -166,7 +125,7 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={fileListData}
-          extraData={{ downloads }}
+          extraData={{ downloads, isRemoving }}
           contentContainerStyle={paddingHorizontal}
           scrollEnabled={scrollEnabled}
           keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
@@ -174,12 +133,22 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
           maxToRenderPerBatch={15}
           windowSize={4}
           renderItem={({ item }) => {
+            const fileItem = item as CourseFileOverview;
             return (
               <CourseRecentFileListItem
-                item={item as CourseFileOverview}
+                item={fileItem}
                 onSwipeStart={onSwipeStart}
                 onSwipeEnd={onSwipeEnd}
                 enableMultiSelect={false}
+                disabled={isRemoving}
+                onLongPress={() => {
+                  if (isDownloading || isRemoving) return;
+                  multiSelectNav?.navigate('CourseFileMultiSelect', {
+                    courseId,
+                    mode: 'recent',
+                    initialSelectedIds: [fileItem.id],
+                  });
+                }}
               />
             );
           }}
@@ -200,27 +169,21 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
           }
         />
       </View>
-      <CourseFileMultiSelectModal
-        visible={multiSelectModalVisible}
-        onClose={handleCloseMultiSelectModal}
-        onCloseModalOnly={handleCloseModalOnly}
-        onModalHide={handleModalHide}
-        courseId={courseId}
-        flatFileList={recentFilesQuery.data ?? []}
-        handleDownloadAction={handleDownloadAction}
-        handleRemoveAction={handleRemoveAction}
-        downloadButtonTitle={downloadButtonTitle}
-        removeButtonTitle={removeButtonTitle}
-        isDownloadButtonDisabled={isDownloadButtonDisabled}
-        isRemoveButtonDisabled={isRemoveButtonDisabled}
-        isDownloading={isDownloading}
-        downloadButtonProgress={downloadButtonProgress}
-        downloadButtonStyle={downloadButtonStyle}
-        removeButtonStyle={removeButtonStyle}
-      />
     </>
   );
 };
+
+const createStyles = ({ spacing, shapes, colors }: Theme) =>
+  StyleSheet.create({
+    textField: {
+      borderRadius: shapes.lg,
+    },
+    searchBar: {
+      paddingBottom: spacing[2],
+      paddingTop: spacing[2],
+      backgroundColor: colors.background,
+    },
+  });
 
 export const CourseFilesScreen = ({ navigation, route }: Props) => {
   return <CourseFilesScreenContent navigation={navigation} route={route} />;

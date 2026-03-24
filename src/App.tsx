@@ -5,7 +5,6 @@ import Mapbox from '@rnmapbox/maps';
 import { AppContent } from './core/components/AppContent';
 import { DialogProvider } from './core/components/Dialog';
 import { ApiProvider } from './core/providers/ApiProvider';
-import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { FeedbackProvider } from './core/providers/FeedbackProvider';
 import { PreferencesProvider } from './core/providers/PreferencesProvider';
 import { SplashProvider } from './core/providers/SplashProvider';
@@ -25,10 +24,8 @@ const App = () => {
           <UiProvider>
             <FeedbackProvider>
               <ApiProvider>
-                <DownloadsProvider>
-                  <DialogProvider />
-                  <AppContent />
-                </DownloadsProvider>
+                <DialogProvider />
+                <AppContent />
               </ApiProvider>
             </FeedbackProvider>
           </UiProvider>

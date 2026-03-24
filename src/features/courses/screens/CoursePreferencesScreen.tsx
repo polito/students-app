@@ -66,7 +66,7 @@ const CleanCourseFilesListItem = () => {
   const courseId = useCourseContext();
   const { data: course } = useGetCourse(courseId);
   const courseFilesCache = getCourseFolderPath(courseId, course?.name);
-  const [cacheSize, setCacheSize] = useState<number>(0);
+  const [cacheSize, setCacheSize] = useState<number | undefined>(undefined);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
@@ -83,7 +83,7 @@ const CleanCourseFilesListItem = () => {
         setCacheSize(size);
       })
       .catch(() => {
-        setCacheSize(0);
+        setCacheSize(undefined);
       });
   }, [ctx, ctxId]);
 
@@ -99,30 +99,35 @@ const CleanCourseFilesListItem = () => {
 
   const handleCleanPress = useCallback(async () => {
     if (!courseFilesCache || !(await confirm())) return;
-    Object.keys(downloads).forEach(key => {
-      if (key.includes(courseFilesCache)) {
-        updateDownload(key, {
-          isDownloaded: false,
-          phase: undefined,
-        });
-      }
-    });
+    try {
+      Object.keys(downloads).forEach(key => {
+        if (key.includes(courseFilesCache)) {
+          updateDownload(key, {
+            isDownloaded: false,
+            phase: undefined,
+          });
+        }
+      });
 
-    const files = await fileDatabaseRef.current.getFilesByContext(ctx, ctxId);
-    await Promise.all(
-      files.map(f => removeFileFromStorage(f.path).catch(() => {})),
-    );
+      const files = await fileDatabaseRef.current.getFilesByContext(ctx, ctxId);
+      await Promise.all(
+        files.map(f => removeFileFromStorage(f.path).catch(() => {})),
+      );
 
-    await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
-    await deleteLocalPath(courseFilesCache).catch(() => {});
-    refreshCacheVersion();
-    setFeedback({
-      text: t('coursePreferencesScreen.cleanCacheFeedback'),
-    });
-    refreshSize();
-    queryClient.invalidateQueries({
-      queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
-    });
+      await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
+      await deleteLocalPath(courseFilesCache).catch(() => {});
+      refreshCacheVersion();
+      setFeedback({
+        text: t('coursePreferencesScreen.cleanCacheFeedback'),
+        isPersistent: false,
+      });
+      refreshSize();
+      queryClient.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+      });
+    } catch {
+      setFeedback({ text: t('common.error'), isPersistent: false });
+    }
   }, [
     courseFilesCache,
     confirm,
@@ -147,7 +152,9 @@ const CleanCourseFilesListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
-      disabled={cacheSize === 0 || isAnyDownloadInProgress}
+      disabled={
+        (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
+      }
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={handleCleanPress}
     />

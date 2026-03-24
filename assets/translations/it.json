@@ -185,7 +185,7 @@
     "removeCompletedShort": "File rimossi",
     "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti",
     "downloadStatus": {
-      "false": "Non scaricato",
+      "false": "Non scaricati",
       "true": "Scaricato"
     },
     "duration": "Durata",
@@ -251,7 +251,7 @@
     "minutes": "Minuti",
     "more": "Più",
     "navigate": "Naviga",
-    "newest": "Più recente",
+    "newest": "Data più recente",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "newVersionTitle": "Nuova versione disponibile!",
@@ -407,6 +407,7 @@
     "unavailableDuringDownload": "cartella non accessibile durante il download"
   },
   "courseDirectoryScreen": {
+    "selectFiles": "Seleziona file",
     "clearSearch": "Cancella ricerca",
     "emptyRootFolder": "Non ci sono file",
     "emptyFolder": "La cartella è vuota",
@@ -427,9 +428,20 @@
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
     "removeFilesTitle": "Rimuovi file",
-    "removeFileConfirmation": "Il file verrà rimosso solo localmente dal tuo dispositivo. Vuoi continuare?",
-    "removeFilesConfirmation": "I {{count}} file verranno rimossi solo localmente dal tuo dispositivo. Vuoi continuare?",
-    "title": "Materiale"
+    "removeFileConfirmation": "Il file verrà rimosso localmente dal tuo dispositivo. Vuoi continuare?",
+    "removeFilesConfirmation": "I {{count}} file verranno rimossi localmente dal tuo dispositivo. Vuoi continuare?",
+    "title": "Materiale",
+    "updateDownloadedTitle": "Aggiorna file scaricati",
+    "updateDownloadedMessage": "{{count}} file selezionati sono già scaricati. Vuoi aggiornarli?",
+    "updateDownloadedInfoTitle": "Download",
+    "updateDownloadedInfoMessage": "1 file già scaricato verrà aggiornato e 1 nuovo file verrà scaricato.",
+    "updateDownloadedInfoMessageOnlyUpdate": "1 file già scaricato verrà aggiornato.",
+    "updateDownloadedInfoMessageOnlyUpdates": "{{downloadedCount}} file già scaricati verranno aggiornati.",
+    "updateDownloadedInfoMessageOneUpdate": "1 file già scaricato verrà aggiornato e {{newCount}} nuovi file verranno scaricati.",
+    "updateDownloadedInfoMessageOneDownload": "{{downloadedCount}} file già scaricati verranno aggiornati e 1 nuovo file verrà scaricato.",
+    "updateDownloadedInfoMessages": "{{downloadedCount}} file già scaricati verranno aggiornati e {{newCount}} nuovi file verranno scaricati.",
+    "downloadOnlyNew": "Solo nuovi",
+    "downloadAll": "Scarica tutti"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -1053,14 +1065,13 @@
     "pickFileTitle": "Puoi includere un allegato per messaggio",
     "reply": "Rispondi",
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
-    "ticketNumber": "Numero ticket",
-    "title": "Ticket",
-    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta",
     "virtualOperator": "OPERATORE VIRTUALE",
     "feedbackTitle": "Hai parlato con un operatore virtuale",
     "feedbackDescription": "Questo nuovo servizio nasce per darti un supporto più veloce ed efficace. Se hai bisogno di ulteriore assistenza, il nostro team ti risponderà al più presto!",
     "feedbackQuestion": "La risposta ti soddisfa?",
-    "realOperatorWillReply": "Un operatore reale ti risponderà al più presto."
+    "ticketNumber": "Numero ticket",
+    "title": "Ticket",
+    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
   },
   "tickets": {
     "close": "Chiudi ticket",

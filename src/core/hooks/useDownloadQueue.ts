@@ -28,6 +28,15 @@ export function useDownloadQueue<T extends DownloadContext>(
       sizeInKiloBytes?: number;
     }>,
   ) => void;
+  addFilesAndStart: (
+    files: Array<{
+      id: string;
+      name: string;
+      url: string;
+      filePath: string;
+      sizeInKiloBytes?: number;
+    }>,
+  ) => void;
   removeFiles: (fileIds: string[]) => void;
   clearFiles: () => void;
   startDownload: () => void;
@@ -78,6 +87,29 @@ export function useDownloadQueue<T extends DownloadContext>(
     [addFilesToQueue, contextId, contextType],
   );
 
+  const addFilesAndStart = useCallback(
+    (
+      files: Array<{
+        id: string;
+        name: string;
+        url: string;
+        filePath: string;
+        sizeInKiloBytes?: number;
+      }>,
+    ) => {
+      if (
+        contextId !== undefined &&
+        contextType !== undefined &&
+        files.length > 0
+      ) {
+        addFilesToQueue(files, contextId, contextType, {
+          startImmediately: true,
+        });
+      }
+    },
+    [addFilesToQueue, contextId, contextType],
+  );
+
   const removeFiles = useCallback(
     (fileIds: string[]) => {
       removeFilesFromQueue(fileIds);
@@ -114,6 +146,7 @@ export function useDownloadQueue<T extends DownloadContext>(
       isDownloading: downloadQueue.isDownloading,
       hasFiles: false,
       addFiles: () => {},
+      addFilesAndStart: () => {},
       removeFiles: removeFilesFromQueue,
       clearFiles: () => {},
       startDownload: startQueueDownload,
@@ -130,6 +163,7 @@ export function useDownloadQueue<T extends DownloadContext>(
     isDownloading,
     hasFiles,
     addFiles,
+    addFilesAndStart,
     removeFiles,
     clearFiles,
     startDownload,
