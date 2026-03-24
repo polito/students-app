@@ -24,7 +24,6 @@ import { Theme } from '@lib/ui/types/Theme';
 import { AnnouncementScope } from '@polito/student-api-client';
 
 import { OnboardingStep } from '../components/OnboardingStep';
-import { useSplashContext } from '../contexts/SplashContext';
 import {
   useGetAnnouncements,
   useMarkAnnouncementAsRead,
@@ -39,7 +38,6 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors, shapes, spacing } = useTheme();
   const { t } = useTranslation();
-  const { hideOnboarding } = useSplashContext();
   const bottomSheetRef = useRef<BaseBottomSheet>(null);
   const animatedPosition = useSharedValue(SCREEN_HEIGHT);
 
@@ -127,9 +125,8 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   );
 
   const handleClose = useCallback(() => {
-    hideOnboarding();
     onClose();
-  }, [hideOnboarding, onClose]);
+  }, [onClose]);
 
   const onNextPage = useCallback(() => {
     markStepAsRead(currentStep);
