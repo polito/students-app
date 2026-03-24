@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Platform, StyleSheet, View } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -36,7 +37,7 @@ interface Props {
 
 export const OnboardingModal = ({ visible, onClose }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { colors, shapes, spacing } = useTheme();
+  const { colors, shapes } = useTheme();
   const { t } = useTranslation();
   const bottomSheetRef = useRef<BaseBottomSheet>(null);
   const animatedPosition = useSharedValue(SCREEN_HEIGHT);
@@ -103,6 +104,15 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
     setVideosReadyCount(prev => prev + 1);
   }, []);
 
+  useEffect(() => {
+    if (visible && mediaReady) {
+      SystemBars.setHidden({ navigationBar: true });
+    }
+    return () => {
+      SystemBars.setHidden({ navigationBar: false });
+    };
+  }, [visible, mediaReady]);
+
   const [currentStep, setCurrentStep] = useState<number>(0);
   const markedAsReadRef = useRef<Set<string>>(new Set());
 
@@ -145,7 +155,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
 
   const renderFooter = useCallback(
     (props: BottomSheetFooterProps) => (
-      <BottomSheetFooter {...props} bottomInset={spacing[8]}>
+      <BottomSheetFooter {...props}>
         <View style={styles.footerRow}>
           {!isFirstStep && (
             <CtaButton
@@ -165,15 +175,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
         </View>
       </BottomSheetFooter>
     ),
-    [
-      isFirstStep,
-      isLastStep,
-      onPreviousPage,
-      onNextPage,
-      t,
-      spacing,
-      styles.footerRow,
-    ],
+    [isFirstStep, isLastStep, onPreviousPage, onNextPage, t, styles.footerRow],
   );
 
   const backdropStyle = useAnimatedStyle(() => ({
@@ -213,8 +215,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
       <BaseBottomSheet
         ref={bottomSheetRef}
         index={0}
-        enableDynamicSizing
-        maxDynamicContentSize={maxHeight}
+        snapPoints={[maxHeight]}
         enablePanDownToClose={false}
         enableHandlePanningGesture={false}
         enableContentPanningGesture={false}
